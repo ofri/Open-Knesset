@@ -3,12 +3,12 @@
 import socket
 import sys
 import gzip
+import os
 
-hostname = socket.gethostname()
-if(hostname=="ofri-laptop"):
-    sys.path.append('/home/ofri/dev/python/knesset_git/')
-    sys.path.append('/home/ofri/dev/python/knesset_git/knesset/')
-    sys.path.append('/home/ofri/dev/python/knesset_git/knesset/simple')
+base_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append('%s/../' % base_dir)
+sys.path.append('%s/../knesset/' % base_dir)
+sys.path.append('%s/../knesset/simple' % base_dir)
 
 import MySQLdb
 import os
