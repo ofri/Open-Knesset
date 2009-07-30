@@ -74,7 +74,9 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     
-    # add host specific template dirs below
+    TEMPLATE_DIRS = (
+        "%s/templates" % base_dir
+    )
 )
 
 INSTALLED_APPS = (
@@ -86,7 +88,6 @@ INSTALLED_APPS = (
     'knesset.simple',
 )
 
-if hostname == 'ofri-laptop':
-    TEMPLATE_DIRS = (
-        "/home/ofri/dev/python/knesset_git/knesset/templates",
-    )
+if hostname == 'ofri-laptop': # just an example of host-specific definitions. use if nessecery
+    DATABASE_USER = 'knesset'     
+    DATABASE_PASSWORD = '123456'  
