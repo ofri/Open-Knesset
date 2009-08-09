@@ -7,7 +7,7 @@ class Correlation(models.Model):
     m2 = models.ForeignKey('Member', related_name = 'm2')
     score = models.IntegerField(default=0)
     normalized_score = models.FloatField(null=True)
-    not_same_party = models.BooleanField(null=True)
+    not_same_party = models.NullBooleanField()
     def __unicode__(self):
         return "%s (%s) - %s (%s) - %.0f" % (self.m1.name,self.m1.parties.all()[0].name,self.m2.name,self.m2.parties.all()[0].name,self.normalized_score)
     

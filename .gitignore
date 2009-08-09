@@ -1,4 +1,8 @@
-# In this file, put only stuff that all developers will want to ignore.
-# For example, pattern like '*~' and '*.bak' belong in your own core.excludesfile.
-
+parts/
+eggs/
+bin/
+downloads/
+src/Open_Knesset.egg-info/
+develop-eggs/
 *.pyc
+*.db
