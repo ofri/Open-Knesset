@@ -113,3 +113,10 @@ class Vote(models.Model):
     topics_against = models.ManyToManyField(Topic, related_name='against_votes', blank=True)
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
+
+    def ForVotesCount(self):
+        return self.voted_for.count()
+
+    def AgainstVotesCount(self):
+        return self.voted_against.count()
+
