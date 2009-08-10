@@ -23,6 +23,9 @@ from knesset.simple.models import *
 
 hebMonths = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
+
+# some party names appear in the knesset website in several forms.
+# this dictionary is used to transform them to canonical form.
 partyAliases = {'עבודה':'העבודה',
                 'ליכוד':'הליכוד',
                 'ש"ס-התאחדות ספרדים שומרי תורה':'ש"ס',
@@ -43,7 +46,6 @@ def UpdateDbFromFiles():
         content = f.read().split('\n')
         print "%s entering data" % str(datetime.datetime.now())
         for line in content:
-            #print line
             if(len(line)<2):
                 continue
             s = line.split('\t')
@@ -51,6 +53,8 @@ def UpdateDbFromFiles():
             vote_id = s[0]
             vote_label = s[1]
             relevant = False
+
+            # some votes are intersting, some are just stupid. so lets load only something that has potential to be interesting
             if(vote_label.find('אישור החוק') >= 0):
                 relevant = True
             if(vote_label.find('קריאה שניה') >= 0):
@@ -60,8 +64,8 @@ def UpdateDbFromFiles():
             
             if not relevant:
                 continue
+
             vote_time_string = s[2].replace('&nbsp;',' ')
-            #print vote_time_string
             for i in hebMonths:
                 if i in vote_time_string:
                     month = hebMonths.index(i)+1
@@ -70,52 +74,55 @@ def UpdateDbFromFiles():
             vote_date = datetime.date(int(year),int(month),int(day))
             voter = s[3]
             voter_party = s[4]
+
+            # transform party names to canonical form
             if(voter_party in partyAliases):
                 voter_party = partyAliases[voter_party]
+
             vote = s[5]
-            #print "looking for party %s" % voter_party
+
+            # create/get the party appearing in this vote 
             p,created = Party.objects.get_or_create(name=voter_party)
-            #print created
-            if created:
-                #print "party created: %s" % voter_party
-                p = Party.objects.get(name=voter_party)
+            if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name. 
+                        #only when it comes back from the db it has valid unicode chars.
+                p = Party.objects.get(name=voter_party) 
             
+            # use this vote's time to update the party's start date and end date
             if (p.start_date is None) or (p.start_date > vote_date):
                 p.start_date = vote_date
             if (p.end_date is None) or (p.end_date < vote_date):
                 p.end_date = vote_date
             p.save()
             
-            #print "looking for member %s" % voter
+            # create/get the member voting
             m,created = Member.objects.get_or_create(name=voter)
-            #print created
             m.party = p;
-            #print m.party
-            if created:
-                #print "member created: %s" % voter
+            if created: # again, unicode magic
                 m = Member.objects.get(name=voter)
+            # use this vote's date to update the member's dates.
             if (m.start_date is None) or (m.start_date > vote_date):
                 m.start_date = vote_date
             if (m.end_date is None) or (m.end_date < vote_date):
                 m.end_date = vote_date
             m.save()
                 
-            #print "looking for membership %s-%s" % (voter,voter_party)
+            # create/get the membership (connection between member and party)
             ms,created = Membership.objects.get_or_create(member=m,party=p)
-            if created:
-                #print "membership created"
+            if created: # again, unicode magic
                 ms = Membership.objects.get(member=m,party=p)
+            # again, update the dates on the membership
             if (ms.start_date is None) or (ms.start_date > vote_date):
                 ms.start_date = vote_date
             if (ms.end_date is None) or (ms.end_date < vote_date):
                 ms.end_date = vote_date
             ms.save()    
                 
+            # create/get a vote object for this vote
             v,created = Vote.objects.get_or_create(title=vote_label, time_string=vote_time_string)
-            if created:
+            if created: # again, unicode magic
                 v = Vote.objects.get(title=vote_label, time_string=vote_time_string)
                 v.time = vote_date
-            #print "vote %s on %s" % (vote,v)
+            # and add the current member's vote
             if vote=='for':
                 v.voted_for.add(m)
             if vote=='against':
@@ -124,7 +131,6 @@ def UpdateDbFromFiles():
                 v.voted_abstain.add(m)
             if vote=='no-vote':
                 v.didnt_vote.add(m)
-            #print "v.save()"
             v.save()
             
         print "%s done" % str(datetime.datetime.now())
