@@ -1,26 +1,18 @@
  # This Python file uses the following encoding: utf-8
-
-import socket
-import sys
-import gzip
 import os
+from django.core.management.base import NoArgsCommand
+from optparse import make_option
+import settings
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
-sys.path.append('%s/../' % base_dir)
-sys.path.append('%s/../knesset/' % base_dir)
-sys.path.append('%s/../knesset/simple' % base_dir)
+import urllib2
+import re
+import gzip
 
 import MySQLdb
-import os
-import re
 import datetime
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'knesset.settings'
-from django.db import transaction
-from django.db import connection
-
 from knesset.simple.models import *
-
+from django.db import connection
 hebMonths = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
 
@@ -40,9 +32,9 @@ partyAliases = {'עבודה':'העבודה',
                 }
 
 def UpdateDbFromFiles():
-    print "updatedb/UpdateDbFromFiles"
+    print "Update DB From Files"
     try:
-        f = gzip.open('data/results.tsv.gz')
+        f = gzip.open('%s/data/results.tsv.gz' % settings.base_dir)
         content = f.read().split('\n')
         print "%s entering data" % str(datetime.datetime.now())
         for line in content:
@@ -138,7 +130,7 @@ def UpdateDbFromFiles():
         print "error: %s" % e
         
 def CalculateCorrelations():
-    print "updatedb/CalculateCorrelations"
+    print "Calculate Correlations"
     try:     
         cursor = connection.cursor()
         print "%s truncate correlations table" % str(datetime.datetime.now())
@@ -188,13 +180,116 @@ def CalculateCorrelations():
 
     except Exception,e:
         print "error: %s" % e
-    
-if __name__ == "__main__":
-    if len(sys.argv)==1:
-        UpdateDbFromFiles()
-        CalculateCorrelations()
-    else:
-        if sys.argv[1] == 'update':
+ 
+
+def ReadPage(voteId):
+    url = "http://www.knesset.gov.il/vote/heb/Vote_Res_Map.asp?vote_id_t=%d" % voteId
+    urlData = urllib2.urlopen(url)
+    page = urlData.read().decode('windows-1255').encode('utf-8')
+    return page
+
+def ReadMemberVotes(page):
+    results = []
+    pattern = re.compile("""Vote_Bord""")
+    match = pattern.split(page)
+    for i in match:
+        vote = ""
+        if(re.match("""_R1""", i)):
+            vote = "for"
+        if(re.match("""_R2""", i)):
+            vote = "against"
+        if(re.match("""_R3""", i)):
+            vote = "abstain"
+        if(re.match("""_R4""", i)):
+            vote = "no-vote"
+        if(vote != ""):
+            name = re.search("""DataText4>([^<]*)</a>""",i).group(1);
+            name = re.sub("""&nbsp;""", " ", name)
+            party = re.search("""DataText4>([^<]*)</td>""",i).group(1);
+            party = re.sub("""&nbsp;""", " ", party)
+            if(party == """ " """):
+                party = lastParty
+            else:
+                lastParty = party 
+            results.append((name, party, vote))  
+    return results
+
+
+def PageTitle(page):
+    title = re.search("""<TITLE>([^<]*)</TITLE>""", page)
+    return title.group(1)
+
+def VoteData(page):
+    name = re.search("""שם החוק: </td>[^<]*<[^>]*>([^<]*)<""", page).group(1)
+    name = name.replace("\t"," ")
+    name = name.replace("\n"," ")
+    name = name.replace("\r"," ")
+    name = name.replace("&nbsp;"," ")
+    date = re.search("""תאריך: </td>[^<]*<[^>]*>([^<]*)<""",page)
+    return (name, date.group(1))
+
+
+class Command(NoArgsCommand):
+    option_list = NoArgsCommand.option_list + (
+        make_option('--no-download', action='store_true', dest='no-download',
+            help="don't download data. only load the data from the files in knesset/data/ to the db."),
+        make_option('--no-process', action='store_true', dest='no-process',
+            help="download data and save it to files in knesset/data/ only. don't load the data to the db."),
+        make_option('--no-correlations', action='store_true', dest='no-correlations',
+            help="don't calculate correlations after loading the data (mainly for debug)."),
+
+    )
+    help = "Downloads data from sources, parses it and loads it to the Django DB."
+
+    requires_model_validation = False
+
+    def Download(self):
+        f = gzip.open("%s/data/results.tsv.gz"%settings.base_dir, "wb")
+        f2 = gzip.open("%s/data/votes.tsv.gz"%settings.base_dir,"wb")
+        r = range(1,12000) # this is the range of page ids to go over. currently its set manually.
+        for id in r:
+            page = ReadPage(id)
+            title = PageTitle(page)
+            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
+                print "no vote found at id %d" % id
+            else:
+                countFor = 0
+                countAgainst = 0
+                countAbstain = 0
+                countNoVote = 0
+                (name,date) = VoteData(page)
+                results = ReadMemberVotes(page)
+                for i in results:
+                    f.write("%d\t%s\t%s\t%s\t%s\t%s\n" % (id,name,date,i[0],i[1],i[2]))
+                    if(i[2]=="for"):
+                        countFor+=1
+                    if(i[2]=="against"):
+                        countAgainst+=1
+                    if(i[2]=="abstain"):
+                        countAbstain+=1
+                    if(i[2]=="no-vote"):
+                        countNoVote+=1
+                f2.write("%d\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, name, date, countFor,countAgainst,countAbstain,countNoVote))
+                print "parsed data at id %d" % id
+            print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
+        f.close()
+        f2.close()
+
+    def handle_noargs(self, **options):
+
+
+        no_download = options.get('no-download', False)
+        no_process = options.get('no-process', False)
+        no_correlations = options.get('no-correlations', False)
+
+        if not no_download:
+            self.Download()    
+        
+        if not no_process:
             UpdateDbFromFiles()
-        if sys.argv[1] == 'calc':
+
+        if not no_correlations:
             CalculateCorrelations()
+
+
+        
