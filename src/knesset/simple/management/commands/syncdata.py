@@ -47,15 +47,16 @@ def UpdateDbFromFiles():
             relevant = False
 
             # some votes are intersting, some are just stupid. so lets load only something that has potential to be interesting
-            if(vote_label.find('אישור החוק') >= 0):
-                relevant = True
-            if(vote_label.find('קריאה שניה') >= 0):
-                relevant = True
-            if(vote_label.find('הצבעה') >= 0):
-                relevant = True
-            
-            if not relevant:
-                continue
+            # disabled for now            
+            #if(vote_label.find('אישור החוק') >= 0):
+            #    relevant = True
+            #if(vote_label.find('קריאה שניה') >= 0):
+            #    relevant = True
+            #if(vote_label.find('הצבעה') >= 0):
+            #    relevant = True
+            #
+            #if not relevant:
+            #    continue
 
             vote_time_string = s[2].replace('&nbsp;',' ')
             for i in hebMonths:
