@@ -2,7 +2,7 @@
 import os
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
-import settings
+from django.conf import settings
 
 import urllib2
 import re
