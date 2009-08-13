@@ -1,0 +1,89 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+		<meta http-equiv="Content-Language" content="en-us">
+
+		<title>{% trans 'Knesset' %}</title>
+
+		<meta name="ROBOTS" content="ALL">
+		<meta http-equiv="imagetoolbar" content="no"/>
+		<meta name="MSSmartTagsPreventParsing" content="true" >
+		<meta name="Authors" content="PyWeb-IL">
+		<meta name="License" content="Follow your inclanations with due regards to the 
+            devil within and the policeman around the corner." > 
+		<meta name="keywords" content="parliament, Systems, Python, Django, open-source" >
+		<meta name="description" content={% trans "I'm just sitting here watching the wheels go round and round." %}>
+
+		<link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="{{MEDIA_URL}}css/print.css" rel="stylesheet" type="text/css" media="print" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}js/base.js"></script>
+      {% block extrahead %}{% endblock %}
+	</head>
+
+	<body>
+
+	<div id="container">
+		<div id="header">
+			<ul id="nav-global">
+				<li id="nav-back"><a href="javascript:goBack();">&lt;</a></li>
+                <!-- TODO: search and a lot of dry-ing -->
+				<li id="nav-stream"><a href="javascript:jsr(Stream);">Stream</a></li>
+				<li id="nav-past-votes">
+					<a href="javascript:jsr(PastVotes);">{% trans 'Past Votes' %}</a>
+				</li>
+				<li id="nav-members">
+					<a href="javascript:jsr(Members);">{% trans 'Members' %}</a>
+				</li>
+				<li id="nav-parties">
+					<a href="javascript:jsr(Parties);">{% trans 'Parties' %}</a>
+				</li>
+				<li id="nav-next-votes">
+					<a href="javascript:jsr(NextVotes);">{% trans 'Upcoming Votes' %}</a>
+				</li>
+				<li id="nav-friends">
+					<a href="javascript:jsr(Friends);">{% trans 'Friends' %}</a>
+				</li>
+				<li id="nav-forward"><a href="javascript:goForward();">&gt;</a></li>
+				<li id="nav-code"><a href="javascript:jsr(Code);">Code</a></li>
+			</ul>
+            
+		</div>
+		<!-- END Header -->
+        <!-- END Reviewed code. Follows is legacy from django-website -->
+		<div id="billboard"></div>
+		<div id="columnwrap">
+			{% block columnwrap %}
+				<div id="content-main">
+				{% block content %}&nbsp;{% endblock %}
+				</div>
+				<!-- END #content-main -->
+			{% endblock %}
+		</div>
+		<!-- END #content -->
+		<div id="footer">
+			<p>&copy; {% now "Y" %} <a href="javascrip:jsr(About);">Benny Daon</a> 
+            unless otherwise noted. Prudely powered by Django. 
+			</p>
+		</div>
+		<!-- END #footer -->
+	</div>
+	<!-- END #container -->
+	<!-- SmarterFox code -->
+	<script type="text/javascript">
+        // start with Stream 
+        jsr (Stream);
+		var finderfoxConfig = {
+		    version: "1.0.0",
+		        key: "1f7962f0c157811b00000122ee87b1a0"
+			};
+			document.write(unescape('%3Cscript type="text/javascript" src="'+
+			('https:'==document.location.protocol?'https://ssl.':'http://')+
+			'finderfox.smarterfox.com/finderfox.js"%3E%3C/script%3E'));
+		</script>
+	</body>
+</html>
+

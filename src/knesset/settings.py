@@ -77,8 +77,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     
-
-        "%s/templates" % base_dir
+    os.path.join(PROJECT_ROOT, 'templates'),
     
 )
 
