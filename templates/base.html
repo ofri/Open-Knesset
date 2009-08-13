@@ -21,6 +21,9 @@
 		<link href="{{MEDIA_URL}}css/print.css" rel="stylesheet" type="text/css" media="print" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/base.js"></script>
+		{% if LANGUAGE_BIDI %}
+			<style> body { direction: rtl; } </style>
+		{% endif %}
       {% block extrahead %}{% endblock %}
 	</head>
 
@@ -30,7 +33,7 @@
 		<div id="header">
 			<ul id="nav-global">
 				<li id="nav-back"><a href="javascript:goBack();">&lt;</a></li>
-                <!-- TODO: search and a lot of dry-ing -->
+                <!-- TODO: search and a lot of drying -->
 				<li id="nav-stream"><a href="javascript:jsr(Stream);">Stream</a></li>
 				<li id="nav-past-votes">
 					<a href="javascript:jsr(PastVotes);">{% trans 'Past Votes' %}</a>
@@ -58,7 +61,7 @@
 		<div id="columnwrap">
 			{% block columnwrap %}
 				<div id="content-main">
-				{% block content %}&nbsp;{% endblock %}
+				{% block content %}TODO: add home content{% endblock %}
 				</div>
 				<!-- END #content-main -->
 			{% endblock %}
