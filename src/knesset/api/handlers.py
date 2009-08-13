@@ -7,9 +7,11 @@ class MemberHandler(BaseHandler):
              )
     allowed_methods = ('GET',)
     model = Member
-    def read(self, request, member_id):
-        member = Member.objects.get(pk=member_id)
-        return member
+    def read(self, request, member_id=None):
+        if member_id:
+            return Member.objects.get(pk=member_id)
+        else:
+            return Member.objects.all()
 
     @classmethod
     def membership (self, member):
@@ -29,8 +31,9 @@ class VoteHandler(BaseHandler):
              )
     allowed_methods = ('GET',)
     model = Vote
-    def read(self, request, vote_id):
-        vote = Vote.objects.get(pk=vote_id)
-        return vote
-
+    def read(self, request, vote_id=None):
+        if vote_id:
+            return Vote.objects.get(pk=vote_id)
+        else:
+            return Vote.objects.all()
 
