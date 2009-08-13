@@ -1,5 +1,5 @@
 from piston.handler import BaseHandler
-from knesset.simple.models import Vote, Member, Membership
+from knesset.simple.models import Vote, Member, Party, Membership
 
 class MemberHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date',
@@ -18,7 +18,6 @@ class MemberHandler(BaseHandler):
         qs = Membership.objects.filter(member=member)
         return qs.values('start_date', 'end_date', 'party_id')
 
-
 class VoteHandler(BaseHandler):
     # fields = ('for', 'against', 'abstain')
     fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
@@ -36,4 +35,16 @@ class VoteHandler(BaseHandler):
             return Vote.objects.get(pk=vote_id)
         else:
             return Vote.objects.all()
+
+class PartyHandler(BaseHandler):
+    fields = ('id', 'name', 'start_date', 'end_date')
+    allowed_methods = ('GET',)
+    model = Party
+    def read(self, request, party_id=None):
+        if party_id:
+            return Party.objects.get(pk=party_id)
+        else:
+            return Party.objects.all()
+
+
 
