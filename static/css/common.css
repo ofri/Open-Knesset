@@ -8,7 +8,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 body { margin:0; padding:0; background:#311F1D url('/static/img/nimrod.jpg') no-repeat top right; color:white; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
-#container { position:relative; min-width:55em; max-width:100em; }
+#container { padding-right: 300px; }
 #homepage #container { max-width:100em; }
 
 /* LINKS */
