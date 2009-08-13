@@ -37,6 +37,9 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''

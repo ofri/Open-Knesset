@@ -8,7 +8,6 @@ import urllib2
 import re
 import gzip
 
-import MySQLdb
 import datetime
 
 from knesset.simple.models import *
@@ -31,10 +30,12 @@ partyAliases = {'עבודה':'העבודה',
                 'יחד  (ישראל חברתית דמוקרטית) והבחירה הדמוקרטית':'מרצ-יחד והבחירה הדמוקרטית',
                 }
 
+DATA_ROOT = getattr(settings, 'DATA_ROOT',
+                    os.path.join(settings.PROJECT_ROOT, 'data'))
 def UpdateDbFromFiles():
     print "Update DB From Files"
     try:
-        f = gzip.open('%s/data/results.tsv.gz' % settings.base_dir)
+        f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'))
         content = f.read().split('\n')
         print "%s entering data" % str(datetime.datetime.now())
         for line in content:
