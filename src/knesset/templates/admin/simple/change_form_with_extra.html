@@ -3,12 +3,11 @@
 {% block after_related_objects %}
 {% if change %}{% if not is_popup %}
     
-      חברים הכנסת עם הקורלציה הגבוהה ביותר:  
+      חברים הכנסת עם הקורלציה הגבוהה ביותר:
 {{extra.hi_corr|safe }}
 <br />
-      חברים הכנסת עם הקורלציה הנמוכה ביותר: 
+      חברים הכנסת עם הקורלציה הנמוכה ביותר:
 {{ extra.low_corr|safe }}
     
 {% endif %}{% endif %}
 {% endblock %}
-

@@ -2,18 +2,20 @@
 import os
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
-import settings
+from django.conf import settings
 
 import urllib2
 import re
 import gzip
 
-import MySQLdb
 import datetime
 
 from knesset.simple.models import *
 from django.db import connection
 
+
+DATA_ROOT = getattr(settings, 'DATA_ROOT',
+                    os.path.join(settings.PROJECT_ROOT, 'data'))
 
 
 class Command(NoArgsCommand):
@@ -33,8 +35,8 @@ class Command(NoArgsCommand):
     last_id = 1
 
     def Download(self):
-        f = gzip.open("%s/data/results.tsv.gz"%settings.base_dir, "ab")
-        f2 = gzip.open("%s/data/votes.tsv.gz"%settings.base_dir,"ab")
+        f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+        f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
         r = range(self.last_id,13000) # this is the range of page ids to go over. currently its set manually.
         for id in r:
             page = self.ReadPage(id)
@@ -70,7 +72,7 @@ class Command(NoArgsCommand):
         Reads local votes file, and sets self.last_downloaded_id to the highest id found in the file.
         This is later used to skip downloading of data alreay downloaded.
         """
-        f = gzip.open("%s/data/votes.tsv.gz"%settings.base_dir,"rb")
+        f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
         content = f.read().split('\n')
         for line in content:
             if(len(line)<2):
@@ -103,7 +105,7 @@ class Command(NoArgsCommand):
     def UpdateDbFromFiles(self):
         print "Update DB From Files"
         try:
-            f = gzip.open('%s/data/results.tsv.gz' % settings.base_dir)
+            f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'))
             content = f.read().split('\n')
             print "%s entering data" % str(datetime.datetime.now())
             for line in content:
