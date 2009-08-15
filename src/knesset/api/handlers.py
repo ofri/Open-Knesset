@@ -1,6 +1,13 @@
 from piston.handler import BaseHandler
 from knesset.simple.models import Vote, Member, Party, Membership
 
+def limit_by_request(qs, request):
+    if 'num' in request.GET:
+        num = int(request.GET['num'])
+        page = 'page' in request.GET and int(request.GET['page']) or 0
+        return qs[page*num:(page+1)*num]
+    return qs
+
 class MemberHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date',
               'membership',
@@ -11,7 +18,8 @@ class MemberHandler(BaseHandler):
         if member_id:
             return Member.objects.get(pk=member_id)
         else:
-            return Member.objects.all()
+            qs = Member.objects.all()
+            return limit_by_request(qs, request)
 
     @classmethod
     def membership (self, member):
@@ -34,7 +42,8 @@ class VoteHandler(BaseHandler):
         if vote_id:
             return Vote.objects.get(pk=vote_id)
         else:
-            return Vote.objects.all()
+            qs = Vote.objects.all()
+            return limit_by_request(qs, request)
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
@@ -44,7 +53,8 @@ class PartyHandler(BaseHandler):
         if party_id:
             return Party.objects.get(pk=party_id)
         else:
-            return Party.objects.all()
+            qs = Party.objects.all()
+            return limit_by_request(qs, request)
 
 
 
