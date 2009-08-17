@@ -12,7 +12,7 @@ import datetime
 
 from knesset.simple.models import *
 from django.db import connection
-
+from django.db.models import Max
 
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, 'data'))
@@ -102,32 +102,43 @@ class Command(NoArgsCommand):
                     'יחד  (ישראל חברתית דמוקרטית) והבחירה הדמוקרטית':'מרצ-יחד והבחירה הדמוקרטית',
                     }
 
+
     def UpdateDbFromFiles(self):
         print "Update DB From Files"
+
         try:
             f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'))
             content = f.read().split('\n')
-            print "%s entering data" % str(datetime.datetime.now())
+            parties = dict() # key: party-name; value: Party
+            members = dict() # key: member-name; value: Member
+            votes   = dict() # key: id; value: Vote
+            memberships = dict() # key: (member.id,party.id)
+            current_vote = None # used to track what vote we are on, to create vote objects only for new votes
+            current_max_src_id = Vote.objects.aggregate(Max('id'))['id__max']
+            if current_max_src_id == None: # the db contains no votes, meanins its empty
+                current_max_src_id = 0
+            print "%s processing data" % str(datetime.datetime.now())
             for line in content:
                 if(len(line)<2):
                     continue
                 s = line.split('\t')
                 
                 vote_id = s[0]
+                if vote_id < current_max_src_id: # skip votes already parsed.
+                    continue                
                 vote_label = s[1]
                 relevant = False
 
                 # some votes are intersting, some are just stupid. so lets load only something that has potential to be interesting
-                # disabled for now            
-                #if(vote_label.find('אישור החוק') >= 0):
-                #    relevant = True
+                if(vote_label.find('אישור החוק') >= 0):
+                    relevant = True
                 #if(vote_label.find('קריאה שניה') >= 0):
                 #    relevant = True
                 #if(vote_label.find('הצבעה') >= 0):
                 #    relevant = True
-                #
-                #if not relevant:
-                #    continue
+
+                if not relevant:
+                    continue
 
                 vote_time_string = s[2].replace('&nbsp;',' ')
                 for i in self.hebMonths:
@@ -146,57 +157,93 @@ class Command(NoArgsCommand):
                 vote = s[5]
 
                 # create/get the party appearing in this vote 
-                p,created = Party.objects.get_or_create(name=voter_party)
-                if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name. 
+                if voter_party in parties:
+                    p = parties[voter_party]
+                    created = False
+                else:
+                    p,created = Party.objects.get_or_create(name=voter_party)
+                #if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name. 
                             #only when it comes back from the db it has valid unicode chars.
-                    p = Party.objects.get(name=voter_party) 
+                #    p = Party.objects.get(name=voter_party) 
                 
                 # use this vote's time to update the party's start date and end date
                 if (p.start_date is None) or (p.start_date > vote_date):
                     p.start_date = vote_date
                 if (p.end_date is None) or (p.end_date < vote_date):
                     p.end_date = vote_date
-                p.save()
+                if created:
+                    p.save() # save on first time, so it would have an id, be able to link, etc.
                 
                 # create/get the member voting
-                m,created = Member.objects.get_or_create(name=voter)
+                if voter in members:
+                    m = members[voter]
+                    created = False
+                else:
+                    m,created = Member.objects.get_or_create(name=voter)
                 m.party = p;
-                if created: # again, unicode magic
-                    m = Member.objects.get(name=voter)
+                #if created: # again, unicode magic
+                #    m = Member.objects.get(name=voter)
                 # use this vote's date to update the member's dates.
                 if (m.start_date is None) or (m.start_date > vote_date):
                     m.start_date = vote_date
                 if (m.end_date is None) or (m.end_date < vote_date):
                     m.end_date = vote_date
-                m.save()
+                if created:
+                    m.save()
+        
                     
                 # create/get the membership (connection between member and party)
-                ms,created = Membership.objects.get_or_create(member=m,party=p)
-                if created: # again, unicode magic
-                    ms = Membership.objects.get(member=m,party=p)
+                if ((m.id,p.id) in memberships):
+                    ms = memberships[(m.id,p.id)]                
+                    created = False
+                else:
+                    ms,created = Membership.objects.get_or_create(member=m,party=p)
+                #if created: # again, unicode magic
+                #    ms = Membership.objects.get(member=m,party=p)
                 # again, update the dates on the membership
                 if (ms.start_date is None) or (ms.start_date > vote_date):
                     ms.start_date = vote_date
                 if (ms.end_date is None) or (ms.end_date < vote_date):
                     ms.end_date = vote_date
-                ms.save()    
+                if created:
+                    ms.save()    
                     
                 # create/get a vote object for this vote
-                v,created = Vote.objects.get_or_create(title=vote_label, time_string=vote_time_string)
-                if created: # again, unicode magic
-                    v = Vote.objects.get(title=vote_label, time_string=vote_time_string)
-                    v.time = vote_date
+                if (current_vote == None) or (vote_id != current_vote.src_id): # we are parsing a new vote. need to create new object
+                    if vote_id in votes:
+                        v = votes[vote_id]
+                        created = False
+                    else:                
+                        v,created = Vote.objects.get_or_create(title=vote_label, time_string=vote_time_string, importance=1)
+                    if created: # again, unicode magic
+                 #       v = Vote.objects.get(title=vote_label, time_string=vote_time_string)
+                        v.time = vote_date
+                        v.src_id = vote_id
+                        
+                        votes[vote_id] = v
+                    current_vote = v
                 # and add the current member's vote
                 if vote=='for':
-                    v.voted_for.add(m)
+                    current_vote.voted_for.add(m)
                 if vote=='against':
-                    v.voted_against.add(m)
+                    current_vote.voted_against.add(m)
                 if vote=='abstain':
-                    v.voted_abstain.add(m)
+                    current_vote.voted_abstain.add(m)
                 if vote=='no-vote':
-                    v.didnt_vote.add(m)
-                v.save()
+                    current_vote.didnt_vote.add(m)
+                if created:
+                    current_vote.save()
                 
+            print "%s done" % str(datetime.datetime.now())
+            print "%s saving data " % str(datetime.datetime.now())
+            for p in parties:
+                p.save()
+            for m in members:
+                m.save()
+            for ms in memberships:
+                ms.save()
+            for v in votes:
+                v.save()
             print "%s done" % str(datetime.datetime.now())
         except Exception,e:
             print "error: %s" % e
