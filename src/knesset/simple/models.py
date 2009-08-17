@@ -101,16 +101,18 @@ class Member(models.Model):
     NameWithLink.allow_tags = True    
 
 class Vote(models.Model):
-    title         = models.CharField(max_length=1000)
-    time          = models.DateTimeField(null=True,blank=True)
-    time_string   = models.CharField(max_length=100)
-    voted_for     = models.ManyToManyField(Member, related_name='for_votes', blank=True)
-    voted_against = models.ManyToManyField(Member, related_name='against_votes', blank=True)
-    voted_abstain = models.ManyToManyField(Member, related_name='abstain_votes', blank=True)
-    didnt_vote    = models.ManyToManyField(Member, related_name='no_votes', blank=True)
-    
+    src_id         = models.IntegerField(null=True,blank=True)    
+    title          = models.CharField(max_length=1000)
+    time           = models.DateTimeField(null=True,blank=True)
+    time_string    = models.CharField(max_length=100)
+    voted_for      = models.ManyToManyField(Member, related_name='for_votes', blank=True)
+    voted_against  = models.ManyToManyField(Member, related_name='against_votes', blank=True)
+    voted_abstain  = models.ManyToManyField(Member, related_name='abstain_votes', blank=True)
+    didnt_vote     = models.ManyToManyField(Member, related_name='no_votes', blank=True)
     topics_for     = models.ManyToManyField(Topic, related_name='for_votes', blank=True)
     topics_against = models.ManyToManyField(Topic, related_name='against_votes', blank=True)
+    importance     = models.FloatField()
+    full_text      = models.TextField(null=True,blank=True)
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
 
