@@ -21,6 +21,13 @@
 		<link href="{{MEDIA_URL}}css/print.css" rel="stylesheet" type="text/css" media="print" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/base.js"></script>
+		{% if LANGUAGE_BIDI %}
+		<style>
+		body {
+		        direction: rtl;
+        }
+		</style>
+		{% endif %}
       {% block extrahead %}{% endblock %}
 	</head>
 
@@ -72,10 +79,8 @@
 		<!-- END #footer -->
 	</div>
 	<!-- END #container -->
-	<!-- SmarterFox code -->
+	<!-- SmarterFox code  too slow for now 
 	<script type="text/javascript">
-        // start with Stream 
-        // jsr (Stream);
 		var finderfoxConfig = {
 		    version: "1.0.0",
 		        key: "1f7962f0c157811b00000122ee87b1a0"
@@ -84,6 +89,7 @@
 			('https:'==document.location.protocol?'https://ssl.':'http://')+
 			'finderfox.smarterfox.com/finderfox.js"%3E%3C/script%3E'));
 		</script>
+        -->
 	</body>
 </html>
 
