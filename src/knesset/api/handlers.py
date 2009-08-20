@@ -18,7 +18,7 @@ class MemberHandler(BaseHandler):
         if member_id:
             return Member.objects.get(pk=member_id)
         else:
-            qs = Member.objects.all()
+            qs = Member.objects.all().order_by('-end_date', 'name')
             return limit_by_request(qs, request)
 
     @classmethod

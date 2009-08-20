@@ -8,7 +8,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 body { margin:0; padding:0; background:#311F1D url('/static/img/nimrod.jpg') no-repeat top right; color:white; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
-#container { padding-right:100px;}
+#container { padding-right:300px;}
 #homepage #container { max-width:100em; }
 
 /* LINKS */
@@ -30,7 +30,7 @@ a:hover { color:#ffe761; }
 #header h1#logo { margin:4px; width:111px; height:41px; }
 /* NAV */
 
-#nav-global { position:absolute; margin:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
+#nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
 #nav-global a { display:block; float:left; padding:5em 16px 10px 16px; }
 #nav-global a:hover { color:white; background:#234f32; }
@@ -40,7 +40,7 @@ a:hover { color:#ffe761; }
 
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
-#content-main { float:right; padding-right: 100px; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
+#content-main { float:right; width:80%; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
