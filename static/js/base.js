@@ -49,9 +49,8 @@ BreadCrumb.prototype.nextPage = function () {
     this.params.page++;
     $.getJSON(API_URL+this.name+'/', this.params, 
             function(data){
-              jQuery.each(data.items, function(i,item){
-                $("<li>").html(this.render()).appendTo("#items");
-              });
+                $('#items-list').append(CurrentState.renderList(data));
+                // cb(data);
             });
 };
 
