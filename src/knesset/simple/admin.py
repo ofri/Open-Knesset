@@ -66,7 +66,7 @@ admin.site.register(Correlation, CorrelationAdmin)
 
 class VoteAdmin(admin.ModelAdmin):
     filter_horizontal = ('voted_for','voted_against','voted_abstain','didnt_vote')
-    list_display = ('__unicode__','ForVotesCount','AgainstVotesCount')
+    list_display = ('__unicode__','short_summary','full_text_link','ForVotesCount','AgainstVotesCount')
 admin.site.register(Vote, VoteAdmin)
 
 class MembershipAdmin(admin.ModelAdmin):
