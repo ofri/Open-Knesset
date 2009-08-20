@@ -112,7 +112,10 @@ class Vote(models.Model):
     topics_for     = models.ManyToManyField(Topic, related_name='for_votes', blank=True)
     topics_against = models.ManyToManyField(Topic, related_name='against_votes', blank=True)
     importance     = models.FloatField()
+    summary        = models.TextField(null=True,blank=True)    
     full_text      = models.TextField(null=True,blank=True)
+    full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
 
@@ -122,3 +125,15 @@ class Vote(models.Model):
     def AgainstVotesCount(self):
         return self.voted_against.count()
 
+    def short_summary(self):
+        if self.summary==None:
+            return ''
+        else:
+            return self.summary[:60]
+
+    def full_text_link(self):
+        if self.full_text_url==None:
+            return ''
+        else:
+            return '<a href="%s">link</a>' % self.full_text_url
+    full_text_link.allow_tags = True  

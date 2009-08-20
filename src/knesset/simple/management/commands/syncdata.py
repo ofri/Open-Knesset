@@ -1,13 +1,13 @@
  # This Python file uses the following encoding: utf-8
-import os
+import os,sys,traceback
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
 from django.conf import settings
 
-import urllib2
+import urllib2,urllib
 import re
 import gzip
-
+import simplejson
 import datetime
 
 from knesset.simple.models import *
@@ -34,40 +34,86 @@ class Command(NoArgsCommand):
 
     last_id = 1
 
-    def Download(self):
-        f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
-        f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_id,13000) # this is the range of page ids to go over. currently its set manually.
+    def read_laws_page(self,index):
+        url = 'http://www.knesset.gov.il/privatelaw/plaw_display.asp?LawTp=2'
+        data = urllib.urlencode({'RowStart':index})
+        urlData = urllib2.urlopen(url,data)
+        page = urlData.read().decode('windows-1255').encode('utf-8')
+        return page
+
+    def parse_laws_page(self,page):
+        names = []
+        exps = []
+        links = []
+        count = -1
+        lines = page.split('\n')
+        for line in lines:
+            r = re.search("""Href=\"(.*?)\">""",line)
+            if r != None:
+                link = 'http://www.knesset.gov.il/privatelaw/' + r.group(1)
+            r = re.search("""<td class="LawText1">(.*)</td>""",line)
+            if r != None:
+                name = r.group(1)
+                if len(name)>0:
+                    names.append(name)
+                    links.append(link)
+                    exps.append('')
+                    count += 1
+            if re.search("""arrResume\[\d*\]""",line) != None:
+                r = re.search("""\"(.*)\"""",line)
+                if r != None:
+                    exps[count] += r.group(1).replace('\t',' ')
+
+        return (names,exps,links)
+
+    def get_laws_data(self):
+        f = gzip.open(os.path.join(DATA_ROOT, 'laws.tsv.gz'), "wb")
+        for x in range(0,910,26): # TODO: find limits of download
+        #for x in range(0,50,26): # for debug
+            page = self.read_laws_page(x)
+            (names,exps,links) = self.parse_laws_page(page)
+            for (name,exp,link) in zip(names,exps,links):
+                f.write("%s\t%s\t%s\n" % (name,exp,link))
+        f.close()
+
+    def get_votes_data(self):
+        f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+        f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
+        r = range(self.last_id+1,12110) # this is the range of page ids to go over. currently its set manually.
         for id in r:
-            page = self.ReadPage(id)
-            title = self.PageTitle(page)
+            page = self.read_votes_page(id)
+            title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
                 print "no vote found at id %d" % id
             else:
-                countFor = 0
-                countAgainst = 0
-                countAbstain = 0
-                countNoVote = 0
-                (name,date) = self.VoteData(page)
-                results = self.ReadMemberVotes(page)
+                count_for = 0
+                count_against = 0
+                count_abstain = 0
+                count_no_vote = 0
+                (name,date) = self.get_vote_data(page)
+                results = self.read_member_votes(page)
                 for i in results:
                     f.write("%d\t%s\t%s\t%s\t%s\t%s\n" % (id,name,date,i[0],i[1],i[2]))
                     if(i[2]=="for"):
-                        countFor+=1
+                        count_for += 1
                     if(i[2]=="against"):
-                        countAgainst+=1
+                        count_against += 1
                     if(i[2]=="abstain"):
-                        countAbstain+=1
+                        count_abstain += 1
                     if(i[2]=="no-vote"):
-                        countNoVote+=1
-                f2.write("%d\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, name, date, countFor,countAgainst,countAbstain,countNoVote))
-                print "parsed data at id %d" % id
+                        count_no_vote += 1
+                f2.write("%d\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, name, date, count_for,count_against,count_abstain,count_no_vote))
+                print "downloaded data with vote id %d" % id
             print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
         f.close()
-        f2.close()
+        f2.close()        
+    
+    def download_all(self):
+        self.get_votes_data()
+        self.get_laws_data()
 
 
-    def UpdateLastDownloadedId(self):
+    def update_last_downloaded_vote_id(self):
         """
         Reads local votes file, and sets self.last_downloaded_id to the highest id found in the file.
         This is later used to skip downloading of data alreay downloaded.
@@ -84,12 +130,17 @@ class Command(NoArgsCommand):
         print "last id found in local files is %d. will try to download more." % self.last_id
         f.close()
 
-    hebMonths = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
+
+    def get_search_string(self,s):
+        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+        return re.sub(r'["\(\) ,-]', '', s)
+
+    heb_months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
 
     # some party names appear in the knesset website in several forms.
     # this dictionary is used to transform them to canonical form.
-    partyAliases = {'עבודה':'העבודה',
+    party_aliases = {'עבודה':'העבודה',
                     'ליכוד':'הליכוד',
                     'ש"ס-התאחדות ספרדים שומרי תורה':'ש"ס',
                     'יחד (ישראל חברתית דמוקרטית) והבחירה הדמוקרטית':'יחד (ישראל חברתית דמוקרטית) והבחירה הדמוקרטית',
@@ -103,10 +154,23 @@ class Command(NoArgsCommand):
                     }
 
 
-    def UpdateDbFromFiles(self):
+    def update_db_from_files(self):
         print "Update DB From Files"
 
         try:
+            laws = [] # of lists: [name,name_for_search,explanation,link]
+            f = gzip.open(os.path.join(DATA_ROOT, 'laws.tsv.gz'))
+            content = f.read().split('\n')
+            for line in content:
+                law = line.split('\t')
+                if len(law)==3:
+                    name_for_search = self.get_search_string(law[0])
+                    law.insert(1, name_for_search)
+                    laws.append(law)
+            f.close()
+
+            parties = dict() # key: party-name; value: Party
+
             f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'))
             content = f.read().split('\n')
             parties = dict() # key: party-name; value: Party
@@ -114,19 +178,25 @@ class Command(NoArgsCommand):
             votes   = dict() # key: id; value: Vote
             memberships = dict() # key: (member.id,party.id)
             current_vote = None # used to track what vote we are on, to create vote objects only for new votes
-            current_max_src_id = Vote.objects.aggregate(Max('id'))['id__max']
+            current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
             if current_max_src_id == None: # the db contains no votes, meanins its empty
                 current_max_src_id = 0
-            print "%s processing data" % str(datetime.datetime.now())
+            print "%s processing data. current_max_src_id = %d" % (str(datetime.datetime.now()), current_max_src_id)
             for line in content:
                 if(len(line)<2):
                     continue
                 s = line.split('\t')
                 
-                vote_id = s[0]
+                vote_id = int(s[0])
+
                 if vote_id < current_max_src_id: # skip votes already parsed.
-                    continue                
+          
+#                if vote_id > 500: # TEMP
+                    continue  
+             
                 vote_label = s[1]
+                vote_label_for_search = self.get_search_string(vote_label)
+
                 relevant = False
 
                 # some votes are intersting, some are just stupid. so lets load only something that has potential to be interesting
@@ -141,9 +211,9 @@ class Command(NoArgsCommand):
                     continue
 
                 vote_time_string = s[2].replace('&nbsp;',' ')
-                for i in self.hebMonths:
+                for i in self.heb_months:
                     if i in vote_time_string:
-                        month = self.hebMonths.index(i)+1
+                        month = self.heb_months.index(i)+1
                 day = re.search("""(\d\d?)""", vote_time_string).group(1)
                 year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
                 vote_date = datetime.date(int(year),int(month),int(day))
@@ -151,8 +221,8 @@ class Command(NoArgsCommand):
                 voter_party = s[4]
 
                 # transform party names to canonical form
-                if(voter_party in self.partyAliases):
-                    voter_party = self.partyAliases[voter_party]
+                if(voter_party in self.party_aliases):
+                    voter_party = self.party_aliases[voter_party]
 
                 vote = s[5]
 
@@ -219,7 +289,12 @@ class Command(NoArgsCommand):
                  #       v = Vote.objects.get(title=vote_label, time_string=vote_time_string)
                         v.time = vote_date
                         v.src_id = vote_id
-                        
+                        for law in laws:
+                            (law_name,law_name_for_search,law_exp,law_link) = law
+                            if vote_label_for_search.find(law_name_for_search) >= 0:
+                                print 'kaching! match on %s' % law_name
+                                v.summary = law_exp
+                                v.full_text_url = law_link
                         votes[vote_id] = v
                     current_vote = v
                 # and add the current member's vote
@@ -237,18 +312,25 @@ class Command(NoArgsCommand):
             print "%s done" % str(datetime.datetime.now())
             print "%s saving data " % str(datetime.datetime.now())
             for p in parties:
-                p.save()
+                parties[p].save()
             for m in members:
-                m.save()
+                members[m].save()
             for ms in memberships:
-                ms.save()
+                memberships[ms].save()
             for v in votes:
-                v.save()
+                votes[v].save()
             print "%s done" % str(datetime.datetime.now())
-        except Exception,e:
-            print "error: %s" % e
+        except:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            print "error: "
+            traceback.print_exception(exceptionType, exceptionValue, exceptionTraceback, limit=2, file=sys.stdout)
+
             
-    def CalculateCorrelations(self):
+    def calculate_correlations(self):
+        """
+        Calculates member pairs correlation on votes.
+        """
+        # TODO: refactor the hell out of this one...
         print "Calculate Correlations"
         try:     
             cursor = connection.cursor()
@@ -301,13 +383,23 @@ class Command(NoArgsCommand):
             print "error: %s" % e
      
 
-    def ReadPage(self,voteId):
+    def read_votes_page(self,voteId):
+        """
+        Gets a votes page from the knesset website.
+        returns is as a string (utf encoded)
+        """
         url = "http://www.knesset.gov.il/vote/heb/Vote_Res_Map.asp?vote_id_t=%d" % voteId
         urlData = urllib2.urlopen(url)
         page = urlData.read().decode('windows-1255').encode('utf-8')
         return page
 
-    def ReadMemberVotes(self,page):
+    def read_member_votes(self,page):
+        """
+        Returns a tuple of (name, party, vote) describing the vote found in page, where:
+         name is a member name
+         party is the member's party
+         vote is 'for','against','abstain' or 'no-vote'
+        """
         results = []
         pattern = re.compile("""Vote_Bord""")
         match = pattern.split(page)
@@ -327,18 +419,24 @@ class Command(NoArgsCommand):
                 party = re.search("""DataText4>([^<]*)</td>""",i).group(1);
                 party = re.sub("""&nbsp;""", " ", party)
                 if(party == """ " """):
-                    party = lastParty
+                    party = last_party
                 else:
-                    lastParty = party 
+                    last_party = party 
                 results.append((name, party, vote))  
         return results
 
 
-    def PageTitle(self,page):
+    def get_page_title(self,page):
+        """
+        Returns the title of a vote page
+        """
         title = re.search("""<TITLE>([^<]*)</TITLE>""", page)
         return title.group(1)
 
-    def VoteData(self,page):
+    def get_vote_data(self,page):
+        """
+        Returns name and date from a vote page
+        """
         name = re.search("""שם החוק: </td>[^<]*<[^>]*>([^<]*)<""", page).group(1)
         name = name.replace("\t"," ")
         name = name.replace("\n"," ")
@@ -347,6 +445,29 @@ class Command(NoArgsCommand):
         date = re.search("""תאריך: </td>[^<]*<[^>]*>([^<]*)<""",page)
         return (name, date.group(1))
 
+    def find_pdf(self,vote_title):
+        """
+        Gets a vote title, and searches google for relevant files about it.
+        NOT FINISHED, AND CURRENTLY NOT USED.
+        """
+        r = ''
+        try:        
+            q = vote_title.replace('-',' ').replace('"','').replace("'","").replace("`","").replace(",","").replace('(',' ').replace(')',' ').replace('  ',' ').replace(' ','+')
+            q = q.replace('אישור החוק','')
+            q = q+'+pdf'
+            q = urllib2.quote(q)
+            url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % q
+            r = simplejson.loads(urllib2.urlopen(url).read().decode('utf-8'))['responseData']['results']
+        except Exception,e:
+            print "error: %s" % e
+            return ''
+        if len(r) > 0:
+            print "full_text_url for vote %s : %s" % (q,r[0]['url'].encode('utf-8'))
+            return r[0]['url']
+        else:
+            #print "didn't find a full_text_url for vote %s , q = %s" % (vote_title,q)
+            return ''
+        
 
     def handle_noargs(self, **options):
 
@@ -356,14 +477,23 @@ class Command(NoArgsCommand):
         no_correlations = options.get('no-correlations', False)
 
         if not no_download:
-            self.UpdateLastDownloadedId()
-            self.Download()    
+            self.update_last_downloaded_vote_id()
+            self.download_all()    
         
         if not no_process:
-            self.UpdateDbFromFiles()
+            self.update_db_from_files()
 
         if not no_correlations:
-            self.CalculateCorrelations()
+            self.calculate_correlations()
 
+        # TEMP        
+        f = open('temp.tsv','wt')
+        print "%d votes found" % Vote.objects.count()
+        for v in Vote.objects.all():
+            if (v.full_text_url != '')and(v.full_text_url != None):
+                f.write("%s\t%s\t%s\n" % (v.title.encode('utf-8'),v.time_string.encode('utf-8'),v.full_text_url.encode('utf-8')))
+            else:
+                f.write("%s\t%s\t\n" % (v.title.encode('utf-8'),v.time_string.encode('utf-8')))
+        f.close()
 
         
