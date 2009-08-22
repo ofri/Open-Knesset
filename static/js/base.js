@@ -40,6 +40,14 @@ function BreadCrumb () {
                   })
         });
     }
+    this.renderList = function (data) {
+            ret = "";
+            $.each(data, function(i,item){
+                var href = "javascript:CurrentState.renderItem("+ item.id + ");";
+                ret += '<li><a href='+ href +'>'+ CurrentState.one_liner(item) +'</a></li>';
+            });
+            return ret;
+        };
     return this;
 };
 function jsr(to) {
@@ -87,23 +95,3 @@ function goForward(){
 function renderContent(html){
     $('#content-main').html(html);
 }   
-// now, init code
-var Members = function ()  {
-        var that = new BreadCrumb();
-        that.name = 'member';
-        that.renderList = function (data) {
-            ret = "";
-            $.each(data, function(i,item){
-                var li =$("#items-list li:first").clone(true);
-                var a = $("#items-list li:first a").clone(true);
-                var one_liner = item.name + " " + item.start_date + " - " + item.end_date;
-                var href = "javascript:CurrentState.renderItem("+ item.id + ");";
-                ret += '<li><a href='+ href +'>'+ one_liner +'</a></li>';
-            });
-            return ret;
-        };
-        return that;
-    };
-$(document).ready (function () {
-    jsr(Members);
-});
