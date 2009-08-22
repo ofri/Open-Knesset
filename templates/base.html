@@ -23,9 +23,8 @@
         <script type="text/javascript" src="{{MEDIA_URL}}js/base.js"></script>
 		{% if LANGUAGE_BIDI %}
 		<style>
-		body {
-		        direction: rtl;
-        }
+        	#nav-global li { float:right; }
+		body { direction: rtl; }
 		</style>
 		{% endif %}
       {% block extrahead %}{% endblock %}
@@ -37,6 +36,7 @@
 		<div id="header">
 			<ul id="nav-global">
 				<li id="nav-back"><a href="javascript:goBack();">&lt;</a></li>
+				<li id="nav-forward"><a href="javascript:goForward();">&gt;</a></li>
                 <!-- TODO: search and a lot of drying -->
 				<li id="nav-stream"><a href="javascript:jsr(Stream);">Stream</a></li>
 				<li id="nav-past-votes">
@@ -51,10 +51,6 @@
 				<li id="nav-next-votes">
 					<a href="javascript:jsr(NextVotes);">{% trans 'Upcoming Votes' %}</a>
 				</li>
-				<li id="nav-friends">
-					<a href="javascript:jsr(Friends);">{% trans 'Friends' %}</a>
-				</li>
-				<li id="nav-forward"><a href="javascript:goForward();">&gt;</a></li>
 				<li id="nav-code"><a href="javascript:jsr(Code);">Code</a></li>
 			</ul>
             
@@ -72,7 +68,7 @@
 		</div>
 		<!-- END #content -->
 		<div id="footer">
-			<p>&copy; {% now "Y" %} <a href="javascript:jsr(About);">DjangoIL</a> 
+			<p>&copy; {% now "Y" %} <a href="javascrip:jsr(About);">DjangoIL</a> 
             unless otherwise noted. Prudely powered by Django. 
 			</p>
 		</div>

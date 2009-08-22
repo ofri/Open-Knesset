@@ -5,62 +5,50 @@ var Moving = true; // system is in transition, most things don't work
 var Buttons = $('#nav_global li');
 var CurrentState = null;
 
-// from the good parts
-Object.create = function (o) {
-    var F = function () {} ;
-    F.prototype=o;
-    return new F();
-};
 
-var BreadCrumb = function (name, renderList) {
-    this.name = name;
-    this.renderList = renderList;
-};
-BreadCrumb.prototype.refresh = function() {
-    $('#nav-' + this.name).addClass('current');
-    $('#nav-back').toggleClass('disabled', Cycle==0);
-    $('#nav-forward').toggleClass('disabled', Cycle==History.length-1);
-    this.pullList(endMove); //callback function when rendering is done
-}
-BreadCrumb.prototype.params = {num:20,page:0};
-BreadCrumb.prototype.getFeedUrl = function (i){
-    var r = API_URL + this.name + '/';
-    if (typeof i == "number") { r +=  i + '/'; }
-    return r;
-};
-BreadCrumb.prototype.pullList = function (cb) {
-    $.getJSON(this.getFeedUrl(),
+function BreadCrumb () {
+    this.params= {num:20, page:0};
+    // from the good parts
+    this.refresh = function() {
+        $('#nav-' + this.name).addClass('current');
+        $('#nav-back').toggleClass('disabled', Cycle==0);
+        $('#nav-forward').toggleClass('disabled', Cycle==History.length-1);
+        this.pullList(endMove); //callback function when rendering is done
+    };
+    this.more = function() {
+        this.params.page ++;
+        this.pullList(endMove); //callback function when rendering is done
+    };
+    this.getFeedUrl = function(i){
+        var r = API_URL + this.name + '/';
+        if (typeof i == "number") { r +=  i + '/'; }
+        return r;
+    };
+    this.pullList = function(cb) {
+        $.getJSON(this.getFeedUrl(),
             this.params, // just added params - need other mthod get JSON fails
             function(data){
                 $('#items-list').append(CurrentState.renderList(data));
-                // cb(data);
+                //TODO: test callback cb(data);
             });
+    };
+    this.pullItem = function(i) {
+        $.getJSON(this.getFeedUrl(i),
+                function(data){
+                  $.each(data.items, function(i,item){
+                    this.itemElement().appendTo("#item");
+                  })
+        });
+    }
+    return this;
 };
-BreadCrumb.prototype.pullItem = function (i) {
-    $.getJSON(this.getFeedUrl(i),
-            function(data){
-              $.each(data.items, function(i,item){
-                this.itemElement().appendTo("#item");
-              })
-            });
-};
-
-BreadCrumb.prototype.nextPage = function () {
-    this.params.page++;
-    $.getJSON(API_URL+this.name+'/', this.params, 
-            function(data){
-                $('#items-list').append(CurrentState.renderList(data));
-                // cb(data);
-            });
-};
-
 function jsr(to) {
     startMove();
     if (Cycle >= 0){
         History[Cycle] = CurrentState;
     }
     Cycle++;
-    CurrentState = new BreadCrumb(to);
+    CurrentState = to();
     var ancientHistory = History.length-Cycle;
     if (ancientHistory>0){
         History.splice(Cycle, ancientHistory);
@@ -69,13 +57,14 @@ function jsr(to) {
 }
 function startMove() {
     Moving = true;
-    $('#nav-' + CurrentState.name).delClass('current');
+    if (CurrentState != null)
+        $('#nav-' + CurrentState.name).removeClass('current');
     Buttons.addClass('Limbo');
 }
 function endMove() {
     Moving = False;;
     $('#nav-' + CurrentState.name).addClass('current');
-    Buttons.delClass('Limbo');
+    Buttons.removeClass('Limbo');
 }
 function goBack(){
     if (!Moving && Cycle > 0) {
@@ -99,9 +88,10 @@ function renderContent(html){
     $('#content-main').html(html);
 }   
 // now, init code
-$(document).ready (function () {
-    CurrentState = new BreadCrumb (name='member', 
-        renderList=function (data) {
+var Members = function ()  {
+        var that = new BreadCrumb();
+        that.name = 'member';
+        that.renderList = function (data) {
             ret = "";
             $.each(data, function(i,item){
                 var li =$("#items-list li:first").clone(true);
@@ -111,6 +101,9 @@ $(document).ready (function () {
                 ret += '<li><a href='+ href +'>'+ one_liner +'</a></li>';
             });
             return ret;
-        });
-    CurrentState.refresh();
+        };
+        return that;
+    };
+$(document).ready (function () {
+    jsr(Members);
 });
