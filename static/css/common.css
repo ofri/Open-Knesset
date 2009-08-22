@@ -40,7 +40,8 @@ a:hover { color:#ffe761; }
 
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
-#content-main { float:right; width:80%; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
+#content-main, #footer { float:right; width:80%; }
+#content-main { background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
@@ -161,7 +162,7 @@ div.versionadded span.title, div.versionchanged span.title { font-weight: bold; 
 
 /* FOOTER */
 
-#footer { clear:both; color:#487858; padding:10px 20px; font-size:90%; }
+#footer { margin: 0 auto; text-align: center; clear:both; color:#487858; padding:10px 20px; font-size:90%; }
 
 /* COMMENTS */
 
@@ -213,6 +214,7 @@ h3 .small { font-size:80%; }
     visibility: hidden;
 }
 #subwrap { display: inline-block; }
+#items { padding-top: 2em;}
 
 /* Hides from IE-mac \*/
 * html #subwrap { height: 1%; }

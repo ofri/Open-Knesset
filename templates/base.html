@@ -68,8 +68,14 @@
 		</div>
 		<!-- END #content -->
 		<div id="footer">
-			<p>&copy; {% now "Y" %} <a href="javascrip:jsr(About);">DjangoIL</a> 
-            unless otherwise noted. Prudely powered by Django. 
+			<p>&copy; {% now "Y" %} <a href="javascrip:jsr(About);">{% trans 'DjangoIL unless otherwise noted.' %}</a>
+			</p>
+			<p>
+				{% block credits %}
+					{% trans 'logoCredit' %}&nbsp;&bull;
+					{% trans 'hostingCredit' %}&nbsp;&bull;
+				{% endblock %} 
+				{% trans 'Member of the python and django communities.' %}
 			</p>
 		</div>
 		<!-- END #footer -->
