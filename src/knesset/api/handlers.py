@@ -60,6 +60,7 @@ class VoteDetailsHandler(BaseHandler):
     @classmethod
     def didntvote(self, vote):
         return self.id_list(vote.didnt_vote.all())
+
 class VoteHandler(BaseHandler):
     # fields = ('for', 'against', 'abstain')
     fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
@@ -69,7 +70,7 @@ class VoteHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Vote
     def read(self, request):
-        qs = Vote.objects.all()
+        qs = Vote.objects.all().order_by('-time')
         return limit_by_request(qs, request)
 
 class PartyHandler(BaseHandler):
