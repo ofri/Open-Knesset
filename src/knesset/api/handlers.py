@@ -26,24 +26,51 @@ class MemberHandler(BaseHandler):
         qs = Membership.objects.filter(member=member)
         return qs.values('start_date', 'end_date', 'party_id')
 
-class VoteHandler(BaseHandler):
+class VoteDetailsHandler(BaseHandler):
     # fields = ('for', 'against', 'abstain')
     fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
-              ('voted_for' , ('member', ('id'))),
-              ('voted_against' , ('member', ('id'))),
-              ('voted_abstain' , ('member', ('id'))),
-              ('didn_vote' , ('member', ('id'))),
+              'votedfor',
+              'votedagainst' ,
+              'votedabstain' ,
+              'didntvote' ,
               'topics_for',
               'topics_against',
              )
     allowed_methods = ('GET',)
     model = Vote
-    def read(self, request, vote_id=None):
-        if vote_id:
-            return Vote.objects.get(pk=vote_id)
-        else:
-            qs = Vote.objects.all()
-            return limit_by_request(qs, request)
+    def read(self, request, vote_id):
+        return Vote.objects.get(pk=vote_id)
+
+    @classmethod
+    def id_list(self, qs):
+        return [object.id for object in qs]
+
+    @classmethod
+    def votedfor(self, vote):
+        return self.id_list(vote.voted_for.all())
+
+    @classmethod
+    def votedagainst(self, vote):
+        return self.id_list(vote.voted_against.all())
+
+    @classmethod
+    def votedabstain(self, vote):
+        return self.id_list(vote.voted_abstain.all())
+
+    @classmethod
+    def didntvote(self, vote):
+        return self.id_list(vote.didnt_vote.all())
+class VoteHandler(BaseHandler):
+    # fields = ('for', 'against', 'abstain')
+    fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
+              'topics_for',
+              'topics_against',
+             )
+    allowed_methods = ('GET',)
+    model = Vote
+    def read(self, request):
+        qs = Vote.objects.all()
+        return limit_by_request(qs, request)
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
