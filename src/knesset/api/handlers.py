@@ -35,6 +35,8 @@ class VoteDetailsHandler(BaseHandler):
               'didntvote' ,
               'topics_for',
               'topics_against',
+              'summary',
+              'full_text_url',
              )
     allowed_methods = ('GET',)
     model = Vote

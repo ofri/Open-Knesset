@@ -8,6 +8,7 @@ var CurrentState = null;
 
 function BreadCrumb () {
     this.params= {num:20, page:0};
+    this.expanded = {}; // an object that holds IDs of expanded items.
     // from the good parts
     this.refresh = function() {
         $('#nav-' + this.name).addClass('selected');
@@ -32,22 +33,44 @@ function BreadCrumb () {
                 //TODO: test callback cb(data);
             });
     };
+
+    this.toggleItem = function(i){
+        if (i in this.expanded) { // this item is already expanded
+            // currently, do nothing.
+            // TODO: close it.
+            delete this.expanded[i];
+            $('#'+i+' > div').fadeOut();
+        } else { // not expanded yet:
+            this.expanded[i] = ''; // add this to the expanded object.
+            this.pullItem(i);
+        }
+    }
     this.pullItem = function(i) {
+        //TODO: add item cache. if item is in cache, don't call API. just show it.        
         $.getJSON(this.getFeedUrl(i),
-                function(data){
-                  $.each(data.items, function(i,item){
-                    this.itemElement().appendTo("#item");
-                  })
-        });
+                    function(data){
+                        html = $('#'+i).html();
+                        $('#'+i).addClass("expanded").append(CurrentState.renderItem(data));
+                      //$.each(data.items, function(i,item){
+                      //  this.itemElement().appendTo("#item");
+                      //})
+                    }
+                );
     }
     this.renderList = function (data) {
             ret = "";
             $.each(data, function(i,item){
-                var href = "javascript:CurrentState.renderItem("+ item.id + ");";
-                ret += '<li><a href='+ href +'>'+ CurrentState.one_liner(item) +'</a></li>';
+                var href = "javascript:CurrentState.toggleItem("+ item.id + ");";
+                ret += '<li id='+ item.id +'><a href='+ href +'>'+ CurrentState.one_liner(item) +'</a></li>';
             });
             return ret;
         };
+    this.renderItem = function (data) {
+        ret = "";
+        ret = '<div class="item_div">'+CurrentState.div_view(data)+'</div>';
+        return ret;
+        
+    }
     return this;
 };
 function jsr(to) {
