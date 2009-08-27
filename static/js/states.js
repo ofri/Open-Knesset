@@ -33,6 +33,9 @@ var Parties = function ()  {
 	i.one_liner = function (item) {
 		return item.name;
 	};
+    i.div_view = function (item) { 
+        return [item.start_date, item.end_date].join('\t');
+    };
     return i;
 };
 
