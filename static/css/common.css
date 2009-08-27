@@ -214,8 +214,5 @@ h3 .small { font-size:80%; }
 }
 #subwrap { display: inline-block; }
 #items { padding-top: 2em;}
+a.disabled { color: #aaaaaa; }
 
-/* Hides from IE-mac \*/
-* html #subwrap { height: 1%; }
-#subwrap { display: block; }
-/* End hide from IE-mac */om IE-mac */

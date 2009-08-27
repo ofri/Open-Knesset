@@ -12,8 +12,8 @@ function BreadCrumb () {
     // from the good parts
     this.refresh = function() {
         $(this.nav_id).addClass('selected');
-        $('#nav-back').toggleClass('disabled', Cycle==0);
-        $('#nav-forward').toggleClass('disabled', Cycle==History.length-1);
+        $('#nav-back a').toggleClass('disabled', Cycle==0);
+        $('#nav-forward a').toggleClass('disabled', Cycle==History.length);
         this.pullList(endMove); //callback function when rendering is done
     };
     this.more = function() {
@@ -30,7 +30,7 @@ function BreadCrumb () {
             this.params, // just added params - need other mthod get JSON fails
             function(data){
                 $('#items-list').append(CurrentState.renderList(data));
-                //TODO: test callback cb(data);
+                cb(data);
             });
     };
 
@@ -94,7 +94,7 @@ function startMove() {
     Buttons.addClass('Limbo');
 }
 function endMove() {
-    Moving = False;;
+    Moving = false;;
     $('#nav-' + CurrentState.name).addClass('current');
     Buttons.removeClass('Limbo');
 }
