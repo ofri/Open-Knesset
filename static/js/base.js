@@ -10,7 +10,7 @@ function BreadCrumb () {
     this.params= {num:20, page:0};
     // from the good parts
     this.refresh = function() {
-        $('#nav-' + this.name).addClass('selected');
+        $(this.nav_id).addClass('selected');
         $('#nav-back').toggleClass('disabled', Cycle==0);
         $('#nav-forward').toggleClass('disabled', Cycle==History.length-1);
         this.pullList(endMove); //callback function when rendering is done
@@ -67,7 +67,7 @@ function startMove() {
     Moving = true;
     $("#items").html('<ul id="items-list"> </ul>'); // TODO: there has to be a simpler way
     if (CurrentState != null)
-        $('#nav-' + CurrentState.name).removeClass('current');
+        $(CurrentState.nav_id).removeClass('selected');
     Buttons.addClass('Limbo');
 }
 function endMove() {

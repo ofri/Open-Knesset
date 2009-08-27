@@ -19,7 +19,6 @@ a:link, a:visited { color:#ffc757; }
 #content-main a:link, #content-main a:visited { color:#251C1F; text-decoration:underline; }
 #content-secondary a:link, #content-secondary a:visited { color:#ffc757; text-decoration:none; }
 a:hover { color:#ffe761; }
-#content-main a:hover, .selected-tag { background-color:#8F6130; color: white; text-decoration:none; }
 #content-secondary a:hover { color:#ffe761; background:none; }
 
 #content-main h2 a, #content-main h3 a { text-decoration:none !important; }
@@ -33,7 +32,7 @@ a:hover { color:#ffe761; }
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
 #nav-global a { display:block; float:left; padding:5em 16px 10px 16px; }
-#nav-global a:hover { color:white; background:#251C1F;}
+#nav-global a:hover, .selected { color:white; background:#251C1F;}
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* COLUMNS */
