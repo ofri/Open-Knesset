@@ -17,16 +17,19 @@ from django.db.models import Max
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, 'data'))
 
-
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
-        make_option('--no-download', action='store_true', dest='no-download',
-            help="don't download data. only load the data from the files in knesset/data/ to the db."),
-        make_option('--no-process', action='store_true', dest='no-process',
-            help="download data and save it to files in knesset/data/ only. don't load the data to the db."),
-        make_option('--no-correlations', action='store_true', dest='no-correlations',
-            help="don't calculate correlations after loading the data (mainly for debug)."),
-
+        make_option('--all', action='store_true', dest='all',
+            help="runs all the syncdata sub processes (like --download --load --process --dump)"),
+        make_option('--download', action='store_true', dest='download',
+            help="download data from knesset website to local files."),
+        make_option('--load', action='store_true', dest='load',
+            help="load the data from local files to the db."),
+        make_option('--process', action='store_true', dest='process',
+            help="run post loading process."),
+        make_option('--dump', action='store_true', dest='dump-to-file',
+            help="write votes to tsv files (mainly for debug, or for research team)."),
+        
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
 
@@ -118,7 +121,12 @@ class Command(NoArgsCommand):
         Reads local votes file, and sets self.last_downloaded_id to the highest id found in the file.
         This is later used to skip downloading of data alreay downloaded.
         """
-        f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
+        try:
+            f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
+        except:
+            self.last_id = 0
+            print "votes file does not exist. will download all votes from knesset (may take some time...)"
+            return            
         content = f.read().split('\n')
         for line in content:
             if(len(line)<2):
@@ -127,9 +135,9 @@ class Command(NoArgsCommand):
             vote_id = int(s[0])
             if vote_id > self.last_id:
                 self.last_id = vote_id
-        print "last id found in local files is %d. will try to download more." % self.last_id
+        print "last id found in local files is %d. " % self.last_id
         f.close()
-
+        
 
     def get_search_string(self,s):
         s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
@@ -216,7 +224,10 @@ class Command(NoArgsCommand):
                         month = self.heb_months.index(i)+1
                 day = re.search("""(\d\d?)""", vote_time_string).group(1)
                 year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
+                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
                 vote_date = datetime.date(int(year),int(month),int(day))
+                vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
+                
                 voter = s[3]
                 voter_party = s[4]
 
@@ -232,6 +243,7 @@ class Command(NoArgsCommand):
                     created = False
                 else:
                     p,created = Party.objects.get_or_create(name=voter_party)
+                    parties[voter_party] = p
                 #if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name. 
                             #only when it comes back from the db it has valid unicode chars.
                 #    p = Party.objects.get(name=voter_party) 
@@ -241,8 +253,8 @@ class Command(NoArgsCommand):
                     p.start_date = vote_date
                 if (p.end_date is None) or (p.end_date < vote_date):
                     p.end_date = vote_date
-                if created:
-                    p.save() # save on first time, so it would have an id, be able to link, etc.
+                if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
+                    p.save() 
                 
                 # create/get the member voting
                 if voter in members:
@@ -250,6 +262,7 @@ class Command(NoArgsCommand):
                     created = False
                 else:
                     m,created = Member.objects.get_or_create(name=voter)
+                    members[voter] = m
                 m.party = p;
                 #if created: # again, unicode magic
                 #    m = Member.objects.get(name=voter)
@@ -258,7 +271,7 @@ class Command(NoArgsCommand):
                     m.start_date = vote_date
                 if (m.end_date is None) or (m.end_date < vote_date):
                     m.end_date = vote_date
-                if created:
+                if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
                     m.save()
         
                     
@@ -268,6 +281,7 @@ class Command(NoArgsCommand):
                     created = False
                 else:
                     ms,created = Membership.objects.get_or_create(member=m,party=p)
+                    memberships[(m.id,p.id)] = ms
                 #if created: # again, unicode magic
                 #    ms = Membership.objects.get(member=m,party=p)
                 # again, update the dates on the membership
@@ -275,7 +289,7 @@ class Command(NoArgsCommand):
                     ms.start_date = vote_date
                 if (ms.end_date is None) or (ms.end_date < vote_date):
                     ms.end_date = vote_date
-                if created:
+                if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
                     ms.save()    
                     
                 # create/get a vote object for this vote
@@ -283,16 +297,20 @@ class Command(NoArgsCommand):
                     if vote_id in votes:
                         v = votes[vote_id]
                         created = False
-                    else:                
-                        v,created = Vote.objects.get_or_create(title=vote_label, time_string=vote_time_string, importance=1)
-                    if created: # again, unicode magic
-                 #       v = Vote.objects.get(title=vote_label, time_string=vote_time_string)
-                        v.time = vote_date
-                        v.src_id = vote_id
+                    else:
+                        try:
+                            v = Vote.objects.get(src_id=vote_id)                
+                            created = False
+                        except:
+                            v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
+                            v.save()
+                            created = True
+
+                    if created: 
                         for law in laws:
                             (law_name,law_name_for_search,law_exp,law_link) = law
                             if vote_label_for_search.find(law_name_for_search) >= 0:
-                                print 'kaching! match on %s' % law_name
+                                #print 'kaching! match on %s' % law_name
                                 v.summary = law_exp
                                 v.full_text_url = law_link
                         votes[vote_id] = v
@@ -310,7 +328,7 @@ class Command(NoArgsCommand):
                     current_vote.save()
                 
             print "%s done" % str(datetime.datetime.now())
-            print "%s saving data " % str(datetime.datetime.now())
+            print "%s saving data: %d parties, %d members, %d memberships, %d votes " % (str(datetime.datetime.now()), len(parties), len(members), len(memberships), len(votes) )
             for p in parties:
                 parties[p].save()
             for m in members:
@@ -325,7 +343,14 @@ class Command(NoArgsCommand):
             print "error: "
             traceback.print_exception(exceptionType, exceptionValue, exceptionTraceback, limit=2, file=sys.stdout)
 
-            
+    def calculate_votes_importances(self):
+        """
+        Calculates votes importances. currently uses rule of thumb: number of voters against + number of voters for / 120.
+        """    
+        for v in Vote.objects.all():
+            v.importance = float(v.voted_for.count() + v.voted_against.count()) / 120
+            v.save()
+        
     def calculate_correlations(self):
         """
         Calculates member pairs correlation on votes.
@@ -383,14 +408,22 @@ class Command(NoArgsCommand):
             print "error: %s" % e
      
 
-    def read_votes_page(self,voteId):
+    def read_votes_page(self,voteId, retry=0):
         """
         Gets a votes page from the knesset website.
         returns is as a string (utf encoded)
         """
         url = "http://www.knesset.gov.il/vote/heb/Vote_Res_Map.asp?vote_id_t=%d" % voteId
-        urlData = urllib2.urlopen(url)
-        page = urlData.read().decode('windows-1255').encode('utf-8')
+        try:        
+            urlData = urllib2.urlopen(url)
+            page = urlData.read().decode('windows-1255').encode('utf-8')
+        except exception,e:
+            print "ERROR: %s" % e
+            if retry < 5:
+                print "waiting some time and trying again... (# of retries = %d)" % retry+1
+                page = read_votes_page(self,voteId, retry+1)
+            else:
+                return None
         return page
 
     def read_member_votes(self,page):
@@ -470,30 +503,50 @@ class Command(NoArgsCommand):
         
 
     def handle_noargs(self, **options):
+    
+        all_options = options.get('all', False)
+        download = options.get('download', False)
+        load = options.get('load', False)
+        process = options.get('process', False)
+        dump_to_file = options.get('dump-to-file', False)
+        if all_options:
+            download = True
+            load = True
+            process = True
+            dump_to_file = True
 
+        if (not(all_options) and not(download) and not(load) and not(process) and not(dump_to_file)):
+            print "no arguments found. doing nothing. try -h for help, or --all to run the full syncdb"
 
-        no_download = options.get('no-download', False)
-        no_process = options.get('no-process', False)
-        no_correlations = options.get('no-correlations', False)
-
-        if not no_download:
+        if download:
+            print "beginning download phase"
             self.update_last_downloaded_vote_id()
             self.download_all()    
         
-        if not no_process:
+        if load:
+            print "beginning load phase"
             self.update_db_from_files()
 
-        if not no_correlations:
+        if process:
+            print "beginning process phase"
+            self.calculate_votes_importances()
             self.calculate_correlations()
 
-        # TEMP        
-        f = open('temp.tsv','wt')
-        print "%d votes found" % Vote.objects.count()
-        for v in Vote.objects.all():
-            if (v.full_text_url != '')and(v.full_text_url != None):
-                f.write("%s\t%s\t%s\n" % (v.title.encode('utf-8'),v.time_string.encode('utf-8'),v.full_text_url.encode('utf-8')))
-            else:
-                f.write("%s\t%s\t\n" % (v.title.encode('utf-8'),v.time_string.encode('utf-8')))
-        f.close()
+        if dump_to_file:
+            print "writing votes to tsv files"
+            f = open('votes.tsv','wt')
+            for v in Vote.objects.all():
+                if (v.full_text_url != None):
+                    link = v.full_text_url.encode('utf-8')
+                else:
+                    link = ''            
+                if (v.summary != None):
+                    summary = v.summary.encode('utf-8')
+                else:
+                    summary = ''            
+                for_ids = ",".join([str(m) for m in v.voted_for.all()])
+                against_ids = ",".join([str(m) for m in v.voted_for.all()])
+                f.write("%d\t%s\t%s\t%s\t%s\t%s\t%s\n" % (v.id,v.title.encode('utf-8'),v.time_string.encode('utf-8'),summary, link, for_ids, against_ids))
+            f.close()
 
         
