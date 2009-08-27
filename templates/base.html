@@ -38,8 +38,7 @@
 			<ul id="nav-global">
 				<li id="nav-back"><a href="javascript:goBack();">&lt;</a></li>
 				<li id="nav-forward"><a href="javascript:goForward();">&gt;</a></li>
-                <!-- TODO: search and a lot of drying -->
-				<li id="nav-stream"><a href="javascript:jsr(Stream);">Stream</a></li>
+                <!-- TODO: search, stream, next votes and a lot of drying -->
 				<li id="nav-past-votes">
 					<a href="javascript:jsr(PastVotes);">{% trans 'Past Votes' %}</a>
 				</li>
@@ -49,10 +48,7 @@
 				<li id="nav-party">
 					<a href="javascript:jsr(Parties);">{% trans 'Parties' %}</a>
 				</li>
-				<li id="nav-next-votes">
-					<a href="javascript:jsr(NextVotes);">{% trans 'Upcoming Votes' %}</a>
-				</li>
-				<li id="nav-code"><a href="javascript:jsr(Code);">Code</a></li>
+				<li id="nav-code"><a href="http://github.com/ofri/Open-Knesset/">{% trans 'Code' %}</a></li>
 			</ul>
             
 		</div>
@@ -69,7 +65,7 @@
 		</div>
 		<!-- END #content -->
 		<div id="footer">
-			<p>&copy; {% now "Y" %} <a href="javascrip:jsr(About);">{% trans 'DjangoIL unless otherwise noted.' %}</a>
+			<p><a href="javascrip:jsr(About);">{% trans 'DjangoIL unless otherwise noted.' %}</a>
 			</p>
 			<p>
 				{% block credits %}
