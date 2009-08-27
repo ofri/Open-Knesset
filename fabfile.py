@@ -35,6 +35,7 @@ def deploy():
     checkout_latest()
     symlink_current_release()
     migrate()
+    restart_web_server()
 
 def clone_repo():
     """Do initial clone of the git repo"""
