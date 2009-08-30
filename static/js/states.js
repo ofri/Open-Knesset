@@ -21,7 +21,17 @@ var PastVotes = function ()  {
         return [item.time, item.title].join("\t");
     };
     i.div_view = function (item) { 
-        return [item.time, item.summary, '<a href="' + item.full_text_url + '">full text</a>'].join('\t');
+        if ((item.summary === null)|(item.summary == '')){
+            summary = "מצטערים! אין תקציר זמין לחוק זה";
+        } else {
+            summary = item.summary;
+        };
+        if (item.full_text_url === null) {
+            link = "";            
+        } else {    
+            link = '<a href="' + item.full_text_url + '">קישור לחוק המלא</a>'
+        };
+        return [item.time, summary, link].join('\t');
     };
     return i;
 };

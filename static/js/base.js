@@ -20,11 +20,13 @@ function BreadCrumb () {
         this.params.page ++;
         this.pullList(endMove); //callback function when rendering is done
     };
+
     this.getFeedUrl = function(i){
         var r = API_URL + this.name + '/';
         if (typeof i == "number") { r +=  i + '/'; }
         return r;
     };
+
     this.pullList = function(cb) {
         $.getJSON(this.getFeedUrl(),
             this.params, // just added params - need other mthod get JSON fails
@@ -34,15 +36,22 @@ function BreadCrumb () {
             });
     };
 
+    this.openItem = function(i){
+        this.expanded[i] = ''; // add this to the expanded object.
+        this.pullItem(i);
+    };
+
+    this.closeItem = function(i){
+        delete this.expanded[i];
+        $('#'+i+' > div').fadeOut();
+        $('#'+i).removeClass("expanded");
+    };
+
     this.toggleItem = function(i){
         if (i in this.expanded) { // this item is already expanded
-            // currently, do nothing.
-            // TODO: close it.
-            delete this.expanded[i];
-            $('#'+i+' > div').fadeOut();
+            this.closeItem(i);
         } else { // not expanded yet:
-            this.expanded[i] = ''; // add this to the expanded object.
-            this.pullItem(i);
+            this.openItem(i);
         }
     }
     this.pullItem = function(i) {
