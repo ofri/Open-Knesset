@@ -18,7 +18,8 @@ var PastVotes = function ()  {
     i.name = 'vote';
     i.nav_id = NAV_SUFFIX + 'past-votes';
     i.one_liner = function (item) {
-        return [item.time, item.title].join("\t");
+        var t = item.time.split(' ')[0];
+        return [t, item.title].join("\t");
     };
     i.div_view = function (item) { 
         if ((item.summary === null)|(item.summary == '')){
@@ -31,7 +32,8 @@ var PastVotes = function ()  {
         } else {    
             link = '<a href="' + item.full_text_url + '">קישור לחוק המלא</a>'
         };
-        return [item.time, summary, link].join('\t');
+        var t = item.time.split(' ')[1];
+        return [t, summary, link].join('<br />');
     };
     return i;
 };
