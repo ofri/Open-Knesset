@@ -9,43 +9,66 @@ var CurrentState = null;
 function BreadCrumb () {
     this.params= {num:20, page:0};
     this.expanded = {}; // an object that holds IDs of expanded items.
-    // from the good parts
-    this.refresh = function() {
-        $(this.nav_id).addClass('selected');
-        $('#nav-back a').toggleClass('disabled', Cycle==0);
-        $('#nav-forward a').toggleClass('disabled', Cycle==History.length);
-        this.pullList(endMove); //callback function when rendering is done
-    };
-    this.more = function() {
-        this.params.page ++;
-        this.pullList(endMove); //callback function when rendering is done
-    };
-    this.getFeedUrl = function(i){
-        var r = API_URL + this.name + '/';
-        if (typeof i == "number") { r +=  i + '/'; }
-        return r;
-    };
-    this.pullList = function(cb) {
-        $.getJSON(this.getFeedUrl(),
-            this.params, // just added params - need other mthod get JSON fails
-            function(data){
-                $('#items-list').append(CurrentState.renderList(data));
-                cb(data);
-            });
-    };
+    return this;
+};
 
-    this.toggleItem = function(i){
-        if (i in this.expanded) { // this item is already expanded
-            // currently, do nothing.
-            // TODO: close it.
-            delete this.expanded[i];
-            $('#'+i+' > div').fadeOut();
-        } else { // not expanded yet:
-            this.expanded[i] = ''; // add this to the expanded object.
-            this.pullItem(i);
-        }
+BreadCrumb.prototype.isList = function () {
+    // is this is about a list?
+    return !this.hasOwnProperty('pk') ;
+}
+
+BreadCrumb.prototype.refresh = function() {
+    $(this.nav_id).addClass('selected');
+    $('#nav-back a').toggleClass('disabled', Cycle==0);
+    $('#nav-forward a').toggleClass('disabled', Cycle==History.length);
+    if (this.isList())
+        this.pullList(this.cls); //callback function when rendering is done
+    else 
+        this.pullObject(this.cls);
+};
+BreadCrumb.prototype.more = function() {
+    this.params.page ++;
+    this.pullList(); //callback function when rendering is done
+};
+
+BreadCrumb.prototype.getFeedUrl = function(i){
+    var r = API_URL + this.name + '/';
+    if (typeof i == "number") { r +=  i + '/'; }
+    return r;
+};
+
+BreadCrumb.prototype.pullList = function(cb) {
+    var i = this;
+    $.getJSON(this.getFeedUrl(),
+        this.params, // just added params - need other mthod get JSON fails
+        function(data){
+            i.endMove();
+            if (typeof cb == 'function')
+                cb(i);
+            $('#items-list').append(i.renderList(data));
+        });
+};
+
+BreadCrumb.prototype.pullObject = function(cb) {
+    $.getJSON(this.getFeedUrl()+this.pk+'/',
+        function(data){
+            cb(data);
+            $('#items').html(data)
+        });
+};
+
+BreadCrumb.prototype.toggleItem = function(i){
+    if (i in this.expanded) { // this item is already expanded
+        // currently, do nothing.
+        // TODO: close it.
+        delete this.expanded[i];
+        $('#'+i+' > div').fadeOut();
+    } else { // not expanded yet:
+        this.expanded[i] = ''; // add this to the expanded object.
+        this.pullItem(i);
     }
-    this.pullItem = function(i) {
+}
+BreadCrumb.prototype.pullItem = function(i) {
         //TODO: add item cache. if item is in cache, don't call API. just show it.        
         $.getJSON(this.getFeedUrl(i),
                     function(data){
@@ -57,7 +80,7 @@ function BreadCrumb () {
                     }
                 );
     }
-    this.renderList = function (data) {
+BreadCrumb.prototype.renderList = function (data) {
             ret = "";
             $.each(data, function(i,item){
                 var href = "javascript:CurrentState.toggleItem("+ item.id + ");";
@@ -65,17 +88,16 @@ function BreadCrumb () {
             });
             return ret;
         };
-    this.renderItem = function (data) {
+BreadCrumb.prototype.renderItem = function (data) {
         ret = "";
         ret = '<div class="item_div">'+CurrentState.div_view(data)+'</div>';
         return ret;
         
     }
-    return this;
-};
-function jsr(to) {
-    startMove();
+function jsr(to, pk) {
+    // jumps to a specific state and if pk is specified, a specific object 
     if (Cycle >= 0){
+        CurrentState.startMove();
         History[Cycle] = CurrentState;
     }
     Cycle++;
@@ -84,24 +106,37 @@ function jsr(to) {
     if (ancientHistory>0){
         History.splice(Cycle, ancientHistory);
     }
+    if (typeof pk != 'undefined')
+        CurrentState.pk = pk;
     CurrentState.refresh();
 }
-function startMove() {
+
+BreadCrumb.prototype.startMove = function () {
     Moving = true;
-    $("#items").html('<ul id="items-list"> </ul>'); // TODO: there has to be a simpler way
+    $("#items").html('Loading...');
     if (CurrentState != null)
         $(CurrentState.nav_id).removeClass('selected');
     Buttons.addClass('Limbo');
 }
-function endMove() {
-    Moving = false;;
+
+BreadCrumb.prototype.endMove = function () {
     $('#nav-' + CurrentState.name).addClass('current');
     Buttons.removeClass('Limbo');
+    Moving = false;;
 }
+
+BreadCrumb.prototype.cls = function (i) {
+    // clear the screen
+    if (i.isList())
+        $("#items").html('<ul id="items-list"></ul>'); // TODO: there has to be a simpler way
+    else
+        $("#items").html('');
+}
+
 function goBack(){
     if (!Moving && Cycle > 0) {
+        CurrentState.startMove();
         History[Cycle] = CurrentState; // remember current state
-        startMove();
         Cycle--;
         CurrentState=History[Cycle];
         CurrentState.refresh();
@@ -110,7 +145,7 @@ function goBack(){
 
 function goForward(){
     if (!Moving && Cycle < History.length-1) {
-        startMove();
+        CurrentState.startMove();
         Cycle++;
         CurrentState=History[Cycle];
         CurrentState.refresh();
