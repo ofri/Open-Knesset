@@ -54,8 +54,6 @@ BreadCrumb.prototype.pullObject = function(cb) {
 
 BreadCrumb.prototype.toggleItem = function(i){
     if (i in this.expanded) { // this item is already expanded
-        // currently, do nothing.
-        // TODO: close it.
         delete this.expanded[i];
         $('#'+i+' > div').fadeOut();
     } else { // not expanded yet:
@@ -115,6 +113,7 @@ BreadCrumb.prototype.cls = function (i) {
 function go (hashpath) {
     // jumps to a specific state and if pk is specified, a specific object 
     // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
+    CurrentState != null && CurrentState.startMove();
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
     var state_name, pk;
     vars = _parse_hashpath.exec(hashpath) ;
