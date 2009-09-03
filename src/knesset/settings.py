@@ -85,6 +85,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'knesset.mks',
+    'knesset.laws',
     'knesset.simple',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
