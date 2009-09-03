@@ -1,5 +1,6 @@
 from piston.handler import BaseHandler
-from knesset.simple.models import Vote, Member, Party, Membership
+from knesset.mks.models import Member, Party, Membership
+from knesset.laws.models import Vote
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
