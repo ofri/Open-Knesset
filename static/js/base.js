@@ -117,7 +117,7 @@ function go (hashpath) {
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
     var state_name, pk;
     vars = _parse_hashpath.exec(hashpath) ;
-    if (vars[1] != "") {
+    if (vars !== null && vars[1] != "") {
         state_name = vars[1];
         pk = vars[2] != ""?vars[2]:0;
     }
