@@ -1,31 +1,27 @@
-var API_URL = '/api/'
+var API_URL = '/api/';
 var Cycle = -1;
-var History = new Array(); // remeber history 
 var Moving = true; // system is in transition, most things don't work
 var Buttons = $('#nav_global li');
 var CurrentState = null;
 
 
-function BreadCrumb () {
+function BreadCrumb() {
     this.params= {num:20, page:0};
     this.expanded = {}; // an object that holds IDs of expanded items.
     return this;
-};
+}
 
 BreadCrumb.prototype.isList = function () {
     // is this is about a list?
     return !this.hasOwnProperty('pk') ;
-}
+};
 
 BreadCrumb.prototype.refresh = function() {
     $(this.nav_id).addClass('selected');
-    $('#nav-back a').toggleClass('disabled', Cycle==0);
-    $('#nav-forward a').toggleClass('disabled', Cycle==History.length);
-    if (this.isList())
-        this.pullList(this.cls); //callback function when rendering is done
-    else 
-        this.pullObject(this.cls);
+    if (this.isList()) { this.pullList(this.cls); }
+    else               { this.pullObject(this.cls); }
 };
+
 BreadCrumb.prototype.more = function() {
     this.params.page ++;
     this.pullList(); //callback function when rendering is done
@@ -43,8 +39,7 @@ BreadCrumb.prototype.pullList = function(cb) {
         this.params, // just added params - need other mthod get JSON fails
         function(data){
             i.endMove();
-            if (typeof cb == 'function')
-                cb(i);
+            if (typeof cb == 'function') { cb(i); }
             $('#items-list').append(i.renderList(data));
         });
 };
@@ -53,7 +48,7 @@ BreadCrumb.prototype.pullObject = function(cb) {
     $.getJSON(this.getFeedUrl()+this.pk+'/',
         function(data){
             cb(data);
-            $('#items').html(data)
+            $('#items').html(data);
         });
 };
 
@@ -67,7 +62,7 @@ BreadCrumb.prototype.toggleItem = function(i){
         this.expanded[i] = ''; // add this to the expanded object.
         this.pullItem(i);
     }
-}
+};
 BreadCrumb.prototype.pullItem = function(i) {
         //TODO: add item cache. if item is in cache, don't call API. just show it.        
         $.getJSON(this.getFeedUrl(i),
@@ -79,51 +74,35 @@ BreadCrumb.prototype.pullItem = function(i) {
                       //})
                     }
                 );
-    }
+};
+
 BreadCrumb.prototype.renderList = function (data) {
-            ret = "";
-            $.each(data, function(i,item){
-                var href = "javascript:CurrentState.toggleItem("+ item.id + ");";
-                ret += '<li id='+ item.id +'><a href='+ href +'>'+ CurrentState.one_liner(item) +'</a></li>';
-            });
-            return ret;
-        };
+    ret = "";
+    $.each(data, function(i,item){
+        var href = "javascript:CurrentState.toggleItem("+ item.id + ");";
+        ret += '<li id='+ item.id +'><a href='+ href +'>'+ CurrentState.one_liner(item) +'</a></li>';
+    });
+    return ret;
+};
+
 BreadCrumb.prototype.renderItem = function (data) {
-        ret = "";
-        ret = '<div class="item_div">'+CurrentState.div_view(data)+'</div>';
-        return ret;
-        
-    }
-function jsr(to, pk) {
-    // jumps to a specific state and if pk is specified, a specific object 
-    if (Cycle >= 0){
-        CurrentState.startMove();
-        History[Cycle] = CurrentState;
-    }
-    Cycle++;
-    CurrentState = to();
-    var ancientHistory = History.length-Cycle;
-    if (ancientHistory>0){
-        History.splice(Cycle, ancientHistory);
-    }
-    if (typeof pk != 'undefined')
-        CurrentState.pk = pk;
-    CurrentState.refresh();
-}
+    ret = "";
+    ret = '<div class="item_div">'+CurrentState.div_view(data)+'</div>';
+    return ret;
+};
 
 BreadCrumb.prototype.startMove = function () {
     Moving = true;
     $("#items").html('Loading...');
-    if (CurrentState != null)
-        $(CurrentState.nav_id).removeClass('selected');
+    if (CurrentState !== null) { $(CurrentState.nav_id).removeClass('selected'); };
     Buttons.addClass('Limbo');
-}
+};
 
 BreadCrumb.prototype.endMove = function () {
     $('#nav-' + CurrentState.name).addClass('current');
     Buttons.removeClass('Limbo');
-    Moving = false;;
-}
+    Moving = false;
+};
 
 BreadCrumb.prototype.cls = function (i) {
     // clear the screen
@@ -131,26 +110,28 @@ BreadCrumb.prototype.cls = function (i) {
         $("#items").html('<ul id="items-list"></ul>'); // TODO: there has to be a simpler way
     else
         $("#items").html('');
-}
+};
 
-function goBack(){
-    if (!Moving && Cycle > 0) {
-        CurrentState.startMove();
-        History[Cycle] = CurrentState; // remember current state
-        Cycle--;
-        CurrentState=History[Cycle];
-        CurrentState.refresh();
+function go (hashpath) {
+    // jumps to a specific state and if pk is specified, a specific object 
+    // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
+    var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
+    var state_name, pk;
+    vars = _parse_hashpath.exec(hashpath) ;
+    if (vars[1] != "") {
+        state_name = vars[1];
+        pk = vars[2] != ""?vars[2]:0;
     }
-}
+    else {
+        state_name = DEFAULT_STATE;
+        pk = 0;
+    }
+    // TODO: del CurrentState;
+    CurrentState = States[state_name](pk);
+    CurrentState.refresh();
+};
 
-function goForward(){
-    if (!Moving && Cycle < History.length-1) {
-        CurrentState.startMove();
-        Cycle++;
-        CurrentState=History[Cycle];
-        CurrentState.refresh();
-   }
-}
 function renderContent(html){
     $('#content-main').html(html);
 }   
+

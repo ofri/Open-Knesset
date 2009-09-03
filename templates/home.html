@@ -1,8 +1,35 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-    <div id="items"> </div>
-    <a href="javascript:CurrentState.more();">{% trans "more" %}</a>
+<div id="items"> </div>
+<a href="javascript:CurrentState.more();">{% trans "more" %}</a>
+<script>
+    // Add events before calling init to make sure they are triggered for
+    // initial hash value.
+    /*
+    $('div#items').bc = BreadCrumb();
+    $('div#items').hashchange(function (e, newHash) {
+        $(this).bc.go(newHash);
+    });
+    // Initialize. Here, the src of the iframe is passed in the init
+    // function. If you've got multiple libraries using this plugin, so
+    // the init function is called from them, you can also set the iframe
+    // src in the iframeSrc variable in the beginning of the code in
+    // jquery.hash.js.
+    $.hash.init('/home/');
+    $.hash.go('PastVotes');
+    // Changes hash when the anchor is clicked. Also automatically sets the
+    // href attribute to "#def456", unless a second argument with a false
+    // value is supplied.
+    $('a#nav-past-votes').hash('PastVotes');
+    $('a#nav-members').hash('Members');
+    $('a#nav-parties').hash('Parties');
+    */
+    $(document).ready(function() {
+        $.history.init(go); // goto is from base.js
+        $('ul#nav-global li a').click(hashclick);
+    });
+</script>
 {% endblock %}
 
 

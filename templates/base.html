@@ -22,6 +22,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/base.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/states.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
 		{% if LANGUAGE_BIDI %}
 		<style>
         	#nav-global li { float:right; }
@@ -36,17 +37,10 @@
 	<div id="container">
 		<div id="header">
 			<ul id="nav-global">
-				<li id="nav-back"><a href="javascript:goBack();">&lt;</a></li>
-				<li id="nav-forward"><a href="javascript:goForward();">&gt;</a></li>
                 <!-- TODO: search, stream, next votes and a lot of drying -->
-				<li id="nav-past-votes">
-					<a href="javascript:jsr(PastVotes);">{% trans 'Past Votes' %}</a>
-				</li>
-				<li id="nav-members">
-					<a href="javascript:jsr(Members);">{% trans 'Members' %}</a>
-				</li>
-				<li id="nav-parties">
-					<a href="javascript:jsr(Parties);">{% trans 'Parties' %}</a>
+				<li id="nav-past-votes"> <a href="/#vote/">{% trans 'Past Votes' %}</a> </li>
+				<li id="nav-members"> <a href="/#member/">{% trans 'Members' %}</a> </li>
+				<li id="nav-parties"> <a href="/#party/">{% trans 'Parties' %}</a>
 				</li>
 				<li id="nav-code"><a href="http://github.com/ofri/Open-Knesset/">{% trans 'Code' %}</a></li>
 			</ul>
