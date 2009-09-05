@@ -53,19 +53,19 @@ class Member(models.Model):
     PartiesString.allow_tags = True
     
     def TotalVotesCount(self):
-        return self.for_votes.count()+self.against_votes.count()+self.abstain_votes.count()
+        return self.votes.exclude(voteaction__type='no-vote').count()
     
     def ForVotesCount(self):
-        return self.for_votes.count()
+        return self.votes.filter(voteaction__type='for').count()
 
     def AgainstVotesCount(self):
-        return self.against_votes.count()
+        return self.votes.filter(voteaction__type='against').count()
 
     def AbstainVotesCount(self):
-        return self.abstain_votes.count()
+        return self.votes.filter(voteaction__type='abstain').count()
     
     def NoVotesCount(self):
-        return self.no_votes.count()
+        return self.votes.filter(voteaction__type='no-vote').count()
     
     
     def LowestCorrelations(self):

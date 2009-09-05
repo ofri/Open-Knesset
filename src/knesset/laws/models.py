@@ -24,7 +24,7 @@ class VoteAction(models.Model):
 
 class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
-    vote_numer     = models.IntegerField(null=True,blank=True)    
+    vote_number    = models.IntegerField(null=True,blank=True)    
     src_id         = models.IntegerField(null=True,blank=True)    
     src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
     title          = models.CharField(max_length=1000)
