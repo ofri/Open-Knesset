@@ -1,0 +1,9 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block h1content %}{% trans 'list' %}{% endblock %}
+{% block divcontent %}
+	<div id="items"> 
+		{% include "mks/list_div.html" %}
+	</div>
+{% endblock %}
+

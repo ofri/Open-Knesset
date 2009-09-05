@@ -1,8 +1,5 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% block content %}
-<div id="items"> </div>
-<a href="javascript:CurrentState.more();">{% trans "more" %}</a>
+{% extends "site_base.html" %}
+{% block divcontent %}
 <script>
     $(document).ready(function() {
         $.history.init(go); // goto is from base.js
