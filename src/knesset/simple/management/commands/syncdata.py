@@ -15,6 +15,10 @@ from knesset.laws.models import *
 from django.db import connection
 from django.db.models import Max
 
+import mk_info_html_parser as mk_parser
+
+ENCODING = 'utf8'
+
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, 'data'))
 
@@ -112,7 +116,20 @@ class Command(NoArgsCommand):
         f.close()
         f2.close()        
     
+    def get_members_data(self):
+        """Recieves a key/value dictionary, and writes them to a tab-seperated file.
+        """
+        f  = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'), "ab")
+
+        for id in range(1,1000): # TODO - find max member id in knesset website and use here
+            member_dict = mk_parser.MKHtmlParser(id).Dict
+            f.write("%d\t%s\t%s\n" % member_dict['MK-ID'], member_dict['name'].encode(ENCODING), member_dict['img_link'].encode(ENCODING))
+        
+        f.flush()
+        f.close()
+
     def download_all(self):
+        self.get_members_data()        
         self.get_votes_data()
         self.get_laws_data()
 
@@ -324,8 +341,8 @@ class Command(NoArgsCommand):
                 members[m].save()
             for ms in memberships:
                 memberships[ms].save()
-            for va in voteactions:
-                voteactions[va].save()
+            #for va in voteactions:
+            #    voteactions[va].save()
             print "%s done" % str(datetime.datetime.now())
             f.close()
         except:
