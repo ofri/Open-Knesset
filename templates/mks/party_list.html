@@ -1,0 +1,6 @@
+{% load i18n %}
+{% for o in object_list %}
+<a id="detail-{{ o.id }}" href="/member/{{ o.id }}/">{{ o.name }}</a>&nbsp;&bull;&nbsp;
+{% empty %}
+    {% trans "Data base empty, no objects" %}
+{% endfor %}

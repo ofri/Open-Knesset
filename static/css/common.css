@@ -41,7 +41,7 @@ a:link, a:visited { color:#ffc757; }
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
 #content-main, #footer { float:right; width:80%; }
-#content-main { opacity: 0.7; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
+#content-main { min-height:372px; opacity: 0.7; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
@@ -58,7 +58,7 @@ a:link, a:visited { color:#ffc757; }
 /* CONTENT */
 
 h1,h2,h3 { margin-top:.8em; font-family:"Trebuchet MS",sans-serif; font-weight:normal; }
-h1 { font-size:218%; margin-top:.6em; margin-bottom:.6em; color:#092e20; line-height:1.1em; }
+h1 { font-size:218%; margin-top:.6em; margin-bottom:.6em; color:#251c1f; line-height:1.1em; }
 h2 { font-size:150%; margin-top:1em; margin-bottom:.2em; line-height:1.2em; color:#092e20; }
 #homepage h2 { font-size:140%; }
 h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#487858; }
