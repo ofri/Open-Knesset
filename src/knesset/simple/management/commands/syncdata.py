@@ -40,7 +40,8 @@ class Command(NoArgsCommand):
 
     requires_model_validation = False
 
-    last_id = 1
+    last_downloaded_vote_id = 0
+    last_downloaded_member_id = 0
 
     def read_laws_page(self,index):
         url = 'http://www.knesset.gov.il/privatelaw/plaw_display.asp?LawTp=2'
@@ -85,9 +86,10 @@ class Command(NoArgsCommand):
         f.close()
 
     def get_votes_data(self):
+        self.update_last_downloaded_vote_id()
         f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
         f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_id+1,12110) # this is the range of page ids to go over. currently its set manually.
+        r = range(self.last_downloaded_vote_id+1,12110) # this is the range of page ids to go over. currently its set manually.
         for id in r:
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
@@ -115,17 +117,54 @@ class Command(NoArgsCommand):
             print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
         f.close()
         f2.close()        
+
+    def update_last_downloaded_member_id(self):
+        """
+        Reads local members file, and sets self.last_downloaded_member_id to the highest id found in the file.
+        This is later used to skip downloading of data alreay downloaded.
+        """
+        try:
+            f = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'))
+        except:
+            self.last_downloaded_member_id = 0
+            print "members file does not exist. setting last_downloaded_member_id to 0"
+            return            
+        content = f.read().split('\n')
+        for line in content:
+            if(len(line)<2):
+                continue
+            s = line.split('\t')
+            id = int(s[0])
+            if id > self.last_downloaded_member_id:
+                self.last_downloaded_member_id = id
+        print "last member id found in local files is %d. " % self.last_downloaded_member_id
+        f.close()
     
     def get_members_data(self):
-        """Recieves a key/value dictionary, and writes them to a tab-seperated file.
+        """downloads members data to local files
         """
+        self.update_last_downloaded_member_id()
+
         f  = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'), "ab")
 
-        for id in range(1,1000): # TODO - find max member id in knesset website and use here
-            member_dict = mk_parser.MKHtmlParser(id).Dict
-            f.write("%d\t%s\t%s\n" % member_dict['MK-ID'], member_dict['name'].encode(ENCODING), member_dict['img_link'].encode(ENCODING))
-        
-        f.flush()
+        fields = ['img_link','טלפון','פקס','אתר נוסף','דואר אלקטרוני','מצב משפחתי','מספר ילדים','תאריך לידה','שנת לידה','מקום לידה','תאריך פטירה','שנת עלייה'] 
+        # note that hebrew strings order is right-to-left
+        # so output file order is id, name, img_link, phone, ...
+
+        fields = [unicode(field.decode('utf8')) for field in fields]
+
+        for id in range(self.last_downloaded_member_id+1,1000): # TODO - find max member id in knesset website and use here
+            m = mk_parser.MKHtmlParser(id).Dict
+            if (m.has_key('name') and m['name'] != None): name = m['name'].encode(ENCODING).replace('&nbsp;',' ')
+            else: continue
+            f.write("%d\t%s\t" % (  id, name ))
+            for field in fields:
+                value = ''
+                if (m.has_key(field) and m[field]!=None): 
+                    value = m[field].encode(ENCODING)
+                f.write("%s\t" % (  value ))
+            f.write("\n")
+            
         f.close()
 
     def download_all(self):
@@ -142,8 +181,8 @@ class Command(NoArgsCommand):
         try:
             f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
         except:
-            self.last_id = 0
-            print "votes file does not exist. will download all votes from knesset (may take some time...)"
+            self.last_downloaded_vote_id = 0
+            print "votes file does not exist. setting last_downloaded_vote_id to 0"
             return            
         content = f.read().split('\n')
         for line in content:
@@ -151,11 +190,49 @@ class Command(NoArgsCommand):
                 continue
             s = line.split('\t')
             vote_id = int(s[0])
-            if vote_id > self.last_id:
-                self.last_id = vote_id
-        print "last id found in local files is %d. " % self.last_id
+            if vote_id > self.last_downloaded_vote_id:
+                self.last_downloaded_vote_id = vote_id
+        print "last id found in local files is %d. " % self.last_downloaded_vote_id
         f.close()
-        
+
+
+    def update_members_from_file(self):
+        f = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'))
+        content = f.read().split('\n')
+        for line in content:
+            if len(line) <= 1:
+                continue
+            (member_id, name, img_url, phone, fax, website, email, family_status, number_of_children, 
+             date_of_birth, year_of_birth, place_of_birth, date_of_death, year_of_aliyah, extra) = line.split('\t') 
+            if email != '':
+                email = email.split(':')[1]
+            try:
+                if date_of_birth.find(',')>=0:
+                    date_of_birth = date_of_birth.split(',')[1].strip(' ')
+                date_of_birth = datetime.datetime.strptime ( date_of_birth, "%d/%m/%Y" )
+            except:
+                date_of_birth = None
+            try:
+                if date_of_birth.find(',')>=0:
+                    date_of_death = date_of_birth.split(',')[1].strip(' ')
+                date_of_death = datetime.datetime.strptime ( date_of_death, "%d/%m/%Y" )
+            except:
+                date_of_death = None
+            try: year_of_birth = int(year_of_birth)
+            except: year_of_birth = None
+            try: year_of_aliyah = int(year_of_aliyah)
+            except: year_of_aliyah = None
+            try: number_of_children = int(number_of_children)
+            except: number_of_children = None
+
+            try:
+                m = Member.objects.get(id=member_id)
+            except: # member_id not found. create new
+                m = Member(id=member_id, name=name, img_url=img_url, phone=phone, fax=fax, website=website, email=email, family_status=family_status, 
+                            number_of_children=number_of_children, date_of_birth=date_of_birth, place_of_birth=place_of_birth, 
+                            date_of_death=date_of_death, year_of_aliyah=year_of_aliyah)
+                m.save()
+                
 
     def get_search_string(self,s):
         s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
@@ -296,9 +373,12 @@ class Command(NoArgsCommand):
                     m = members[voter]
                     created = False
                 else:
-                    m,created = Member.objects.get_or_create(name=voter)
+                    try:
+                        m = Member.objects.get(name=voter)
+                    except:   # if there are several people with same age, 
+                        m = Member.objects.filter(name=voter).order_by('-date_of_birth')[0] # choose the younger. TODO: fix this
                     members[voter] = m
-                m.party = p;
+                #m.party = p;
                 #if created: # again, unicode magic
                 #    m = Member.objects.get(name=voter)
                 # use this vote's date to update the member's dates.
@@ -306,8 +386,8 @@ class Command(NoArgsCommand):
                     m.start_date = vote_date
                 if (m.end_date is None) or (m.end_date < vote_date):
                     m.end_date = vote_date
-                if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
-                    m.save()
+                #if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
+                #    m.save()
         
                     
                 # create/get the membership (connection between member and party)
@@ -526,16 +606,17 @@ class Command(NoArgsCommand):
             process = True
             dump_to_file = True
 
-        if (not(all_options) and not(download) and not(load) and not(process) and not(dump_to_file)):
-            print "no arguments found. doing nothing. try -h for help, or --all to run the full syncdb"
+        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file)])):
+            print "no arguments found. doing nothing. try -h for help, or --all to run the full syncdata flow"
 
         if download:
             print "beginning download phase"
-            self.update_last_downloaded_vote_id()
             self.download_all()    
+            #self.get_members_data()  
         
         if load:
             print "beginning load phase"
+            self.update_members_from_file()
             self.update_db_from_files()
 
         if process:
@@ -558,11 +639,6 @@ class Command(NoArgsCommand):
                 for_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='for').all()])
                 against_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='against').all()])
                 f.write("%d\t%s\t%s\t%s\t%s\t%s\t%s\n" % (v.id,v.title.encode('utf-8'),v.time_string.encode('utf-8'),summary, link, for_ids, against_ids))
-            f.close()
-            print "writing members to tsv file"
-            f = open('members.tsv','wt')
-            for m in Member.objects.all():
-                f.write("%d\t%s\n" % (m.id,m.name.encode('utf-8')))
             f.close()
 
         
