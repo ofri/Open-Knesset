@@ -17,10 +17,10 @@ class MemberHandler(BaseHandler):
     model = Member
     def read(self, request, member_id=None):
         if member_id:
-            return Member.objects.get(pk=member_id)
+            qs = Member.objects.get(pk=member_id)
         else:
             qs = Member.objects.all().order_by('-end_date', 'name')
-            return limit_by_request(qs, request)
+        return qs
 
     @classmethod
     def membership (self, member):
@@ -84,8 +84,4 @@ class PartyHandler(BaseHandler):
         if party_id:
             return Party.objects.get(pk=party_id)
         else:
-            qs = Party.objects.all()
-            return limit_by_request(qs, request)
-
-
-
+            return Party.objects.all()

@@ -67,6 +67,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # make sure to keep the DebugToolbarMiddleware last
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'knesset.urls'
@@ -85,6 +87,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'piston',
+    'debug_toolbar',
     'knesset.mks',
     'knesset.laws',
     'knesset.simple',
@@ -96,6 +100,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.media",
 "knesset.context.processor",
 )
+INTERNAL_IPS = ('127.0.0.1',)
 
 if hostname == 'ofri-laptop': # just an example of host-specific definitions. use if nessecery
     DATABASE_USER = 'knesset'     
