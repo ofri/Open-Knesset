@@ -33,7 +33,7 @@ admin.site.register(Party, PartyAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
-    fields = ('name','start_date','end_date')
+#    fields = ('name','start_date','end_date')
     list_display = ('name','PartiesString', 'TotalVotesCount','ForVotesCount', 'AgainstVotesCount','AbstainVotesCount')
     inlines = (MembershipInline,)
 

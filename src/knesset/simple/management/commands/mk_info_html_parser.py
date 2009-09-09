@@ -14,7 +14,7 @@ from BeautifulSoup import BeautifulSoup  #for HTML parsing
 
 #URLS
 MK_HTML_INFO_PAGE = r"http://www.knesset.gov.il/mk/heb/mk_print.asp?mk_individual_id_t=";
-KNESET_URL = r"http://www.knesset.gov.il/"
+KNESET_URL = r"http://www.knesset.gov.il"
 
 #REGEXPS
 PRESONAL_INFO_KEY_DATA_TAG = "Data"
@@ -32,6 +32,7 @@ class MKHtmlParser(object):
 	
 	def __init__(self,mk_id):
 		self.__mk_id = mk_id
+		self.__mk_info_dict = {}
 		self.__soup = self._parse_mk_info_page()		
 		self.__mk_info_dict['name'] = self._get_mk_name()
 		self.__mk_info_dict['img_link'] = self._get_mk_image_link()
