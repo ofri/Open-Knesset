@@ -45,6 +45,18 @@ class Member(models.Model):
     parties = models.ManyToManyField(Party, related_name='members', through='Membership')
     start_date  = models.DateField(null=True)
     end_date    = models.DateField(null=True)
+    img_url     = models.URLField(null=True)
+    phone = models.CharField(null=True,max_length=20)
+    fax = models.CharField(null=True,max_length=20)
+    email = models.EmailField(null=True)
+    website     = models.URLField(null=True)
+    family_status = models.CharField(null=True,max_length=10)
+    number_of_children = models.IntegerField(null=True)
+    date_of_birth  = models.DateField(null=True)
+    place_of_birth = models.CharField(null=True,max_length=100)    
+    date_of_death  = models.DateField(null=True)
+    year_of_aliyah = models.IntegerField(null=True)
+
     def __unicode__(self):
         return "%s" % self.name
     
