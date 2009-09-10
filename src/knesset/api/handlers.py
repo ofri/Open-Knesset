@@ -89,6 +89,6 @@ class PartyHandler(BaseHandler):
     model = Party
     def read(self, request, party_id=None):
         if party_id:
-            return Party.objects.get(pk=party_id)
+            return Party.objects.filter(pk=party_id)
         else:
             return Party.objects.all()

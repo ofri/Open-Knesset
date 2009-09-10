@@ -47,7 +47,7 @@ BreadCrumb.prototype.pullList = function(cb) {
 };
 
 BreadCrumb.prototype.pullObject = function(cb) {
-    $.get(this.getFeedUrl()+this.id+'/',
+    $.get(this.getFeedUrl(this.id),
 	this.params,
         function(data){
             CurrentState.endMove();
@@ -131,11 +131,11 @@ function go (hashpath, params) {
     vars = _parse_hashpath.exec(hashpath) ;
     if (vars !== null && vars[1] != "") {
         state_name = vars[1];
-        id = vars[2] != ""?vars[2]:0;
+        id = vars[2] != ""?parseInt(vars[2]):undefined;
     }
     else {
         state_name = DEFAULT_STATE;
-        id = 0;
+        id = undefined;
     }
     CurrentState = States[state_name](id);
     for (attrname in params) { CurrentState.params[attrname] = params[attrname]; };

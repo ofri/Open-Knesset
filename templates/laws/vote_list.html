@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for o in object_list %}
-<li><a id="{{ o.id }}" href="javascript:CurrentState.toggleItem({{ o.id}});">{{ o.title }}</a></li>
+<li><a id="detail-{{ o.id }}" href="/#vote/{{ o.id }}/">{{ o.title }}</a></li>
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
