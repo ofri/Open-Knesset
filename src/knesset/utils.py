@@ -10,4 +10,4 @@ def yearstart(year):
     return datetime(year,1,1)
 
 def yearend(year):
-    return datetime(year,31,12)
+    return datetime(year,12,31)

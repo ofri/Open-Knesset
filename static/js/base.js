@@ -120,7 +120,7 @@ BreadCrumb.prototype.cls = function () {
         $("#items").html('');
 };
 
-function go (hashpath) {
+function go (hashpath, params) {
     // jumps to a specific state and if id is specified, a specific object 
     // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
@@ -138,6 +138,7 @@ function go (hashpath) {
         id = 0;
     }
     CurrentState = States[state_name](id);
+    for (attrname in params) { CurrentState.params[attrname] = params[attrname]; };
     CurrentState.refresh();
 };
 

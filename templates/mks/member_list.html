@@ -1,5 +1,5 @@
 {% load i18n %}
-</div>
+<div>
 {% for o in object_list %}
 
 {# Dryer but doesn't work: <a href="{% url knesset.mks.views.detail o.id %}">{{ o.name }}</a>&bull; #}
@@ -7,17 +7,6 @@
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
-	<div id="nav-tail">
-		<ul>
-				<li><a href="javascript:go('member', '', 2009);">2009</a>
-				<li><a href="javascript:go('member', '', 2008);">2008</a>
-				<li><a href="javascript:go('member', '', 2007);">2007</a>
-				<li><a href="javascript:go('member', '', 2006);">2006</a>
-				<li><a href="javascript:go('member', '', 2005);">2005</a>
-				<li><a href="javascript:go('member', '', 2004);">2004</a>
-				<li><a href="javascript:go('member', '', 2003);">2003</a>
-		<ul>
-	</div>
 </div>
 
 

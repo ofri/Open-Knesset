@@ -23,8 +23,7 @@ class MemberHandler(BaseHandler):
             year = request.GET.get('year', -1)
             if year == -1:
                 year = datetime.now().year
-            qs = Member.objects.filter(end_date__gte=yearend(year-1),
-                      start_date__lte=yearstart(year))
+            qs = Member.objects.filter(end_date__gte=yearstart(2009))
         return qs
 
     @classmethod
