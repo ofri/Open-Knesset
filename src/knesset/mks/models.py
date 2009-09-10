@@ -17,6 +17,11 @@ class Party(models.Model):
     start_date  = models.DateField(null=True)
     end_date    = models.DateField(null=True)
 
+    @property
+    def uri_template (self):
+        # TODO: use the Site's url from django.contrib.site
+        return "%s/api/party/%s/htmldiv/" % ('', self.id)
+
     def __unicode__(self):
         return "%s" % self.name
     
@@ -56,6 +61,9 @@ class Member(models.Model):
     place_of_birth = models.CharField(null=True,max_length=100)    
     date_of_death  = models.DateField(null=True)
     year_of_aliyah = models.IntegerField(null=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __unicode__(self):
         return "%s" % self.name
