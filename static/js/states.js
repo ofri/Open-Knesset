@@ -2,13 +2,13 @@ var NAV_SUFFIX = '#nav-';
 var DEFAULT_STATE = 'vote';
 
 var States = {
-    'member' : function (pk, year) {
+    'member' : function (id, year) {
         var i = new BreadCrumb();
-	i.params = {};
+	    i.params = {};
         i.name = 'member';
         i.nav_id = NAV_SUFFIX + 'members';
         i.params = (typeof year == 'integer')?{year: year}:{};
-        if (typeof pk == 'integer') { i.pk = pk };
+        if (typeof id == 'integer') { i.id = id };
         i.one_liner = function (item) { return item.name };
         i.div_view = function (item) { 
             return [item.start_date, item.end_date].join('\t');
@@ -17,11 +17,11 @@ var States = {
         i.hasMore = false;
 	return i;
     },
-    'vote': function (pk)  {
+    'vote': function (id)  {
         var i = new BreadCrumb();
         i.name = 'vote';
-        if (typeof pk == 'int')
-            i.pk = pk;
+        if (typeof id == 'integer')
+            i.id = id;
         i.nav_id = NAV_SUFFIX + 'past-votes';
         i.one_liner = function (item) {
             var t = item.time.split(' ')[0];
