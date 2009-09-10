@@ -1,9 +1,9 @@
 var API_URL = '/api/';
 var Cycle = -1;
 var Moving = true; // system is in transition, most things don't work
-var Buttons = $('#nav_global li');
 var CurrentState = null;
-
+var HEADER = "#content-main h1";
+var CONTENT = "#content-main div";
 
 function BreadCrumb() {
     this.params= {num:20, page:0};
@@ -13,7 +13,7 @@ function BreadCrumb() {
 
 BreadCrumb.prototype.isList = function () {
     // is this is about a list?
-    return !this.hasOwnProperty('pk') ;
+    return !this.hasOwnProperty('id') ;
 };
 
 BreadCrumb.prototype.refresh = function() {
@@ -22,6 +22,7 @@ BreadCrumb.prototype.refresh = function() {
     else               { this.pullObject(this.cls); }
 };
 
+BreadCrumb.prototype.hasMore = true;
 BreadCrumb.prototype.more = function() {
     this.params.page ++;
     this.pullList(); //callback function when rendering is done
@@ -30,25 +31,28 @@ BreadCrumb.prototype.more = function() {
 BreadCrumb.prototype.getFeedUrl = function(i){
     var r = API_URL + this.name + '/';
     if (typeof i == "number") { r +=  i + '/'; }
+    r += 'htmldiv/';
     return r;
 };
 
 BreadCrumb.prototype.pullList = function(cb) {
-    var i = this;
-    $.getJSON(this.getFeedUrl(),
+    $.get(this.getFeedUrl(),
         this.params, // just added params - need other mthod get JSON fails
         function(data){
-            i.endMove();
-            if (typeof cb == 'function') { cb(i); }
-            $('#items-list').append(i.renderList(data));
-        });
+            CurrentState.endMove();
+            if (typeof cb == 'function') { cb(); }
+            $(CONTENT+ ' ul').append(data);
+        },
+	'html');
 };
 
 BreadCrumb.prototype.pullObject = function(cb) {
-    $.getJSON(this.getFeedUrl()+this.pk+'/',
+    $.get(this.getFeedUrl()+this.id+'/',
+	this.params,
         function(data){
-            cb(data);
-            $('#items').html(data);
+            CurrentState.endMove();
+            if (typeof cb == 'function') { cb(); }
+            $(CONTENT).append(data);
         });
 };
 
@@ -63,10 +67,10 @@ BreadCrumb.prototype.toggleItem = function(i){
 };
 BreadCrumb.prototype.pullItem = function(i) {
         //TODO: add item cache. if item is in cache, don't call API. just show it.        
-        $.getJSON(this.getFeedUrl(i),
-                    function(data){
-                        html = $('#'+i).html();
-                        $('#'+i).addClass("expanded").append(CurrentState.renderItem(data));
+        $.get(this.getFeedUrl(i),
+		this.params,
+	    	function(data){
+                        $('#'+i).addClass("expanded").append(data);
                       //$.each(data.items, function(i,item){
                       //  this.itemElement().appendTo("#item");
                       //})
@@ -84,49 +88,56 @@ BreadCrumb.prototype.renderList = function (data) {
 };
 
 BreadCrumb.prototype.renderItem = function (data) {
-    ret = "";
-    ret = '<div class="item_div">'+CurrentState.div_view(data)+'</div>';
-    return ret;
+    return data;
 };
 
 BreadCrumb.prototype.startMove = function () {
     Moving = true;
-    $("#items").html('Loading...');
+    $(HEADER).html(gettext('Loading...'));
     if (CurrentState !== null) { $(CurrentState.nav_id).removeClass('selected'); };
-    Buttons.addClass('Limbo');
+    $('#more').die();
 };
 
 BreadCrumb.prototype.endMove = function () {
     $('#nav-' + CurrentState.name).addClass('current');
-    Buttons.removeClass('Limbo');
+    $('#content-main h1').html(gettext(CurrentState.name));
     Moving = false;
 };
 
-BreadCrumb.prototype.cls = function (i) {
-    // clear the screen
-    if (i.isList())
-        $("#items").html('<ul id="items-list"></ul>'); // TODO: there has to be a simpler way
+BreadCrumb.prototype.cls = function () {
+    // clear the screen and prepare it for CurrentState
+    var i = CurrentState;
+    if (i.isList()) {
+        var a = '<ul id="items-list"></ul>' ;
+	if (i.hasMore) {
+		a += '<a id="more" href="javascript:CurrentState.more();">'+
+		gettext("more") +
+		'</a>'; // TODO: there has to be a simpler way
+	}
+        $(CONTENT).html(a);
+    }
     else
         $("#items").html('');
 };
 
 function go (hashpath) {
-    // jumps to a specific state and if pk is specified, a specific object 
+    // jumps to a specific state and if id is specified, a specific object 
     // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
-    CurrentState != null && CurrentState.startMove();
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
-    var state_name, pk;
+    var state_name, id;
+
+    if (CurrentState != null) { CurrentState.startMove() };
+
     vars = _parse_hashpath.exec(hashpath) ;
     if (vars !== null && vars[1] != "") {
         state_name = vars[1];
-        pk = vars[2] != ""?vars[2]:0;
+        id = vars[2] != ""?vars[2]:0;
     }
     else {
         state_name = DEFAULT_STATE;
-        pk = 0;
+        id = 0;
     }
-    // TODO: del CurrentState;
-    CurrentState = States[state_name](pk);
+    CurrentState = States[state_name](id);
     CurrentState.refresh();
 };
 

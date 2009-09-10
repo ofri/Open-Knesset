@@ -2,19 +2,20 @@ var NAV_SUFFIX = '#nav-';
 var DEFAULT_STATE = 'vote';
 
 var States = {
-    'member' : function (pk) {
+    'member' : function (pk, year) {
         var i = new BreadCrumb();
+	i.params = {};
         i.name = 'member';
         i.nav_id = NAV_SUFFIX + 'members';
-        if (typeof pk == 'int')
-            i.pk = pk;
-        i.one_liner = function (item) {
-            return item.name
-        };
+        i.params = (typeof year == 'integer')?{year: year}:{};
+        if (typeof pk == 'integer') { i.pk = pk };
+        i.one_liner = function (item) { return item.name };
         i.div_view = function (item) { 
             return [item.start_date, item.end_date].join('\t');
         };
-        return i;
+	// clear the hasMore flag as we display all members on one page
+        i.hasMore = false;
+	return i;
     },
     'vote': function (pk)  {
         var i = new BreadCrumb();
@@ -53,6 +54,7 @@ var States = {
         i.div_view = function (item) { 
             return [item.start_date, item.end_date].join('\t');
         };
+        i.hasMore = false;
         return i;
     }
 };

@@ -1,6 +1,8 @@
+from datetime import datetime
 from piston.handler import BaseHandler
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote
+from knesset.laws.models import Vote, VoteAction
+from knesset.utils import yearstart, yearend
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -11,29 +13,34 @@ def limit_by_request(qs, request):
 
 class MemberHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date',
-              'membership',
-             )
+              'membership',)
     allowed_methods = ('GET',)
     model = Member
     def read(self, request, member_id=None):
         if member_id:
-            return Member.objects.get(pk=member_id)
+            qs = Member.objects.filter(pk=member_id)
         else:
-            qs = Member.objects.all().order_by('-end_date', 'name')
-            return limit_by_request(qs, request)
+            year = request.GET.get('year', -1)
+            if year == -1:
+                year = datetime.now().year
+            qs = Member.objects.filter(end_date__gte=yearend(year-1),
+                      start_date__lte=yearstart(year))
+        return qs
 
     @classmethod
     def membership (self, member):
         qs = Membership.objects.filter(member=member)
-        return qs.values('start_date', 'end_date', 'party_id')
+        return [dict(since=o.start_date, until=o.end_date,
+                     id=o.party.uri_template) for o in qs]
 
 class VoteDetailsHandler(BaseHandler):
     # fields = ('for', 'against', 'abstain')
-    fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
-              'votedfor',
-              'votedagainst' ,
-              'votedabstain' ,
-              'didntvote' ,
+    fields = ('id', 'title', 'time', 'for_votes_counts', 'against_votes_counts',
+              'member_uri_template', 
+              'voted_for',
+              'voted_against' ,
+              'voted_abstain' ,
+              'didnt_vote' ,
               'topics_for',
               'topics_against',
               'summary',
@@ -42,31 +49,32 @@ class VoteDetailsHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Vote
     def read(self, request, vote_id):
-        return Vote.objects.get(pk=vote_id)
+        return Vote.objects.filter(pk=vote_id)
 
     @classmethod
-    def id_list(self, qs):
-        return [object.id for object in qs]
+    def member_uri_template(self, vote):
+        # TODO: needs Drying - use django's url resolver
+        return "/member/{id}/htmldiv/" 
 
     @classmethod
-    def votedfor(self, vote):
-        return self.id_list(vote.voted_for.all())
+    def voted_for(self, vote):
+        return vote.get_voters_id('for')
 
     @classmethod
-    def votedagainst(self, vote):
-        return self.id_list(vote.voted_against.all())
+    def voted_against(self, vote):
+        return vote.get_voters_id('against')
 
     @classmethod
-    def votedabstain(self, vote):
-        return self.id_list(vote.voted_abstain.all())
+    def voted_abstain(self, vote):
+        return vote.get_voters_id('abstain')
 
     @classmethod
-    def didntvote(self, vote):
-        return self.id_list(vote.didnt_vote.all())
+    def didnt_vote(self, vote):
+        return vote.get_voters_id('no-vote')
 
 class VoteHandler(BaseHandler):
     # fields = ('for', 'against', 'abstain')
-    fields = ('id', 'title', 'time', 'ForVotesCount', 'AgainstVotesCount',
+    fields = ('id', 'title', 'time', 'for_votes_count', 'against_vote_count',
               'topics_for',
               'topics_against',
              )
@@ -84,8 +92,4 @@ class PartyHandler(BaseHandler):
         if party_id:
             return Party.objects.get(pk=party_id)
         else:
-            qs = Party.objects.all()
-            return limit_by_request(qs, request)
-
-
-
+            return Party.objects.all()

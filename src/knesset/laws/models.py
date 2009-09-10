@@ -41,10 +41,13 @@ class Vote(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
 
-    def ForVotesCount(self):
+    def get_voters_id(self, vote_type):
+        return VoteAction.objects.filter(vote=self, type=vote_type).values_list('member__id', flat=True)
+
+    def for_votes_count(self):
         return self.votes.filter(voteaction__type='for').count()
 
-    def AgainstVotesCount(self):
+    def against_votes_count(self):
         return self.votes.filter(voteaction__type='against').count()
 
     def short_summary(self):
