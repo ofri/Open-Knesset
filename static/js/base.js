@@ -117,7 +117,7 @@ BreadCrumb.prototype.cls = function () {
         $(CONTENT).html(a);
     }
     else
-        $("#items").html('');
+        $(CONTENT).html('');
 };
 
 function go (hashpath, params) {
