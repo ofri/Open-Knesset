@@ -1,11 +1,17 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block h1content %}{% trans 'list' %}{% endblock %}
+{% block h1content %}{% trans 'Votes' %}{% endblock %}
 {% block divcontent %}
-	<div id="items"> 
 	<ul>
 		{% include "laws/vote_list.html" %}
 	</ul>
-	</div>
+	<a id="more" href="javascript:CurrentState.more();">
+		{% trans 'more' %}</a>
+<script>
+    $(document).ready(function () {
+	CurrentState = States['vote']();
+	CurrentState.endMove();
+});
+</script>
 {% endblock %}
 

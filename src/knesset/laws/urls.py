@@ -1,9 +1,8 @@
 from django.conf.urls.defaults import *
+from views import vote
+from models import Vote
 
-
-urlpatterns = patterns('',
-    #(r'^$', 'canvas'),
-    (r'^hello/$', 'knesset.simple.views.hello_world'),
-
-    # Define other pages you want to create here
+lawsurlpatterns = patterns ('',
+    url(r'^vote/$', vote, name='vote-list'),
+    url(r'^vote/(\d+)/$', vote, name='vote-detail'),
 )

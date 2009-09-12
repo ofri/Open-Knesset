@@ -1,12 +1,10 @@
 {% load i18n %}
-<div>
 {% for o in object_list %}
-
-{# Dryer but doesn't work: <a href="{% url knesset.mks.views.detail o.id %}">{{ o.name }}</a>&bull; #}
-<a id="detail-{{ o.id }}" href="#member/{{ o.id }}/">{{ o.name }}</a>&nbsp;&bull;&nbsp;
+	<a id="detail-{{ o.id }}" href="{% url member-detail o.id %}">
+		{{ o.name }}
+	</a>&nbsp;&bull;&nbsp;
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
-</div>
 
 

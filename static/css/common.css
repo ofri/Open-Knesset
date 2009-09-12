@@ -45,7 +45,7 @@ a:link, a:visited { color:#ffc757; }
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
-#content-main div { font-size:105%; }
+#content-main div { font-size: 100%; }
 .sidebar { font-size:92%; }
 .sidebar * { margin-left:14px; margin-right:14px; }
 .sidebar * * { margin-left:0; margin-right:0; }

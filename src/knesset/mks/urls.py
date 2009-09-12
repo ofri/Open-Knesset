@@ -1,10 +1,10 @@
 from django.conf.urls.defaults import *
 from knesset.mks.views import *
 
-urlpatterns = patterns('',
-    url(r'member/$', 'knesset.mks.views.member_list'),
-    url(r'member/(\d+)/$', 'knesset.mks.views.member_detail'),
-    url(r'party/$', 'knesset.mks.views.party_list'),
-    url(r'party/(\d+)/$', 'knesset.mks.views.party_detail'),
+mksurlpatterns = patterns('knesset.mks.views',
+    url(r'^member/$', 'member', name='member-list'),
+    url(r'^member/(\d+)/$', 'member', name='member-detail'),
+    url(r'^party/$', 'party', name='party-list'),
+    url(r'^party/(\d+)/$', 'party', name='party-detail'),
 
 )

@@ -40,6 +40,14 @@ var States = {
             var t = item.time.split(' ')[1];
             return [t, summary, link].join('<br />');
         };
+
+	i.updateList = function (data) {
+            $(CONTENT+ ' ul').append(data);
+	};
+
+	i.cls = function() {
+		return '<ul id="items-list"></ul>' + BreadCrumb.prototype.cls();
+	}
         return i;
     },
 

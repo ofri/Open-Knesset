@@ -2,12 +2,13 @@
 {% load i18n %}
 {% block h1content %}{% trans 'Members' %}{% endblock %}
 {% block divcontent %}
-		{% include "mks/member_list.html" %}
+	{% include "mks/member_detail.html" %}
 <script>
     $(document).ready(function () {
-	CurrentState = States['member']();
+	CurrentState = States['member']({{ object.id }});
 	CurrentState.endMove();
 });
 </script>
+
 {% endblock %}
 

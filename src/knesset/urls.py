@@ -1,16 +1,16 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.views.generic.list_detail import object_list
+from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.simple import direct_to_template
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from knesset.mks.urls import mksurlpatterns
+from knesset.laws.urls import lawsurlpatterns
 admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
-    (r'^mks/', include('knesset.mks.urls')),
-    (r'^laws/', include('knesset.laws.urls')),
     (r'^api/', include('knesset.api.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
@@ -22,6 +22,7 @@ urlpatterns = patterns('',
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog'),
 
 )
+urlpatterns += mksurlpatterns + lawsurlpatterns
 if settings.LOCAL_DEV:
     urlpatterns += patterns('django.views.static',
         (r'^%s(?P<path>.*)' % settings.MEDIA_URL[1:], 'serve',

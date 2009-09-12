@@ -1,5 +1,14 @@
 {% extends "site_base.html" %}
+{% load i18n %}
+{% block h1content %} {% trans PAGE_BASE_NAME %} {% endblock %}
 {% block divcontent %}
+<script>
+    $(document).ready(function() {
+        $.history.init(go); // goto is from base.js
+        $('ul#nav-global li a').click(hashclick);
+        $('ul#item-list div a').live('click', hashclick);
+    });
+</script>
 {% endblock %}
 
 

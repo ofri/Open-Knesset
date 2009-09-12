@@ -2,19 +2,11 @@
 {% load i18n %}
 {% block content %}
 	<h1>
-		{% trans PAGE_BASE_NAME %}&nbsp;
 		{% block h1content %} {% endblock %}
 	</h1>
 	<div>
 		{% block divcontent %} ahm.. my child should replace this block{% endblock %}
 	</div>
-<script>
-    $(document).ready(function() {
-        $.history.init(go); // goto is from base.js
-        $('ul#nav-global li a').click(hashclick);
-        $('ul#item-list div a').live('click', hashclick);
-    });
-</script>
 {% endblock %}
 
 

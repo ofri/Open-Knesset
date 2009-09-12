@@ -17,9 +17,8 @@ BreadCrumb.prototype.isList = function () {
 };
 
 BreadCrumb.prototype.refresh = function() {
-    $(this.nav_id).addClass('selected');
-    if (this.isList()) { this.pullList(this.cls); }
-    else               { this.pullObject(this.cls); }
+    if (this.isList()) { this.pullList(cls=true); }
+    else               { this.pullObject(true); }
 };
 
 BreadCrumb.prototype.hasMore = true;
@@ -35,24 +34,30 @@ BreadCrumb.prototype.getFeedUrl = function(i){
     return r;
 };
 
-BreadCrumb.prototype.pullList = function(cb) {
+BreadCrumb.prototype.updateList = function(data) {
+	$(CONTENT).append(data);
+};
+
+BreadCrumb.prototype.pullList = function(cls) {
     $.get(this.getFeedUrl(),
         this.params, // just added params - need other mthod get JSON fails
         function(data){
-            CurrentState.endMove();
-            if (typeof cb == 'function') { cb(); }
-            $(CONTENT+ ' ul').append(data);
+            CurrentState.endMove(cls);
+	    	CurrentState.updateList(data);
         },
 	'html');
 };
 
-BreadCrumb.prototype.pullObject = function(cb) {
+BreadCrumb.prototype.updateObject = function(data) {
+	$(CONTENT).append(data);
+};
+
+BreadCrumb.prototype.pullObject = function(cls) {
     $.get(this.getFeedUrl(this.id),
 	this.params,
         function(data){
-            CurrentState.endMove();
-            if (typeof cb == 'function') { cb(); }
-            $(CONTENT).append(data);
+            CurrentState.endMove(cls);
+	    	CurrentState.updateObject(data);
         });
 };
 
@@ -98,26 +103,25 @@ BreadCrumb.prototype.startMove = function () {
     $('#more').die();
 };
 
-BreadCrumb.prototype.endMove = function () {
-    $('#nav-' + CurrentState.name).addClass('current');
+BreadCrumb.prototype.endMove = function (cls) {
+    $(this.nav_id).addClass('selected');
     $('#content-main h1').html(gettext(CurrentState.name));
+	if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) };
     Moving = false;
 };
 
 BreadCrumb.prototype.cls = function () {
     // clear the screen and prepare it for CurrentState
     var i = CurrentState;
+    var a = '';
     if (i.isList()) {
-        var a = '<ul id="items-list"></ul>' ;
-	if (i.hasMore) {
-		a += '<a id="more" href="javascript:CurrentState.more();">'+
-		gettext("more") +
-		'</a>'; // TODO: there has to be a simpler way
-	}
-        $(CONTENT).html(a);
+			if (i.hasMore) {
+				a += '<a id="more" href="javascript:CurrentState.more();">'+
+				gettext("more") +
+				'</a>'; // TODO: there has to be a simpler way
+			}
     }
-    else
-        $(CONTENT).html('');
+	return a;
 };
 
 function go (hashpath, params) {
