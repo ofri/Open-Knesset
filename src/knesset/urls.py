@@ -9,9 +9,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
-    (r'^member/', include('knesset.mks.urls')),
-    (r'^party/$', include('knesset.mks.urls')),
-    (r'^vote/$', include('knesset.laws.urls')),
+    (r'^mks/', include('knesset.mks.urls')),
+    (r'^laws/', include('knesset.laws.urls')),
     (r'^api/', include('knesset.api.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
