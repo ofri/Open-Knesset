@@ -35,6 +35,9 @@ class Party(models.Model):
     def MembersString(self):
         return ", ".join([m.NameWithLink() for m in self.members.all().order_by('name')])
     MembersString.allow_tags = True
+
+    def member_list(self):
+        return self.members.all()
     
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
@@ -68,6 +71,9 @@ class Member(models.Model):
     def __unicode__(self):
         return "%s" % self.name
     
+    def Party(self):    
+        return self.parties.all().order_by('-membership__start_date')[0]
+
     def PartiesString(self):
         return ", ".join([p.NameWithLink() for p in self.parties.all().order_by('membership__start_date')])
     PartiesString.allow_tags = True

@@ -1,6 +1,11 @@
 {% load i18n %}
+{% load mks_extra %}
 <img id="member-photo" src="{{ object.img_url }}"><h2> {{ object.name }}<h2>
 <table id="member-info">
+    <tr>
+        <td>{% trans "party" %}</td>
+        <td><a id="detail-{{ object.Party.id }}" href="{% url party-detail object.Party.id %}">{{ object.Party.name }}</a></td>
+    </tr>    
     <tr>
         <td>{% trans "age" %}</td>
         <td>{{ object.date_of_birth|timesince }}</td>
