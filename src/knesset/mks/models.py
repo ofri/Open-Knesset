@@ -38,6 +38,11 @@ class Party(models.Model):
 
     def member_list(self):
         return self.members.all()
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('party-detail', [str(self.id)])
+
     
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
@@ -112,8 +117,9 @@ class Member(models.Model):
         return ", ".join(strings)
     
     
-    def Url(self):
-        return "/admin/simple/member/%d" % self.id
+    @models.permalink
+    def get_absolute_url(self):
+        return ('member-detail', [str(self.id)])
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' %(self.Url(),self.name)

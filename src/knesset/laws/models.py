@@ -62,3 +62,8 @@ class Vote(models.Model):
         else:
             return '<a href="%s">link</a>' % self.full_text_url
     full_text_link.allow_tags = True  
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('vote-detail', [str(self.id)])
+
