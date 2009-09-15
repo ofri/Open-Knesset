@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 09:20-0500\n"
-"PO-Revision-Date: 2009-09-15 17:24+0200\n"
+"POT-Creation-Date: 2009-09-15 18:52+0300\n"
+"PO-Revision-Date: 2009-09-15 18:51+0200\n"
 "Last-Translator: benny daon <bennydaon@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,15 +23,18 @@ msgstr "טוען..."
 msgid "more"
 msgstr "עוד"
 
-#: js/states.js:8
+#: js/states.js:9
 msgid "members"
 msgstr "ח\"כים"
 
-#: js/states.js:22
+#: js/states.js:24
 msgid "votes"
 msgstr "הצבעות"
 
-#: js/states.js:57
+#: js/states.js:60
 msgid "parties"
 msgstr "מפלגות"
 
+#: js/states.js:76
+msgid "about"
+msgstr "אודות"

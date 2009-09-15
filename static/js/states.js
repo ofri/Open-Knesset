@@ -73,6 +73,7 @@ var States = {
     'about': function (id)  {
         var i = new BreadCrumb();
         i.name = 'about';
+        i.header = gettext('about');
         i.nav_id = NAV_SUFFIX + 'about';
         i.hasMore = false;
         i.getFeedUrl = function(i){
