@@ -41,12 +41,13 @@ var States = {
             return [t, summary, link].join('<br />');
         };
 
-	i.updateList = function (data) {
-            $(CONTENT+ ' ul').append(data);
+	i.updateList = function (data,cls) {
+            if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) }; 
+            $(CONTENT_LIST).append(data);
 	};
 
 	i.cls = function() {
-		return '<ul id="items-list"></ul>' + BreadCrumb.prototype.cls();
+		return '<ul id="item-list"></ul>' + BreadCrumb.prototype.cls();
 	}
         return i;
     },

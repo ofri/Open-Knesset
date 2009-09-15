@@ -18,8 +18,8 @@ def party (request, pk=None):
     qs = Party.objects.all()
     if pk:
         return object_detail(request, queryset=qs, object_id=pk, 
-                             template_name='mks/party_detail.html')
+                             template_name='mks/party.html')
     else:
         # return a list
         qs = limit_by_request(qs, request)
-        return object_list(request, queryset=qs)
+        return object_list(request, queryset=qs,template_name='mks/parties.html')

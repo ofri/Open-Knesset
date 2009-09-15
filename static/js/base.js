@@ -4,6 +4,7 @@ var Moving = true; // system is in transition, most things don't work
 var CurrentState = null;
 var HEADER = "#content-main h1";
 var CONTENT = "#content-main div";
+var CONTENT_LIST = "#item-list";
 
 function BreadCrumb() {
     this.params= {num:20, page:0};
@@ -34,7 +35,8 @@ BreadCrumb.prototype.getFeedUrl = function(i){
     return r;
 };
 
-BreadCrumb.prototype.updateList = function(data) {
+BreadCrumb.prototype.updateList = function(data,cls) {
+    if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) };
 	$(CONTENT).append(data);
 };
 
@@ -42,13 +44,14 @@ BreadCrumb.prototype.pullList = function(cls) {
     $.get(this.getFeedUrl(),
         this.params, // just added params - need other mthod get JSON fails
         function(data){
-            CurrentState.endMove(cls);
-	    	CurrentState.updateList(data);
+	    	CurrentState.updateList(data,cls);
+            CurrentState.endMove();
         },
 	'html');
 };
 
-BreadCrumb.prototype.updateObject = function(data) {
+BreadCrumb.prototype.updateObject = function(data,cls) {
+    if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) };
 	$(CONTENT).append(data);
 };
 
@@ -56,8 +59,8 @@ BreadCrumb.prototype.pullObject = function(cls) {
     $.get(this.getFeedUrl(this.id),
 	this.params,
         function(data){
-            CurrentState.endMove(cls);
-	    	CurrentState.updateObject(data);
+	    	CurrentState.updateObject(data,cls);
+            CurrentState.endMove();
         });
 };
 
@@ -103,10 +106,20 @@ BreadCrumb.prototype.startMove = function () {
     $('#more').die();
 };
 
-BreadCrumb.prototype.endMove = function (cls) {
+updateLinks = function () {
+    $("a").each(function (){
+        var href = $(this).attr('href');
+        if(typeof href != "undefined" && href[0]=='/' && href[1]!='#'){
+            href = '/#'+href.substr(1);
+            $(this).attr('href',href);
+        };
+    });    
+};
+
+BreadCrumb.prototype.endMove = function () {
     $(this.nav_id).addClass('selected');
     $('#content-main h1').html(gettext(CurrentState.name));
-	if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) };
+    updateLinks();
     Moving = false;
 };
 
@@ -127,6 +140,7 @@ BreadCrumb.prototype.cls = function () {
 function go (hashpath, params) {
     // jumps to a specific state and if id is specified, a specific object 
     // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
+    if (hashpath=="") { return; };
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
     var state_name, id;
 

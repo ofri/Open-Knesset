@@ -1,13 +1,10 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% block nav-members %}class="selected"{% endblock %}
 {% block h1content %}{% trans 'Members' %}{% endblock %}
 {% block divcontent %}
 		{% include "mks/member_list.html" %}
-<script>
-    $(document).ready(function () {
-	CurrentState = States['member']();
-	CurrentState.endMove();
-});
-</script>
 {% endblock %}
-
+{% block extra-ready %}
+    CurrentState = States['member']();
+{% endblock %}

@@ -7,6 +7,8 @@
         $.history.init(go); // goto is from base.js
         $('ul#nav-global li a').click(hashclick);
         $('ul#item-list div a').live('click', hashclick);
+        updateLinks();
+        
     });
 </script>
 {% endblock %}

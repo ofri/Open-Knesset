@@ -7,6 +7,15 @@
 	<div>
 		{% block divcontent %} ahm.. my child should replace this block{% endblock %}
 	</div>
+    <script>
+        $(document).ready(function() {
+            {% block extra-ready %} {% endblock %}
+            $.history.init(go); // goto is from base.js
+            $('ul#nav-global li a').click(hashclick);
+            $('ul#item-list li a').live('click', hashclick);
+            updateLinks();
+        });
+    </script>
 {% endblock %}
 
 
