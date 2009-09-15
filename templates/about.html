@@ -1,0 +1,14 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block h1content %}{% trans 'About' %}{% endblock %}
+{% block divcontent %}
+	{% include "about_content.html" %}
+    <script>
+        $(document).ready(function () {
+    	    CurrentState = States['about']();
+    	    CurrentState.endMove();
+        });
+    </script>
+{% endblock %}
+
+
