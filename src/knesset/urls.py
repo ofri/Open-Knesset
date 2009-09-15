@@ -15,6 +15,8 @@ js_info_dict = {
 
 urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
+    url(r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
+    url(r'^about-content/$', direct_to_template, {'template': 'about_content.html'}, 'about-content'),
     (r'^api/', include('knesset.api.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
