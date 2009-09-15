@@ -1,0 +1,10 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block nav-members %}class="selected"{% endblock %}
+{% block h1content %}{% trans 'Parties' %}{% endblock %}
+{% block divcontent %}
+		{% include "mks/party_list.html" %}
+{% endblock %}
+{% block extra-ready %}
+    CurrentState = States['party']();
+{% endblock %}
