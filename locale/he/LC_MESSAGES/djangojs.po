@@ -3,44 +3,35 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-07 18:20-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-09-15 09:20-0500\n"
+"PO-Revision-Date: 2009-09-15 17:24+0200\n"
+"Last-Translator: benny daon <bennydaon@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/base.html:9
-msgid "Knesset"
-msgstr "כנסת"
+#: js/base.js:104
+msgid "Loading..."
+msgstr "טוען..."
 
-#: templates/base.html:18
-msgid "I'm just sitting here watching the wheels go round and round."
-msgstr "אתר הכמנסת הפתוח"
-
-#: templates/base.html:43
-msgid "Past Votes"
-msgstr "הצבעות"
-
-#: templates/base.html:46
-msgid "Members"
-msgstr "ח\"כים"
-
-#: templates/base.html:49
-msgid "Parties"
-msgstr "מפלגות"
-
-#: templates/base.html:51
-msgid "Code"
-msgstr "קוד מקור"
-
-#: templates/home.html:5
+#: js/base.js:133
 msgid "more"
 msgstr "עוד"
+
+#: js/states.js:8
+msgid "members"
+msgstr "ח\"כים"
+
+#: js/states.js:22
+msgid "votes"
+msgstr "הצבעות"
+
+#: js/states.js:57
+msgid "parties"
+msgstr "מפלגות"
 

@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'piston',
     'debug_toolbar',
+    'knesset',
     'knesset.mks',
     'knesset.laws',
     'knesset.simple',

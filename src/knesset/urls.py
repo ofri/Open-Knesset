@@ -9,6 +9,10 @@ from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 admin.autodiscover()
 
+js_info_dict = {
+    'packages': ('knesset',),
+    }
+
 urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
     (r'^api/', include('knesset.api.urls')),
@@ -19,7 +23,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      (r'^admin/(.*)', admin.site.root),
-     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog'),
+     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns

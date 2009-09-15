@@ -6,6 +6,7 @@ var States = {
         var i = new BreadCrumb();
 	    i.params = {};
         i.name = 'member';
+        i.header = gettext('members');
         i.nav_id = NAV_SUFFIX + 'members';
         i.params = (typeof year == 'number')?{year: year}:{};
         if (typeof id == 'number') { i.id = id };
@@ -20,6 +21,7 @@ var States = {
     'vote': function (id)  {
         var i = new BreadCrumb();
         i.name = 'vote';
+        i.header = gettext('votes');
         if (typeof id == 'number') { i.id = id; };
         i.nav_id = NAV_SUFFIX + 'past-votes';
         i.one_liner = function (item) {
@@ -55,6 +57,7 @@ var States = {
     'party': function (id)  {
         var i = new BreadCrumb();
         i.name = 'party';
+        i.header = gettext('parties');
         i.nav_id = NAV_SUFFIX + 'parties';
         if (typeof id == 'number') { i.id = id };
         i.one_liner = function (item) {

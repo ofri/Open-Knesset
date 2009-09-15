@@ -118,7 +118,7 @@ updateLinks = function () {
 
 BreadCrumb.prototype.endMove = function () {
     $(this.nav_id).addClass('selected');
-    $('#content-main h1').html(gettext(CurrentState.name));
+    $('#content-main h1').html(CurrentState.header);
     updateLinks();
     Moving = false;
 };
