@@ -1,7 +1,8 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block h1content %} {% trans PAGE_BASE_NAME %} {% endblock %}
+{% block h1content %}{% trans 'Homepage' %}{% endblock %}
 {% block divcontent %}
+{% trans "Choose a tab to start browsing" %}
 <script>
     $(document).ready(function() {
         $.history.init(go); // goto is from base.js

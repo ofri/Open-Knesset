@@ -65,6 +65,17 @@ var States = {
         };
         i.hasMore = false;
         return i;
+    },
+
+    'about': function (id)  {
+        var i = new BreadCrumb();
+        i.name = 'about';
+        i.nav_id = NAV_SUFFIX + 'about';
+        i.hasMore = false;
+        i.getFeedUrl = function(i){
+            return "/about-content/";
+        };
+        return i;
     }
 };
 
