@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 18:56+0300\n"
-"PO-Revision-Date: 2009-09-15 19:02+0200\n"
-"Last-Translator: benny daon <bennydaon@gmail.com>\n"
+"POT-Creation-Date: 2009-10-18 10:18-0500\n"
+"PO-Revision-Date: 2009-10-18 17:23+0200\n"
+"Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -123,9 +123,8 @@ msgid "party"
 msgstr "מפלגה"
 
 #: templates/mks/member_detail.html:10
-#, fuzzy
 msgid "age"
-msgstr "שינוי"
+msgstr "גיל"
 
 #: templates/mks/member_detail.html:15
 msgid "year of aliyah"
@@ -152,13 +151,12 @@ msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
 #: templates/mks/member_detail.html:40
-#, fuzzy
 msgid "web site"
 msgstr "אתר"
 
 #: templates/mks/member_detail.html:44
 msgid "none"
-msgstr "כלום"
+msgstr "אין"
 
 #~ msgid "Arabic"
 #~ msgstr "ערבית"
