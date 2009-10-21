@@ -42,7 +42,7 @@ msgstr "אודות"
 
 #: templates/about_content.html:2
 msgid "Open Knesset a project aimed at exposing the knesset's work to the public."
-msgstr "פריקט זה מיועד לחשוף את פעילות הכנסת לציבור."
+msgstr "פרויקט זה מיועד לחשוף את פעילות הכנסת לציבור."
 
 #: templates/about_content.html:3
 msgid "After all, they work for us, don't they?"
@@ -75,7 +75,7 @@ msgstr "כנסת"
 
 #: templates/base.html:18
 msgid "I'm just sitting here watching the wheels go round and round."
-msgstr "אתר הכמנסת הפתוח"
+msgstr "אתר הכנסת הפתוח"
 
 #: templates/base.html:63
 msgid "DjangoIL unless otherwise noted."
