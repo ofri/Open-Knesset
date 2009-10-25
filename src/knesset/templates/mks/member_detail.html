@@ -45,3 +45,37 @@
         {% endif %}
     </tr>
 </table>
+<h2>{% trans "Votes"%}</h2>
+
+<div class="member_votes">
+    <h3>{% trans "For" %}</h3>
+    <ul>
+    {% for vote in object.for_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "Against" %}</h3>
+    <ul>
+    {% for vote in object.against_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "Abstain" %}</h3>
+    <ul>
+    {% for vote in object.abstain_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "No Vote" %}</h3>
+    <ul>
+    {% for vote in object.no_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>

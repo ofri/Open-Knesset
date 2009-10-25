@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-18 10:18-0500\n"
-"PO-Revision-Date: 2009-10-18 17:23+0200\n"
+"POT-Creation-Date: 2009-10-25 05:09-0500\n"
+"PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,7 @@ msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
 #: templates/laws/votes.html:4
-#, fuzzy
+#: templates/mks/member_detail.html:48
 msgid "Votes"
 msgstr "הצבעות"
 
@@ -157,6 +157,22 @@ msgstr "אתר"
 #: templates/mks/member_detail.html:44
 msgid "none"
 msgstr "אין"
+
+#: templates/mks/member_detail.html:51
+msgid "For"
+msgstr "בעד"
+
+#: templates/mks/member_detail.html:59
+msgid "Against"
+msgstr "נגד"
+
+#: templates/mks/member_detail.html:67
+msgid "Abstain"
+msgstr "נמנע"
+
+#: templates/mks/member_detail.html:75
+msgid "No Vote"
+msgstr "נוכח ולא הצביע"
 
 #~ msgid "Arabic"
 #~ msgstr "ערבית"
@@ -493,8 +509,6 @@ msgstr "אין"
 #~ msgstr "תאריך/שעה"
 #~ msgid "User"
 #~ msgstr "משתמש"
-#~ msgid "Action"
-#~ msgstr "פעולה"
 #~ msgid "DATETIME_FORMAT"
 #~ msgstr "d.m.‏Y H:i:s"
 #~ msgid ""
@@ -2257,8 +2271,6 @@ msgstr "אין"
 #~ msgstr "יוני"
 #~ msgid "July"
 #~ msgstr "יולי"
-#~ msgid "August"
-#~ msgstr "אוגוסט"
 #~ msgid "September"
 #~ msgstr "ספטמבר"
 #~ msgid "October"
@@ -2305,8 +2317,6 @@ msgstr "אין"
 #~ msgstr "נוב'"
 #~ msgid "Dec."
 #~ msgstr "דצמ'"
-#~ msgid "or"
-#~ msgstr "או"
 #~ msgid "year"
 #~ msgid_plural "years"
 #~ msgstr[0] "שנה"
