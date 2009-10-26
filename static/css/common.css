@@ -223,4 +223,8 @@ h3 .small { font-size:80%; }
 #subwrap { display: inline-block; }
 #items { padding-top: 2em;}
 a.disabled { color: #aaaaaa; }
+.member_votes { float: right; width:24% }
+.member_votes ul { padding-left:0.5em; padding-right:0; }
+
+    
 
