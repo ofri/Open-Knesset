@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
     url(r'^about-content/$', direct_to_template, {'template': 'about_content.html'}, 'about-content'),
     (r'^api/', include('knesset.api.urls')),
-
+    (r'^accounts/', include('socialauth.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
