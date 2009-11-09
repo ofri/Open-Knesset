@@ -4,6 +4,10 @@ from django.views.generic.list_detail import object_list, object_detail
 from knesset.utils import limit_by_request, yearstart
 from knesset.mks.models import Member, Party
 
+member_context = dict (quesryset =
+                       Member.objects.filter(end_date__gte=yearstart(2009)),
+                      paginate_by = 20)
+
 def member (request, pk=None):
     qs = Member.objects.all()
     if pk:

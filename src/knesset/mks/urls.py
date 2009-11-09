@@ -1,10 +1,13 @@
 from django.conf.urls.defaults import *
-from knesset.mks.views import *
-
+from knesset.mks.models import Member, Party
+from knesset.hashnav.views import ListDetailView
+                       
+member_view = ListDetailView(queryset = Member.objects.all(),) # filter(end_date__gte=yearstart(2009)),
+party_view = ListDetailView(queryset = Party.objects.all(),) 
 mksurlpatterns = patterns('knesset.mks.views',
-    url(r'^member/$', 'member', name='member-list'),
-    url(r'^member/(\d+)/$', 'member', name='member-detail'),
-    url(r'^party/$', 'party', name='party-list'),
-    url(r'^party/(\d+)/$', 'party', name='party-detail'),
+    url(r'^member/$', member_view, name='member-list'),
+    url(r'^member/(?P<object_id>\d+)/$', member_view, name='member-detail'),
+    url(r'^party/$', party_view, name='party-list'),
+    url(r'^party/(?P<object_id>\d+)/$', party_view, name='party-detail'),
 
 )

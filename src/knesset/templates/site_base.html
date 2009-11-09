@@ -10,10 +10,10 @@
     <script>
         $(document).ready(function() {
             {% block extra-ready %} {% endblock %}
-            $.history.init(go); // goto is from base.js
+            $.history.init(go); // go is from pageobjects.js
             $('ul#nav-global li a').click(hashclick);
-            $('ul#item-list li a').live('click', hashclick);
-            updateLinks();
+            // $('ul#item-list li a').live('click', hashclick);
+            hashHrefs("a");
         });
     </script>
 {% endblock %}

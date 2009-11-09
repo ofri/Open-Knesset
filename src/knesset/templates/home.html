@@ -3,15 +3,6 @@
 {% block h1content %}{% trans 'Homepage' %}{% endblock %}
 {% block divcontent %}
 {% trans "Choose a tab to start browsing" %}
-<script>
-    $(document).ready(function() {
-        $.history.init(go); // goto is from base.js
-        $('ul#nav-global li a').click(hashclick);
-        $('ul#item-list div a').live('click', hashclick);
-        updateLinks();
-        
-    });
-</script>
 {% endblock %}
 
 

@@ -1,3 +1,10 @@
-{{ object.summary }}
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block h1content %}{% trans 'Past Votes' %}{% endblock %}
+{% block divcontent %}
+	{% include "laws/_vote_detail.html" %}
+</script>
 
-<a href="{{ object.full_text_url }} ">קישור לחוק המלא</a>'
+{% endblock %}
+
+

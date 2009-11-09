@@ -1,10 +1,6 @@
+{% extends "site_base.html" %}
 {% load i18n %}
-<h2> {{ object.name }}</h2>
-{% for o in object.member_list %}
-	<a id="detail-{{ o.id }}" href="{% url member-detail o.id %}">
-		{{ o.name }}
-	</a>&nbsp;&bull;&nbsp;
-{% empty %}
-    {% trans "Data base empty, no objects" %}
-{% endfor %}
-
+{% block h1content %}{% trans 'Members' %}{% endblock %}
+{% block divcontent %}
+	{% include "mks/_party_detail.html" %}
+{% endblock %}

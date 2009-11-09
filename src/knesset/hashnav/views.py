@@ -5,6 +5,7 @@ from django.core.xheaders import populate_xheaders
 from django.core.paginator import Paginator, InvalidPage
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import list_detail
+from django.views.generic.simple import direct_to_template
 from django.shortcuts import get_object_or_404
 
 class ClassBasedView(object):
@@ -19,7 +20,20 @@ class ClassBasedView(object):
     def post(self, request, ret, **kwargs):
         return ret
         
-class HashNavView(ClassBasedView):
+    def full_to_part(self, template_name):
+        return os.path.join(os.path.dirname(template_name),
+                            "_%s" % os.path.basename(template_name))
+
+class SimpleView(ClassBasedView):
+    def __init__(self, template):
+        self.template = template
+
+    def render (self,request):
+        if 'part' in request.GET:
+            template_name = self.full_to_part(self.template)
+        return direct_to_template(request, template=template_name)
+
+class ListDetailView(ClassBasedView):
     """
     Generic view of an object or a list of objects
 
@@ -37,10 +51,6 @@ class HashNavView(ClassBasedView):
     def __init__(self, queryset, paginate_by = None):
         self.queryset = queryset
         self.paginate_by = paginate_by
-
-    def full_to_part(self, template_name):
-        return os.path.join(os.path.dirname(template_name),
-                            "_%s" % os.path.basename(template_name))
 
     def render_list(self, request, page=None,
             allow_empty=True, template_name=None, template_loader=loader,
