@@ -29,8 +29,9 @@ class SimpleView(ClassBasedView):
         self.template = template
 
     def render (self,request):
-        if 'part' in request.GET:
-            template_name = self.full_to_part(self.template)
+        if 'part' in request.GET:   template_name = self.full_to_part(self.template)
+        else:                       template_name = self.template
+
         return direct_to_template(request, template=template_name)
 
 class ListDetailView(ClassBasedView):

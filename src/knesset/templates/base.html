@@ -40,6 +40,7 @@
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
+				<li id="nav-main" {% block nav-main-page %} {% endblock %} > <a href="{% url main%}">{% trans 'Main' %}</a> </li>
 				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
 				<li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
 				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>

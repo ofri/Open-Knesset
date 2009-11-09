@@ -3,12 +3,6 @@
 {% block h1content %}{% trans 'About' %}{% endblock %}
 {% block divcontent %}
 	{% include "_about.html" %}
-    <script>
-        $(document).ready(function () {
-    	    CurrentState = States['about']();
-    	    CurrentState.endMove();
-        });
-    </script>
 {% endblock %}
 
 

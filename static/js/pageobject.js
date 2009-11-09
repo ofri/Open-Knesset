@@ -116,4 +116,10 @@ function go (path, params) {
         for (attrname in params) { current_page.params[attrname] = params[attrname]; };
         if (path!="") current_page.refresh();
     }
+    else {
+        current_page = Pages['main'].clone();
+        current_page.params.url = '/';
+        for (attrname in params) { current_page.params[attrname] = params[attrname]; };
+        current_page.refresh();
+        }
 };
