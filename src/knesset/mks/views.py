@@ -4,6 +4,9 @@ from django.views.generic.list_detail import object_list, object_detail
 from knesset.utils import limit_by_request, yearstart
 from knesset.mks.models import Member, Party
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def member (request, pk=None):
     qs = Member.objects.all()
     if pk:
