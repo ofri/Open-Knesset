@@ -1,0 +1,81 @@
+{% load i18n %}
+{% load mks_extra %}
+<img id="member-photo" src="{{ object.img_url }}"><h2> {{ object.name }}<h2>
+<table id="member-info">
+    <tr>
+        <td>{% trans "party" %}</td>
+        <td><a id="detail-{{ object.Party.id }}" href="{% url party-detail object.Party.id %}">{{ object.Party.name }}</a></td>
+    </tr>    
+    <tr>
+        <td>{% trans "age" %}</td>
+        <td>{{ object.date_of_birth|timesince }}</td>
+    </tr>
+    {% if object.year_of_aliyah %}
+    <tr>
+        <td>{% trans "year of aliyah" %}</td>
+        <td>{{ object.year_of_aliyah }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td>{% trans "family status" %}</td>
+        <td>{{ object.family_status }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "place of birth" %}</td>
+        <td>{{ object.place_of_birth }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "phone" %}</td>
+        <td>{{ object.phone }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "fax" %}</td>
+        <td>{{ object.fax }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "e-mail address" %}</td>
+        <td><a href="mailto:{{object.email}}">{{ object.email }}</a></td>
+    </tr>
+    <tr>
+        <td>{% trans "web site" %}</td>
+        {% if object.website %}
+        <td><a href="{{object.website}}">{{ object.website }}</a></td>
+        {% else %}
+        <td>{% trans "none" %}</td>
+        {% endif %}
+    </tr>
+</table>
+<h2>{% trans "Votes"%}</h2>
+
+<div class="member_votes">
+    <h3>{% trans "For" %}</h3>
+    <ul>
+    {% for vote in object.for_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "Against" %}</h3>
+    <ul>
+    {% for vote in object.against_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "Abstain" %}</h3>
+    <ul>
+    {% for vote in object.abstain_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div class="member_votes">
+    <h3>{% trans "No Vote" %}</h3>
+    <ul>
+    {% for vote in object.no_votes %}
+        <li><a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
