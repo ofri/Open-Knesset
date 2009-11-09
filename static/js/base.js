@@ -4,7 +4,6 @@ var Moving = true; // system is in transition, most things don't work
 var CurrentState = null;
 var HEADER = "#content-main h1";
 var CONTENT = "#content-main div";
-var CONTENT_LIST = "#item-list";
 
 function BreadCrumb() {
     this.params= {num:20, page:0};
@@ -139,7 +138,6 @@ BreadCrumb.prototype.cls = function () {
 
 function go (hashpath, params) {
     // jumps to a specific state and if id is specified, a specific object 
-    // var _parse_hashpath = /^([A-Za-z]+)\/(?:(\d+)\/)?$/;
     if (hashpath=="") { return; };
     var _parse_hashpath = /^([A-Za-z]+)\/(\d*)/;
     var state_name, id;

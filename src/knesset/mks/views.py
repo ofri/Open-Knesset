@@ -6,6 +6,10 @@ from knesset.mks.models import Member, Party
 
 from django.contrib.auth.decorators import login_required
 
+member_context = dict (quesryset =
+                       Member.objects.filter(end_date__gte=yearstart(2009)),
+                      paginate_by = 20)
+
 @login_required
 def member (request, pk=None):
     qs = Member.objects.all()

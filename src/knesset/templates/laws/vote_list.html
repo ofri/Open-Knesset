@@ -1,6 +1,11 @@
+{% extends "site_base.html" %}
 {% load i18n %}
-{% for o in object_list %}
-<li><a id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a></li>
-{% empty %}
-    {% trans "Data base empty, no objects" %}
-{% endfor %}
+{% block nav-votes %}class="selected"{% endblock %}
+{% block h1content %}{% trans 'Votes' %}{% endblock %}
+{% block divcontent %}
+	<ul id="item-list">
+		{% include "laws/_vote_list.html" %}
+	</ul>
+    <a id="more" href="#">{% trans 'more' %}</a>
+
+{% endblock %}

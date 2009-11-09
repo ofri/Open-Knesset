@@ -7,15 +7,18 @@ from django.views.generic.simple import direct_to_template
 from django.contrib import admin
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
+from knesset.hashnav.views import SimpleView
 admin.autodiscover()
 
 js_info_dict = {
     'packages': ('knesset',),
     }
 
+about_view = SimpleView(template='about.html')
+
 urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
-    url(r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
+    url(r'^about/$', about_view, name='about'),
     url(r'^about-content/$', direct_to_template, {'template': 'about_content.html'}, 'about-content'),
     (r'^api/', include('knesset.api.urls')),
     (r'^accounts/', include('socialauth.urls')),
