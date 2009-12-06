@@ -87,7 +87,7 @@ PageObject.prototype.endMove = function () {
     if (this.params.hasOwnProperty("header_at")) $(this.params.header_at).html(this.params.header);
     else $("#content-main h1").html(this.params.header);
 
-    hashHrefs(this.params.page_at+' a');
+    hashHrefs(this.params.page_at+' a.hashnav');
     this.moving = false;
 };
 
