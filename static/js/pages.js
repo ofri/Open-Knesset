@@ -4,6 +4,13 @@ var DEFAULT_HEADER_AT = "#content-main h1"
 var DEFAULT_CONTENT_AT = "#content-main div";
 
 var Pages = {
+    'main': new PageObject({
+        name : 'main',
+        header : gettext('main'),
+        header_at: DEFAULT_HEADER_AT,
+        nav_id : NAV_SUFFIX + 'main',
+        has_more : false,
+        page_at : DEFAULT_CONTENT_AT }),
     'member' : new PageObject({ 
         name : 'member',
         header : gettext('members'),
@@ -11,7 +18,6 @@ var Pages = {
         nav_id : NAV_SUFFIX + 'members',
         has_more : false,
         page_at : DEFAULT_CONTENT_AT }),
-
     'vote': new PageObject({
         name : 'vote',
         header : gettext('votes'),
@@ -23,7 +29,6 @@ var Pages = {
         more_at : '#more',
         page_at : DEFAULT_CONTENT_AT,
         content_at : '#item-list' }),
-
     'party': new PageObject({
         name : 'party',
         header : gettext('parties'),
@@ -31,14 +36,12 @@ var Pages = {
         nav_id : NAV_SUFFIX + 'parties',
         has_more : false,
         page_at : DEFAULT_CONTENT_AT }),
-
     'about': new PageObject({
         name : 'about',
         header : gettext('about'),
         header_at: DEFAULT_HEADER_AT,
         nav_id : NAV_SUFFIX + 'about',
         has_more : false,
-        url : "/about-content/",
         page_at : DEFAULT_CONTENT_AT })
 };
 

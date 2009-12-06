@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.simple import direct_to_template
+from django.views.generic.simple import redirect_to
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,11 +16,13 @@ js_info_dict = {
     }
 
 about_view = SimpleView(template='about.html')
+main_view = SimpleView(template='main.html')
 
 urlpatterns = patterns('',
-    url(r'^$', direct_to_template, {'template': 'home.html'}, 'home'),
+    #url(r'^$', redirect_to, {'url' : 'main/'} ),
+    url(r'^$', main_view, name='main'),
+    #url(r'^main/$', main_view, name='main'),
     url(r'^about/$', about_view, name='about'),
-    url(r'^about-content/$', direct_to_template, {'template': 'about_content.html'}, 'about-content'),
     (r'^api/', include('knesset.api.urls')),
     (r'^accounts/', include('socialauth.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 

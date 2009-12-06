@@ -15,7 +15,7 @@
 		<meta name="License" content="Follow your inclanations with due regards to the 
             devil within and the policeman around the corner." > 
 		<meta name="keywords" content="parliament, Systems, Python, Django, open-source" >
-		<meta name="description" content={% trans "I'm just sitting here watching the wheels go round and round." %}>
+		<meta name="description" content="{% trans "I'm just sitting here watching the wheels go round and round." %}">
 
 		<link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
 		<link href="{{MEDIA_URL}}css/print.css" rel="stylesheet" type="text/css" media="print" />
@@ -64,6 +64,8 @@
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
+
+                <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a class="hashnav" href="{% url main%}">{% trans 'Main' %}</a> </li>
 				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
 				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
 				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>

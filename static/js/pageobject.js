@@ -68,7 +68,8 @@ PageObject.prototype.pullObject = function(cls) {
 PageObject.prototype.startMove = function () {
     this.moving = true;
     // TODO: need to get rid of this constant
-    $(this.params.header_at).html(gettext('Loading...'));
+    //  $(this.params.header_at).html(gettext('Loading...'));
+    $(this.params.header_at).html("<img src='/static/img/ajax-loader.gif'>");
     if (current_page !== null) { $(current_page.params.nav_id).removeClass('selected'); };
 };
 
@@ -116,4 +117,10 @@ function go (path, params) {
         for (attrname in params) { current_page.params[attrname] = params[attrname]; };
         if (path!="") current_page.refresh();
     }
+    else {
+        current_page = Pages['main'].clone();
+        current_page.params.url = '/';
+        for (attrname in params) { current_page.params[attrname] = params[attrname]; };
+        current_page.refresh();
+        }
 };
