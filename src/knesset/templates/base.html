@@ -54,7 +54,7 @@
                     <a href="{% url socialauth_openid_login %}" id="openid_login_link">Openid</a> 
                     <a href="{% url socialauth_google_login %}" id="google_login_link">Google</a> 
                     <fb:login-button onlogin="facebook_onlogin();"></fb:login-button> 
-                <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
+                    <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
                 
                 <br />
             </div>
@@ -64,10 +64,10 @@
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
-				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-				<li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
-				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-				<li id="nav-about" {% block nav-about %} {% endblock %} > <a href="{% url about %}">{% trans 'About' %}</a> </li>
+				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
+				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
+				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
+				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
 			</ul>
             
 		</div>
