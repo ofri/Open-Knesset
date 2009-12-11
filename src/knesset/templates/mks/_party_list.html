@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for o in object_list %}
-    <a id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;&bull;&nbsp;
+    <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;&bull;&nbsp;
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}

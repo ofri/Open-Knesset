@@ -10,8 +10,8 @@ member_context = dict (quesryset =
                        Member.objects.filter(end_date__gte=yearstart(2009)),
                       paginate_by = 20)
 
-@login_required
 def member (request, pk=None):
+    print "member view"
     qs = Member.objects.all()
     if pk:
         return object_detail(request, queryset=qs, object_id=pk, 

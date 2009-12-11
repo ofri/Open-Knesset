@@ -36,6 +36,10 @@ a:link, a:visited { color:#ffc757; }
 #nav-global a:hover, .selected { color:white; background:#251C1F;}
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
+/* ACCOUNTS */
+#accounts { margin:10px}
+#login { margin-right:30px}
+
 /* COLUMNS */
 
 #columnwrap { padding-bottom:10px; }
@@ -223,8 +227,8 @@ h3 .small { font-size:80%; }
 #subwrap { display: inline-block; }
 #items { padding-top: 2em;}
 a.disabled { color: #aaaaaa; }
-.member_votes { float: right; width:24% }
-.member_votes ul { padding-left:0.5em; padding-right:0; }
+#content-main .member_votes { float: right; width:24% }
+#content-main .member_votes ul { padding-left:1.5em; padding-right:0; }
 
-    
+#content-main .bold-link { font-weight:bold; }
 

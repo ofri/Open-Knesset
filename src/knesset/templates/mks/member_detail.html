@@ -3,12 +3,5 @@
 {% block h1content %}{% trans 'Members' %}{% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
-<script>
-    $(document).ready(function () {
-	CurrentState = States['member']({{ object.id }});
-	CurrentState.endMove();
-});
-</script>
-
 {% endblock %}
 

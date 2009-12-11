@@ -126,8 +126,9 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                            'socialauth.auth_backends.OpenIdBackend',
                            'socialauth.auth_backends.FacebookBackend',
                            )
+#print "PATH: %s" % sys.path
 
-LOGIN_REDIRECT_URL = '/accounts/login/done/'
-LOGOUT_REDIRECT_URL = '/accounts/logout/done/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 SITE_NAME = 'Open-Knesset'

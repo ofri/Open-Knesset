@@ -1,3 +1,28 @@
-{{ object.summary }}
+{% load i18n %}
+<h2>{{ object.title }}</h2>
+<table id="member-info">
+    <tr>
+        <td>{% trans "Time" %}:</td>
+        <td>{{ object.time_string }}</td>
+    </tr>    
+    <tr>
+        <td>{% trans "For" %}</td>
+        <td>{{ object.for_votes_count }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Against" %}</td>
+        <td>{{ object.against_votes_count }}</td>
+    </tr>
 
-<a href="{{ object.full_text_url }} ">קישור לחוק המלא</a>'
+</table>
+{% if object.summary %}
+    {{ object.summary|safe }}
+{% else %}
+    {% trans 'No summary for this vote' %}
+{% endif %}
+<br />
+{% if object.full_text_url %}
+    <a class="bold-link" href="{{ object.full_text_url }}">{% trans 'Link to compete vote text' %}</a>
+{% else %}
+    {% trans 'No link to full vote text' %}
+{% endif %}
