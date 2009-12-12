@@ -96,6 +96,7 @@ INSTALLED_APPS = (
     'knesset.simple',
     'socialauth',
     'openid_consumer',
+    'tagging',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",

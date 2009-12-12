@@ -1,11 +1,9 @@
 from django.db import models
 from knesset.mks.models import Member, Party
+from tagging.models import Tag
 
-class Topic(models.Model):
-    name        = models.CharField(max_length=64)
-    description = models.TextField(max_length=2048)
-    def __unicode__(self):
-        return "%s" % self.name
+from tagging.forms import TagField
+from django import forms
 
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', u'For'),
@@ -31,8 +29,6 @@ class Vote(models.Model):
     time           = models.DateTimeField(null=True,blank=True)
     time_string    = models.CharField(max_length=100)
     votes          = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
-    topics_for     = models.ManyToManyField(Topic, related_name='for_topics', blank=True)
-    topics_against = models.ManyToManyField(Topic, related_name='against_topics', blank=True)
     importance     = models.FloatField()
     summary        = models.TextField(null=True,blank=True)    
     full_text      = models.TextField(null=True,blank=True)
@@ -67,3 +63,20 @@ class Vote(models.Model):
     def get_absolute_url(self):
         return ('vote-detail', [str(self.id)])
 
+    def _get_tags(self):
+        return Tag.objects.get_for_object(self)
+
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
+
+    tags = property(_get_tags, _set_tags)
+
+
+    def tag_form(self):
+        tf = TagForm()
+        tf.tags = self.tags
+        tf.initial = {'tags':','.join([str(t) for t in self.tags])}
+        return tf
+
+class TagForm(forms.Form):
+    tags = TagField()

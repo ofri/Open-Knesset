@@ -231,4 +231,4 @@ a.disabled { color: #aaaaaa; }
 #content-main .member_votes ul { padding-left:1.5em; padding-right:0; }
 
 #content-main .bold-link { font-weight:bold; }
-
+#content-main label { display: block; width: 6em; float:right}
