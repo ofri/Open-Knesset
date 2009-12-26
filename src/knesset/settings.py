@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'socialauth',
     'openid_consumer',
     'tagging',
+    'knesset.tagvotes',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -106,6 +107,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "knesset.context.processor",
 )
 INTERNAL_IPS = ('127.0.0.1',)
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
+
 
 if hostname == 'ofri-laptop': # just an example of host-specific definitions. use if nessecery
     DATABASE_USER = 'knesset'     
