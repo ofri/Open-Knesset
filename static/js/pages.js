@@ -29,6 +29,18 @@ var Pages = {
         more_at : '#more',
         page_at : DEFAULT_CONTENT_AT,
         content_at : '#item-list' }),
+    'law-approve': new PageObject({
+        name : 'law-approve',
+        header : gettext('law-approve'),
+        header_at: DEFAULT_HEADER_AT,
+        nav_id : NAV_SUFFIX + 'law-approve',
+        cls : '<ul id="item-list"></ul>' + 
+			  '<a id="more" href="#">'+
+				gettext("more") + '</a>',
+        more_at : '#more',
+        page_at : DEFAULT_CONTENT_AT,
+        content_at : '#item-list' }),
+
     'party': new PageObject({
         name : 'party',
         header : gettext('parties'),

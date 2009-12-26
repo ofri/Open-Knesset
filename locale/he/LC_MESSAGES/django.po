@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 06:59-0600\n"
+"POT-Creation-Date: 2009-12-26 11:06-0600\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: build/lib/knesset/context.py:12 src/knesset/context.py:12
-#: src/knesset/templates/base.html:70
+#: src/knesset/templates/base.html:71
 #: src/knesset/templates/mks/member_detail.html:3
 #: src/knesset/templates/mks/member_list.html:4
 #: src/knesset/templates/mks/party_detail.html:3
@@ -24,7 +24,7 @@ msgid "Members"
 msgstr "ח\"כים"
 
 #: build/lib/knesset/context.py:13 src/knesset/context.py:13
-#: src/knesset/templates/base.html:71
+#: src/knesset/templates/base.html:72
 #: src/knesset/templates/mks/party_list.html:4
 msgid "Parties"
 msgstr "מפלגות"
@@ -34,6 +34,188 @@ msgstr "מפלגות"
 #: src/knesset/templates/laws/vote_detail.html:3
 msgid "Past Votes"
 msgstr "הצבעות"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/__init__.py:22
+#, python-format
+msgid "The model %s has already been registered."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/fields.py:69
+#, python-format
+msgid "%s can only be set on instances."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:19
+msgid "Multiple tags were given."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:22
+#, fuzzy, python-format
+msgid "A tag may be no more than %s characters long."
+msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:38
+#, fuzzy, python-format
+msgid "Each tag may be no more than %s characters long."
+msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:58
+#, python-format
+msgid "No tags were given: \"%s\"."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:60
+#, python-format
+msgid "Multiple tags were given: \"%s\"."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:450
+#: parts/django/django/contrib/auth/models.py:63
+#: parts/django/django/contrib/auth/models.py:86
+msgid "name"
+msgstr "שם"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:456
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:466
+#, fuzzy
+msgid "tag"
+msgstr "תג:"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:457
+#, fuzzy
+msgid "tags"
+msgstr "ארגאו"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:467
+#: parts/django/django/contrib/comments/models.py:22
+#: parts/django/django/contrib/contenttypes/models.py:74
+msgid "content type"
+msgstr "סוג תוכן"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:468
+#: parts/django/django/contrib/admin/models.py:22
+msgid "object id"
+msgstr "מזהה אובייקט"
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:476
+#: src/knesset/tagvotes/models.py:11
+msgid "tagged item"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:477
+msgid "tagged items"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:189
+msgid ""
+"If a list or tuple of tags is provided, they must all be tag names, Tag "
+"objects or Tag ids."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:191
+msgid "The tag input given was invalid."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:236
+#, python-format
+msgid "Invalid distribution algorithm specified: %s."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:33
+msgid "tagged_object_list must be called with a queryset or a model."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:39
+msgid "tagged_object_list must be called with a tag."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:43
+#, python-format
+msgid "No Tag found matching \"%s\"."
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:19
+#, python-format
+msgid "tags_for_model tag was given an invalid model: %s"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:32
+#, python-format
+msgid "tag_cloud_for_model tag was given an invalid model: %s"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:56
+#, python-format
+msgid "tagged_objects tag was given an invalid model: %s"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:89
+#, python-format
+msgid "%s tag requires either three or five arguments"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:91
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:143
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:198
+#, python-format
+msgid "second argument to %s tag must be 'as'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:94
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:147
+#, python-format
+msgid "if given, fourth argument to %s tag must be 'with'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:96
+#, python-format
+msgid "if given, fifth argument to %s tag must be 'counts'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:141
+#, python-format
+msgid "%s tag requires either three or between five and seven arguments"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:155
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:164
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:170
+#, python-format
+msgid "%(tag)s tag was given an invalid option: '%(option)s'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:175
+#, python-format
+msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:196
+#, python-format
+msgid "%s tag requires exactly three arguments"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:221
+#, python-format
+msgid "%s tag requires exactly five arguments"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:223
+#, python-format
+msgid "second argument to %s tag must be 'in'"
+msgstr ""
+
+#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:225
+#, python-format
+msgid "fourth argument to %s tag must be 'as'"
+msgstr ""
 
 #: parts/debug-toolbar/debug_toolbar/panels/cache.py:92
 #, python-format
@@ -106,6 +288,7 @@ msgstr ""
 #: parts/debug-toolbar/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:12
 #: parts/debug-toolbar/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:11
 #: parts/django/django/contrib/admindocs/views.py:358
+#: src/knesset/templates/laws/_vote_detail.html:6
 msgid "Time"
 msgstr "זמן"
 
@@ -700,10 +883,6 @@ msgstr "פעולה"
 #: parts/django/django/contrib/admin/models.py:19
 msgid "action time"
 msgstr "זמן פעולה"
-
-#: parts/django/django/contrib/admin/models.py:22
-msgid "object id"
-msgstr "מזהה אובייקט"
 
 #: parts/django/django/contrib/admin/models.py:23
 msgid "object repr"
@@ -1733,11 +1912,6 @@ msgstr "סיסמה ישנה"
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "סיסמתך הישנה הוזנה בצורה שגויה. נא להזינה שוב."
 
-#: parts/django/django/contrib/auth/models.py:63
-#: parts/django/django/contrib/auth/models.py:86
-msgid "name"
-msgstr "שם"
-
 #: parts/django/django/contrib/auth/models.py:65
 msgid "codename"
 msgstr "שם קוד"
@@ -1843,6 +2017,7 @@ msgstr "הרשאות משתמש"
 #: parts/django/django/contrib/auth/models.py:144
 #: parts/django/django/contrib/comments/models.py:50
 #: parts/django/django/contrib/comments/models.py:168
+#: src/knesset/tagvotes/models.py:12
 msgid "user"
 msgstr "משתמש"
 
@@ -1906,11 +2081,6 @@ msgstr[1] "שמור על לשונך! המילים %s אסורות לשימוש �
 msgid ""
 "If you enter anything in this field your comment will be treated as spam"
 msgstr "אם יוזן משהו בשדה היחס לתגובתך יהיה כמו לספאם"
-
-#: parts/django/django/contrib/comments/models.py:22
-#: parts/django/django/contrib/contenttypes/models.py:74
-msgid "content type"
-msgstr "סוג תוכן"
 
 #: parts/django/django/contrib/comments/models.py:24
 msgid "object ID"
@@ -4888,6 +5058,15 @@ msgstr ""
 msgid "Sign in"
 msgstr "סנינה"
 
+#: src/knesset/tagvotes/models.py:18
+msgid "tag vote"
+msgstr ""
+
+#: src/knesset/tagvotes/models.py:19
+#, fuzzy
+msgid "tag votes"
+msgstr "הצבעות"
+
 #: src/knesset/templates/_about.html:2
 msgid ""
 "Open Knesset a project aimed at exposing the knesset's work to the public."
@@ -4924,7 +5103,7 @@ msgstr "קבוצת הדיון נמצאת "
 msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
-#: src/knesset/templates/about.html:3 src/knesset/templates/base.html:72
+#: src/knesset/templates/about.html:3 src/knesset/templates/base.html:73
 msgid "About"
 msgstr "אודות"
 
@@ -4950,35 +5129,66 @@ msgstr "התנתק"
 msgid "Main"
 msgstr "ראשי"
 
-#: src/knesset/templates/base.html:89
+#: src/knesset/templates/base.html:70
+#, fuzzy
+msgid "Law Approvals"
+msgstr "אישור חוקים"
+
+#: src/knesset/templates/base.html:90
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: src/knesset/templates/base.html:93
+#: src/knesset/templates/base.html:94
 msgid "logoCredit"
 msgstr "  מימין, הפסל נמרוד של יצחק דנצינגר"
 
-#: src/knesset/templates/base.html:94
+#: src/knesset/templates/base.html:95
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: src/knesset/templates/base.html:96
+#: src/knesset/templates/base.html:97
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
-#: src/knesset/templates/laws/_vote_detail.html:5
+#: src/knesset/templates/laws/_vote_detail.html:10
+#: src/knesset/templates/mks/_member_detail.html:51
+msgid "For"
+msgstr "בעד"
+
+#: src/knesset/templates/laws/_vote_detail.html:14
+#: src/knesset/templates/mks/_member_detail.html:59
+msgid "Against"
+msgstr "נגד"
+
+#: src/knesset/templates/laws/_vote_detail.html:20
+#: src/knesset/templates/laws/_vote_detail.html:24
+#: src/knesset/templates/laws/_vote_detail.html:32
+#: src/knesset/templates/laws/_vote_list.html:6
+#, fuzzy
+msgid "Tags"
+msgstr "תגיות"
+
+#: src/knesset/templates/laws/_vote_detail.html:36
+msgid "Login to edit tags"
+msgstr "הרשם כדי לערוך תגיות"
+
+#: src/knesset/templates/laws/_vote_detail.html:44
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: src/knesset/templates/laws/_vote_detail.html:7
+#: src/knesset/templates/laws/_vote_detail.html:48
 msgid "Link to compete vote text"
 msgstr "קישור למסמך המלא"
 
-#: src/knesset/templates/laws/_vote_detail.html:9
+#: src/knesset/templates/laws/_vote_detail.html:50
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: src/knesset/templates/laws/_vote_list.html:5
+#: src/knesset/templates/laws/_vote_list.html:11
+msgid "No tags"
+msgstr "אין תגיות"
+
+#: src/knesset/templates/laws/_vote_list.html:15
 #: src/knesset/templates/mks/_member_list.html:7
 #: src/knesset/templates/mks/_party_detail.html:8
 #: src/knesset/templates/mks/_party_list.html:5
@@ -5029,14 +5239,6 @@ msgstr "אתר"
 #: src/knesset/templates/mks/_member_detail.html:44
 msgid "none"
 msgstr "אין"
-
-#: src/knesset/templates/mks/_member_detail.html:51
-msgid "For"
-msgstr "בעד"
-
-#: src/knesset/templates/mks/_member_detail.html:59
-msgid "Against"
-msgstr "נגד"
 
 #: src/knesset/templates/mks/_member_detail.html:67
 msgid "Abstain"
