@@ -232,3 +232,5 @@ a.disabled { color: #aaaaaa; }
 
 #content-main .bold-link { font-weight:bold; }
 #content-main label { display: block; width: 6em; float:right}
+
+#content-main #vote-tags { display: inline-block; }

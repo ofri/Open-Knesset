@@ -16,11 +16,18 @@
     </div>
     <div>
     {% if user.is_authenticated %}
-        <form action="/vote/submit-tags/{{ object.id }}/" method="POST">
+        <form action="/vote/{{ object.id }}/submit-tags/" method="POST">
             <label for="tags">{% trans "Tags" %}</label>
             {{ object.tag_form.tags }}
             <input type="submit" value="Submit" />
-        </form>
+        </form><br/>
+        <label for="tags">{% trans "Tags" %}</label><div id="vote-tags">
+        {% for t in  object.tags %}
+            {{ t }} ({{ t.score }}) <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/+1/">UP</a> <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/-1/">DOWN</a><br/>
+        {% endfor %}</div>
+        <br/>
+
+        
     {% else %}
             <label for="tags">{% trans "Tags" %}</label>
             {% for t in  object.tags %}

@@ -6,6 +6,7 @@ from views import *
 vote_view = ListDetailView(queryset = Vote.objects.all(),paginate_by=20) # filter(end_date__gte=yearstart(2009)),
 lawsurlpatterns = patterns ('',
     url(r'^vote/$', vote_view, name='vote-list'),
-    url(r'^vote/submit-tags/(?P<object_id>\d+)/$', submit_tags), 
+    url(r'^vote/(?P<object_id>\d+)/submit-tags/$', submit_tags),
+    url(r'^vote/(?P<object_id>\d+)/tag-votes/(?P<tag_id>\d+)/(?P<vote>[+\-\d]+)/$', vote_on_tag),  
     url(r'^vote/(?P<object_id>\d+)/$', vote_view, name='vote-detail'),
 )
