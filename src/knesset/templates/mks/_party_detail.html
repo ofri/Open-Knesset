@@ -1,7 +1,7 @@
 {% load i18n %}
 <h2> {{ object.name }}</h2>
 {% for o in object.member_list %}
-	<a id="detail-{{ o.id }}" href="{% url member-detail o.id %}">
+	<a class="hashnav" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">
 		{{ o.name }}
 	</a>&nbsp;&bull;&nbsp;
 {% empty %}

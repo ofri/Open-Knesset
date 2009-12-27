@@ -1,0 +1,22 @@
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib.auth.models import User
+from tagging.models import Tag,TaggedItem
+
+class TagVote(models.Model):
+    """
+    Holds the data for user's vote on a tag.
+    """
+    tagged_item     = models.ForeignKey(TaggedItem, verbose_name=_('tagged item'), related_name='votes')
+    user            = models.ForeignKey(User, verbose_name=_('user'), related_name='tagvotes')
+    vote            = models.IntegerField()
+
+    class Meta:
+        # Enforce unique vote per user and tagged item
+        unique_together = (('tagged_item', 'user'),)
+        verbose_name = _('tag vote')
+        verbose_name_plural = _('tag votes')
+
+    def __unicode__(self):
+        return u'%s - %s [%d]' % (self.user, self.tagged_item, self.vote)

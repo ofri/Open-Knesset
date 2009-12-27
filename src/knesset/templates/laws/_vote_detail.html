@@ -1,3 +1,54 @@
-{{ object.summary }}
+{% load i18n %}
+{% load tagging_tags %}
+<h2>{{ object.title }}</h2>
+<div id="vote-info">
+    <div>
+        <label for="time">{% trans "Time" %}</label>
+        {{ object.time_string }}
+    </div>    
+    <div>
+        <label for="for-votes">{% trans "For" %}</label>
+        {{ object.for_votes_count }}
+    </div>
+    <div>
+        <label for="against-votes">{% trans "Against" %}</label>
+        {{ object.against_votes_count }}
+    </div>
+    <div>
+    {% if user.is_authenticated %}
+        <form action="/vote/{{ object.id }}/submit-tags/" method="POST">
+            <label for="tags">{% trans "Tags" %}</label>
+            {{ object.tag_form.tags }}
+            <input type="submit" value="Submit" />
+        </form><br/>
+        <label for="tags">{% trans "Tags" %}</label><div id="vote-tags">
+        {% for t in  object.tags %}
+            {{ t }} ({{ t.score }}) <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/+1/">UP</a> <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/-1/">DOWN</a><br/>
+        {% endfor %}</div>
+        <br/>
 
-<a href="{{ object.full_text_url }} ">קישור לחוק המלא</a>'
+        
+    {% else %}
+            <label for="tags">{% trans "Tags" %}</label>
+            {% for t in  object.tags %}
+                {{ t }},
+            {% endfor %}
+            {% trans 'Login to edit tags' %}
+    {% endif %}
+    </div>
+
+</table>
+{% if object.summary %}
+    {{ object.summary|safe }}
+{% else %}
+    {% trans 'No summary for this vote' %}
+{% endif %}
+<br />
+{% if object.full_text_url %}
+    <a class="bold-link" href="{{ object.full_text_url }}">{% trans 'Link to compete vote text' %}</a>
+{% else %}
+    {% trans 'No link to full vote text' %}
+{% endif %}
+
+
+

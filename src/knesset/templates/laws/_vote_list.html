@@ -1,6 +1,16 @@
 {% load i18n %}
 {% for o in object_list %}
-<li><a id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a></li>
+<li>
+    <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a><br/>
+    {% if o.tags %}    
+        {% trans 'Tags' %}: 
+        {% for t in o.tags %}
+            {{ t }} ({{ t.score }}),&nbsp;
+        {% endfor %}
+    {% else %}
+        {% trans 'No tags' %}
+    {% endif %}
+</li>
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}

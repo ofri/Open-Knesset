@@ -67,6 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'openid_consumer.middleware.OpenIDMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -93,6 +94,10 @@ INSTALLED_APPS = (
     'knesset.mks',
     'knesset.laws',
     'knesset.simple',
+    'socialauth',
+    'openid_consumer',
+    'tagging',
+    'knesset.tagvotes',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -102,7 +107,34 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "knesset.context.processor",
 )
 INTERNAL_IPS = ('127.0.0.1',)
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
+
 
 if hostname == 'ofri-laptop': # just an example of host-specific definitions. use if nessecery
     DATABASE_USER = 'knesset'     
     DATABASE_PASSWORD = '123456'  
+
+OPENID_REDIRECT_NEXT = '/accounts/openid/done/'
+
+OPENID_SREG = {"requred": "nickname, email", "optional":"postcode, country", "policy_url": ""}
+
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+
+FACEBOOK_API_KEY = 'e7698d234fef3813756578fa4b927917'
+FACEBOOK_API_SECRET = 'd765c75c355a90c31090420e546cb83a'
+
+
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
+                           'socialauth.auth_backends.OpenIdBackend',
+                           'socialauth.auth_backends.FacebookBackend',
+                           )
+#print "PATH: %s" % sys.path
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SITE_NAME = 'Open-Knesset'

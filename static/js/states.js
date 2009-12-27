@@ -53,6 +53,41 @@ var States = {
 	}
         return i;
     },
+    'law-approve': function (id)  {
+        var i = new BreadCrumb();
+        i.name = 'law-approve';
+        i.header = gettext('votes');
+        if (typeof id == 'number') { i.id = id; };
+        i.nav_id = NAV_SUFFIX + 'law-approve';
+        i.one_liner = function (item) {
+            var t = item.time.split(' ')[0];
+            return [t, item.title].join("\t");
+        };
+        i.div_view = function (item) { 
+            if ((item.summary === null)|(item.summary == '')){
+                summary = "מצטערים! אין תקציר זמין לחוק זה";
+            } else {
+                summary = item.summary;
+            };
+            if (item.full_text_url === null) {
+                link = "";            
+            } else {    
+                link = '<a href="' + item.full_text_url + '">קישור לחוק המלא</a>'
+            };
+            var t = item.time.split(' ')[1];
+            return [t, summary, link].join('<br />');
+        };
+
+	i.updateList = function (data,cls) {
+            if (typeof cls != 'undefined') { $(CONTENT).html(CurrentState.cls()) }; 
+            $(CONTENT_LIST).append(data);
+	};
+
+	i.cls = function() {
+		return '<ul id="item-list"></ul>' + BreadCrumb.prototype.cls();
+	}
+        return i;
+    },
 
     'party': function (id)  {
         var i = new BreadCrumb();
