@@ -233,4 +233,22 @@ a.disabled { color: #aaaaaa; }
 #content-main .bold-link { font-weight:bold; }
 #content-main label { display: block; width: 6em; float:right}
 
-#content-main #vote-tags { display: inline-block; }
+#content-main #vote-tags { display: inline-block; line-height: 2.5em; }
+
+#content-main .vote-up { 
+    background: url('/static/img/Thumbs-up.png') no-repeat center 0; 
+    padding-left: 1.1em;
+    padding-right: 1.1em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+#content-main .vote-down { 
+    background: url('/static/img/Thumbs-down.png') no-repeat center 0; 
+    padding-left: 1.1em;
+    padding-right: 1.1em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+#content-main .selected { 
+    background-color: #333333;
+}

@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load tagging_tags %}
+{% load laws_extra %}
 <h2>{{ object.title }}</h2>
 <div id="vote-info">
     <div>
@@ -22,8 +23,8 @@
             <input type="submit" value="Submit" />
         </form><br/>
         <label for="tags">{% trans "Tags" %}</label><div id="vote-tags">
-        {% for t in  object.tags %}
-            {{ t }} ({{ t.score }}) <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/+1/">UP</a> <a href="/vote/{{ object.id }}/tag-votes/{{ t.id }}/-1/">DOWN</a><br/>
+        {% for t in object.tags %}
+            {% user_votes user object t %} <br />
         {% endfor %}</div>
         <br/>
 
