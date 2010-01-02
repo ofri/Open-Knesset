@@ -67,7 +67,7 @@
 
                 <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a class="hashnav" href="{% url main%}">{% trans 'Main' %}</a> </li>
 				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-                <li id="nav-law-approve" {% block nav-law-approve %} {% endblock %} > <a class="hashnav" href="{% url vote-law-approve %}">{% trans 'Law Approvals' %}</a> </li>
+                <li id="nav-law-approve" {% block nav-law-approve %} {% endblock %} > <a class="hashnav" href="{% url law-approve %}">{% trans 'Law Approvals' %}</a> </li>
 				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
 				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
 				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>

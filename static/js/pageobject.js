@@ -102,7 +102,7 @@ PageObject.prototype.endMove = function () {
     */
 
 function go (path, params) {
-    var _parse_path = /([A-Za-z]+)\/((\d*)\/)?$/;
+    var _parse_path = /([A-Za-z\-]+)\/((\d*)\/)?$/;
     var page_name, id;
 
     if (current_page != null) { current_page.startMove() };
