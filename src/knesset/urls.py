@@ -31,6 +31,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      (r'^admin/(.*)', admin.site.root),
+     (r'^comments/', include('django.contrib.comments.urls')),
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
 )

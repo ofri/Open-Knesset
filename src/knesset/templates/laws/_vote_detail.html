@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
+{% load comments %}
+
 <h2>{{ object.title }}</h2>
 <div id="vote-info">
     <div>
@@ -50,6 +52,14 @@
 {% else %}
     {% trans 'No link to full vote text' %}
 {% endif %}
-
+<br />
+<h3>{% trans 'User comments' %}</h3>
+{% get_comment_list for object as comment_list %}
+{% for comment in comment_list %}
+    {{ comment.name }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: <pre>{{ comment.comment }}</pre> <br/>
+{% endfor %}
+{% if user.is_authenticated %}
+{% render_comment_form for object %}
+{% endif %}
 
 
