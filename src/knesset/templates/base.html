@@ -45,7 +45,9 @@
 	<body>
     <div id="accounts">
         {% if user.is_authenticated %}
-            {% trans 'Logged in as ' %} {{ user }}. <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
+            {% trans 'Logged in as ' %} {{ user }} &bull;
+                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
+                <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
         {% else %}
             Login via
             <div id="login">

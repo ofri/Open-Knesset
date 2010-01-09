@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     #url(r'^main/$', main_view, name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
+    (r'^profiles/', include('knesset.accounts.urls')),
     (r'^accounts/', include('socialauth.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

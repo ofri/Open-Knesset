@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'tagging',
     'knesset.tagvotes',
     'django.contrib.comments',
+    'knesset.accounts',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
