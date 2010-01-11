@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-09 18:41+0200\n"
+"POT-Creation-Date: 2010-01-10 00:08+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -133,6 +133,26 @@ msgstr "ערוך פרופיל"
 #: templates/base.html:50
 msgid "Logout"
 msgstr "התנתק"
+
+#: templates/base.html:52
+msgid "Login via"
+msgstr "הזדהה באמצעות"
+
+#: templates/base.html:54
+msgid "Twitter"
+msgstr "טוויטר"
+
+#: templates/base.html:55
+msgid "Yahoo"
+msgstr "יאהו"
+
+#: templates/base.html:56
+msgid "Openid"
+msgstr "&rlm;OpenID"
+
+#: templates/base.html:57
+msgid "Google"
+msgstr "גוגל"
 
 #: templates/base.html:70 templates/main.html:3
 msgid "Main"
@@ -765,9 +785,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Site administration"
 #~ msgstr "ניהול אתר"
 
-#~ msgid "Log in"
-#~ msgstr "כניסה"
-
 #~ msgid "%s administration"
 #~ msgstr "ניהול %s"
 
@@ -863,9 +880,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Add %(name)s"
 #~ msgstr "הוספת %(name)s"
-
-#~ msgid "Filter"
-#~ msgstr "סינון"
 
 #~ msgid "Delete"
 #~ msgstr "מחיקה"
