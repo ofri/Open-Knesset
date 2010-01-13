@@ -38,8 +38,17 @@ a:link, a:visited { color:#ffc757; }
 
 /* ACCOUNTS */
 #accounts { margin:10px}
-#login { margin-right:30px}
-
+#login { margin-right:30px; display:inline; direction:rtl; text-align:right;}
+#login a {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+    background-color:#563310;
+}
+#login a:hover { color:white; background-color:#251C1F; }
+#login img {width:16px; height:16px;position:relative; top:4px; padding-left:1px; padding-right:1px;}
+#login img#RES_ID_fb_login_image {height: 16px; width:67px;}
 /* COLUMNS */
 
 #columnwrap { padding-bottom:10px; }
@@ -233,4 +242,22 @@ a.disabled { color: #aaaaaa; }
 #content-main .bold-link { font-weight:bold; }
 #content-main label { display: block; width: 6em; float:right}
 
-#content-main #vote-tags { display: inline-block; }
+#content-main #vote-tags { display: inline-block; line-height: 2.5em; }
+
+#content-main .vote-up { 
+    background: url('/static/img/Thumbs-up.png') no-repeat center 0; 
+    padding-left: 1.1em;
+    padding-right: 1.1em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+#content-main .vote-down { 
+    background: url('/static/img/Thumbs-down.png') no-repeat center 0; 
+    padding-left: 1.1em;
+    padding-right: 1.1em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+#content-main .selected { 
+    background-color: #333333;
+}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+
+{% block content %}
+
+{% trans 'An email has been sent to' %} {{ email }} .<br/>
+{% trans 'Please use the link in the email to validate.' %}<br/>
+<a class="bold-link" href="{% url main %}">{% trans 'Back to the main page' %}</a>
+
+{% endblock %}
