@@ -25,14 +25,14 @@ a:link, a:visited { color:#ffc757; }
 
 /* HEADER */
 
-#header { position:relative; height:6.5em; }
+#header { position:relative; height:3em; }
 #header h1#logo { margin:4px; width:111px; height:41px; }
 
 /* NAV */
 
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
-#nav-global a { display:block; float:left; padding:5em 16px 10px 16px; }
+#nav-global a { display:block; float:left; padding:1em 16px 10px 16px; }
 #nav-global a:hover, .selected { color:white; background:#251C1F;}
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
@@ -261,3 +261,37 @@ a.disabled { color: #aaaaaa; }
 #content-main .selected { 
     background-color: #333333;
 }
+
+p.date {
+    color:#666;
+    margin:0em;
+}
+.tag {
+    background-color:#C0C0C0;
+    border-bottom:1px solid #251C1F;
+    border-right:1px solid #251C1F;
+    color:#E0EAF1;
+    padding: 0.1em;
+    margin: 0.5em;
+}
+.item {
+    list-style-type:none;
+    background-color:#C6A390;
+    padding:0.1em;
+    margin-top:0.5em;
+    margin-bottom: 0.5em;
+    border-bottom:1px solid #251C1F;
+    border-right:1px solid #251C1F;
+}
+.list-wrap {
+    line-height: 200%;
+}
+.item .info {
+    padding-right:2em;
+    padding-bottom:0.1em;
+    margin:0em;    
+}
+.item.dontwrap {
+    white-space:nowrap;
+}
+

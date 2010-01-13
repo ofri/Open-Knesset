@@ -51,7 +51,7 @@
     <h3>{% trans "For" %}</h3>
     <ul>
     {% for vote in object.for_votes %}
-        <li><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
     {% endfor %}
     </ul>
 </div>
@@ -59,7 +59,7 @@
     <h3>{% trans "Against" %}</h3>
     <ul>
     {% for vote in object.against_votes %}
-        <li><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
     {% endfor %}
     </ul>
 </div>
@@ -67,7 +67,7 @@
     <h3>{% trans "Abstain" %}</h3>
     <ul>
     {% for vote in object.abstain_votes %}
-        <li><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
     {% endfor %}
     </ul>
 </div>
@@ -75,7 +75,7 @@
     <h3>{% trans "No Vote" %}</h3>
     <ul>
     {% for vote in object.no_votes %}
-        <li><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
+        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
     {% endfor %}
     </ul>
 </div>
