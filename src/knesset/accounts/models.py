@@ -2,11 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User, Permission
 from django.utils.translation import ugettext_lazy as _
 import datetime
-import hashlib
 import random
 import re
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
+alphabet = 'abcdef1234567890'
 
 class EmailValidationManager(models.Manager):
 
@@ -16,8 +16,7 @@ class EmailValidationManager(models.Manager):
         ev.user = user
         ev.email = user.email
         ev.date_requested = datetime.datetime.now()
-        salt = hashlib.new('SHA1',str(random.random())).hexdigest()[:5]
-        ev.activation_key = hashlib.new('SHA1',salt+user.username).hexdigest()
+        ev.activation_key = ''.join([random.sample(alphabet,1)[0] for x in range(40)])
         ev.save()
         print "activation key = %s" % ev.activation_key
         return ev
