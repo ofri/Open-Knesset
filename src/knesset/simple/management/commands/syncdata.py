@@ -62,10 +62,10 @@ class Command(NoArgsCommand):
             r = re.search("""Href=\"(.*?)\">""",line)
             if r != None:
                 link = 'http://www.knesset.gov.il/privatelaw/' + r.group(1)
-            r = re.search("""<td class="LawText1">(.*)</td>""",line)
+            r = re.search("""<td class="LawText1">(.*)""",line)
             if r != None:
-                name = r.group(1)
-                if len(name)>0:
+                name = r.group(1).replace("</td>","").strip()
+                if len(name)>1 and name.find('span')<0:
                     names.append(name)
                     links.append(link)
                     exps.append('')
@@ -278,8 +278,6 @@ class Command(NoArgsCommand):
             f.close()
 
             parties = dict() # key: party-name; value: Party
-
-            parties = dict() # key: party-name; value: Party
             members = dict() # key: member-name; value: Member
             votes   = dict() # key: id; value: Vote
             memberships = dict() # key: (member.id,party.id)
@@ -307,6 +305,9 @@ class Command(NoArgsCommand):
                 vote_date = datetime.date(int(year),int(month),int(day))
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 vote_label_for_search = self.get_search_string(vote_label)
+
+                if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
+                    continue
 
                 try:
                     v = Vote.objects.get(src_id=vote_id)                
@@ -351,7 +352,10 @@ class Command(NoArgsCommand):
 
                 vote = s[3]
 
-                v = votes[vote_id]
+                try:
+                    v = votes[vote_id]
+                except KeyError: #this vote was skipped in this read, also skip voteactions and members
+                    continue 
                 vote_date = v.time.date()
 
                 # create/get the party appearing in this vote 
@@ -646,7 +650,7 @@ class Command(NoArgsCommand):
         if download:
             print "beginning download phase"
             self.download_all()    
-            #self.get_members_data()  
+            #self.get_laws_data()
         
         if load:
             print "beginning load phase"
