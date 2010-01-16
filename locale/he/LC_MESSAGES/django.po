@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-10 00:08+0200\n"
+"POT-Creation-Date: 2010-01-16 23:40+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,16 +15,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:12 templates/base.html:73 templates/mks/member_detail.html:3
+#: context.py:13 templates/base.html:73 templates/mks/member_detail.html:3
 #: templates/mks/member_list.html:4 templates/mks/party_detail.html:3
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:13 templates/base.html:74 templates/mks/party_list.html:4
+#: context.py:14 templates/base.html:74 templates/mks/party_list.html:4
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:14 templates/base.html:71 templates/laws/vote_detail.html:3
+#: context.py:15 templates/base.html:71 templates/laws/vote_detail.html:3
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -36,24 +36,24 @@ msgstr "כתובת דוא\"ל"
 msgid "user name"
 msgstr "שם משתמש"
 
-#: accounts/models.py:30
+#: accounts/models.py:29
 msgid "activation key"
 msgstr "קוד אימות"
 
-#: accounts/models.py:40
+#: accounts/models.py:39
 #, python-format
 msgid "%(key)s does not look like an activation key."
 msgstr "%(key)s לא נראה כמו קוד אימות חוקי."
 
-#: accounts/models.py:44
+#: accounts/models.py:43
 msgid "The user has updated the email since this activation key was sent."
 msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נשלח."
 
-#: accounts/models.py:46
+#: accounts/models.py:45
 msgid "This activation key has expired."
 msgstr "פג תוקפו של קוד אימות זה."
 
-#: accounts/models.py:55
+#: accounts/models.py:54
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
@@ -167,14 +167,10 @@ msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
 #: templates/base.html:96
-msgid "logoCredit"
-msgstr ""
-
-#: templates/base.html:97
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:99
+#: templates/base.html:98
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -204,11 +200,6 @@ msgstr "שלח דואר אלקטרוני לאימות"
 #: templates/accounts/editprofile.html:25
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
-
-#: templates/accounts/email_validation.txt:2
-#: templates/accounts/email_validation_subject.txt:1
-msgid "email validation for"
-msgstr "אימות דואר אלקטרוני עבור"
 
 #: templates/accounts/email_validation_failed.html:9
 #: templates/accounts/email_validation_sent.html:10
@@ -245,7 +236,7 @@ msgid "Against"
 msgstr "נגד"
 
 #: templates/laws/_vote_detail.html:23 templates/laws/_vote_detail.html:27
-#: templates/laws/_vote_detail.html:35 templates/laws/_vote_list.html:6
+#: templates/laws/_vote_detail.html:35 templates/laws/_vote_list.html:8
 msgid "Tags"
 msgstr "תגיות"
 
@@ -265,16 +256,20 @@ msgstr "קישור למסמך המלא"
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: templates/laws/_vote_detail.html:56
+#: templates/laws/_vote_detail.html:58
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/laws/_vote_list.html:11
+#: templates/laws/_vote_detail.html:63
+msgid "No comments yet"
+msgstr "אין עדיין תגובות"
+
+#: templates/laws/_vote_list.html:15
 msgid "No tags"
 msgstr "אין תגיות"
 
-#: templates/laws/_vote_list.html:15 templates/mks/_member_list.html:7
-#: templates/mks/_party_detail.html:8 templates/mks/_party_list.html:5
+#: templates/laws/_vote_list.html:20 templates/mks/_member_list.html:6
+#: templates/mks/_party_detail.html:7 templates/mks/_party_list.html:6
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
@@ -282,7 +277,7 @@ msgstr "המסד ריק, אין נתונים"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: templates/laws/vote_list.html:9
+#: templates/laws/vote_list.html:10
 msgid "more"
 msgstr "עוד"
 
@@ -333,6 +328,9 @@ msgstr "נמנע"
 #: templates/mks/_member_detail.html:75
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
+
+#~ msgid "email validation for"
+#~ msgstr "אימות דואר אלקטרוני עבור"
 
 #, fuzzy
 #~ msgid "A tag may be no more than %s characters long."
@@ -1593,9 +1591,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Comment moderation queue"
 #~ msgstr "תור תגובה עבור מתון של תגובות"
-
-#~ msgid "No comments to moderate"
-#~ msgstr "אין תגובות עד בינוני"
 
 #~ msgid "Email"
 #~ msgstr "כתובת דוא\"ל"

@@ -53,13 +53,18 @@
     {% trans 'No link to full vote text' %}
 {% endif %}
 <br />
-<h3>{% trans 'User comments' %}</h3>
 {% get_comment_list for object as comment_list %}
-{% for comment in comment_list %}
-    {{ comment.name }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: <pre>{{ comment.comment }}</pre> <br/>
-{% endfor %}
-{% if user.is_authenticated %}
-{% render_comment_form for object %}
+{% if comment_list %}
+    <h3>{% trans 'User comments' %}</h3>
+    {% for comment in comment_list %}
+        {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
+    {% endfor %}
+{% else %}
+    <h3>{% trans 'No comments yet' %}</h3>
+{% endif %}
+
+{% if perms.comments.add_comment %}
+    {% render_comment_form for object %}
 {% endif %}
 
 

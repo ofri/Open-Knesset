@@ -294,4 +294,16 @@ p.date {
 .item.dontwrap {
     white-space:nowrap;
 }
+div.comment {
+    background-color:#E3C0A0;
+    border-bottom: 1px solid #251C1F;
+    border-right: 1px solid #251C1F;
+    border-top: 1px solid #888;
+    border-left: 1px solid #888;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin:0.2em;
+    margin-bottom:0.8em;
+
+}
 
