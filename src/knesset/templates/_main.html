@@ -1,2 +1,14 @@
 {% load i18n %}
 {% trans "Choose a tab to start browsing" %}
+{% trans "or" %}:
+<form method="get" action="{% url haystack_search %}">
+        <table>
+            {{ form.as_table }}
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+        </table>
+</form>
