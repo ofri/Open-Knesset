@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'knesset.tagvotes',
     'django.contrib.comments',
     'knesset.accounts',
+    'haystack',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -141,3 +142,8 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 SITE_NAME = 'Open-Knesset'
+HAYSTACK_SITECONF = 'knesset.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(base_dir, 'whoosh_index')
+
+
