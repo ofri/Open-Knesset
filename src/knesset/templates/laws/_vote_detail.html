@@ -19,7 +19,7 @@
             {% endblocktrans %}
             <div class="list-wrap indented">
             {% for m in object.for_votes %}
-            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{% url member-detail m.id %}">{{ m.name }}</a>&nbsp;
+            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.Party.name }}">{{ m.name }}</a>&nbsp;
             {% endfor %}
             </div>
         {% else %}
