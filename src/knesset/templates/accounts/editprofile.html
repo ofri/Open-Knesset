@@ -1,10 +1,8 @@
-{% extends 'base.html' %}
+{% extends "site_base.html" %}
 {% load i18n %}
-
-
-
-{% block content %}
-
+{% block extratitle %}{% trans 'User Profile' %}{% endblock %}
+{% block h1content %}{% trans 'User Profile' %}{% endblock %}
+{% block divcontent %}
 <form action="." method="post">
     <table>
     {{ edit_form }}

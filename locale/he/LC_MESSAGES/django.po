@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-28 15:51+0200\n"
+"POT-Creation-Date: 2010-01-28 16:20+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,16 +15,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:13 templates/base.html:73 templates/mks/member_detail.html:3
-#: templates/mks/member_list.html:4 templates/mks/party_detail.html:3
+#: context.py:13 templates/base.html:73 templates/mks/member_detail.html:4
+#: templates/mks/member_list.html:3 templates/mks/member_list.html.py:5
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:14 templates/base.html:74 templates/mks/party_list.html:4
+#: context.py:14 templates/base.html:74 templates/mks/party_detail.html:4
+#: templates/mks/party_list.html:3 templates/mks/party_list.html.py:5
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:15 templates/base.html:71 templates/laws/vote_detail.html:3
+#: context.py:15 templates/base.html:71 templates/laws/vote_detail.html:4
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -114,17 +115,17 @@ msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 msgid "or"
 msgstr "או"
 
-#: templates/about.html:3 templates/base.html:75
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:75
 msgid "About"
 msgstr "אודות"
 
 #: templates/base.html:9
-msgid "Knesset"
-msgstr "כנסת"
+msgid "Open Knesset"
+msgstr "הכנסת הפתוחה"
 
 #: templates/base.html:18
 msgid "I'm just sitting here watching the wheels go round and round."
-msgstr "אתר הכנסת הפתוח"
+msgstr "אתר הכנסת הפתוחה"
 
 #: templates/base.html:48
 msgid "Logged in as "
@@ -158,7 +159,7 @@ msgstr "&rlm;OpenID"
 msgid "Google"
 msgstr "גוגל"
 
-#: templates/base.html:70 templates/main.html:3
+#: templates/base.html:70 templates/main.html:3 templates/main.html.py:4
 msgid "Main"
 msgstr "ראשי"
 
@@ -178,11 +179,15 @@ msgstr "תודה לטוזיג על אירוח האתר"
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
-#: templates/accounts/editprofile.html:12
+#: templates/accounts/editprofile.html:3 templates/accounts/editprofile.html:4
+msgid "User Profile"
+msgstr "פרופיל משתמש"
+
+#: templates/accounts/editprofile.html:10
 msgid "save"
 msgstr "שמור"
 
-#: templates/accounts/editprofile.html:17
+#: templates/accounts/editprofile.html:15
 msgid ""
 "You do not have permissions to edit anything. In order to be able to edit, "
 "you must first provide a valid email address."
@@ -190,18 +195,18 @@ msgstr ""
 "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני "
 "חוקית."
 
-#: templates/accounts/editprofile.html:19
+#: templates/accounts/editprofile.html:17
 msgid ""
 "You do not have permissions to edit anything. In order to be able to edit, "
 "you must provide a valid email address, and validate it"
 msgstr ""
 "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
 
-#: templates/accounts/editprofile.html:21
+#: templates/accounts/editprofile.html:19
 msgid "send validation email"
 msgstr "שלח דואר אלקטרוני לאימות"
 
-#: templates/accounts/editprofile.html:25
+#: templates/accounts/editprofile.html:23
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
@@ -250,8 +255,12 @@ msgid_plural ""
 "\n"
 "            %(counter)s MKs\n"
 "            "
-msgstr[0] "\nח\"כ %(counter)s"
-msgstr[1] "\n%(counter)s ח\"כים"
+msgstr[0] ""
+"\n"
+"ח\"כ %(counter)s"
+msgstr[1] ""
+"\n"
+"%(counter)s ח\"כים"
 
 #: templates/laws/_vote_detail.html:26 templates/laws/_vote_detail.html:43
 #: templates/mks/_member_detail.html:44
@@ -300,11 +309,12 @@ msgstr "אין תגיות"
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
-#: templates/laws/vote_list.html:4 templates/mks/_member_detail.html:48
+#: templates/laws/vote_list.html:3 templates/laws/vote_list.html.py:5
+#: templates/mks/_member_detail.html:48
 msgid "Votes"
 msgstr "הצבעות"
 
-#: templates/laws/vote_list.html:10
+#: templates/laws/vote_list.html:11
 msgid "more"
 msgstr "עוד"
 

@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% block extratitle %}{{ object.name }}{% endblock %}
 {% block h1content %}{% trans 'Members' %}{% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
