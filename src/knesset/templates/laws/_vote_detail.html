@@ -83,7 +83,9 @@
 {% if comment_list %}
     <h3>{% trans 'User comments' %}</h3>
     {% for comment in comment_list %}
-        {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
+        <a name="c{{ comment.id }}"></a>
+        {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
+        <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
     {% endfor %}
 {% else %}
     <h3>{% trans 'No comments yet' %}</h3>

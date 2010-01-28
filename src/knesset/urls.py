@@ -13,6 +13,12 @@ from knesset.laws.urls import lawsurlpatterns
 from knesset.hashnav.views import SimpleView
 admin.autodiscover()
 
+from knesset.feeds import Comments
+
+feeds = {
+    'comments': Comments
+}
+
 js_info_dict = {
     'packages': ('knesset',),
     }
@@ -36,8 +42,7 @@ urlpatterns = patterns('',
      (r'^comments/', include('django.contrib.comments.urls')),
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      (r'^search/', include('haystack.urls')),
-
-
+     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns
 if settings.LOCAL_DEV:
