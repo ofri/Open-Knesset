@@ -286,6 +286,9 @@ p.date {
 .list-wrap {
     line-height: 200%;
 }
+.indented {
+    padding-right:6em;
+}
 .item .info {
     padding-right:2em;
     padding-bottom:0.1em;

@@ -10,12 +10,38 @@
         {{ object.time_string }}
     </div>    
     <div>
-        <label for="for-votes">{% trans "For" %}</label>
-        {{ object.for_votes_count }}
+        <label for="for-votes">{% trans "For" %}</label>        
+        {% if object.for_votes_count %}        
+            {% blocktrans count object.for_votes|length as counter %}
+            {{ counter }} MK
+            {% plural %}
+            {{ counter }} MKs
+            {% endblocktrans %}
+            <div class="list-wrap indented">
+            {% for m in object.for_votes %}
+            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{% url member-detail m.id %}">{{ m.name }}</a>&nbsp;
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans 'none' %}
+        {% endif %}
     </div>
     <div>
         <label for="against-votes">{% trans "Against" %}</label>
-        {{ object.against_votes_count }}
+        {% if object.against_votes_count %}        
+            {% blocktrans count object.against_votes|length as counter %}
+            {{ counter }} MK
+            {% plural %}
+            {{ counter }} MKs
+            {% endblocktrans %}
+            <div class="list-wrap indented">
+            {% for m in object.against_votes %}
+            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{% url member-detail m.id %}">{{ m.name }}</a>&nbsp;
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans 'none' %}
+        {% endif %}
     </div>
     <div>
     {% if user.is_authenticated %}

@@ -48,8 +48,15 @@ class Vote(models.Model):
     def for_votes_count(self):
         return self.votes.filter(voteaction__type='for').count()
 
+    def for_votes(self):
+        return self.votes.filter(voteaction__type='for')
+
     def against_votes_count(self):
         return self.votes.filter(voteaction__type='against').count()
+
+    def against_votes(self):
+        return self.votes.filter(voteaction__type='against')
+
 
     def short_summary(self):
         if self.summary==None:
