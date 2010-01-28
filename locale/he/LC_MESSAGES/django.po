@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-28 16:20+0200\n"
+"POT-Creation-Date: 2010-01-29 00:12+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -296,7 +296,7 @@ msgstr "אין קישור למסמך המלא להצבעה זו"
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/laws/_vote_detail.html:89
+#: templates/laws/_vote_detail.html:91
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
@@ -314,9 +314,13 @@ msgstr "המסד ריק, אין נתונים"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: templates/laws/vote_list.html:11
-msgid "more"
-msgstr "עוד"
+#: templates/laws/vote_list.html:12
+msgid "previous votes"
+msgstr "ההצבעות הקודמות"
+
+#: templates/laws/vote_list.html:16
+msgid "next votes"
+msgstr "ההצבעות הבאות"
 
 #: templates/mks/_member_detail.html:6
 msgid "party"
@@ -361,6 +365,9 @@ msgstr "נמנע"
 #: templates/mks/_member_detail.html:75
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
+
+#~ msgid "more"
+#~ msgstr "עוד"
 
 #, fuzzy
 #~ msgid "A tag may be no more than %s characters long."

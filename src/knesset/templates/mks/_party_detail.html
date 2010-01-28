@@ -1,8 +1,8 @@
 {% load i18n %}
-<h2> {{ object.name }}</h2>
+<h2><a href=".">{{ object.name }}</a></h2>
 <div class="list-wrap">
 {% for o in object.member_list %}
-	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
+	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
