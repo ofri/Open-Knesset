@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-16 23:40+0200\n"
+"POT-Creation-Date: 2010-01-28 15:51+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -110,6 +110,10 @@ msgstr "קבוצת הדיון נמצאת "
 msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
+#: templates/_main.html:3
+msgid "or"
+msgstr "או"
+
 #: templates/about.html:3 templates/base.html:75
 msgid "About"
 msgstr "אודות"
@@ -201,6 +205,11 @@ msgstr "שלח דואר אלקטרוני לאימות"
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
+#: templates/accounts/email_validation.txt:2
+#: templates/accounts/email_validation_subject.txt:1
+msgid "email validation for"
+msgstr "אימות דואר אלקטרוני עבור"
+
 #: templates/accounts/email_validation_failed.html:9
 #: templates/accounts/email_validation_sent.html:10
 #: templates/accounts/email_validation_successful.html:9
@@ -231,36 +240,54 @@ msgstr "זמן"
 msgid "For"
 msgstr "בעד"
 
-#: templates/laws/_vote_detail.html:17 templates/mks/_member_detail.html:59
+#: templates/laws/_vote_detail.html:15 templates/laws/_vote_detail.html:32
+#, python-format
+msgid ""
+"\n"
+"            %(counter)s MK\n"
+"            "
+msgid_plural ""
+"\n"
+"            %(counter)s MKs\n"
+"            "
+msgstr[0] "\nח\"כ %(counter)s"
+msgstr[1] "\n%(counter)s ח\"כים"
+
+#: templates/laws/_vote_detail.html:26 templates/laws/_vote_detail.html:43
+#: templates/mks/_member_detail.html:44
+msgid "none"
+msgstr "אין"
+
+#: templates/laws/_vote_detail.html:30 templates/mks/_member_detail.html:59
 msgid "Against"
 msgstr "נגד"
 
-#: templates/laws/_vote_detail.html:23 templates/laws/_vote_detail.html:27
-#: templates/laws/_vote_detail.html:35 templates/laws/_vote_list.html:8
+#: templates/laws/_vote_detail.html:49 templates/laws/_vote_detail.html:53
+#: templates/laws/_vote_detail.html:61 templates/laws/_vote_list.html:8
 msgid "Tags"
 msgstr "תגיות"
 
-#: templates/laws/_vote_detail.html:39
+#: templates/laws/_vote_detail.html:65
 msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
-#: templates/laws/_vote_detail.html:47
+#: templates/laws/_vote_detail.html:73
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: templates/laws/_vote_detail.html:51
+#: templates/laws/_vote_detail.html:77
 msgid "Link to compete vote text"
 msgstr "קישור למסמך המלא"
 
-#: templates/laws/_vote_detail.html:53
+#: templates/laws/_vote_detail.html:79
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: templates/laws/_vote_detail.html:58
+#: templates/laws/_vote_detail.html:84
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/laws/_vote_detail.html:63
+#: templates/laws/_vote_detail.html:89
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
@@ -317,10 +344,6 @@ msgstr "כתובת דוא\"ל"
 msgid "web site"
 msgstr "אתר"
 
-#: templates/mks/_member_detail.html:44
-msgid "none"
-msgstr "אין"
-
 #: templates/mks/_member_detail.html:67
 msgid "Abstain"
 msgstr "נמנע"
@@ -328,9 +351,6 @@ msgstr "נמנע"
 #: templates/mks/_member_detail.html:75
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
-
-#~ msgid "email validation for"
-#~ msgstr "אימות דואר אלקטרוני עבור"
 
 #, fuzzy
 #~ msgid "A tag may be no more than %s characters long."
@@ -3587,10 +3607,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Dec."
 #~ msgstr "דצמ'"
-
-#, fuzzy
-#~ msgid "or"
-#~ msgstr "בעד"
 
 #~ msgid "year"
 #~ msgid_plural "years"
