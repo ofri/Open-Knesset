@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block h1content %}{% trans 'Members' %}{% endblock %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block h1content %}{% trans 'Parties' %}{% endblock %}
 {% block divcontent %}
 	{% include "mks/_party_detail.html" %}
 {% endblock %}

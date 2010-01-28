@@ -1,12 +1,12 @@
 {% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
 		<meta http-equiv="Content-Language" content="en-us">
 
-		<title>{% trans 'Knesset' %}</title>
+		<title>{% trans 'Open Knesset' %} | {% block extratitle %}{% endblock %}</title>
 
 		<meta name="ROBOTS" content="ALL">
 		<meta http-equiv="imagetoolbar" content="no"/>
@@ -21,6 +21,14 @@
 		<link href="{{MEDIA_URL}}css/print.css" rel="stylesheet" type="text/css" media="print" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
+	    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+        <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
+        <script type="text/javascript">
+            function facebook_onlogin(){
+            window.location = "{% url socialauth_facebook_login_done %}"
+    
+            }
+        </script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pages.js"></script>
@@ -35,16 +43,36 @@
 	</head>
 
 	<body>
-
+    <div id="accounts">
+        {% if user.is_authenticated %}
+            {% trans 'Logged in as ' %} {{ user }} &bull;
+                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
+                <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
+        {% else %}
+            {% trans 'Login via' %}
+            <div id="login">
+<!--                    <a href="{% url socialauth_twitter_login %}" id="twitter_login_link"><img src="/static/img/twitter.png"/>{% trans 'Twitter' %}</a> 
+                    <a href="{% url socialauth_yahoo_login %}" id="yahoo_login_link"><img src="/static/img/yahoo.png"/>{% trans 'Yahoo' %}</a> 
+                    <a href="{% url socialauth_openid_login %}" id="openid_login_link"><img src="/static/img/openid.png"/>{% trans 'Openid' %}</a> 
+    -->                <a href="{% url socialauth_google_login %}" id="google_login_link"><img src="/static/img/google.png"/>{% trans 'Google' %}</a> 
+                    <fb:login-button onlogin="facebook_onlogin();"></fb:login-button> 
+                    <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
+    
+                <br />
+            </div>
+        {% endif %}
+    </div>
 	<div id="container">
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
-				<li id="nav-main" {% block nav-main-page %} {% endblock %} > <a href="{% url main%}">{% trans 'Main' %}</a> </li>
-				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-				<li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
-				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-				<li id="nav-about" {% block nav-about %} {% endblock %} > <a href="{% url about %}">{% trans 'About' %}</a> </li>
+
+                <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a class="hashnav" href="{% url main%}">{% trans 'Main' %}</a> </li>
+				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
+                <li id="nav-law-approve" {% block nav-law-approve %} {% endblock %} > <a class="hashnav" href="{% url law-approve %}">{% trans 'Law Approvals' %}</a> </li>
+				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
+				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
+				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
 			</ul>
             
 		</div>
@@ -61,11 +89,10 @@
 		</div>
 		<!-- END #content -->
 		<div id="footer">
-			<p><a href="javascript:jsr(About);">{% trans 'DjangoIL unless otherwise noted.' %}</a>
+			<p><a class="hashnav" href="{% url about %}">{% trans 'DjangoIL unless otherwise noted.' %}</a>
 			</p>
 			<p>
 				{% block credits %}
-					{% trans 'logoCredit' %}&nbsp;&bull;
 					{% trans 'hostingCredit' %}&nbsp;&bull;
 				{% endblock %} 
 				{% trans 'Member of the python and django communities.' %}

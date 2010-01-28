@@ -9,6 +9,7 @@ import re
 import gzip
 import simplejson
 import datetime
+import time
 
 from knesset.mks.models import *
 from knesset.laws.models import *
@@ -57,13 +58,14 @@ class Command(NoArgsCommand):
         count = -1
         lines = page.split('\n')
         for line in lines:
+            #print line
             r = re.search("""Href=\"(.*?)\">""",line)
             if r != None:
                 link = 'http://www.knesset.gov.il/privatelaw/' + r.group(1)
-            r = re.search("""<td class="LawText1">(.*)</td>""",line)
+            r = re.search("""<td class="LawText1">(.*)""",line)
             if r != None:
-                name = r.group(1)
-                if len(name)>0:
+                name = r.group(1).replace("</td>","").strip()
+                if len(name)>1 and name.find('span')<0:
                     names.append(name)
                     links.append(link)
                     exps.append('')
@@ -71,7 +73,10 @@ class Command(NoArgsCommand):
             if re.search("""arrResume\[\d*\]""",line) != None:
                 r = re.search("""\"(.*)\"""",line)
                 if r != None:
-                    exps[count] += r.group(1).replace('\t',' ')
+                    try:
+                        exps[count] += r.group(1).replace('\t',' ')
+                    except: 
+                        pass
 
         return (names,exps,links)
 
@@ -89,7 +94,7 @@ class Command(NoArgsCommand):
         self.update_last_downloaded_vote_id()
         f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
         f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_downloaded_vote_id+1,12110) # this is the range of page ids to go over. currently its set manually.
+        r = range(self.last_downloaded_vote_id+1,14110) # this is the range of page ids to go over. currently its set manually.
         for id in r:
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
@@ -273,8 +278,6 @@ class Command(NoArgsCommand):
             f.close()
 
             parties = dict() # key: party-name; value: Party
-
-            parties = dict() # key: party-name; value: Party
             members = dict() # key: member-name; value: Member
             votes   = dict() # key: id; value: Vote
             memberships = dict() # key: (member.id,party.id)
@@ -302,6 +305,9 @@ class Command(NoArgsCommand):
                 vote_date = datetime.date(int(year),int(month),int(day))
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 vote_label_for_search = self.get_search_string(vote_label)
+
+                if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
+                    continue
 
                 try:
                     v = Vote.objects.get(src_id=vote_id)                
@@ -346,7 +352,10 @@ class Command(NoArgsCommand):
 
                 vote = s[3]
 
-                v = votes[vote_id]
+                try:
+                    v = votes[vote_id]
+                except KeyError: #this vote was skipped in this read, also skip voteactions and members
+                    continue 
                 vote_date = v.time.date()
 
                 # create/get the party appearing in this vote 
@@ -506,7 +515,8 @@ class Command(NoArgsCommand):
         try:        
             urlData = urllib2.urlopen(url)
             page = urlData.read().decode('windows-1255').encode('utf-8')
-        except exception,e:
+            time.sleep(2)
+        except Exception,e:
             print "ERROR: %s" % e
             if retry < 5:
                 print "waiting some time and trying again... (# of retries = %d)" % retry+1
@@ -591,7 +601,35 @@ class Command(NoArgsCommand):
         else:
             #print "didn't find a full_text_url for vote %s , q = %s" % (vote_title,q)
             return ''
-        
+
+    def dump_to_file(self):
+        f = open('votes.tsv','wt')
+        for v in Vote.objects.filter(time__gte=datetime.date(2009,2,24)):
+            if (v.full_text_url != None):
+                link = v.full_text_url.encode('utf-8')
+            else:
+                link = ''            
+            if (v.summary != None):
+                summary = v.summary.encode('utf-8')
+            else:
+                summary = ''            
+            #for_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='for').all()])
+            #against_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='against').all()])
+            #f.write("%d\t%s\t%s\t%s\t%s\t%s\t%s\n" % (v.id,v.title.encode('utf-8'),v.time_string.encode('utf-8'),summary, link, for_ids, against_ids))
+            f.write("%d\t%s\t%s\t%s\t%s\n" % (v.id, str(v.time), v.title.encode('utf-8'), summary, link))
+        f.close()
+
+        f = open('votings.tsv','wt')
+        for v in Vote.objects.filter(time__gte=datetime.date(2009,2,24)):
+            for va in v.voteaction_set.all():
+                f.write("%d\t%d\t%s\n" % (v.id, va.member.id, va.type))
+        f.close()
+
+        f = open('members.tsv','wt')
+        for m in Member.objects.filter(end_date__gte=datetime.date(2009,2,24)):
+            f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.Party().__unicode__().encode('utf-8')))
+        f.close()
+
 
     def handle_noargs(self, **options):
     
@@ -612,7 +650,7 @@ class Command(NoArgsCommand):
         if download:
             print "beginning download phase"
             self.download_all()    
-            #self.get_members_data()  
+            #self.get_laws_data()
         
         if load:
             print "beginning load phase"
@@ -626,19 +664,6 @@ class Command(NoArgsCommand):
 
         if dump_to_file:
             print "writing votes to tsv file"
-            f = open('votes.tsv','wt')
-            for v in Vote.objects.all():
-                if (v.full_text_url != None):
-                    link = v.full_text_url.encode('utf-8')
-                else:
-                    link = ''            
-                if (v.summary != None):
-                    summary = v.summary.encode('utf-8')
-                else:
-                    summary = ''            
-                for_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='for').all()])
-                against_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='against').all()])
-                f.write("%d\t%s\t%s\t%s\t%s\t%s\t%s\n" % (v.id,v.title.encode('utf-8'),v.time_string.encode('utf-8'),summary, link, for_ids, against_ids))
-            f.close()
+            self.dump_to_file()
 
         

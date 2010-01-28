@@ -109,7 +109,6 @@ class ListDetailView(ClassBasedView):
         """
         if extra_context is None: extra_context = {}
         queryset = self.queryset._clone()
-        print queryset.count()
         if self.paginate_by:
             paginator = Paginator(queryset, self.paginate_by, allow_empty_first_page=allow_empty)
             if not page:

@@ -1,7 +1,7 @@
+#encoding: utf-8
 from django.db import models
 
 from django.db.models import Q
-
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -24,6 +24,9 @@ class Party(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
+
+    def name_with_dashes(self):
+        return self.name.replace("'",'"').replace(' ','-')
     
     def Url(self):
         return "/admin/simple/party/%d" % self.id
@@ -41,7 +44,7 @@ class Party(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('party-detail', [str(self.id)])
+        return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
     
 class Membership(models.Model):
@@ -76,6 +79,9 @@ class Member(models.Model):
     def __unicode__(self):
         return "%s" % self.name
     
+    def name_with_dashes(self):
+        return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(' ','-')
+
     def Party(self):    
         return self.parties.all().order_by('-membership__start_date')[0]
 
@@ -130,7 +136,7 @@ class Member(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('member-detail', [str(self.id)])
+        return ('member-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' %(self.Url(),self.name)

@@ -1,11 +1,19 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% block extratitle %}{% trans 'Votes' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
 {% block h1content %}{% trans 'Votes' %}{% endblock %}
+{% block submenu %} {% endblock %}
 {% block divcontent %}
 	<ul id="item-list">
 		{% include "laws/_vote_list.html" %}
 	</ul>
-    <a id="more" href="#">{% trans 'more' %}</a>
+    {% if has_previous %}
+        <a id="prev" href="?page={{ previous }}">{% trans 'previous votes' %}</a>    
+    {% endif %}
+    &nbsp;
+    {% if has_next %}
+        <a id="more" href="?page={{ next }}">{% trans 'next votes' %}</a>
+    {% endif %}
 
 {% endblock %}

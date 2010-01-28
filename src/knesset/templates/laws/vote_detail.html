@@ -1,10 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% block extratitle %}{{ object.title }}{% endblock %}
 {% block h1content %}{% trans 'Past Votes' %}{% endblock %}
 {% block divcontent %}
 	{% include "laws/_vote_detail.html" %}
-</script>
-
 {% endblock %}
 
 

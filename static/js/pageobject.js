@@ -88,7 +88,7 @@ PageObject.prototype.endMove = function () {
     if (this.params.hasOwnProperty("header_at")) $(this.params.header_at).html(this.params.header);
     else $("#content-main h1").html(this.params.header);
 
-    hashHrefs(this.params.page_at+' a');
+    hashHrefs(this.params.page_at+' a.hashnav');
     this.moving = false;
 };
 
@@ -102,7 +102,7 @@ PageObject.prototype.endMove = function () {
     */
 
 function go (path, params) {
-    var _parse_path = /([A-Za-z]+)\/((\d*)\/)?$/;
+    var _parse_path = /([A-Za-z\-]+)\/((\d*)\/)?$/;
     var page_name, id;
 
     if (current_page != null) { current_page.startMove() };

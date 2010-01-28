@@ -1,11 +1,10 @@
 from django.db import models
 from knesset.mks.models import Member, Party
+from tagging.models import Tag, TaggedItem
+from knesset.tagvotes.models import TagVote
 
-class Topic(models.Model):
-    name        = models.CharField(max_length=64)
-    description = models.TextField(max_length=2048)
-    def __unicode__(self):
-        return "%s" % self.name
+from tagging.forms import TagField
+from django import forms
 
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', u'For'),
@@ -31,12 +30,14 @@ class Vote(models.Model):
     time           = models.DateTimeField(null=True,blank=True)
     time_string    = models.CharField(max_length=100)
     votes          = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
-    topics_for     = models.ManyToManyField(Topic, related_name='for_topics', blank=True)
-    topics_against = models.ManyToManyField(Topic, related_name='against_topics', blank=True)
     importance     = models.FloatField()
     summary        = models.TextField(null=True,blank=True)    
     full_text      = models.TextField(null=True,blank=True)
     full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+
+    class Meta:
+        ordering = ('-time',)
+
 
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
@@ -47,8 +48,15 @@ class Vote(models.Model):
     def for_votes_count(self):
         return self.votes.filter(voteaction__type='for').count()
 
+    def for_votes(self):
+        return self.votes.filter(voteaction__type='for')
+
     def against_votes_count(self):
         return self.votes.filter(voteaction__type='against').count()
+
+    def against_votes(self):
+        return self.votes.filter(voteaction__type='against')
+
 
     def short_summary(self):
         if self.summary==None:
@@ -67,3 +75,40 @@ class Vote(models.Model):
     def get_absolute_url(self):
         return ('vote-detail', [str(self.id)])
 
+    def _get_tags(self):
+        tags = Tag.objects.get_for_object(self)
+        for t in tags:
+            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
+            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
+            t.score_positive = t.score > 0
+        tags = [t for t in tags]        
+        tags.sort(key=lambda x:-x.score)
+        return tags
+
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
+
+    tags = property(_get_tags, _set_tags)
+
+    def tags_with_user_votes(self, user):
+        tags = Tag.objects.get_for_object(self)
+        for t in tags:
+            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
+            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
+            v = TagVote.objects.filter(tagged_item=ti).filter(user=user)
+            if(len(v)>0):
+                t.user_score = v[0].vote
+            else:
+                t.user_score = 0
+        return tags.sorted(cmp=lambda x,y:cmp(x.score, y.score))
+
+
+
+    def tag_form(self):
+        tf = TagForm()
+        tf.tags = self.tags
+        tf.initial = {'tags':', '.join([str(t) for t in self.tags])}
+        return tf
+
+class TagForm(forms.Form):
+    tags = TagField()

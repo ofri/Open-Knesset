@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-09 22:00+0200\n"
+"POT-Creation-Date: 2010-01-29 00:12+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,18 +15,64 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:12 templates/base.html:45 templates/mks/member_detail.html:3
-#: templates/mks/member_list.html:4 templates/mks/members.html:4
-#: templates/mks/party_detail.html:3
+#: context.py:13 templates/base.html:73 templates/mks/member_detail.html:4
+#: templates/mks/member_list.html:3 templates/mks/member_list.html.py:5
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:13 templates/base.html:46 templates/mks/party_list.html:4
+#: context.py:14 templates/base.html:74 templates/mks/party_detail.html:4
+#: templates/mks/party_list.html:3 templates/mks/party_list.html.py:5
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:14 templates/base.html:44 templates/laws/vote_detail.html:3
+#: context.py:15 templates/base.html:71 templates/laws/vote_detail.html:4
 msgid "Past Votes"
+msgstr "הצבעות"
+
+#: accounts/forms.py:7
+msgid "email address"
+msgstr "כתובת דוא\"ל"
+
+#: accounts/forms.py:8
+msgid "user name"
+msgstr "שם משתמש"
+
+#: accounts/models.py:29
+msgid "activation key"
+msgstr "קוד אימות"
+
+#: accounts/models.py:39
+#, python-format
+msgid "%(key)s does not look like an activation key."
+msgstr "%(key)s לא נראה כמו קוד אימות חוקי."
+
+#: accounts/models.py:43
+msgid "The user has updated the email since this activation key was sent."
+msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נשלח."
+
+#: accounts/models.py:45
+msgid "This activation key has expired."
+msgstr "פג תוקפו של קוד אימות זה."
+
+#: accounts/models.py:54
+msgid "Invalid activation key."
+msgstr "קוד האימות לא תקין"
+
+#: tagvotes/models.py:11
+msgid "tagged item"
+msgstr ""
+
+#: tagvotes/models.py:12
+msgid "user"
+msgstr "משתמש"
+
+#: tagvotes/models.py:18
+msgid "tag vote"
+msgstr ""
+
+#: tagvotes/models.py:19
+#, fuzzy
+msgid "tag votes"
 msgstr "הצבעות"
 
 #: templates/_about.html:2
@@ -65,50 +111,216 @@ msgstr "קבוצת הדיון נמצאת "
 msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
-#: templates/about.html:3 templates/base.html:47
+#: templates/_main.html:3
+msgid "or"
+msgstr "או"
+
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:75
 msgid "About"
 msgstr "אודות"
 
 #: templates/base.html:9
-msgid "Knesset"
-msgstr "כנסת"
+msgid "Open Knesset"
+msgstr "הכנסת הפתוחה"
 
 #: templates/base.html:18
 msgid "I'm just sitting here watching the wheels go round and round."
-msgstr "אתר הכנסת הפתוח"
+msgstr "אתר הכנסת הפתוחה"
 
-#: templates/base.html:43 templates/main.html:3
+#: templates/base.html:48
+msgid "Logged in as "
+msgstr "מחובר כ "
+
+#: templates/base.html:49
+msgid "Edit Profile"
+msgstr "ערוך פרופיל"
+
+#: templates/base.html:50
+msgid "Logout"
+msgstr "התנתק"
+
+#: templates/base.html:52
+msgid "Login via"
+msgstr "הזדהה באמצעות"
+
+#: templates/base.html:54
+msgid "Twitter"
+msgstr "טוויטר"
+
+#: templates/base.html:55
+msgid "Yahoo"
+msgstr "יאהו"
+
+#: templates/base.html:56
+msgid "Openid"
+msgstr "&rlm;OpenID"
+
+#: templates/base.html:57
+msgid "Google"
+msgstr "גוגל"
+
+#: templates/base.html:70 templates/main.html:3 templates/main.html.py:4
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:64
+#: templates/base.html:72
+msgid "Law Approvals"
+msgstr "אישור חוקים"
+
+#: templates/base.html:92
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:68
-msgid "logoCredit"
-msgstr "  מימין, הפסל נמרוד של יצחק דנצינגר"
-
-#: templates/base.html:69
+#: templates/base.html:96
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:71
+#: templates/base.html:98
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
-#: templates/laws/_vote_list.html:5 templates/mks/_member_list.html:7
-#: templates/mks/_party_detail.html:8 templates/mks/_party_list.html:5
+#: templates/accounts/editprofile.html:3 templates/accounts/editprofile.html:4
+msgid "User Profile"
+msgstr "פרופיל משתמש"
+
+#: templates/accounts/editprofile.html:10
+msgid "save"
+msgstr "שמור"
+
+#: templates/accounts/editprofile.html:15
+msgid ""
+"You do not have permissions to edit anything. In order to be able to edit, "
+"you must first provide a valid email address."
+msgstr ""
+"אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני "
+"חוקית."
+
+#: templates/accounts/editprofile.html:17
+msgid ""
+"You do not have permissions to edit anything. In order to be able to edit, "
+"you must provide a valid email address, and validate it"
+msgstr ""
+"אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
+
+#: templates/accounts/editprofile.html:19
+msgid "send validation email"
+msgstr "שלח דואר אלקטרוני לאימות"
+
+#: templates/accounts/editprofile.html:23
+msgid "Your email has been validated, so you can edit stuff!"
+msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
+
+#: templates/accounts/email_validation.txt:2
+#: templates/accounts/email_validation_subject.txt:1
+msgid "email validation for"
+msgstr "אימות דואר אלקטרוני עבור"
+
+#: templates/accounts/email_validation_failed.html:9
+#: templates/accounts/email_validation_sent.html:10
+#: templates/accounts/email_validation_successful.html:9
+msgid "Back to the main page"
+msgstr "חזרה לעמוד הראשי"
+
+#: templates/accounts/email_validation_sent.html:8
+msgid "An email has been sent to"
+msgstr "נשלח דואר ל"
+
+#: templates/accounts/email_validation_sent.html:9
+msgid "Please use the link in the email to validate."
+msgstr "אנא השתמש/י בקישור שנשלח במייל כדי לאשר שכתובת המייל שסופקה אכן שלך."
+
+#: templates/accounts/email_validation_successful.html:8
+msgid "Your email has been validated, so you can now edit stuff!"
+msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לערוך."
+
+#: templates/comments/form.html:17
+msgid "Post comment"
+msgstr "פרסם את התגובה"
+
+#: templates/laws/_vote_detail.html:9
+msgid "Time"
+msgstr "זמן"
+
+#: templates/laws/_vote_detail.html:13 templates/mks/_member_detail.html:51
+msgid "For"
+msgstr "בעד"
+
+#: templates/laws/_vote_detail.html:15 templates/laws/_vote_detail.html:32
+#, python-format
+msgid ""
+"\n"
+"            %(counter)s MK\n"
+"            "
+msgid_plural ""
+"\n"
+"            %(counter)s MKs\n"
+"            "
+msgstr[0] ""
+"\n"
+"ח\"כ %(counter)s"
+msgstr[1] ""
+"\n"
+"%(counter)s ח\"כים"
+
+#: templates/laws/_vote_detail.html:26 templates/laws/_vote_detail.html:43
+#: templates/mks/_member_detail.html:44
+msgid "none"
+msgstr "אין"
+
+#: templates/laws/_vote_detail.html:30 templates/mks/_member_detail.html:59
+msgid "Against"
+msgstr "נגד"
+
+#: templates/laws/_vote_detail.html:49 templates/laws/_vote_detail.html:53
+#: templates/laws/_vote_detail.html:61 templates/laws/_vote_list.html:8
+msgid "Tags"
+msgstr "תגיות"
+
+#: templates/laws/_vote_detail.html:65
+msgid "Login to edit tags"
+msgstr "הרשם כדי לערוך תגיות"
+
+#: templates/laws/_vote_detail.html:73
+msgid "No summary for this vote"
+msgstr "אין תקציר להצבעה זו"
+
+#: templates/laws/_vote_detail.html:77
+msgid "Link to compete vote text"
+msgstr "קישור למסמך המלא"
+
+#: templates/laws/_vote_detail.html:79
+msgid "No link to full vote text"
+msgstr "אין קישור למסמך המלא להצבעה זו"
+
+#: templates/laws/_vote_detail.html:84
+msgid "User comments"
+msgstr "תגובות"
+
+#: templates/laws/_vote_detail.html:91
+msgid "No comments yet"
+msgstr "אין עדיין תגובות"
+
+#: templates/laws/_vote_list.html:15
+msgid "No tags"
+msgstr "אין תגיות"
+
+#: templates/laws/_vote_list.html:20 templates/mks/_member_list.html:6
+#: templates/mks/_party_detail.html:7 templates/mks/_party_list.html:6
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
-#: templates/laws/vote_list.html:4 templates/mks/_member_detail.html:48
+#: templates/laws/vote_list.html:3 templates/laws/vote_list.html.py:5
+#: templates/mks/_member_detail.html:48
 msgid "Votes"
 msgstr "הצבעות"
 
-#: templates/laws/vote_list.html:9
-msgid "more"
-msgstr "עוד"
+#: templates/laws/vote_list.html:12
+msgid "previous votes"
+msgstr "ההצבעות הקודמות"
+
+#: templates/laws/vote_list.html:16
+msgid "next votes"
+msgstr "ההצבעות הבאות"
 
 #: templates/mks/_member_detail.html:6
 msgid "party"
@@ -146,18 +358,6 @@ msgstr "כתובת דוא\"ל"
 msgid "web site"
 msgstr "אתר"
 
-#: templates/mks/_member_detail.html:44
-msgid "none"
-msgstr "אין"
-
-#: templates/mks/_member_detail.html:51
-msgid "For"
-msgstr "בעד"
-
-#: templates/mks/_member_detail.html:59
-msgid "Against"
-msgstr "נגד"
-
 #: templates/mks/_member_detail.html:67
 msgid "Abstain"
 msgstr "נמנע"
@@ -166,12 +366,160 @@ msgstr "נמנע"
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
-#~ msgid "Main Page"
-#~ msgstr "rtah"
+#~ msgid "more"
+#~ msgstr "עוד"
 
 #, fuzzy
-#~ msgid "Homepage"
-#~ msgstr "דף הבית"
+#~ msgid "A tag may be no more than %s characters long."
+#~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
+#, fuzzy
+#~ msgid "Each tag may be no more than %s characters long."
+#~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
+#~ msgid "name"
+#~ msgstr "שם"
+
+#, fuzzy
+#~ msgid "tag"
+#~ msgstr "תג:"
+
+#, fuzzy
+#~ msgid "tags"
+#~ msgstr "ארגאו"
+
+#~ msgid "content type"
+#~ msgstr "סוג תוכן"
+
+#~ msgid "object id"
+#~ msgstr "מזהה אובייקט"
+
+#, fuzzy
+#~ msgid "Cache Usage"
+#~ msgstr "הערה לשינוי"
+
+#, fuzzy
+#~ msgid "Logging"
+#~ msgstr "כניסה"
+
+#, fuzzy
+#~ msgid "Log Messages"
+#~ msgstr "הודעה"
+
+#, fuzzy
+#~ msgid "Signals"
+#~ msgstr "סינאלוה"
+
+#, fuzzy
+#~ msgid "Templates"
+#~ msgstr "תבנית"
+
+#, fuzzy
+#~ msgid "Context switches"
+#~ msgstr "סוגי תוכן"
+
+#, fuzzy
+#~ msgid "Versions"
+#~ msgstr "התחברויות"
+
+#, fuzzy
+#~ msgid "Hide"
+#~ msgstr "הינדי"
+
+#, fuzzy
+#~ msgid "Show Toolbar"
+#~ msgstr "הצג הכל"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "קוד מקור"
+
+#, fuzzy
+#~ msgid "Location"
+#~ msgstr "לטבית"
+
+#, fuzzy
+#~ msgid "Hits"
+#~ msgstr "אתרים"
+
+#, fuzzy
+#~ msgid "Misses"
+#~ msgstr "מיי"
+
+#, fuzzy
+#~ msgid "Parameters"
+#~ msgstr "מפלגות"
+
+#, fuzzy
+#~ msgid "Function"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "Value"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "Level"
+#~ msgstr "לביצה"
+
+#, fuzzy
+#~ msgid "Message"
+#~ msgstr "הודעה"
+
+#, fuzzy
+#~ msgid "View information"
+#~ msgstr "ניהול אתר"
+
+#, fuzzy
+#~ msgid "args"
+#~ msgstr "ארגאו"
+
+#, fuzzy
+#~ msgid "Signal"
+#~ msgstr "סינאלוה"
+
+#, fuzzy
+#~ msgid "Action"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "Query"
+#~ msgstr "משתמש"
+
+#, fuzzy
+#~ msgid "Line"
+#~ msgstr "תשעה"
+
+#, fuzzy
+#~ msgid "File"
+#~ msgstr "סינון"
+
+#, fuzzy
+#~ msgid "Template Source"
+#~ msgstr "שם תבנית"
+
+#, fuzzy
+#~ msgid "Template path"
+#~ msgstr "שם תבנית"
+
+#, fuzzy
+#~ msgid "Template"
+#~ msgstr "תבנית"
+
+#~ msgid "None"
+#~ msgstr "ללא"
+
+#, fuzzy
+#~ msgid "Context processor"
+#~ msgstr "סוגי תוכן"
+
+#, fuzzy
+#~ msgid "Package"
+#~ msgstr "פראג"
+
+#, fuzzy
+#~ msgid "Version"
+#~ msgstr "פרסית"
 
 #~ msgid "Arabic"
 #~ msgstr "ערבית"
@@ -256,6 +604,10 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Korean"
 #~ msgstr "קוריאנית"
+
+#, fuzzy
+#~ msgid "Khmer"
+#~ msgstr "כאן"
 
 #~ msgid "Kannada"
 #~ msgstr "קנדית"
@@ -369,14 +721,12 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Action:"
 #~ msgstr "פעולה"
 
-#~ msgid "action time"
-#~ msgstr "זמן פעולה"
-
-#~ msgid "object id"
-#~ msgstr "מזהה אובייקט"
-
 #~ msgid "object repr"
 #~ msgstr "ייצוג אובייקט"
+
+#, fuzzy
+#~ msgid "action flag"
+#~ msgstr "סמן הערה"
 
 #~ msgid "change message"
 #~ msgstr "הערה לשינוי"
@@ -386,9 +736,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "log entries"
 #~ msgstr "רישומי יומן"
-
-#~ msgid "None"
-#~ msgstr "ללא"
 
 #~ msgid "Changed %s."
 #~ msgstr "%s שונה."
@@ -473,9 +820,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Site administration"
 #~ msgstr "ניהול אתר"
 
-#~ msgid "Log in"
-#~ msgstr "כניסה"
-
 #~ msgid "%s administration"
 #~ msgstr "ניהול %s"
 
@@ -508,6 +852,10 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "We're sorry, but the requested page could not be found."
 #~ msgstr "אנו מצטערים, לא ניתן למצוא את הדף המבוקש."
+
+#, fuzzy
+#~ msgid "Home"
+#~ msgstr "דף הבית"
 
 #~ msgid "Server error"
 #~ msgstr "שגיאת שרת"
@@ -568,9 +916,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Add %(name)s"
 #~ msgstr "הוספת %(name)s"
 
-#~ msgid "Filter"
-#~ msgstr "סינון"
-
 #~ msgid "Delete"
 #~ msgstr "מחיקה"
 
@@ -603,9 +948,10 @@ msgstr "נוכח ולא הצביע"
 #~ "מחיקת %(object_name)s מצריכה מחיקת אובייקטים מקושרים, אך לחשבון שלך אין "
 #~ "הרשאות למחיקת סוגי האובייקטים הבאים:"
 
+#, fuzzy
 #~ msgid ""
 #~ "Are you sure you want to delete the selected %(object_name)s objects? All "
-#~ "of the following objects and it's related items will be deleted:"
+#~ "of the following objects and their related items will be deleted:"
 #~ msgstr ""
 #~ "האם אתה בטוח שאתה רוצה למחוק את פריטי ה %(object_name)s שנבחרו.  כל "
 #~ "הפריטים הבאים והחומר הנלווה אליהם יימחקו."
@@ -615,6 +961,10 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Models available in the %(name)s application."
 #~ msgstr "מודלים זמינים ביישום %(name)s."
+
+#, fuzzy
+#~ msgid "Change"
+#~ msgstr "שינוי:"
 
 #~ msgid "You don't have permission to edit anything."
 #~ msgstr "אין לך הרשאות לעריכה."
@@ -662,9 +1012,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Show all"
 #~ msgstr "הצג הכל"
-
-#~ msgid "Save"
-#~ msgstr "שמירה"
 
 #~ msgid "Search"
 #~ msgstr "חיפוש"
@@ -825,6 +1172,10 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Select %s to change"
 #~ msgstr "בחירת %s לשינוי"
 
+#, fuzzy
+#~ msgid "site"
+#~ msgstr "אתרים"
+
 #~ msgid "template"
 #~ msgstr "תבנית"
 
@@ -905,9 +1256,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Text"
 #~ msgstr "טקסט"
-
-#~ msgid "Time"
-#~ msgstr "זמן"
 
 #~ msgid "URL"
 #~ msgstr "URL"
@@ -1048,9 +1396,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Your old password was entered incorrectly. Please enter it again."
 #~ msgstr "סיסמתך הישנה הוזנה בצורה שגויה. נא להזינה שוב."
 
-#~ msgid "name"
-#~ msgstr "שם"
-
 #~ msgid "codename"
 #~ msgstr "שם קוד"
 
@@ -1065,9 +1410,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "groups"
 #~ msgstr "קבוצות"
-
-#~ msgid "username"
-#~ msgstr "שם משתמש"
 
 #~ msgid "first name"
 #~ msgstr "שם פרטי"
@@ -1084,6 +1426,10 @@ msgstr "נוכח ולא הצביע"
 #~ msgstr ""
 #~ "יש להזין '[algo]$[salt]$[hexdigest]' או להשתמש ב<a href=\"password/"
 #~ "\">טופס שינוי הסיסמה</a>."
+
+#, fuzzy
+#~ msgid "staff status"
+#~ msgstr "מצב משפחתי"
 
 #~ msgid "Designates whether the user can log into this admin site."
 #~ msgstr "מציין האם המשתמש יכול להתחבר לאתר הניהול."
@@ -1121,9 +1467,6 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "user permissions"
 #~ msgstr "הרשאות משתמש"
-
-#~ msgid "user"
-#~ msgstr "משתמש"
 
 #~ msgid "users"
 #~ msgstr "משתמשים"
@@ -1167,9 +1510,6 @@ msgstr "נוכח ולא הצביע"
 #~ "If you enter anything in this field your comment will be treated as spam"
 #~ msgstr "אם יוזן משהו בשדה היחס לתגובתך יהיה כמו לספאם"
 
-#~ msgid "content type"
-#~ msgstr "סוג תוכן"
-
 #~ msgid "object ID"
 #~ msgstr "מזהה אובייקט"
 
@@ -1203,9 +1543,6 @@ msgstr "נוכח ולא הצביע"
 #~ "removed\" message will be displayed instead."
 #~ msgstr ""
 #~ "יש לסמן תיבה זו עבור תגובה לא נאותה. הודעת \"תגובה זו נמחקה\" תוצג במקום."
-
-#~ msgid "comments"
-#~ msgstr "תגובות"
 
 #~ msgid ""
 #~ "This comment was posted by an authenticated user and thus the name is "
@@ -1292,9 +1629,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Comment moderation queue"
 #~ msgstr "תור תגובה עבור מתון של תגובות"
 
-#~ msgid "No comments to moderate"
-#~ msgstr "אין תגובות עד בינוני"
-
 #~ msgid "Email"
 #~ msgstr "כתובת דוא\"ל"
 
@@ -1326,9 +1660,6 @@ msgstr "נוכח ולא הצביע"
 #~ msgid_plural "Please correct the errors below"
 #~ msgstr[0] "בבקשה לתקן את השגיאה למטה"
 #~ msgstr[1] "אנא תקן את שגיאות למטה"
-
-#~ msgid "Post your comment"
-#~ msgstr "פרסם את התגובה"
 
 #~ msgid "or make changes"
 #~ msgstr "או לבצע שינויים"
@@ -1431,6 +1762,10 @@ msgstr "נוכח ולא הצביע"
 #~ msgid_plural "%(value).1f trillion"
 #~ msgstr[0] "%(value).1f טריליון"
 #~ msgstr[1] "%(value).1f טריליונים"
+
+#, fuzzy
+#~ msgid "one"
+#~ msgstr "אין"
 
 #~ msgid "two"
 #~ msgstr "שניים"
@@ -1986,6 +2321,10 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "Enter a valid Finnish social security number."
 #~ msgstr "יש להזין מספר ביטוח לאומי פיני חוקי."
 
+#, fuzzy
+#~ msgid "Phone numbers must be in 0X XX XX XX XX format."
+#~ msgstr "תחביר מספרי טלפון חייב להיות XXXX-XXXXXX."
+
 #~ msgid "Enter a zip code in the format XXXXXXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXXXXXX."
 
@@ -2487,6 +2826,10 @@ msgstr "נוכח ולא הצביע"
 
 #~ msgid "Malacky"
 #~ msgstr "מאלאקי"
+
+#, fuzzy
+#~ msgid "Martin"
+#~ msgstr "ראשי"
 
 #~ msgid "Medzilaborce"
 #~ msgstr "מדזילבורצה"
@@ -3209,6 +3552,10 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "July"
 #~ msgstr "יולי"
 
+#, fuzzy
+#~ msgid "August"
+#~ msgstr "נגד"
+
 #~ msgid "September"
 #~ msgstr "ספטמבר"
 
@@ -3338,5 +3685,9 @@ msgstr "נוכח ולא הצביע"
 #~ msgid "The %(verbose_name)s was deleted."
 #~ msgstr "ה-%(verbose_name)s נמחק."
 
-#~ msgid "Code"
-#~ msgstr "קוד מקור"
+#, fuzzy
+#~ msgid "Sign in"
+#~ msgstr "סנינה"
+
+#~ msgid "Main Page"
+#~ msgstr "rtah"

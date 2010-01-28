@@ -1,3 +1,98 @@
-{{ object.summary }}
+{% load i18n %}
+{% load tagging_tags %}
+{% load laws_extra %}
+{% load comments %}
 
-<a href="{{ object.full_text_url }} ">קישור לחוק המלא</a>'
+<h2><a href=".">{{ object.title }}</a></h2>
+<div id="vote-info">
+    <div>
+        <label for="time">{% trans "Time" %}</label>
+        {{ object.time_string }}
+    </div>    
+    <div>
+        <label for="for-votes">{% trans "For" %}</label>        
+        {% if object.for_votes_count %}        
+            {% blocktrans count object.for_votes|length as counter %}
+            {{ counter }} MK
+            {% plural %}
+            {{ counter }} MKs
+            {% endblocktrans %}
+            <div class="list-wrap indented">
+            {% for m in object.for_votes %}
+            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{{ m.get_absolute_url }}" title="{{ m.Party.name }}">{{ m.name }}</a>&nbsp;
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans 'none' %}
+        {% endif %}
+    </div>
+    <div>
+        <label for="against-votes">{% trans "Against" %}</label>
+        {% if object.against_votes_count %}        
+            {% blocktrans count object.against_votes|length as counter %}
+            {{ counter }} MK
+            {% plural %}
+            {{ counter }} MKs
+            {% endblocktrans %}
+            <div class="list-wrap indented">
+            {% for m in object.against_votes %}
+            <a class="hashnav item dontwrap" id="detail-{{ m.id }}" href="{{ m.get_absolute_url }}" title="{{ m.Party.name }}">{{ m.name }}</a>&nbsp;
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans 'none' %}
+        {% endif %}
+    </div>
+    <div>
+    {% if user.is_authenticated %}
+        <form action="/vote/{{ object.id }}/submit-tags/" method="POST">
+            <label for="tags">{% trans "Tags" %}</label>
+            {{ object.tag_form.tags }}
+            <input type="submit" value="Submit" />
+        </form><br/>
+        <label for="tags">{% trans "Tags" %}</label><div id="vote-tags">
+        {% for t in object.tags %}
+            {% user_votes user object t %} <br />
+        {% endfor %}</div>
+        <br/>
+
+        
+    {% else %}
+            <label for="tags">{% trans "Tags" %}</label>
+            {% for t in  object.tags %}
+                {{ t }},
+            {% endfor %}
+            {% trans 'Login to edit tags' %}
+    {% endif %}
+    </div>
+
+</table>
+{% if object.summary %}
+    {{ object.summary|safe }}
+{% else %}
+    {% trans 'No summary for this vote' %}
+{% endif %}
+<br />
+{% if object.full_text_url %}
+    <a class="bold-link" href="{{ object.full_text_url }}">{% trans 'Link to compete vote text' %}</a>
+{% else %}
+    {% trans 'No link to full vote text' %}
+{% endif %}
+<br />
+{% get_comment_list for object as comment_list %}
+{% if comment_list %}
+    <h3>{% trans 'User comments' %}</h3>
+    {% for comment in comment_list %}
+        <a name="c{{ comment.id }}"></a>
+        {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
+        <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
+    {% endfor %}
+{% else %}
+    <h3>{% trans 'No comments yet' %}</h3>
+{% endif %}
+
+{% if perms.comments.add_comment %}
+    {% render_comment_form for object %}
+{% endif %}
+
+

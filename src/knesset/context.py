@@ -6,6 +6,7 @@ the knesset's context processor is here.
 '''
 import re
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
@@ -16,11 +17,14 @@ STATE_NAMES = {
 url = re.compile(r'(?P<state>\w+)/(?:(?P<pk>\d+)/)?$')
 
 def processor(request):
+    d = dict()
     m = url.match(request.path)
     state = m and m.group('state') or DEFAULT_STATE
     try:
-        return {'PAGE_BASE_NAME': STATE_NAMES[state]}
+        d['PAGE_BASE_NAME'] = STATE_NAMES[state]
     except KeyError:
-        return {'PAGE_BASE_NAME': STATE_NAMES[DEFAULT_STATE]}
+        d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
+    
+    d['fb_api_key'] = settings.FACEBOOK_API_KEY
 
-
+    return d
