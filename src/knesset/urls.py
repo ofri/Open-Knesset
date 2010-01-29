@@ -46,7 +46,7 @@ urlpatterns = patterns('',
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns
 if settings.LOCAL_DEV:
-    urlpatterns += patterns('django.views.static',
-        (r'^%s(?P<path>.*)' % settings.MEDIA_URL[1:], 'serve',
+    urlpatterns += patterns('django.views',
+        (r'^static/(?P<path>.*)' , 'static.serve',
          {'document_root': settings.MEDIA_ROOT}),
     )

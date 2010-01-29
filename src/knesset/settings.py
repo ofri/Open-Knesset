@@ -2,7 +2,6 @@
 import sys, socket, os
 hostname = socket.gethostname() # to add host specific overrides
 
-base_dir = os.path.abspath(os.path.dirname(__file__))  # used instead of relative path, so that importing this module from outside would work (like done in update_db.py)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -37,7 +36,7 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -83,24 +82,24 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
+    'django.contrib.auth',          # django apps
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'piston',
+    'django.contrib.comments',
+    'piston',                       # friends apps
     'debug_toolbar',
-    'knesset',
-    'knesset.mks',
-    'knesset.laws',
-    'knesset.simple',
     'socialauth',
     'openid_consumer',
     'tagging',
-    'knesset.tagvotes',
-    'django.contrib.comments',
-    'knesset.accounts',
     'haystack',
+    'knesset.aux',                  # knesset apps
+    'knesset.mks',
+    'knesset.laws',
+    'knesset.simple',
+    'knesset.tagvotes',
+    'knesset.accounts',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -144,6 +143,6 @@ LOGOUT_REDIRECT_URL = '/'
 SITE_NAME = 'Open-Knesset'
 HAYSTACK_SITECONF = 'knesset.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(base_dir, 'whoosh_index')
+HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'whoosh_index')
 
 
