@@ -1,8 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block extratitle %}{% trans 'Votes' %}{% endblock %}
-{% block nav-votes %}class="selected"{% endblock %}
-{% block h1content %}{% trans 'Votes' %}{% endblock %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
+{% block h1content %}{{ title }}{% endblock %}
 {% block submenu %} {% endblock %}
 {% block divcontent %}
 	<ul id="item-list">

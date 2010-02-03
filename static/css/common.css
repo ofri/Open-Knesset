@@ -33,7 +33,7 @@ a:link, a:visited { color:#ffc757; }
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
 #nav-global a { display:block; float:left; padding:1em 16px 10px 16px; }
-#nav-global a:hover, .selected { color:white; background:#251C1F;}
+#nav-global a:hover, .selected { color:white; background:#453C3F;}
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* ACCOUNTS */
@@ -54,7 +54,7 @@ a:link, a:visited { color:#ffc757; }
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
 #content-main, #footer { float:right; width:90%; }
-#content-main { min-height:372px; opacity: 0.7; background:#E6C3B0; color:#311F1D; padding-bottom:10px; }
+#content-main { min-height:372px; opacity: 0.7; background:#A69380; color:#311F1D; padding-bottom:10px; }
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
@@ -74,7 +74,7 @@ h1,h2,h3 { margin-top:.8em; font-family:"Trebuchet MS",sans-serif; font-weight:n
 h1 { font-size:218%; margin-top:.6em; margin-bottom:.6em; color:#251c1f; line-height:1.1em; }
 h2 { font-size:150%; margin-top:1em; margin-bottom:.2em; line-height:1.2em; color:#092e20; }
 #homepage h2 { font-size:140%; }
-h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#487858; }
+h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#251c1f; }
 h4 { font-size:100%; font-weight:bold; margin-bottom:-3px; margin-top:1.2em; text-transform:uppercase; letter-spacing:1px; }
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
 h5 { font-size:1em; font-weight:bold; margin-top:1.5em; margin-bottom:3px; }
@@ -242,7 +242,9 @@ a.disabled { color: #aaaaaa; }
 #content-main .bold-link { font-weight:bold; }
 #content-main label { display: block; width: 6em; float:right}
 
-#content-main #vote-tags { display: inline-block; line-height: 2.5em; }
+#content-main #tagging-container { padding-top:1em; padding-bottom:1em; }
+#content-main #tags { display: inline-block; padding-bottom:0.8em }
+#content-main #vote-tags { display: inline-block; line-height:2.5em }
 
 #content-main .vote-up { 
     background: url('/static/img/Thumbs-up.png') no-repeat center 0; 

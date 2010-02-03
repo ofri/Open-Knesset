@@ -43,27 +43,39 @@
             {% trans 'none' %}
         {% endif %}
     </div>
-    <div>
+    <div id="tagging-container">
     {% if user.is_authenticated %}
         <form action="/vote/{{ object.id }}/submit-tags/" method="POST">
             <label for="tags">{% trans "Tags" %}</label>
             {{ object.tag_form.tags }}
             <input type="submit" value="Submit" />
         </form><br/>
-        <label for="tags">{% trans "Tags" %}</label><div id="vote-tags">
-        {% for t in object.tags %}
-            {% user_votes user object t %} <br />
-        {% endfor %}</div>
-        <br/>
-
-        
-    {% else %}
-            <label for="tags">{% trans "Tags" %}</label>
-            {% for t in  object.tags %}
-                {{ t }},
+        <label for="tags">{% trans "Tags" %}</label>
+        {% if object.tags %}
+            <div id="vote-tags">
+            {% for t in object.tags %}
+                {% user_votes user object t %} <br />        
             {% endfor %}
-            {% trans 'Login to edit tags' %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />        
+        {% endif %}
+    {% else %}
+        <br/>
+        <label for="tags">{% trans "Tags" %}</label>
+        {% if object.tags %}
+            <div id="tags">
+            {% for t in object.tags %}
+               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />
+        {% endif %}
+
+        ({% trans 'Login to edit tags' %})
     {% endif %}
+
     </div>
 
 </table>

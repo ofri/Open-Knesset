@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-29 00:12+0200\n"
+"POT-Creation-Date: 2010-02-03 23:21+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,17 +15,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:13 templates/base.html:73 templates/mks/member_detail.html:4
+#: context.py:13 templates/base.html:74 templates/mks/member_detail.html:5
 #: templates/mks/member_list.html:3 templates/mks/member_list.html.py:5
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:14 templates/base.html:74 templates/mks/party_detail.html:4
+#: context.py:14 templates/base.html:75 templates/mks/party_detail.html:5
 #: templates/mks/party_list.html:3 templates/mks/party_list.html.py:5
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:15 templates/base.html:71 templates/laws/vote_detail.html:4
+#: context.py:15 templates/base.html:72
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -57,6 +57,19 @@ msgstr "פג תוקפו של קוד אימות זה."
 #: accounts/models.py:54
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
+
+#: laws/urls.py:8 templates/mks/_member_detail.html:48
+msgid "Votes"
+msgstr "הצבעות"
+
+#: laws/urls.py:9 templates/base.html:73
+msgid "Law Approvals"
+msgstr "אישור חוקים"
+
+#: laws/views.py:49
+#, python-format
+msgid "Votes tagged %(tag)s"
+msgstr "הצבעות שתויגו %(tag)s"
 
 #: tagvotes/models.py:11
 msgid "tagged item"
@@ -115,7 +128,7 @@ msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 msgid "or"
 msgstr "או"
 
-#: templates/about.html:3 templates/about.html.py:4 templates/base.html:75
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:76
 msgid "About"
 msgstr "אודות"
 
@@ -127,55 +140,51 @@ msgstr "הכנסת הפתוחה"
 msgid "I'm just sitting here watching the wheels go round and round."
 msgstr "אתר הכנסת הפתוחה"
 
-#: templates/base.html:48
+#: templates/base.html:49
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: templates/base.html:49
+#: templates/base.html:50
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: templates/base.html:50
+#: templates/base.html:51
 msgid "Logout"
 msgstr "התנתק"
 
-#: templates/base.html:52
+#: templates/base.html:53
 msgid "Login via"
 msgstr "הזדהה באמצעות"
 
-#: templates/base.html:54
+#: templates/base.html:55
 msgid "Twitter"
 msgstr "טוויטר"
 
-#: templates/base.html:55
+#: templates/base.html:56
 msgid "Yahoo"
 msgstr "יאהו"
 
-#: templates/base.html:56
+#: templates/base.html:57
 msgid "Openid"
 msgstr "&rlm;OpenID"
 
-#: templates/base.html:57
+#: templates/base.html:58
 msgid "Google"
 msgstr "גוגל"
 
-#: templates/base.html:70 templates/main.html:3 templates/main.html.py:4
+#: templates/base.html:71 templates/main.html:3 templates/main.html.py:4
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:72
-msgid "Law Approvals"
-msgstr "אישור חוקים"
-
-#: templates/base.html:92
+#: templates/base.html:93
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:96
+#: templates/base.html:97
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:98
+#: templates/base.html:99
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -209,11 +218,6 @@ msgstr "שלח דואר אלקטרוני לאימות"
 #: templates/accounts/editprofile.html:23
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
-
-#: templates/accounts/email_validation.txt:2
-#: templates/accounts/email_validation_subject.txt:1
-msgid "email validation for"
-msgstr "אימות דואר אלקטרוני עבור"
 
 #: templates/accounts/email_validation_failed.html:9
 #: templates/accounts/email_validation_sent.html:10
@@ -272,31 +276,35 @@ msgid "Against"
 msgstr "נגד"
 
 #: templates/laws/_vote_detail.html:49 templates/laws/_vote_detail.html:53
-#: templates/laws/_vote_detail.html:61 templates/laws/_vote_list.html:8
+#: templates/laws/_vote_detail.html:65 templates/laws/_vote_list.html:8
 msgid "Tags"
 msgstr "תגיות"
 
-#: templates/laws/_vote_detail.html:65
+#: templates/laws/_vote_detail.html:61 templates/laws/_vote_detail.html:73
+msgid "No tags yet"
+msgstr "אין עדיין תגיות"
+
+#: templates/laws/_vote_detail.html:76
 msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
-#: templates/laws/_vote_detail.html:73
+#: templates/laws/_vote_detail.html:85
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: templates/laws/_vote_detail.html:77
+#: templates/laws/_vote_detail.html:89
 msgid "Link to compete vote text"
 msgstr "קישור למסמך המלא"
 
-#: templates/laws/_vote_detail.html:79
+#: templates/laws/_vote_detail.html:91
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: templates/laws/_vote_detail.html:84
+#: templates/laws/_vote_detail.html:96
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/laws/_vote_detail.html:91
+#: templates/laws/_vote_detail.html:103
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
@@ -304,21 +312,15 @@ msgstr "אין עדיין תגובות"
 msgid "No tags"
 msgstr "אין תגיות"
 
-#: templates/laws/_vote_list.html:20 templates/mks/_member_list.html:6
-#: templates/mks/_party_detail.html:7 templates/mks/_party_list.html:6
-msgid "Data base empty, no objects"
-msgstr "המסד ריק, אין נתונים"
+#: templates/laws/_vote_list.html:20
+msgid "No results found"
+msgstr "לא נמצאו תוצאות"
 
-#: templates/laws/vote_list.html:3 templates/laws/vote_list.html.py:5
-#: templates/mks/_member_detail.html:48
-msgid "Votes"
-msgstr "הצבעות"
-
-#: templates/laws/vote_list.html:12
+#: templates/laws/vote_list.html:13
 msgid "previous votes"
 msgstr "ההצבעות הקודמות"
 
-#: templates/laws/vote_list.html:16
+#: templates/laws/vote_list.html:17
 msgid "next votes"
 msgstr "ההצבעות הבאות"
 
@@ -365,6 +367,14 @@ msgstr "נמנע"
 #: templates/mks/_member_detail.html:75
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
+
+#: templates/mks/_member_list.html:6 templates/mks/_party_detail.html:7
+#: templates/mks/_party_list.html:6
+msgid "Data base empty, no objects"
+msgstr "המסד ריק, אין נתונים"
+
+#~ msgid "email validation for"
+#~ msgstr "אימות דואר אלקטרוני עבור"
 
 #~ msgid "more"
 #~ msgstr "עוד"
