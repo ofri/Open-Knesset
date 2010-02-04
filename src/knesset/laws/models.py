@@ -5,6 +5,7 @@ from knesset.tagvotes.models import TagVote
 
 from tagging.forms import TagField
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', u'For'),
@@ -37,7 +38,8 @@ class Vote(models.Model):
 
     class Meta:
         ordering = ('-time',)
-
+        verbose_name = _('Vote')
+        verbose_name_plural = _('Votes')
 
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)

@@ -102,7 +102,7 @@ ins a { text-decoration: none; }
 
 ul { padding-left:2em; }
 ol { padding-left:30px; }
-ul li { list-style-type:square; margin-bottom:.4em; }
+ul li { list-style-type:none; margin-bottom:.4em; }
 ul ul { padding-left:1.2em; }
 ul ul ul { padding-left:1em; }
 ul.linklist, ul.toc { padding-left:0; }
