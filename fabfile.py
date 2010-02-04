@@ -15,7 +15,7 @@ def staging():
     config.fab_hosts = ['staging.tzafim.org']
     config.fab_user = 'daonb'
 
-def production():
+def live():
     """Production server settings"""
     config.settings = 'tuzig'
     config.path = '/home/daonb/sites/Open-Knesset'
@@ -35,11 +35,12 @@ def deploy():
     checkout_latest()
     symlink_current_release()
     migrate()
-    restart_web_server()
+    refresh_server()
 
 def clone_repo():
     """Do initial clone of the git repo"""
     run('cd $(path); git clone $(repository) repository')
+    run ('python bootstrap.py')
 
 def checkout_latest():
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
@@ -51,19 +52,20 @@ def checkout_latest():
     run('rm -rf $(path)/releases/$(release)/.git*')
 
 def install_env():
-    """Install the required packages using pip"""
-    run('cd $(path)/repository; python bootstrap.py; bin/buildout')
+    """Install the required packages using buildout"""
+    run('cd $(path)/repository; bin/buildout')
 
 def symlink_current_release():
     """Symlink our current release, uploads and settings file"""
     run('cd $(path); rm project; ln -s releases/current project; rm releases/current; ln -s $(release) releases/current')
-    run('cd $(path)/releases/current/src/knesset; ln -s settings_$(settings).py runsettings.py', fail='ignore')
+    run('cd $(path)/project/src/knesset; ln -s settings_$(settings).py runsettings.py', fail='ignore')
 
 def migrate():
     """Run our migrations"""
     run('cd $(path)/releases/current; bin/django syncdb --noinput')
-    # for south: run('cd $(path)/releases/current; bin/django syncdb --noinput --migrate')
+    run('cd $(path)/releases/current; bin/django update_index --noinput')
+    # for south: run('cd $(path)/project; bin/django syncdb --noinput --migrate')
 
-def restart_web_server():
+def refresh_server():
     """Restart the web server"""
-    sudo('apache2ctl restart')
+    sudo('touch $(path)/project/deploy/knesset_wsgi.py')
