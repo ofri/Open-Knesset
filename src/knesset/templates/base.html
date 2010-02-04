@@ -32,6 +32,7 @@
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pages.js"></script>
+        
 		{% if LANGUAGE_BIDI %}
 		<style>
         	#nav-global li { float:right; }
@@ -57,7 +58,7 @@
     -->                <a href="{% url socialauth_google_login %}" id="google_login_link"><img src="/static/img/google.png"/>{% trans 'Google' %}</a> 
                     <fb:login-button onlogin="facebook_onlogin();"></fb:login-button> 
                     <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
-    
+                    <script type="text/javascript" src="{{MEDIA_URL}}js/fixfacebook.js"></script>
                 <br />
             </div>
         {% endif %}

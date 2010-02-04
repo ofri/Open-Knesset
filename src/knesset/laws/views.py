@@ -1,4 +1,4 @@
-# Create your views here.
+from django.utils.translation import ugettext_lazy
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from knesset.utils import limit_by_request
@@ -7,6 +7,11 @@ from django.http import HttpResponseRedirect
 from knesset.laws.models import TagForm
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
+
+from django.http import Http404
+from tagging.views import tagged_object_list
+
+
 
 
 NUM_VOTES = getattr(settings, 'NUM_VOTES', 20)
@@ -39,3 +44,11 @@ def vote_on_tag(request,object_id,tag_id,vote):
     tv.vote = vote
     tv.save()
     return HttpResponseRedirect("/vote/%s" % object_id)
+
+def tagged(request,tag):
+    title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
+    try:
+        return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
+    except Http404:
+        return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
+

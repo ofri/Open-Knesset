@@ -1,7 +1,8 @@
 #encoding: utf-8
 from django.db import models
-
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
+
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -16,6 +17,10 @@ class Party(models.Model):
     name        = models.CharField(max_length=64)
     start_date  = models.DateField(null=True)
     end_date    = models.DateField(null=True)
+
+    class Meta:
+        verbose_name = _('Party')
+        verbose_name_plural = _('Parties')
 
     @property
     def uri_template (self):
@@ -75,10 +80,16 @@ class Member(models.Model):
 
     class Meta:
         ordering = ['name']
+        verbose_name = _('Member')
+        verbose_name_plural = _('Members')
+
 
     def __unicode__(self):
         return "%s" % self.name
     
+    def title(self):
+        return self.name
+
     def name_with_dashes(self):
         return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(' ','-')
 

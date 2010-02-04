@@ -2,5 +2,5 @@
 href="/vote/{{ vote.id }}/tag-votes/{{ tag.id }}/+1/"></a>
 <a class="vote-down{% if current_vote_down %} selected{% endif %}"
 href="/vote/{{ vote.id }}/tag-votes/{{ tag.id }}/-1/"></a>
-{{ tag }} ({{ tag.score }})
+<a href="{% url tagged-votes tag=tag %}" class="tag">{{ tag }} ({{ tag.score }})</a>
 

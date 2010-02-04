@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{{ object.name }}{% endblock %}
+{% block nav-parties %}class="selected"{% endblock %}
 {% block h1content %}{% trans 'Parties' %}{% endblock %}
 {% block divcontent %}
 	{% include "mks/_party_detail.html" %}

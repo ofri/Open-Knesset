@@ -1,7 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{{ object.title }}{% endblock %}
-{% block h1content %}{% trans 'Past Votes' %}{% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
+{% block h1content %}{{ title }}{% endblock %}
 {% block divcontent %}
 	{% include "laws/_vote_detail.html" %}
 {% endblock %}

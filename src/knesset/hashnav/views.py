@@ -49,9 +49,10 @@ class ListDetailView(ClassBasedView):
         include_dir:    where the partial template is
     """
 
-    def __init__(self, queryset, paginate_by = None):
+    def __init__(self, queryset, paginate_by = None, extra_context = None):
         self.queryset = queryset
         self.paginate_by = paginate_by
+        self.extra_context = extra_context
 
     def render_list(self, request, page=None,
             allow_empty=True, template_name=None, template_loader=loader,
@@ -107,6 +108,7 @@ class ListDetailView(ClassBasedView):
             page_range:
                 A list of the page numbers (1-indexed).
         """
+        extra_context = extra_context or self.extra_context
         if extra_context is None: extra_context = {}
         queryset = self.queryset._clone()
         if self.paginate_by:
@@ -183,6 +185,7 @@ class ListDetailView(ClassBasedView):
             object
                 the object
         """
+        extra_context = extra_context or self.extra_context
         if extra_context is None: extra_context = {}
         model = self.queryset.model
 
