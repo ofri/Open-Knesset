@@ -146,4 +146,5 @@ HAYSTACK_SITECONF = 'knesset.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(base_dir, 'whoosh_index')
 
+MAX_TAG_LENGTH = 128
 
