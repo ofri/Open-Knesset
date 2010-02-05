@@ -14,7 +14,6 @@
                 </td>
             </tr>
         </table>
-
         {% if query %}
             <h3>{% trans 'Results' %}</h3>
 
@@ -27,6 +26,13 @@
             {% endfor %}
         {% else %}
             {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+        {% if page.has_previous %}
+            <a id="prev" href="?q={{ query }}&page={{ page.previous_page_number }}">{% trans 'previous results' %}</a>    
+        {% endif %}
+        &nbsp;
+        {% if page.has_next %}
+            <a id="more" href="?q={{ query }}&page={{ page.next_page_number }}">{% trans 'next results' %}</a>
         {% endif %}
     </form>
 {% endblock %}
