@@ -101,6 +101,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'knesset.accounts',
     'haystack',
+    'knesset.links',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",

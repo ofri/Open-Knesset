@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-04 12:20+0200\n"
+"POT-Creation-Date: 2010-02-08 17:45+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: build/lib/knesset/context.py:12 src/knesset/context.py:13
-#: src/knesset/mks/models.py:84 src/knesset/templates/base.html:74
+#: src/knesset/mks/models.py:85 src/knesset/templates/base.html:74
 #: src/knesset/templates/mks/member_detail.html:5
 #: src/knesset/templates/mks/member_list.html:3
 #: src/knesset/templates/mks/member_list.html:5
@@ -38,6 +38,7 @@ msgstr "הצבעות"
 
 #: eggs/django_haystack-1.0.1_final-py2.6.egg/haystack/forms.py:18
 #: parts/django/django/contrib/admin/templates/admin/search_form.html:8
+#: src/knesset/templates/_main.html:10
 #: src/knesset/templates/search/search.html:3
 #: src/knesset/templates/search/search.html:4
 #: src/knesset/templates/search/search.html:13
@@ -113,6 +114,7 @@ msgstr "ארגאו"
 #: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:477
 #: parts/django/django/contrib/comments/models.py:22
 #: parts/django/django/contrib/contenttypes/models.py:74
+#: src/knesset/links/models.py:12
 msgid "content type"
 msgstr "סוג תוכן"
 
@@ -341,7 +343,7 @@ msgstr ""
 #: parts/debug-toolbar/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:12
 #: parts/debug-toolbar/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:11
 #: parts/django/django/contrib/admindocs/views.py:358
-#: src/knesset/templates/laws/_vote_detail.html:9
+#: src/knesset/templates/laws/_vote_detail.html:10
 msgid "Time"
 msgstr "זמן"
 
@@ -2009,7 +2011,7 @@ msgid "last name"
 msgstr "שם משפחה"
 
 #: parts/django/django/contrib/auth/models.py:131
-#: src/knesset/templates/mks/_member_detail.html:36
+#: src/knesset/templates/mks/_member_detail.html:37
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
@@ -2101,6 +2103,7 @@ msgid "Enter a valid e-mail address."
 msgstr "יש להזין כתובת דוא\"ל חוקית."
 
 #: parts/django/django/contrib/comments/admin.py:11
+#: src/knesset/links/admin.py:10
 msgid "Content"
 msgstr "תוכן"
 
@@ -2145,6 +2148,7 @@ msgid ""
 msgstr "אם יוזן משהו בשדה היחס לתגובתך יהיה כמו לספאם"
 
 #: parts/django/django/contrib/comments/models.py:24
+#: src/knesset/links/models.py:14
 msgid "object ID"
 msgstr "מזהה אובייקט"
 
@@ -2392,6 +2396,7 @@ msgid "Advanced options"
 msgstr "אפשרויות מתקדמות"
 
 #: parts/django/django/contrib/flatpages/models.py:8
+#: src/knesset/links/models.py:10
 msgid "title"
 msgstr "כותרת"
 
@@ -5165,16 +5170,24 @@ msgstr "הצבעות"
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: src/knesset/laws/views.py:49
+#: src/knesset/laws/views.py:51
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
+
+#: src/knesset/links/models.py:20
+msgid "link"
+msgstr "קישור"
+
+#: src/knesset/links/models.py:21
+msgid "links"
+msgstr "קישורים"
 
 #: src/knesset/mks/models.py:22
 msgid "Party"
 msgstr "מפלגה"
 
-#: src/knesset/mks/models.py:83
+#: src/knesset/mks/models.py:84
 msgid "Member"
 msgstr "ח\"כ"
 
@@ -5339,13 +5352,13 @@ msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לער�
 msgid "Post comment"
 msgstr "פרסם את התגובה"
 
-#: src/knesset/templates/laws/_vote_detail.html:13
+#: src/knesset/templates/laws/_vote_detail.html:14
 #: src/knesset/templates/mks/_member_detail.html:51
 msgid "For"
 msgstr "בעד"
 
-#: src/knesset/templates/laws/_vote_detail.html:15
-#: src/knesset/templates/laws/_vote_detail.html:32
+#: src/knesset/templates/laws/_vote_detail.html:16
+#: src/knesset/templates/laws/_vote_detail.html:33
 #, python-format
 msgid ""
 "\n"
@@ -5362,25 +5375,24 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים"
 
-#: src/knesset/templates/laws/_vote_detail.html:26
-#: src/knesset/templates/laws/_vote_detail.html:43
-#: src/knesset/templates/mks/_member_detail.html:44
+#: src/knesset/templates/laws/_vote_detail.html:27
+#: src/knesset/templates/laws/_vote_detail.html:44
 msgid "none"
 msgstr "אין"
 
-#: src/knesset/templates/laws/_vote_detail.html:30
+#: src/knesset/templates/laws/_vote_detail.html:31
 #: src/knesset/templates/mks/_member_detail.html:59
 msgid "Against"
 msgstr "נגד"
 
-#: src/knesset/templates/laws/_vote_detail.html:49
-#: src/knesset/templates/laws/_vote_detail.html:53
+#: src/knesset/templates/laws/_vote_detail.html:50
+#: src/knesset/templates/laws/_vote_detail.html:54
 #: src/knesset/templates/laws/_vote_detail.html:65
 #: src/knesset/templates/laws/_vote_list.html:8
 msgid "Tags"
 msgstr "תגיות"
 
-#: src/knesset/templates/laws/_vote_detail.html:61
+#: src/knesset/templates/laws/_vote_detail.html:62
 #: src/knesset/templates/laws/_vote_detail.html:73
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
@@ -5389,23 +5401,19 @@ msgstr "אין עדיין תגיות"
 msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
-#: src/knesset/templates/laws/_vote_detail.html:85
+#: src/knesset/templates/laws/_vote_detail.html:84
+msgid "summary"
+msgstr "תקציר"
+
+#: src/knesset/templates/laws/_vote_detail.html:87
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: src/knesset/templates/laws/_vote_detail.html:89
-msgid "Link to compete vote text"
-msgstr "קישור למסמך המלא"
-
-#: src/knesset/templates/laws/_vote_detail.html:91
-msgid "No link to full vote text"
-msgstr "אין קישור למסמך המלא להצבעה זו"
-
-#: src/knesset/templates/laws/_vote_detail.html:96
+#: src/knesset/templates/laws/_vote_detail.html:93
 msgid "User comments"
 msgstr "תגובות"
 
-#: src/knesset/templates/laws/_vote_detail.html:103
+#: src/knesset/templates/laws/_vote_detail.html:100
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
@@ -5425,37 +5433,38 @@ msgstr "ההצבעות הקודמות"
 msgid "next votes"
 msgstr "ההצבעות הבאות"
 
-#: src/knesset/templates/mks/_member_detail.html:6
+#: src/knesset/templates/links/_links_as_div.html:3
+#: src/knesset/templates/links/_links_as_table.html:3
+msgid "Links"
+msgstr "קישורים"
+
+#: src/knesset/templates/mks/_member_detail.html:7
 msgid "party"
 msgstr "מפלגה"
 
-#: src/knesset/templates/mks/_member_detail.html:10
+#: src/knesset/templates/mks/_member_detail.html:11
 msgid "age"
 msgstr "גיל"
 
-#: src/knesset/templates/mks/_member_detail.html:15
+#: src/knesset/templates/mks/_member_detail.html:16
 msgid "year of aliyah"
 msgstr "שנת עליה"
 
-#: src/knesset/templates/mks/_member_detail.html:20
+#: src/knesset/templates/mks/_member_detail.html:21
 msgid "family status"
 msgstr "מצב משפחתי"
 
-#: src/knesset/templates/mks/_member_detail.html:24
+#: src/knesset/templates/mks/_member_detail.html:25
 msgid "place of birth"
 msgstr "מקום לידה"
 
-#: src/knesset/templates/mks/_member_detail.html:28
+#: src/knesset/templates/mks/_member_detail.html:29
 msgid "phone"
 msgstr "טלפון"
 
-#: src/knesset/templates/mks/_member_detail.html:32
+#: src/knesset/templates/mks/_member_detail.html:33
 msgid "fax"
 msgstr "פקס"
-
-#: src/knesset/templates/mks/_member_detail.html:40
-msgid "web site"
-msgstr "אתר"
 
 #: src/knesset/templates/mks/_member_detail.html:67
 msgid "Abstain"
@@ -5471,13 +5480,30 @@ msgstr "נוכח ולא הצביע"
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
-#: src/knesset/templates/search/search.html:19
+#: src/knesset/templates/search/search.html:18
 msgid "Results"
 msgstr "תוצאות"
 
-#: src/knesset/templates/search/search.html:26
+#: src/knesset/templates/search/search.html:25
 msgid "No results found."
 msgstr "לא נמצאו תוצאות"
+
+#: src/knesset/templates/search/search.html:31
+msgid "previous results"
+msgstr "התוצאות הקודמות"
+
+#: src/knesset/templates/search/search.html:35
+msgid "next results"
+msgstr "התוצאות הבאות"
+
+#~ msgid "Link to compete vote text"
+#~ msgstr "קישור למסמך המלא"
+
+#~ msgid "No link to full vote text"
+#~ msgstr "אין קישור למסמך המלא להצבעה זו"
+
+#~ msgid "web site"
+#~ msgstr "אתר"
 
 #~ msgid "email validation for"
 #~ msgstr "אימות דואר אלקטרוני עבור"

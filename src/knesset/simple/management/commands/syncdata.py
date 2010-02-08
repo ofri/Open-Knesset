@@ -3,6 +3,7 @@ import os,sys,traceback
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 import urllib2,urllib
 import re
@@ -13,6 +14,7 @@ import time
 
 from knesset.mks.models import *
 from knesset.laws.models import *
+from knesset.links.models import *
 from django.db import connection
 from django.db.models import Max
 
@@ -94,7 +96,7 @@ class Command(NoArgsCommand):
         self.update_last_downloaded_vote_id()
         f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
         f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_downloaded_vote_id+1,14110) # this is the range of page ids to go over. currently its set manually.
+        r = range(self.last_downloaded_vote_id+1,13400) # this is the range of page ids to go over. currently its set manually.
         for id in r:
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
@@ -158,7 +160,7 @@ class Command(NoArgsCommand):
 
         fields = [unicode(field.decode('utf8')) for field in fields]
 
-        for id in range(self.last_downloaded_member_id+1,1000): # TODO - find max member id in knesset website and use here
+        for id in range(self.last_downloaded_member_id+1,900): # TODO - find max member id in knesset website and use here
             m = mk_parser.MKHtmlParser(id).Dict
             if (m.has_key('name') and m['name'] != None): name = m['name'].encode(ENCODING).replace('&nbsp;',' ')
             else: continue
@@ -233,11 +235,14 @@ class Command(NoArgsCommand):
             try:
                 m = Member.objects.get(id=member_id)
             except: # member_id not found. create new
-                m = Member(id=member_id, name=name, img_url=img_url, phone=phone, fax=fax, website=website, email=email, family_status=family_status, 
+                m = Member(id=member_id, name=name, img_url=img_url, phone=phone, fax=fax, website=None, email=email, family_status=family_status, 
                             number_of_children=number_of_children, date_of_birth=date_of_birth, place_of_birth=place_of_birth, 
                             date_of_death=date_of_death, year_of_aliyah=year_of_aliyah)
                 m.save()
-                
+                if len(website)>0:
+                    l = Link(title='אתר האינטרנט של %s' % name, url=website, content_type=ContentType.objects.get_for_model(m), object_pk=m.id)
+                    l.save()
+
 
     def get_search_string(self,s):
         s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
@@ -329,8 +334,11 @@ class Command(NoArgsCommand):
                         (law_name,law_name_for_search,law_exp,law_link) = law
                         if vote_label_for_search.find(law_name_for_search) >= 0:
                             v.summary = law_exp
-                            v.full_text_url = law_link
+                            v.full_text_url = law_link                    
                     v.save()
+                    if v.full_text_url != None:
+                        l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=v.id)
+                        l.save()
                 votes[int(vote_id)] = v
             f.close()
 
@@ -428,6 +436,7 @@ class Command(NoArgsCommand):
                 parties[p].save()
             for m in members:
                 members[m].save()
+            Member.objects.filter(end_date__isnull=True).delete() # remove members that haven't voted at all - no end date
             for ms in memberships:
                 memberships[ms].save()
             #for va in voteactions:
@@ -660,7 +669,7 @@ class Command(NoArgsCommand):
         if process:
             print "beginning process phase"
             self.calculate_votes_importances()
-            self.calculate_correlations()
+            #self.calculate_correlations()
 
         if dump_to_file:
             print "writing votes to tsv file"

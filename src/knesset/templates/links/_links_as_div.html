@@ -1,0 +1,8 @@
+{% load i18n %}
+{% if links %}
+    <div class="links"><label>{% trans 'Links' %}</label>
+    {% for link in links %}
+        <a class="bold-link" href="{{ link.url|safe }}">{{ link.title }}</a>&nbsp;
+    {% endfor %}
+    </div>
+{% endif %}

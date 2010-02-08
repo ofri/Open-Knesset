@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
+{% load links_extra %}
 {% load comments %}
 
 <h2><a href=".">{{ object.title }}</a></h2>
@@ -49,7 +50,7 @@
             <label for="tags">{% trans "Tags" %}</label>
             {{ object.tag_form.tags }}
             <input type="submit" value="Submit" />
-        </form><br/>
+        </form>
         <label for="tags">{% trans "Tags" %}</label>
         {% if object.tags %}
             <div id="vote-tags">
@@ -61,7 +62,6 @@
             {% trans "No tags yet" %}<br />        
         {% endif %}
     {% else %}
-        <br/>
         <label for="tags">{% trans "Tags" %}</label>
         {% if object.tags %}
             <div id="tags">
@@ -75,22 +75,19 @@
 
         ({% trans 'Login to edit tags' %})
     {% endif %}
-
     </div>
 
-</table>
+    {% object_links_as_div object %} 
+
+
 {% if object.summary %}
+    <h3>{% trans 'summary' %}</h3>
     {{ object.summary|safe }}
 {% else %}
     {% trans 'No summary for this vote' %}
 {% endif %}
 <br />
-{% if object.full_text_url %}
-    <a class="bold-link" href="{{ object.full_text_url }}">{% trans 'Link to compete vote text' %}</a>
-{% else %}
-    {% trans 'No link to full vote text' %}
-{% endif %}
-<br />
+
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}
     <h3>{% trans 'User comments' %}</h3>
