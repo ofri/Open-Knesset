@@ -100,8 +100,13 @@
     <h3>{% trans 'No comments yet' %}</h3>
 {% endif %}
 
-{% if perms.comments.add_comment %}
-    {% render_comment_form for object %}
+{% if user.is_authenticated %}
+    {% if perms.comments.add_comment %}
+        {% render_comment_form for object %}
+    {% else %}
+        {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
+    {% endif %}
+{% else %}
+    {% trans 'Please login to comment' %}
 {% endif %}
-
 

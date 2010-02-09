@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-08 17:45+0200\n"
+"POT-Creation-Date: 2010-02-09 23:05+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -5416,6 +5416,22 @@ msgstr "תגובות"
 #: src/knesset/templates/laws/_vote_detail.html:100
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
+
+#: src/knesset/templates/laws/_vote_detail.html:107
+msgid "Please"
+msgstr "אנא"
+
+#: src/knesset/templates/laws/_vote_detail.html:107
+msgid "validate your email"
+msgstr "אמת את הדואר אלקטרוני שסיפקת"
+
+#: src/knesset/templates/laws/_vote_detail.html:107
+msgid " to comment"
+msgstr " כדי להגיב"
+
+#: src/knesset/templates/laws/_vote_detail.html:110
+msgid "Please login to comment"
+msgstr "אנא התחבר כדי להגיב"
 
 #: src/knesset/templates/laws/_vote_list.html:15
 msgid "No tags"
