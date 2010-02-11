@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-09 23:30+0200\n"
+"POT-Creation-Date: 2010-02-11 20:18+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -293,11 +293,19 @@ msgstr "פרסם את התגובה"
 msgid "Time"
 msgstr "זמן"
 
-#: templates/laws/_vote_detail.html:14 templates/mks/_member_detail.html:51
+#: templates/laws/_vote_detail.html:12
+msgid "Go to next vote by time"
+msgstr "עבור להצבעה הבאה לפי זמן"
+
+#: templates/laws/_vote_detail.html:13
+msgid "Go to previous vote by time"
+msgstr "עבור להצבעה הקודמת לפי זמן"
+
+#: templates/laws/_vote_detail.html:16 templates/mks/_member_detail.html:51
 msgid "For"
 msgstr "בעד"
 
-#: templates/laws/_vote_detail.html:16 templates/laws/_vote_detail.html:33
+#: templates/laws/_vote_detail.html:18 templates/laws/_vote_detail.html:35
 #, python-format
 msgid ""
 "\n"
@@ -314,56 +322,56 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים"
 
-#: templates/laws/_vote_detail.html:27 templates/laws/_vote_detail.html:44
+#: templates/laws/_vote_detail.html:29 templates/laws/_vote_detail.html:46
 msgid "none"
 msgstr "אין"
 
-#: templates/laws/_vote_detail.html:31 templates/mks/_member_detail.html:59
+#: templates/laws/_vote_detail.html:33 templates/mks/_member_detail.html:59
 msgid "Against"
 msgstr "נגד"
 
-#: templates/laws/_vote_detail.html:50 templates/laws/_vote_detail.html:54
-#: templates/laws/_vote_detail.html:65 templates/laws/_vote_list.html:8
+#: templates/laws/_vote_detail.html:52 templates/laws/_vote_detail.html:56
+#: templates/laws/_vote_detail.html:67 templates/laws/_vote_list.html:8
 msgid "Tags"
 msgstr "תגיות"
 
-#: templates/laws/_vote_detail.html:62 templates/laws/_vote_detail.html:73
+#: templates/laws/_vote_detail.html:64 templates/laws/_vote_detail.html:75
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
-#: templates/laws/_vote_detail.html:76
+#: templates/laws/_vote_detail.html:78
 msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
-#: templates/laws/_vote_detail.html:84
+#: templates/laws/_vote_detail.html:86
 msgid "summary"
 msgstr "תקציר"
 
-#: templates/laws/_vote_detail.html:87
+#: templates/laws/_vote_detail.html:89
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: templates/laws/_vote_detail.html:93
+#: templates/laws/_vote_detail.html:95
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/laws/_vote_detail.html:100
+#: templates/laws/_vote_detail.html:102
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
-#: templates/laws/_vote_detail.html:107
+#: templates/laws/_vote_detail.html:109
 msgid "Please"
 msgstr "אנא"
 
-#: templates/laws/_vote_detail.html:107
+#: templates/laws/_vote_detail.html:109
 msgid "validate your email"
 msgstr "אמת את הדואר אלקטרוני שסיפקת"
 
-#: templates/laws/_vote_detail.html:107
+#: templates/laws/_vote_detail.html:109
 msgid " to comment"
 msgstr " כדי להגיב"
 
-#: templates/laws/_vote_detail.html:110
+#: templates/laws/_vote_detail.html:112
 msgid "Please login to comment"
 msgstr "אנא התחבר כדי להגיב"
 

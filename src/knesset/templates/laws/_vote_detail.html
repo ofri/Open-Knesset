@@ -8,7 +8,9 @@
 <div id="vote-info">
     <div>
         <label for="time">{% trans "Time" %}</label>
-        {{ object.time_string }}
+        {{ object.time_string }} 
+        &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_next_by_time.id %}">{% trans 'Go to next vote by time' %}</a>
+        &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_previous_by_time.id %}">{% trans 'Go to previous vote by time' %}</a>
     </div>    
     <div>
         <label for="for-votes">{% trans "For" %}</label>        
