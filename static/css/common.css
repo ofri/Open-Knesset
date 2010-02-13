@@ -31,10 +31,10 @@ a:link, a:visited { color:#ffc757; }
 /* NAV */
 
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
-#nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #453C3F;-moz-border-radius:0.8em 0.8em 0em 0em; }
+#nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #453C3F;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
-#nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #A69380; -moz-border-radius:0.8em 0.8em 0em 0em;}
-#nav-global li.selected { color:#000; border-bottom: none; padding-bottom: 1px;color:white; background: #A69380; -moz-border-radius:0.8em 0.8em 0em 0em; }
+#nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #A69380; }
+#nav-global li.selected { color:#000; border-bottom: none; padding-bottom: 1px;color:white; background: #A69380; }
 #nav-global li.selected>a { color:#000; }
 
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
@@ -275,10 +275,25 @@ a.disabled { color: #aaaaaa; }
     background-color: #333333;
 }
 
-p.date {
+#content-main p {
     color:#666;
     margin:0em;
 }
+#content-main div.bar {
+    background-color: #00AA00;
+    margin:0em;
+    height:1em;  
+    margin-bottom:-1.25em;
+    position:relative;
+    top:-1.25em;
+    right:4.5em;  
+}
+#content-main div.against {
+    background-color: #AA0000;
+}
+
+
+
 #content-main .tag {
     background-color:#C0C0C0;
     border-bottom:1px solid #251C1F;

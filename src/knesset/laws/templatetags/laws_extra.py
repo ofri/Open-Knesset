@@ -14,4 +14,13 @@ def user_votes(user, vote, tag):
         cv = 0
     return {'user': user, 'vote':vote, 'tag':tag, 'current_vote_up':cv==1, 'current_vote_down':cv==-1}
 
+@register.inclusion_tag('laws/_bar.html')
+def bar(number, is_for):
+    """ draws a bar to represent number of voters.
+        number - number of people voted this way.
+        is_for - is this a "for" bar. false means "against" bar.
+    """
+    width = round(number/1.2)
+    return {'width': width, 'is_for':is_for}
+
 
