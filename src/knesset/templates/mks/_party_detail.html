@@ -1,9 +1,16 @@
 {% load i18n %}
 <h2><a href=".">{{ object.name }}</a></h2>
 <div class="list-wrap">
-{% for o in object.member_list %}
+<h3>{% trans 'Current MKs' %}</h3>
+{% for o in object.current_members %}
 	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
+{% if object.past_members %}
+    <h3>{% trans 'Past MKs' %}</h3>
+    {% for o in object.past_members %}
+	    <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
+    {% endfor %}
+{% endif %}
 </div>
