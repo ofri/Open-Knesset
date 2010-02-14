@@ -37,6 +37,8 @@ class Command(NoArgsCommand):
             help="run post loading process."),
         make_option('--dump', action='store_true', dest='dump-to-file',
             help="write votes to tsv files (mainly for debug, or for research team)."),
+        make_option('--update', action='store_true', dest='update',
+            help="online update of votes data."),
         
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -91,6 +93,75 @@ class Command(NoArgsCommand):
             for (name,exp,link) in zip(names,exps,links):
                 f.write("%s\t%s\t%s\n" % (name,exp,link))
         f.close()
+
+    def update_votes(self):
+        """This function updates votes data online, without saving to files."""
+        self.update_last_downloaded_vote_id()
+        r = range(self.last_downloaded_vote_id+1,self.last_downloaded_vote_id+100) 
+        for vote_id in r:
+            (page, vote_src_url) = self.read_votes_page(vote_id)
+            title = self.get_page_title(page)
+            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
+                print "no vote found at id %d" % vote_id
+            else:
+                (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
+                
+        #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t') 
+        #f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date))
+                print "downloaded data with vote id %d" % vote_id
+                vote_time_string = date.replace('&nbsp;',' ')
+                for i in self.heb_months:
+                    if i in vote_time_string:
+                        month = self.heb_months.index(i)+1
+                day = re.search("""(\d\d?)""", vote_time_string).group(1)
+                year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
+                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
+                vote_date = datetime.date(int(year),int(month),int(day))
+                vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
+                #vote_label_for_search = self.get_search_string(vote_label)
+
+                try:
+                    v = Vote.objects.get(src_id=vote_id)                
+                    created = False
+                except:
+                    v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
+                    try:
+                        vote_meeting_num = int(vote_meeting_num)
+                        v.meeting_number = vote_meeting_num
+                    except:
+                        pass
+                    try:
+                        vote_num = int(vote_num)
+                        v.vote_number = vote_num
+                    except:
+                        pass
+                    v.src_url = vote_src_url
+                    v.save()
+                    if v.full_text_url != None:
+                        l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=v.id)
+                        l.save()
+
+                results = self.read_member_votes(page)
+                for (voter,voter_party,vote) in results:
+                    #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))                    
+
+                    # transform party names to canonical form
+                    if(voter_party in self.party_aliases):
+                        voter_party = self.party_aliases[voter_party]
+
+                    p = Party.objects.get(name=voter_party)
+                                    
+                    # get the member voting                
+                    try:
+                        m = Member.objects.get(name=voter)
+                    except:   # if there are several people with same name, 
+                        m = Member.objects.filter(name=voter).order_by('-date_of_birth')[0] # choose the younger. TODO: fix this
+                        
+                    # add the current member's vote
+                    va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+                    if created:
+                        va.save()
+
 
     def get_votes_data(self):
         self.update_last_downloaded_vote_id()
@@ -518,7 +589,7 @@ class Command(NoArgsCommand):
     def read_votes_page(self,voteId, retry=0):
         """
         Gets a votes page from the knesset website.
-        returns is as a string (utf encoded)
+        returns a string (utf encoded)
         """
         url = "http://www.knesset.gov.il/vote/heb/Vote_Res_Map.asp?vote_id_t=%d" % voteId
         try:        
@@ -647,14 +718,15 @@ class Command(NoArgsCommand):
         load = options.get('load', False)
         process = options.get('process', False)
         dump_to_file = options.get('dump-to-file', False)
+        update = options.get('update', False)
         if all_options:
             download = True
             load = True
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file)])):
-            print "no arguments found. doing nothing. try -h for help, or --all to run the full syncdata flow"
+        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update)])):
+            print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
             print "beginning download phase"
@@ -675,4 +747,6 @@ class Command(NoArgsCommand):
             print "writing votes to tsv file"
             self.dump_to_file()
 
+        if update:
+            self.update_votes()
         
