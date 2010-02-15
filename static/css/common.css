@@ -25,15 +25,18 @@ a:link, a:visited { color:#ffc757; }
 
 /* HEADER */
 
-#header { position:relative; height:3em; }
+#header { position:relative; height:3em; right:2em}
 #header h1#logo { margin:4px; width:111px; height:41px; }
 
 /* NAV */
 
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
-#nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
-#nav-global a { display:block; float:left; padding:1em 16px 10px 16px; }
-#nav-global a:hover, .selected { color:white; background:#453C3F;}
+#nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #453C3F;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
+#nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
+#nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #A69380; }
+#nav-global li.selected { color:#000; border-bottom: none; padding-bottom: 1px;color:white; background: #A69380; }
+#nav-global li.selected>a { color:#000; }
+
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* ACCOUNTS */
@@ -54,11 +57,19 @@ a:link, a:visited { color:#ffc757; }
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
 #content-main, #footer { float:right; width:90%; }
-#content-main { min-height:372px; opacity: 0.7; background:#A69380; color:#311F1D; padding-bottom:10px; }
+#content-main { 
+    min-height:372px; 
+    background:#A69380; 
+    color:#311F1D; 
+    padding-bottom:10px; 
+    -moz-border-radius:1em;
+    -webkit-border-radius:1em;
+    border-radius:1em;
+}
 #generic #content-main, #code #content-main { width:100%; }
 #content-main * { margin-left:22px; margin-right:24px; }
 #content-main * * { margin-left:0; margin-right:0; }
-#content-main div { font-size: 100%; }
+#content-main div { font-size: 100%; line-height:2; }
 .sidebar { font-size:92%; }
 .sidebar * { margin-left:14px; margin-right:14px; }
 .sidebar * * { margin-left:0; margin-right:0; }
@@ -242,7 +253,7 @@ a.disabled { color: #aaaaaa; }
 #content-main .bold-link { font-weight:bold; }
 #content-main label { display: block; width: 6em; float:right}
 
-#content-main #tagging-container { padding-top:1em; padding-bottom:1em; }
+#content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
 #content-main #vote-tags { display: inline-block; line-height:2.5em }
 
@@ -264,19 +275,34 @@ a.disabled { color: #aaaaaa; }
     background-color: #333333;
 }
 
-p.date {
+#content-main p {
     color:#666;
     margin:0em;
 }
-.tag {
+#content-main div.bar {
+    background-color: #00AA00;
+    margin:0em;
+    height:1em;  
+    margin-bottom:-1.25em;
+    position:relative;
+    top:-1.25em;
+    right:4.5em;  
+}
+#content-main div.against {
+    background-color: #AA0000;
+}
+
+
+
+#content-main .tag {
     background-color:#C0C0C0;
     border-bottom:1px solid #251C1F;
     border-right:1px solid #251C1F;
     color:#E0EAF1;
     padding: 0.1em;
-    margin: 0.5em;
+
 }
-.item {
+#content-main .item {
     list-style-type:none;
     background-color:#C6A390;
     padding:0.1em;
@@ -284,22 +310,24 @@ p.date {
     margin-bottom: 0.5em;
     border-bottom:1px solid #251C1F;
     border-right:1px solid #251C1F;
+    line-height:1.5;
 }
-.list-wrap {
+#content-main .list-wrap {
     line-height: 200%;
 }
-.indented {
+#content-main .indented {
     padding-right:6em;
 }
-.item .info {
+#content-main .item .info {
     padding-right:2em;
     padding-bottom:0.1em;
     margin:0em;    
+    line-height:1.5;
 }
-.item.dontwrap {
+#content-main .item.dontwrap {
     white-space:nowrap;
 }
-div.comment {
+#content-main div.comment {
     background-color:#E3C0A0;
     border-bottom: 1px solid #251C1F;
     border-right: 1px solid #251C1F;

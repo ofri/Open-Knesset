@@ -25,8 +25,8 @@ class MembershipInline(admin.TabularInline):
 
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
-    fields = ('name','start_date','end_date')
-    list_display = ('name','start_date', 'end_date','MembersString')
+#    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
+    list_display = ('name','start_date', 'end_date','is_coalition', 'number_of_members', 'number_of_seats')
     inlines = (MembershipInline,)
 
 admin.site.register(Party, PartyAdmin)

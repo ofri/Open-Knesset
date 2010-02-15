@@ -15,12 +15,15 @@ class Correlation(models.Model):
     
 class Party(models.Model):
     name        = models.CharField(max_length=64)
-    start_date  = models.DateField(null=True)
-    end_date    = models.DateField(null=True)
-
+    start_date  = models.DateField(blank=True, null=True)
+    end_date    = models.DateField(blank=True, null=True)
+    is_coalition = models.BooleanField(default=False)
+    number_of_members = models.IntegerField(blank=True, null=True)
+    number_of_seats = models.IntegerField(blank=True, null=True)
     class Meta:
         verbose_name = _('Party')
         verbose_name_plural = _('Parties')
+        ordering = ('-number_of_seats',)
 
     @property
     def uri_template (self):
@@ -30,6 +33,12 @@ class Party(models.Model):
     def __unicode__(self):
         return "%s" % self.name
 
+    def current_members(self):
+        return self.members.filter(is_current=True)
+
+    def past_members(self):
+        return self.members.filter(is_current=False)
+    
     def name_with_dashes(self):
         return self.name.replace("'",'"').replace(' ','-')
     
@@ -55,28 +64,30 @@ class Party(models.Model):
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
     party       = models.ForeignKey('Party')
-    start_date  = models.DateField(null=True)
-    end_date    = models.DateField(null=True)
+    start_date  = models.DateField(blank=True, null=True)
+    end_date    = models.DateField(blank=True, null=True)
 
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
 
+
 class Member(models.Model):
     name    = models.CharField(max_length=64)
     parties = models.ManyToManyField(Party, related_name='members', through='Membership')
-    start_date  = models.DateField(null=True)
-    end_date    = models.DateField(null=True)
-    img_url     = models.URLField(null=True)
-    phone = models.CharField(null=True,max_length=20)
-    fax = models.CharField(null=True,max_length=20)
-    email = models.EmailField(null=True)
-    website     = models.URLField(null=True)
-    family_status = models.CharField(null=True,max_length=10)
-    number_of_children = models.IntegerField(null=True)
-    date_of_birth  = models.DateField(null=True)
-    place_of_birth = models.CharField(null=True,max_length=100)    
-    date_of_death  = models.DateField(null=True)
-    year_of_aliyah = models.IntegerField(null=True)
+    start_date  = models.DateField(blank=True, null=True)
+    end_date    = models.DateField(blank=True, null=True)
+    img_url     = models.URLField(blank=True)
+    phone = models.CharField(blank=True, null=True, max_length=20)
+    fax = models.CharField(blank=True, null=True, max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    website     = models.URLField(blank=True, null=True)
+    family_status = models.CharField(blank=True, null=True,max_length=10)
+    number_of_children = models.IntegerField(blank=True, null=True)
+    date_of_birth  = models.DateField(blank=True, null=True)
+    place_of_birth = models.CharField(blank=True, null=True, max_length=100)    
+    date_of_death  = models.DateField(blank=True, null=True)
+    year_of_aliyah = models.IntegerField(blank=True, null=True)
+    is_current = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['name']

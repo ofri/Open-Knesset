@@ -1,3 +1,4 @@
+#encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
@@ -32,7 +33,8 @@ def submit_tags(request,object_id):
         form = TagForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             v = Vote.objects.get(pk=object_id)
-            v.tags = form.cleaned_data['tags'].replace('"','')
+            v.tags = u'%s,' % form.cleaned_data['tags'].replace('"',u'”') # add comma in the end to force treatment as comma-separated list
+                                                                          # replace " with ” to support hebrew initials
 
 
     return HttpResponseRedirect("/vote/%s" % object_id)

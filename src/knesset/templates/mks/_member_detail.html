@@ -1,10 +1,10 @@
 {% load i18n %}
-{% load mks_extra %}
-<img id="member-photo" src="{{ object.img_url }}"><h2><a href=".">{{ object.name }}</a><h2>
+{% load links_extra %}
+<img id="member-photo" src="{{ object.img_url }}"/><h2><a href=".">{{ object.name }}</a><h2>
 <table id="member-info">
     <tr>
         <td>{% trans "party" %}</td>
-        <td><a class="hashnav" id="detail-{{ object.Party.id }}" href="{{ object.Party.get_absolute_url }}">{{ object.Party.name }}</a></td>
+        <td><a class="bold-link" id="detail-{{ object.Party.id }}" href="{{ object.Party.get_absolute_url }}">{{ object.Party.name }}</a></td>
     </tr>    
     <tr>
         <td>{% trans "age" %}</td>
@@ -34,17 +34,16 @@
     </tr>
     <tr>
         <td>{% trans "e-mail address" %}</td>
-        <td><a href="mailto:{{object.email}}">{{ object.email }}</a></td>
+        <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
     </tr>
-    <tr>
-        <td>{% trans "web site" %}</td>
-        {% if object.website %}
-        <td><a href="{{object.website}}">{{ object.website }}</a></td>
-        {% else %}
-        <td>{% trans "none" %}</td>
-        {% endif %}
-    </tr>
+    
+    {% object_links_as_table object %}
+
 </table>
+
+
+
+
 <h2>{% trans "Votes"%}</h2>
 
 <div class="member_votes">

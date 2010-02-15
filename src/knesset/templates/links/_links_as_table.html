@@ -1,0 +1,8 @@
+{% load i18n %}
+{% if links %}
+    <td>{% trans 'Links' %}</td><td>
+    {% for link in links %}
+        <a class="bold-link" href="{{ link.url|safe }}">{{ link.title }}</a><br/>
+    {% endfor %}
+    </td>
+{% endif %}

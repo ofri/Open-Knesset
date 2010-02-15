@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'knesset.simple',
     'knesset.tagvotes',
     'knesset.accounts',
+    'knesset.links',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -145,4 +146,5 @@ HAYSTACK_SITECONF = 'knesset.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'whoosh_index')
 
+MAX_TAG_LENGTH = 128
 
