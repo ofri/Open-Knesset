@@ -13,10 +13,11 @@ from knesset.laws.urls import lawsurlpatterns
 from knesset.hashnav.views import SimpleView
 admin.autodiscover()
 
-from knesset.feeds import Comments
+from knesset.feeds import *
 
 feeds = {
-    'comments': Comments
+    'comments': Comments,
+    'votes': Votes
 }
 
 js_info_dict = {
