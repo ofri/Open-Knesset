@@ -10,11 +10,11 @@
 		{% include "laws/_vote_list.html" %}
 	</ul>
     {% if has_previous %}
-        <a id="prev" href="?page={{ previous }}">{% trans 'previous votes' %}</a>    
+        <a id="prev" href="?page={{ previous }}">{% trans 'next votes' %}</a>    
     {% endif %}
     &nbsp;
     {% if has_next %}
-        <a id="more" href="?page={{ next }}">{% trans 'next votes' %}</a>
+        <a id="more" href="?page={{ next }}">{% trans 'previous votes' %}</a>
     {% endif %}
 
 {% endblock %}
