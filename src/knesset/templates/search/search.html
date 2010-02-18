@@ -19,7 +19,7 @@
 
             {% for result in page.object_list %}
                 <p>
-                    ({{ result.verbose_name }}) <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+                    ({{ result.verbose_name }}) <a href="{{ result.object.get_absolute_url }}">{% if results.object.title %}{{ result.object.title }}{% else %}{{ result.object }}{% endif %}</a>
                 </p>
             {% empty %}
                 <p>{% trans 'No results found.' %}</p>
