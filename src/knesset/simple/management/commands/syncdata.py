@@ -95,15 +95,20 @@ class Command(NoArgsCommand):
         f.close()
 
     def update_votes(self):
-        """This function updates votes data online, without saving to files."""
-        self.update_last_downloaded_vote_id()
-        r = range(self.last_downloaded_vote_id+1,self.last_downloaded_vote_id+100) 
-        for vote_id in r:
+        """This function updates votes data online, without saving to files."""        
+        current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
+        if current_max_src_id == None: # the db contains no votes, meaning its empty
+            print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
+            return
+        vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
+        limit_src_id = vote_id + 20 # look for next 20 votes. if results are found, this value will be incremented. 
+        while vote_id < limit_src_id:        
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
                 print "no vote found at id %d" % vote_id
             else:
+                limit_src_id = vote_id + 20 # results found, so we'll look for at least 20 more votes
                 (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
                 
         #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t') 
@@ -161,7 +166,7 @@ class Command(NoArgsCommand):
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
                     if created:
                         va.save()
-
+            vote_id += 1 
 
     def get_votes_data(self):
         self.update_last_downloaded_vote_id()
