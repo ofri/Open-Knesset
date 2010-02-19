@@ -1,12 +1,18 @@
 {% load i18n %}
 {% load laws_extra %}
 {% for o in object_list %}
-<li class="item">
-    <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a><br/>
+
+
+<div class="item">
+    <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">
+    {{ o.title }}<br/>
     <div class="info">
         <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count 1 %}
         <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count 0 %}
         <p class="date">{{ o.time_string }}</p>
+    </div>
+    </a>
+    <div>
         {% if o.tags %}    
             <!--{% trans 'Tags' %}:-->
             {% for t in o.tags %}
@@ -18,7 +24,7 @@
             <!--{% trans 'No tags' %}-->
         {% endif %}
     </div>
-</li>
+</div>
 {% empty %}
     {% trans "No results found" %}
 {% endfor %}

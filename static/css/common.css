@@ -6,7 +6,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 /* SETUP */
 
-body { margin:0; padding:0; background-color:#311F1D; color:white; }
+body { margin:0; padding:0; background-color:#3e6c86; color:white; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
 #container { padding-right:10%;}
 #homepage #container { max-width:100em; }
@@ -16,9 +16,9 @@ body, th, td { font:12px/1.4em Verdana,sans-serif; }
 a {text-decoration: none;}
 a img {border: none;}
 a:link, a:visited { color:#ffc757; }
-#content-main a:link, #content-main a:visited { color:#251C1F; text-decoration:none; }
+#content-main a:link, #content-main a:visited { color:#000; text-decoration:none; }
 #content-secondary a:link, #content-secondary a:visited { color:#ffc757; text-decoration:none; }
-#content-main a:hover { color:#fff; background-color: #150C0F}
+#content-main a:hover { color:#fff; background-color: #150C0F; }
 #content-secondary a:hover { color:#ffe761; background:none; }
 
 #content-main h2 a, #content-main h3 a { text-decoration:none !important; }
@@ -31,10 +31,10 @@ a:link, a:visited { color:#ffc757; }
 /* NAV */
 
 #nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
-#nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #453C3F;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
+#nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #0d204a;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
-#nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #A69380; }
-#nav-global li.selected { color:#000; border-bottom: none; padding-bottom: 1px;color:white; background: #A69380; }
+#nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #dfe4e7; }
+#nav-global li.selected { color:#000; border-bottom: none; padding-bottom: 1px;color:white; background: #dfe4e7; }
 #nav-global li.selected>a { color:#000; }
 
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
@@ -59,7 +59,7 @@ a:link, a:visited { color:#ffc757; }
 #content-main, #footer { float:right; width:90%; }
 #content-main { 
     min-height:372px; 
-    background:#A69380; 
+    background:#dfe4e7; 
     color:#311F1D; 
     padding-bottom:10px; 
     -moz-border-radius:1em;
@@ -276,7 +276,7 @@ a.disabled { color: #aaaaaa; }
 }
 
 #content-main p {
-    color:#666;
+    color:#999;
     margin:0em;
 }
 #content-main div.bar {
@@ -292,28 +292,44 @@ a.disabled { color: #aaaaaa; }
     background-color: #AA0000;
 }
 
-
-
 #content-main .tag {
     background-color:#C0C0C0;
     border-bottom:1px solid #251C1F;
     border-right:1px solid #251C1F;
     color:#E0EAF1;
     padding: 0.1em;
+}
+#content-main .tag:hover {
+    background-color:#E0EAF1;
+    color:#C0C0C0;
 
 }
+
 #content-main .item {
     list-style-type:none;
-    background-color:#C6A390;
+    background-color:#0d204a;
     padding:0.1em;
     margin-top:0.5em;
     margin-bottom: 0.5em;
-    border-bottom:1px solid #251C1F;
-    border-right:1px solid #251C1F;
+    border-top:2px solid #3d508a;
+    border-left:2px solid #3d508a;
+    border-bottom:2px solid #00001a;
+    border-right:2px solid #00001a;
+    font-size:115%;
     line-height:1.5;
+    color:#fbfffd;
+}
+#content-main .item:hover {
+    background-color:#150C0F;
+}
+#content-main .item > a {
+    color: #fbfffd;
+}
+#content-main a.item {
+    color: #fbfffd;
 }
 #content-main .list-wrap {
-    line-height: 200%;
+    line-height: 250%;
 }
 #content-main .indented {
     padding-right:6em;
@@ -337,6 +353,8 @@ a.disabled { color: #aaaaaa; }
     padding-right: 0.5em;
     margin:0.2em;
     margin-bottom:0.8em;
-
+}
+#content-main div.comment > p {
+    color: #444;
 }
 
