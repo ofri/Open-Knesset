@@ -15,7 +15,7 @@ body, th, td { font:12px/1.4em Verdana,sans-serif; }
 
 a {text-decoration: none;}
 a img {border: none;}
-a:link, a:visited { color:#ffc757; }
+a:link, a:visited { color:#ffffff; }
 #content-main a:link, #content-main a:visited { color:#000; text-decoration:none; }
 #content-secondary a:link, #content-secondary a:visited { color:#ffc757; text-decoration:none; }
 #content-main a:hover { color:#fff; background-color: #150C0F; }
@@ -40,16 +40,16 @@ a:link, a:visited { color:#ffc757; }
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* ACCOUNTS */
-#accounts { margin:10px}
+#accounts { margin:10px; }
+#accounts a:hover { background-color:#251C1F; }
 #login { margin-right:30px; display:inline; direction:rtl; text-align:right;}
 #login a {
     padding-left: 0.5em;
     padding-right: 0.5em;
     padding-top:0.5em;
     padding-bottom:0.5em;
-    background-color:#563310;
 }
-#login a:hover { color:white; background-color:#251C1F; }
+#login a:hover { background-color:#251C1F; }
 #login img {width:16px; height:16px;position:relative; top:4px; padding-left:1px; padding-right:1px;}
 #login img#RES_ID_fb_login_image {height: 16px; width:67px;}
 /* COLUMNS */
