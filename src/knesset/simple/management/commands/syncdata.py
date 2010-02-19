@@ -11,6 +11,7 @@ import gzip
 import simplejson
 import datetime
 import time
+import logging
 
 from knesset.mks.models import *
 from knesset.laws.models import *
@@ -24,6 +25,8 @@ ENCODING = 'utf8'
 
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, 'data'))
+
+logger = logging.getLogger("open-knesset.syncdata")
 
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
@@ -105,15 +108,15 @@ class Command(NoArgsCommand):
         while vote_id < limit_src_id:        
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
-            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
-                print "no vote found at id %d" % vote_id
+            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id                
+                logger.debug("no vote found at id %d" % vote_id)
             else:
                 limit_src_id = vote_id + 20 # results found, so we'll look for at least 20 more votes
                 (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
                 
         #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t') 
         #f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date))
-                print "downloaded data with vote id %d" % vote_id
+                logger.debug("downloaded data with vote id %d" % vote_id)
                 vote_time_string = date.replace('&nbsp;',' ')
                 for i in self.heb_months:
                     if i in vote_time_string:
@@ -177,7 +180,7 @@ class Command(NoArgsCommand):
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
-                print "no vote found at id %d" % id
+                logger.debug("no vote found at id %d" % id)
             else:
                 count_for = 0
                 count_against = 0
@@ -196,8 +199,8 @@ class Command(NoArgsCommand):
                     if(vote=="no-vote"):
                         count_no_vote += 1
                 f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date, count_for, count_against, count_abstain, count_no_vote))
-                print "downloaded data with vote id %d" % id
-            print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
+                logger.debug("downloaded data with vote id %d" % id)
+            #print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
         f.close()
         f2.close()        
 
@@ -210,7 +213,7 @@ class Command(NoArgsCommand):
             f = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'))
         except:
             self.last_downloaded_member_id = 0
-            print "members file does not exist. setting last_downloaded_member_id to 0"
+            logger.debug("members file does not exist. setting last_downloaded_member_id to 0")
             return            
         content = f.read().split('\n')
         for line in content:
@@ -220,7 +223,7 @@ class Command(NoArgsCommand):
             id = int(s[0])
             if id > self.last_downloaded_member_id:
                 self.last_downloaded_member_id = id
-        print "last member id found in local files is %d. " % self.last_downloaded_member_id
+        logger.debug("last member id found in local files is %d. " % self.last_downloaded_member_id)
         f.close()
     
     def get_members_data(self):
@@ -265,7 +268,7 @@ class Command(NoArgsCommand):
             f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
         except:
             self.last_downloaded_vote_id = 0
-            print "votes file does not exist. setting last_downloaded_vote_id to 0"
+            logger.debug("votes file does not exist. setting last_downloaded_vote_id to 0")
             return            
         content = f.read().split('\n')
         for line in content:
@@ -275,7 +278,7 @@ class Command(NoArgsCommand):
             vote_id = int(s[0])
             if vote_id > self.last_downloaded_vote_id:
                 self.last_downloaded_vote_id = vote_id
-        print "last id found in local files is %d. " % self.last_downloaded_vote_id
+        logger.debug("last id found in local files is %d. " % self.last_downloaded_vote_id)
         f.close()
 
 
@@ -344,7 +347,7 @@ class Command(NoArgsCommand):
 
 
     def update_db_from_files(self):
-        print "Update DB From Files"
+        logger.debug("Update DB From Files")
 
         try:
             laws = [] # of lists: [name,name_for_search,explanation,link]
@@ -367,7 +370,7 @@ class Command(NoArgsCommand):
             if current_max_src_id == None: # the db contains no votes, meanins its empty
                 current_max_src_id = 0
 
-            print "%s processing votes data." % (str(datetime.datetime.now()))
+            logger.debug("processing votes data")
             f = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'))
             content = f.read().split('\n')
             for line in content:
@@ -418,7 +421,7 @@ class Command(NoArgsCommand):
                 votes[int(vote_id)] = v
             f.close()
 
-            print "%s processing member votes data." % (str(datetime.datetime.now()))
+            logger.debug("processing member votes data")
             f = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'))
             content = f.read().split('\n')
             for line in content:
@@ -506,8 +509,8 @@ class Command(NoArgsCommand):
                 if created:
                     va.save()
                 
-            print "%s done" % str(datetime.datetime.now())
-            print "%s saving data: %d parties, %d members, %d memberships " % (str(datetime.datetime.now()), len(parties), len(members), len(memberships) )
+            logger.debug("done")
+            logger.debug("saving data: %d parties, %d members, %d memberships " % (len(parties), len(members), len(memberships) ))
             for p in parties:
                 parties[p].save()
             for m in members:
@@ -517,12 +520,11 @@ class Command(NoArgsCommand):
                 memberships[ms].save()
             #for va in voteactions:
             #    voteactions[va].save()
-            print "%s done" % str(datetime.datetime.now())
+            logger.debug("done")
             f.close()
         except:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            print "error: "
-            traceback.print_exception(exceptionType, exceptionValue, exceptionTraceback, limit=2, file=sys.stdout)
+            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
             
 
     def calculate_votes_importances(self):
@@ -602,11 +604,12 @@ class Command(NoArgsCommand):
             page = urlData.read().decode('windows-1255').encode('utf-8')
             time.sleep(2)
         except Exception,e:
-            print "ERROR: %s" % e
+            logger.warn(e)
             if retry < 5:
-                print "waiting some time and trying again... (# of retries = %d)" % retry+1
+                logger.warn("waiting some time and trying again... (# of retries = %d)" % retry+1)
                 page = read_votes_page(self,voteId, retry+1)
             else:
+                logger.error("failed too many times. last error: %s", e)
                 return None
         return (page, url)
 

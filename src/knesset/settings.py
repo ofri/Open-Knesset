@@ -1,5 +1,6 @@
 # Django settings for knesset project.
 import sys, socket, os
+import logging
 hostname = socket.gethostname() # to add host specific overrides
 
 
@@ -116,10 +117,6 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 
-if hostname == 'ofri-laptop': # just an example of host-specific definitions. use if nessecery
-    DATABASE_USER = 'knesset'     
-    DATABASE_PASSWORD = '123456'  
-
 OPENID_REDIRECT_NEXT = '/accounts/openid/done/'
 
 OPENID_SREG = {"requred": "nickname, email", "optional":"postcode, country", "policy_url": ""}
@@ -136,7 +133,6 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                            'socialauth.auth_backends.OpenIdBackend',
                            'socialauth.auth_backends.FacebookBackend',
                            )
-#print "PATH: %s" % sys.path
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -147,4 +143,14 @@ HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'whoosh_index')
 
 MAX_TAG_LENGTH = 128
+
+
+LOG_FILENAME = os.path.join(PROJECT_ROOT, 'open-knesset.log')
+logger = logging.getLogger("open-knesset")
+logger.setLevel(logging.DEBUG)  # override this in prod server to logging.ERROR
+h = logging.FileHandler(LOG_FILENAME)
+h.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s")
+h.setFormatter(formatter)
+logger.addHandler(h)
 
