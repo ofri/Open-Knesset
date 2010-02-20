@@ -31,7 +31,7 @@ class PartyVotingStatistics(models.Model):
         
     
     def __unicode__(self):
-        return "%s" % party.name
+        return "%s" % self.party.name
 
 
 class MemberVotingStatistics(models.Model):
