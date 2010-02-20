@@ -17,7 +17,7 @@ from knesset.mks.models import *
 from knesset.laws.models import *
 from knesset.links.models import *
 from django.db import connection
-from django.db.models import Max
+from django.db.models import Max,Count
 
 import mk_info_html_parser as mk_parser
 
@@ -757,4 +757,52 @@ class Command(NoArgsCommand):
 
         if update:
             self.update_votes()
-        
+
+def update_vote_properties(v):
+    party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
+    party_ids = [x[0] for x in party_id_member_count_coalition]
+    party_member_count = [x[1] for x in party_id_member_count_coalition]
+    party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
+
+    for_party_ids = [va.Party().id for va in v.for_votes()]    
+    party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]    
+
+    against_party_ids = [va.Party().id for va in v.against_votes()]
+    party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
+
+    party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+    party_stands_against = [float(av)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+    
+    party_stands_for = dict(zip(party_ids, party_stands_for))
+    party_stands_against = dict(zip(party_ids, party_stands_against))
+
+    coalition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if party_is_coalition[y]])
+    coalition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if party_is_coalition[y]])
+    opposition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if not party_is_coalition[y]])
+    opposition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if not party_is_coalition[y]])
+
+    coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes)) 
+    coalition_stands_against = float(coalition_against_votes)>0.66*(coalition_for_votes+coalition_against_votes)
+    opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+    opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+
+    for va in VoteAction.objects.filter(vote=v):
+        dirt = False
+        if party_stands_for[va.member.Party().id] and va.type=='against':
+            va.against_party = True
+            dirt = True
+        if party_stands_against[va.member.Party().id] and va.type=='for':
+            va.against_party = True
+            dirt = True
+        if va.member.Party().is_coalition:
+            if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
+                va.against_coalition = True
+                dirt = True
+        else:
+            if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
+                va.against_opposition = True
+                dirt = True
+        if dirt:
+            va.save()
+
+

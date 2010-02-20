@@ -14,10 +14,38 @@ VOTE_ACTION_TYPE_CHOICES = (
         (u'no-vote', u'No Vote'),
 )
 
+
+class PartyVotingStatistics(models.Model):
+    party = models.OneToOneField('mks.Party',related_name='voting_statistics')
+    
+    def votes_against_party_count(self):
+        return VoteAction.objects.filter(member__current_party=self.party, against_party=True).count()
+
+    def votes_count(self):
+        return VoteAction.objects.filter(member__current_party=self.party).count()
+
+    def discipline(self):
+        total_votes = self.votes_count()
+        votes_against_party = self.votes_against_party_count()
+        return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        
+    
+    def __unicode__(self):
+        return "%s" % party.name
+
+
+class MemberVotingStatistics(models.Model):
+    member = models.OneToOneField('mks.Member', related_name='voting_statistics')
+
+
+
 class VoteAction(models.Model):
     type   = models.CharField(max_length=10,choices=VOTE_ACTION_TYPE_CHOICES)
     member = models.ForeignKey('mks.Member')
     vote   = models.ForeignKey('Vote')
+    against_party = models.BooleanField(default=False)
+    against_coalition = models.BooleanField(default=False)
+    against_opposition = models.BooleanField(default=False)
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
  
@@ -51,13 +79,24 @@ class Vote(models.Model):
         return self.votes.filter(voteaction__type='for').count()
 
     def for_votes(self):
-        return self.votes.filter(voteaction__type='for')
+        #return self.votes.filter(voteaction__type='for')
+        return VoteAction.objects.filter(vote=self, type='for')
 
     def against_votes_count(self):
         return self.votes.filter(voteaction__type='against').count()
 
     def against_votes(self):
-        return self.votes.filter(voteaction__type='against')
+        #return self.votes.filter(voteaction__type='against')
+        return VoteAction.objects.filter(vote=self, type='against')
+
+    def against_party_votes_count(self):
+        return VoteAction.objects.filter(vote=self, against_party=True).count()
+
+    def against_coalition_votes_count(self):
+        return VoteAction.objects.filter(vote=self, against_coalition=True).count()
+
+    def against_opposition_votes_count(self):
+        return VoteAction.objects.filter(vote=self, against_opposition=True).count()
 
 
     def short_summary(self):

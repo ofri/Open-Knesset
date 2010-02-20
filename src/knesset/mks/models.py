@@ -73,7 +73,8 @@ class Membership(models.Model):
 
 class Member(models.Model):
     name    = models.CharField(max_length=64)
-    parties = models.ManyToManyField(Party, related_name='members', through='Membership')
+    parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
+    current_party = models.ForeignKey(Party, related_name='members', blank=True, null=True)
     start_date  = models.DateField(blank=True, null=True)
     end_date    = models.DateField(blank=True, null=True)
     img_url     = models.URLField(blank=True)

@@ -1,8 +1,19 @@
 {% load i18n %}
 <h2><a href=".">{{ object.name }}</a></h2>
 <div class="list-wrap">
+<h3>{% trans 'Statistics' %}</h3>
+<table id="party-info">
+    <tr>
+        <td>{% trans "Number of votes" %}</td>
+        <td>{{ object.voting_statistics.votes_count }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Factional discipline" %}</td>
+        <td>{{ object.voting_statistics.discipline }}</td>
+    </tr>    
+</table>
 <h3>{% trans 'Current MKs' %}</h3>
-{% for o in object.current_members %}
+{% for o in object.current_members.all %}
 	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
 {% empty %}
     {% trans "Data base empty, no objects" %}
