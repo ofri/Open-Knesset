@@ -95,6 +95,7 @@ INSTALLED_APPS = (
     'openid_consumer',
     'tagging',
     'haystack',
+    'south',
     'knesset.aux',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
