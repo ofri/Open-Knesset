@@ -20,7 +20,7 @@ class Migration:
     
     
     def backwards(self, orm):
-        orm.MemberVotingStatistics.all().delete()
+        orm.MemberVotingStatistics.objects.all().delete()
     
     models = {
         'laws.membervotingstatistics': {

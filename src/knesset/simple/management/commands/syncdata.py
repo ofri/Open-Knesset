@@ -764,10 +764,10 @@ def update_vote_properties(v):
     party_member_count = [x[1] for x in party_id_member_count_coalition]
     party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
 
-    for_party_ids = [va.Party().id for va in v.for_votes()]    
+    for_party_ids = [va.member.current_party.id for va in v.for_votes()]    
     party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]    
 
-    against_party_ids = [va.Party().id for va in v.against_votes()]
+    against_party_ids = [va.member.current_party.id for va in v.against_votes()]
     party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
 
     party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
@@ -788,10 +788,10 @@ def update_vote_properties(v):
 
     for va in VoteAction.objects.filter(vote=v):
         dirt = False
-        if party_stands_for[va.member.Party().id] and va.type=='against':
+        if party_stands_for[va.member.current_party.id] and va.type=='against':
             va.against_party = True
             dirt = True
-        if party_stands_against[va.member.Party().id] and va.type=='for':
+        if party_stands_against[va.member.current_party.id] and va.type=='for':
             va.against_party = True
             dirt = True
         if va.member.Party().is_coalition:
