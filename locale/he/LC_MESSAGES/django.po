@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-21 22:38+0200\n"
+"POT-Creation-Date: 2010-02-22 00:45+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -60,12 +60,12 @@ msgstr "פג תוקפו של קוד אימות זה."
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
-#: laws/models.py:69
+#: laws/models.py:101
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:70 laws/urls.py:8 templates/include/member_detail.html:48
-#: templates/mks/_member_detail.html:47
+#: laws/models.py:102 laws/urls.py:8 templates/include/member_detail.html:48
+#: templates/mks/_member_detail.html:62
 msgid "Votes"
 msgstr "הצבעות"
 
@@ -145,7 +145,8 @@ msgid ""
 "OK. We don't blame you. On the contrary. You just helped us find a bug, and "
 "our team will investigate it ASAP."
 msgstr ""
-"משהו שעשית גרם לשגיאה בשרת שלנו. אבל הי! אנחנו לא מאשימים אותך. להפך. עזרת לנו למצוא באג, והצוות שלנו יתפנה מייד לטפל בו. אז תודה רבה לך!"
+"משהו שעשית גרם לשגיאה בשרת שלנו. אבל הי! אנחנו לא מאשימים אותך. להפך. עזרת "
+"לנו למצוא באג, והצוות שלנו יתפנה מייד לטפל בו. אז תודה רבה לך!"
 
 #: templates/500.html:15 templates/accounts/email_validation_failed.html:9
 #: templates/accounts/email_validation_sent.html:10
@@ -357,29 +358,29 @@ msgstr "אין"
 
 #: templates/include/member_detail.html:51
 #: templates/include/vote_detail.html:13 templates/laws/_vote_detail.html:20
-#: templates/laws/_vote_list.html:10 templates/mks/_member_detail.html:50
+#: templates/laws/_vote_list.html:10 templates/mks/_member_detail.html:65
 msgid "For"
 msgstr "בעד"
 
 #: templates/include/member_detail.html:59
 #: templates/include/vote_detail.html:30 templates/laws/_vote_detail.html:41
-#: templates/laws/_vote_list.html:11 templates/mks/_member_detail.html:58
+#: templates/laws/_vote_list.html:11 templates/mks/_member_detail.html:73
 msgid "Against"
 msgstr "נגד"
 
 #: templates/include/member_detail.html:67
-#: templates/mks/_member_detail.html:66
+#: templates/mks/_member_detail.html:81
 msgid "Abstain"
 msgstr "נמנע"
 
 #: templates/include/member_detail.html:75
-#: templates/mks/_member_detail.html:74
+#: templates/mks/_member_detail.html:89
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
 #: templates/include/member_list.html:6 templates/include/party_detail.html:7
 #: templates/include/party_list.html:6 templates/include/vote_list.html:20
-#: templates/mks/_member_list.html:9 templates/mks/_party_detail.html:19
+#: templates/mks/_member_list.html:9 templates/mks/_party_detail.html:27
 #: templates/mks/_party_list.html:9 templates/mks/_party_list.html.py:18
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
@@ -558,25 +559,37 @@ msgstr "ההצבעות הקודמות"
 msgid "Links"
 msgstr "קישורים"
 
-#: templates/mks/_member_list.html:3 templates/mks/_party_detail.html:15
-msgid "Current MKs"
-msgstr "חברי כנסת נוכחיים"
-
-#: templates/mks/_member_list.html:11 templates/mks/_party_detail.html:22
-msgid "Past MKs"
-msgstr "חברי כנסת בעבר"
-
-#: templates/mks/_party_detail.html:4
+#: templates/mks/_member_detail.html:43 templates/mks/_party_detail.html:4
 msgid "Statistics"
 msgstr "סטטיסטיקות"
 
-#: templates/mks/_party_detail.html:7
+#: templates/mks/_member_detail.html:46 templates/mks/_party_detail.html:7
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: templates/mks/_party_detail.html:11
+#: templates/mks/_member_detail.html:50 templates/mks/_party_detail.html:15
 msgid "Factional discipline"
 msgstr "משמעת סיעתית"
+
+#: templates/mks/_member_detail.html:54 templates/mks/_party_detail.html:19
+msgid "Coalition discipline"
+msgstr "משמעת קואליציה"
+
+#: templates/mks/_member_detail.html:54 templates/mks/_party_detail.html:19
+msgid "Opposition discipline"
+msgstr "משמעת אופוזיציה"
+
+#: templates/mks/_member_list.html:3 templates/mks/_party_detail.html:23
+msgid "Current MKs"
+msgstr "חברי כנסת נוכחיים"
+
+#: templates/mks/_member_list.html:11 templates/mks/_party_detail.html:30
+msgid "Past MKs"
+msgstr "חברי כנסת בעבר"
+
+#: templates/mks/_party_detail.html:11
+msgid "Average votes per MK"
+msgstr "ממוצע הצבעות לח\"כ"
 
 #: templates/mks/_party_list.html:3
 msgid "Coalition"

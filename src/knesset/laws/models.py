@@ -22,13 +22,23 @@ class PartyVotingStatistics(models.Model):
         return VoteAction.objects.filter(member__current_party=self.party, against_party=True).count()
 
     def votes_count(self):
-        return VoteAction.objects.filter(member__current_party=self.party).count()
+        return VoteAction.objects.filter(member__current_party=self.party).exclude(type='no-vote').count()
+
+    def votes_per_seat(self):
+        return round(float(self.votes_count()) / self.party.number_of_seats,1)
 
     def discipline(self):
         total_votes = self.votes_count()
         votes_against_party = self.votes_against_party_count()
         return round(100.0*(total_votes-votes_against_party)/total_votes,1)
-        
+
+    def coalition_discipline(self): # if party is in opposition this actually returns opposition_discipline
+        total_votes = self.votes_count()
+        if self.party.is_coalition:
+            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
+        else:
+            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
+        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)                
     
     def __unicode__(self):
         return "%s" % self.party.name
@@ -37,6 +47,28 @@ class PartyVotingStatistics(models.Model):
 class MemberVotingStatistics(models.Model):
     member = models.OneToOneField('mks.Member', related_name='voting_statistics')
 
+    def votes_against_party_count(self):
+        return VoteAction.objects.filter(member=self.member, against_party=True).count()
+
+    def votes_count(self):
+        return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+
+    def discipline(self):
+        total_votes = self.votes_count()
+        votes_against_party = self.votes_against_party_count()
+        return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+
+    def coalition_discipline(self): # if party is in opposition this actually returns opposition_discipline
+        total_votes = self.votes_count()
+        if self.member.current_party.is_coalition:
+            votes_against_coalition = VoteAction.objects.filter(member=self.member, against_coalition=True).count()
+        else:
+            votes_against_coalition = VoteAction.objects.filter(member=self.member, against_opposition=True).count()
+        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)                
+
+
+    def __unicode__(self):
+        return "%s" % self.member.name
 
 
 class VoteAction(models.Model):

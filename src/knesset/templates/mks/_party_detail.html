@@ -8,8 +8,16 @@
         <td>{{ object.voting_statistics.votes_count }}</td>
     </tr>
     <tr>
+        <td>{% trans "Average votes per MK" %}</td>
+        <td>{{ object.voting_statistics.votes_per_seat }}</td>
+    </tr>
+    <tr>
         <td>{% trans "Factional discipline" %}</td>
         <td>{{ object.voting_statistics.discipline }}</td>
+    </tr>    
+    <tr>
+        <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
+        <td>{{ object.voting_statistics.coalition_discipline }}</td>
     </tr>    
 </table>
 <h3>{% trans 'Current MKs' %}</h3>

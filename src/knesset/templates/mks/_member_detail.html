@@ -40,7 +40,22 @@
     {% object_links_as_table object %}
 
 </table>
+<h2>{% trans "Statistics" %}</h2>
+<table>
+    <tr>
+        <td>{% trans "Number of votes" %}</td>
+        <td>{{ object.voting_statistics.votes_count }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Factional discipline" %}</td>
+        <td>{{ object.voting_statistics.discipline }}</td>
+    </tr>
+    <tr>
+        <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
+        <td>{{ object.voting_statistics.coalition_discipline }}</td>
+    </tr>    
 
+</table>
 
 
 
