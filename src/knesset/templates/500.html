@@ -1,0 +1,17 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+		<meta http-equiv="Content-Language" content="en-us">
+        <title>{% trans 'Open Knesset' %} | {% trans 'Something went wrong!' %}<title>
+</head>
+<body>
+<h1>{% trans 'Something went wrong!' %}</h1>
+<p>
+	{% trans "Whatever you did caused some kind of an error in our server. But hey! its OK. We don't blame you. On the contrary. You just helped us find a bug, and our team will investigate it ASAP." %}    
+</p>
+<a class="bold-link" href="{% url main %}">{% trans 'Back to the main page' %}</a>  
+
+

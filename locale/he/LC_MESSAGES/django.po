@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-20 23:19+0200\n"
+"POT-Creation-Date: 2010-02-21 22:38+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -127,6 +127,32 @@ msgstr ""
 msgid "tag votes"
 msgstr "הצבעות"
 
+#: templates/404.html:3 templates/404.html.py:4
+msgid "Page not found"
+msgstr "דף לא קיים"
+
+#: templates/500.html:8 templates/base.html:9
+msgid "Open Knesset"
+msgstr "הכנסת הפתוחה"
+
+#: templates/500.html:8 templates/500.html.py:11
+msgid "Something went wrong!"
+msgstr "משהו השתבש!"
+
+#: templates/500.html:13
+msgid ""
+"Whatever you did caused some kind of an error in our server. But hey! its "
+"OK. We don't blame you. On the contrary. You just helped us find a bug, and "
+"our team will investigate it ASAP."
+msgstr ""
+"משהו שעשית גרם לשגיאה בשרת שלנו. אבל הי! אנחנו לא מאשימים אותך. להפך. עזרת לנו למצוא באג, והצוות שלנו יתפנה מייד לטפל בו. אז תודה רבה לך!"
+
+#: templates/500.html:15 templates/accounts/email_validation_failed.html:9
+#: templates/accounts/email_validation_sent.html:10
+#: templates/accounts/email_validation_successful.html:9
+msgid "Back to the main page"
+msgstr "חזרה לעמוד הראשי"
+
 #: templates/_about.html:2
 msgid ""
 "Open Knesset a project aimed at exposing the knesset's work to the public."
@@ -175,10 +201,6 @@ msgstr "חיפוש"
 #: templates/about.html:3 templates/about.html.py:4 templates/base.html:76
 msgid "About"
 msgstr "אודות"
-
-#: templates/base.html:9
-msgid "Open Knesset"
-msgstr "הכנסת הפתוחה"
 
 #: templates/base.html:18
 msgid "I'm just sitting here watching the wheels go round and round."
@@ -267,12 +289,6 @@ msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות ע
 #: templates/accounts/email_validation_subject.txt:1
 msgid "email validation for"
 msgstr "אימות דואר אלקטרוני עבור"
-
-#: templates/accounts/email_validation_failed.html:9
-#: templates/accounts/email_validation_sent.html:10
-#: templates/accounts/email_validation_successful.html:9
-msgid "Back to the main page"
-msgstr "חזרה לעמוד הראשי"
 
 #: templates/accounts/email_validation_sent.html:8
 msgid "An email has been sent to"
@@ -1100,9 +1116,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Add Another"
 #~ msgstr "הוסף עוד אחת"
-
-#~ msgid "Page not found"
-#~ msgstr "דף לא קיים"
 
 #~ msgid "We're sorry, but the requested page could not be found."
 #~ msgstr "אנו מצטערים, לא ניתן למצוא את הדף המבוקש."
