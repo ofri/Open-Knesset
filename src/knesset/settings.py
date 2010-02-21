@@ -154,3 +154,5 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s
 h.setFormatter(formatter)
 logger.addHandler(h)
 
+from local_settings import *
+
