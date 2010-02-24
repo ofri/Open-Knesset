@@ -8,7 +8,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 body { margin:0; padding:0; background-color:#3e6c86; color:white; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
-#container { padding-right:10%;}
+#container { width:80%; margin: 0 auto;}
 #homepage #container { max-width:100em; }
 
 /* LINKS */
@@ -25,12 +25,12 @@ a:link, a:visited { color:#ffffff; }
 
 /* HEADER */
 
-#header { height:3em; padding-right:2em}
+#header { clear:both; padding-right:2em}
 #header h1#logo { margin:4px; width:111px; height:41px; }
 
 /* NAV */
 
-#nav-global { margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
+#nav-global { margin:0; padding:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #0d204a;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
 #nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #dfe4e7; }
@@ -40,9 +40,9 @@ a:link, a:visited { color:#ffffff; }
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* ACCOUNTS */
-#accounts { margin:10px; }
+#accounts { margin-top:10px; float: left; }
 #accounts a:hover { background-color:#251C1F; }
-#login { margin-right:30px; display:inline; direction:rtl; text-align:right;}
+#login { display:inline;}
 #login a {
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -56,12 +56,12 @@ a:link, a:visited { color:#ffffff; }
 
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
-#content-main, #footer { float:right; width:90%; }
+#content-main, #footer { width:100%; }
 #content-main { 
     min-height:372px; 
     background:#dfe4e7; 
     color:#311F1D; 
-    padding-bottom:10px; 
+    padding:1em 0; 
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
     border-radius:1em;

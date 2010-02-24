@@ -44,26 +44,26 @@
 	</head>
 
 	<body>
-    <div id="accounts">
-        {% if user.is_authenticated %}
-            {% trans 'Logged in as ' %} {{ user }} &bull;
-                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
-                <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
-        {% else %}
-            {% trans 'Login via' %}
-            <div id="login">
-<!--                    <a href="{% url socialauth_twitter_login %}" id="twitter_login_link"><img src="/static/img/twitter.png"/>{% trans 'Twitter' %}</a> 
-                    <a href="{% url socialauth_yahoo_login %}" id="yahoo_login_link"><img src="/static/img/yahoo.png"/>{% trans 'Yahoo' %}</a> 
-                    <a href="{% url socialauth_openid_login %}" id="openid_login_link"><img src="/static/img/openid.png"/>{% trans 'Openid' %}</a> 
-    -->                <a href="{% url socialauth_google_login %}" id="google_login_link"><img src="/static/img/google.png"/>{% trans 'Google' %}</a> 
-                    <fb:login-button onlogin="facebook_onlogin();"></fb:login-button> 
-                    <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
-                    <script type="text/javascript" src="{{MEDIA_URL}}js/fixfacebook.js"></script>
-                <br />
-            </div>
-        {% endif %}
-    </div>
 	<div id="container">
+        <div id="accounts">
+            {% if user.is_authenticated %}
+                {% trans 'Logged in as ' %} {{ user }} &bull;
+                    <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
+                    <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
+            {% else %}
+                {% trans 'Login via' %}
+                <div id="login">
+    <!--                    <a href="{% url socialauth_twitter_login %}" id="twitter_login_link"><img src="/static/img/twitter.png"/>{% trans 'Twitter' %}</a> 
+                        <a href="{% url socialauth_yahoo_login %}" id="yahoo_login_link"><img src="/static/img/yahoo.png"/>{% trans 'Yahoo' %}</a> 
+                        <a href="{% url socialauth_openid_login %}" id="openid_login_link"><img src="/static/img/openid.png"/>{% trans 'Openid' %}</a> 
+        -->                <a href="{% url socialauth_google_login %}" id="google_login_link"><img src="/static/img/google.png"/>{% trans 'Google' %}</a> 
+                        <fb:login-button onlogin="facebook_onlogin();"></fb:login-button> 
+                        <script type="text/javascript">  FB.init("{{ fb_api_key }}", "{% url socialauth_xd_receiver %}"); </script>
+                        <script type="text/javascript" src="{{MEDIA_URL}}js/fixfacebook.js"></script>
+                    <br />
+                </div>
+            {% endif %}
+        </div>
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
