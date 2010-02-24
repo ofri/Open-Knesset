@@ -6,9 +6,9 @@
 {% block h1content %}{{ title }}{% endblock %}
 {% block submenu %} {% endblock %}
 {% block divcontent %}
-	<ul id="item-list">
+	<div id="item-list">
 		{% include "laws/_vote_list.html" %}
-	</ul>
+	</div>
     {% if has_previous %}
         <a id="prev" href="?page={{ previous }}">{% trans 'next votes' %}</a>    
     {% endif %}
