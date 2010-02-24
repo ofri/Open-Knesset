@@ -25,12 +25,12 @@ a:link, a:visited { color:#ffffff; }
 
 /* HEADER */
 
-#header { position:relative; height:3em; right:2em}
+#header { height:3em; padding-right:2em}
 #header h1#logo { margin:4px; width:111px; height:41px; }
 
 /* NAV */
 
-#nav-global { position:absolute; margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
+#nav-global { margin:0; padding:0; bottom:0; right:0; font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; margin-left:0.1em; margin-right:0.1em; margin-top:0; margin-bottom:0; padding:0; padding-bottom:1px; background: #0d204a;-moz-border-radius:0.8em 0.8em 0em 0em; -webkit-border-radius:0.8em 0.8em 0em 0em; border-radius:0.8em 0.8em 0em 0em;}
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
 #nav-global li:hover { border-bottom: 1px solid #000; padding-bottom: 0px; color:white; background: #dfe4e7; }
