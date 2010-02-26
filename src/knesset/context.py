@@ -8,6 +8,8 @@ import re
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
+from haystack.forms import SearchForm
+
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
     'member': _('Members'),
@@ -26,5 +28,7 @@ def processor(request):
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
     
     d['fb_api_key'] = settings.FACEBOOK_API_KEY
+
+    d['search_form'] = SearchForm()
 
     return d

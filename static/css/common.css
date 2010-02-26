@@ -358,3 +358,10 @@ a.disabled { color: #aaaaaa; }
     color: #444;
 }
 
+
+div #search {
+    float:left;
+    margin-top:6px;
+    margin-left:20px;
+    height:32px;
+}
