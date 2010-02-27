@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-22 00:45+0200\n"
+"POT-Creation-Date: 2010-02-27 10:51+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:13 mks/models.py:96 templates/base.html:74
+#: context.py:15 mks/models.py:96 templates/base.html:77
 #: templates/mks/member_detail.html:5 templates/mks/member_list.html:3
 #: templates/mks/member_list.html.py:5
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:14 mks/models.py:25 templates/base.html:75
+#: context.py:16 mks/models.py:25 templates/base.html:78
 #: templates/mks/party_detail.html:5 templates/mks/party_list.html:3
 #: templates/mks/party_list.html.py:5
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:15 templates/base.html:72
+#: context.py:17 templates/base.html:75
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -69,7 +69,7 @@ msgstr "הצבעה"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/urls.py:9 templates/base.html:73
+#: laws/urls.py:9 templates/base.html:76
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
@@ -194,12 +194,13 @@ msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 msgid "or"
 msgstr "או"
 
-#: templates/_main.html:10 templates/search/search.html:3
-#: templates/search/search.html.py:4 templates/search/search.html:13
+#: templates/_main.html:10 templates/base.html:68
+#: templates/search/search.html:3 templates/search/search.html.py:4
+#: templates/search/search.html:13
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/about.html:3 templates/about.html.py:4 templates/base.html:76
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:79
 msgid "About"
 msgstr "אודות"
 
@@ -207,51 +208,51 @@ msgstr "אודות"
 msgid "I'm just sitting here watching the wheels go round and round."
 msgstr "אתר הכנסת הפתוחה"
 
-#: templates/base.html:49
+#: templates/base.html:50
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: templates/base.html:50
+#: templates/base.html:51
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: templates/base.html:51
+#: templates/base.html:52
 msgid "Logout"
 msgstr "התנתק"
 
-#: templates/base.html:53
+#: templates/base.html:54
 msgid "Login via"
 msgstr "הזדהה באמצעות"
 
-#: templates/base.html:55
+#: templates/base.html:56
 msgid "Twitter"
 msgstr "טוויטר"
 
-#: templates/base.html:56
+#: templates/base.html:57
 msgid "Yahoo"
 msgstr "יאהו"
 
-#: templates/base.html:57
+#: templates/base.html:58
 msgid "Openid"
 msgstr "&rlm;OpenID"
 
-#: templates/base.html:58
+#: templates/base.html:59
 msgid "Google"
 msgstr "גוגל"
 
-#: templates/base.html:71 templates/main.html:3 templates/main.html.py:4
+#: templates/base.html:74 templates/main.html:3 templates/main.html.py:4
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:93
+#: templates/base.html:96
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:97
+#: templates/base.html:100
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:99
+#: templates/base.html:102
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -599,19 +600,23 @@ msgstr "קואליציה"
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: templates/search/search.html:18
+#: templates/search/search.html:19
+msgid "Did you mean"
+msgstr "האם התכוונת ל"
+
+#: templates/search/search.html:21
 msgid "Results"
 msgstr "תוצאות"
 
-#: templates/search/search.html:25
+#: templates/search/search.html:28
 msgid "No results found."
 msgstr "לא נמצאו תוצאות"
 
-#: templates/search/search.html:31
+#: templates/search/search.html:34
 msgid "previous results"
 msgstr "התוצאות הקודמות"
 
-#: templates/search/search.html:35
+#: templates/search/search.html:38
 msgid "next results"
 msgstr "התוצאות הבאות"
 

@@ -1,4 +1,6 @@
 from datetime import datetime
+from haystack.forms import SearchForm
+
 def limit_by_request(qs, request):
     if 'num' in request.GET:
         num = int(request.GET['num'])
@@ -11,3 +13,9 @@ def yearstart(year):
 
 def yearend(year):
     return datetime(year,12,31)
+
+class SearchFormWithSpellSuggest(SearchForm):
+    def search(self):
+        sqs = super(SearchFormWithSpellSuggest, self).search()
+        self.spl = sqs.spelling_suggestion()
+        return sqs

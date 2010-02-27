@@ -11,6 +11,9 @@ from knesset.views import MainView
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.hashnav.views import SimpleView
+from utils import SearchFormWithSpellSuggest
+from haystack.views import SearchView
+
 admin.autodiscover()
 
 from knesset.feeds import *
@@ -27,6 +30,8 @@ js_info_dict = {
 about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
+
+
 urlpatterns = patterns('',
     url(r'^$', MainView(), name='main'),
     url(r'^about/$', about_view, name='about'),
@@ -42,7 +47,8 @@ urlpatterns = patterns('',
      (r'^comments/$', 'django.views.generic.list_detail.object_list', {'queryset': Comment.objects.all(),'paginate_by':20}), 
      (r'^comments/', include('django.contrib.comments.urls')),
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
-     (r'^search/', include('haystack.urls')),
+     #(r'^search/', include('haystack.urls')),
+     url(r'^search/', SearchView(form_class=SearchFormWithSpellSuggest), name='haystack_search'),
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns

@@ -15,6 +15,9 @@
             </tr>
         </table>
         {% if query %}
+            {% if form.spl %}
+            <a href="{% url haystack_search %}?q={{ form.spl }}">{% trans 'Did you mean' %} "{{ form.spl }}"?</a>
+            {% endif %}
             <h3>{% trans 'Results' %}</h3>
 
             {% for result in page.object_list %}
@@ -34,6 +37,7 @@
         {% if page.has_next %}
             <a id="more" href="?q={{ query }}&page={{ page.next_page_number }}">{% trans 'next results' %}</a>
         {% endif %}
+
     </form>
 {% endblock %}
 

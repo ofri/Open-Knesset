@@ -8,7 +8,7 @@ import re
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from haystack.forms import SearchForm
+from utils import SearchFormWithSpellSuggest
 
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
@@ -17,6 +17,7 @@ STATE_NAMES = {
     'vote': _('Past Votes'),
 }
 url = re.compile(r'(?P<state>\w+)/(?:(?P<pk>\d+)/)?$')
+
 
 def processor(request):
     d = dict()
@@ -29,6 +30,6 @@ def processor(request):
     
     d['fb_api_key'] = settings.FACEBOOK_API_KEY
 
-    d['search_form'] = SearchForm()
+    d['search_form'] = SearchFormWithSpellSuggest()
 
     return d
