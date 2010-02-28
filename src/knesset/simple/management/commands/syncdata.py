@@ -97,6 +97,37 @@ class Command(NoArgsCommand):
                 f.write("%s\t%s\t%s\n" % (name,exp,link))
         f.close()
 
+    def download_laws(self):
+        """ returns an array of laws data: laws[i][0] - name, laws[i][1] - name for search, laws[i][2] - summary, laws[i][3] - link """
+        laws = []
+        for x in range(0,79,26): # read 4 last laws pages
+            page = self.read_laws_page(x) 
+            (names,exps,links) = self.parse_laws_page(page)
+            for (name,exp,link) in zip(names,exps,links):
+                name_for_search = self.get_search_string(name)
+                laws.append((name,name_for_search,exp,link))
+        return laws 
+
+    def update_laws_data(self):
+        logger.debug("update laws data")
+        laws = self.download_laws()
+        votes = Vote.objects.all().order_by('-time')[:100]
+        for v in votes:
+            search_name = self.get_search_string(v.title.encode('UTF-8'))
+            for l in laws:
+                if search_name.find(l[1]) >= 0:
+                    print "match"
+                    v.summary = l[2]
+                    v.save()
+                    try:
+                        (link, created) = Link.objects.get_or_create(title=u'מסמך הצעת החוק באתר הכנסת', url=l[3], content_type=ContentType.objects.get_for_model(v), object_pk=v.id)
+                        if created:                         
+                            link.save()
+                    except Exception, e:
+                        logger.error(e)
+                    
+
+
     def update_votes(self):
         """This function updates votes data online, without saving to files."""        
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
@@ -169,6 +200,9 @@ class Command(NoArgsCommand):
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
                     if created:
                         va.save()
+
+                update_vote_properties(v)
+
             vote_id += 1 
 
     def get_votes_data(self):
@@ -757,6 +791,7 @@ class Command(NoArgsCommand):
 
         if update:
             self.update_votes()
+            self.update_laws_data()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
