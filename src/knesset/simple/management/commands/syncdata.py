@@ -12,6 +12,8 @@ import simplejson
 import datetime
 import time
 import logging
+from cStringIO import StringIO
+from pyth.plugins.rtf15.reader import Rtf15Reader
 
 from knesset.mks.models import *
 from knesset.laws.models import *
@@ -746,6 +748,44 @@ class Command(NoArgsCommand):
         except Exception, e:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nsearch_text='+search_text.encode('utf8')+'\nvote.title='+v.title.encode('utf8'))
+
+    def get_full_text(self,v):
+        try:
+            l = Link.objects.get(object_pk=v.id, title=u'מסמך הצעת החוק באתר הכנסת')
+        except Exception:
+            pass
+        try:
+            if l.url.endswith('.rtf'):
+                file_str = StringIO()
+                file_str.write(urllib2.urlopen(l.url).read())
+                doc = Rtf15Reader.read(file_str)
+                content_list = []
+                is_bold = False
+                for j in [1,2]:
+                    for i in range(len(doc.content[j].content)):
+                        part = doc.content[j].content[i]
+                        if 'bold' in part.properties:           # this part is bold
+                            if not is_bold:                          # last part was not bold
+                                content_list.append('<br/><b>')         # add new line and bold
+                                is_bold = True                          # remember that we are now in bold
+                            content_list.append(part.content[0]+' ') # add this part
+                            
+                        else:                                   # this part is not bold
+                            if len(part.content[0]) <= 1:           # this is a dummy node, ignore it
+                                pass
+                            else:                                   # this is a real node
+                                if is_bold:                         # last part was bold. need to unbold
+                                    content_list.append('</b>')
+                                    is_bold = False
+                                content_list.append('<br/>'+part.content[0]) #add this part in a new line
+
+                    content_list.append('<br/>')
+
+                v.full_text = ''.join(content_list)
+                v.save()
+        except Exception, e:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nvote.title='+v.title.encode('utf8'))
 
     def dump_to_file(self):
         f = open('votes.tsv','wt')

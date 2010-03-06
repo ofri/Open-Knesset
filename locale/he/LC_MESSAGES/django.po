@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-27 10:51+0200\n"
+"POT-Creation-Date: 2010-03-06 21:30+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -431,11 +431,11 @@ msgstr "קישור למסמך המלא"
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: templates/include/vote_detail.html:84 templates/laws/_vote_detail.html:107
+#: templates/include/vote_detail.html:84 templates/laws/_vote_detail.html:112
 msgid "User comments"
 msgstr "תגובות"
 
-#: templates/include/vote_detail.html:91 templates/laws/_vote_detail.html:114
+#: templates/include/vote_detail.html:91 templates/laws/_vote_detail.html:119
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
@@ -471,19 +471,23 @@ msgstr "אין עדיין תגיות"
 msgid "summary"
 msgstr "תקציר"
 
-#: templates/laws/_vote_detail.html:121
+#: templates/laws/_vote_detail.html:106
+msgid "Bill Text"
+msgstr "החוק המלא"
+
+#: templates/laws/_vote_detail.html:126
 msgid "Please"
 msgstr "אנא"
 
-#: templates/laws/_vote_detail.html:121
+#: templates/laws/_vote_detail.html:126
 msgid "validate your email"
 msgstr "אמת את הדואר אלקטרוני שסיפקת"
 
-#: templates/laws/_vote_detail.html:121
+#: templates/laws/_vote_detail.html:126
 msgid " to comment"
 msgstr " כדי להגיב"
 
-#: templates/laws/_vote_detail.html:124
+#: templates/laws/_vote_detail.html:129
 msgid "Please login to comment"
 msgstr "אנא התחבר כדי להגיב"
 
@@ -1541,9 +1545,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Phone number"
 #~ msgstr "מספר טלפון"
-
-#~ msgid "Text"
-#~ msgstr "טקסט"
 
 #~ msgid "URL"
 #~ msgstr "URL"

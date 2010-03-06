@@ -102,6 +102,11 @@
 {% endif %}
 <br />
 
+{% if object.full_text %}
+    <h3>{% trans 'Bill Text' %}</h3>
+    {{ object.full_text|safe }}
+{% endif %}
+
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}
     <h3>{% trans 'User comments' %}</h3>
