@@ -207,6 +207,7 @@ class Command(NoArgsCommand):
                 update_vote_properties(v)
                 v = Vote.objects.get(src_id=vote_id)
                 self.find_synced_protocol(v)
+                self.get_full_text(v)
 
             vote_id += 1 
 
