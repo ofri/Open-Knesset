@@ -47,23 +47,37 @@ class PartyVotingStatistics(models.Model):
 class MemberVotingStatistics(models.Model):
     member = models.OneToOneField('mks.Member', related_name='voting_statistics')
 
-    def votes_against_party_count(self):
-        return VoteAction.objects.filter(member=self.member, against_party=True).count()
+    def votes_against_party_count(self, from_date = None):
+        if from_date:
+            return VoteAction.objects.filter(member=self.member, against_party=True, vote__time__gt=from_date).count()    
+        else:
+            return VoteAction.objects.filter(member=self.member, against_party=True).count()
 
-    def votes_count(self):
-        return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+    def votes_count(self, from_date = None):
+        if from_date:
+            return VoteAction.objects.filter(member=self.member, vote__time__gt=from_date).exclude(type='no-vote').count()
+        else:
+            return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+            
 
-    def discipline(self):
-        total_votes = self.votes_count()
-        votes_against_party = self.votes_against_party_count()
+    def discipline(self, from_date = None):
+        total_votes = self.votes_count(from_date)
+        if total_votes <= 3: # not enough data
+            return None
+        votes_against_party = self.votes_against_party_count(from_date)
         return round(100.0*(total_votes-votes_against_party)/total_votes,1)
 
-    def coalition_discipline(self): # if party is in opposition this actually returns opposition_discipline
-        total_votes = self.votes_count()
+    def coalition_discipline(self, from_date = None): # if party is in opposition this actually returns opposition_discipline
+        total_votes = self.votes_count(from_date)
+        if total_votes <= 3: # not enough data
+            return None
         if self.member.current_party.is_coalition:
-            votes_against_coalition = VoteAction.objects.filter(member=self.member, against_coalition=True).count()
+            v = VoteAction.objects.filter(member=self.member, against_coalition=True)
         else:
-            votes_against_coalition = VoteAction.objects.filter(member=self.member, against_opposition=True).count()
+            v = VoteAction.objects.filter(member=self.member, against_opposition=True)
+        if from_date:
+            v = v.filter(vote__time__gt=from_date)
+        votes_against_coalition = v.count()
         return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)                
 
 

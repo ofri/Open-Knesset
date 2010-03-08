@@ -1,6 +1,8 @@
 from django import template
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
+from datetime import date, timedelta
+from django.utils.translation import ugettext_lazy as _
 
 register = template.Library()
 
@@ -23,4 +25,18 @@ def bar(number, is_for):
     width = round(number/1.2)
     return {'width': width, 'is_for':is_for}
 
+@register.filter
+def recent_discipline(m):
+    d = date.today() - timedelta(30)
+    return m.voting_statistics.discipline(d) or _('Not enough data')
+
+@register.filter
+def recent_coalition_discipline(m):
+    d = date.today() - timedelta(30)
+    return m.voting_statistics.coalition_discipline(d) or _('Not enough data')
+
+@register.filter
+def recent_votes_count(m):
+    d = date.today() - timedelta(30)
+    return m.voting_statistics.votes_count(d)
 

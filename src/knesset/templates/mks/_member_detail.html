@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load links_extra %}
+{% load laws_extra %}
 <img id="member-photo" src="{{ object.img_url }}"/><h2><a href=".">{{ object.name }}</a><h2>
 <table id="member-info">
     <tr>
@@ -45,14 +46,17 @@
     <tr>
         <td>{% trans "Number of votes" %}</td>
         <td>{{ object.voting_statistics.votes_count }}</td>
+        <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
     </tr>
     <tr>
         <td>{% trans "Factional discipline" %}</td>
-        <td>{{ object.voting_statistics.discipline }}</td>
+        <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+        <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
     </tr>
     <tr>
         <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-        <td>{{ object.voting_statistics.coalition_discipline }}</td>
+        <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+        <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
     </tr>    
 
 </table>

@@ -103,7 +103,7 @@ class Member(models.Model):
         return self.name
 
     def name_with_dashes(self):
-        return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(' ','-')
+        return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-')
 
     def Party(self):    
         return self.parties.all().order_by('-membership__start_date')[0]

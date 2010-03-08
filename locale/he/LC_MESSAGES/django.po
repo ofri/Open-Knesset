@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-06 21:30+0200\n"
+"POT-Creation-Date: 2010-03-09 00:47+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -60,12 +60,12 @@ msgstr "פג תוקפו של קוד אימות זה."
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
-#: laws/models.py:101
+#: laws/models.py:115
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:102 laws/urls.py:8 templates/include/member_detail.html:48
-#: templates/mks/_member_detail.html:62
+#: laws/models.py:116 laws/urls.py:8 templates/include/member_detail.html:48
+#: templates/mks/_member_detail.html:66
 msgid "Votes"
 msgstr "הצבעות"
 
@@ -77,6 +77,12 @@ msgstr "אישור חוקים"
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
+
+#: laws/templatetags/laws_extra.py:31 laws/templatetags/laws_extra.py:36
+#: laws/templatetags/laws_extra.py:41 templates/mks/_member_detail.html:53
+#: templates/mks/_member_detail.html:58
+msgid "Not enough data"
+msgstr "אין מספיק נתונים"
 
 #: links/admin.py:10
 msgid "Content"
@@ -308,42 +314,42 @@ msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לער�
 msgid "Post comment"
 msgstr "פרסם את התגובה"
 
-#: templates/include/member_detail.html:6 templates/mks/_member_detail.html:6
+#: templates/include/member_detail.html:6 templates/mks/_member_detail.html:7
 msgid "party"
 msgstr "מפלגה"
 
 #: templates/include/member_detail.html:10
-#: templates/mks/_member_detail.html:10
+#: templates/mks/_member_detail.html:11
 msgid "age"
 msgstr "גיל"
 
 #: templates/include/member_detail.html:15
-#: templates/mks/_member_detail.html:15
+#: templates/mks/_member_detail.html:16
 msgid "year of aliyah"
 msgstr "שנת עליה"
 
 #: templates/include/member_detail.html:20
-#: templates/mks/_member_detail.html:20
+#: templates/mks/_member_detail.html:21
 msgid "family status"
 msgstr "מצב משפחתי"
 
 #: templates/include/member_detail.html:24
-#: templates/mks/_member_detail.html:24
+#: templates/mks/_member_detail.html:25
 msgid "place of birth"
 msgstr "מקום לידה"
 
 #: templates/include/member_detail.html:28
-#: templates/mks/_member_detail.html:28
+#: templates/mks/_member_detail.html:29
 msgid "phone"
 msgstr "טלפון"
 
 #: templates/include/member_detail.html:32
-#: templates/mks/_member_detail.html:32
+#: templates/mks/_member_detail.html:33
 msgid "fax"
 msgstr "פקס"
 
 #: templates/include/member_detail.html:36
-#: templates/mks/_member_detail.html:36
+#: templates/mks/_member_detail.html:37
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
@@ -359,23 +365,23 @@ msgstr "אין"
 
 #: templates/include/member_detail.html:51
 #: templates/include/vote_detail.html:13 templates/laws/_vote_detail.html:20
-#: templates/laws/_vote_list.html:10 templates/mks/_member_detail.html:65
+#: templates/laws/_vote_list.html:10 templates/mks/_member_detail.html:69
 msgid "For"
 msgstr "בעד"
 
 #: templates/include/member_detail.html:59
 #: templates/include/vote_detail.html:30 templates/laws/_vote_detail.html:41
-#: templates/laws/_vote_list.html:11 templates/mks/_member_detail.html:73
+#: templates/laws/_vote_list.html:11 templates/mks/_member_detail.html:77
 msgid "Against"
 msgstr "נגד"
 
 #: templates/include/member_detail.html:67
-#: templates/mks/_member_detail.html:81
+#: templates/mks/_member_detail.html:85
 msgid "Abstain"
 msgstr "נמנע"
 
 #: templates/include/member_detail.html:75
-#: templates/mks/_member_detail.html:89
+#: templates/mks/_member_detail.html:93
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
@@ -564,23 +570,28 @@ msgstr "ההצבעות הקודמות"
 msgid "Links"
 msgstr "קישורים"
 
-#: templates/mks/_member_detail.html:43 templates/mks/_party_detail.html:4
+#: templates/mks/_member_detail.html:44 templates/mks/_party_detail.html:4
 msgid "Statistics"
 msgstr "סטטיסטיקות"
 
-#: templates/mks/_member_detail.html:46 templates/mks/_party_detail.html:7
+#: templates/mks/_member_detail.html:47 templates/mks/_party_detail.html:7
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: templates/mks/_member_detail.html:50 templates/mks/_party_detail.html:15
+#: templates/mks/_member_detail.html:49 templates/mks/_member_detail.html:54
+#: templates/mks/_member_detail.html:59
+msgid "Last 30 days"
+msgstr "ב 30 הימים האחרונים"
+
+#: templates/mks/_member_detail.html:52 templates/mks/_party_detail.html:15
 msgid "Factional discipline"
 msgstr "משמעת סיעתית"
 
-#: templates/mks/_member_detail.html:54 templates/mks/_party_detail.html:19
+#: templates/mks/_member_detail.html:57 templates/mks/_party_detail.html:19
 msgid "Coalition discipline"
 msgstr "משמעת קואליציה"
 
-#: templates/mks/_member_detail.html:54 templates/mks/_party_detail.html:19
+#: templates/mks/_member_detail.html:57 templates/mks/_party_detail.html:19
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
 
@@ -986,9 +997,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Today"
 #~ msgstr "היום"
-
-#~ msgid "Past 7 days"
-#~ msgstr "בשבוע האחרון"
 
 #~ msgid "This month"
 #~ msgstr "החודש"
