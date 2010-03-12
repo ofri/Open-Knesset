@@ -1,5 +1,6 @@
 from datetime import datetime
 from haystack.forms import SearchForm
+from django.db import models
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -19,3 +20,4 @@ class SearchFormWithSpellSuggest(SearchForm):
         sqs = super(SearchFormWithSpellSuggest, self).search()
         self.spl = sqs.spelling_suggestion()
         return sqs
+

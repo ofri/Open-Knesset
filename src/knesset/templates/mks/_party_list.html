@@ -1,19 +1,19 @@
 {% load i18n %}
+{% load laws_extra %}
 <div class="list-wrap">
     <h2>{% trans 'Coalition' %}</h2>
-    {% for o in object_list %}
-        {% if o.is_coalition %}
-            <a class="hashnav item" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
-        {% endif %}
+    {% for o in coalition %}
+        <a class="hashnav item" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }} ({{ o.extra }})</a>
+        {% bar o.extra 1 norm_factor baseline %}
     {% empty %}
         {% trans "Data base empty, no objects" %}
     {% endfor %}
+</div>
+<div class="list-wrap">
     <h2>{% trans 'Opposition' %}</h2>
-    {% for o in object_list %}
-        {% if o.is_coalition %}
-        {% else %}
-            <a class="hashnav item" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }}</a>&nbsp;
-        {% endif %}
+    {% for o in opposition %}
+        <a class="hashnav item" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.name }} ({{ o.extra }})</a>
+        {% bar o.extra 1 norm_factor baseline %}
     {% empty %}
         {% trans "Data base empty, no objects" %}
     {% endfor %}

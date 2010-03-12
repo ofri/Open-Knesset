@@ -1,9 +1,10 @@
 from django.conf.urls.defaults import *
 from knesset.mks.models import Member, Party
 from knesset.hashnav.views import ListDetailView
+from views import MemberListView, PartyListView
                        
-member_view = ListDetailView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
-party_view = ListDetailView(queryset = Party.objects.all(),) 
+member_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
+party_view = PartyListView(queryset = Party.objects.all(),) 
 mksurlpatterns = patterns('knesset.mks.views',
     url(r'^member/$', member_view, name='member-list'),
     url(r'^member/(?P<object_id>\d+)/$', member_view, name='member-detail'),

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-09 00:47+0200\n"
+"POT-Creation-Date: 2010-03-12 19:09+0200\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:15 mks/models.py:96 templates/base.html:77
-#: templates/mks/member_detail.html:5 templates/mks/member_list.html:3
-#: templates/mks/member_list.html.py:5
+#: context.py:15 mks/models.py:96 mks/views.py:53 mks/views.py:57
+#: templates/base.html:76 templates/mks/member_detail.html:5
+#: templates/mks/member_list.html:3 templates/mks/member_list.html.py:5
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:16 mks/models.py:25 templates/base.html:78
-#: templates/mks/party_detail.html:5 templates/mks/party_list.html:3
-#: templates/mks/party_list.html.py:5
+#: context.py:16 mks/models.py:25 mks/views.py:84 mks/views.py:97
+#: mks/views.py:112 mks/views.py:127 templates/base.html:77
+#: templates/mks/party_detail.html:5
 msgid "Parties"
 msgstr "מפלגות"
 
@@ -60,27 +60,80 @@ msgstr "פג תוקפו של קוד אימות זה."
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
-#: laws/models.py:115
+#: laws/models.py:118
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:116 laws/urls.py:8 templates/include/member_detail.html:48
+#: laws/models.py:119 laws/urls.py:8 templates/include/member_detail.html:48
 #: templates/mks/_member_detail.html:66
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/urls.py:9 templates/base.html:76
+#: laws/views.py:57
+msgid "All votes"
+msgstr "כל ההצבעות"
+
+#: laws/views.py:58
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: laws/views.py:51
+#: laws/views.py:59
+msgid "Second Call"
+msgstr "קריאה שניה"
+
+#: laws/views.py:60
+msgid "Demurrer"
+msgstr "הסתייגויות"
+
+#: laws/views.py:61
+msgid "Motion of no confidence"
+msgstr "הצבעות אי-אמון"
+
+#: laws/views.py:62
+msgid "Pass to committee"
+msgstr "העברה לוועדה"
+
+#: laws/views.py:63
+msgid "Continuation"
+msgstr "החלת דין רציפות"
+
+#: laws/views.py:64
+msgid "Last Week"
+msgstr "שבוע אחרון"
+
+#: laws/views.py:65
+msgid "Last Month"
+msgstr "חודש אחרון"
+
+#: laws/views.py:66
+msgid "All times"
+msgstr "כל הזמנים"
+
+#: laws/views.py:67 templates/include/vote_detail.html:9
+#: templates/laws/_vote_detail.html:10
+msgid "Time"
+msgstr "זמן"
+
+#: laws/views.py:68
+msgid "Controversy"
+msgstr "מידת המחלוקת"
+
+#: laws/views.py:69
+msgid "Against Party"
+msgstr "הצבעות נגד המפלגה"
+
+#: laws/views.py:70 templates/mks/_member_detail.html:47
+#: templates/mks/_party_detail.html:7
+msgid "Number of votes"
+msgstr "מספר הצבעות"
+
+#: laws/views.py:111
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
 
 #: laws/templatetags/laws_extra.py:31 laws/templatetags/laws_extra.py:36
-#: laws/templatetags/laws_extra.py:41 templates/mks/_member_detail.html:53
-#: templates/mks/_member_detail.html:58
+#: templates/mks/_member_detail.html:53 templates/mks/_member_detail.html:58
 msgid "Not enough data"
 msgstr "אין מספיק נתונים"
 
@@ -115,6 +168,38 @@ msgstr "מפלגה"
 #: mks/models.py:95
 msgid "Member"
 msgstr "ח\"כ"
+
+#: mks/views.py:45
+msgid "By ABC"
+msgstr "לפי א\"ב"
+
+#: mks/views.py:45 mks/views.py:53
+msgid "By number of votes"
+msgstr "לפי מספר הצבעות"
+
+#: mks/views.py:71
+msgid "By Number of seats"
+msgstr "מספר ח\"כים"
+
+#: mks/views.py:72
+msgid "By votes per seat"
+msgstr "הצבעות לח\"כ"
+
+#: mks/views.py:73 mks/views.py:112
+msgid "By factional discipline"
+msgstr "משמעת סיעתית"
+
+#: mks/views.py:74 mks/views.py:127
+msgid "By coalition/opposition discipline"
+msgstr "משמעת קואליציה/אופוזיציה"
+
+#: mks/views.py:84
+msgid "By number of seats"
+msgstr "מספר ח\"כים"
+
+#: mks/views.py:97
+msgid "By votes per seats"
+msgstr "הצבעות לח\"כ"
 
 #: tagvotes/models.py:11
 msgid "tagged item"
@@ -206,7 +291,7 @@ msgstr "או"
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/about.html:3 templates/about.html.py:4 templates/base.html:79
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:78
 msgid "About"
 msgstr "אודות"
 
@@ -250,15 +335,15 @@ msgstr "גוגל"
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:96
+#: templates/base.html:95
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:100
+#: templates/base.html:99
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:102
+#: templates/base.html:101
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -387,14 +472,12 @@ msgstr "נוכח ולא הצביע"
 
 #: templates/include/member_list.html:6 templates/include/party_detail.html:7
 #: templates/include/party_list.html:6 templates/include/vote_list.html:20
-#: templates/mks/_member_list.html:9 templates/mks/_party_detail.html:27
-#: templates/mks/_party_list.html:9 templates/mks/_party_list.html.py:18
+#: templates/mks/_member_list.html:9
+#: templates/mks/_member_list_with_bars.html:11
+#: templates/mks/_party_detail.html:27 templates/mks/_party_list.html:9
+#: templates/mks/_party_list.html.py:18
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
-
-#: templates/include/vote_detail.html:9 templates/laws/_vote_detail.html:10
-msgid "Time"
-msgstr "זמן"
 
 #: templates/include/vote_detail.html:15 templates/include/vote_detail.html:32
 #: templates/laws/_vote_detail.html:22 templates/laws/_vote_detail.html:43
@@ -558,11 +641,23 @@ msgstr[1] ""
 msgid "No results found"
 msgstr "לא נמצאו תוצאות"
 
-#: templates/laws/vote_list.html:13
+#: templates/laws/vote_list.html:9
+msgid "Vote types"
+msgstr "סוגי הצבעות"
+
+#: templates/laws/vote_list.html:10
+msgid "Time range"
+msgstr "טווח זמנים"
+
+#: templates/laws/vote_list.html:11
+msgid "Order by"
+msgstr "מיין לפי"
+
+#: templates/laws/vote_list.html:18 templates/laws/vote_list.html.py:20
 msgid "next votes"
 msgstr "ההצבעות הבאות"
 
-#: templates/laws/vote_list.html:17
+#: templates/laws/vote_list.html:26 templates/laws/vote_list.html.py:28
 msgid "previous votes"
 msgstr "ההצבעות הקודמות"
 
@@ -573,10 +668,6 @@ msgstr "קישורים"
 #: templates/mks/_member_detail.html:44 templates/mks/_party_detail.html:4
 msgid "Statistics"
 msgstr "סטטיסטיקות"
-
-#: templates/mks/_member_detail.html:47 templates/mks/_party_detail.html:7
-msgid "Number of votes"
-msgstr "מספר הצבעות"
 
 #: templates/mks/_member_detail.html:49 templates/mks/_member_detail.html:54
 #: templates/mks/_member_detail.html:59
@@ -595,11 +686,15 @@ msgstr "משמעת קואליציה"
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
 
-#: templates/mks/_member_list.html:3 templates/mks/_party_detail.html:23
+#: templates/mks/_member_list.html:3
+#: templates/mks/_member_list_with_bars.html:4
+#: templates/mks/_party_detail.html:23
 msgid "Current MKs"
 msgstr "חברי כנסת נוכחיים"
 
-#: templates/mks/_member_list.html:11 templates/mks/_party_detail.html:30
+#: templates/mks/_member_list.html:11
+#: templates/mks/_member_list_with_bars.html:14
+#: templates/mks/_party_detail.html:30
 msgid "Past MKs"
 msgstr "חברי כנסת בעבר"
 
@@ -607,11 +702,11 @@ msgstr "חברי כנסת בעבר"
 msgid "Average votes per MK"
 msgstr "ממוצע הצבעות לח\"כ"
 
-#: templates/mks/_party_list.html:3
+#: templates/mks/_party_list.html:4
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: templates/mks/_party_list.html:11
+#: templates/mks/_party_list.html:13
 msgid "Opposition"
 msgstr "אופוזיציה"
 
@@ -1311,9 +1406,6 @@ msgstr "התוצאות הבאות"
 #~ msgstr ""
 #~ "לאובייקט זה אין היסטוריית שינוי. כנראה לא השתמשו בממשק הניהול הזה להוספתו."
 
-#~ msgid "Show all"
-#~ msgstr "הצג הכל"
-
 #, fuzzy
 #~ msgid "Save"
 #~ msgstr "שמור"
@@ -1465,9 +1557,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Reset my password"
 #~ msgstr "אפס את סיסמתי"
-
-#~ msgid "All dates"
-#~ msgstr "כל התאריכים"
 
 #~ msgid "Select %s"
 #~ msgstr "בחירת %s"
@@ -1973,9 +2062,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "python model class name"
 #~ msgstr "שם ה-class של מודל פייתון"
-
-#~ msgid "content types"
-#~ msgstr "סוגי תוכן"
 
 #~ msgid ""
 #~ "Example: '/about/contact/'. Make sure to have leading and trailing "
@@ -2821,9 +2907,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Durango"
 #~ msgstr "צ'יוואוה"
-
-#~ msgid "Guerrero"
-#~ msgstr "גררו"
 
 #~ msgid "Guanajuato"
 #~ msgstr "גואנחואטו"
@@ -3718,9 +3801,6 @@ msgstr "התוצאות הבאות"
 #~ "hyphens."
 #~ msgstr "יש להזין ערך המכיל אותיות, ספרות, קווים תחתונים ומקפים בלבד."
 
-#~ msgid "Order"
-#~ msgstr "מיון"
-
 #~ msgid "%(field_name)s must be unique for %(date_field)s %(lookup)s."
 #~ msgstr "%(field_name)s חייב להיות ייחודי ל%(lookup)s של ה%(date_field)s"
 
@@ -3933,16 +4013,6 @@ msgstr "התוצאות הבאות"
 #~ msgid_plural "years"
 #~ msgstr[0] "שנה"
 #~ msgstr[1] "שנים"
-
-#~ msgid "month"
-#~ msgid_plural "months"
-#~ msgstr[0] "חודש"
-#~ msgstr[1] "חודשים"
-
-#~ msgid "week"
-#~ msgid_plural "weeks"
-#~ msgstr[0] "שבוע"
-#~ msgstr[1] "שבועות"
 
 #~ msgid "day"
 #~ msgid_plural "days"

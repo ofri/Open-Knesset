@@ -1,8 +1,13 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block extratitle %}{% trans 'Parties' %}{% endblock %}
+{% block extratitle %}{{ title }}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
-{% block h1content %}{% trans 'Parties' %}{% endblock %}
+{% block h1content %}{{ title }}{% endblock %}
 {% block divcontent %}
+    <div class="friend_pages" style="width:30em;">
+        {% for link in friend_pages %}
+            <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; 
+        {% endfor %}
+    </div>
 		{% include "mks/_party_list.html" %}
 {% endblock %}

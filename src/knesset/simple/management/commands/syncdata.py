@@ -751,6 +751,17 @@ class Command(NoArgsCommand):
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nsearch_text='+search_text.encode('utf8')+'\nvote.title='+v.title.encode('utf8'))
 
+
+    def find_relevant_comittee_protocols(self,v):
+        m = re.search(' - (.*),', v.title)
+        search_text = urllib2.quote(m.group(1).replace('(','').replace(')','').replace('`','').encode('utf8'))
+        params = "ckShowAll=on&subj=%s" % urllib2.quote(search_text)
+        url = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
+        page = urllib2.urlopen(url,params).read().decode('windows-1255').encode('utf-8')
+        # parse results
+        m = re.search('class="DateText">(.*)</span>', page)
+
+
     def get_full_text(self,v):
         try:
             l = Link.objects.get(object_pk=str(v.id), title=u'מסמך הצעת החוק באתר הכנסת')
@@ -886,10 +897,13 @@ def update_vote_properties(v):
     opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
     opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
 
+
+    against_party_count = 0
     for va in VoteAction.objects.filter(vote=v):
         dirt = False
         if party_stands_for[va.member.current_party.id] and va.type=='against':
             va.against_party = True
+            against_party_count += 1
             dirt = True
         if party_stands_against[va.member.current_party.id] and va.type=='for':
             va.against_party = True
@@ -905,4 +919,6 @@ def update_vote_properties(v):
         if dirt:
             va.save()
 
-
+    v.controversy = min(v.for_votes_count(), v.against_votes_count())
+    v.against_party = against_party_count
+    v.save()

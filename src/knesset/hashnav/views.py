@@ -54,7 +54,7 @@ class ListDetailView(ClassBasedView):
         self.paginate_by = paginate_by
         self.extra_context = extra_context
 
-    def render_list(self, request, page=None,
+    def render_list(self, request, queryset=None, page=None,
             allow_empty=True, template_name=None, template_loader=loader,
             extra_context=None, context_processors=None, template_object_name='object',
             mimetype=None):
@@ -108,9 +108,14 @@ class ListDetailView(ClassBasedView):
             page_range:
                 A list of the page numbers (1-indexed).
         """
-        extra_context = extra_context or self.extra_context
-        if extra_context is None: extra_context = {}
-        queryset = self.queryset._clone()
+        if self.extra_context:
+            ec = dict(self.extra_context) 
+        else:
+            ec = {}
+        ec.update(extra_context or {})        
+        
+        if queryset==None:            
+            queryset = self.queryset._clone()
         if self.paginate_by:
             paginator = Paginator(queryset, self.paginate_by, allow_empty_first_page=allow_empty)
             if not page:
@@ -156,7 +161,7 @@ class ListDetailView(ClassBasedView):
             }, context_processors)
             if not allow_empty and len(queryset) == 0:
                 raise Http404
-        for key, value in extra_context.items():
+        for key, value in ec.items():
             if callable(value):
                 c[key] = value()
             else:
@@ -185,8 +190,8 @@ class ListDetailView(ClassBasedView):
             object
                 the object
         """
-        extra_context = extra_context or self.extra_context
-        if extra_context is None: extra_context = {}
+        ec = self.extra_context or {}
+        ec.update(extra_context or {}) 
         model = self.queryset.model
 
         if object_id:
@@ -215,7 +220,7 @@ class ListDetailView(ClassBasedView):
         c = RequestContext(request, {
             template_object_name: obj,
         }, context_processors)
-        for key, value in extra_context.items():
+        for key, value in ec.items():
             if callable(value):
                 c[key] = value()
             else:
