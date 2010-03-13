@@ -932,4 +932,5 @@ def update_vote_properties(v):
 
     v.controversy = min(v.for_votes_count(), v.against_votes_count())
     v.against_party = against_party_count
+    v.votes_count = VoteAction.objects.filter(vote=v).count()
     v.save()
