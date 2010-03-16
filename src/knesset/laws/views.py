@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from knesset.utils import limit_by_request
 from knesset.laws.models import Vote
 from django.http import HttpResponseRedirect
@@ -71,6 +72,7 @@ class VoteListView(ListDetailView):
         self.extra_context['friend_pages'] = r            
         return super(VoteListView, self).render_list(request, **kwargs)
 
+@login_required
 def submit_tags(request,object_id):
     if request.method == 'POST': # If the form has been submitted...
         form = TagForm(request.POST) # A form bound to the POST data
@@ -82,6 +84,7 @@ def submit_tags(request,object_id):
 
     return HttpResponseRedirect("/vote/%s" % object_id)
 
+@login_required
 def vote_on_tag(request,object_id,tag_id,vote):
     v = Vote.objects.get(pk=object_id)
     ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=v.id)[0]

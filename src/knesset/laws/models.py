@@ -106,7 +106,7 @@ class VoteManager(models.Manager):
     def filter_and_order(self, *args, **kwargs):
         qs = self.all()
         filter_kwargs = {}
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         if 'type' in kwargs and kwargs['type'] and kwargs['type'] != 'all':
             filter_kwargs['title__startswith'] = self.VOTE_TYPES[kwargs['type']]
         if 'since' in kwargs and kwargs['since'] and kwargs['since'] != 'all':
@@ -154,13 +154,13 @@ class Vote(models.Model):
         return VoteAction.objects.filter(vote=self,
                          type=vote_type).values_list('member__id', flat=True)
     def for_votes(self):
-        return self.votes.filter(voteaction__type='for')
+        return VoteAction.objects.filter(vote=self, type='for')
 
     def for_votes_count(self):
         return self.for_votes().count()
 
     def against_votes(self):
-        return self.votes.filter(voteaction__type='against')
+        return VoteAction.objects.filter(vote=self, type='against')
 
     def against_votes_count(self):
         return self.against_votes().count()

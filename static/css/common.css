@@ -276,8 +276,10 @@ a.disabled { color: #aaaaaa; }
 }
 
 #content-main p {
-    display:inline;
     margin:0em;
+}
+#content-main .info > p{
+    display:inline;
     white-space:nowrap;
 }
 #content-main div.bar {

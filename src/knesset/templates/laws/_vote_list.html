@@ -10,21 +10,21 @@
         <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count 1 %}
         <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count 0 %}
         <p class="date">{{ o.time_string }}</p> &nbsp; 
-            {% if o.against_party_votes_count %}<p><img src="/static/img/Warning.png"/ > 
+            {% if o.against_party_votes_count %}<p><img src="/static/img/Warning.png" /> 
                 {% blocktrans count o.against_party_votes_count as counter %}
                 {{ counter }} MK voted differently than the majority of his party
                 {% plural %}
                 {{ counter }} MKs voted differently than the majority of their party
                 {% endblocktrans %}</p> &nbsp; 
             {% endif %}
-            {% if o.against_coalition_votes_count %}<p><img src="/static/img/Error.png"/ > 
+            {% if o.against_coalition_votes_count %}<p><img src="/static/img/Error.png" /> 
                 {% blocktrans count o.against_coalition_votes_count as counter %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
                 {% plural %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
                 {% endblocktrans %}</p> &nbsp; 
             {% endif %}
-            {% if o.against_opposition_votes_count %}<p><img src="/static/img/Error.png"/ > 
+            {% if o.against_opposition_votes_count %}<p><img src="/static/img/Error.png" /> 
                 {% blocktrans count o.against_opposition_votes_count as counter %}
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
                 {% plural %}

@@ -13,7 +13,7 @@ from models import *
 
 from django.core.mail import send_mail
 import logging
-import sys
+import sys,traceback
 logger = logging.getLogger("open-knesset.accounts")
 
 @login_required
