@@ -5,5 +5,5 @@ Installation:
 $ python bootstrap.py
 $ bin/buildout
 $ bin/django syncdb
+$ bin/django loaddata full_data.json
 $ bin/django runserver
-
