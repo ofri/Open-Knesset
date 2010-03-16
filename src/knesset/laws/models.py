@@ -1,3 +1,5 @@
+#encoding: utf-8
+from datetime import date, timedelta
 from django.db import models
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
@@ -94,7 +96,32 @@ class VoteAction(models.Model):
     against_opposition = models.BooleanField(default=False)
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
- 
+
+class VoteManager(models.Manager):
+    # TODO: add i18n to the types so we'd have 
+    #   {'law-approve': _('approve law'), ...
+    VOTE_TYPES = {'law-approve': u'אישור החוק', 'second-call': u'קריאה שנייה', 'demurrer': u'הסתייגות', 
+                  'no-confidence': u'הצעת אי-אמון', 'pass-to-committee': u'להעביר את ', 'continuation': u'להחיל דין רציפות'}
+
+    def filter_and_order(self, *args, **kwargs):
+        qs = self.all()
+        filter_kwargs = {}
+        import pdb; pdb.set_trace()
+        if 'type' in kwargs and kwargs['type'] and kwargs['type'] != 'all':
+            filter_kwargs['title__startswith'] = self.VOTE_TYPES[kwargs['type']]
+        if 'since' in kwargs and kwargs['since'] and kwargs['since'] != 'all':
+            filter_kwargs['time__gt'] = date.today()-timedelta(int(kwargs['since']))
+
+        qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
+
+        if 'order' in kwargs:
+            if kwargs['order']=='controversy':
+                qs = qs.filter(controversy__gt=0).order_by('-controversy')
+            if kwargs['order']=='against-party':
+                qs = qs.filter(against_party__gt=0).order_by('-against_party')
+            if kwargs['order']=='votes':
+                qs = qs.order_by('-votes_count')
+        return qs
 
 class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
@@ -113,6 +140,8 @@ class Vote(models.Model):
     full_text      = models.TextField(null=True,blank=True)
     full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
 
+    objects = VoteManager()
+
     class Meta:
         ordering = ('-time',)
         verbose_name = _('Vote')
@@ -122,31 +151,35 @@ class Vote(models.Model):
         return "%s (%s)" % (self.title, self.time_string)
 
     def get_voters_id(self, vote_type):
-        return VoteAction.objects.filter(vote=self, type=vote_type).values_list('member__id', flat=True)
+        return VoteAction.objects.filter(vote=self,
+                         type=vote_type).values_list('member__id', flat=True)
+    def for_votes(self):
+        return self.votes.filter(voteaction__type='for')
 
     def for_votes_count(self):
-        return self.votes.filter(voteaction__type='for').count()
-
-    def for_votes(self):
-        #return self.votes.filter(voteaction__type='for')
-        return VoteAction.objects.filter(vote=self, type='for')
-
-    def against_votes_count(self):
-        return self.votes.filter(voteaction__type='against').count()
+        return self.for_votes().count()
 
     def against_votes(self):
-        #return self.votes.filter(voteaction__type='against')
-        return VoteAction.objects.filter(vote=self, type='against')
+        return self.votes.filter(voteaction__type='against')
+
+    def against_votes_count(self):
+        return self.against_votes().count()
+
+    def against_party_votes(self):
+        return self.votes.filter(voteaction__against_party=True)
 
     def against_party_votes_count(self):
-        return VoteAction.objects.filter(vote=self, against_party=True).count()
+        return self.against_party_votes().count()
+
+    def against_coalition_votes(self):
+        return self.votes.filter(voteaction__against_coalition=True)
 
     def against_coalition_votes_count(self):
-        return VoteAction.objects.filter(vote=self, against_coalition=True).count()
+        return self.against_coalition_votes.count()
 
+    # TODO: this should die
     def against_opposition_votes_count(self):
         return VoteAction.objects.filter(vote=self, against_opposition=True).count()
-
 
     def short_summary(self):
         if self.summary==None:

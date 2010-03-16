@@ -15,37 +15,20 @@ from tagging.views import tagged_object_list
 
 from knesset.hashnav.views import ListDetailView
 
-from datetime import date, timedelta
 from django.db.models import Count
 import urllib
 import urllib2
 
 class VoteListView(ListDetailView):
-    
-    vote_types = {'law-approve': u'אישור החוק', 'second-call': u'קריאה שנייה', 'demurrer': u'הסתייגות', 
-                  'no-confidence': u'הצעת אי-אמון', 'pass-to-committee': u'להעביר את ', 'continuation': u'להחיל דין רציפות'}
+
+    def pre (self, request, **kwargs):
+        self.queryset = Vote.objects.filter_and_order(**{
+            'type': request.GET.get('vote_type', None),
+            'since': request.GET.get('time', None),
+            'order': request.GET.get('order', None),
+        })
 
     def render_list(self,request, **kwargs):
-        qs = self.queryset.all()
-        vt = request.GET.get('vote_type','all')
-        if vt in self.vote_types:
-            qs = qs.filter(title__startswith=self.vote_types[vt])            
-
-        if request.GET.get('time','all') != 'all':
-            try:
-                num_days = int(request.GET['time'])
-                qs = qs.filter(time__gt=date.today()-timedelta(num_days))
-                if num_days==7: time='week'
-                if num_days==30: time='month'
-            except ValueError: # not a number
-                pass
-        if 'order' in request.GET:
-            if request.GET['order']=='controversy':
-                qs = qs.filter(controversy__gt=0).order_by('-controversy')
-            if request.GET['order']=='against-party':
-                qs = qs.filter(against_party__gt=0).order_by('-against_party')
-            if request.GET['order']=='votes':
-                qs = qs.order_by('-votes_count')
         if not self.extra_context: self.extra_context = {}
 
         friend_page = {}
@@ -86,7 +69,7 @@ class VoteListView(ListDetailView):
 
         #[(_('all'),'&'.join([time,order])), (_('law approval'))],[],[]]        
         self.extra_context['friend_pages'] = r            
-        return ListDetailView.render_list(self,request, queryset=qs, **kwargs)
+        return super(VoteListView, self).render_list(request, **kwargs)
 
 def submit_tags(request,object_id):
     if request.method == 'POST': # If the form has been submitted...
