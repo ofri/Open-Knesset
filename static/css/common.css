@@ -274,6 +274,19 @@ a.disabled { color: #aaaaaa; }
 #content-main .selected { 
     background-color: #333333;
 }
+#content-main .stand {    
+    line-height:1.1;
+    margin-left:0.2em;
+    padding-left:0.1em;
+    padding-right:0.1em;
+    display:inline;
+}
+#content-main .stand.for { background-color:#99FFBB; }
+#content-main .stand.against { background-color:#FF99BB; }
+#content-main .stand.abstain { background-color:#CFCFCF; }
+#content-main .stand.no-vote { background-color:#BBBBBB; }
+#content-main .stand.absent { background-color:#BBBBBB; }
+
 
 #content-main p {
     margin:0em;
