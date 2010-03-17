@@ -106,7 +106,6 @@ class VoteManager(models.Manager):
     def filter_and_order(self, *args, **kwargs):
         qs = self.all()
         filter_kwargs = {}
-        #import pdb; pdb.set_trace()
         if 'type' in kwargs and kwargs['type'] and kwargs['type'] != 'all':
             filter_kwargs['title__startswith'] = self.VOTE_TYPES[kwargs['type']]
         if 'since' in kwargs and kwargs['since'] and kwargs['since'] != 'all':
