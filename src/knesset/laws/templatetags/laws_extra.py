@@ -1,6 +1,8 @@
 from django import template
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
+from knesset.laws.models import VoteAction, VOTE_ACTION_TYPE_CHOICES
+from knesset.mks.models import Member
 from datetime import date, timedelta
 from django.utils.translation import ugettext_lazy as _
 
@@ -39,4 +41,24 @@ def recent_coalition_discipline(m):
 def recent_votes_count(m):
     d = date.today() - timedelta(30)
     return m.voting_statistics.votes_count(d)
+
+@register.inclusion_tag('laws/_member_stand.html')
+def member_stand(v, m):
+    """ returns member m stand on vote v """
+    va = VoteAction.objects.filter(member__id = m, vote__id = v)
+    if va:
+        for (name,string) in VOTE_ACTION_TYPE_CHOICES:
+            if va[0].type==name:
+                stand = _(string)
+                cls = name
+        return {'stand':stand, 'class':cls, 'name':va[0].member.name}
+    else:
+        stand=_('Absent')
+        cls = 'absent'
+        try:
+            m = Member.objects.get(pk=m)
+            return {'stand':stand, 'class':cls, 'name':m.name}
+        except Exception, e:
+            print e
+            return 
 

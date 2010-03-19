@@ -69,7 +69,11 @@ class VoteListView(ListDetailView):
             r[key].append((url, name, current))        
 
         #[(_('all'),'&'.join([time,order])), (_('law approval'))],[],[]]        
-        self.extra_context['friend_pages'] = r            
+        self.extra_context['friend_pages'] = r
+        show_stands = request.GET.get('show_stands', None)            
+        if show_stands:
+            show_stands = show_stands.split(',')
+        self.extra_context['show_stands'] = show_stands
         return super(VoteListView, self).render_list(request, **kwargs)
 
 @login_required

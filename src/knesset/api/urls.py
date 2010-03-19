@@ -11,7 +11,8 @@ party_handler = Resource(PartyHandler)
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler),
       url(r'^vote/(?P<id>[0-9]+)/$', vote_handler),
-      url(r'^member/(?:(?P<member_id>[^/]+)/)?(?P<emitter_format>.+)/$', member_handler),
-      url(r'^party/(?:(?P<party_id>[^/]+)/)?(?P<emitter_format>.+)/$', party_handler),
+      url(r'^member/$', member_handler),
+      url(r'^member/(?P<id>[0-9]+)/$', member_handler),
+      url(r'^party/(?:(?P<id>[^/]+)/)?(?P<emitter_format>.+)/$', party_handler),
       )
 

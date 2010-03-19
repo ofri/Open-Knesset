@@ -7,6 +7,7 @@
     <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">
     {{ o.title }}<br/>
     <div class="info">
+
         <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count 1 %}
         <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count 0 %}
         <p class="date">{{ o.time_string }}</p> &nbsp; 
@@ -31,7 +32,6 @@
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
                 {% endblocktrans %}</p> &nbsp; 
             {% endif %}
-
     </div>
     </a>
     <div>
@@ -46,6 +46,8 @@
             <!--{% trans 'No tags' %}-->
         {% endif %}
     </div>
+    {% for s in show_stands %}{% member_stand o.id s %}{% endfor %}
+
 </div>
 {% empty %}
     {% trans "No results found" %}
