@@ -12,19 +12,10 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('url', 'name', 
-              'member',)
+    fields = ('id', 'url', 'name',)
     allowed_methods = ('GET',)
     model = Member
-    qs = Membership.objects.all()
-    def read(self, request, **kwargs):
-        if member_id in kwargs:
-            qs = self.qs.filter(pk=kwargs[member_id])
-        else:
-            year = request.GET.get('year', None)
-            if year:
-                qs = self.qs.filter(end_date__gte=yearstart(year))
-        return qs
+    qs = Member.objects.all()
 
     @classmethod
     def url (self, member):

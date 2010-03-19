@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 
 member_context = dict (quesryset =
-                       Member.objects.filter(end_date__gte=date(2010,1,1)),
+                       Member.objects.all(),
                       paginate_by = 20)
 
 def member (request, pk=None):
@@ -39,21 +39,20 @@ def party (request, pk=None):
 class MemberListView(ListDetailView):    
     def render_list(self,request, **kwargs):
         qs = self.queryset.all()
-        info = request.GET.get('info',None)
+        info = request.GET.get('info','votes')
         ec = dict(self.extra_context) or {}
         if 'extra_context' in kwargs:
             ec.update(kwargs['extra_context'])
-        ec['friend_pages'] = [['.',_('By ABC'), False], ['.?info=votes', _('By number of votes'), False]]
+        ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], ['.?info=votes', _('By number of votes'), False]]
         
-        if info:
-            if info=='votes':
-                qs = qs.annotate(extra=Count('votes')).order_by('-extra')
-                ec['past_mks'] = ec['past_mks'].annotate(extra=Count('votes')).order_by('-extra')
-                ec['friend_pages'][1][2] = True
-                ec['norm_factor'] = float(qs[0].extra)/50
-                ec['title'] = "%s %s" % (_('Members'), _('By number of votes'))
+        if info=='votes':
+            qs = qs.annotate(extra=Count('votes')).order_by('-extra')
+            ec['past_mks'] = ec['past_mks'].annotate(extra=Count('votes')).order_by('-extra')
+            ec['friend_pages'][1][2] = True
+            ec['norm_factor'] = float(qs[0].extra)/50
+            ec['title'] = "%s %s" % (_('Members'), _('By number of votes'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        else:            
+        if info=='abc':
             ec['friend_pages'][0][2] = True
             ec['title'] = _('Members')
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
