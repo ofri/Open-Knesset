@@ -4,7 +4,7 @@
 <h3>{% trans 'Current MKs' %}</h3>
 {% for o in object_list %}
     {% if o.is_current %}
-	    <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}" title="{{ o.Party.name }}">{{ o.name }} ({{o.extra}})</a>
+	    <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.Party.name }}">{{ o.name }} ({{o.extra}})</a>
         {% bar o.extra 1 norm_factor %}
     {% endif %}
 {% empty %}
@@ -13,7 +13,7 @@
 </table>
 <h3>{% trans 'Past MKs' %}</h3>
 {% for o in past_mks %}
-	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}" title="{{ o.Party.name }}">{{ o.name }}{% if o.extra %} ({{o.extra}}){% endif %}</a>
+	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.Party.name }}">{{ o.name }}{% if o.extra %} ({{o.extra}}){% endif %}</a>
     {% bar o.extra 1 norm_factor %}
 {% endfor %}
 
