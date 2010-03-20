@@ -1,6 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load laws_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
 {% block subnav %}        
         {% trans 'Vote types' %}: {% for link in friend_pages.vote_type %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
@@ -11,21 +14,5 @@
 	<div id="item-list">
 		{% include "laws/_vote_list.html" %}
 	</div>
-    {% if has_previous %}
-        {% if request.QueryDict.values %}
-            <a id="prev" href="{{request.get_full_path}}&page={{ previous }}">{% trans 'next votes' %}</a>    
-        {% else %}
-            <a id="prev" href=".?page={{ previous }}">{% trans 'next votes' %}</a>    
-        {% endif %}
-    {% endif %}
-    &nbsp;
-    {% if has_next %}
-        {% if request.QueryDict.values %}
-            <a id="more" href="{{request.get_full_path}}&page={{ next }}">{% trans 'previous votes' %}</a>
-        {% else %}
-            <a id="more" href=".?page={{ next }}">{% trans 'previous votes' %}</a>    
-        {% endif %}
-
-    {% endif %}
-
+    {% pagination page_obj paginator request %}
 {% endblock %}

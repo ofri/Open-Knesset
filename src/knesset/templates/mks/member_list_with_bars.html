@@ -1,6 +1,8 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{% trans 'Members' %}{% endblock %}
+{% block description %}{% trans 'Members' %} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
 {% block subnav %}
         {% for link in friend_pages %}

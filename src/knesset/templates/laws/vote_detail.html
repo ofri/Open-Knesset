@@ -1,6 +1,8 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{{ object.title }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
 {% block divcontent %}
