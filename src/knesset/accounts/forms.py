@@ -10,8 +10,12 @@ class EditProfileForm(forms.Form):
         super(EditProfileForm, self).__init__(*args, **kwargs)
         self.user = user
         if self.user:
-            self.initial = {'username': user.username, \
-                        'first_name':user.first_name, 'last_name':user.last_name}
+            self.initial = {'username': user.username,
+                        'first_name':user.first_name, 
+                        'last_name':user.last_name,
+                        'email': user.email,
+                        }
+        self.has_email = True if user.email else False
 
         p = Permission.objects.get(name='Can add comment')
         self.has_perms = self.user.user_permissions.filter(id=p.id).count()

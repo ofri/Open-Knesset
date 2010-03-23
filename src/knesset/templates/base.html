@@ -43,13 +43,7 @@
                     <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
                     <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
             {% else %}
-                {% trans 'Login via' %}
-                <div id="login">
-    <!--                    <a href="{% url socialauth_twitter_login %}" id="twitter_login_link"><img src="/static/img/twitter.png"/>{% trans 'Twitter' %}</a> 
-                        <a href="{% url socialauth_yahoo_login %}" id="yahoo_login_link"><img src="/static/img/yahoo.png"/>{% trans 'Yahoo' %}</a> 
-                        <a href="{% url socialauth_openid_login %}" id="openid_login_link"><img src="/static/img/openid.png"/>{% trans 'Openid' %}</a> 
-        -->                <a href="{% url socialauth_google_login %}" id="google_login_link"><img src="/static/img/google.png"/>{% trans 'Google' %}</a> 
-                </div>
+                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
         <div id="search"><form  method="get" action="{% url haystack_search %}">
