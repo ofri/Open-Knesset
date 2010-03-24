@@ -9,6 +9,7 @@
         {% trans 'Vote types' %}: {% for link in friend_pages.vote_type %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Time range' %}: {% for link in friend_pages.time %}     <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Order by' %}:   {% for link in friend_pages.order %}    <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
+        {% trans 'Favorite MKs' %}: <a href="{% url member-select %}?next={{ request.get_full_path }}">{% trans 'edit favorite MKs list' %}</a> &bull; 
 {% endblock %}
 {% block divcontent %}
 	<div id="item-list">

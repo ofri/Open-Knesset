@@ -359,6 +359,10 @@ a.disabled { color: #aaaaaa; }
 #content-main .item.dontwrap {
     white-space:nowrap;
 }
+#content-main .selected {
+    border:1px solid #FF3300;
+}
+
 #content-main div.comment {
     background-color:#E3C0A0;
     border-bottom: 1px solid #251C1F;
@@ -399,6 +403,9 @@ a.disabled { color: #aaaaaa; }
 }
 #content-main #pagination > a.current {
     border:1px solid #000;
+}
+#content-main .inline-form {
+    display:inline;
 }
 
 div #search {

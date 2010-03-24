@@ -76,6 +76,9 @@ class VoteListView(ListDetailView):
         show_stands = request.GET.get('show_stands', None)            
         if show_stands:
             show_stands = show_stands.split(',')
+        else:
+            selected_mks = request.session.get('selected_mks',dict())
+            show_stands = [str(i) for i in selected_mks.keys()]
         self.extra_context['show_stands'] = show_stands
         return super(VoteListView, self).render_list(request, **kwargs)
 

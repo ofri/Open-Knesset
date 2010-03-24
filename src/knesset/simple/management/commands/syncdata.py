@@ -113,7 +113,8 @@ class Command(NoArgsCommand):
     def update_laws_data(self):
         logger.info("update laws data")
         laws = self.download_laws()
-        votes = Vote.objects.all().order_by('-time')[:100]
+        logger.debug("finished downloading laws data")
+        votes = Vote.objects.all().order_by('-time')[:200]
         for v in votes:
             search_name = self.get_search_string(v.title.encode('UTF-8'))
             for l in laws:
@@ -130,7 +131,7 @@ class Command(NoArgsCommand):
 
             if v.full_text == None:
                 self.get_full_text(v)
-                    
+        logger.debug("finished updating laws data")
 
 
     def update_votes(self):
@@ -186,8 +187,8 @@ class Command(NoArgsCommand):
                         l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
                         l.save()
 
-                results = self.read_member_votes(page)
-                for (voter,voter_party,vote) in results:
+                results = self.read_member_votes(page, return_ids=True)
+                for (voter_id,voter_party,vote) in results:
                     #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))                    
 
                     # transform party names to canonical form
@@ -198,13 +199,10 @@ class Command(NoArgsCommand):
                                     
                     # get the member voting                
                     try:
-                        m = Member.objects.get(name=voter)
-                    except:   # if there are several people with same name, 
-                        try:
-                            m = Member.objects.filter(name=voter).order_by('-date_of_birth')[0] # choose the younger. TODO: fix this
-                        except:
-                            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
+                        m = Member.objects.get(pk=int(voter_id))
+                    except:
+                        exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                        logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback), str(voter_id)))
                         
                     # add the current member's vote
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
@@ -661,12 +659,13 @@ class Command(NoArgsCommand):
                 return None
         return (page, url)
 
-    def read_member_votes(self,page):
+    def read_member_votes(self,page,return_ids=False):
         """
         Returns a tuple of (name, party, vote) describing the vote found in page, where:
          name is a member name
          party is the member's party
          vote is 'for','against','abstain' or 'no-vote'
+         if return_ids = True, it will return member id, and not name as first element.
         """
         results = []
         pattern = re.compile("""Vote_Bord""")
@@ -684,13 +683,18 @@ class Command(NoArgsCommand):
             if(vote != ""):
                 name = re.search("""DataText4>([^<]*)</a>""",i).group(1);
                 name = re.sub("""&nbsp;""", " ", name)
+                m_id = re.search("""mk_individual_id_t=(\d+)""",i).group(1)
                 party = re.search("""DataText4>([^<]*)</td>""",i).group(1);
                 party = re.sub("""&nbsp;""", " ", party)
                 if(party == """ " """):
                     party = last_party
                 else:
                     last_party = party 
-                results.append((name, party, vote))  
+                if return_ids:
+                    results.append((m_id, party, vote))  
+                else:
+                    results.append((name, party, vote))  
+
         return results
 
 
@@ -747,7 +751,8 @@ class Command(NoArgsCommand):
             to_year = from_year = str(v.time.year)
             m = re.search(' - (.*),', v.title)
             if not m:
-                logger.debug("couldn't create search string for vote\nvote.id=%s\nvote.title=%s\n", str(v.id), v.title)    
+                logger.debug("couldn't create search string for vote\nvote.id=%s\nvote.title=%s\n", str(v.id), v.title)
+                return    
             search_text = urllib2.quote(m.group(1).replace('(','').replace(')','').replace('`','').encode('utf8'))
 
             # I'm really sorry for the next line, but I really had no choice:
@@ -755,7 +760,8 @@ class Command(NoArgsCommand):
             page = urllib2.urlopen(url,params).read()
             m = re.search('ProtEOnlineLoad\((.*), \'false\'\);', page)
             if not m:
-                logger.debug("couldn't find vote in synched protocol\nvote.id=%s\nvote.title=%s\nsearch_string=%s", str(v.id), v.title, search_string)
+                logger.debug("couldn't find vote in synched protocol\nvote.id=%s\nvote.title=%s\nsearch_text=%s", str(v.id), v.title, search_text)
+                return
             l = Link(title=u'פרוטוקול מסונכרן (וידאו וטקסט) של הישיבה', url='http://online.knesset.gov.il/eprotocol/PLAYER/PEPlayer.aspx?ProtocolID=%s' % m.group(1), content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
             l.save()
         except Exception, e:
