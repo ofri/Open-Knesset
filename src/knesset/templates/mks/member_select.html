@@ -1,0 +1,26 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans 'Select Members' %}{% endblock %}
+{% block keywords %}{% trans 'Select Members' %}{% endblock %}
+{% block description %}{% trans 'Select Members' %} - {% endblock %}
+
+{% block nav-members %}class="selected"{% endblock %}
+{% block divcontent %}
+<h2>{% trans 'Choose MKs to show their votes in vote list' %}</h2>
+{% if next %}<a href="{{next}}">{% trans 'Click here when you are done' %}</a>{% endif %}
+<div class="list-wrap">
+<h3>{% trans 'Current MKs' %}</h3>
+{% for o in object_list %}
+    {% if o.is_current %}
+    	<form action=".?next={{next}}" class="inline-form" method="post"><input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
+    {% endif %}
+{% empty %}
+    {% trans "Data base empty, no objects" %}
+{% endfor %}
+<h3>{% trans 'Past MKs' %}</h3>
+{% for o in past_mks %}
+    <form action=".?next={{next}}" class="inline-form" method="post"><input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
+{% endfor %}
+
+</div>
+{% endblock %}
