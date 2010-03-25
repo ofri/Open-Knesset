@@ -5,8 +5,8 @@ from django.views.generic.simple import direct_to_template
 from django.views.generic.simple import redirect_to
 
 from django.contrib.comments.models import Comment
-
 from django.contrib import admin
+
 from knesset.views import MainView
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
@@ -17,11 +17,20 @@ from haystack.views import SearchView
 admin.autodiscover()
 
 from knesset.feeds import *
+from knesset.sitemap import *
 
 feeds = {
     'comments': Comments,
     'votes': Votes
 }
+
+sitemaps = {
+    'members': MemberSitemap,
+    'parties': PartySitemap,
+    'votes': VoteSitemap,
+    'index': IndexPagesSitemap,
+}
+
 
 js_info_dict = {
     'packages': ('knesset',),
@@ -50,6 +59,8 @@ urlpatterns = patterns('',
      #(r'^search/', include('haystack.urls')),
      url(r'^search/', SearchView(form_class=SearchFormWithSpellSuggest), name='haystack_search'),
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
+     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
+
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns
 if settings.LOCAL_DEV:

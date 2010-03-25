@@ -9,7 +9,9 @@ from knesset.mks.models import Member, Party
 from knesset.hashnav.views import ListDetailView
 
 from django.contrib.auth.decorators import login_required
-
+import logging
+import sys,traceback
+logger = logging.getLogger("open-knesset.mks")
 
 member_context = dict (quesryset =
                        Member.objects.all(),
@@ -35,6 +37,35 @@ def party (request, pk=None):
         qs = limit_by_request(qs, request)
         return object_list(request, queryset=qs,template_name='mks/parties.html')
 
+class MemberSelectView(ListDetailView):    
+    def render_list(self,request, **kwargs):
+        ec = dict(self.extra_context) or {}
+        if 'extra_context' in kwargs:
+            ec.update(kwargs['extra_context'])
+        selected_mks = request.session.get('selected_mks',dict())
+        qs = self.queryset.all()
+        for o in qs:
+            if o.id in selected_mks:
+                o.selected = True
+        next = request.GET.get('next',None)
+        if next:
+            path = request.get_full_path()
+            ec['next'] = path[path.find('=')+1:]
+                            
+        return ListDetailView.render_list(self, request, queryset = qs, extra_context = ec, **kwargs)
+    def handle_post(self, request, **kwargs):
+        try:
+            o_id = int(request.POST.get('object_id', None))
+            selected_mks = request.session.get('selected_mks',dict())
+            if o_id in selected_mks:
+                del selected_mks[o_id]
+            else:
+                selected_mks[o_id] = True        
+            request.session['selected_mks'] = selected_mks
+        except Exception, e:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))            
+        return self.render_list(request, **kwargs)
 
 class MemberListView(ListDetailView):    
     def render_list(self,request, **kwargs):

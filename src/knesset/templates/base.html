@@ -4,9 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
-		<meta http-equiv="Content-Language" content="en-us">
+		<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
 
-		<title>{% trans 'Open Knesset' %} | {% block extratitle %}{% endblock %}</title>
+		<title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
 
 		<meta name="ROBOTS" content="ALL">
 		<meta http-equiv="imagetoolbar" content="no"/>
@@ -14,8 +14,8 @@
 		<meta name="Authors" content="PyWeb-IL">
 		<meta name="License" content="Follow your inclanations with due regards to the 
             devil within and the policeman around the corner." > 
-		<meta name="keywords" content="parliament, Systems, Python, Django, open-source" >
-		<meta name="description" content="{% trans "I'm just sitting here watching the wheels go round and round." %}">
+		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
+		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
 
 		<link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />		
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>

@@ -22,22 +22,7 @@ import urllib2
 
 class VoteListView(ListDetailView):
 
-    def pre (self, request, **kwargs):
-        self.queryset = Vote.objects.filter_and_order(**{
-            'type': request.GET.get('vote_type', None),
-            'since': request.GET.get('time', None),
-            'order': request.GET.get('order', None),
-        })
-
-    def render_list(self,request, **kwargs):
-        if not self.extra_context: self.extra_context = {}
-
-        friend_page = {}
-        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type','all').encode('utf8'))
-        friend_page['time'] = urllib.quote(request.GET.get('time','all').encode('utf8'))
-        friend_page['order'] = urllib.quote(request.GET.get('order','time').encode('utf8'))
-
-        friend_pages = [
+    friend_pages = [
             ('vote_type','all',_('All votes')),
             ('vote_type','law-approve', _('Law Approvals')),
             ('vote_type','second-call', _('Second Call')),
@@ -54,13 +39,31 @@ class VoteListView(ListDetailView):
             ('order','votes',_('Number of votes'))
         ]
 
+    def pre (self, request, **kwargs):
+        self.queryset = Vote.objects.filter_and_order(**{
+            'type': request.GET.get('vote_type', None),
+            'since': request.GET.get('time', None),
+            'order': request.GET.get('order', None),
+        })
+        
+
+    def render_list(self,request, **kwargs):
+        if not self.extra_context: self.extra_context = {}
+
+        friend_page = {}
+        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type','all').encode('utf8'))
+        friend_page['time'] = urllib.quote(request.GET.get('time','all').encode('utf8'))
+        friend_page['order'] = urllib.quote(request.GET.get('order','time').encode('utf8'))        
+
         r = {}
 
-        for key, value, name in friend_pages:
+        for key, value, name in self.friend_pages:
             page = friend_page.copy()
             current = False
             if page[key]==value:
                 current = True
+                if key=='vote_type':
+                    self.extra_context['title'] = name
             else:
                 page[key] = value
             url =  "./?%s" % urllib.urlencode(page)
@@ -73,6 +76,9 @@ class VoteListView(ListDetailView):
         show_stands = request.GET.get('show_stands', None)            
         if show_stands:
             show_stands = show_stands.split(',')
+        else:
+            selected_mks = request.session.get('selected_mks',dict())
+            show_stands = [str(i) for i in selected_mks.keys()]
         self.extra_context['show_stands'] = show_stands
         return super(VoteListView, self).render_list(request, **kwargs)
 

@@ -1,13 +1,15 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{% trans 'Members' %}{% endblock %}
+{% block keywords %}{% trans 'Members' %}{% endblock %}
+{% block description %}{% trans 'Members' %} - {% endblock %}
+
 {% block nav-members %}class="selected"{% endblock %}
-{% block h1content %}{% trans 'Members' %}{% endblock %}
-{% block divcontent %}
-    <div class="friend_pages">
+{% block subnav %}
         {% for link in friend_pages %}
-            <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; 
+            <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; 
         {% endfor %}
-    </div><br/><br/>
+{% endblock %}
+{% block divcontent %}
 		{% include "mks/_member_list.html" %}
 {% endblock %}

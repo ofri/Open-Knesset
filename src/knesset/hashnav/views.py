@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 
 class ClassBasedView(object):
     def __call__(self, request, **kwargs):
-        self.pre(request, **kwargs)
+        self.pre(request, **kwargs)       
         ret = self.render(request, **kwargs)
         return self.post(request, ret, **kwargs)
 
@@ -165,7 +165,7 @@ class ListDetailView(ClassBasedView):
             if callable(value):
                 c[key] = value()
             else:
-                c[key] = value
+                c[key] = value              
         if not template_name:
             model = queryset.model
             template_name = "%s/%s_list.html" % (model._meta.app_label, model._meta.object_name.lower())
@@ -231,7 +231,8 @@ class ListDetailView(ClassBasedView):
 
     def render(self, request, **kwargs):
         include_dir = getattr(kwargs, "include_dir", "include")
-
+        if request.method == "POST":
+            return self.handle_post(request, **kwargs)
         if 'object_id' in kwargs:
             return self.render_object(request, **kwargs)
         else:
