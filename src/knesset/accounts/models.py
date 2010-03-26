@@ -4,9 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 import datetime
 import random
 import re
+import logging
+import sys,traceback
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 alphabet = 'abcdef1234567890'
+
+logger = logging.getLogger("open-knesset.accounts")
 
 class EmailValidationManager(models.Manager):
 
@@ -18,7 +22,7 @@ class EmailValidationManager(models.Manager):
         ev.date_requested = datetime.datetime.now()
         ev.activation_key = ''.join([random.sample(alphabet,1)[0] for x in range(40)])
         ev.save()
-        print "activation key = %s" % ev.activation_key
+        logger.debug("activation key = %s", ev.activation_key)
         return ev
 
 
@@ -53,6 +57,7 @@ class EmailValidation(models.Model):
         except self.DoesNotExist:
             return (False, _("Invalid activation key."))
         except Exception, e:
-            print "exception: %s" % e
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
             return (False, "Something went wrong.")
     

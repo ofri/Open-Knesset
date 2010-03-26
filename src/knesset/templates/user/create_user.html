@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block extartitle %}{% trans 'login' %}{% endblock %}
+{% block extratitle %}{% trans 'Create new user' %}{% endblock %}
 {% block content %}
     <form method="post" action="{% url create_user %}">
         <table>{{ form.as_table }}</table>
-        <input type="submit" value="register">
+        <input type="submit" value="{% trans 'register' %}">
         <input type="hidden" name="next" value="{{ next }}">
     </form>
 {% endblock %}

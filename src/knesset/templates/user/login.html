@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block extartitle %}{% trans 'login' %}{% endblock %}
+{% block extratitle %}{% trans 'login' %}{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
 
 <p>
-    {% trans "You are already logged in."%} <a href="{% url socialauth_social_logout %}">Logout</a>?
+    {% trans "You are already logged in."%} <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>?
 </p>
 
 {% else %}
@@ -14,10 +14,10 @@
 <div id="login">
     <form method="post" action="{% url login %}">
         <table>{{ form.as_table }}</table>
-        <input type="submit" value="login">
+        <input type="submit" value="{% trans 'login' %}">
         <input type="hidden" name="next" value="{{ next }}">
     </form>
-    <a href="{% url create_user %}?next={{next}}">{% trans "register" %}</a>
+    <a href="{% url create_user %}?next={{next}}">{% trans "New user? Register" %}</a>
     
 </div>
 {% endif %}

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-24 16:20+0200\n"
+"POT-Creation-Date: 2010-03-26 12:07+0300\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: context.py:15 mks/models.py:96 mks/views.py:84 mks/views.py:88
-#: templates/base.html:64 templates/mks/member_list.html:3
+#: templates/base.html:58 templates/mks/member_list.html:3
 #: templates/mks/member_list.html.py:4 templates/mks/member_list.html:5
 #: templates/mks/member_list_with_bars.html:4
 #: templates/mks/member_list_with_bars.html:5
@@ -24,48 +24,54 @@ msgid "Members"
 msgstr "ח\"כים"
 
 #: context.py:16 mks/models.py:25 mks/views.py:115 mks/views.py:129
-#: mks/views.py:144 mks/views.py:159 templates/base.html:65
+#: mks/views.py:144 mks/views.py:159 templates/base.html:59
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:17 templates/base.html:63
+#: context.py:17 templates/base.html:57
 msgid "Past Votes"
 msgstr "הצבעות"
 
-#: accounts/forms.py:7
+#: accounts/forms.py:6
 msgid "email address"
 msgstr "כתובת דוא\"ל"
 
-#: accounts/forms.py:8
-msgid "user name"
+#: accounts/forms.py:7 user/forms.py:8
+msgid "Username"
 msgstr "שם משתמש"
 
-#: accounts/models.py:29
+#: accounts/forms.py:8 accounts/forms.py:9 user/forms.py:9 user/forms.py:10
+msgid ""
+"Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ "
+"characters)."
+msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/./+/-/_ בלבד).‏"
+
+#: accounts/models.py:33
 msgid "activation key"
 msgstr "קוד אימות"
 
-#: accounts/models.py:39
+#: accounts/models.py:43
 #, python-format
 msgid "%(key)s does not look like an activation key."
 msgstr "%(key)s לא נראה כמו קוד אימות חוקי."
 
-#: accounts/models.py:43
+#: accounts/models.py:47
 msgid "The user has updated the email since this activation key was sent."
 msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נשלח."
 
-#: accounts/models.py:45
+#: accounts/models.py:49
 msgid "This activation key has expired."
 msgstr "פג תוקפו של קוד אימות זה."
 
-#: accounts/models.py:54
+#: accounts/models.py:58
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
-#: laws/models.py:147
+#: laws/models.py:146
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:148 laws/urls.py:8 templates/include/member_detail.html:48
+#: laws/models.py:147 laws/urls.py:8 templates/include/member_detail.html:48
 #: templates/mks/_member_detail.html:66
 msgid "Votes"
 msgstr "הצבעות"
@@ -282,13 +288,13 @@ msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 msgid "or"
 msgstr "או"
 
-#: templates/_main.html:10 templates/base.html:56
+#: templates/_main.html:10 templates/base.html:50
 #: templates/search/search.html:3 templates/search/search.html.py:4
 #: templates/search/search.html:13
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/about.html:3 templates/about.html.py:4 templates/base.html:66
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:60
 msgid "About"
 msgstr "אודות"
 
@@ -304,43 +310,28 @@ msgstr "מחובר כ "
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: templates/base.html:44
+#: templates/base.html:44 templates/user/login.html:9
 msgid "Logout"
 msgstr "התנתק"
 
-#: templates/base.html:46
-msgid "Login via"
-msgstr "הזדהה באמצעות"
+#: templates/base.html:46 templates/user/login.html:4
+#: templates/user/login.html.py:17
+msgid "login"
+msgstr "כניסה"
 
-#: templates/base.html:48
-msgid "Twitter"
-msgstr "טוויטר"
-
-#: templates/base.html:49
-msgid "Yahoo"
-msgstr "יאהו"
-
-#: templates/base.html:50
-msgid "Openid"
-msgstr "&rlm;OpenID"
-
-#: templates/base.html:51
-msgid "Google"
-msgstr "גוגל"
-
-#: templates/base.html:62 templates/main.html:3
+#: templates/base.html:56 templates/main.html:3
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:83
+#: templates/base.html:77
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:87
+#: templates/base.html:81
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:89
+#: templates/base.html:83
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -751,6 +742,40 @@ msgstr "התוצאות הקודמות"
 #: templates/search/search.html:38
 msgid "next results"
 msgstr "התוצאות הבאות"
+
+#: templates/user/create_user.html:4
+msgid "Create new user"
+msgstr "צור משתמש חדש"
+
+#: templates/user/create_user.html:8
+msgid "register"
+msgstr "הרשם"
+
+#: templates/user/login.html:9
+msgid "You are already logged in."
+msgstr "אתה כבר מחובר.‏"
+
+#: templates/user/login.html:20
+msgid "New user? Register"
+msgstr "משתמש חדש? הרשם"
+
+#~ msgid "user name"
+#~ msgstr "שם משתמש"
+
+#~ msgid "Login via"
+#~ msgstr "הזדהה באמצעות"
+
+#~ msgid "Twitter"
+#~ msgstr "טוויטר"
+
+#~ msgid "Yahoo"
+#~ msgstr "יאהו"
+
+#~ msgid "Openid"
+#~ msgstr "&rlm;OpenID"
+
+#~ msgid "Google"
+#~ msgstr "גוגל"
 
 #~ msgid "next votes"
 #~ msgstr "ההצבעות הבאות"
@@ -1245,10 +1270,6 @@ msgstr "התוצאות הבאות"
 #~ msgid "Site administration"
 #~ msgstr "ניהול אתר"
 
-#, fuzzy
-#~ msgid "Log in"
-#~ msgstr "כניסה"
-
 #~ msgid "%s administration"
 #~ msgstr "ניהול %s"
 
@@ -1465,9 +1486,6 @@ msgstr "התוצאות הבאות"
 #~ msgstr ""
 #~ "ראשית יש להזין שם משתמש וסיסמה. לאחר מכן יהיה ביכולתך לערוך אפשרויות "
 #~ "נוספות עבור המשתמש."
-
-#~ msgid "Username"
-#~ msgstr "שם משתמש"
 
 #~ msgid "Password"
 #~ msgstr "סיסמה"
@@ -3440,9 +3458,6 @@ msgstr "התוצאות הבאות"
 
 #~ msgid "Greater London"
 #~ msgstr "לונדון רבתי"
-
-#~ msgid "Greater Manchester"
-#~ msgstr "מנצ'סטר רבתי"
 
 #~ msgid "Hampshire"
 #~ msgstr "המפשייר"
