@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-26 12:07+0300\n"
+"POT-Creation-Date: 2010-03-26 18:49+0300\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -759,6 +759,90 @@ msgstr "אתה כבר מחובר.‏"
 msgid "New user? Register"
 msgstr "משתמש חדש? הרשם"
 
+#: templates/user/login.html:21
+msgid "Forgot password?"
+msgstr "שכחת סיסמה?‏"
+
+#: templates/user/password_reset_complete.html:3
+#: templates/user/password_reset_complete.html:5
+msgid "Password reset complete"
+msgstr "איפוס הסיסמה הושלם"
+
+#: templates/user/password_reset_complete.html:7
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr "ססמתך נשמרה. כעת ניתן להתחבר."
+
+#: templates/user/password_reset_complete.html:9
+msgid "Log in"
+msgstr "כניסה"
+
+#: templates/user/password_reset_confirm.html:3
+#: templates/user/password_reset_form.html:3
+#: templates/user/password_reset_form.html:7
+msgid "Password reset"
+msgstr "איפוס סיסמה"
+
+#: templates/user/password_reset_confirm.html:8
+msgid "Enter new password"
+msgstr "הזנת סיסמה חדשה"
+
+#: templates/user/password_reset_confirm.html:10
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr "נא להזין את סיסמתך החדשה פעמיים כדי שנוכל לוודא שהקלדת אותה כראוי."
+
+#: templates/user/password_reset_confirm.html:14
+msgid "New password:"
+msgstr "סיסמה חדשה:"
+
+#: templates/user/password_reset_confirm.html:16
+msgid "Confirm password:"
+msgstr "אימות סיסמה:"
+
+#: templates/user/password_reset_confirm.html:17
+msgid "Change my password"
+msgstr "שנה את סיסמתי"
+
+#: templates/user/password_reset_confirm.html:22
+msgid "Password reset unsuccessful"
+msgstr "איפוס הסיסמה נכשל"
+
+#: templates/user/password_reset_confirm.html:24
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+"הקישור לאיפוס הסיסמה אינו חוקי. ייתכן והשתמשו בו כבר. אנא בקש שוב איפוס סיסמה. "
+
+#: templates/user/password_reset_done.html:3
+#: templates/user/password_reset_done.html:7
+msgid "Password reset successful"
+msgstr "הסיסמה אופסה בהצלחה"
+
+#: templates/user/password_reset_done.html:9
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+"שלחנו הוראות לקביעת הסיסמה אל כתובת הדוא\"ל שהזנת. ההודעה אמורה להתקבל בקרוב."
+
+#: templates/user/password_reset_form.html:9
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+"שכחת את סיסמתך ? נא להזין את כתובת הדוא\"ל, ואנו נשלח הוראות לקביעת "
+"סיסמה חדשה."
+
+#: templates/user/password_reset_form.html:13
+msgid "E-mail address:"
+msgstr "כתובת דוא\"ל:"
+
+#: templates/user/password_reset_form.html:13
+msgid "Reset my password"
+msgstr "אפס את סיסמתי"
+
 #~ msgid "user name"
 #~ msgstr "שם משתמש"
 
@@ -818,10 +902,6 @@ msgstr "משתמש חדש? הרשם"
 #, fuzzy
 #~ msgid "Cache Usage"
 #~ msgstr "הערה לשינוי"
-
-#, fuzzy
-#~ msgid "Logging"
-#~ msgstr "כניסה"
 
 #, fuzzy
 #~ msgid "Log Messages"
@@ -1527,54 +1607,8 @@ msgstr "משתמש חדש? הרשם"
 #~ msgid "Old password:"
 #~ msgstr "סיסמה ישנה:"
 
-#~ msgid "New password:"
-#~ msgstr "סיסמה חדשה:"
-
-#~ msgid "Confirm password:"
-#~ msgstr "אימות סיסמה:"
-
-#~ msgid "Change my password"
-#~ msgstr "שנה את סיסמתי"
-
-#~ msgid "Password reset"
-#~ msgstr "איפוס סיסמה"
-
-#~ msgid "Password reset complete"
-#~ msgstr "איפוס הסיסמה הושלם"
-
-#~ msgid "Your password has been set.  You may go ahead and log in now."
-#~ msgstr "ססמתך נשמרה. כעת ניתן להתחבר."
-
 #~ msgid "Password reset confirmation"
 #~ msgstr "אימות איפוס סיסמה"
-
-#~ msgid "Enter new password"
-#~ msgstr "הזנת סיסמה חדשה"
-
-#~ msgid ""
-#~ "Please enter your new password twice so we can verify you typed it in "
-#~ "correctly."
-#~ msgstr "נא להזין את סיסמתך החדשה פעמיים כדי שנוכל לוודא שהקלדת אותה כראוי."
-
-#~ msgid "Password reset unsuccessful"
-#~ msgstr "איפוס הסיסמה נכשל"
-
-#~ msgid ""
-#~ "The password reset link was invalid, possibly because it has already been "
-#~ "used.  Please request a new password reset."
-#~ msgstr ""
-#~ "הקישור לאיפוס הסיסמה אינו חוקי. ייתכן והשתמשו בו כבר. נא לבקש איפוס סיסמה "
-#~ "חדש."
-
-#~ msgid "Password reset successful"
-#~ msgstr "הסיסמה אופסה בהצלחה"
-
-#~ msgid ""
-#~ "We've e-mailed you instructions for setting your password to the e-mail "
-#~ "address you submitted. You should be receiving it shortly."
-#~ msgstr ""
-#~ "שלחנו הוראות לקביעת הסיסמה אל כתובת הדוא\"ל שהזנת. ההודעה אמורה להתקבל "
-#~ "בקרוב."
 
 #~ msgid "You're receiving this e-mail because you requested a password reset"
 #~ msgstr "הודעה זו התקבלה כי ביקשת איפוס סיסמה"
@@ -1593,19 +1627,6 @@ msgstr "משתמש חדש? הרשם"
 
 #~ msgid "The %(site_name)s team"
 #~ msgstr "צוות %(site_name)s"
-
-#~ msgid ""
-#~ "Forgotten your password? Enter your e-mail address below, and we'll e-"
-#~ "mail instructions for setting a new one."
-#~ msgstr ""
-#~ "שכחת את סיסמתך ? נא להזין את כתובת הדוא\"ל מתחת, ואנו נשלח הוראות לקביעת "
-#~ "סיסמה חדשה."
-
-#~ msgid "E-mail address:"
-#~ msgstr "כתובת דוא\"ל:"
-
-#~ msgid "Reset my password"
-#~ msgstr "אפס את סיסמתי"
 
 #~ msgid "Select %s to change"
 #~ msgstr "בחירת %s לשינוי"
