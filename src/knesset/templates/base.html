@@ -58,9 +58,11 @@
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
+
+<!--
         <div id="search"><form  method="get" action="{% url haystack_search %}">
             {{ search_form.q }}<input type="submit" value="{% trans 'Search' %}"></form>
-        </div>
+        </div>!-->
 		<div id="header">
 			<ul id="nav-global">
                 <!-- TODO: search, stream, next votes and a lot of drying -->
