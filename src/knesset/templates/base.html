@@ -16,7 +16,7 @@
             devil within and the policeman around the corner." > 
 		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
 		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
-
+        <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
 		<link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />		
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
@@ -24,6 +24,18 @@
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pages.js"></script>
+
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+            try {
+            var pageTracker = _gat._getTracker("UA-15521464-1");
+            pageTracker._setDomainName(".oknesset.org");
+            pageTracker._trackPageview();
+            } catch(err) {}
+        </script>
         
 		{% if LANGUAGE_BIDI %}
 		<style>
