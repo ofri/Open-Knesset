@@ -8,6 +8,11 @@ class Committee(models.Model):
     def __unicode__(self):
         return "%s" % self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('committee-detail', [str(self.id)])
+       
+
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee)
     date_string = models.CharField(max_length=256)
@@ -18,4 +23,8 @@ class CommitteeMeeting(models.Model):
     topics = models.TextField(null=True,blank=True)
     def __unicode__(self):
         return "%s %s" % (self.committee.name, self.date_string)
-
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('committee-meeting', [str(self.id)])
+  

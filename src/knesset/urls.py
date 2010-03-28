@@ -18,18 +18,11 @@ from haystack.views import SearchView
 admin.autodiscover()
 
 from knesset.feeds import *
-from knesset.sitemap import *
+from knesset.sitemap import sitemaps
 
 feeds = {
     'comments': Comments,
     'votes': Votes
-}
-
-sitemaps = {
-    'members': MemberSitemap,
-    'parties': PartySitemap,
-    'votes': VoteSitemap,
-    'index': IndexPagesSitemap,
 }
 
 
