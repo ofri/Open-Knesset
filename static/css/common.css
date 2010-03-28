@@ -44,10 +44,8 @@ a:link, a:visited { color:#ffffff; }
 #accounts a:hover { background-color:#251C1F; }
 #login { display:inline;}
 #login a {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    padding-top:0.5em;
-    padding-bottom:0.5em;
+    padding: 0.25em;
+    margin:0.25em;
 }
 #login a:hover { background-color:#251C1F; }
 #login img {width:16px; height:16px;position:relative; top:4px; padding-left:1px; padding-right:1px;}
@@ -193,7 +191,7 @@ div.versionadded span.title, div.versionchanged span.title { font-weight: bold; 
 
 /* FOOTER */
 
-#footer { margin: 0 auto; text-align: center; clear:both; color:#487858; padding:10px 20px; font-size:90%; }
+#footer { margin: 0 auto; text-align: center; clear:both; color:#689878; padding:10px 20px; font-size:90%; }
 
 /* COMMENTS */
 
@@ -289,7 +287,9 @@ a.disabled { color: #aaaaaa; }
 
 
 #content-main p {
-    margin:0em;
+    margin-top:0em;
+    margin-bottom:0em;
+    margin-left:0em;
 }
 #content-main .info > p{
     display:inline;
@@ -407,6 +407,16 @@ a.disabled { color: #aaaaaa; }
 #content-main .inline-form {
     display:inline;
 }
+#content-main form {
+    margin-right: 1em;
+}
+#content-main > form > p {
+    margin: 0.4em;
+}
+#content-main > form > p > label{
+    width: 8em;
+}
+
 
 div #search {
     float:left;

@@ -6,5 +6,5 @@ from django.utils.translation import ugettext_lazy as _
 
 class UserProfile(models.Model):
     user = models.ForeignKey('User')
-    parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
-    members = models.ManyToManyField(Member, related_name='all_members', through='Membership')
+    followed_parties = models.ManyToManyField(Party, related_name='followed_by')
+    followed_members = models.ManyToManyField(Member, related_name='followed_by')

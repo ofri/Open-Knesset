@@ -3,8 +3,10 @@ from django.contrib.auth.models import User, Permission
 from django.utils.translation import ugettext_lazy as _
 
 class EditProfileForm(forms.Form):
-    email = forms.EmailField(required=False, widget=forms.TextInput(attrs={'size':'40'}),label=_(u'email address'))
-    username = forms.CharField(max_length = 100, widget=forms.TextInput(attrs={'size':'40'}),label=_(u'user name'))
+    email = forms.EmailField(required=False ,label=_(u'email address'))
+    username = username = forms.RegexField(label=_("Username"), max_length=30, regex=r'^(?u)[ \w.@+-]{4,}$',
+        help_text = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."),
+        error_message = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."))
     
     def __init__(self, user=None, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)

@@ -5,9 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class RegistrationForm(UserCreationForm):
-    username = forms.RegexField(label=_("Username"), max_length=30, regex=r'^(?u)\w+$',
-        help_text = _("Required. 30 characters or fewer. Alphanumeric characters only"),
-        error_message = _("This value must contain only letters, numbers and underscores."))
+    username = forms.RegexField(label=_("Username"), max_length=30, regex=r'^(?u)[ \w.@+-]{4,}$',
+        help_text = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."),
+        error_message = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."))
     class Meta:
         model = User
         fields = ('username', 'email')
