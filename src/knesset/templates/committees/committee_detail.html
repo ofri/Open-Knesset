@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-committees %}class="selected"{% endblock %}
+{% block subnav %}        {% endblock %}
+{% block divcontent %}
+    <h2>{{title}}</h2>
+    <h3>{% trans 'Last Meetings' %}</h3>
+	<div id="item-list">
+        {% for o in meetings_list %}
+            <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br>
+        {% endfor %}
+	</div>
+    <a href="all_meetings/">{% trans 'Full meetings list'%}</a>
+{% endblock %}

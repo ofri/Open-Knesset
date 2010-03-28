@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
 import urllib2,urllib
+import cookielib
 import re
 import gzip
 import simplejson
@@ -18,6 +19,8 @@ from pyth.plugins.rtf15.reader import Rtf15Reader
 from knesset.mks.models import *
 from knesset.laws.models import *
 from knesset.links.models import *
+from knesset.committees.models import *
+
 from django.db import connection
 from django.db.models import Max,Count
 
@@ -135,8 +138,9 @@ class Command(NoArgsCommand):
 
 
     def update_votes(self):
-        logger.info("update votes")
         """This function updates votes data online, without saving to files."""        
+        
+        logger.info("update votes")        
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
         if current_max_src_id == None: # the db contains no votes, meaning its empty
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
@@ -768,16 +772,144 @@ class Command(NoArgsCommand):
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nsearch_text='+search_text.encode('utf8')+'\nvote.title='+v.title.encode('utf8'))
 
+    def check_vote_mentioned_in_cm(self, v, cm):
+        m = v.title[v.title.find(' - ')+2:]
+        v_search_text = self.get_search_string(m.encode('utf8'))
+        cm_search_text = self.get_search_string(cm.protocol_text.encode('utf8')).replace('\n','')
+        if cm_search_text.find(v_search_text)>=0:
+            cm.votes_mentioned.add(v)
 
-    def find_relevant_comittee_protocols(self,v):
-        m = re.search(' - (.*),', v.title)
-        search_text = urllib2.quote(m.group(1).replace('(','').replace(')','').replace('`','').encode('utf8'))
-        params = "ckShowAll=on&subj=%s" % urllib2.quote(search_text)
-        url = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
-        page = urllib2.urlopen(url,params).read().decode('windows-1255').encode('utf-8')
-        # parse results
-        m = re.search('class="DateText">(.*)</span>', page)
+    def find_votes_in_cms(self):
+        for cm in CommitteeMeeting.objects.all():
+            for v in Vote.objects.all():
+                self.check_vote_mentioned_in_cm(v, cm)
+            
+    def get_protocols_page(self, page, page_num):
+        FILES_BASE_URL = "http://www.knesset.gov.il/protocols/"
+        res = []
+        max_linked_page = max([int(r) for r in re.findall("'Page\$(\d*)",page)])
+        last_page = False        
+        if max_linked_page < page_num:
+            last_page = True
 
+        # trim the page to the results part
+        start = page.find(r'id="gvProtocol"')
+        end = page.find(r'javascript:__doPostBack')
+        page = page[start:end]
+        date_text = ''
+        comittee = ''
+        subject = ''
+        # find interesting parts
+        matches = re.findall(r'<span id="gvProtocol(.*?)</span>|OpenDoc(.*?)\);',page, re.DOTALL)
+        for (span,link) in matches:
+            if len(span): # we are parsing a matched span - committee info
+                if span.find(r'ComName')>0:
+                    comittee = span[span.find(r'>')+1:]
+                if span.find(r'lblDate')>0:
+                    date_text = span[span.find(r'>')+1:]
+                if span.find(r'lblSubject')>0:
+                    if span.find(r'<Table')>0: # this subject is multiline so they show it a a table
+                        subject = ' '.join(re.findall(r'>([^<]*)<',span)) # extract text only from all table elements
+                    else:
+                        subject = span[span.find(r'>')+1:] # no table, just take the text
+            else: # we are parsing a matched link - comittee protocol url
+                if link.find(r'html')>0:
+                    html_url = FILES_BASE_URL + re.search(r"'\.\./([^']*)'", link).group(1)
+                    res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results        
+                    date_text = ''
+                    comittee = ''
+                    subject = ''
+        return (last_page, res)
+
+    def get_protocols(self, max_page=10):        
+        SEARCH_URL = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
+        cj = cookielib.LWPCookieJar()
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        urllib2.install_opener(opener)
+
+
+        # get the search page to extract legal "viewstate" and "event validation" strings. need to pass them so the search will work
+        page = urllib2.urlopen(SEARCH_URL).read().decode('windows-1255').encode('utf-8')
+        
+        event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
+
+        # define date range
+        params = "__EVENTTARGET=DtFrom&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (view_state, event_validation)
+        page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
+        event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
+
+        # hit the search
+        params = "btnSearch=%%E7%%E9%%F4%%E5%%F9&__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (view_state, event_validation)
+        page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
+        event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
+        page_num = 1        
+        (last_page, page_res) = self.get_protocols_page(page, page_num)
+        res = page_res[:]
+
+        while (not last_page) and (page_num < max_page):
+            page_num += 1 
+            params = "__EVENTTARGET=gvProtocol&__EVENTARGUMENT=Page%%24%d&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (page_num, view_state, event_validation)
+            page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
+            # update EV and VS    
+            event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
+            view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')
+            # parse the page            
+            (last_page, page_res) = self.get_protocols_page(page, page_num)
+            res.extend(page_res)
+
+
+        for (date_string, com, topic, link) in res:
+            (c, created) = Committee.objects.get_or_create(name=com)
+            if created:
+                c.save()
+            r = re.search("(\d\d)/(\d\d)/(\d\d\d\d)", date_string)
+            d = datetime.date(int(r.group(3)), int(r.group(2)), int(r.group(1)))
+            (cm, created) = CommitteeMeeting.objects.get_or_create(committee=c, date_string=date_string, date=d, topics=topic)
+            if not created:
+                continue
+            cm.protocol_text = self.get_committee_protocol_text(link)
+            cm.save()
+            try:
+                r = re.search("חברי הוועדה(.*?)\n\n".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                s = r.split('\n')
+                s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
+                for m in Member.objects.all():
+                    for s0 in s:
+                        if s0.find(m.name_with_dashes())>=0:
+                            print "found %s in %s" % (m.name, str(cm.id))
+                            cm.mks_attended.add(m)                        
+            except Exception, e:
+                exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
+
+            cm.save()
+            
+
+
+    def get_committee_protocol_text(self, url):
+        if url.find('html'):
+            url = url.replace('html','rtf')
+        file_str = StringIO()
+        file_str.write(urllib2.urlopen(url).read())
+        try:
+            doc = Rtf15Reader.read(file_str)
+        except Exception:
+            return ''
+        text = []
+        attended_list = False
+        for paragraph in doc.content:
+            for sentence in paragraph.content:
+                if 'bold' in sentence.properties and attended_list:
+                    attended_list = False
+                    text.append('')
+                if 'מוזמנים'.decode('utf8') in sentence.content[0] and 'bold' in sentence.properties:
+                    attended_list = True                
+                text.append(sentence.content[0])
+        all_text = '\n'.join(text)
+        return re.sub(r'\n:\n',r':\n',all_text)
 
     def get_full_text(self,v):
         try:
