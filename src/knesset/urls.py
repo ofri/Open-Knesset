@@ -13,6 +13,7 @@ from knesset.laws.urls import lawsurlpatterns
 from knesset.hashnav.views import SimpleView
 from utils import SearchFormWithSpellSuggest
 from haystack.views import SearchView
+from haystack.forms import SearchForm
 
 admin.autodiscover()
 
@@ -39,10 +40,10 @@ js_info_dict = {
 about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
-
+main_view = SearchView(template='main.html', form_class=SearchForm)
 
 urlpatterns = patterns('',
-    url(r'^$', MainView(), name='main'),
+    url(r'^$', main_view, name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
     (r'^user/', include('knesset.user.urls')),
