@@ -10,6 +10,7 @@ from django.contrib import admin
 from knesset.views import MainView
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
+from knesset.committees.urls import committeesurlpatterns
 from knesset.hashnav.views import SimpleView
 from utils import SearchFormWithSpellSuggest
 from haystack.views import SearchView
@@ -18,18 +19,11 @@ from haystack.forms import SearchForm
 admin.autodiscover()
 
 from knesset.feeds import *
-from knesset.sitemap import *
+from knesset.sitemap import sitemaps
 
 feeds = {
     'comments': Comments,
     'votes': Votes
-}
-
-sitemaps = {
-    'members': MemberSitemap,
-    'parties': PartySitemap,
-    'votes': VoteSitemap,
-    'index': IndexPagesSitemap,
 }
 
 
@@ -63,7 +57,7 @@ urlpatterns = patterns('',
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
 
 )
-urlpatterns += mksurlpatterns + lawsurlpatterns
+urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:
     urlpatterns += patterns('django.views',
         (r'^static/(?P<path>.*)' , 'static.serve',

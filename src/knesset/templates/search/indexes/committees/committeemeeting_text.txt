@@ -1,0 +1,4 @@
+{{ object.committee.name }}
+{{ object.topics }}
+{{ object.protocol_text }}
+

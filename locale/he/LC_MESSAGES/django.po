@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-26 18:49+0300\n"
+"POT-Creation-Date: 2010-03-28 19:01+0300\n"
 "PO-Revision-Date: 2009-10-25 12:12+0200\n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -66,6 +66,16 @@ msgstr "פג תוקפו של קוד אימות זה."
 #: accounts/models.py:58
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
+
+#: committees/views.py:26
+#, python-format
+msgid "%(committee)s meeting on %(date)s"
+msgstr ""
+
+#: committees/views.py:32
+#, python-format
+msgid "All meetings by %(committee)s"
+msgstr ""
 
 #: laws/models.py:146
 msgid "Vote"
@@ -294,7 +304,7 @@ msgstr "או"
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/about.html:3 templates/about.html.py:4 templates/base.html:60
+#: templates/about.html:3 templates/about.html.py:4 templates/base.html:61
 msgid "About"
 msgstr "אודות"
 
@@ -323,15 +333,19 @@ msgstr "כניסה"
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:77
+#: templates/base.html:60
+msgid "Committees"
+msgstr "ועדות"
+
+#: templates/base.html:78
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:81
+#: templates/base.html:82
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:83
+#: templates/base.html:84
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
@@ -386,6 +400,64 @@ msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לער�
 #: templates/comments/form.html:17
 msgid "Post comment"
 msgstr "פרסם את התגובה"
+
+#: templates/committees/committee_detail.html:10
+msgid "Last Meetings"
+msgstr "ישיבות אחרונות"
+
+#: templates/committees/committee_detail.html:16
+msgid "Full meetings list"
+msgstr "רשימת הישיבות המלאה"
+
+#: templates/committees/committeemeeting_detail.html:11
+msgid "All committee meetings"
+msgstr "כל ישיבות הוועדה"
+
+#: templates/committees/committeemeeting_detail.html:12
+msgid "Topics"
+msgstr "נושאים"
+
+#: templates/committees/committeemeeting_detail.html:13
+msgid "MKs attended"
+msgstr "ח\"כים נוכחים"
+
+#: templates/committees/committeemeeting_detail.html:14
+msgid "Relevant votes"
+msgstr "הצבעות קשורות במליאה"
+
+#: templates/committees/committeemeeting_detail.html:15
+msgid "Protocol"
+msgstr "פרוטוקול"
+
+#: templates/committees/committeemeeting_detail.html:20
+#: templates/include/vote_detail.html:84 templates/laws/_vote_detail.html:112
+msgid "User comments"
+msgstr "תגובות"
+
+#: templates/committees/committeemeeting_detail.html:27
+#: templates/include/vote_detail.html:91 templates/laws/_vote_detail.html:119
+msgid "No comments yet"
+msgstr "אין עדיין תגובות"
+
+#: templates/committees/committeemeeting_detail.html:34
+#: templates/laws/_vote_detail.html:126
+msgid "Please"
+msgstr "אנא"
+
+#: templates/committees/committeemeeting_detail.html:34
+#: templates/laws/_vote_detail.html:126
+msgid "validate your email"
+msgstr "אמת את הדואר אלקטרוני שסיפקת"
+
+#: templates/committees/committeemeeting_detail.html:34
+#: templates/laws/_vote_detail.html:126
+msgid " to comment"
+msgstr " כדי להגיב"
+
+#: templates/committees/committeemeeting_detail.html:37
+#: templates/laws/_vote_detail.html:129
+msgid "Please login to comment"
+msgstr "אנא התחבר כדי להגיב"
 
 #: templates/include/member_detail.html:6 templates/mks/_member_detail.html:7
 msgid "party"
@@ -508,14 +580,6 @@ msgstr "קישור למסמך המלא"
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: templates/include/vote_detail.html:84 templates/laws/_vote_detail.html:112
-msgid "User comments"
-msgstr "תגובות"
-
-#: templates/include/vote_detail.html:91 templates/laws/_vote_detail.html:119
-msgid "No comments yet"
-msgstr "אין עדיין תגובות"
-
 #: templates/include/vote_list.html:15 templates/laws/_vote_list.html:46
 msgid "No tags"
 msgstr "אין תגיות"
@@ -563,22 +627,6 @@ msgstr "תקציר"
 #: templates/laws/_vote_detail.html:106
 msgid "Bill Text"
 msgstr "החוק המלא"
-
-#: templates/laws/_vote_detail.html:126
-msgid "Please"
-msgstr "אנא"
-
-#: templates/laws/_vote_detail.html:126
-msgid "validate your email"
-msgstr "אמת את הדואר אלקטרוני שסיפקת"
-
-#: templates/laws/_vote_detail.html:126
-msgid " to comment"
-msgstr " כדי להגיב"
-
-#: templates/laws/_vote_detail.html:129
-msgid "Please login to comment"
-msgstr "אנא התחבר כדי להגיב"
 
 #: templates/laws/_vote_list.html:15
 #, python-format
@@ -813,7 +861,8 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
-"הקישור לאיפוס הסיסמה אינו חוקי. ייתכן והשתמשו בו כבר. אנא בקש שוב איפוס סיסמה. "
+"הקישור לאיפוס הסיסמה אינו חוקי. ייתכן והשתמשו בו כבר. אנא בקש שוב איפוס "
+"סיסמה. "
 
 #: templates/user/password_reset_done.html:3
 #: templates/user/password_reset_done.html:7
@@ -832,8 +881,8 @@ msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll e-mail "
 "instructions for setting a new one."
 msgstr ""
-"שכחת את סיסמתך ? נא להזין את כתובת הדוא\"ל, ואנו נשלח הוראות לקביעת "
-"סיסמה חדשה."
+"שכחת את סיסמתך ? נא להזין את כתובת הדוא\"ל, ואנו נשלח הוראות לקביעת סיסמה "
+"חדשה."
 
 #: templates/user/password_reset_form.html:13
 msgid "E-mail address:"
@@ -860,9 +909,6 @@ msgstr "אפס את סיסמתי"
 
 #~ msgid "Google"
 #~ msgstr "גוגל"
-
-#~ msgid "next votes"
-#~ msgstr "ההצבעות הבאות"
 
 #~ msgid "By number of seats"
 #~ msgstr "מספר ח\"כים"

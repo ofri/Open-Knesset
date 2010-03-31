@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load laws_extra %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-committees %}class="selected"{% endblock %}
+{% block subnav %}        {% endblock %}
+{% block divcontent %}
+    <h2>{{ title }}</h2>
+	<div id="item-list">
+        {% for o in object_list %}
+            <a class="hashnav item" href="{% url committee-meeting o.id %}">{{ o.date_string }} <span style="font-size:75%">{{ o.topics|safe }}</span></a><br>
+        {% endfor %}
+	</div>  <br>
+    {% pagination page_obj paginator request %}  
+{% endblock %}
