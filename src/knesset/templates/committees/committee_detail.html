@@ -1,12 +1,12 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.name }} - {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block subnav %}        {% endblock %}
 {% block divcontent %}
-    <h2>{{title}}</h2>
+    <h2>{{object.name}}</h2>
     <h3>{% trans 'Last Meetings' %}</h3>
 	<div id="item-list">
         {% for o in meetings_list %}

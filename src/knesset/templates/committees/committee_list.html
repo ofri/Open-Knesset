@@ -1,10 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block extratitle %}{% trans "Committees" %}{% endblock %}
+{% block keywords %}{{% trans "Committees" %}{% endblock %}
+{% block description %}{% trans "Committees" %} - {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
-{% block subnav %}        {% endblock %}
 {% block divcontent %}
 	<div id="item-list">
         {% for o in object_list %}

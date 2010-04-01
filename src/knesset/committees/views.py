@@ -5,18 +5,10 @@ from models import *
 
 class CommitteesView(ListDetailView):
 
-    def render_list(self,request, **kwargs):
+    def render_object(self, request, object_id, **kwargs):
         if not self.extra_context: self.extra_context = {}
-        self.extra_context['meetings_list'] = CommitteeMeeting.objects.all()
-        return super(CommitteesView, self).render_list(request, **kwargs)
-
-    def render_object(self,request, object_id=None, **kwargs):
-        if not self.extra_context: self.extra_context = {}
-        c = Committee.objects.get(pk=object_id)
-        self.extra_context['title'] = c.name
         self.extra_context['meetings_list'] = CommitteeMeeting.objects.filter(committee__pk=object_id)[:10]
         return super(CommitteesView, self).render_object(request, object_id, **kwargs)
-
 
 class CommitteeMeetingView(ListDetailView):
 
