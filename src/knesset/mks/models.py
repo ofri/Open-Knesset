@@ -11,7 +11,7 @@ class Correlation(models.Model):
     normalized_score = models.FloatField(null=True)
     not_same_party = models.NullBooleanField()
     def __unicode__(self):
-        return "%s (%s) - %s (%s) - %.0f" % (self.m1.name,self.m1.parties.all()[0].name,self.m2.name,self.m2.parties.all()[0].name,self.normalized_score)
+        return "%s - %s - %.0f" % (self.m1.name,self.m2.name,self.normalized_score)
     
 class Party(models.Model):
     name        = models.CharField(max_length=64)
@@ -140,10 +140,10 @@ class Member(models.Model):
         return self.no_votes().count()
     
     def LowestCorrelations(self):
-        return Correlation.objects.all().filter(Q(m1=self.id)|Q(m2=self.id)).order_by('normalized_score')[0:5]
+        return Correlation.objects.filter(m1=self.id).order_by('normalized_score')[0:4]
     
     def HighestCorrelations(self):
-        return Correlation.objects.all().filter(Q(m1=self.id)|Q(m2=self.id)).order_by('-normalized_score')[0:5]
+        return Correlation.objects.filter(m1=self.id).order_by('-normalized_score')[0:4]
     
     def CorrelationListToString(self,cl):
         
@@ -153,7 +153,7 @@ class Member(models.Model):
                 m = c.m2
             else:
                 m = c.m1
-            strings.append("%s (%.0f)"%(m.NameWithLink(),c.normalized_score))
+            strings.append("%s (%.0f)"%(m.NameWithLink(),100*c.normalized_score))
         return ", ".join(strings)
     
     
@@ -162,6 +162,6 @@ class Member(models.Model):
         return ('member-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
     def NameWithLink(self):
-        return '<a href="%s">%s</a>' %(self.Url(),self.name)
+        return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True    
 
