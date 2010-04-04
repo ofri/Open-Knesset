@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 03:06+0300\n"
-"PO-Revision-Date: 2010-04-04 03:07+0200\n"
+"POT-Creation-Date: 2010-04-04 03:23+0300\n"
+"PO-Revision-Date: 2010-04-04 03:25+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -600,7 +600,7 @@ msgstr[1] ""
 #: templates/laws/_vote_detail.html:64
 #: templates/laws/_vote_detail.html:68
 #: templates/laws/_vote_detail.html:79
-#: templates/laws/_vote_list.html:39
+#: templates/laws/_vote_list.html:41
 msgid "Tags"
 msgstr "תגיות"
 
@@ -623,7 +623,7 @@ msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
 #: templates/include/vote_list.html:15
-#: templates/laws/_vote_list.html:46
+#: templates/laws/_vote_list.html:48
 msgid "No tags"
 msgstr "אין תגיות"
 
@@ -679,7 +679,15 @@ msgstr "תקציר"
 msgid "Bill Text"
 msgstr "החוק המלא"
 
+#: templates/laws/_vote_list.html:14
+msgid "Full text is available"
+msgstr "יש פירוט זמין עבור הצבעה זו"
+
 #: templates/laws/_vote_list.html:15
+msgid "Summary is available"
+msgstr "יש תקציר זמין עבור הצבעה זו"
+
+#: templates/laws/_vote_list.html:17
 #, python-format
 msgid ""
 "\n"
@@ -696,7 +704,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים הצביעו שונה ממרבית חברי מפלגותיהם"
 
-#: templates/laws/_vote_list.html:22
+#: templates/laws/_vote_list.html:24
 #, python-format
 msgid ""
 "\n"
@@ -713,7 +721,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי קואליציה הצביעו שונה משאר חברי הקואליציה"
 
-#: templates/laws/_vote_list.html:29
+#: templates/laws/_vote_list.html:31
 #, python-format
 msgid ""
 "\n"
@@ -730,7 +738,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי אופוזיציה הצביעו שונה משאר חברי האופוזיציה"
 
-#: templates/laws/_vote_list.html:53
+#: templates/laws/_vote_list.html:55
 msgid "No results found"
 msgstr "לא נמצאו תוצאות"
 
