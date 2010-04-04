@@ -91,6 +91,12 @@
     {% endif %}
     </div>
 
+    {% if object.committee_meetings.count %}
+        <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>        
+    {% else %}
+        no com meetings
+    {% endif %}
+
     {% object_links_as_div object %} 
 
 

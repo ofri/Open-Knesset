@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 01:38+0300\n"
-"PO-Revision-Date: 2010-04-04 01:46+0200\n"
+"POT-Creation-Date: 2010-04-04 03:06+0300\n"
+"PO-Revision-Date: 2010-04-04 03:07+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -452,33 +452,33 @@ msgstr "פרוטוקול"
 
 #: templates/committees/committeemeeting_detail.html:19
 #: templates/include/vote_detail.html:84
-#: templates/laws/_vote_detail.html:112
+#: templates/laws/_vote_detail.html:118
 msgid "User comments"
 msgstr "תגובות"
 
 #: templates/committees/committeemeeting_detail.html:26
 #: templates/include/vote_detail.html:91
-#: templates/laws/_vote_detail.html:119
+#: templates/laws/_vote_detail.html:125
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:126
+#: templates/laws/_vote_detail.html:132
 msgid "Please"
 msgstr "אנא"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:126
+#: templates/laws/_vote_detail.html:132
 msgid "validate your email"
 msgstr "אמת את הדואר אלקטרוני שסיפקת"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:126
+#: templates/laws/_vote_detail.html:132
 msgid " to comment"
 msgstr " כדי להגיב"
 
 #: templates/committees/committeemeeting_detail.html:36
-#: templates/laws/_vote_detail.html:129
+#: templates/laws/_vote_detail.html:135
 msgid "Please login to comment"
 msgstr "אנא התחבר כדי להגיב"
 
@@ -610,7 +610,7 @@ msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
 #: templates/include/vote_detail.html:73
-#: templates/laws/_vote_detail.html:101
+#: templates/laws/_vote_detail.html:107
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
@@ -667,11 +667,15 @@ msgstr "הצביע שונה ממרבית חברי האופוזיציה"
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
-#: templates/laws/_vote_detail.html:98
+#: templates/laws/_vote_detail.html:95
+msgid "This vote is mentioned in the following committe meetings"
+msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
+
+#: templates/laws/_vote_detail.html:104
 msgid "summary"
 msgstr "תקציר"
 
-#: templates/laws/_vote_detail.html:106
+#: templates/laws/_vote_detail.html:112
 msgid "Bill Text"
 msgstr "החוק המלא"
 
