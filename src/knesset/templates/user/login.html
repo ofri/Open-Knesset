@@ -12,7 +12,7 @@
 {% else %}
 
 <div id="login">
-    <form method="post" action="{% url login %}">
+    <form method="post" action="{% url login %}">{% csrf_token %}
         <table>{{ form.as_table }}</table>
         <input type="submit" value="{% trans 'login' %}">
         <input type="hidden" name="next" value="{{ next }}">
