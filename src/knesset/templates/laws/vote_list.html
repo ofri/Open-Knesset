@@ -15,5 +15,7 @@
 	<div id="item-list">
 		{% include "laws/_vote_list.html" %}
 	</div>
-    {% pagination page_obj paginator request %}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
 {% endblock %}
