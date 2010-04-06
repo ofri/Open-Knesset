@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 03:23+0300\n"
-"PO-Revision-Date: 2010-04-04 03:25+0200\n"
+"POT-Creation-Date: 2010-04-06 03:16+0300\n"
+"PO-Revision-Date: 2010-04-06 03:16+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -101,67 +101,67 @@ msgstr "הצבעה"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/views.py:26
+#: laws/views.py:27
 msgid "All votes"
 msgstr "כל ההצבעות"
 
-#: laws/views.py:27
+#: laws/views.py:28
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: laws/views.py:28
+#: laws/views.py:29
 msgid "Second Call"
 msgstr "קריאה שניה"
 
-#: laws/views.py:29
+#: laws/views.py:30
 msgid "Demurrer"
 msgstr "הסתייגויות"
 
-#: laws/views.py:30
+#: laws/views.py:31
 msgid "Motion of no confidence"
 msgstr "הצבעות אי-אמון"
 
-#: laws/views.py:31
+#: laws/views.py:32
 msgid "Pass to committee"
 msgstr "העברה לוועדה"
 
-#: laws/views.py:32
+#: laws/views.py:33
 msgid "Continuation"
 msgstr "החלת דין רציפות"
 
-#: laws/views.py:33
+#: laws/views.py:34
 msgid "Last Week"
 msgstr "שבוע אחרון"
 
-#: laws/views.py:34
+#: laws/views.py:35
 msgid "Last Month"
 msgstr "חודש אחרון"
 
-#: laws/views.py:35
+#: laws/views.py:36
 msgid "All times"
 msgstr "כל הזמנים"
 
-#: laws/views.py:36
+#: laws/views.py:37
 #: templates/include/vote_detail.html:9
-#: templates/laws/_vote_detail.html:10
+#: templates/laws/_vote_detail.html:11
 msgid "Time"
 msgstr "זמן"
 
-#: laws/views.py:37
+#: laws/views.py:38
 msgid "Controversy"
 msgstr "מידת המחלוקת"
 
-#: laws/views.py:38
+#: laws/views.py:39
 msgid "Against Party"
 msgstr "הצבעות נגד המפלגה"
 
-#: laws/views.py:39
+#: laws/views.py:40
 #: templates/mks/_member_detail.html:47
 #: templates/mks/_party_detail.html:7
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: laws/views.py:107
+#: laws/views.py:119
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
@@ -452,33 +452,33 @@ msgstr "פרוטוקול"
 
 #: templates/committees/committeemeeting_detail.html:19
 #: templates/include/vote_detail.html:84
-#: templates/laws/_vote_detail.html:118
+#: templates/laws/_vote_detail.html:120
 msgid "User comments"
 msgstr "תגובות"
 
 #: templates/committees/committeemeeting_detail.html:26
 #: templates/include/vote_detail.html:91
-#: templates/laws/_vote_detail.html:125
+#: templates/laws/_vote_detail.html:127
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:132
+#: templates/laws/_vote_detail.html:134
 msgid "Please"
 msgstr "אנא"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:132
+#: templates/laws/_vote_detail.html:134
 msgid "validate your email"
 msgstr "אמת את הדואר אלקטרוני שסיפקת"
 
 #: templates/committees/committeemeeting_detail.html:33
-#: templates/laws/_vote_detail.html:132
+#: templates/laws/_vote_detail.html:134
 msgid " to comment"
 msgstr " כדי להגיב"
 
 #: templates/committees/committeemeeting_detail.html:36
-#: templates/laws/_vote_detail.html:135
+#: templates/laws/_vote_detail.html:137
 msgid "Please login to comment"
 msgstr "אנא התחבר כדי להגיב"
 
@@ -529,14 +529,14 @@ msgstr "אתר"
 #: templates/include/member_detail.html:44
 #: templates/include/vote_detail.html:26
 #: templates/include/vote_detail.html:43
-#: templates/laws/_vote_detail.html:37
-#: templates/laws/_vote_detail.html:58
+#: templates/laws/_vote_detail.html:38
+#: templates/laws/_vote_detail.html:59
 msgid "none"
 msgstr "אין"
 
 #: templates/include/member_detail.html:51
 #: templates/include/vote_detail.html:13
-#: templates/laws/_vote_detail.html:20
+#: templates/laws/_vote_detail.html:21
 #: templates/laws/_vote_list.html:11
 #: templates/mks/_member_detail.html:69
 msgid "For"
@@ -544,7 +544,7 @@ msgstr "בעד"
 
 #: templates/include/member_detail.html:59
 #: templates/include/vote_detail.html:30
-#: templates/laws/_vote_detail.html:41
+#: templates/laws/_vote_detail.html:42
 #: templates/laws/_vote_list.html:12
 #: templates/mks/_member_detail.html:77
 msgid "Against"
@@ -575,8 +575,8 @@ msgstr "המסד ריק, אין נתונים"
 
 #: templates/include/vote_detail.html:15
 #: templates/include/vote_detail.html:32
-#: templates/laws/_vote_detail.html:22
-#: templates/laws/_vote_detail.html:43
+#: templates/laws/_vote_detail.html:23
+#: templates/laws/_vote_detail.html:44
 #, python-format
 msgid ""
 "\n"
@@ -598,19 +598,18 @@ msgstr[1] ""
 #: templates/include/vote_detail.html:61
 #: templates/include/vote_list.html:8
 #: templates/laws/_vote_detail.html:64
-#: templates/laws/_vote_detail.html:68
-#: templates/laws/_vote_detail.html:79
+#: templates/laws/_vote_detail.html:81
 #: templates/laws/_vote_list.html:41
 msgid "Tags"
 msgstr "תגיות"
 
 #: templates/include/vote_detail.html:65
-#: templates/laws/_vote_detail.html:90
+#: templates/laws/_vote_detail.html:92
 msgid "Login to edit tags"
 msgstr "הרשם כדי לערוך תגיות"
 
 #: templates/include/vote_detail.html:73
-#: templates/laws/_vote_detail.html:107
+#: templates/laws/_vote_detail.html:109
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
@@ -639,43 +638,51 @@ msgstr "העמוד הבא"
 msgid "Pages"
 msgstr "עמודים"
 
-#: templates/laws/_vote_detail.html:13
+#: templates/laws/_vote_detail.html:14
 msgid "Go to next vote by time"
 msgstr "עבור להצבעה הבאה לפי זמן"
 
-#: templates/laws/_vote_detail.html:16
+#: templates/laws/_vote_detail.html:17
 msgid "Go to previous vote by time"
 msgstr "עבור להצבעה הקודמת לפי זמן"
 
-#: templates/laws/_vote_detail.html:30
-#: templates/laws/_vote_detail.html:51
+#: templates/laws/_vote_detail.html:31
+#: templates/laws/_vote_detail.html:52
 msgid "Voted differently than majority of own party"
 msgstr "הצביע שונה ממרבית חברי סיעתו"
 
-#: templates/laws/_vote_detail.html:31
-#: templates/laws/_vote_detail.html:52
+#: templates/laws/_vote_detail.html:32
+#: templates/laws/_vote_detail.html:53
 msgid "Voted differently than majority of the coalition"
 msgstr "הצביע שונה ממרבית חברי הקואליציה"
 
-#: templates/laws/_vote_detail.html:32
-#: templates/laws/_vote_detail.html:53
+#: templates/laws/_vote_detail.html:33
+#: templates/laws/_vote_detail.html:54
 msgid "Voted differently than majority of the opposition"
 msgstr "הצביע שונה ממרבית חברי האופוזיציה"
 
-#: templates/laws/_vote_detail.html:76
-#: templates/laws/_vote_detail.html:87
+#: templates/laws/_vote_detail.html:72
+#: templates/laws/_vote_detail.html:89
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
-#: templates/laws/_vote_detail.html:95
+#: templates/laws/_vote_detail.html:75
+msgid "Suggest Tags"
+msgstr "הוסף תגיות"
+
+#: templates/laws/_vote_detail.html:76
+msgid "Click here"
+msgstr "לחץ כאן"
+
+#: templates/laws/_vote_detail.html:97
 msgid "This vote is mentioned in the following committe meetings"
 msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
 
-#: templates/laws/_vote_detail.html:104
+#: templates/laws/_vote_detail.html:106
 msgid "summary"
 msgstr "תקציר"
 
-#: templates/laws/_vote_detail.html:112
+#: templates/laws/_vote_detail.html:114
 msgid "Bill Text"
 msgstr "החוק המלא"
 

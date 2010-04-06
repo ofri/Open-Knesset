@@ -5,6 +5,7 @@
 {% block description %}{{ object.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block divcontent %}
 	{% include "laws/_vote_detail.html" %}
 {% endblock %}

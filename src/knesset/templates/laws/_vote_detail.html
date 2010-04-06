@@ -4,6 +4,7 @@
 {% load links_extra %}
 {% load comments %}
 
+
 <h2><a href=".">{{ object.title }}</a></h2>
 <div id="vote-info">
     <div>
@@ -60,11 +61,6 @@
     </div>
     <div id="tagging-container">
     {% if user.is_authenticated %}
-        <form action="/vote/{{ object.id }}/submit-tags/" method="POST">
-            <label for="tags">{% trans "Tags" %}</label>
-            {{ object.tag_form.tags }}
-            <input type="submit" value="Submit" />
-        </form>
         <label for="tags">{% trans "Tags" %}</label>
         {% if object.tags %}
             <div id="vote-tags">
@@ -75,6 +71,12 @@
         {% else %}
             {% trans "No tags yet" %}<br />        
         {% endif %}
+        <div id="add_tags">
+            <span>{% trans "Suggest Tags" %}</span> 
+            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+            </span>
+        </div>
+
     {% else %}
         <label for="tags">{% trans "Tags" %}</label>
         {% if object.tags %}
@@ -92,9 +94,7 @@
     </div>
 
     {% if object.committee_meetings.count %}
-        <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>        
-    {% else %}
-        no com meetings
+        <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>                
     {% endif %}
 
     {% object_links_as_div object %} 

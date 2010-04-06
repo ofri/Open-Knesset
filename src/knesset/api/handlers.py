@@ -2,6 +2,7 @@ from datetime import datetime
 from piston.handler import BaseHandler
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
+from tagging.models import Tag, TaggedItem
 
 DEFAULT_PAGE_LEN = 20
 def limit_by_request(qs, request):
@@ -80,8 +81,34 @@ class PartyHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Party
     
-    def read(self, request, party_id=None):
-        if party_id:
-            return Party.objects.filter(pk=party_id)
+    def read(self, request, id=None):
+        if id:
+            return Party.objects.filter(pk=id)
         else:
             return Party.objects.all()
+
+class TagHandler(BaseHandler):
+    fields = ('id', 'name', 'number_of_items')
+    allowed_methods = ('GET',)
+    model = Party
+    
+    def read(self, request, **kwargs):
+        id = None
+        if 'id' in kwargs:
+            id = kwargs['id']        
+        if id:
+            return Tag.objects.filter(pk=id)
+        vote_id = None
+        if 'vote_id' in kwargs:
+            vote_id = kwargs['vote_id']
+        if vote_id:
+            tags_ids = TaggedItem.objects.filter(object_id=vote_id).values_list('tag', flat=True)
+            return Tag.objects.filter(id__in=tags_ids)
+
+        return Tag.objects.all().order_by('name')
+    
+    @classmethod
+    def number_of_items(self, tag):
+        return tag.items.count()
+
+
