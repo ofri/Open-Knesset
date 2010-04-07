@@ -26,7 +26,6 @@ class EmailValidationManager(models.Manager):
         ev.date_requested = datetime.datetime.now()
         ev.activation_key = ''.join([random.sample(alphabet,1)[0] for x in range(40)])
         ev.save()
-        import pdb; pdb.set_trace()
         logger.debug("activation key = %s", ev.activation_key)
         current_site = Site.objects.get_current()
         subject = render_to_string('accounts/email_validation_subject.txt',
