@@ -7,12 +7,12 @@
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
     <h2>{{title}}</h2>
-    <a href="">{% trans 'All committee meetings' %}</a><br>
+    <a href="{% url committee-all-meetings object.committee.id %}">{% trans 'All committee meetings' %}</a><br>
     {% trans 'Topics' %}: {{ object.topics|safe }}<br>
     {% trans 'MKs attended' %}: {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.Party.name }}" />{{ m.name }}</a> &nbsp; {% endfor %}<br>
     {% trans 'Relevant votes' %}: {% for v in object.votes_mentioned.all %}<a class="hashnav item dontwrap" id="vote-{{ v.id }}" href="{% url vote-detail v.id %}" />{{ v.title }}</a> &nbsp; {% endfor %}<br>
     <h3>{% trans 'Protocol' %}</h3>
-    <textarea rows="20" cols="90" readonly="true">{{ object.protocol_text}}</textarea>
+    <div class="protocol">{{ object.protocol_text|linebreaks }}</div>
 
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}

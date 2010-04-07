@@ -417,7 +417,12 @@ a.disabled { color: #aaaaaa; }
     width: 8em;
 }
 
-
+#content-main .protocol {
+    height: 30em;
+    overflow: auto;
+    background-color:#EEE;
+    padding:0.5em;
+}
 div #search {
     float:left;
     margin-top:6px;
