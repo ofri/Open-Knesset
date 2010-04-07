@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
+from knesset.accounts.models import EmailValidation
+
 def create_user(request):
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
@@ -14,6 +16,7 @@ def create_user(request):
             user = authenticate(username=form.cleaned_data['username'], 
                                 password=form.cleaned_data['password1'])
             login(request, user)
+            ev = EmailValidation.objects.send(user=user)
             next = request.POST.get('next', None)
             return HttpResponseRedirect(next if next else reverse('edit-profile'))
         else:
