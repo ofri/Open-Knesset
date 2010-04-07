@@ -1,17 +1,14 @@
 from django.conf import settings
 from django.shortcuts import render_to_response
-from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 
 from forms import EditProfileForm
 from models import *
 
-from django.core.mail import send_mail
 import logging
 import sys,traceback
 logger = logging.getLogger("open-knesset.accounts")
@@ -37,21 +34,7 @@ def edit_profile(request):
 def send_validation_email(request):
     if request.method == 'GET':
         return HttpResponseRedirect(reverse('edit-profile'))
-    ev = EmailValidation.objects.create(user=request.user)
-    current_site = Site.objects.get_current()
-    subject = render_to_string('accounts/email_validation_subject.txt',
-                               { 'site': current_site })
-    # Email subject *must not* contain newlines
-    subject = ''.join(subject.splitlines())
-    
-    message = render_to_string('accounts/email_validation.txt',
-                               { 'activation_key': ev.activation_key,                                 
-                                 'site': current_site })
-    try:
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [ev.email])
-    except Exception:
-        exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-        logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
+    ev = EmailValidation.objects.send(user=request.user)
     return render_to_response('accounts/email_validation_sent.html', {'email':ev.email}, RequestContext(request))
 
 @login_required
