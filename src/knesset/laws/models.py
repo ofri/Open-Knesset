@@ -147,7 +147,7 @@ class Vote(models.Model):
         verbose_name_plural = _('Votes')
 
     def __unicode__(self):
-        return "%s (%s)" % (self.title, self.time_string)
+        return "%d %s (%s)" % (self.id, self.title, self.time_string)
 
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
