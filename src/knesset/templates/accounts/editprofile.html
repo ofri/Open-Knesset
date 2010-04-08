@@ -3,7 +3,7 @@
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
 {% block h1content %}{% trans 'User Profile' %}{% endblock %}
 {% block divcontent %}
-<form action="." method="post">
+<form action="." method="post">{% csrf_token %}
     <table>
     {{ edit_form }}
     </table>
@@ -15,7 +15,7 @@
         {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address.' %}
     {% else %}
         {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it' %}
-        <form action="../send-validation-email/" method="post">
+        <form action="../send-validation-email/" method="post">{% csrf_token %}
             <input type="submit" name="send validation email" value="{% trans 'send validation email' %}" />
         </form>
     {% endif %}

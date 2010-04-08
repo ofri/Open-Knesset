@@ -1,5 +1,5 @@
 {% load comments i18n %}
-<form action="{% comment_form_target %}" method="post">
+<form action="{% comment_form_target %}" method="post">{% csrf_token %}
   <input type="hidden" name="next" value="{{ request.path }}" />
   {% for field in form %}
     {% if field.is_hidden %}
