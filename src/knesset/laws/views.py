@@ -31,13 +31,17 @@ class VoteListView(ListDetailView):
             ('vote_type','no-confidence', _('Motion of no confidence')),
             ('vote_type','pass-to-committee', _('Pass to committee')),
             ('vote_type','continuation', _('Continuation')),
+            ('tagged','all',_('All')),
+            ('tagged','false',_('Untagged Votes')),
+            ('tagged','true',_('Tagged Votes')),            
             ('time','7',_('Last Week')),
             ('time','30',_('Last Month')),
             ('time','all',_('All times')),
             ('order','time',_('Time')),
             ('order','controversy', _('Controversy')),
             ('order','against-party',_('Against Party')),
-            ('order','votes',_('Number of votes'))
+            ('order','votes',_('Number of votes')),
+            
         ]
 
     def pre (self, request, **kwargs):
@@ -45,6 +49,7 @@ class VoteListView(ListDetailView):
             'type': request.GET.get('vote_type', None),
             'since': request.GET.get('time', None),
             'order': request.GET.get('order', None),
+            'tagged': request.GET.get('tagged',None),
         })
         
 
@@ -53,6 +58,7 @@ class VoteListView(ListDetailView):
 
         friend_page = {}
         friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type','all').encode('utf8'))
+        friend_page['tagged'] = urllib.quote(request.GET.get('tagged','all').encode('utf8'))                
         friend_page['time'] = urllib.quote(request.GET.get('time','all').encode('utf8'))
         friend_page['order'] = urllib.quote(request.GET.get('order','time').encode('utf8'))        
 

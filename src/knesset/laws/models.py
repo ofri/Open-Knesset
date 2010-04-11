@@ -1,6 +1,8 @@
 #encoding: utf-8
 from datetime import date, timedelta
 from django.db import models
+from django.db.models import Count
+from django.contrib.contenttypes import generic
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
@@ -113,6 +115,12 @@ class VoteManager(models.Manager):
 
         qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
 
+        if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'false':
+            qs = qs.annotate(c=Count('tagged_items')).filter(c=0)
+        if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'true':
+            qs = qs.annotate(c=Count('tagged_items')).filter(c__gt=0)
+
+
         if 'order' in kwargs:
             if kwargs['order']=='controversy':
                 qs = qs.filter(controversy__gt=0).order_by('-controversy')
@@ -138,6 +146,11 @@ class Vote(models.Model):
     summary        = models.TextField(null=True,blank=True)    
     full_text      = models.TextField(null=True,blank=True)
     full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+
+    tagged_items = generic.GenericRelation(TaggedItem,
+                                           object_id_field="object_id",
+                                           content_type_field="content_type")
+
 
     objects = VoteManager()
 
