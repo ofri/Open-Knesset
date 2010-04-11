@@ -6,28 +6,12 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 
-from forms import EditProfileForm
 from models import *
 
 import logging
 import sys,traceback
 logger = logging.getLogger("open-knesset.accounts")
 
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        edit_form = EditProfileForm(user=request.user, data=request.POST)
-        if edit_form.is_valid():
-            user = edit_form.save()
-            m = request.user.message_set.create()
-            m.message = 'Your profile has been updated.'
-            m.save()
-            
-            return HttpResponseRedirect('.')
-    if request.method == 'GET':
-        edit_form = EditProfileForm(user = request.user)
-    payload = {'edit_form':edit_form}
-    return render_to_response('accounts/editprofile.html', payload, RequestContext(request))
 
 
 @login_required

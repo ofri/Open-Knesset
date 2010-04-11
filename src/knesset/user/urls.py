@@ -3,6 +3,7 @@ from django.conf.urls.defaults import *
 # views coded in this app
 urlpatterns = patterns('knesset.user.views',
     url(r'^create/$', 'create_user', name ='create_user'),
+    url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
     )
 
 # views coded elsewhere
