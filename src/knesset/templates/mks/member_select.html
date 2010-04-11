@@ -12,14 +12,14 @@
 <h3>{% trans 'Current MKs' %}</h3>
 {% for o in object_list %}
     {% if o.is_current %}
-    	<form action=".?next={{next}}" class="inline-form" method="post"><input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
+    	<form action=".?next={{next}}" class="inline-form" method="post">{% csrf_token %} <input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
     {% endif %}
 {% empty %}
     {% trans "Data base empty, no objects" %}
 {% endfor %}
 <h3>{% trans 'Past MKs' %}</h3>
 {% for o in past_mks %}
-    <form action=".?next={{next}}" class="inline-form" method="post"><input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
+    <form action=".?next={{next}}" class="inline-form" method="post">{% csrf_token %} <input type="hidden" name="object_id" value="{{ o.id }}"/><input id="detail-{{ o.id }}" class="hashnav item dontwrap{% if o.selected%} selected{% endif %}" type="submit" name="submit" value="{{ o.name }}"  /></form>&nbsp;
 {% endfor %}
 
 </div>
