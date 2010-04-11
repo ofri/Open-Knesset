@@ -18,7 +18,7 @@ class CommitteeMeeting(models.Model):
     date_string = models.CharField(max_length=256)
     date = models.DateField()
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
-    votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings')
+    votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
     def __unicode__(self):
