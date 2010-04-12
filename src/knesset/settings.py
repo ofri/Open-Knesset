@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'knesset.tagvotes',
     'knesset.accounts',
     'knesset.links',
+    'knesset.user',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -149,6 +150,7 @@ HAYSTACK_INCLUDE_SPELLING = True
 
 MAX_TAG_LENGTH = 128
 
+AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 LOG_FILENAME = os.path.join(PROJECT_ROOT, 'open-knesset.log')
 logger = logging.getLogger("open-knesset")

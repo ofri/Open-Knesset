@@ -44,4 +44,7 @@ def edit_profile(request):
     if request.method == 'GET':
         edit_form = EditProfileForm(user = request.user)
     payload = {'edit_form':edit_form}
-    return render_to_response('accounts/editprofile.html', payload, RequestContext(request))
+    return render_to_response('user/editprofile.html',
+        context_instance=RequestContext(request,
+            {'edit_form': edit_form,
+            }))
