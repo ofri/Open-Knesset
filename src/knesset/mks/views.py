@@ -53,19 +53,25 @@ class MemberSelectView(ListDetailView):
             ec['next'] = path[path.find('=')+1:]
                             
         return ListDetailView.render_list(self, request, queryset = qs, extra_context = ec, **kwargs)
+
     def handle_post(self, request, **kwargs):
+        ''' post to toggle a followed object '''
         try:
             o_id = int(request.POST.get('object_id', None))
-            selected_mks = request.session.get('selected_mks',dict())
+            o_type = request.POST.get('object_type', 'mks')
+            key = 'selected_%s' % o_type
+            selected_mks = request.session.get(key ,dict())
             if o_id in selected_mks:
                 del selected_mks[o_id]
             else:
                 selected_mks[o_id] = True        
-            request.session['selected_mks'] = selected_mks
+            request.session[key] = selected_mks
         except Exception, e:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))            
+        # post should return json
         return self.render_list(request, **kwargs)
+
 
 class MemberListView(ListDetailView):    
     def render_list(self,request, **kwargs):
