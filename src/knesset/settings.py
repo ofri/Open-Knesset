@@ -67,7 +67,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'openid_consumer.middleware.OpenIDMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -92,8 +91,6 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'piston',                       # friends apps
     'debug_toolbar',
-    'socialauth',
-    'openid_consumer',
     'tagging',
     'haystack',
     'south',
@@ -120,26 +117,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-
-OPENID_REDIRECT_NEXT = '/accounts/openid/done/'
-
-OPENID_SREG = {"requred": "nickname, email", "optional":"postcode, country", "policy_url": ""}
-
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
-
-
-FACEBOOK_API_KEY = 'e7698d234fef3813756578fa4b927917'
-FACEBOOK_API_SECRET = 'd765c75c355a90c31090420e546cb83a'
-
-
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
-                           'socialauth.auth_backends.OpenIdBackend',
-                           'socialauth.auth_backends.FacebookBackend',
-                           )
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/user/login/'
 
 SITE_NAME = 'Open-Knesset'
 HAYSTACK_SITECONF = 'knesset.search_sites'

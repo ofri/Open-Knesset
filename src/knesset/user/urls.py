@@ -8,9 +8,9 @@ urlpatterns = patterns('knesset.user.views',
 
 # views coded elsewhere
 urlpatterns += patterns('',
-    (r'^soc/', include('socialauth.urls')),
     (r'^registration/', include('knesset.accounts.urls')),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'user/login.html'}, name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
     url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name': 'user/password_reset_form.html'}, name='password_reset'),
     url(r'^password_reset/done/$', 'django.contrib.auth.views.password_reset_done', {'template_name': 'user/password_reset_done.html'}),
     url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', {'template_name': 'user/password_reset_confirm.html'}),

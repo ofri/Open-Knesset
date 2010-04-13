@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
 
 <p>
-    {% trans "You are already logged in."%} <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>?
+    {% trans "You are already logged in."%} <a href="{% url logout %}">{% trans 'Logout' %}</a>?
 </p>
 
 {% else %}

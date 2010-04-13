@@ -28,8 +28,6 @@ def processor(request):
     except KeyError:
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
     
-    d['fb_api_key'] = settings.FACEBOOK_API_KEY
-
     d['search_form'] = SearchFormWithSpellSuggest()
 
     return d
