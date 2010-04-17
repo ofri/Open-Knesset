@@ -96,7 +96,7 @@ INSTALLED_APPS = (
     'tagging',
     'haystack',
     'south',
-    'knesset.aux',                  # knesset apps
+    'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
     'knesset.committees',
