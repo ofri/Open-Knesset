@@ -1,0 +1,44 @@
+Open-Knesset bennydaon$ FAIL^C
+Open-Knesset bennydaon$ bin/django migrate user
+Running migrations for user:
+ - Migrating forwards to 0002_add_user_profile.
+ > user:0002_add_user_profile
+User object
+> /Users/bennydaon/src/Open-Knesset/src/knesset/user/migrations/0002_add_user_profile.py(16)forwards()
+-> profile.user = u
+(Pdb) l
+ 11             "Write your forwards methods here."
+ 12             for u in orm['auth.User'].objects.all():
+ 13                 profile = UserProfile()
+ 14                 print u 
+ 15                 import pdb; pdb.set_trace()
+ 16  ->             profile.user = u
+ 17                 profile.save()
+ 18     
+ 19         def backwards(self, orm):
+ 20             raise RuntimeError("Cannot reverse this migration.")
+ 21         
+(Pdb) s
+--Call--
+> /Users/bennydaon/src/Open-Knesset/parts/django/django/db/models/fields/related.py(306)__set__()
+-> def __set__(self, instance, value):
+(Pdb) s
+> /Users/bennydaon/src/Open-Knesset/parts/django/django/db/models/fields/related.py(307)__set__()
+-> if instance is None:
+(Pdb) s
+> /Users/bennydaon/src/Open-Knesset/parts/django/django/db/models/fields/related.py(312)__set__()
+-> if value is None and self.field.null == False:
+(Pdb) s
+> /Users/bennydaon/src/Open-Knesset/parts/django/django/db/models/fields/related.py(315)__set__()
+-> elif value is not None and not isinstance(value, self.field.rel.to):
+(Pdb) s
+> /Users/bennydaon/src/Open-Knesset/parts/django/django/db/models/fields/related.py(316)__set__()
+-> raise ValueError('Cannot assign "%r": "%s.%s" must be a "%s" instance.' %
+(Pdb) value.__class__
+<class 'django.contrib.auth.models.User'>
+(Pdb) self.field.rel.to
+<class 'django.contrib.auth.models.User'>
+(Pdb) isinstance(value, self.field.rel.to)
+False
+
+WTF?

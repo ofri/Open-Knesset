@@ -93,8 +93,6 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'piston',                       # friends apps
     'debug_toolbar',
-    'socialauth',
-    'openid_consumer',
     'tagging',
     'haystack',
     'south',
@@ -106,6 +104,7 @@ INSTALLED_APPS = (
     'knesset.tagvotes',
     'knesset.accounts',
     'knesset.links',
+    'knesset.user',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -120,26 +119,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-
-OPENID_REDIRECT_NEXT = '/accounts/openid/done/'
-
-OPENID_SREG = {"requred": "nickname, email", "optional":"postcode, country", "policy_url": ""}
-
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
-
-
-FACEBOOK_API_KEY = 'e7698d234fef3813756578fa4b927917'
-FACEBOOK_API_SECRET = 'd765c75c355a90c31090420e546cb83a'
-
-
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
-                           'socialauth.auth_backends.OpenIdBackend',
-                           'socialauth.auth_backends.FacebookBackend',
-                           )
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/user/login/'
 
 SITE_NAME = 'Open-Knesset'
 HAYSTACK_SITECONF = 'knesset.search_sites'
@@ -150,6 +130,7 @@ HAYSTACK_INCLUDE_SPELLING = True
 
 MAX_TAG_LENGTH = 128
 
+AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 LOG_FILENAME = os.path.join(PROJECT_ROOT, 'open-knesset.log')
 logger = logging.getLogger("open-knesset")

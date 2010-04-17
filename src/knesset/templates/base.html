@@ -53,7 +53,7 @@
             {% if user.is_authenticated %}
                 {% trans 'Logged in as ' %} {{ user }} &bull;
                     <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
-                    <a href="{% url socialauth_social_logout %}">{% trans 'Logout' %}</a>
+                    <a href="{% url logout %}">{% trans 'Logout' %}</a>
             {% else %}
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}

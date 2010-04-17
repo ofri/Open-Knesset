@@ -9,13 +9,17 @@
     </table>
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
+    {% trans "Following Members:" %}
+    {% for member in request.user.get_profile.members %}
+        {{member.name}}
+    {% endfor %}
 <br/>
 {% if not edit_form.has_perms %}
     {% if not edit_form.has_email %}
         {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address.' %}
     {% else %}
         {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it' %}
-        <form action="../send-validation-email/" method="post">{% csrf_token %}
+        <form action="{% url send-validation-email %}" method="post">{% csrf_token %}
             <input type="submit" name="send validation email" value="{% trans 'send validation email' %}" />
         </form>
     {% endif %}

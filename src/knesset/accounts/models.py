@@ -1,5 +1,9 @@
 from django.db import models
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.contrib.auth.models import User, Permission
+from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 import datetime
 import random
@@ -15,7 +19,7 @@ logger = logging.getLogger("open-knesset.accounts")
 class EmailValidationManager(models.Manager):
 
     @classmethod
-    def create(self,user):
+    def send(self,user):
         ev = EmailValidation()
         ev.user = user
         ev.email = user.email
@@ -23,8 +27,21 @@ class EmailValidationManager(models.Manager):
         ev.activation_key = ''.join([random.sample(alphabet,1)[0] for x in range(40)])
         ev.save()
         logger.debug("activation key = %s", ev.activation_key)
+        current_site = Site.objects.get_current()
+        subject = render_to_string('accounts/email_validation_subject.txt',
+                                   { 'site': current_site })
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        
+        message = render_to_string('accounts/email_validation.txt',
+                                   { 'activation_key': ev.activation_key,                                 
+                                     'site': current_site })
+        try:
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [ev.email])
+        except Exception:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
         return ev
-
 
 class EmailValidation(models.Model):
     user = models.ForeignKey(User)

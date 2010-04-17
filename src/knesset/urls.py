@@ -6,7 +6,6 @@ from django.views.generic.simple import direct_to_template, redirect_to
 from django.contrib.comments.models import Comment
 from django.contrib import admin
 
-from knesset.views import MainView
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
