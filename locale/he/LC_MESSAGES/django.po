@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-20 22:26+0300\n"
-"PO-Revision-Date: 2010-04-20 22:28+0200\n"
+"PO-Revision-Date: 2010-04-20 22:38+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -264,7 +264,7 @@ msgstr "דף לא קיים"
 #: templates/base.html:9
 #: templates/base.html.py:17
 msgid "Open Knesset"
-msgstr "הכנסת הפתוחה"
+msgstr "כנסת פתוחה"
 
 #: templates/500.html:8
 #: templates/500.html.py:11
