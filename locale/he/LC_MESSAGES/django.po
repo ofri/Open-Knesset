@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-12 00:35+0300\n"
-"PO-Revision-Date: 2010-04-12 00:36+0200\n"
+"POT-Creation-Date: 2010-04-20 22:26+0300\n"
+"PO-Revision-Date: 2010-04-20 22:28+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,9 +17,13 @@ msgstr ""
 
 #: context.py:15
 #: mks/models.py:96
-#: mks/views.py:84
-#: mks/views.py:88
+#: mks/views.py:92
+#: mks/views.py:96
+#: mks/views.py:99
 #: templates/base.html:70
+#: templates/mks/member_graph.html:3
+#: templates/mks/member_graph.html.py:4
+#: templates/mks/member_graph.html:5
 #: templates/mks/member_list.html:3
 #: templates/mks/member_list.html.py:4
 #: templates/mks/member_list.html:5
@@ -30,10 +34,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:25
-#: mks/views.py:115
-#: mks/views.py:129
-#: mks/views.py:144
-#: mks/views.py:159
+#: mks/views.py:128
+#: mks/views.py:142
+#: mks/views.py:157
+#: mks/views.py:172
 #: templates/base.html:71
 msgid "Parties"
 msgstr "מפלגות"
@@ -43,40 +47,24 @@ msgstr "מפלגות"
 msgid "Past Votes"
 msgstr "הצבעות"
 
-#: accounts/forms.py:6
-msgid "email address"
-msgstr "כתובת דוא\"ל"
-
-#: accounts/forms.py:7
-#: user/forms.py:8
-msgid "Username"
-msgstr "שם משתמש"
-
-#: accounts/forms.py:8
-#: accounts/forms.py:9
-#: user/forms.py:9
-#: user/forms.py:10
-msgid "Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."
-msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/./+/-/_ בלבד).‏"
-
-#: accounts/models.py:33
+#: accounts/models.py:50
 msgid "activation key"
 msgstr "קוד אימות"
 
-#: accounts/models.py:43
+#: accounts/models.py:60
 #, python-format
 msgid "%(key)s does not look like an activation key."
 msgstr "%(key)s לא נראה כמו קוד אימות חוקי."
 
-#: accounts/models.py:47
+#: accounts/models.py:64
 msgid "The user has updated the email since this activation key was sent."
 msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נשלח."
 
-#: accounts/models.py:49
+#: accounts/models.py:66
 msgid "This activation key has expired."
 msgstr "פג תוקפו של קוד אימות זה."
 
-#: accounts/models.py:58
+#: accounts/models.py:75
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
@@ -96,7 +84,7 @@ msgstr "הצבעה"
 
 #: laws/models.py:160
 #: laws/urls.py:8
-#: templates/include/member_detail.html:48
+#: templates/include/member_detail.html:47
 #: templates/mks/_member_detail.html:66
 msgid "Votes"
 msgstr "הצבעות"
@@ -221,34 +209,39 @@ msgstr "מפלגה"
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/views.py:77
+#: mks/views.py:83
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: mks/views.py:77
 #: mks/views.py:84
+#: mks/views.py:92
 msgid "By number of votes"
 msgstr "לפי מספר הצבעות"
 
-#: mks/views.py:102
+#: mks/views.py:85
+#: mks/views.py:99
+msgid "Graphical view"
+msgstr "תצוגה גרפית"
+
+#: mks/views.py:115
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:103
+#: mks/views.py:116
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:104
+#: mks/views.py:117
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:105
+#: mks/views.py:118
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
 #: tagvotes/models.py:11
 msgid "tagged item"
-msgstr ""
+msgstr "פריט מתויג"
 
 #: tagvotes/models.py:12
 msgid "user"
@@ -256,12 +249,11 @@ msgstr "משתמש"
 
 #: tagvotes/models.py:18
 msgid "tag vote"
-msgstr ""
+msgstr "הצבעה על תיוג"
 
 #: tagvotes/models.py:19
-#, fuzzy
 msgid "tag votes"
-msgstr "הצבעות"
+msgstr "הצבעות על תגיות"
 
 #: templates/404.html:3
 #: templates/404.html.py:4
@@ -388,31 +380,6 @@ msgstr "תודה לטוזיג על אירוח האתר"
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
 
-#: templates/accounts/editprofile.html:3
-#: templates/accounts/editprofile.html:4
-msgid "User Profile"
-msgstr "פרופיל משתמש"
-
-#: templates/accounts/editprofile.html:10
-msgid "save"
-msgstr "שמור"
-
-#: templates/accounts/editprofile.html:15
-msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
-msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
-
-#: templates/accounts/editprofile.html:17
-msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
-msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
-
-#: templates/accounts/editprofile.html:19
-msgid "send validation email"
-msgstr "שלח דואר אלקטרוני לאימות"
-
-#: templates/accounts/editprofile.html:23
-msgid "Your email has been validated, so you can edit stuff!"
-msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
-
 #: templates/accounts/email_validation.txt:2
 #: templates/accounts/email_validation_subject.txt:1
 msgid "email validation for"
@@ -494,51 +461,51 @@ msgstr " כדי להגיב"
 msgid "Please login to comment"
 msgstr "אנא התחבר כדי להגיב"
 
-#: templates/include/member_detail.html:6
+#: templates/include/member_detail.html:5
 #: templates/mks/_member_detail.html:7
 msgid "party"
 msgstr "מפלגה"
 
-#: templates/include/member_detail.html:10
+#: templates/include/member_detail.html:9
 #: templates/mks/_member_detail.html:11
 msgid "age"
 msgstr "גיל"
 
-#: templates/include/member_detail.html:15
+#: templates/include/member_detail.html:14
 #: templates/mks/_member_detail.html:16
 msgid "year of aliyah"
 msgstr "שנת עליה"
 
-#: templates/include/member_detail.html:20
+#: templates/include/member_detail.html:19
 #: templates/mks/_member_detail.html:21
 msgid "family status"
 msgstr "מצב משפחתי"
 
-#: templates/include/member_detail.html:24
+#: templates/include/member_detail.html:23
 #: templates/mks/_member_detail.html:25
 msgid "place of birth"
 msgstr "מקום לידה"
 
-#: templates/include/member_detail.html:28
+#: templates/include/member_detail.html:27
 #: templates/mks/_member_detail.html:29
 msgid "phone"
 msgstr "טלפון"
 
-#: templates/include/member_detail.html:32
+#: templates/include/member_detail.html:31
 #: templates/mks/_member_detail.html:33
 msgid "fax"
 msgstr "פקס"
 
-#: templates/include/member_detail.html:36
+#: templates/include/member_detail.html:35
 #: templates/mks/_member_detail.html:37
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
-#: templates/include/member_detail.html:40
+#: templates/include/member_detail.html:39
 msgid "web site"
 msgstr "אתר"
 
-#: templates/include/member_detail.html:44
+#: templates/include/member_detail.html:43
 #: templates/include/vote_detail.html:26
 #: templates/include/vote_detail.html:43
 #: templates/laws/_vote_detail.html:38
@@ -546,7 +513,7 @@ msgstr "אתר"
 msgid "none"
 msgstr "אין"
 
-#: templates/include/member_detail.html:51
+#: templates/include/member_detail.html:50
 #: templates/include/vote_detail.html:13
 #: templates/laws/_vote_detail.html:21
 #: templates/laws/_vote_list.html:11
@@ -554,7 +521,7 @@ msgstr "אין"
 msgid "For"
 msgstr "בעד"
 
-#: templates/include/member_detail.html:59
+#: templates/include/member_detail.html:58
 #: templates/include/vote_detail.html:30
 #: templates/laws/_vote_detail.html:42
 #: templates/laws/_vote_list.html:12
@@ -562,12 +529,12 @@ msgstr "בעד"
 msgid "Against"
 msgstr "נגד"
 
-#: templates/include/member_detail.html:67
+#: templates/include/member_detail.html:66
 #: templates/mks/_member_detail.html:85
 msgid "Abstain"
 msgstr "נמנע"
 
-#: templates/include/member_detail.html:75
+#: templates/include/member_detail.html:74
 #: templates/mks/_member_detail.html:93
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
@@ -576,7 +543,7 @@ msgstr "נוכח ולא הצביע"
 #: templates/include/party_detail.html:7
 #: templates/include/party_list.html:6
 #: templates/include/vote_list.html:20
-#: templates/mks/_member_list.html:9
+#: templates/mks/_member_list.html:10
 #: templates/mks/_member_list_with_bars.html:11
 #: templates/mks/_party_detail.html:27
 #: templates/mks/_party_list.html:9
@@ -813,14 +780,14 @@ msgstr "משמעת קואליציה"
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
 
-#: templates/mks/_member_list.html:3
+#: templates/mks/_member_list.html:4
 #: templates/mks/_member_list_with_bars.html:4
 #: templates/mks/_party_detail.html:23
 #: templates/mks/member_select.html:12
 msgid "Current MKs"
 msgstr "חברי כנסת נוכחיים"
 
-#: templates/mks/_member_list.html:11
+#: templates/mks/_member_list.html:12
 #: templates/mks/_member_list_with_bars.html:14
 #: templates/mks/_party_detail.html:30
 #: templates/mks/member_select.html:20
@@ -880,6 +847,35 @@ msgstr "צור משתמש חדש"
 #: templates/user/create_user.html:8
 msgid "register"
 msgstr "הרשם"
+
+#: templates/user/editprofile.html:3
+#: templates/user/editprofile.html.py:4
+msgid "User Profile"
+msgstr "פרופיל משתמש"
+
+#: templates/user/editprofile.html:10
+msgid "save"
+msgstr "שמור"
+
+#: templates/user/editprofile.html:12
+msgid "Following Members:"
+msgstr "עוקב אחר ח\"כים:"
+
+#: templates/user/editprofile.html:19
+msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
+msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
+
+#: templates/user/editprofile.html:21
+msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
+msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
+
+#: templates/user/editprofile.html:23
+msgid "send validation email"
+msgstr "שלח דואר אלקטרוני לאימות"
+
+#: templates/user/editprofile.html:27
+msgid "Your email has been validated, so you can edit stuff!"
+msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
 #: templates/user/login.html:9
 msgid "You are already logged in."
@@ -960,6 +956,22 @@ msgstr "כתובת דוא\"ל:"
 #: templates/user/password_reset_form.html:13
 msgid "Reset my password"
 msgstr "אפס את סיסמתי"
+
+#: user/forms.py:8
+#: user/forms.py:24
+msgid "Username"
+msgstr "שם משתמש"
+
+#: user/forms.py:9
+#: user/forms.py:10
+#: user/forms.py:25
+#: user/forms.py:26
+msgid "Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."
+msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/./+/-/_ בלבד).‏"
+
+#: user/forms.py:23
+msgid "email address"
+msgstr "כתובת דוא\"ל"
 
 #~ msgid "user name"
 #~ msgstr "שם משתמש"

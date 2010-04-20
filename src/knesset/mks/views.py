@@ -80,7 +80,9 @@ class MemberListView(ListDetailView):
         ec = dict(self.extra_context) or {}
         if 'extra_context' in kwargs:
             ec.update(kwargs['extra_context'])
-        ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], ['.?info=votes', _('By number of votes'), False]]
+        ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], 
+                              ['.?info=votes', _('By number of votes'), False],
+                              ['.?info=graph', _('Graphical view'), False]]
         
         if info=='votes':
             qs = qs.annotate(extra=Count('votes')).order_by('-extra')
@@ -92,6 +94,11 @@ class MemberListView(ListDetailView):
         if info=='abc':
             ec['friend_pages'][0][2] = True
             ec['title'] = _('Members')
+        if info=='graph':
+            ec['friend_pages'][2][2] = True
+            ec['title'] = "%s %s" % (_('Members'), _('Graphical view'))
+            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
+
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
 
 class PartyListView(ListDetailView):

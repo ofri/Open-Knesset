@@ -13,7 +13,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name',)
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'discipline')
     allowed_methods = ('GET',)
     model = Member
     qs = Member.objects.all()
@@ -21,6 +21,19 @@ class MemberHandler(BaseHandler):
     @classmethod
     def url (self, member):
         return member.get_absolute_url()
+
+    @classmethod
+    def party (self, member):
+        return member.current_party.name
+
+    @classmethod
+    def votes_count (self, member):
+        return member.voting_statistics.votes_count()
+    
+    @classmethod
+    def discipline (self, member):
+        return member.voting_statistics.discipline()
+
 
     @classmethod
     def member (self, member):
@@ -33,10 +46,8 @@ class MemberHandler(BaseHandler):
 
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 
-              'summary',
-              'for_votes', 'agains_votes' , 'abstain_votes' , 'didnt_vote' ,
-              'topics_for', 'topics_against',
-              'full_text_url',
+              'summary','full_text',
+              'for_votes', 'against_votes' , 'abstain_votes' , 'didnt_vote' ,
              )
     exclude = ('member')
     allowed_methods = ('GET',)
@@ -67,6 +78,14 @@ class VoteHandler(BaseHandler):
     @classmethod
     def url(self, vote):
         return vote.get_absolute_url()
+
+    @classmethod
+    def for_votes(self, vote):
+        return vote.get_voters_id('for')
+
+    @classmethod
+    def against_votes(self, vote):
+        return vote.get_voters_id('against')
 
     @classmethod
     def abstain_votes(self, vote):

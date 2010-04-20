@@ -429,3 +429,6 @@ div #search {
     margin-left:20px;
     height:32px;
 }
+#tooltip {
+    color: #000;
+}
