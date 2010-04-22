@@ -1,18 +1,22 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load mks %}
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
 {% block h1content %}{% trans 'User Profile' %}{% endblock %}
 {% block divcontent %}
 <form action="." method="post">{% csrf_token %}
     <table>
     {{ edit_form }}
+    <tr>
+        <th>{% trans "Following Members:" %}</th>
+        <td>
+            {% for member in request.user.get_profile.members %}
+                {% mk member %}
+            {% endfor %}
+        </td>
     </table>
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
-    {% trans "Following Members:" %}
-    {% for member in request.user.get_profile.members %}
-        {{member.name}}
-    {% endfor %}
 <br/>
 {% if not edit_form.has_perms %}
     {% if not edit_form.has_email %}
