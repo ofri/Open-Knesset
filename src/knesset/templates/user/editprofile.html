@@ -11,7 +11,7 @@
         <th>{% trans "Following Members:" %}</th>
         <td>
             {% for member in request.user.get_profile.members %}
-                {% mk member %}
+                {% mk member 'x' %}
             {% endfor %}
         </td>
     </table>
@@ -30,5 +30,22 @@
 {% else %}
     {% trans 'Your email has been validated, so you can edit stuff!' %}
 {% endif %}
+<script>
+    $(document).ready( function() {
+        $('.can-delete-member').click(function(){
+            var id_re = /.*-(\d+)/;
+            var member_id = id_re.exec(this.id)[1];
+            jQuery.ajax({
+                type: 'DELETE',
+                url: '{% url member-handler %}'+member_id+'/',
+                context: $('detail-'+member_id),
+                success: function () {
+                    this.remove();
+                },
+            })
+            return (false);
+        })
+    })
+</script>
 
 {% endblock %}

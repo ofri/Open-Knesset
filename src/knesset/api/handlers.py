@@ -1,5 +1,6 @@
 from datetime import datetime
 from piston.handler import BaseHandler
+from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
 from tagging.models import Tag, TaggedItem
@@ -14,7 +15,7 @@ def limit_by_request(qs, request):
 
 class MemberHandler(BaseHandler):
     fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'discipline')
-    allowed_methods = ('GET',)
+    allowed_methods = ('GET','DELETE')
     model = Member
     qs = Member.objects.all()
 
@@ -43,6 +44,14 @@ class MemberHandler(BaseHandler):
                      since=o.start_date,
                      until=o.end_date,
                      ), qs)
+
+    def delete(self, request, id):
+        try:
+            p = request.user.get_profile()
+            p.followed_members.remove(int(id))
+            return rc.DELETED
+        except:
+            return rc.FORBIDDEN
 
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 

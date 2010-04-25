@@ -12,7 +12,7 @@ tag_handler = Resource(TagHandler)
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler),
       url(r'^vote/(?P<id>[0-9]+)/$', vote_handler),
-      url(r'^member/$', member_handler),
+      url(r'^member/$', member_handler, name='member-handler'),
       url(r'^member/(?P<id>[0-9]+)/$', member_handler),
       url(r'^party/$', party_handler),
       url(r'^party/(?P<id>[0-9]+)/$', party_handler),
