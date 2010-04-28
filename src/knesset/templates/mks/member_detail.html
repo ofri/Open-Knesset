@@ -4,7 +4,56 @@
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
+{% block subnav %}
+<div class='subnav'>
+    <a id="watch" class="button" href="."></a>
+&bull;
+    <a class="button" href="{% url member-list %}">{% trans "All Members" %}</a>
+</div>
+{% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
+    <script>
+        $(document).ready(function() {
+            var member_id = {{object.id}};
+            {% if watched_member %}
+                document.is_watched = true;
+                $('#watch').html("{% trans 'Unwatch' %}");
+            {%else%}
+                document.is_watched = false;
+                $('#watch').html("{% trans 'Watch' %}");
+            {% endif %};
+            $('#watch').click( function () {
+                if (document.is_watched) {
+                    jQuery.ajax({
+                        type: 'DELETE',
+                        url: '{% url user-handler %}member/'+member_id+'/',
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = false;
+                            this.html("{% trans 'Watch' %}");
+                        }
+                    });
+                }
+                else {
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: '{% url user-handler %}',
+                        data: {watch_member: member_id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = true;
+                            this.html("{% trans 'Unwatch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            alert(textStatus);
+                        }
+                    });
+                }
+                return (false);
+            })
+        })
+    </script>
+
 {% endblock %}
 

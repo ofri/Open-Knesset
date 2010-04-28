@@ -37,8 +37,8 @@
             var member_id = id_re.exec(this.id)[1];
             jQuery.ajax({
                 type: 'DELETE',
-                url: '{% url member-handler %}'+member_id+'/',
-                context: $('detail-'+member_id),
+                url: '{% url user-handler %}member/'+member_id+'/',
+                context: $('#detail-'+member_id),
                 success: function () {
                     this.remove();
                 },
