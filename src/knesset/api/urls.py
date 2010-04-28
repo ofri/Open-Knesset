@@ -3,11 +3,13 @@ from piston.resource import Resource
 from piston.emitters import Emitter
 
 from knesset.api.handlers import *
+from knesset.user.handlers import UserHandler
 
 vote_handler = Resource(VoteHandler)
 member_handler = Resource(MemberHandler)
 party_handler = Resource(PartyHandler)
 tag_handler = Resource(TagHandler)
+user_handler = Resource(UserHandler)
 
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler),
@@ -19,6 +21,8 @@ urlpatterns = patterns('',
       url(r'^tag/$', tag_handler),
       url(r'^tag/(?P<id>[0-9]+)/$', tag_handler),
       url(r'^tag/vote/(?P<vote_id>[0-9]+)/$', tag_handler),
+      url(r'^user/$', user_handler, name='user-handler'),
+      url(r'^user/(?P<type>member)/(?P<id>[0-9]+)/$', user_handler),
 
       )
 
