@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 22:26+0300\n"
-"PO-Revision-Date: 2010-04-20 22:38+0200\n"
-"Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
+"POT-Creation-Date: 2010-04-28 06:15-0500\n"
+"PO-Revision-Date: 2010-04-28 15:23+0200\n"
+"Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,9 +17,9 @@ msgstr ""
 
 #: context.py:15
 #: mks/models.py:96
-#: mks/views.py:92
-#: mks/views.py:96
-#: mks/views.py:99
+#: mks/views.py:91
+#: mks/views.py:95
+#: mks/views.py:98
 #: templates/base.html:70
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
@@ -34,10 +34,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:25
-#: mks/views.py:128
-#: mks/views.py:142
-#: mks/views.py:157
-#: mks/views.py:172
+#: mks/views.py:137
+#: mks/views.py:151
+#: mks/views.py:166
+#: mks/views.py:181
 #: templates/base.html:71
 msgid "Parties"
 msgstr "מפלגות"
@@ -209,33 +209,33 @@ msgstr "מפלגה"
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/views.py:83
+#: mks/views.py:82
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: mks/views.py:84
-#: mks/views.py:92
+#: mks/views.py:83
+#: mks/views.py:91
 msgid "By number of votes"
 msgstr "לפי מספר הצבעות"
 
-#: mks/views.py:85
-#: mks/views.py:99
+#: mks/views.py:84
+#: mks/views.py:98
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: mks/views.py:115
+#: mks/views.py:124
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:116
+#: mks/views.py:125
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:117
+#: mks/views.py:126
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:118
+#: mks/views.py:127
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
@@ -379,11 +379,6 @@ msgstr "תודה לטוזיג על אירוח האתר"
 #: templates/base.html:96
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
-
-#: templates/accounts/email_validation.txt:2
-#: templates/accounts/email_validation_subject.txt:1
-msgid "email validation for"
-msgstr "אימות דואר אלקטרוני עבור"
 
 #: templates/accounts/email_validation_sent.html:8
 msgid "An email has been sent to"
@@ -806,6 +801,20 @@ msgstr "קואליציה"
 msgid "Opposition"
 msgstr "אופוזיציה"
 
+#: templates/mks/member_detail.html:11
+msgid "All Members"
+msgstr "כל הח\"כים"
+
+#: templates/mks/member_detail.html:21
+#: templates/mks/member_detail.html:46
+msgid "Unwatch"
+msgstr "עֲזֹב"
+
+#: templates/mks/member_detail.html:24
+#: templates/mks/member_detail.html:34
+msgid "Watch"
+msgstr "עֲקֹב"
+
 #: templates/mks/member_select.html:3
 #: templates/mks/member_select.html.py:4
 #: templates/mks/member_select.html:5
@@ -848,32 +857,32 @@ msgstr "צור משתמש חדש"
 msgid "register"
 msgstr "הרשם"
 
-#: templates/user/editprofile.html:3
-#: templates/user/editprofile.html.py:4
+#: templates/user/editprofile.html:4
+#: templates/user/editprofile.html.py:5
 msgid "User Profile"
 msgstr "פרופיל משתמש"
 
-#: templates/user/editprofile.html:10
-msgid "save"
-msgstr "שמור"
-
-#: templates/user/editprofile.html:12
+#: templates/user/editprofile.html:11
 msgid "Following Members:"
 msgstr "עוקב אחר ח\"כים:"
 
-#: templates/user/editprofile.html:19
+#: templates/user/editprofile.html:18
+msgid "save"
+msgstr "שמור"
+
+#: templates/user/editprofile.html:23
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
 
-#: templates/user/editprofile.html:21
+#: templates/user/editprofile.html:25
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
 
-#: templates/user/editprofile.html:23
+#: templates/user/editprofile.html:27
 msgid "send validation email"
 msgstr "שלח דואר אלקטרוני לאימות"
 
-#: templates/user/editprofile.html:27
+#: templates/user/editprofile.html:31
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
@@ -973,22 +982,33 @@ msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/.
 msgid "email address"
 msgstr "כתובת דוא\"ל"
 
+#~ msgid "email validation for"
+#~ msgstr "אימות דואר אלקטרוני עבור"
+
 #~ msgid "user name"
 #~ msgstr "שם משתמש"
+
 #~ msgid "Login via"
 #~ msgstr "הזדהה באמצעות"
+
 #~ msgid "Twitter"
 #~ msgstr "טוויטר"
+
 #~ msgid "Yahoo"
 #~ msgstr "יאהו"
+
 #~ msgid "Openid"
 #~ msgstr "&rlm;OpenID"
+
 #~ msgid "Google"
 #~ msgstr "גוגל"
+
 #~ msgid "By number of seats"
 #~ msgstr "מספר ח\"כים"
+
 #~ msgid "By votes per seats"
 #~ msgstr "הצבעות לח\"כ"
+
 #~ msgid "Search In"
 #~ msgstr "חפש ב"
 
@@ -999,6 +1019,7 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "Each tag may be no more than %s characters long."
 #~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
 #~ msgid "name"
 #~ msgstr "שם"
 
@@ -1009,6 +1030,7 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "tags"
 #~ msgstr "ארגאו"
+
 #~ msgid "object id"
 #~ msgstr "מזהה אובייקט"
 
@@ -1147,6 +1169,7 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "Template"
 #~ msgstr "תבנית"
+
 #~ msgid "None"
 #~ msgstr "ללא"
 
@@ -1161,282 +1184,400 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "Version"
 #~ msgstr "פרסית"
+
 #~ msgid "Arabic"
 #~ msgstr "ערבית"
+
 #~ msgid "Bengali"
 #~ msgstr "בנגאלית"
+
 #~ msgid "Bulgarian"
 #~ msgstr "בולגרית"
+
 #~ msgid "Catalan"
 #~ msgstr "קאטלונית"
+
 #~ msgid "Czech"
 #~ msgstr "צ'כית"
+
 #~ msgid "Welsh"
 #~ msgstr "וולשית"
+
 #~ msgid "Danish"
 #~ msgstr "דנית"
+
 #~ msgid "German"
 #~ msgstr "גרמנית"
+
 #~ msgid "Greek"
 #~ msgstr "יוונית"
+
 #~ msgid "English"
 #~ msgstr "אנגלית"
+
 #~ msgid "Spanish"
 #~ msgstr "ספרדית"
+
 #~ msgid "Estonian"
 #~ msgstr "אסטונית"
+
 #~ msgid "Argentinean Spanish"
 #~ msgstr "ספרדית ארגנטינאית"
+
 #~ msgid "Basque"
 #~ msgstr "בסקית"
+
 #~ msgid "Persian"
 #~ msgstr "פרסית"
+
 #~ msgid "Finnish"
 #~ msgstr "פינית"
+
 #~ msgid "French"
 #~ msgstr "צרפתית"
+
 #~ msgid "Irish"
 #~ msgstr "אירית"
+
 #~ msgid "Galician"
 #~ msgstr "גאליצית"
+
 #~ msgid "Hungarian"
 #~ msgstr "הונגרית"
+
 #~ msgid "Hebrew"
 #~ msgstr "עברית"
+
 #~ msgid "Hindi"
 #~ msgstr "הינדי"
+
 #~ msgid "Croatian"
 #~ msgstr "קרואטית"
+
 #~ msgid "Icelandic"
 #~ msgstr "איסלנדית"
+
 #~ msgid "Italian"
 #~ msgstr "איטלקית"
+
 #~ msgid "Japanese"
 #~ msgstr "יפנית"
+
 #~ msgid "Georgian"
 #~ msgstr "גיאורגית"
+
 #~ msgid "Korean"
 #~ msgstr "קוריאנית"
 
 #, fuzzy
 #~ msgid "Khmer"
 #~ msgstr "כאן"
+
 #~ msgid "Kannada"
 #~ msgstr "קנדית"
+
 #~ msgid "Latvian"
 #~ msgstr "לטבית"
+
 #~ msgid "Lithuanian"
 #~ msgstr "ליטאית"
+
 #~ msgid "Macedonian"
 #~ msgstr "מקדונית"
-#~ msgid "Dutch"
-#~ msgstr "הולנדית"
+
 #~ msgid "Norwegian"
 #~ msgstr "נורווגית"
+
 #~ msgid "Polish"
 #~ msgstr "פולנית"
+
 #~ msgid "Portuguese"
 #~ msgstr "פורטוגזית"
+
 #~ msgid "Brazilian Portuguese"
 #~ msgstr "פורטוגזית ברזילאית"
+
 #~ msgid "Romanian"
 #~ msgstr "רומנית"
+
 #~ msgid "Russian"
 #~ msgstr "רוסית"
+
 #~ msgid "Slovak"
 #~ msgstr "סלובקית"
+
 #~ msgid "Slovenian"
 #~ msgstr "סלובנית"
+
 #~ msgid "Serbian"
 #~ msgstr "סרבית"
+
 #~ msgid "Swedish"
 #~ msgstr "שוודית"
+
 #~ msgid "Tamil"
 #~ msgstr "טמילית"
+
 #~ msgid "Telugu"
 #~ msgstr "טלגו"
+
 #~ msgid "Thai"
 #~ msgstr "תאילנדית"
+
 #~ msgid "Turkish"
 #~ msgstr "טורקית"
+
 #~ msgid "Ukrainian"
 #~ msgstr "אוקראינית"
+
 #~ msgid "Simplified Chinese"
 #~ msgstr "סינית פשוטה"
+
 #~ msgid "Traditional Chinese"
 #~ msgstr "סינית מסורתית"
+
 #~ msgid "Successfully deleted %(count)d %(items)s."
 #~ msgstr "%(count)d %(items)s  היו נמחקו בהצלחה."
+
 #~ msgid "Are you sure?"
 #~ msgstr "האם את/ה בטוח/ה ?"
+
 #~ msgid "Delete selected %(verbose_name_plural)s"
 #~ msgstr "מחק את %(verbose_name_plural)s שבחרת בו"
+
 #~ msgid ""
 #~ "<h3>By %s:</h3>\n"
 #~ "<ul>\n"
 #~ msgstr ""
 #~ "<h3>ע\"י %s:</h3>\n"
 #~ "<ul>\n"
+
 #~ msgid "Any date"
 #~ msgstr "כל תאריך"
+
 #~ msgid "Today"
 #~ msgstr "היום"
+
 #~ msgid "This month"
 #~ msgstr "החודש"
+
 #~ msgid "This year"
 #~ msgstr "השנה"
+
 #~ msgid "Yes"
 #~ msgstr "כן"
+
 #~ msgid "No"
 #~ msgstr "לא"
+
 #~ msgid "Unknown"
 #~ msgstr "לא ידוע"
+
 #~ msgid "Action:"
 #~ msgstr "פעולה"
 
 #, fuzzy
 #~ msgid "action time"
 #~ msgstr "קוד אימות"
+
 #~ msgid "object repr"
 #~ msgstr "ייצוג אובייקט"
 
 #, fuzzy
 #~ msgid "action flag"
 #~ msgstr "סמן הערה"
+
 #~ msgid "change message"
 #~ msgstr "הערה לשינוי"
+
 #~ msgid "log entry"
 #~ msgstr "רישום יומן"
+
 #~ msgid "log entries"
 #~ msgstr "רישומי יומן"
+
 #~ msgid "Changed %s."
 #~ msgstr "%s שונה."
+
 #~ msgid "and"
 #~ msgstr "ו"
+
 #~ msgid "Added %(name)s \"%(object)s\"."
 #~ msgstr "התווסף %(name)s \"%(object)s\"."
+
 #~ msgid "Changed %(list)s for %(name)s \"%(object)s\"."
 #~ msgstr "שונה %(list)s עבור %(name)s \"%(object)s\"."
+
 #~ msgid "Deleted %(name)s \"%(object)s\"."
 #~ msgstr "נמחק %(name)s \"%(object)s\"."
+
 #~ msgid "No fields changed."
 #~ msgstr "אף שדה לא השתנה."
+
 #~ msgid "The %(name)s \"%(obj)s\" was added successfully."
 #~ msgstr "הוספת %(name)s \"%(obj)s\" בוצעה בהצלחה."
+
 #~ msgid "You may edit it again below."
 #~ msgstr "ניתן לערוך שוב מתחת"
+
 #~ msgid "You may add another %s below."
 #~ msgstr "ניתן להוסיף %s נוסף מתחת."
+
 #~ msgid "The %(name)s \"%(obj)s\" was changed successfully."
 #~ msgstr "שינוי %(name)s \"%(obj)s\" בוצע בהצלחה."
+
 #~ msgid ""
 #~ "The %(name)s \"%(obj)s\" was added successfully. You may edit it again "
 #~ "below."
 #~ msgstr "הוספת %(name)s \"%(obj)s\" בוצעה בהצלחה. ניתן לערוך אותו שוב מתחת."
+
 #~ msgid "Add %s"
 #~ msgstr "הוספת %s"
+
 #~ msgid "%(name)s object with primary key %(key)r does not exist."
 #~ msgstr "הפריט %(name)s עם המקש %(key)r אינו קיים."
+
 #~ msgid "Change %s"
 #~ msgstr "שינוי %s"
+
 #~ msgid "Database error"
 #~ msgstr "שגיאת בסיס נתונים"
+
 #~ msgid "%(count)s %(name)s was changed successfully."
+
 #~ msgid_plural "%(count)s %(name)s were changed successfully."
 #~ msgstr[0] "שינוי %(count)s %(name)s בהצלחה."
 #~ msgstr[1] "שינוי %(count)s %(name)s בהצלחה."
+
 #~ msgid "The %(name)s \"%(obj)s\" was deleted successfully."
 #~ msgstr "מחיקת %(name)s \"%(obj)s\" בוצעה בהצלחה."
+
 #~ msgid "Change history: %s"
 #~ msgstr "היסטוריית שינוי: %s"
+
 #~ msgid ""
 #~ "Please enter a correct username and password. Note that both fields are "
 #~ "case-sensitive."
 #~ msgstr ""
 #~ "נא להזין שם משתמש וסיסמה נכונים. בשני השדות גודל האותיות האנגליות משנה."
+
 #~ msgid "Please log in again, because your session has expired."
 #~ msgstr "עליך להתחבר שנית כי פג הזמן המוקצב לך."
+
 #~ msgid ""
 #~ "Looks like your browser isn't configured to accept cookies. Please enable "
 #~ "cookies, reload this page, and try again."
 #~ msgstr ""
 #~ "נראה שהדפדפן שלך אינו מוגדר לקבל עוגיות. נא לאפשר עוגיות, לטעון מחדש את "
 #~ "הדף ולנסות שוב."
+
 #~ msgid "Usernames cannot contain the '@' character."
 #~ msgstr "שם משתמש אינו יכול להכיל את התו '@'."
+
 #~ msgid "Your e-mail address is not your username. Try '%s' instead."
 #~ msgstr "כתובת הדוא\"ל שלך אינה שם המשתמש שלך. נסה/י '%s' במקום."
+
 #~ msgid "Site administration"
 #~ msgstr "ניהול אתר"
+
 #~ msgid "%s administration"
 #~ msgstr "ניהול %s"
+
 #~ msgid "One or more %(fieldname)s in %(name)s: %(obj)s"
 #~ msgstr "אחד או יותר %(fieldname)s ב%(name)s: %(obj)s"
+
 #~ msgid "One or more %(fieldname)s in %(name)s:"
 #~ msgstr "אחד או יותר %(fieldname)s ב%(name)s:"
+
 #~ msgid "Date:"
 #~ msgstr "תאריך:"
+
 #~ msgid "Time:"
 #~ msgstr "שעה:"
+
 #~ msgid "Change:"
 #~ msgstr "שינוי:"
+
 #~ msgid "Lookup"
 #~ msgstr "חפש"
+
 #~ msgid "Add Another"
 #~ msgstr "הוסף עוד אחת"
+
 #~ msgid "We're sorry, but the requested page could not be found."
 #~ msgstr "אנו מצטערים, לא ניתן למצוא את הדף המבוקש."
 
 #, fuzzy
 #~ msgid "Home"
 #~ msgstr "דף הבית"
+
 #~ msgid "Server error"
 #~ msgstr "שגיאת שרת"
+
 #~ msgid "Server error (500)"
 #~ msgstr "שגיאת שרת (500)"
+
 #~ msgid "Server Error <em>(500)</em>"
 #~ msgstr "שגיאת שרת <em>(500)</em>"
+
 #~ msgid ""
 #~ "There's been an error. It's been reported to the site administrators via "
 #~ "e-mail and should be fixed shortly. Thanks for your patience."
 #~ msgstr ""
 #~ "התרחשה שגיאה. היא דווחה למנהלי האתר בדוא\"ל ותתוקן בקרוב. תודה על סבלנותך."
+
 #~ msgid "Run the selected action"
 #~ msgstr "הפעל את הפעולה שבחרת בה."
+
 #~ msgid "Go"
 #~ msgstr "בצע"
+
 #~ msgid "%(name)s"
 #~ msgstr "%(name)s"
+
 #~ msgid "Welcome,"
 #~ msgstr "שלום,"
+
 #~ msgid "Documentation"
 #~ msgstr "תיעוד"
+
 #~ msgid "Change password"
 #~ msgstr "שינוי סיסמה"
+
 #~ msgid "Log out"
 #~ msgstr "יציאה"
+
 #~ msgid "Django site admin"
 #~ msgstr "ניהול אתר Django"
+
 #~ msgid "Django administration"
 #~ msgstr "ניהול Django"
+
 #~ msgid "Add"
 #~ msgstr "הוספה"
+
 #~ msgid "History"
 #~ msgstr "היסטוריה"
+
 #~ msgid "View on site"
 #~ msgstr "צפיה באתר"
+
 #~ msgid "Please correct the error below."
+
 #~ msgid_plural "Please correct the errors below."
 #~ msgstr[0] "נא לתקן את השגיאה המופיעה מתחת."
 #~ msgstr[1] "נא לתקן את השגיאות המופיעות מתחת."
+
 #~ msgid "Add %(name)s"
 #~ msgstr "הוספת %(name)s"
 
 #, fuzzy
 #~ msgid "Filter"
 #~ msgstr "סינון"
+
 #~ msgid "Delete"
 #~ msgstr "מחיקה"
+
 #~ msgid ""
 #~ "Deleting the %(object_name)s '%(escaped_object)s' would result in "
 #~ "deleting related objects, but your account doesn't have permission to "
@@ -1444,16 +1585,20 @@ msgstr "כתובת דוא\"ל"
 #~ msgstr ""
 #~ "מחיקת %(object_name)s '%(escaped_object)s' מצריכה מחיקת אובייקטים "
 #~ "מקושרים, אך לחשבון שלך אין הרשאות למחיקת סוגי האובייקטים הבאים:"
+
 #~ msgid ""
 #~ "Are you sure you want to delete the %(object_name)s \"%(escaped_object)s"
 #~ "\"? All of the following related items will be deleted:"
 #~ msgstr ""
 #~ "האם ברצונך למחוק את %(object_name)s \"%(escaped_object)s\"? כל הפריטים "
 #~ "הקשורים הבאים יימחקו:"
+
 #~ msgid "Yes, I'm sure"
 #~ msgstr "כן, אני בטוח/ה"
+
 #~ msgid "Delete multiple objects"
 #~ msgstr "מחק כמה פריטים"
+
 #~ msgid ""
 #~ "Deleting the %(object_name)s would result in deleting related objects, "
 #~ "but your account doesn't have permission to delete the following types of "
@@ -1469,24 +1614,32 @@ msgstr "כתובת דוא\"ל"
 #~ msgstr ""
 #~ "האם אתה בטוח שאתה רוצה למחוק את פריטי ה %(object_name)s שנבחרו.  כל "
 #~ "הפריטים הבאים והחומר הנלווה אליהם יימחקו."
+
 #~ msgid " By %(filter_title)s "
 #~ msgstr " לפי %(filter_title)s "
+
 #~ msgid "Models available in the %(name)s application."
 #~ msgstr "מודלים זמינים ביישום %(name)s."
 
 #, fuzzy
 #~ msgid "Change"
 #~ msgstr "שינוי:"
+
 #~ msgid "You don't have permission to edit anything."
 #~ msgstr "אין לך הרשאות לעריכה."
+
 #~ msgid "Recent Actions"
 #~ msgstr "פעולות אחרונות"
+
 #~ msgid "My Actions"
 #~ msgstr "הפעולות שלי"
+
 #~ msgid "None available"
 #~ msgstr "לא נמצאו"
+
 #~ msgid "Unknown content"
 #~ msgstr "תוכן לא ידוע"
+
 #~ msgid ""
 #~ "Something's wrong with your database installation. Make sure the "
 #~ "appropriate database tables have been created, and make sure the database "
@@ -1494,16 +1647,22 @@ msgstr "כתובת דוא\"ל"
 #~ msgstr ""
 #~ "משהו שגוי בהתקנת בסיס הנתונים שלך. נא לוודא שנוצרו טבלאות בסיס הנתונים "
 #~ "המתאימות, ובסיס הנתונים ניתן לקריאה על ידי המשתמש המתאים."
+
 #~ msgid "Username:"
 #~ msgstr "שם משתמש:"
+
 #~ msgid "Password:"
 #~ msgstr "סיסמה:"
+
 #~ msgid "Date/time"
 #~ msgstr "תאריך/שעה"
+
 #~ msgid "User"
 #~ msgstr "משתמש"
+
 #~ msgid "DATETIME_FORMAT"
 #~ msgstr "d.m.‏Y H:i:s"
+
 #~ msgid ""
 #~ "This object doesn't have a change history. It probably wasn't added via "
 #~ "this admin site."
@@ -1516,133 +1675,191 @@ msgstr "כתובת דוא\"ל"
 
 #, fuzzy
 #~ msgid "1 result"
+
 #~ msgid_plural "%(counter)s results"
 #~ msgstr[0] "תוצאות"
 #~ msgstr[1] "תוצאות"
+
 #~ msgid "%(full_result_count)s total"
 #~ msgstr "%(full_result_count)s סה\"כ"
+
 #~ msgid "Save as new"
 #~ msgstr "שמירה כחדש"
+
 #~ msgid "Save and add another"
 #~ msgstr "שמירה והוספת אחר"
+
 #~ msgid "Save and continue editing"
 #~ msgstr "שמירה והמשך עריכה"
+
 #~ msgid ""
 #~ "First, enter a username and password. Then, you'll be able to edit more "
 #~ "user options."
 #~ msgstr ""
 #~ "ראשית יש להזין שם משתמש וסיסמה. לאחר מכן יהיה ביכולתך לערוך אפשרויות "
 #~ "נוספות עבור המשתמש."
+
 #~ msgid "Password"
 #~ msgstr "סיסמה"
+
 #~ msgid "Password (again)"
 #~ msgstr "סיסמה (שוב)"
+
 #~ msgid "Enter the same password as above, for verification."
 #~ msgstr "יש להזין את אותה סיסמה שוב,לאימות."
+
 #~ msgid "Enter a new password for the user <strong>%(username)s</strong>."
 #~ msgstr "יש להזין סיסמה חדשה עבור המשתמש <strong>%(username)s</strong>."
+
 #~ msgid "Delete?"
 #~ msgstr "מחיקה ?"
+
 #~ msgid "Thanks for spending some quality time with the Web site today."
 #~ msgstr "תודה על בילוי זמן איכות עם האתר."
+
 #~ msgid "Log in again"
 #~ msgstr "התחבר/י שוב"
+
 #~ msgid "Password change"
 #~ msgstr "שינוי סיסמה"
+
 #~ msgid "Password change successful"
 #~ msgstr "הסיסמה שונתה בהצלחה"
+
 #~ msgid "Your password was changed."
 #~ msgstr "סיסמתך שונתה."
+
 #~ msgid ""
 #~ "Please enter your old password, for security's sake, and then enter your "
 #~ "new password twice so we can verify you typed it in correctly."
 #~ msgstr ""
 #~ "נא להזין את סיסמתך הישנה, למען האבטחה, ולאחר מכן את סיסמתך החדשה פעמיים "
 #~ "כדי שנוכל לוודא שהקלדת אותה כראוי."
+
 #~ msgid "Old password:"
 #~ msgstr "סיסמה ישנה:"
+
 #~ msgid "Password reset confirmation"
 #~ msgstr "אימות איפוס סיסמה"
+
 #~ msgid "You're receiving this e-mail because you requested a password reset"
 #~ msgstr "הודעה זו התקבלה כי ביקשת איפוס סיסמה"
+
 #~ msgid "for your user account at %(site_name)s"
 #~ msgstr "עבור חשבון המשתמש שלך ב %(site_name)s"
+
 #~ msgid "Please go to the following page and choose a new password:"
 #~ msgstr "נא להגיע לעמוד הבא ולבחור סיסמה חדשה:"
+
 #~ msgid "Your username, in case you've forgotten:"
 #~ msgstr "שם המשתמש שלך, במקרה ששכחת:"
+
 #~ msgid "Thanks for using our site!"
 #~ msgstr "תודה על השימוש באתר שלנו!"
+
 #~ msgid "The %(site_name)s team"
 #~ msgstr "צוות %(site_name)s"
+
 #~ msgid "Select %s to change"
 #~ msgstr "בחירת %s לשינוי"
 
 #, fuzzy
 #~ msgid "site"
 #~ msgstr "אתרים"
+
 #~ msgid "template"
 #~ msgstr "תבנית"
+
 #~ msgid "tag:"
 #~ msgstr "תג:"
+
 #~ msgid "filter:"
 #~ msgstr "סינון:"
+
 #~ msgid "view:"
 #~ msgstr "ה-view:"
+
 #~ msgid "App %r not found"
 #~ msgstr "יישום %r לא נמצא"
+
 #~ msgid "Model %(model_name)r not found in app %(app_label)r"
 #~ msgstr "מודל %(model_name)r לא נמצא ביישום %(app_label)r"
+
 #~ msgid "the related `%(app_label)s.%(data_type)s` object"
 #~ msgstr "אוביקטי `%(app_label)s.%(data_type)s` קשורים"
+
 #~ msgid "model:"
 #~ msgstr "מודל:"
+
 #~ msgid "related `%(app_label)s.%(object_name)s` objects"
 #~ msgstr "אובייקטי `%(app_label)s.%(object_name)s` קשורים"
+
 #~ msgid "all %s"
 #~ msgstr "כל %s"
+
 #~ msgid "Fields on %s objects"
 #~ msgstr "Fields on %s objects"
+
 #~ msgid "Integer"
 #~ msgstr "מספר שלם"
+
 #~ msgid "Boolean (Either True or False)"
 #~ msgstr "בוליאני (אמת או שקר)"
+
 #~ msgid "String (up to %(max_length)s)"
 #~ msgstr "מחרוזת (עד %(max_length)s תווים)"
+
 #~ msgid "Comma-separated integers"
 #~ msgstr "מספרים שלמים מופרדים בפסיקים"
+
 #~ msgid "Date (without time)"
 #~ msgstr "תאריך (ללא שעה)"
+
 #~ msgid "Date (with time)"
 #~ msgstr "תאריך (כולל שעה)"
+
 #~ msgid "Decimal number"
 #~ msgstr "מספר עשרוני"
+
 #~ msgid "E-mail address"
 #~ msgstr "כתובת דוא\"ל"
+
 #~ msgid "File path"
 #~ msgstr "נתיב קובץ"
+
 #~ msgid "Floating point number"
 #~ msgstr "מספר עשרוני"
+
 #~ msgid "IP address"
 #~ msgstr "כתובת IP"
+
 #~ msgid "Boolean (Either True, False or None)"
 #~ msgstr "בוליאני (אמת, שקר או כלום)"
+
 #~ msgid "Relation to parent model"
 #~ msgstr "יחס למודל אב"
+
 #~ msgid "Phone number"
 #~ msgstr "מספר טלפון"
+
 #~ msgid "URL"
 #~ msgstr "URL"
+
 #~ msgid "U.S. state (two uppercase letters)"
 #~ msgstr "מדינה בארה\"ב (שתי אותיות גדולות)"
+
 #~ msgid "XML text"
 #~ msgstr "טקסט XML"
+
 #~ msgid "%s does not appear to be a urlpattern object"
 #~ msgstr "לא נראה ש-%s הוא אובייקט urlpattern"
+
 #~ msgid "Bookmarklets"
 #~ msgstr "ייסומניות"
+
 #~ msgid "Documentation bookmarklets"
 #~ msgstr "ייסומוניות תיעוד"
+
 #~ msgid ""
 #~ "\n"
 #~ "<p class=\"help\">To install bookmarklets, drag the link to your "
@@ -1664,96 +1881,134 @@ msgstr "כתובת דוא\"ל"
 #~ "ניתנות לצפיה רק ממחשב שמסווג\n"
 #~ "כ\"פנימי\" (יש לדבר עם מנהל המערכת שלך אם אינך בטוח/ה\n"
 #~ "שהמחשב מסווג ככזה).</p>\n"
+
 #~ msgid "Documentation for this page"
 #~ msgstr "תיעוד לדף זה"
+
 #~ msgid ""
 #~ "Jumps you from any page to the documentation for the view that generates "
 #~ "that page."
 #~ msgstr "מקפיץ אותך מכל עמוד לתיעוד התצוגה שייצרה אותו."
+
 #~ msgid "Show object ID"
 #~ msgstr "הצג מזהה אובייקט"
+
 #~ msgid ""
 #~ "Shows the content-type and unique ID for pages that represent a single "
 #~ "object."
 #~ msgstr "מציג את סוג התוכן והמזהה הייחודי לעמודים המייצגים אובייקט בודד."
+
 #~ msgid "Edit this object (current window)"
 #~ msgstr "עריכת אובייקט זה (בחלון הנוכחי)"
+
 #~ msgid "Jumps to the admin page for pages that represent a single object."
 #~ msgstr "קופץ לעמוד הניהול לעמודים אשר מייצגים אובייקטים בודד."
+
 #~ msgid "Edit this object (new window)"
 #~ msgstr "עריכת אובייקט זה (בחלון חדש)"
+
 #~ msgid "As above, but opens the admin page in a new window."
 #~ msgstr "כנ\"ל, אך דף הניהול ייפתח בחלון חדש."
+
 #~ msgid "Personal info"
 #~ msgstr "מידע אישי"
+
 #~ msgid "Permissions"
 #~ msgstr "הרשאות"
+
 #~ msgid "Important dates"
 #~ msgstr "תאריכים חשובים"
+
 #~ msgid "Groups"
 #~ msgstr "קבוצות"
+
 #~ msgid "Add user"
 #~ msgstr "הוספת משתמש"
+
 #~ msgid "Password changed successfully."
 #~ msgstr "הסיסמה שונתה בהצלחה."
+
 #~ msgid "Change password: %s"
 #~ msgstr "שינוי סיסמה: %s"
+
 #~ msgid ""
 #~ "Required. 30 characters or fewer. Alphanumeric characters only (letters, "
 #~ "digits and underscores)."
 #~ msgstr ""
 #~ "דורש 30 תווים או פחות. תווים אלפאנומריים בלבד (אותיות, ספרות וקווים "
 #~ "תחתונים)."
+
 #~ msgid "This value must contain only letters, numbers and underscores."
 #~ msgstr "ערך זה חייב להכיל אותיות, ספרות וקווים תחתונים בלבד."
+
 #~ msgid "Password confirmation"
 #~ msgstr "אימות סיסמה"
+
 #~ msgid "A user with that username already exists."
 #~ msgstr "משתמש עם שם משתמש זה קיים כבר"
+
 #~ msgid "The two password fields didn't match."
 #~ msgstr "שני שדות הסיסמה אינם זהים."
+
 #~ msgid "This account is inactive."
 #~ msgstr "חשבון זה אינו פעיל."
+
 #~ msgid ""
 #~ "Your Web browser doesn't appear to have cookies enabled. Cookies are "
 #~ "required for logging in."
 #~ msgstr "נראה שעוגיות לא מאופשרות בדפדפן שלך. הן נדרשות כדי להתחבר."
+
 #~ msgid "E-mail"
 #~ msgstr "כתובת דוא\"ל"
+
 #~ msgid ""
 #~ "That e-mail address doesn't have an associated user account. Are you sure "
 #~ "you've registered?"
 #~ msgstr "כתובת דואר אלקטרוני זו אינה משוייכת למשתמש. בטוח שנרשמת ?"
+
 #~ msgid "Password reset on %s"
 #~ msgstr "איפוס סיסמה על %s"
+
 #~ msgid "New password"
 #~ msgstr "סיסמה חדשה"
+
 #~ msgid "New password confirmation"
 #~ msgstr "אימות סיסמה חדשה"
+
 #~ msgid "Old password"
 #~ msgstr "סיסמה ישנה"
+
 #~ msgid "Your old password was entered incorrectly. Please enter it again."
 #~ msgstr "סיסמתך הישנה הוזנה בצורה שגויה. נא להזינה שוב."
+
 #~ msgid "codename"
 #~ msgstr "שם קוד"
+
 #~ msgid "permission"
 #~ msgstr "הרשאה"
+
 #~ msgid "permissions"
 #~ msgstr "הרשאות"
+
 #~ msgid "group"
 #~ msgstr "קבוצה"
+
 #~ msgid "groups"
 #~ msgstr "קבוצות"
 
 #, fuzzy
 #~ msgid "username"
 #~ msgstr "שם משתמש"
+
 #~ msgid "first name"
 #~ msgstr "שם פרטי"
+
 #~ msgid "last name"
 #~ msgstr "שם משפחה"
+
 #~ msgid "password"
 #~ msgstr "סיסמה"
+
 #~ msgid ""
 #~ "Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change "
 #~ "password form</a>."
@@ -1764,78 +2019,109 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "staff status"
 #~ msgstr "מצב משפחתי"
+
 #~ msgid "Designates whether the user can log into this admin site."
 #~ msgstr "מציין האם המשתמש יכול להתחבר לאתר הניהול."
+
 #~ msgid "active"
 #~ msgstr "פעיל"
+
 #~ msgid ""
 #~ "Designates whether this user should be treated as active. Unselect this "
 #~ "instead of deleting accounts."
 #~ msgstr ""
 #~ "מציין האם יש להתייחס למשתמש כפעיל. יש לבטל בחירה זו במקום למחוק חשבונות "
 #~ "משתמשים."
+
 #~ msgid "superuser status"
 #~ msgstr "סטטוס משתמש על"
+
 #~ msgid ""
 #~ "Designates that this user has all permissions without explicitly "
 #~ "assigning them."
 #~ msgstr "מציין שלמשתמש זה יש את כל ההרשאות ללא הצורך המפורש בהענקתן."
+
 #~ msgid "last login"
 #~ msgstr "כניסה אחרונה"
+
 #~ msgid "date joined"
 #~ msgstr "תאריך הצטרפות"
+
 #~ msgid ""
 #~ "In addition to the permissions manually assigned, this user will also get "
 #~ "all permissions granted to each group he/she is in."
 #~ msgstr ""
 #~ "בנוסף לכל ההרשאות שהוקצו ידנית, יוענקו למשתמש גם כל ההרשאות של כל קבוצה "
 #~ "המשוייכת אליו."
+
 #~ msgid "user permissions"
 #~ msgstr "הרשאות משתמש"
+
 #~ msgid "users"
 #~ msgstr "משתמשים"
+
 #~ msgid "message"
 #~ msgstr "הודעה"
+
 #~ msgid "Logged out"
 #~ msgstr "יצאת מהמערכת"
+
 #~ msgid "Enter a valid e-mail address."
 #~ msgstr "יש להזין כתובת דוא\"ל חוקית."
+
 #~ msgid "Metadata"
 #~ msgstr "מטא-נתונים"
+
 #~ msgid "%(site_name)s comments"
 #~ msgstr "הערות ל %(site_name)s"
+
 #~ msgid "Latest comments on %(site_name)s"
 #~ msgstr "ההערות האחרונות על %(site_name)s"
+
 #~ msgid "Name"
 #~ msgstr "שם"
+
 #~ msgid "Email address"
 #~ msgstr "כתובת דוא\"ל"
+
 #~ msgid "Comment"
 #~ msgstr "תגובה"
+
 #~ msgid "Watch your mouth! The word %s is not allowed here."
+
 #~ msgid_plural "Watch your mouth! The words %s are not allowed here."
 #~ msgstr[0] "שמור על לשונך! המילה %s אסורה לשימוש כאן."
 #~ msgstr[1] "שמור על לשונך! המילים %s אסורות לשימוש כאן."
+
 #~ msgid ""
 #~ "If you enter anything in this field your comment will be treated as spam"
 #~ msgstr "אם יוזן משהו בשדה היחס לתגובתך יהיה כמו לספאם"
+
 #~ msgid "user's name"
 #~ msgstr "שם משתמש"
+
 #~ msgid "user's email address"
 #~ msgstr "כתובת דוא\"ל משתמש"
+
 #~ msgid "user's URL"
 #~ msgstr "אתר המשתמש"
+
 #~ msgid "comment"
 #~ msgstr "תגובה"
+
 #~ msgid "date/time submitted"
 #~ msgstr "תאריך/שעת הגשה"
+
 #~ msgid "is public"
 #~ msgstr "ציבורי"
+
 #~ msgid ""
 #~ "Uncheck this box to make the comment effectively disappear from the site."
 #~ msgstr "ביטול סימון תיבה תעלים בפועל את התגובה מהאתר"
+
 #~ msgid "is removed"
 #~ msgstr "האם הוסר"
+
 #~ msgid ""
 #~ "Check this box if the comment is inappropriate. A \"This comment has been "
 #~ "removed\" message will be displayed instead."
@@ -1845,14 +2131,17 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "comments"
 #~ msgstr "תגובה"
+
 #~ msgid ""
 #~ "This comment was posted by an authenticated user and thus the name is "
 #~ "read-only."
 #~ msgstr "הודעה זו נשלחה ע\"י משתמש מחובר לכן השם הוא לקריאה בלבד."
+
 #~ msgid ""
 #~ "This comment was posted by an authenticated user and thus the email is "
 #~ "read-only."
 #~ msgstr "הודעה זו נשלחה ע\"י משתמש מחובר לכן כתובת הדוא\"ל לקריאה בלבד."
+
 #~ msgid ""
 #~ "Posted by %(user)s at %(date)s\n"
 #~ "\n"
@@ -1865,71 +2154,102 @@ msgstr "כתובת דוא\"ל"
 #~ "%(comment)s\n"
 #~ "\n"
 #~ "http://%(domain)s%(url)s"
+
 #~ msgid "flag"
 #~ msgstr "סימן"
+
 #~ msgid "date"
 #~ msgstr "תאריך"
+
 #~ msgid "comment flag"
 #~ msgstr "סמן הערה"
+
 #~ msgid "comment flags"
 #~ msgstr "סמני הערה"
+
 #~ msgid "Approve a comment"
 #~ msgstr "אשר הערה"
+
 #~ msgid "Really make this comment public?"
 #~ msgstr "באמת הופכים את התגובה הציבורית?"
+
 #~ msgid "Approve"
 #~ msgstr "אשר"
+
 #~ msgid "Thanks for approving"
 #~ msgstr "תודה על השימוש באתר שלנו!"
+
 #~ msgid ""
 #~ "Thanks for taking the time to improve the quality of discussion on our "
 #~ "site"
 #~ msgstr "תודה שהקדשת מזמנך כדי לשפר את האתר שלנו"
+
 #~ msgid "Remove a comment"
 #~ msgstr "הסר הערה"
+
 #~ msgid "Really remove this comment?"
 #~ msgstr "באמת להסיר את הערה זו?"
+
 #~ msgid "Remove"
 #~ msgstr "להסיר"
+
 #~ msgid "Thanks for removing"
 #~ msgstr "תודה על הסרת"
+
 #~ msgid "Flag this comment"
 #~ msgstr "סמן את הערה זו"
+
 #~ msgid "Really flag this comment?"
 #~ msgstr "באמת, סמן את הערה זו?"
+
 #~ msgid "Flag"
 #~ msgstr "סימן"
+
 #~ msgid "Thanks for flagging"
 #~ msgstr "תודה לציון"
+
 #~ msgid "Post"
 #~ msgstr "פוסט"
+
 #~ msgid "Preview"
 #~ msgstr "תצוגה מקדימה"
+
 #~ msgid "Comment moderation queue"
 #~ msgstr "תור תגובה עבור מתון של תגובות"
 
 #, fuzzy
 #~ msgid "No comments to moderate"
 #~ msgstr "אין עדיין תגובות"
+
 #~ msgid "Email"
 #~ msgstr "כתובת דוא\"ל"
+
 #~ msgid "Authenticated?"
 #~ msgstr "מאומתים?"
+
 #~ msgid "IP Address"
 #~ msgstr "כתובת IP"
+
 #~ msgid "Date posted"
 #~ msgstr "תאריך הצטרפות"
+
 #~ msgid "yes"
 #~ msgstr "כן"
+
 #~ msgid "no"
 #~ msgstr "לא"
+
 #~ msgid "Thanks for commenting"
 #~ msgstr "תודה על התגובה"
+
 #~ msgid "Thank you for your comment"
 #~ msgstr "תודה על התגובה"
+
 #~ msgid "Preview your comment"
 #~ msgstr "תצוגה מקדימה של התגובה"
+
 #~ msgid "Please correct the error below"
+
 #~ msgid_plural "Please correct the errors below"
 #~ msgstr[0] "בבקשה לתקן את השגיאה למטה"
 #~ msgstr[1] "אנא תקן את שגיאות למטה"
@@ -1937,72 +2257,99 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "Post your comment"
 #~ msgstr "פרסם את התגובה"
+
 #~ msgid "or make changes"
 #~ msgstr "או לבצע שינויים"
+
 #~ msgid "python model class name"
 #~ msgstr "שם ה-class של מודל פייתון"
+
 #~ msgid ""
 #~ "Example: '/about/contact/'. Make sure to have leading and trailing "
 #~ "slashes."
 #~ msgstr ""
 #~ "לדוגמא: '/about/contact/'. יש לוודא הימצאות הקווים הנטויים בהתחלה ובסוף."
+
 #~ msgid ""
 #~ "This value must contain only letters, numbers, underscores, dashes or "
 #~ "slashes."
 #~ msgstr "ערך זה חייב להכיל אותיות, ספרות, מקפים, קווים תחתונים ונטויים בלבד."
+
 #~ msgid "Advanced options"
 #~ msgstr "אפשרויות מתקדמות"
+
 #~ msgid "content"
 #~ msgstr "תוכן"
+
 #~ msgid "enable comments"
 #~ msgstr "אפשר תגובות"
+
 #~ msgid "template name"
 #~ msgstr "שם תבנית"
+
 #~ msgid ""
 #~ "Example: 'flatpages/contact_page.html'. If this isn't provided, the "
 #~ "system will use 'flatpages/default.html'."
 #~ msgstr ""
 #~ "דוגמא: 'flatpages/contact_page.html'. אם זה לא צויין, המערכת תשתמש "
 #~ "ב-'flatpages/default.html'."
+
 #~ msgid "registration required"
 #~ msgstr "הרשמה נדרשת"
+
 #~ msgid ""
 #~ "If this is checked, only logged-in users will be able to view the page."
 #~ msgstr "אם מסומן, רק משתמשים מחוברים יוכלו לצפות בדף."
+
 #~ msgid "flat pages"
 #~ msgstr "דפים פשוטים"
+
 #~ msgid ""
 #~ "We apologize, but your form has expired. Please continue filling out the "
 #~ "form from this page."
 #~ msgstr ""
 #~ "לצערנו פג תוקף הטופס שלך.  עליך להמשיך למלא את הטופס מן העמוד הזה ואילך."
+
 #~ msgid "No geometry value provided."
 #~ msgstr "לא סופק ערך גיאומטרי."
+
 #~ msgid "Invalid geometry value."
 #~ msgstr "ערך גאומטרי שגוי."
+
 #~ msgid "Invalid geometry type."
 #~ msgstr "סוג גיאומטרי שגוי."
+
 #~ msgid ""
 #~ "An error occurred when transforming the geometry to the SRID of the "
 #~ "geometry form field."
 #~ msgstr "הייתה בעיה עם השינוי של הצורה לסוג של השדה."
+
 #~ msgid "th"
 #~ msgstr "רביעי"
+
 #~ msgid "st"
 #~ msgstr "ראשון"
+
 #~ msgid "nd"
 #~ msgstr "שני"
+
 #~ msgid "rd"
 #~ msgstr "שלישי"
+
 #~ msgid "%(value).1f million"
+
 #~ msgid_plural "%(value).1f million"
 #~ msgstr[0] "%(value).1f מיליון"
 #~ msgstr[1] "%(value).1f מיליונים"
+
 #~ msgid "%(value).1f billion"
+
 #~ msgid_plural "%(value).1f billion"
 #~ msgstr[0] "%(value).1f מיליארד"
 #~ msgstr[1] "%(value).1f מיליארדים"
+
 #~ msgid "%(value).1f trillion"
+
 #~ msgid_plural "%(value).1f trillion"
 #~ msgstr[0] "%(value).1f טריליון"
 #~ msgstr[1] "%(value).1f טריליונים"
@@ -2010,1292 +2357,1909 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "one"
 #~ msgstr "אין"
+
 #~ msgid "two"
 #~ msgstr "שניים"
+
 #~ msgid "three"
 #~ msgstr "שלושה"
+
 #~ msgid "four"
 #~ msgstr "ארבעה"
+
 #~ msgid "five"
 #~ msgstr "חמישה"
+
 #~ msgid "six"
 #~ msgstr "שישה"
+
 #~ msgid "seven"
 #~ msgstr "שבעה"
+
 #~ msgid "eight"
 #~ msgstr "שמונה"
+
 #~ msgid "nine"
 #~ msgstr "תשעה"
+
 #~ msgid "today"
 #~ msgstr "היום"
+
 #~ msgid "tomorrow"
 #~ msgstr "מחר"
+
 #~ msgid "yesterday"
 #~ msgstr "אתמול"
+
 #~ msgid "Enter a postal code in the format NNNN or ANNNNAAA."
 #~ msgstr "יש להזין קוד דואר בתחביר NNNN או ANNNNAAA."
+
 #~ msgid "This field requires only numbers."
 #~ msgstr "יש להזין רק ספרות בשדה זה."
+
 #~ msgid "This field requires 7 or 8 digits."
 #~ msgstr "שדה זה דורש 7 או 8 ספרות."
+
 #~ msgid "Enter a valid CUIT in XX-XXXXXXXX-X or XXXXXXXXXXXX format."
 #~ msgstr "יש להזין מספר CUIT חוקי בתחביר XX-XXXXXXXX-X או XXXXXXXXXXXX."
+
 #~ msgid "Invalid CUIT."
 #~ msgstr "CUIT שגוי"
+
 #~ msgid "Burgenland"
 #~ msgstr "\tבורגנלנד"
+
 #~ msgid "Carinthia"
 #~ msgstr "קרינתיה"
+
 #~ msgid "Lower Austria"
 #~ msgstr "אוסטריה התחתונה"
+
 #~ msgid "Upper Austria"
 #~ msgstr "אוסטריה עילית"
+
 #~ msgid "Salzburg"
 #~ msgstr "זלצבורג"
+
 #~ msgid "Styria"
 #~ msgstr "שטיריה"
+
 #~ msgid "Tyrol"
 #~ msgstr "טירול"
+
 #~ msgid "Vorarlberg"
 #~ msgstr "פורארלברג"
+
 #~ msgid "Vienna"
 #~ msgstr "וינה"
+
 #~ msgid "Enter a zip code in the format XXXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXXX."
+
 #~ msgid "Enter a valid Austrian Social Security Number in XXXX XXXXXX format."
 #~ msgstr "יש להזין מספר ביטוח לאומי אוסטרלי חוקי בתחביר XXXX XXXXXX."
+
 #~ msgid "Enter a 4 digit post code."
 #~ msgstr "יש להזין קוד דואר בן 4 ספרות."
+
 #~ msgid "Enter a zip code in the format XXXXX-XXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXXXX-XXX."
+
 #~ msgid "Phone numbers must be in XX-XXXX-XXXX format."
 #~ msgstr "מספרי טלפון חייבים להיות בתחביר XX-XXXX-XXXX."
+
 #~ msgid ""
 #~ "Select a valid brazilian state. That state is not one of the available "
 #~ "states."
 #~ msgstr "נא לבחור מדינה ברזילאית חוקית. מדינה זו אינה אחת מהמדינות האפשריות."
+
 #~ msgid "Invalid CPF number."
 #~ msgstr "מספר CPF לא חוקי"
+
 #~ msgid "This field requires at most 11 digits or 14 characters."
 #~ msgstr "שדה זה דורש 11 או 14 ספרות לכל היותר."
+
 #~ msgid "Invalid CNPJ number."
 #~ msgstr "מספר CNPJ לא חוקי"
+
 #~ msgid "This field requires at least 14 digits"
 #~ msgstr "שדה זה דורש לפחות 14 ספרות."
+
 #~ msgid "Enter a postal code in the format XXX XXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXX XXX."
+
 #~ msgid ""
 #~ "Enter a valid Canadian Social Insurance number in XXX-XXX-XXX format."
 #~ msgstr "יש להזין מספר ביטוח לאומי קנדי חוקי בתחביר XXX-XXX-XXXX."
+
 #~ msgid "Aargau"
 #~ msgstr "ארגאו"
+
 #~ msgid "Appenzell Innerrhoden"
 #~ msgstr "אפנצל אינר-רודן"
+
 #~ msgid "Appenzell Ausserrhoden"
 #~ msgstr "אפנצל אוסר-רודן"
+
 #~ msgid "Basel-Stadt"
 #~ msgstr "באזל-שטאדט"
+
 #~ msgid "Basel-Land"
 #~ msgstr "באזל-לנדשאפט"
+
 #~ msgid "Berne"
 #~ msgstr "ברן"
+
 #~ msgid "Fribourg"
 #~ msgstr "פריבור"
+
 #~ msgid "Geneva"
 #~ msgstr "ג'נבה"
+
 #~ msgid "Glarus"
 #~ msgstr "גלרוס"
+
 #~ msgid "Graubuenden"
 #~ msgstr "גראובינדן"
+
 #~ msgid "Jura"
 #~ msgstr "ז'ורה"
+
 #~ msgid "Lucerne"
 #~ msgstr "לוצרן"
+
 #~ msgid "Neuchatel"
 #~ msgstr "נשאטל"
+
 #~ msgid "Nidwalden"
 #~ msgstr "נידוולדן"
+
 #~ msgid "Obwalden"
 #~ msgstr "אובוולדן"
+
 #~ msgid "Schaffhausen"
 #~ msgstr "שפהאוזן"
+
 #~ msgid "Schwyz"
 #~ msgstr "שוויץ"
+
 #~ msgid "Solothurn"
 #~ msgstr "זולותורן"
+
 #~ msgid "St. Gallen"
 #~ msgstr "סנט גלן"
+
 #~ msgid "Thurgau"
 #~ msgstr "Thurgau"
+
 #~ msgid "Ticino"
 #~ msgstr "טיצ'ינו"
+
 #~ msgid "Uri"
 #~ msgstr "אורי"
+
 #~ msgid "Valais"
 #~ msgstr "ואלה"
+
 #~ msgid "Vaud"
 #~ msgstr "וו"
+
 #~ msgid "Zug"
 #~ msgstr "צוג"
+
 #~ msgid "Zurich"
 #~ msgstr "ציריך"
+
 #~ msgid ""
 #~ "Enter a valid Swiss identity or passport card number in X1234567<0 or "
 #~ "1234567890 format."
 #~ msgstr ""
 #~ "יש להזין מספר זיהוי או דרכון שוויצרי בתחביר X1234567<0 או 1234567890."
+
 #~ msgid "Enter a valid Chilean RUT."
 #~ msgstr "יש להזין RUT צ'יליאני חוקי."
+
 #~ msgid "Enter a valid Chilean RUT. The format is XX.XXX.XXX-X."
 #~ msgstr "יש להזין RUT צ'יליאני חוקי. התחביר הוא XX.XXX.XXX-X."
+
 #~ msgid "The Chilean RUT is not valid."
 #~ msgstr "שדה RUT צ'יליאני אינו חוקי."
+
 #~ msgid "Prague"
 #~ msgstr "פראג"
+
 #~ msgid "Central Bohemian Region"
 #~ msgstr "מרכז בוהמיה"
+
 #~ msgid "South Bohemian Region"
 #~ msgstr "דרום בוהמיה"
+
 #~ msgid "Pilsen Region"
 #~ msgstr "מחוז פילזן"
+
 #~ msgid "Carlsbad Region"
 #~ msgstr "מחוז או איזור קרלסבד"
+
 #~ msgid "Usti Region"
 #~ msgstr "מחוז אוסטי"
+
 #~ msgid "Liberec Region"
 #~ msgstr "מחוז ליברץ"
+
 #~ msgid "Hradec Region"
 #~ msgstr "מחוז חרדץ"
+
 #~ msgid "Pardubice Region"
 #~ msgstr "מחוז פרדוביצה"
+
 #~ msgid "Vysocina Region"
 #~ msgstr "מחוז ויסוצ'ינה"
+
 #~ msgid "South Moravian Region"
 #~ msgstr "דרום מורביה"
+
 #~ msgid "Olomouc Region"
 #~ msgstr "מחוז או איזור אולומוק"
+
 #~ msgid "Zlin Region"
 #~ msgstr "מחוז זלין"
+
 #~ msgid "Moravian-Silesian Region"
 #~ msgstr "איזור מורביה – שלזיה"
+
 #~ msgid "Enter a postal code in the format XXXXX or XXX XX."
 #~ msgstr "יש להזין קוד דואר בתחביר XXXXX או XXX XX."
+
 #~ msgid "Enter a birth number in the format XXXXXX/XXXX or XXXXXXXXXX."
 #~ msgstr "הזן מספר לידה בתבנית XXXXXX/XXXX או XXXXXXXXXX."
+
 #~ msgid "Invalid optional parameter Gender, valid values are 'f' and 'm'"
 #~ msgstr "המשתנה שהזנת בשדה מין שגוי. הערכים החוקיים הם 'f' ו-'m'."
+
 #~ msgid "Enter a valid birth number."
 #~ msgstr "הזן מספר לידה חוקי."
+
 #~ msgid "Enter a valid IC number."
 #~ msgstr "הזן מספר IC חוקי."
+
 #~ msgid "Baden-Wuerttemberg"
 #~ msgstr "באדן-וירטמברג"
+
 #~ msgid "Bavaria"
 #~ msgstr "באווריה"
+
 #~ msgid "Berlin"
 #~ msgstr "ברלין"
+
 #~ msgid "Brandenburg"
 #~ msgstr "ברנדנבורג"
+
 #~ msgid "Bremen"
 #~ msgstr "ברמן"
+
 #~ msgid "Hamburg"
 #~ msgstr "המבורג"
+
 #~ msgid "Hessen"
 #~ msgstr "הסה"
+
 #~ msgid "Mecklenburg-Western Pomerania"
 #~ msgstr "מקלנבורג-מערב פומרניה"
+
 #~ msgid "Lower Saxony"
 #~ msgstr "סקסוניה התחתונה"
+
 #~ msgid "North Rhine-Westphalia"
 #~ msgstr "נורדריין-וסטפאליה"
+
 #~ msgid "Rhineland-Palatinate"
 #~ msgstr "ריינלנד-פאלץ"
+
 #~ msgid "Saarland"
 #~ msgstr "חבל הסאר"
+
 #~ msgid "Saxony"
 #~ msgstr "סקסוניה"
+
 #~ msgid "Saxony-Anhalt"
 #~ msgstr "סקסוניה-אנהלט"
+
 #~ msgid "Schleswig-Holstein"
 #~ msgstr "שלזוויג-הולשטיין"
+
 #~ msgid "Thuringia"
 #~ msgstr "תורינגיה"
+
 #~ msgid "Enter a zip code in the format XXXXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXXXX."
+
 #~ msgid ""
 #~ "Enter a valid German identity card number in XXXXXXXXXXX-XXXXXXX-XXXXXXX-"
 #~ "X format."
 #~ msgstr ""
 #~ "יש להזין מספר זיהוי גרמני חוקי בתחביר XXXXXXXXXXX-XXXXXXX-XXXXXXX-X."
+
 #~ msgid "Arava"
 #~ msgstr "אראבה"
+
 #~ msgid "Albacete"
 #~ msgstr "אלבסטה"
+
 #~ msgid "Alacant"
 #~ msgstr "אלאקאנט"
+
 #~ msgid "Almeria"
 #~ msgstr "אלמריה"
+
 #~ msgid "Avila"
 #~ msgstr "אווילה"
+
 #~ msgid "Badajoz"
 #~ msgstr "באדאג'וז"
+
 #~ msgid "Illes Balears"
 #~ msgstr "האיים הבלאריים"
+
 #~ msgid "Barcelona"
 #~ msgstr "ברצלונה"
+
 #~ msgid "Burgos"
 #~ msgstr "בורגוס"
+
 #~ msgid "Caceres"
 #~ msgstr "קסרס"
+
 #~ msgid "Cadiz"
 #~ msgstr "קדיס"
+
 #~ msgid "Castello"
 #~ msgstr "קסטלו"
+
 #~ msgid "Ciudad Real"
 #~ msgstr "העיר הקולוניאלית"
+
 #~ msgid "Cordoba"
 #~ msgstr "קורדובה"
+
 #~ msgid "A Coruna"
 #~ msgstr "א קורוניה"
+
 #~ msgid "Cuenca"
 #~ msgstr "קואנקה"
+
 #~ msgid "Girona"
 #~ msgstr "ז'ירונה"
+
 #~ msgid "Granada"
 #~ msgstr "גרנדה"
+
 #~ msgid "Guadalajara"
 #~ msgstr "גוודלחרה"
+
 #~ msgid "Guipuzkoa"
 #~ msgstr "גוויפוזקואה"
+
 #~ msgid "Huelva"
 #~ msgstr "אואלבה"
+
 #~ msgid "Huesca"
 #~ msgstr "אואסקה"
+
 #~ msgid "Jaen"
 #~ msgstr "חאאן"
+
 #~ msgid "Leon"
 #~ msgstr "לאון"
+
 #~ msgid "Lleida"
 #~ msgstr "ליידה"
+
 #~ msgid "La Rioja"
 #~ msgstr "לה ריוחה"
+
 #~ msgid "Lugo"
 #~ msgstr "לוגו"
+
 #~ msgid "Madrid"
 #~ msgstr "מדריד"
+
 #~ msgid "Malaga"
 #~ msgstr "מאלאגה"
+
 #~ msgid "Murcia"
 #~ msgstr "מורסיה"
+
 #~ msgid "Navarre"
 #~ msgstr "נווארה"
+
 #~ msgid "Ourense"
 #~ msgstr "אוורנס"
+
 #~ msgid "Asturias"
 #~ msgstr "אסטוריאס"
+
 #~ msgid "Palencia"
 #~ msgstr "פלנסיה"
+
 #~ msgid "Las Palmas"
 #~ msgstr "לאס פאלמס"
+
 #~ msgid "Pontevedra"
 #~ msgstr "פונטוורדה"
+
 #~ msgid "Salamanca"
 #~ msgstr "סלמנקה"
+
 #~ msgid "Santa Cruz de Tenerife"
 #~ msgstr "סנטה קרוז דה טנריף"
+
 #~ msgid "Cantabria"
 #~ msgstr "קנטבריה"
+
 #~ msgid "Segovia"
 #~ msgstr "סגוביה"
+
 #~ msgid "Seville"
 #~ msgstr "סביליה"
+
 #~ msgid "Soria"
 #~ msgstr "סוריה"
+
 #~ msgid "Tarragona"
 #~ msgstr "טרגונה"
+
 #~ msgid "Teruel"
 #~ msgstr "טרואל"
+
 #~ msgid "Toledo"
 #~ msgstr "טולדו"
+
 #~ msgid "Valencia"
 #~ msgstr "ולנסיה"
+
 #~ msgid "Valladolid"
 #~ msgstr "ויאדוליד"
+
 #~ msgid "Bizkaia"
 #~ msgstr "ביסקאיה"
+
 #~ msgid "Zamora"
 #~ msgstr "סמורה"
+
 #~ msgid "Zaragoza"
 #~ msgstr "סראגוסה"
+
 #~ msgid "Ceuta"
 #~ msgstr "סאוטה"
+
 #~ msgid "Melilla"
 #~ msgstr "מלייה"
+
 #~ msgid "Andalusia"
 #~ msgstr "אנדלוסיה"
+
 #~ msgid "Aragon"
 #~ msgstr "אראגון"
+
 #~ msgid "Principality of Asturias"
 #~ msgstr "נסיכות אסטוריאס"
+
 #~ msgid "Balearic Islands"
 #~ msgstr "האיים הבלאריים"
+
 #~ msgid "Basque Country"
 #~ msgstr "חבל הבסקים"
+
 #~ msgid "Canary Islands"
 #~ msgstr "האיים הקנריים"
+
 #~ msgid "Castile-La Mancha"
 #~ msgstr "קסטיליה-לה מנצ'ה"
+
 #~ msgid "Castile and Leon"
 #~ msgstr "קסטיליה ולאון"
+
 #~ msgid "Catalonia"
 #~ msgstr "קאטלוניה"
+
 #~ msgid "Extremadura"
 #~ msgstr "אקסטרמדורה"
+
 #~ msgid "Galicia"
 #~ msgstr "גאליציה"
+
 #~ msgid "Region of Murcia"
 #~ msgstr "אזור מורסיה"
+
 #~ msgid "Foral Community of Navarre"
 #~ msgstr "הקהילה האוטונומית של נווארה"
+
 #~ msgid "Valencian Community"
 #~ msgstr "קהילת ולנסיה"
+
 #~ msgid "Enter a valid postal code in the range and format 01XXX - 52XXX."
 #~ msgstr "נא להזיו מיקוד חוקי בתחום ובתחביר 01XXX - 52XXX."
+
 #~ msgid ""
 #~ "Enter a valid phone number in one of the formats 6XXXXXXXX, 8XXXXXXXX or "
 #~ "9XXXXXXXX."
 #~ msgstr ""
 #~ "נא להזין מספר טלפון חוקי באחד מהתחבירים 6XXXXXXXX, 8XXXXXXXX or 9XXXXXXXX."
+
 #~ msgid "Please enter a valid NIF, NIE, or CIF."
 #~ msgstr "נא להזין NIF, NIE, או CIF חוקי."
+
 #~ msgid "Please enter a valid NIF or NIE."
 #~ msgstr "נא להזין NIF או NIE חוקי."
+
 #~ msgid "Invalid checksum for NIF."
 #~ msgstr "סיכום ביקורת שגוי עבור NIF."
+
 #~ msgid "Invalid checksum for NIE."
 #~ msgstr "סיכום ביקורת שגוי עבור NIE."
+
 #~ msgid "Invalid checksum for CIF."
 #~ msgstr "סיכום ביקורת שגוי עבור CIF."
+
 #~ msgid ""
 #~ "Please enter a valid bank account number in format XXXX-XXXX-XX-"
 #~ "XXXXXXXXXX."
 #~ msgstr "נא להזין חשבון בנק חוקי בתחביר XXXX-XXXX-XX-XXXXXXXXXX."
+
 #~ msgid "Invalid checksum for bank account number."
 #~ msgstr "סיכום ביקורת שגוי עבור מספר חשבון בנק."
+
 #~ msgid "Enter a valid Finnish social security number."
 #~ msgstr "יש להזין מספר ביטוח לאומי פיני חוקי."
 
 #, fuzzy
 #~ msgid "Phone numbers must be in 0X XX XX XX XX format."
 #~ msgstr "תחביר מספרי טלפון חייב להיות XXXX-XXXXXX."
+
 #~ msgid "Enter a zip code in the format XXXXXXX."
 #~ msgstr "יש להזין מיקוד בתחביר XXXXXXX."
+
 #~ msgid ""
 #~ "Enter a valid Icelandic identification number. The format is XXXXXX-XXXX."
 #~ msgstr "יש להזין מספר זיהוי איסלנדי חוקי. התחביר הוא XXXXXX-XXXX."
+
 #~ msgid "The Icelandic identification number is not valid."
 #~ msgstr "מספר הזיהוי האיסלנדי אינו חוקי"
+
 #~ msgid "Enter a valid zip code."
 #~ msgstr "יש להזין מיקוד חוקי."
+
 #~ msgid "Enter a valid Social Security number."
 #~ msgstr "יש להזין מספר ביטוח לאומי חוקי."
+
 #~ msgid "Enter a valid VAT number."
 #~ msgstr "יש להזין מספר מעמ חוקי"
+
 #~ msgid "Enter a postal code in the format XXXXXXX or XXX-XXXX."
 #~ msgstr "יש להזין קוד דואר בתחביר XXXXXXX או XXX-XXXX."
+
 #~ msgid "Hokkaido"
 #~ msgstr "הוקאידו"
+
 #~ msgid "Aomori"
 #~ msgstr "אאומורי"
+
 #~ msgid "Iwate"
 #~ msgstr "Iwate"
+
 #~ msgid "Miyagi"
 #~ msgstr "מיאגי"
+
 #~ msgid "Akita"
 #~ msgstr "אקיטה"
+
 #~ msgid "Yamagata"
 #~ msgstr "יאמאגטה"
+
 #~ msgid "Fukushima"
 #~ msgstr "פוקושימה"
+
 #~ msgid "Ibaraki"
 #~ msgstr "איברקי"
+
 #~ msgid "Tochigi"
 #~ msgstr "טושיגי"
+
 #~ msgid "Gunma"
 #~ msgstr "גונמה"
+
 #~ msgid "Saitama"
 #~ msgstr "סאיטאמה"
+
 #~ msgid "Chiba"
 #~ msgstr "צ'יבה"
+
 #~ msgid "Tokyo"
 #~ msgstr "טוקיו"
+
 #~ msgid "Kanagawa"
 #~ msgstr "קאנגאווה"
+
 #~ msgid "Yamanashi"
 #~ msgstr "יאמאנשי"
+
 #~ msgid "Nagano"
 #~ msgstr "נאגאנו"
+
 #~ msgid "Niigata"
 #~ msgstr "נייגטה"
+
 #~ msgid "Toyama"
 #~ msgstr "טויאמה"
+
 #~ msgid "Ishikawa"
 #~ msgstr "אישיקאוואה"
+
 #~ msgid "Fukui"
 #~ msgstr "פוקוי"
+
 #~ msgid "Gifu"
 #~ msgstr "גיפו"
+
 #~ msgid "Shizuoka"
 #~ msgstr "שיזואוקה"
+
 #~ msgid "Aichi"
 #~ msgstr "אייצ'י"
+
 #~ msgid "Mie"
 #~ msgstr "מיי"
+
 #~ msgid "Shiga"
 #~ msgstr "שיגה"
+
 #~ msgid "Kyoto"
 #~ msgstr "קיוטו"
+
 #~ msgid "Osaka"
 #~ msgstr "אוסקה"
+
 #~ msgid "Hyogo"
 #~ msgstr "הייוגו"
+
 #~ msgid "Nara"
 #~ msgstr "נארה"
+
 #~ msgid "Wakayama"
 #~ msgstr "ווקאייאמה"
+
 #~ msgid "Tottori"
 #~ msgstr "טוטורי"
+
 #~ msgid "Shimane"
 #~ msgstr "Shimane"
+
 #~ msgid "Okayama"
 #~ msgstr "אוקייאמה"
+
 #~ msgid "Hiroshima"
 #~ msgstr "הירושימה"
+
 #~ msgid "Yamaguchi"
 #~ msgstr "יאמאגוצ'י"
+
 #~ msgid "Tokushima"
 #~ msgstr "טוקושימה"
+
 #~ msgid "Kagawa"
 #~ msgstr "קאגאווה"
+
 #~ msgid "Ehime"
 #~ msgstr "Ehime"
+
 #~ msgid "Kochi"
 #~ msgstr "קוצ'י"
+
 #~ msgid "Fukuoka"
 #~ msgstr "פוקוקה"
+
 #~ msgid "Saga"
 #~ msgstr "סגה"
+
 #~ msgid "Nagasaki"
 #~ msgstr "נגסקי"
+
 #~ msgid "Kumamoto"
 #~ msgstr "קומאמוטו"
+
 #~ msgid "Oita"
 #~ msgstr "אויטה"
+
 #~ msgid "Miyazaki"
 #~ msgstr "מיאזאקי"
+
 #~ msgid "Kagoshima"
 #~ msgstr "קגושימה"
+
 #~ msgid "Okinawa"
 #~ msgstr "אוקינאווה"
+
 #~ msgid "Aguascalientes"
 #~ msgstr "אגואסקליינטס"
+
 #~ msgid "Baja California"
 #~ msgstr "באחה קליפורניה"
+
 #~ msgid "Baja California Sur"
 #~ msgstr "באחה קליפורניה הדרומית"
+
 #~ msgid "Campeche"
 #~ msgstr "קמפצ'ה"
+
 #~ msgid "Chihuahua"
 #~ msgstr "צ'יוואוה"
+
 #~ msgid "Chiapas"
 #~ msgstr "צ'יאפס"
+
 #~ msgid "Coahuila"
 #~ msgstr "קואהווילה"
+
 #~ msgid "Colima"
 #~ msgstr "קולימה"
+
 #~ msgid "Distrito Federal"
 #~ msgstr "מחוז פדרלי"
+
 #~ msgid "Durango"
 #~ msgstr "צ'יוואוה"
+
 #~ msgid "Guanajuato"
 #~ msgstr "גואנחואטו"
+
 #~ msgid "Hidalgo"
 #~ msgstr "אידלגו"
+
 #~ msgid "Jalisco"
 #~ msgstr "חליסקו"
+
 #~ msgid "Estado de México"
 #~ msgstr "אסטאדו דה מקסיקו"
+
 #~ msgid "Michoacán"
 #~ msgstr "מיצ'ואקן"
+
 #~ msgid "Morelos"
 #~ msgstr "מורלוס"
+
 #~ msgid "Nayarit"
 #~ msgstr "נייארית"
+
 #~ msgid "Nuevo León"
 #~ msgstr "נואבו ליאון"
+
 #~ msgid "Oaxaca"
 #~ msgstr "אואסקה"
+
 #~ msgid "Puebla"
 #~ msgstr "פואבלה"
+
 #~ msgid "Querétaro"
 #~ msgstr "קוורטארו"
+
 #~ msgid "Quintana Roo"
 #~ msgstr "קינטאנה רו"
+
 #~ msgid "Sinaloa"
 #~ msgstr "סינאלוה"
+
 #~ msgid "San Luis Potosí"
 #~ msgstr "סאן לואי פוטוסי"
+
 #~ msgid "Sonora"
 #~ msgstr "סונורה"
+
 #~ msgid "Tabasco"
 #~ msgstr "טבסקו"
+
 #~ msgid "Tamaulipas"
 #~ msgstr "טמפוליפס"
+
 #~ msgid "Tlaxcala"
 #~ msgstr "טלקסקאלה"
+
 #~ msgid "Veracruz"
 #~ msgstr "ורקרוז"
+
 #~ msgid "Yucatán"
 #~ msgstr "יוקטן"
+
 #~ msgid "Zacatecas"
 #~ msgstr "זאקאטקס"
+
 #~ msgid "Enter a valid postal code"
 #~ msgstr "יש להזין מיקוד חוקי."
+
 #~ msgid "Enter a valid phone number"
 #~ msgstr "יש להזין מספר טלפון חוקי"
+
 #~ msgid "Enter a valid SoFi number"
 #~ msgstr "יש להזין מספר SoFi חוקי"
+
 #~ msgid "Drenthe"
 #~ msgstr "דרנתה"
+
 #~ msgid "Flevoland"
 #~ msgstr "פלבולנד"
+
 #~ msgid "Friesland"
 #~ msgstr "פריזלנד"
+
 #~ msgid "Gelderland"
 #~ msgstr "חלדרלנד"
+
 #~ msgid "Groningen"
 #~ msgstr "חרונינגן"
+
 #~ msgid "Limburg"
 #~ msgstr "לימבורג"
+
 #~ msgid "Noord-Brabant"
 #~ msgstr "צפון בראבנט"
+
 #~ msgid "Noord-Holland"
 #~ msgstr "צפון הולנד"
+
 #~ msgid "Overijssel"
 #~ msgstr "אובראיסל"
+
 #~ msgid "Utrecht"
 #~ msgstr "אוטרכט"
+
 #~ msgid "Zeeland"
 #~ msgstr "זילנד"
+
 #~ msgid "Zuid-Holland"
 #~ msgstr "דרום הולנד"
+
 #~ msgid "Enter a valid Norwegian social security number."
 #~ msgstr "יש להזין מספר ביטוח לאומי נורבגי חוקי."
+
 #~ msgid "This field requires 8 digits."
 #~ msgstr "שדה זה דורש 8 ספרות."
+
 #~ msgid "This field requires 11 digits."
 #~ msgstr "שדה זה דורש 11 ספרות."
+
 #~ msgid "National Identification Number consists of 11 digits."
 #~ msgstr "מספר זיהוי לאומי מורכב מ-11 ספרות"
+
 #~ msgid "Wrong checksum for the National Identification Number."
 #~ msgstr "סכום ביקורת שגוי עבודי מספר הזיהוי הלאומי"
+
 #~ msgid ""
 #~ "Enter a tax number field (NIP) in the format XXX-XXX-XX-XX or XX-XX-XXX-"
 #~ "XXX."
 #~ msgstr "נא להזין שדה מספר מס (NIP) בתחביר XXX-XXX-XX-XX או XX-XX-XXX-XXX."
+
 #~ msgid "Wrong checksum for the Tax Number (NIP)."
 #~ msgstr "סיכום ביקורת שגוי עבור מספר מס (NIP)."
+
 #~ msgid ""
 #~ "National Business Register Number (REGON) consists of 9 or 14 digits."
 #~ msgstr "סמפר רשומת בית עסק ארצי(REGON) מכיל או תשע או ארבע עשרה ספרות."
+
 #~ msgid "Wrong checksum for the National Business Register Number (REGON)."
 #~ msgstr "סיכום שגוי National Business Register Number (REGON)."
+
 #~ msgid "Enter a postal code in the format XX-XXX."
 #~ msgstr "נא להזין מיקוד בתחביר XX-XXX."
+
 #~ msgid "Lower Silesia"
 #~ msgstr "סילסיה התחתונה"
+
 #~ msgid "Kuyavia-Pomerania"
 #~ msgstr "קויאבויה - פומרניה"
+
 #~ msgid "Lublin"
 #~ msgstr "לובלין"
+
 #~ msgid "Lubusz"
 #~ msgstr "לובוש"
+
 #~ msgid "Lodz"
 #~ msgstr "לודז'"
+
 #~ msgid "Lesser Poland"
 #~ msgstr "פולין זוטא"
+
 #~ msgid "Masovia"
 #~ msgstr "מזוביה"
+
 #~ msgid "Opole"
 #~ msgstr "אופולה"
+
 #~ msgid "Subcarpatia"
 #~ msgstr "תת קרפטיה"
+
 #~ msgid "Podlasie"
 #~ msgstr "פודלסיה"
+
 #~ msgid "Pomerania"
 #~ msgstr "פומרניה"
+
 #~ msgid "Silesia"
 #~ msgstr "סילסיה"
+
 #~ msgid "Swietokrzyskie"
 #~ msgstr "סבייטוקזי'סקי"
+
 #~ msgid "Warmia-Masuria"
 #~ msgstr "וורמיה- מזוריה"
+
 #~ msgid "Greater Poland"
 #~ msgstr "פולין רבתי"
+
 #~ msgid "West Pomerania"
 #~ msgstr "מערב פומרניה"
+
 #~ msgid "Enter a valid CIF."
 #~ msgstr "יש להזין CIF חוקי."
+
 #~ msgid "Enter a valid CNP."
 #~ msgstr "יש להזין CNP חוקי."
+
 #~ msgid "Enter a valid IBAN in ROXX-XXXX-XXXX-XXXX-XXXX-XXXX format"
 #~ msgstr "יש להזין מספר IBAN חוקי בתחביר ROXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+
 #~ msgid "Phone numbers must be in XXXX-XXXXXX format."
 #~ msgstr "תחביר מספרי טלפון חייב להיות XXXX-XXXXXX."
+
 #~ msgid "Enter a valid postal code in the format XXXXXX"
 #~ msgstr "נא להזין מיקוד חוקי בתחביר XXXXXX"
+
 #~ msgid "Banska Bystrica"
 #~ msgstr " בנסקה ביסטריצה"
+
 #~ msgid "Banska Stiavnica"
 #~ msgstr "בנסקה שטיאבניצה"
+
 #~ msgid "Bardejov"
 #~ msgstr "ברדיוב"
+
 #~ msgid "Banovce nad Bebravou"
 #~ msgstr "בנובץ ע\"מ בברבו"
+
 #~ msgid "Brezno"
 #~ msgstr "ברזנו"
+
 #~ msgid "Bratislava I"
 #~ msgstr "ברטיסלאבה 1"
+
 #~ msgid "Bratislava II"
 #~ msgstr "ברטיסלאבה 2"
+
 #~ msgid "Bratislava III"
 #~ msgstr "ברטיסלאבה 3"
+
 #~ msgid "Bratislava IV"
 #~ msgstr "ברטיסלאבה 4"
+
 #~ msgid "Bratislava V"
 #~ msgstr "ברטיסלאבה 5"
+
 #~ msgid "Bytca"
 #~ msgstr "ביטצ'ה"
+
 #~ msgid "Cadca"
 #~ msgstr "צ'דקה"
+
 #~ msgid "Detva"
 #~ msgstr "דטבה"
+
 #~ msgid "Dolny Kubin"
 #~ msgstr "דולני קובין"
+
 #~ msgid "Dunajska Streda"
 #~ msgstr "דונאייסקה סטרדה"
+
 #~ msgid "Galanta"
 #~ msgstr "גלנטה"
+
 #~ msgid "Gelnica"
 #~ msgstr "גלניקה"
+
 #~ msgid "Hlohovec"
 #~ msgstr "הלוהובץ"
+
 #~ msgid "Humenne"
 #~ msgstr "הומנה"
+
 #~ msgid "Ilava"
 #~ msgstr "אילבה"
+
 #~ msgid "Kezmarok"
 #~ msgstr "קזמרוק"
+
 #~ msgid "Komarno"
 #~ msgstr "קומרנו"
+
 #~ msgid "Kosice I"
 #~ msgstr "קושיצה 1"
+
 #~ msgid "Kosice II"
 #~ msgstr "קושיצה 2"
+
 #~ msgid "Kosice III"
 #~ msgstr "קושיצה 3"
+
 #~ msgid "Kosice IV"
 #~ msgstr "קושיצה 4"
+
 #~ msgid "Kosice - okolie"
 #~ msgstr "קושיצ'ה - אוקולי"
+
 #~ msgid "Krupina"
 #~ msgstr "קרופינה"
+
 #~ msgid "Kysucke Nove Mesto"
 #~ msgstr "קיוסקה נובה מסטו"
+
 #~ msgid "Levice"
 #~ msgstr "לביצה"
+
 #~ msgid "Levoca"
 #~ msgstr "לבוצ'ה"
+
 #~ msgid "Liptovsky Mikulas"
 #~ msgstr "ליפטובסקי מיקולס"
+
 #~ msgid "Lucenec"
 #~ msgstr "לוצ'נץ'"
+
 #~ msgid "Malacky"
 #~ msgstr "מאלאקי"
 
 #, fuzzy
 #~ msgid "Martin"
 #~ msgstr "ראשי"
+
 #~ msgid "Medzilaborce"
 #~ msgstr "מדזילבורצה"
+
 #~ msgid "Michalovce"
 #~ msgstr "מיחלובצה"
+
 #~ msgid "Myjava"
 #~ msgstr "מיאווה"
+
 #~ msgid "Namestovo"
 #~ msgstr "נמסטובו"
+
 #~ msgid "Nitra"
 #~ msgstr "ניטרה"
+
 #~ msgid "Nove Mesto nad Vahom"
 #~ msgstr "נובה מסטו ע\"נ וה"
+
 #~ msgid "Nove Zamky"
 #~ msgstr "נווי-זאמקי"
+
 #~ msgid "Partizanske"
 #~ msgstr "פרטיזנסקה"
+
 #~ msgid "Pezinok"
 #~ msgstr "פזינוק"
+
 #~ msgid "Piestany"
 #~ msgstr "פיאסטאני"
+
 #~ msgid "Poltar"
 #~ msgstr "פולטר"
+
 #~ msgid "Poprad"
 #~ msgstr "פופרד"
+
 #~ msgid "Povazska Bystrica"
 #~ msgstr "פובסקה ביסטריצ'ה"
+
 #~ msgid "Presov"
 #~ msgstr "פרשוב"
+
 #~ msgid "Prievidza"
 #~ msgstr "פרבידזה"
+
 #~ msgid "Puchov"
 #~ msgstr "פוצ'וב"
+
 #~ msgid "Revuca"
 #~ msgstr "ריץ"
+
 #~ msgid "Rimavska Sobota"
 #~ msgstr "רימובסקה סובוטה"
+
 #~ msgid "Roznava"
 #~ msgstr "רוזנבה"
+
 #~ msgid "Ruzomberok"
 #~ msgstr "רוזומברוק"
+
 #~ msgid "Sabinov"
 #~ msgstr "סבינוב"
+
 #~ msgid "Senec"
 #~ msgstr "סנץ"
+
 #~ msgid "Senica"
 #~ msgstr "סניצ'ה"
+
 #~ msgid "Skalica"
 #~ msgstr "סקליצ'ה"
+
 #~ msgid "Snina"
 #~ msgstr "סנינה"
+
 #~ msgid "Sobrance"
 #~ msgstr "סוברנס"
+
 #~ msgid "Spisska Nova Ves"
 #~ msgstr "ספישסקה נובה וס"
+
 #~ msgid "Stara Lubovna"
 #~ msgstr "סטרה לובובנה"
+
 #~ msgid "Stropkov"
 #~ msgstr "סרטופקוב"
+
 #~ msgid "Svidnik"
 #~ msgstr "סבידניק"
+
 #~ msgid "Sala"
 #~ msgstr "סאלה"
+
 #~ msgid "Topolcany"
 #~ msgstr "טופולצ'ני"
+
 #~ msgid "Trebisov"
 #~ msgstr "טרביסוב"
+
 #~ msgid "Trencin"
 #~ msgstr "טרנצ'ין"
+
 #~ msgid "Trnava"
 #~ msgstr "טרנאוה"
+
 #~ msgid "Turcianske Teplice"
 #~ msgstr "טורצינסק טפליץ"
+
 #~ msgid "Tvrdosin"
 #~ msgstr "טברודוסין"
+
 #~ msgid "Velky Krtis"
 #~ msgstr "ולקי קריץ"
+
 #~ msgid "Vranov nad Toplou"
 #~ msgstr "טרנוב ע\"נ טופולו"
+
 #~ msgid "Zlate Moravce"
 #~ msgstr "זלטה מורבצה"
+
 #~ msgid "Zvolen"
 #~ msgstr "זבולן"
+
 #~ msgid "Zarnovica"
 #~ msgstr "זרנוביקה"
+
 #~ msgid "Ziar nad Hronom"
 #~ msgstr "ז'יר ע\"נ הרון"
+
 #~ msgid "Zilina"
 #~ msgstr "ז'ילינה"
+
 #~ msgid "Banska Bystrica region"
 #~ msgstr "מחוז בטנסקה ביסטריקה"
+
 #~ msgid "Bratislava region"
 #~ msgstr "מחוז ברטיסלבה"
+
 #~ msgid "Kosice region"
 #~ msgstr "מחוז קושיצ'ה"
+
 #~ msgid "Nitra region"
 #~ msgstr "מחוז ניטרה"
+
 #~ msgid "Presov region"
 #~ msgstr "מחוז פראסוב"
+
 #~ msgid "Trencin region"
 #~ msgstr "מחוז טראנצין"
+
 #~ msgid "Trnava region"
 #~ msgstr "מחוז טרנאוה"
+
 #~ msgid "Zilina region"
 #~ msgstr "מחוז ז'ילינה"
+
 #~ msgid "Enter a valid postcode."
 #~ msgstr "יש להזין מיקוד חוקי."
+
 #~ msgid "Bedfordshire"
 #~ msgstr " בדפורשייר"
+
 #~ msgid "Buckinghamshire"
 #~ msgstr "באקינגהמשייר"
+
 #~ msgid "Cheshire"
 #~ msgstr " צ'שייר"
+
 #~ msgid "Cornwall and Isles of Scilly"
 #~ msgstr "קורנוול ואיי סילי"
+
 #~ msgid "Cumbria"
 #~ msgstr " קאמבריה"
+
 #~ msgid "Derbyshire"
 #~ msgstr "דרבישייר"
+
 #~ msgid "Devon"
 #~ msgstr " דבון"
+
 #~ msgid "Dorset"
 #~ msgstr "דורסט"
+
 #~ msgid "Durham"
 #~ msgstr "דרהאם"
+
 #~ msgid "East Sussex"
 #~ msgstr "מזרח אסקס"
+
 #~ msgid "Essex"
 #~ msgstr "אסקס"
+
 #~ msgid "Gloucestershire"
 #~ msgstr "גלוסטרשייר"
+
 #~ msgid "Greater London"
 #~ msgstr "לונדון רבתי"
+
 #~ msgid "Hampshire"
 #~ msgstr "המפשייר"
+
 #~ msgid "Hertfordshire"
 #~ msgstr "הארטפורדשייר"
+
 #~ msgid "Kent"
 #~ msgstr "קנט"
+
 #~ msgid "Lancashire"
 #~ msgstr "לנקשייר"
+
 #~ msgid "Leicestershire"
 #~ msgstr "ליסטרשייר"
+
 #~ msgid "Lincolnshire"
 #~ msgstr " לינקולנשייר"
+
 #~ msgid "Merseyside"
 #~ msgstr "מרסיסייד"
+
 #~ msgid "Norfolk"
 #~ msgstr "נורפולק"
+
 #~ msgid "North Yorkshire"
 #~ msgstr "צפון יורקשייר"
+
 #~ msgid "Northamptonshire"
 #~ msgstr "נורת'המפטונשייר"
+
 #~ msgid "Northumberland"
 #~ msgstr "נורת'אמברלנד"
+
 #~ msgid "Nottinghamshire"
 #~ msgstr "נוטינגהאמשייר"
+
 #~ msgid "Oxfordshire"
 #~ msgstr "אוקספורדשייר"
+
 #~ msgid "Shropshire"
 #~ msgstr "שרופשייר"
+
 #~ msgid "Somerset"
 #~ msgstr "סומרסט"
+
 #~ msgid "South Yorkshire"
 #~ msgstr "דרום יורקשייר"
+
 #~ msgid "Staffordshire"
 #~ msgstr "סטאפורדשייר"
+
 #~ msgid "Suffolk"
 #~ msgstr " סאפוק"
+
 #~ msgid "Surrey"
 #~ msgstr "סוריי"
+
 #~ msgid "Tyne and Wear"
 #~ msgstr "טיין ו-וויר"
+
 #~ msgid "Warwickshire"
 #~ msgstr " וורוויקשייר"
+
 #~ msgid "West Midlands"
 #~ msgstr "מערב המידלנדס"
+
 #~ msgid "West Sussex"
 #~ msgstr "מערב סאסקס"
+
 #~ msgid "West Yorkshire"
 #~ msgstr "מערב יורקשייר"
+
 #~ msgid "Wiltshire"
 #~ msgstr " ווילטשייר"
+
 #~ msgid "Worcestershire"
 #~ msgstr " ווסטרשייר"
+
 #~ msgid "County Antrim"
 #~ msgstr "מחוז אנטרים"
+
 #~ msgid "County Armagh"
 #~ msgstr "ארמה"
+
 #~ msgid "County Down"
 #~ msgstr "מחוז דאון"
+
 #~ msgid "County Fermanagh"
 #~ msgstr "מחוז פרמאנה"
+
 #~ msgid "County Londonderry"
 #~ msgstr "מחוז לונדונברי"
+
 #~ msgid "County Tyrone"
 #~ msgstr "מחוז טיירון"
+
 #~ msgid "Clwyd"
 #~ msgstr "קלוויד"
+
 #~ msgid "Dyfed"
 #~ msgstr "דייפד"
+
 #~ msgid "Gwent"
 #~ msgstr "גוונט"
+
 #~ msgid "Gwynedd"
 #~ msgstr "גווינד"
+
 #~ msgid "Mid Glamorgan"
 #~ msgstr "מרכז גלמורגן"
+
 #~ msgid "Powys"
 #~ msgstr "ַפואיס"
+
 #~ msgid "South Glamorgan"
 #~ msgstr "דרום גלמורגן"
+
 #~ msgid "West Glamorgan"
 #~ msgstr "מערב גלמורגן"
+
 #~ msgid "Borders"
 #~ msgstr "גבולות"
+
 #~ msgid "Central Scotland"
 #~ msgstr "מרכז סקוטלנד"
+
 #~ msgid "Dumfries and Galloway"
 #~ msgstr "דמפרייס וגאלוויי"
+
 #~ msgid "Fife"
 #~ msgstr "פייף"
+
 #~ msgid "Grampian"
 #~ msgstr " גרמפיאן"
+
 #~ msgid "Highland"
 #~ msgstr "רמה"
+
 #~ msgid "Lothian"
 #~ msgstr "לודיאן"
+
 #~ msgid "Orkney Islands"
 #~ msgstr "איי אורקיי"
+
 #~ msgid "Shetland Islands"
 #~ msgstr "איי שטלנד"
+
 #~ msgid "Strathclyde"
 #~ msgstr "סטראת'קלייד"
+
 #~ msgid "Tayside"
 #~ msgstr "טייסייד"
+
 #~ msgid "Western Isles"
 #~ msgstr "האיים המערביים"
+
 #~ msgid "England"
 #~ msgstr "אנגליה"
+
 #~ msgid "Northern Ireland"
 #~ msgstr "צפון אירלנד"
+
 #~ msgid "Scotland"
 #~ msgstr "סקוטלנד"
+
 #~ msgid "Wales"
 #~ msgstr "וויילס"
+
 #~ msgid "Enter a zip code in the format XXXXX or XXXXX-XXXX."
 #~ msgstr "יש להזין מיקוד חוקי בתחביר XXXXX או XXXXX-XXXX."
+
 #~ msgid "Enter a valid U.S. Social Security number in XXX-XX-XXXX format."
 #~ msgstr "יש להזין מספר ביטוח לאומי אמריקאי בתחביר XXX-XX-XXXX."
+
 #~ msgid "Enter a valid South African ID number"
 #~ msgstr "נא להזין מספר זיהוי דרום אפריקאי חוקי"
+
 #~ msgid "Enter a valid South African postal code"
 #~ msgstr "נא להזין מיקוד דרום אפריקאי חוקי"
+
 #~ msgid "Eastern Cape"
 #~ msgstr "הכף המזרחי"
+
 #~ msgid "Free State"
 #~ msgstr "המדינה החופשית"
+
 #~ msgid "Gauteng"
 #~ msgstr "גאוטנג"
+
 #~ msgid "KwaZulu-Natal"
 #~ msgstr "קווזולו-נטל"
+
 #~ msgid "Limpopo"
 #~ msgstr "לימפופו"
+
 #~ msgid "Mpumalanga"
 #~ msgstr "מפומלנגה"
+
 #~ msgid "Northern Cape"
 #~ msgstr "כף צפוני"
+
 #~ msgid "North West"
 #~ msgstr "דרום מערב"
+
 #~ msgid "Western Cape"
 #~ msgstr "כף מערבי"
+
 #~ msgid "redirect from"
 #~ msgstr "הפניה מ"
+
 #~ msgid ""
 #~ "This should be an absolute path, excluding the domain name. Example: '/"
 #~ "events/search/'."
 #~ msgstr "זה אמור להיות נתיב מלא, ללא שם המתחם. לדוגמא: '/‎/events/search'."
+
 #~ msgid "redirect to"
 #~ msgstr "הפניה אל"
+
 #~ msgid ""
 #~ "This can be either an absolute path (as above) or a full URL starting "
 #~ "with 'http://'."
 #~ msgstr "יכול להיות נתיב מלא (כנ\"ל) או URL מלא המתחיל ב'http://'."
+
 #~ msgid "redirect"
 #~ msgstr "הפניה"
+
 #~ msgid "redirects"
 #~ msgstr "הפניות"
+
 #~ msgid "session key"
 #~ msgstr "מפתח התחברות (session key)"
+
 #~ msgid "session data"
 #~ msgstr "מידע התחברות (session data)"
+
 #~ msgid "expire date"
 #~ msgstr "תאריך פג תוקף"
+
 #~ msgid "session"
 #~ msgstr "התחברות"
+
 #~ msgid "sessions"
 #~ msgstr "התחברויות"
+
 #~ msgid "domain name"
 #~ msgstr "שם מתחם"
+
 #~ msgid "display name"
 #~ msgstr "שם לתצוגה"
+
 #~ msgid "sites"
 #~ msgstr "אתרים"
+
 #~ msgid "This value must be an integer."
 #~ msgstr "ערך זה חייב להיות מספר שלם."
+
 #~ msgid "This value must be either True or False."
 #~ msgstr "ערך זה חייב להיות אמת או שקר."
+
 #~ msgid "This field cannot be null."
 #~ msgstr "שדה זה אינו יכול להכיל null."
+
 #~ msgid "Enter only digits separated by commas."
 #~ msgstr "יש להזין רק ספרות מופרדות בפסיקים."
+
 #~ msgid "Enter a valid date in YYYY-MM-DD format."
 #~ msgstr "יש להזין תאריך במבנה YYYY-MM-DD."
+
 #~ msgid "Invalid date: %s"
 #~ msgstr "תאריך שגוי: %s"
+
 #~ msgid "Enter a valid date/time in YYYY-MM-DD HH:MM[:ss[.uuuuuu]] format."
 #~ msgstr "נא להזין תאריך/שעה חוקיים בתחביר YYYY-MM-DD HH:MM[:ss[.uuuuuu]]."
+
 #~ msgid "This value must be a decimal number."
 #~ msgstr "ערך זה חייב להיות מספר עשרוני."
+
 #~ msgid "This value must be a float."
 #~ msgstr "על הערך הזה להיות ערך מספר עשרוני."
+
 #~ msgid "This value must be either None, True or False."
 #~ msgstr "ערך זה חייב להיות כלום, אמת או שקר."
+
 #~ msgid "Enter a valid time in HH:MM[:ss[.uuuuuu]] format."
 #~ msgstr "נא להזין זמן חוקי בתחביר HH:MM[:ss[.uuuuuu]]."
+
 #~ msgid ""
 #~ "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
 #~ msgstr ""
 #~ "יש להחזיק את \"Control\", או \"Command\" על מק, לחוץ כדי לבחור יותר מאחד."
+
 #~ msgid "Please enter valid %(self)s IDs. The value %(value)r is invalid."
+
 #~ msgid_plural ""
 #~ "Please enter valid %(self)s IDs. The values %(value)r are invalid."
 #~ msgstr[0] "נא להזין מזהה %(self)s חוקי. הערך %(value)r אינו חוקי."
 #~ msgstr[1] "נא להזין מזהי %(self)s חוקיים. הערכים %(value)r אינם חוקיים."
+
 #~ msgid "This field is required."
 #~ msgstr "יש להזין תוכן בשדה זה."
+
 #~ msgid "Enter a valid value."
 #~ msgstr "יש להזין ערך חוקי."
+
 #~ msgid ""
 #~ "Ensure this value has at most %(max)d characters (it has %(length)d)."
 #~ msgstr "נא לוודא שערך זה מכיל  %(max)d תווים לכל היותר (מכיל %(length)d)."
+
 #~ msgid ""
 #~ "Ensure this value has at least %(min)d characters (it has %(length)d)."
 #~ msgstr "נא לוודא שערך זה מכיל לפחות %(min)d תווים (מכיל %(length)d)."
+
 #~ msgid "Enter a whole number."
 #~ msgstr "נא להזין מספר שלם."
+
 #~ msgid "Ensure this value is less than or equal to %s."
 #~ msgstr "יש לוודא שערך זה פחות מ או שווה ל %s."
+
 #~ msgid "Ensure this value is greater than or equal to %s."
 #~ msgstr "יש לוודא שהערך גדול מ או שווה ל %s."
+
 #~ msgid "Enter a number."
 #~ msgstr "נא להזין מספר."
+
 #~ msgid "Ensure that there are no more than %s digits in total."
 #~ msgstr "נא לוודא שאין יותר מ-%s ספרות סה\"כ"
+
 #~ msgid "Ensure that there are no more than %s decimal places."
 #~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
 #~ msgid ""
 #~ "Ensure that there are no more than %s digits before the decimal point."
 #~ msgstr "נא לוודא שאין יותר מ-%s ספרות לפני הנקודה העשרונית"
+
 #~ msgid "Enter a valid date."
 #~ msgstr "יש להזין תאריך חוקי."
+
 #~ msgid "Enter a valid time."
 #~ msgstr "יש להזין שעה חוקית."
+
 #~ msgid "Enter a valid date/time."
 #~ msgstr "יש להזין תאריך ושעה חוקיים."
+
 #~ msgid "No file was submitted. Check the encoding type on the form."
 #~ msgstr "לא נשלח שום קובץ. נא לבדוק את סוג הקידוד של הטופס."
+
 #~ msgid "No file was submitted."
 #~ msgstr "לא נשלח שום קובץ"
+
 #~ msgid "The submitted file is empty."
 #~ msgstr "הקובץ שנשלח ריק."
+
 #~ msgid ""
 #~ "Ensure this filename has at most %(max)d characters (it has %(length)d)."
 #~ msgstr "על שם הקובץ להיות לא יותר מ %(max)d תווים (יש לו%(length)d)."
+
 #~ msgid ""
 #~ "Upload a valid image. The file you uploaded was either not an image or a "
 #~ "corrupted image."
 #~ msgstr ""
 #~ "נא להעלות תמונה חוקית. הקובץ שהעלת אינו תמונה או מכיל תמונה מקולקלת."
+
 #~ msgid "Enter a valid URL."
 #~ msgstr "יש להזין URL חוקי."
+
 #~ msgid "This URL appears to be a broken link."
 #~ msgstr "ה-URL הזה נראה כקישור שבור."
+
 #~ msgid ""
 #~ "Select a valid choice. %(value)s is not one of the available choices."
 #~ msgstr "יש לבחור אפשרות חוקית. %(value)s אינו בין האפשרויות הזמינות."
+
 #~ msgid "Enter a list of values."
 #~ msgstr "יש להזין רשימת ערכים"
+
 #~ msgid "Enter a valid IPv4 address."
 #~ msgstr "יש להזין כתובת IPv4 חוקית."
+
 #~ msgid ""
 #~ "Enter a valid 'slug' consisting of letters, numbers, underscores or "
 #~ "hyphens."
 #~ msgstr "יש להזין ערך המכיל אותיות, ספרות, קווים תחתונים ומקפים בלבד."
+
 #~ msgid "%(field_name)s must be unique for %(date_field)s %(lookup)s."
 #~ msgstr "%(field_name)s חייב להיות ייחודי ל%(lookup)s של ה%(date_field)s"
+
 #~ msgid "%(model_name)s with this %(field_label)s already exists."
 #~ msgstr "%(model_name)s·עם·%(field_label)s·זה קיימת כבר."
+
 #~ msgid "Please correct the duplicate data for %(field)s."
 #~ msgstr "נא לתקן את הערכים כפולים ל%(field)s."
+
 #~ msgid ""
 #~ "Please correct the duplicate data for %(field)s, which must be unique."
 #~ msgstr "נא לתקן את הערכים כפולים ל%(field)s, זה חייב להיות ייחודי."
+
 #~ msgid ""
 #~ "Please correct the duplicate data for %(field_name)s which must be unique "
 #~ "for the %(lookup)s in %(date_field)s."
 #~ msgstr ""
 #~ "נא לתקן את הערכים כפולים %(field_name)s, זה חייב להיות ייחודי ל%(lookup)s "
 #~ "של %(date_field)s."
+
 #~ msgid "Please correct the duplicate values below."
 #~ msgstr "נא לתקן את הערכים כפולים מתחת."
+
 #~ msgid ""
 #~ "The inline foreign key did not match the parent instance primary key."
 #~ msgstr "הרצופות מפתח זר לא תאם את האב מופע המפתח העיקרי."
+
 #~ msgid ""
 #~ "Select a valid choice. That choice is not one of the available choices."
 #~ msgstr "יש לבחור אפשרות חוקית; '%(data)s' אינו בין %(choices)s."
+
 #~ msgid "Select a valid choice. %s is not one of the available choices."
 #~ msgstr "יש לבחור אפשרות חוקית. %s אינו בין האפשרויות הזמינות."
+
 #~ msgid "\"%s\" is not a valid value for a primary key."
 #~ msgstr "\"%s\" איננו חוקי כמקש עיקרי."
+
 #~ msgid "yes,no,maybe"
 #~ msgstr "כן,לא,אולי"
+
 #~ msgid "%(size)d byte"
+
 #~ msgid_plural "%(size)d bytes"
 #~ msgstr[0] "%(size)d בית"
 #~ msgstr[1] "%(size)d בתים"
+
 #~ msgid "%.1f KB"
 #~ msgstr "%.1f KB"
+
 #~ msgid "%.1f MB"
 #~ msgstr "%.1f MB"
+
 #~ msgid "%.1f GB"
 #~ msgstr "%.1f GB"
+
 #~ msgid "p.m."
 #~ msgstr "אחר הצהריים"
+
 #~ msgid "a.m."
 #~ msgstr "בבוקר"
+
 #~ msgid "PM"
 #~ msgstr "אחר הצהריים"
+
 #~ msgid "AM"
 #~ msgstr "בבוקר"
+
 #~ msgid "midnight"
 #~ msgstr "חצות"
+
 #~ msgid "noon"
 #~ msgstr "צהריים"
+
 #~ msgid "Monday"
 #~ msgstr "שני"
+
 #~ msgid "Tuesday"
 #~ msgstr "שלישי"
+
 #~ msgid "Wednesday"
 #~ msgstr "רביעי"
+
 #~ msgid "Thursday"
 #~ msgstr "חמישי"
+
 #~ msgid "Friday"
 #~ msgstr "שישי"
+
 #~ msgid "Saturday"
 #~ msgstr "שבת"
+
 #~ msgid "Sunday"
 #~ msgstr "ראשון"
+
 #~ msgid "Mon"
 #~ msgstr "שני"
+
 #~ msgid "Tue"
 #~ msgstr "שלישי"
+
 #~ msgid "Wed"
 #~ msgstr "רביעי"
+
 #~ msgid "Thu"
 #~ msgstr "חמישי"
+
 #~ msgid "Fri"
 #~ msgstr "שישי"
+
 #~ msgid "Sat"
 #~ msgstr "שבת"
+
 #~ msgid "Sun"
 #~ msgstr "ראשון"
+
 #~ msgid "January"
 #~ msgstr "ינואר"
+
 #~ msgid "February"
 #~ msgstr "פברואר"
+
 #~ msgid "March"
 #~ msgstr "מרס"
+
 #~ msgid "April"
 #~ msgstr "אפריל"
+
 #~ msgid "May"
 #~ msgstr "מאי"
+
 #~ msgid "June"
 #~ msgstr "יוני"
+
 #~ msgid "July"
 #~ msgstr "יולי"
 
 #, fuzzy
 #~ msgid "August"
 #~ msgstr "נגד"
+
 #~ msgid "September"
 #~ msgstr "ספטמבר"
+
 #~ msgid "October"
 #~ msgstr "אוקטובר"
+
 #~ msgid "November"
 #~ msgstr "נובמבר"
+
 #~ msgid "December"
 #~ msgstr "דצמבר"
+
 #~ msgid "jan"
 #~ msgstr "ינו"
+
 #~ msgid "feb"
 #~ msgstr "פבר"
+
 #~ msgid "mar"
 #~ msgstr "מרס"
+
 #~ msgid "apr"
 #~ msgstr "אפר"
+
 #~ msgid "may"
 #~ msgstr "מאי"
+
 #~ msgid "jun"
 #~ msgstr "יונ"
+
 #~ msgid "jul"
 #~ msgstr "יול"
+
 #~ msgid "aug"
 #~ msgstr "אוג"
+
 #~ msgid "sep"
 #~ msgstr "ספט"
+
 #~ msgid "oct"
 #~ msgstr "אוק"
+
 #~ msgid "nov"
 #~ msgstr "נוב"
+
 #~ msgid "dec"
 #~ msgstr "דצמ"
+
 #~ msgid "Jan."
 #~ msgstr "ינו'"
+
 #~ msgid "Feb."
 #~ msgstr "פבר'"
+
 #~ msgid "Aug."
 #~ msgstr "אוג'"
+
 #~ msgid "Sept."
 #~ msgstr "ספט'"
+
 #~ msgid "Oct."
 #~ msgstr "אוק'"
+
 #~ msgid "Nov."
 #~ msgstr "נוב'"
+
 #~ msgid "Dec."
 #~ msgstr "דצמ'"
+
 #~ msgid "year"
+
 #~ msgid_plural "years"
 #~ msgstr[0] "שנה"
 #~ msgstr[1] "שנים"
+
 #~ msgid "day"
+
 #~ msgid_plural "days"
 #~ msgstr[0] "יום"
 #~ msgstr[1] "ימים"
+
 #~ msgid "hour"
+
 #~ msgid_plural "hours"
 #~ msgstr[0] "שעה"
 #~ msgstr[1] "שעות"
+
 #~ msgid "minute"
+
 #~ msgid_plural "minutes"
 #~ msgstr[0] "דקה"
 #~ msgstr[1] "דקות"
+
 #~ msgid "minutes"
 #~ msgstr "דקות"
+
 #~ msgid "%(number)d %(type)s"
 #~ msgstr "%(number)d %(type)s"
+
 #~ msgid ", %(number)d %(type)s"
 #~ msgstr ", %(number)d %(type)s"
+
 #~ msgid "DATE_FORMAT"
 #~ msgstr "d.m.Y"
+
 #~ msgid "TIME_FORMAT"
 #~ msgstr "H:i:s"
+
 #~ msgid "YEAR_MONTH_FORMAT"
 #~ msgstr "d.m.Y"
+
 #~ msgid "MONTH_DAY_FORMAT"
 #~ msgstr "d.m.Y"
+
 #~ msgid "The %(verbose_name)s was created successfully."
 #~ msgstr "ה-%(verbose_name)s  נוצר בהצלחה."
+
 #~ msgid "The %(verbose_name)s was updated successfully."
 #~ msgstr "ה-%(verbose_name)s עודכן בהצלחה."
+
 #~ msgid "The %(verbose_name)s was deleted."
 #~ msgstr "ה-%(verbose_name)s נמחק."
 
@@ -3306,8 +4270,9 @@ msgstr "כתובת דוא\"ל"
 #, fuzzy
 #~ msgid "Sign in"
 #~ msgstr "סנינה"
+
 #~ msgid "more"
 #~ msgstr "עוד"
+
 #~ msgid "Main Page"
 #~ msgstr "rtah"
-
