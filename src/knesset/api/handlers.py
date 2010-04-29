@@ -32,17 +32,19 @@ class MemberHandler(BaseHandler):
 
     @classmethod
     def votes_per_month (self, member):
-        return member.voting_statistics.average_votes_per_month()
+        return round(member.voting_statistics.average_votes_per_month(),1)
 
     @classmethod
     def service_time (self, member):
         return member.service_time()
-
     
     @classmethod
     def discipline (self, member):
-        return member.voting_statistics.discipline()
-
+        x = member.voting_statistics.discipline()
+        if x:
+            return round(x,2)
+        else:
+            return None
 
     @classmethod
     def member (self, member):

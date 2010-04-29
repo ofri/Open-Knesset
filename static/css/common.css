@@ -432,3 +432,12 @@ div #search {
 #tooltip {
     color: #000;
 }
+#placeholder {
+    float:right;
+}
+#y-axis {
+    float:right;
+}
+#x-axis {
+    clear:both;
+}
