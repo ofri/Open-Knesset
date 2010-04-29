@@ -31,24 +31,27 @@ function load_data_callback(original_data){
         party = original_data[i]['party'].replace(' ','_');
         var name = original_data[i]['name'];
         var var1 = original_data[i][var1_name];
-        values1.push(var1);        
+        
         if (var1>maxx)
             maxx = var1;
         if (var1<minx)
             minx = var1;
         var var2 = original_data[i][var2_name];
-        values2.push(var2);
-        if (var2>maxy)
-            maxy = var2;
-        if (var2<miny)
-            miny = var2;
-        var image_url = original_data[i]['img_url'];
-        if (!(party in parties)) {
-            parties[party] = {names:[],raw_data:[],data:[],image_url:[]};            
-        }
-        parties[party].names.push(name);
-        parties[party].raw_data.push([var1,var2]);
-        parties[party].image_url.push(image_url);
+        if ((var1!=null)&(var2!=null)){        
+            values1.push(var1);        
+            values2.push(var2);
+            if (var2>maxy)
+                maxy = var2;
+            if (var2<miny)
+                miny = var2;
+            var image_url = original_data[i]['img_url'];
+            if (!(party in parties)) {
+                parties[party] = {names:[],raw_data:[],data:[],image_url:[]};            
+            }
+            parties[party].names.push(name);
+            parties[party].raw_data.push([var1,var2]);
+            parties[party].image_url.push(image_url);
+        };
     };
     values1.sort(sortNumber);
     values2.sort(sortNumber);
