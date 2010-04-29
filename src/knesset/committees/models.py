@@ -28,3 +28,7 @@ class CommitteeMeeting(models.Model):
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
   
+    class Meta:
+        ordering = ('-date',)
+
+
