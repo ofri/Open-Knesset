@@ -81,15 +81,20 @@ class MemberListView(ListDetailView):
         if 'extra_context' in kwargs:
             ec.update(kwargs['extra_context'])
         ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], 
-                              ['.?info=votes', _('By number of votes'), False],
+                              ['.?info=votes', _('By number of votes per month'), False],
                               ['.?info=graph', _('Graphical view'), False]]
         
         if info=='votes':
-            qs = qs.annotate(extra=Count('votes')).order_by('-extra')
-            ec['past_mks'] = ec['past_mks'].annotate(extra=Count('votes')).order_by('-extra')
+            qs = list(qs)
+            qs.sort(key=lambda x:-x.voting_statistics.average_votes_per_month())
+            #qs = qs.annotate(extra=Count('votes')).order_by('-extra')
+            #ec['past_mks'] = ec['past_mks'].annotate(extra=Count('votes')).order_by('-extra')
+            ec['past_mks'] = list(ec['past_mks'])
+            ec['past_mks'].sort(key=lambda x:-x.voting_statistics.average_votes_per_month())
             ec['friend_pages'][1][2] = True
-            ec['norm_factor'] = float(qs[0].extra)/50
-            ec['title'] = "%s %s" % (_('Members'), _('By number of votes'))
+            #ec['norm_factor'] = float(qs[0].extra)/50
+            ec['norm_factor'] = float(qs[0].voting_statistics.average_votes_per_month())/50.0            
+            ec['title'] = "%s %s" % (_('Members'), _('By number of votes per month'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
         if info=='abc':
             ec['friend_pages'][0][2] = True

@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-
+from datetime import date
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -155,7 +155,14 @@ class Member(models.Model):
                 m = c.m1
             strings.append("%s (%.0f)"%(m.NameWithLink(),100*c.normalized_score))
         return ", ".join(strings)
-    
+
+    def service_time(self):
+        """returns the number of days this MK has been serving in the current knesset"""
+        if self.is_current:
+            return (date.today() -  self.start_date).days
+        else:
+            return (self.end_date - self.start_date).days
+
     
     @models.permalink
     def get_absolute_url(self):
