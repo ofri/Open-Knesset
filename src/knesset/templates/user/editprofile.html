@@ -36,8 +36,9 @@
             var id_re = /.*-(\d+)/;
             var member_id = id_re.exec(this.id)[1];
             jQuery.ajax({
-                type: 'DELETE',
-                url: '{% url user-handler %}member/'+member_id+'/',
+                type: 'POST',
+                url: '{% url follow-members %}',
+                data: {unwatch: member_id},
                 context: $('#detail-'+member_id),
                 success: function () {
                     this.remove();

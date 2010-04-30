@@ -26,20 +26,24 @@
             $('#watch').click( function () {
                 if (document.is_watched) {
                     jQuery.ajax({
-                        type: 'DELETE',
-                        url: '{% url user-handler %}member/'+member_id+'/',
+                        type: 'POST',
+                        url: '{% url follow-members %}',
+                        data: {unwatch: member_id},
                         context: $('#watch'),
                         success: function () {
                             document.is_watched = false;
                             this.html("{% trans 'Watch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            alert(textStatus);
                         }
                     });
                 }
                 else {
                     jQuery.ajax({
-                        type: 'PUT',
-                        url: '{% url user-handler %}',
-                        data: {watch_member: member_id},
+                        type: 'POST',
+                        url: '{% url follow-members %}',
+                        data: {watch: member_id},
                         context: $('#watch'),
                         success: function () {
                             document.is_watched = true;
