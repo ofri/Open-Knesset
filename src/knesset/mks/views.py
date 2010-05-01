@@ -18,7 +18,6 @@ member_context = dict (quesryset =
                       paginate_by = 20)
 
 def member (request, pk=None):
-    print "member view"
     qs = Member.objects.all()
     if pk:
         return object_detail(request, queryset=qs, object_id=pk, 
@@ -105,6 +104,16 @@ class MemberListView(ListDetailView):
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
 
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
+    def render_object(self, request, object_id, extra_context={}, **kwargs):
+        if request.user.is_authenticated():
+            p = request.user.get_profile()
+            qs = p.followed_members.filter(pk=object_id)
+            extra_context.update(dict(watched_member = bool(qs)))
+
+        return super(MemberListView, self).render_object(request, object_id,
+                              extra_context=extra_context, **kwargs)
+
+
 
 class PartyListView(ListDetailView):
     def render_list(self,request, **kwargs):
