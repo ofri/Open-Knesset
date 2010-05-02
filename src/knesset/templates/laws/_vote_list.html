@@ -48,7 +48,13 @@
             <!--{% trans 'No tags' %}-->
         {% endif %}
     </div>
-    {% for s in show_stands %}{% member_stand o.id s %}{% endfor %}
+    {% if show_stands %}
+        {% for s in show_stands %}{% member_stand o.id s %}{% endfor %}
+    {% else %} {% if forloop.first %}
+        <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
+        {% endif %}
+    {% endif %}
+
 
 </div>
 {% empty %}
