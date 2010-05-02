@@ -14,7 +14,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'discipline')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline')
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -30,11 +30,22 @@ class MemberHandler(BaseHandler):
     @classmethod
     def votes_count (self, member):
         return member.voting_statistics.votes_count()
+
+    @classmethod
+    def votes_per_month (self, member):
+        return round(member.voting_statistics.average_votes_per_month(),1)
+
+    @classmethod
+    def service_time (self, member):
+        return member.service_time()
     
     @classmethod
     def discipline (self, member):
-        return member.voting_statistics.discipline()
-
+        x = member.voting_statistics.discipline()
+        if x:
+            return round(x,2)
+        else:
+            return None
 
     @classmethod
     def member (self, member):

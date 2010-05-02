@@ -23,6 +23,8 @@ import urllib2
 
 class VoteListView(ListDetailView):
 
+    session_votes_key = 'selected_votes'
+    
     friend_pages = [
             ('vote_type','all',_('All votes')),
             ('vote_type','law-approve', _('Law Approvals')),
@@ -45,23 +47,33 @@ class VoteListView(ListDetailView):
         ]
 
     def pre (self, request, **kwargs):
-        self.queryset = Vote.objects.filter_and_order(**{
-            'type': request.GET.get('vote_type', None),
-            'since': request.GET.get('time', None),
-            'order': request.GET.get('order', None),
-            'tagged': request.GET.get('tagged',None),
-        })
+
+        pass
         
 
     def render_list(self,request, **kwargs):
+
+        
         if not self.extra_context: self.extra_context = {}
 
+        saved_selection = request.session.get(self.session_votes_key, dict())
+        options = {
+            'type': request.GET.get('vote_type', saved_selection.get('vote_type', None)),
+            'since': request.GET.get('time', saved_selection.get('time',None)),
+            'order': request.GET.get('order', saved_selection.get('order', None)),
+            'tagged': request.GET.get('tagged', saved_selection.get('tagged', None)),
+        }
+        
+        queryset = Vote.objects.filter_and_order(**options)
+        
         friend_page = {}
-        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type','all').encode('utf8'))
-        friend_page['tagged'] = urllib.quote(request.GET.get('tagged','all').encode('utf8'))                
-        friend_page['time'] = urllib.quote(request.GET.get('time','all').encode('utf8'))
-        friend_page['order'] = urllib.quote(request.GET.get('order','time').encode('utf8'))        
+        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type',saved_selection.get('vote_type','all')).encode('utf8'))
+        friend_page['tagged'] = urllib.quote(request.GET.get('tagged', saved_selection.get('tagged','all')).encode('utf8'))
+        friend_page['time'] = urllib.quote(request.GET.get('time', saved_selection.get('time','all')).encode('utf8'))
+        friend_page['order'] = urllib.quote(request.GET.get('order',saved_selection.get('order','time')).encode('utf8'))
 
+        request.session[self.session_votes_key] = friend_page
+        
         r = {}
 
         for key, value, name in self.friend_pages:
@@ -87,7 +99,7 @@ class VoteListView(ListDetailView):
             selected_mks = request.session.get('selected_mks',dict())
             show_stands = [str(i) for i in selected_mks.keys()]
         self.extra_context['show_stands'] = show_stands
-        return super(VoteListView, self).render_list(request, **kwargs)
+        return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
 
 @login_required
 def submit_tags(request,object_id):

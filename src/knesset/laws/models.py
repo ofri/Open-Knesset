@@ -63,6 +63,12 @@ class MemberVotingStatistics(models.Model):
         else:
             return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
             
+    def average_votes_per_month(self):
+        if hasattr(self, '_average_votes_per_month'):
+            return self._average_votes_per_month
+        st = self.member.service_time()
+        self._average_votes_per_month =  30.0*self.votes_count()/st
+        return self._average_votes_per_month
 
     def discipline(self, from_date = None):
         total_votes = self.votes_count(from_date)

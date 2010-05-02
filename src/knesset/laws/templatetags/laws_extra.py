@@ -1,10 +1,13 @@
 from django import template
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
-from knesset.laws.models import VoteAction, VOTE_ACTION_TYPE_CHOICES
+from knesset.laws.models import VoteAction, VOTE_ACTION_TYPE_CHOICES, MemberVotingStatistics
 from knesset.mks.models import Member
 from datetime import date, timedelta
 from django.utils.translation import ugettext_lazy as _
+import logging
+logger = logging.getLogger("open-knesset.laws.templatetags")
+
 
 register = template.Library()
 
@@ -24,23 +27,36 @@ def bar(number, is_for, norm_factor=1.2, baseline=0):
         number - number of people voted this way.
         is_for - is this a "for" bar. false means "against" bar.
     """
-    width = round((number-baseline)/norm_factor)
+    width = round((number-baseline)/norm_factor,1)
     return {'width': width, 'is_for':is_for}
 
 @register.filter
 def recent_discipline(m):
     d = date.today() - timedelta(30)
-    return m.voting_statistics.discipline(d) or _('Not enough data')
+    try:
+        return m.voting_statistics.discipline(d) or _('Not enough data')
+    except MemberVotingStatistics.DoesNotExist:
+        logger.error('%d is missing voting statistics' % m.id)
+        return _('Not enough data')
 
 @register.filter
 def recent_coalition_discipline(m):
     d = date.today() - timedelta(30)
-    return m.voting_statistics.coalition_discipline(d) or _('Not enough data')
+    try:
+        return m.voting_statistics.coalition_discipline(d) or _('Not enough data')
+    except MemberVotingStatistics.DoesNotExist:
+        logger.error('%d is missing voting statistics' % m.id)
+        return _('Not enough data')
 
 @register.filter
 def recent_votes_count(m):
     d = date.today() - timedelta(30)
-    return m.voting_statistics.votes_count(d)
+    try:
+        return m.voting_statistics.votes_count(d)
+    except MemberVotingStatistics.DoesNotExist:
+        logger.error('%d is missing voting statistics' % m.id)
+        return _('Not enough data')
+
 
 @register.inclusion_tag('laws/_member_stand.html')
 def member_stand(v, m):
