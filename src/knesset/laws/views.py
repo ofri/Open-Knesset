@@ -92,13 +92,10 @@ class VoteListView(ListDetailView):
 
         #[(_('all'),'&'.join([time,order])), (_('law approval'))],[],[]]        
         self.extra_context['friend_pages'] = r
-        show_stands = request.GET.get('show_stands', None)            
-        if show_stands:
-            show_stands = show_stands.split(',')
-        else:
-            selected_mks = request.session.get('selected_mks',dict())
-            show_stands = [str(i) for i in selected_mks.keys()]
-        self.extra_context['show_stands'] = show_stands
+        watched_members = request.user.get_profile().followed_members.all()\
+                if request.user.is_authenticated() else False
+
+        self.extra_context['watched_members'] = watched_members
         return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
 
 @login_required
