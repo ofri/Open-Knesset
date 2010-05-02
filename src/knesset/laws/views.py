@@ -48,6 +48,14 @@ class VoteListView(ListDetailView):
 
     def pre (self, request, **kwargs):
 
+        pass
+        
+
+    def render_list(self,request, **kwargs):
+
+        
+        if not self.extra_context: self.extra_context = {}
+
         saved_selection = request.session.get(self.session_votes_key, dict())
         options = {
             'type': request.GET.get('vote_type', saved_selection.get('vote_type', None)),
@@ -55,14 +63,8 @@ class VoteListView(ListDetailView):
             'order': request.GET.get('order', saved_selection.get('order', None)),
             'tagged': request.GET.get('tagged', saved_selection.get('tagged', None)),
         }
-        #request.session[self.session_votes_key] = dict([ [key, options[key]] for key in options.keys() if options[key]])
-        self.queryset = Vote.objects.filter_and_order(**options)
         
-
-    def render_list(self,request, **kwargs):
-        if not self.extra_context: self.extra_context = {}
-
-        saved_selection = request.session.get(self.session_votes_key, dict())
+        queryset = Vote.objects.filter_and_order(**options)
         
         friend_page = {}
         friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type',saved_selection.get('vote_type','all')).encode('utf8'))
@@ -97,7 +99,7 @@ class VoteListView(ListDetailView):
             selected_mks = request.session.get('selected_mks',dict())
             show_stands = [str(i) for i in selected_mks.keys()]
         self.extra_context['show_stands'] = show_stands
-        return super(VoteListView, self).render_list(request, **kwargs)
+        return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
 
 @login_required
 def submit_tags(request,object_id):
