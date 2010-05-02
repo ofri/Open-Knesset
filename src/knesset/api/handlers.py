@@ -121,7 +121,7 @@ class PartyHandler(BaseHandler):
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
     allowed_methods = ('GET',)
-    model = Party
+    model = Tag
     
     def read(self, request, **kwargs):
         id = None
