@@ -17,9 +17,11 @@
 		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
 		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-		<link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />		
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
 	    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
@@ -43,6 +45,10 @@
             #member-photo { float:right; margin:0.5em;}
 		body { direction: rtl; }
 		</style>
+        <script>
+            $.jGrowl.defaults.position="top-left";
+        </script>
+
 		{% endif %}
       {% block extrahead %}{% endblock %}
 	</head>

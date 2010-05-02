@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseForbidden
 from django.contrib.auth import login, authenticate
 from forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
@@ -50,8 +50,9 @@ def edit_profile(request):
             {'edit_form': edit_form,
             }))
 
-@login_required
 def follow_members(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
     p = request.user.get_profile()
     if request.method == 'POST':
         unwatch_id = request.POST.get('unwatch', None)

@@ -3,7 +3,7 @@
 
 {% block extratitle %}{% trans 'Create new user' %}{% endblock %}
 {% block content %}
-    <form method="post" action="{% url create_user %}">{% csrf_token %}
+    <form method="post" action=".">{% csrf_token %}
         <table>{{ form.as_table }}</table>
         <input type="submit" value="{% trans 'register' %}">
         <input type="hidden" name="next" value="{{ next }}">
