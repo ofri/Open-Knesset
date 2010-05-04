@@ -9,7 +9,7 @@
     <h2>{{title}}</h2>
     <a href="{% url committee-all-meetings object.committee.id %}">{% trans 'All committee meetings' %}</a><br>
     {% trans 'Topics' %}: {{ object.topics|safe }}<br>
-    {% trans 'MKs attended' %}: {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.Party.name }}" />{{ m.name }}</a> &nbsp; {% endfor %}<br>
+    {% trans 'MKs attended' %}: {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.current_party.name }}" />{{ m.name }}</a> &nbsp; {% endfor %}<br>
     {% trans 'Relevant votes' %}: {% for v in object.votes_mentioned.all %}<a class="hashnav item dontwrap" id="vote-{{ v.id }}" href="{% url vote-detail v.id %}" />{{ v.title }}</a> &nbsp; {% endfor %}<br>
     <h3>{% trans 'Protocol' %}</h3>
     <div class="protocol">{{ object.protocol_text|linebreaks }}</div>
