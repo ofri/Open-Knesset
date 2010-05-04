@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-01 23:46+0300\n"
-"PO-Revision-Date: 2010-05-01 23:47+0200\n"
-"Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
+"POT-Creation-Date: 2010-05-02 07:36-0500\n"
+"PO-Revision-Date: 2010-05-02 15:43+0200\n"
+"Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +43,7 @@ msgid "Parties"
 msgstr "מפלגות"
 
 #: context.py:17
-#: templates/base.html:69
+#: templates/base.html:75
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -319,11 +319,12 @@ msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
 #: templates/_main.html:3
+#: templates/mks/member_detail.html:12
 msgid "or"
 msgstr "או"
 
 #: templates/_main.html:10
-#: templates/base.html:62
+#: templates/base.html:68
 #: templates/search/search.html:3
 #: templates/search/search.html.py:4
 #: templates/search/search.html:13
@@ -332,7 +333,7 @@ msgstr "חיפוש"
 
 #: templates/about.html:3
 #: templates/about.html.py:4
-#: templates/base.html:73
+#: templates/base.html:79
 msgid "About"
 msgstr "אודות"
 
@@ -340,48 +341,53 @@ msgstr "אודות"
 msgid "I'm just sitting here watching the wheels go round and round."
 msgstr "אתר הכנסת הפתוחה"
 
-#: templates/base.html:54
+#: templates/base.html:60
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: templates/base.html:55
+#: templates/base.html:61
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: templates/base.html:56
+#: templates/base.html:62
 #: templates/user/login.html:9
 msgid "Logout"
 msgstr "התנתק"
 
-#: templates/base.html:58
+#: templates/base.html:64
+#: templates/mks/member_detail.html:11
 #: templates/user/login.html:4
 #: templates/user/login.html.py:17
 msgid "login"
-msgstr "כניסה"
+msgstr "היכנס"
 
-#: templates/base.html:68
+#: templates/base.html:74
 #: templates/main.html:3
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:72
+#: templates/base.html:78
 #: templates/committees/committee_list.html:3
 #: templates/committees/committee_list.html:4
 #: templates/committees/committee_list.html:5
 msgid "Committees"
 msgstr "ועדות"
 
-#: templates/base.html:90
+#: templates/base.html:96
 msgid "DjangoIL unless otherwise noted."
 msgstr "התכנים באתר הם ברשות הרבים."
 
-#: templates/base.html:94
+#: templates/base.html:100
 msgid "hostingCredit"
 msgstr "תודה לטוזיג על אירוח האתר"
 
-#: templates/base.html:96
+#: templates/base.html:102
 msgid "Member of the python and django communities."
 msgstr "תודה לקהילות דג'נגו ופייתון על הקוד וכל הדגים"
+
+#: templates/site_base.html:5
+msgid "Sorry, a strange error occured. Please try reloading the page."
+msgstr "מצטער, ארעה שגיאה  מוזרה. אנא כענן את המסך ונסה שנית."
 
 #: templates/accounts/email_validation.txt:2
 #: templates/accounts/email_validation_subject.txt:1
@@ -446,6 +452,7 @@ msgstr "אין עדיין תגובות"
 
 #: templates/committees/committeemeeting_detail.html:33
 #: templates/laws/_vote_detail.html:132
+#: templates/mks/member_detail.html:10
 msgid "Please"
 msgstr "אנא"
 
@@ -809,7 +816,16 @@ msgstr "קואליציה"
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: templates/mks/member_detail.html:11
+#: templates/mks/member_detail.html:9
+msgid "You have to be logged in to watch a user."
+msgstr "כדי לעקוב אחר חבר כנסת את/ה חייב/ת להתחבר."
+
+#: templates/mks/member_detail.html:13
+#: templates/user/create_user.html:8
+msgid "register"
+msgstr "הרשם"
+
+#: templates/mks/member_detail.html:19
 msgid "All Members"
 msgstr "כל הח\"כים"
 
@@ -860,10 +876,6 @@ msgstr "התוצאות הבאות"
 #: templates/user/create_user.html:4
 msgid "Create new user"
 msgstr "צור משתמש חדש"
-
-#: templates/user/create_user.html:8
-msgid "register"
-msgstr "הרשם"
 
 #: templates/user/editprofile.html:4
 #: templates/user/editprofile.html.py:5

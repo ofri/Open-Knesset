@@ -61,7 +61,7 @@ def recent_votes_count(m):
 @register.inclusion_tag('laws/_member_stand.html')
 def member_stand(v, m):
     """ returns member m stand on vote v """
-    va = VoteAction.objects.filter(member__id = m, vote__id = v)
+    va = VoteAction.objects.filter(member = m, vote = v)
     if va:
         for (name,string) in VOTE_ACTION_TYPE_CHOICES:
             if va[0].type==name:
@@ -72,7 +72,6 @@ def member_stand(v, m):
         stand=_('Absent')
         cls = 'absent'
         try:
-            m = Member.objects.get(pk=m)
             return {'stand':stand, 'class':cls, 'name':m.name}
         except Exception, e:
             print e

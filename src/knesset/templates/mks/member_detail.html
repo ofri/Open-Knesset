@@ -4,12 +4,19 @@
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
+{% block message %}
+<span id="message_login">
+    {% trans "You have to be logged in to watch a user." %}
+    {% trans "Please" %}
+    <a href="{% url login %}">{% trans "login" %}</a>
+    {% trans "or" %}
+    <a href="{% url register %}">{% trans "register" %}</a>
+</span>
+{% endblock %}
 {% block subnav %}
-<div class='subnav'>
     <a id="watch" class="button" href="."></a>
 &bull;
     <a class="button" href="{% url member-list %}">{% trans "All Members" %}</a>
-</div>
 {% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
@@ -35,7 +42,9 @@
                             this.html("{% trans 'Watch' %}");
                         },
                         error:  function(request, textStatus, error) {
-                            alert(textStatus);
+                            var msg = $("#message_unknown").html()
+                            $.jGrowl(msg, {life: 5000});
+                            $('#message_login').show();
                         }
                     });
                 }
@@ -50,7 +59,8 @@
                             this.html("{% trans 'Unwatch' %}");
                         },
                         error:  function(request, textStatus, error) {
-                            alert(textStatus);
+                            var msg = $("#message_login").html()
+                            $.jGrowl(msg, {sticky: true});
                         }
                     });
                 }
