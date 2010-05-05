@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseForbidden
 from django.contrib.auth import login, authenticate
 from forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from forms import EditProfileForm
 
 from knesset.accounts.models import EmailValidation
+from knesset.mks.models import Member
 
 def create_user(request):
     if request.method == 'POST':
@@ -48,3 +49,24 @@ def edit_profile(request):
         context_instance=RequestContext(request,
             {'edit_form': edit_form,
             }))
+
+def follow_members(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
+    p = request.user.get_profile()
+    if request.method == 'POST':
+        unwatch_id = request.POST.get('unwatch', None)
+        if unwatch_id:
+            p.followed_members.remove(int(unwatch_id))
+        else:
+            watch_id = request.POST.get('watch', None)
+            if not watch_id:
+                return HttpResponseServerError('neither "watch" nor "unwatch" arguments specified')
+            try:
+                member = Member.objects.get(pk=watch_id)
+                p.followed_members.add(member)
+            except Member.DoesNotExist:
+                return HttpResponseBadRequest('bad member id')
+        return HttpResponse('OK')
+    else:
+        return HttpResponseNotAllowed(['POST'])

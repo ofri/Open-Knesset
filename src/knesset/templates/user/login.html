@@ -17,7 +17,7 @@
         <input type="submit" value="{% trans 'login' %}">
         <input type="hidden" name="next" value="{{ next }}">
     </form><br>
-    <a href="{% url create_user %}?next={{next}}">{% trans "New user? Register" %}</a><br>
+    <a href="{% url register %}?next={{next}}">{% trans "New user? Register" %}</a><br>
     <a href="{% url password_reset %}?next={{next}}">{% trans "Forgot password?" %}</a><br>    
 
     

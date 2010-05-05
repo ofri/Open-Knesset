@@ -3,7 +3,7 @@
 <table id="member-info">
     <tr>
         <td>{% trans "party" %}</td>
-        <td><a class="hashnav" id="detail-{{ object.Party.id }}" href="{{ object.Party.get_absolute_url }}">{{ object.Party.name }}</a></td>
+        <td><a class="hashnav" id="detail-{{ object.current_party.id }}" href="{{ object.current_party.get_absolute_url }}">{{ object.current_party.name }}</a></td>
     </tr>    
     <tr>
         <td>{% trans "age" %}</td>

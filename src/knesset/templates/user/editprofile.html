@@ -1,18 +1,22 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load mks %}
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
 {% block h1content %}{% trans 'User Profile' %}{% endblock %}
 {% block divcontent %}
 <form action="." method="post">{% csrf_token %}
     <table>
     {{ edit_form }}
+    <tr>
+        <th>{% trans "Following Members:" %}</th>
+        <td>
+            {% for member in request.user.get_profile.members %}
+                {% mk member 'x' %}
+            {% endfor %}
+        </td>
     </table>
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
-    {% trans "Following Members:" %}
-    {% for member in request.user.get_profile.members %}
-        {{member.name}}
-    {% endfor %}
 <br/>
 {% if not edit_form.has_perms %}
     {% if not edit_form.has_email %}
@@ -26,5 +30,23 @@
 {% else %}
     {% trans 'Your email has been validated, so you can edit stuff!' %}
 {% endif %}
+<script>
+    $(document).ready( function() {
+        $('.can-delete-member').click(function(){
+            var id_re = /.*-(\d+)/;
+            var member_id = id_re.exec(this.id)[1];
+            jQuery.ajax({
+                type: 'POST',
+                url: '{% url follow-members %}',
+                data: {unwatch: member_id},
+                context: $('#detail-'+member_id),
+                success: function () {
+                    this.remove();
+                },
+            })
+            return (false);
+        })
+    })
+</script>
 
 {% endblock %}

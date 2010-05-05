@@ -1,4 +1,5 @@
 var graph;
+var all_data = null;
 
 function showTooltip(x, y, contents) {
     $('<div id="tooltip">' + contents + '</div>').css( {
@@ -18,6 +19,16 @@ function sortNumber(a, b)
 }
 
 function load_data_callback(original_data){
+    all_data = original_data;
+    $(".axis_combobox").html('<select><option value="discipline">משמעת</option><option value="service_time">זמן בכנסת ה-18</option><option value="votes_count">כמות הצבעות</option><option value="votes_per_month">ממוצע הצבעות בחודש</option></select>')    
+    $("#y-axis>select").val('votes_per_month');
+    $(".axis_combobox").change(function() {
+        update_graph(all_data);
+    });
+    update_graph(original_data);
+}
+
+function update_graph(original_data){
     var parties = {};
     var minx = 1E100;
     var maxx = -1E100;
@@ -25,10 +36,10 @@ function load_data_callback(original_data){
     var maxy = -1E100;
     var values1 = [];
     var values2 = [];
-    var var1_name = 'votes_count';
-    var var2_name = 'discipline';
+    var var1_name = $('#x-axis>select').val()
+    var var2_name = $('#y-axis>select').val()
     for(var i=0;i<original_data.length;i++){
-        party = original_data[i]['party'].replace(' ','_');
+        party = original_data[i]['party'].replace(/ /g,'_');
         var name = original_data[i]['name'];
         var var1 = original_data[i][var1_name];
         
@@ -93,7 +104,7 @@ function load_data_callback(original_data){
         legend: {
             container: $("#legend"),
             noColumns: 6,
-            labelFormatter: function(a,b){return '<a class="party_link" "href="#">'+a.replace("_"," ")+'</a>'}
+            labelFormatter: function(a,b){return '<a class="party_link" "href="#">'+a.replace(/_/g," ")+'</a>'}
           },
 
        series: {
@@ -105,12 +116,12 @@ function load_data_callback(original_data){
             fill: false
         },
         shadowSize: 2,
-         xaxis: { ticks: [ [0, scale1[0].toString()], [(scale1.length-1)/2, 'average '+var1_name.replace('_',' ')],[scale1.length-1, scale1.slice(-1).toString()] ] },
+         xaxis: { ticks: [ [0, scale1[0].toString()], [(scale1.length-1)/2, 'average '+var1_name.replace(/_/g,' ')],[scale1.length-1, scale1.slice(-1).toString()] ] },
 //                  transform: function (v) { return Math.log(v); },
 //                  inverseTransform: function (v) { return Math.exp(v); }
                     
        //         },
-         yaxis: { ticks: [ [0, scale2[0].toString()], [(scale2.length-1)/2, 'average<br/>'+var2_name.replace('_',' ')],[scale2.length-1, scale2.slice(-1).toString()] ] },
+         yaxis: { ticks: [ [0, scale2[0].toString()], [(scale2.length-1)/2, 'average<br/>'+var2_name.replace(/_/g,' ')],[scale2.length-1, scale2.slice(-1).toString()] ] },
 //                  transform: function (v) { return Math.log(v); },
 //                  inverseTransform: function (v) { return Math.exp(v); }
        //         }, 
@@ -137,7 +148,7 @@ function load_data_callback(original_data){
                     var party = item.series.label;
                     var d = parties[party].raw_data[item.dataIndex];
                     showTooltip(item.pageX, item.pageY,
-                                 parties[party].names[item.dataIndex] + '<br/>('+party.replace('_',' ')+')‏<br/>'+var1_name.replace('_',' ')+': '+d[0]+'<br/>'+var2_name.replace('_',' ')+': '+d[1]+'<br/><img src="'+parties[party].image_url[item.dataIndex]+'"/>');
+                                 parties[party].names[item.dataIndex] + '<br/>('+party.replace(/_/g,' ')+')‏<br/>'+var1_name.replace(/_/g,' ')+': '+d[0]+'<br/>'+var2_name.replace(/_/g,' ')+': '+d[1]+'<br/><img src="'+parties[party].image_url[item.dataIndex]+'"/>');
                 }
             }
             else {
@@ -148,7 +159,7 @@ function load_data_callback(original_data){
 
     $(".party_link").hover(
           function () {
-            var party = $(this).html().replace(' ','_');            
+            var party = $(this).html().replace(/ /g,'_');            
             for (var d=0; d<data.length; d++){
                 if (data[d].label==party){
                     for(var j=0;j<data[d].data.length;j++)
@@ -166,6 +177,6 @@ function load_data_callback(original_data){
 
 $(document).ready(function () {
     $("#placeholder").html('Loading Data');
-    $.getJSON('/api/member/', load_data_callback );    
+    $.getJSON('/api/member/', load_data_callback );
 });
 

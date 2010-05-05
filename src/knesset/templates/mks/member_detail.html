@@ -4,7 +4,70 @@
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
+{% block message %}
+<span id="message_login">
+    {% trans "You have to be logged in to watch a user." %}
+    {% trans "Please" %}
+    <a href="{% url login %}">{% trans "login" %}</a>
+    {% trans "or" %}
+    <a href="{% url register %}">{% trans "register" %}</a>
+</span>
+{% endblock %}
+{% block subnav %}
+    <a id="watch" class="button" href="."></a>
+&bull;
+    <a class="button" href="{% url member-list %}">{% trans "All Members" %}</a>
+{% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
+    <script>
+        $(document).ready(function() {
+            var member_id = {{object.id}};
+            {% if watched_member %}
+                document.is_watched = true;
+                $('#watch').html("{% trans 'Unwatch' %}");
+            {%else%}
+                document.is_watched = false;
+                $('#watch').html("{% trans 'Watch' %}");
+            {% endif %};
+            $('#watch').click( function () {
+                if (document.is_watched) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{% url follow-members %}',
+                        data: {unwatch: member_id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = false;
+                            this.html("{% trans 'Watch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_unknown").html()
+                            $.jGrowl(msg, {life: 5000});
+                            $('#message_login').show();
+                        }
+                    });
+                }
+                else {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{% url follow-members %}',
+                        data: {watch: member_id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = true;
+                            this.html("{% trans 'Unwatch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_login").html()
+                            $.jGrowl(msg, {sticky: true});
+                        }
+                    });
+                }
+                return (false);
+            })
+        })
+    </script>
+
 {% endblock %}
 

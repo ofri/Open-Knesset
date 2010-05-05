@@ -13,7 +13,7 @@ body, th, td { font:12px/1.4em Verdana,sans-serif; }
 
 /* LINKS */
 
-a {text-decoration: none;}
+a {text-decoration: none; font-weight: bold;}
 a img {border: none;}
 a:link, a:visited { color:#ffffff; }
 #content-main a:link, #content-main a:visited { color:#000; text-decoration:none; }
@@ -431,4 +431,13 @@ div #search {
 }
 #tooltip {
     color: #000;
+}
+#placeholder {
+    float:right;
+}
+#y-axis {
+    float:right;
+}
+#x-axis {
+    clear:both;
 }

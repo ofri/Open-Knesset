@@ -206,7 +206,7 @@ class Command(NoArgsCommand):
                         m = Member.objects.get(pk=int(voter_id))
                     except:
                         exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                        logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback), str(voter_id)))
+                        logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), str(voter_id))
                         
                     # add the current member's vote
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
@@ -974,7 +974,7 @@ class Command(NoArgsCommand):
 
         f = open('members.tsv','wt')
         for m in Member.objects.filter(end_date__gte=datetime.date(2009,2,24)):
-            f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.Party().__unicode__().encode('utf-8')))
+            f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.current_party().__unicode__().encode('utf-8')))
         f.close()
 
 
@@ -1057,7 +1057,7 @@ def update_vote_properties(v):
         if party_stands_against[va.member.current_party.id] and va.type=='for':
             va.against_party = True
             dirt = True
-        if va.member.Party().is_coalition:
+        if va.member.current_party.is_coalition:
             if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
                 va.against_coalition = True
                 dirt = True

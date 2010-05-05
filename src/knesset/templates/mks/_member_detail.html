@@ -5,7 +5,7 @@
 <table id="member-info">
     <tr>
         <td>{% trans "party" %}</td>
-        <td><a class="bold-link" id="detail-{{ object.Party.id }}" href="{% url party-detail object.Party.id %}">{{ object.Party.name }}</a></td>
+        <td><a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></td>
     </tr>    
     <tr>
         <td>{% trans "age" %}</td>
