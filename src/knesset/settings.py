@@ -68,6 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',    
+    'pagination.middleware.PaginationMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -79,7 +80,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
-    
 )
 
 INSTALLED_APPS = (
@@ -95,6 +95,8 @@ INSTALLED_APPS = (
     'tagging',
     'haystack',
     'south',
+    'planet',
+    'pagination',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
@@ -130,6 +132,8 @@ HAYSTACK_INCLUDE_SPELLING = True
 MAX_TAG_LENGTH = 128
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
+
+USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.2; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)"
 
 LOG_FILENAME = os.path.join(PROJECT_ROOT, 'open-knesset.log')
 logger = logging.getLogger("open-knesset")

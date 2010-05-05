@@ -53,6 +53,7 @@ urlpatterns = patterns('',
      url(r'^search/', SearchView(form_class=SearchFormWithSpellSuggest), name='haystack_search'),
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
+     (r'^planet/', include('planet.urls')),
 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
