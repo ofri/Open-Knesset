@@ -15,13 +15,10 @@ body, th, td { font:12px/1.4em Verdana,sans-serif; }
 
 a {text-decoration: none; font-weight: bold;}
 a img {border: none;}
-a:link, a:visited { color:#ffffff; }
-#content-main a:link, #content-main a:visited { color:#000; text-decoration:none; }
+a:visited { color:#ffffff; }
 #content-secondary a:link, #content-secondary a:visited { color:#ffc757; text-decoration:none; }
-#content-main a:hover { color:#fff; background-color: #150C0F; }
+#content-main a:hover { text-decoration:underline;}
 #content-secondary a:hover { color:#ffe761; background:none; }
-
-#content-main h2 a, #content-main h3 a { text-decoration:none !important; }
 
 /* HEADER */
 
@@ -441,3 +438,12 @@ div #search {
 #x-axis {
     clear:both;
 }
+
+/* planet */
+div.post { border-top: 1px solid #888;}
+.post a  { color:#3E6C86; }
+.post .external_links {float:left;}
+.post h3 {display: inline; }
+.post .original {padding-right:2em; font-size:80%; }
+.post .content a {font-size:80%;}
+.post .date { font-size:80%; }
