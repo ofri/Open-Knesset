@@ -81,25 +81,41 @@ class MemberListView(ListDetailView):
             ec.update(kwargs['extra_context'])
         ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], 
                               ['.?info=votes', _('By number of votes per month'), False],
+                              ['.?info=presence', _('By average weekly hours of presence'), False],
                               ['.?info=graph', _('Graphical view'), False]]
         
         if info=='votes':
             qs = list(qs)
-            qs.sort(key=lambda x:-x.voting_statistics.average_votes_per_month())
-            #qs = qs.annotate(extra=Count('votes')).order_by('-extra')
-            #ec['past_mks'] = ec['past_mks'].annotate(extra=Count('votes')).order_by('-extra')
+            for x in qs:
+                x.extra = x.voting_statistics.average_votes_per_month()
+            qs.sort(key=lambda x:x.extra, reverse=True)
             ec['past_mks'] = list(ec['past_mks'])
-            ec['past_mks'].sort(key=lambda x:-x.voting_statistics.average_votes_per_month())
+            for x in ec['past_mks']:
+                x.extra = x.voting_statistics.average_votes_per_month()
+            ec['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             ec['friend_pages'][1][2] = True
-            #ec['norm_factor'] = float(qs[0].extra)/50
-            ec['norm_factor'] = float(qs[0].voting_statistics.average_votes_per_month())/50.0            
+            ec['norm_factor'] = float(qs[0].extra)/50.0            
             ec['title'] = "%s %s" % (_('Members'), _('By number of votes per month'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
         if info=='abc':
             ec['friend_pages'][0][2] = True
             ec['title'] = _('Members')
-        if info=='graph':
+        if info=='presence':
+            qs = list(qs)
+            for x in qs:
+                x.extra = x.average_weekly_presence()
+            qs.sort(key=lambda x:x.extra or 0, reverse=True)
+            ec['past_mks'] = list(ec['past_mks'])
+            for x in ec['past_mks']:
+                x.extra = x.average_weekly_presence()
+            ec['past_mks'].sort(key=lambda x:x.extra or 0, reverse=True)
             ec['friend_pages'][2][2] = True
+            ec['norm_factor'] = float(qs[0].extra)/50.0            
+            ec['title'] = "%s %s" % (_('Members'), _('By average weekly hours of presence'))
+            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
+
+        if info=='graph':
+            ec['friend_pages'][3][2] = True
             ec['title'] = "%s %s" % (_('Members'), _('Graphical view'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
 

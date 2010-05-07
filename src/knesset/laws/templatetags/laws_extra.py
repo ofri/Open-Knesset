@@ -27,6 +27,8 @@ def bar(number, is_for, norm_factor=1.2, baseline=0):
         number - number of people voted this way.
         is_for - is this a "for" bar. false means "against" bar.
     """
+    if not number:
+        number = 0
     width = round((number-baseline)/norm_factor,1)
     return {'width': width, 'is_for':is_for}
 

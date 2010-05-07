@@ -163,6 +163,12 @@ class Member(models.Model):
         else:
             return (self.end_date - self.start_date).days
 
+    def average_weekly_presence(self):
+        hours = WeeklyPresence.objects.filter(member=self).values_list('hours',flat=True)
+        if len(hours):
+            return round(sum(hours)/len(hours),1)
+        else:
+            return None
     
     @models.permalink
     def get_absolute_url(self):
@@ -172,3 +178,12 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True    
 
+
+
+class WeeklyPresence(models.Model):
+    member      = models.ForeignKey('Member')
+    date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
+    hours       = models.FloatField(blank=True) # number of hours this member was present during this week
+
+    def __unicode__(self):
+        return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
