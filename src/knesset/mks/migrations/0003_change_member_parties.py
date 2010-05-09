@@ -8,20 +8,19 @@ class Migration(SchemaMigration):
     
     def forwards(self, orm):
         
-        # Adding model 'WeeklyPresence'
-        db.create_table('mks_weeklypresence', (
-            ('member', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mks.Member'])),
-            ('date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('hours', self.gf('django.db.models.fields.FloatField')(blank=True)),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-        ))
-        db.send_create_signal('mks', ['WeeklyPresence'])
+        # Removing M2M table for field parties on 'Member'
+        db.delete_table('mks_member_parties')
     
     
     def backwards(self, orm):
         
-        # Deleting model 'WeeklyPresence'
-        db.delete_table('mks_weeklypresence')
+        # Adding M2M table for field parties on 'Member'
+        db.create_table('mks_member_parties', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('member', models.ForeignKey(orm['mks.member'], null=False)),
+            ('party', models.ForeignKey(orm['mks.party'], null=False))
+        ))
+        db.create_unique('mks_member_parties', ['member_id', 'party_id'])
     
     
     models = {
@@ -48,7 +47,7 @@ class Migration(SchemaMigration):
             'is_current': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'number_of_children': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'parties': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['mks.Party']"}),
+            'parties': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'all_members'", 'symmetrical': 'False', 'through': "orm['mks.Membership']", 'to': "orm['mks.Party']"}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'place_of_birth': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
@@ -79,7 +78,7 @@ class Migration(SchemaMigration):
             'hours': ('django.db.models.fields.FloatField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'member': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mks.Member']"})
-        },
+        }
     }
     
     complete_apps = ['mks']
