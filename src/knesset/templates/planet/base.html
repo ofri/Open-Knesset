@@ -4,6 +4,7 @@
 {% block head_feeds %}
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - RSS 2.0 Feed" href="{% url rss_feed %}" />
 {% endblock %}
+{% block nav-main-page %} class="selected" {% endblock %}
 
 {% block subnav %}
     <ul>
@@ -69,10 +70,11 @@
 <script>
     $(document).ready ( function () {
         var parts=document.URL.split('/');
+        var s = [];
         if (parts.length<=4)
-            var s = $('a[href$="posts/"]');
-        else
-            var s = $('a[href$="'+parts [4]+'/"]');
+            s = $('a[href$="posts/"]');
+        else if (parts.length==6)
+            s = $('a[href$="'+parts [4]+'/"]');
         if (s.length) {
             var t = $(s).html();
             $(s).parent().html(t);

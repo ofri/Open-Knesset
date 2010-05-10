@@ -2,8 +2,7 @@
 {% load i18n pagination_tags planet_tags %}
 
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
-{% block nav-main-page %} class="selected" {% endblock %}
-{% block divcontent %}
+{% block content %}
 
 <div style="padding-top:1em;">
     {% autopaginate posts 10 %}
