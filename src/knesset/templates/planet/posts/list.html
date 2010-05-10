@@ -1,21 +1,18 @@
 {% extends "planet/base.html" %}
 {% load i18n pagination_tags planet_tags %}
 
-{% block page_title %}{% trans 'Posts list' %} - {{ block.super }}{% endblock %}
-{% block extrameta %}
-    <meta name="DC.title" content="{% trans 'Posts list' %} - {{ site.name }}" />
-    <meta name="description" content="{% trans 'Posts list' %} - {{ site.name }}" />
-{% endblock %}
+{% block extratitle %}{% trans 'Home' %}{% endblock %}
+{% block nav-main-page %} class="selected" {% endblock %}
+{% block divcontent %}
 
-{% block content %}
-<h2>{% trans "Here's a collection of Parliment members' posts" %}</h2>
+<div style="padding-top:1em;">
     {% autopaginate posts 10 %}
     {% for post in posts %}
-        <div class="post {% cycle 'even' 'odd' %} clearfix">
+        <div class="item post clearfix">
             {% post_details post %}
         </div>
     {% endfor %}
-
     {% paginate %}
+</div>
 {% endblock %}
 

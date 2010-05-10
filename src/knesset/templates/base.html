@@ -86,7 +86,7 @@
 		<div id="columnwrap">
 			{% block columnwrap %}                
 				<div id="content-main">
-				{% block content %}TODO: add home content{% endblock %}
+				{% block content-main %}{% endblock %}
 				</div>
 				<!-- END #content-main -->
 			{% endblock %}
@@ -116,6 +116,8 @@
 			'finderfox.smarterfox.com/finderfox.js"%3E%3C/script%3E'));
 		</script>
         -->
+    {% block footer %}
+    {% endblock %}
 	</body>
 </html>
 
