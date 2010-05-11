@@ -14,7 +14,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month')
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()

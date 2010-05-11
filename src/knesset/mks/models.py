@@ -170,6 +170,12 @@ class Member(models.Model):
         else:
             return None
     
+    def committee_meetings_count(self):
+        return self.committee_meetings.count()
+
+    def committee_meetings_per_month(self):
+        return round(self.committee_meetings.count() * 30.0 / self.service_time(),1)
+
     @models.permalink
     def get_absolute_url(self):
         return ('member-detail-with-slug', [str(self.id), self.name_with_dashes()])

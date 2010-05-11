@@ -82,6 +82,7 @@ class MemberListView(ListDetailView):
         ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], 
                               ['.?info=votes', _('By number of votes per month'), False],
                               ['.?info=presence', _('By average weekly hours of presence'), False],
+                              ['.?info=committees', _('By average monthly committee meetings'), False],
                               ['.?info=graph', _('Graphical view'), False]]
         
         if info=='votes':
@@ -113,9 +114,22 @@ class MemberListView(ListDetailView):
             ec['norm_factor'] = float(qs[0].extra)/50.0            
             ec['title'] = "%s %s" % (_('Members'), _('By average weekly hours of presence'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
+        if info=='committees':
+            qs = list(qs)
+            for x in qs:
+                x.extra = x.committee_meetings_per_month()
+            qs.sort(key=lambda x:x.extra or 0, reverse=True)
+            ec['past_mks'] = list(ec['past_mks'])
+            for x in ec['past_mks']:
+                x.extra = x.committee_meetings_per_month()
+            ec['past_mks'].sort(key=lambda x:x.extra or 0, reverse=True)
+            ec['friend_pages'][2][2] = True
+            ec['norm_factor'] = float(qs[0].extra)/50.0            
+            ec['title'] = "%s %s" % (_('Members'), _('By average monthly committee meetings'))
+            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
 
         if info=='graph':
-            ec['friend_pages'][3][2] = True
+            ec['friend_pages'][4][2] = True
             ec['title'] = "%s %s" % (_('Members'), _('Graphical view'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
 

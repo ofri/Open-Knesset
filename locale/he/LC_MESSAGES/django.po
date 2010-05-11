@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-07 17:30+0300\n"
-"PO-Revision-Date: 2010-05-07 17:31+0200\n"
+"POT-Creation-Date: 2010-05-12 01:03+0300\n"
+"PO-Revision-Date: 2010-05-12 01:04+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,10 +17,11 @@ msgstr ""
 
 #: context.py:15
 #: mks/models.py:96
-#: mks/views.py:98
-#: mks/views.py:102
-#: mks/views.py:114
-#: mks/views.py:119
+#: mks/views.py:99
+#: mks/views.py:103
+#: mks/views.py:115
+#: mks/views.py:128
+#: mks/views.py:133
 #: templates/base.html:76
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
@@ -35,10 +36,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:25
-#: mks/views.py:158
 #: mks/views.py:172
-#: mks/views.py:187
-#: mks/views.py:202
+#: mks/views.py:186
+#: mks/views.py:201
+#: mks/views.py:216
 #: templates/base.html:77
 msgid "Parties"
 msgstr "מפלגות"
@@ -86,7 +87,7 @@ msgstr "הצבעה"
 #: laws/models.py:166
 #: laws/urls.py:8
 #: templates/include/member_detail.html:47
-#: templates/mks/_member_detail.html:71
+#: templates/mks/_member_detail.html:76
 msgid "Votes"
 msgstr "הצבעות"
 
@@ -219,33 +220,38 @@ msgid "By ABC"
 msgstr "לפי א\"ב"
 
 #: mks/views.py:83
-#: mks/views.py:98
+#: mks/views.py:99
 msgid "By number of votes per month"
 msgstr "לפי מספר הצבעות ממוצע בחודש"
 
 #: mks/views.py:84
-#: mks/views.py:114
+#: mks/views.py:115
 msgid "By average weekly hours of presence"
 msgstr "לפי ממוצע שעות שבועיות"
 
 #: mks/views.py:85
-#: mks/views.py:119
+#: mks/views.py:128
+msgid "By average monthly committee meetings"
+msgstr "לפי מספר ישיבות וועדות בחודש"
+
+#: mks/views.py:86
+#: mks/views.py:133
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: mks/views.py:145
+#: mks/views.py:159
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:146
+#: mks/views.py:160
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:147
+#: mks/views.py:161
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:148
+#: mks/views.py:162
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
@@ -338,8 +344,8 @@ msgstr "או"
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/about.html:3
-#: templates/about.html.py:4
+#: templates/about.html:4
+#: templates/about.html.py:5
 #: templates/base.html:79
 msgid "About"
 msgstr "אודות"
@@ -534,7 +540,7 @@ msgstr "אין"
 #: templates/include/vote_detail.html:13
 #: templates/laws/_vote_detail.html:21
 #: templates/laws/_vote_list.html:11
-#: templates/mks/_member_detail.html:74
+#: templates/mks/_member_detail.html:79
 msgid "For"
 msgstr "בעד"
 
@@ -542,17 +548,17 @@ msgstr "בעד"
 #: templates/include/vote_detail.html:30
 #: templates/laws/_vote_detail.html:42
 #: templates/laws/_vote_list.html:12
-#: templates/mks/_member_detail.html:82
+#: templates/mks/_member_detail.html:87
 msgid "Against"
 msgstr "נגד"
 
 #: templates/include/member_detail.html:66
-#: templates/mks/_member_detail.html:90
+#: templates/mks/_member_detail.html:95
 msgid "Abstain"
 msgstr "נמנע"
 
 #: templates/include/member_detail.html:74
-#: templates/mks/_member_detail.html:98
+#: templates/mks/_member_detail.html:103
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
@@ -796,6 +802,10 @@ msgstr "משמעת אופוזיציה"
 #: templates/mks/_member_detail.html:62
 msgid "Average weekly hours"
 msgstr "שעות שבועיות בממוצע"
+
+#: templates/mks/_member_detail.html:66
+msgid "Average number of committee meetings per month"
+msgstr "ישיבות וועדות בחודש"
 
 #: templates/mks/_member_list.html:4
 #: templates/mks/_member_list_with_bars.html:4

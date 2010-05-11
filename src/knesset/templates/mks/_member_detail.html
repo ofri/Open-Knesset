@@ -61,7 +61,12 @@
     <tr>
         <td>{% trans "Average weekly hours" %}</td>
         <td>{% if object.average_weekly_presence %}{{ object.average_weekly_presence }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
-    </tr>   
+    </tr>
+    <tr>
+        <td>{% trans "Average number of committee meetings per month" %}</td>
+        <td>{{ object.committee_meetings_per_month }}</td>
+    </tr>
+       
  
 
 </table>
