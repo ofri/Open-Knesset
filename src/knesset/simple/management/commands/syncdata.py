@@ -880,7 +880,7 @@ class Command(NoArgsCommand):
                 for m in Member.objects.all():
                     for s0 in s:
                         if s0.find(m.name_with_dashes())>=0:
-                            print "found %s in %s" % (m.name, str(cm.id))
+                            #print "found %s in %s" % (m.name, str(cm.id))
                             cm.mks_attended.add(m)                        
             except Exception, e:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
@@ -1060,6 +1060,7 @@ class Command(NoArgsCommand):
             self.update_votes()
             self.update_laws_data()
             self.update_presence()
+            self.get_protocols()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
