@@ -1,10 +1,11 @@
 {% extends "site_base.html" %}
-{% load i18n %}
+{% load i18n i18ninclude %}
+
 {% block extratitle %}{% trans 'About' %}{% endblock %}
 {% block h1content %}{% trans 'About' %}{% endblock %}
 {% block nav-about %} class="selected" {% endblock %}
 {% block divcontent %}
-	{% include "_about.html" %}
+	{% i18ninclude "about.html" LANGUAGE_CODE %}
 {% endblock %}
 
 
