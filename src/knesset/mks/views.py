@@ -123,7 +123,7 @@ class MemberListView(ListDetailView):
             for x in ec['past_mks']:
                 x.extra = x.committee_meetings_per_month()
             ec['past_mks'].sort(key=lambda x:x.extra or 0, reverse=True)
-            ec['friend_pages'][2][2] = True
+            ec['friend_pages'][3][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0            
             ec['title'] = "%s %s" % (_('Members'), _('By average monthly committee meetings'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
