@@ -12,7 +12,7 @@ class Correlation(models.Model):
     not_same_party = models.NullBooleanField()
     def __unicode__(self):
         return "%s - %s - %.0f" % (self.m1.name,self.m2.name,self.normalized_score)
-    
+
 class Party(models.Model):
     name        = models.CharField(max_length=64)
     start_date  = models.DateField(blank=True, null=True)
@@ -38,17 +38,17 @@ class Party(models.Model):
 
     def past_members(self):
         return self.members.filter(is_current=False)
-    
+
     def name_with_dashes(self):
         return self.name.replace("'",'"').replace(' ','-')
-    
+
     def Url(self):
         return "/admin/simple/party/%d" % self.id
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' %(self.Url(),self.name)
     NameWithLink.allow_tags = True
-    
+
     def MembersString(self):
         return ", ".join([m.NameWithLink() for m in self.members.all().order_by('name')])
     MembersString.allow_tags = True
@@ -60,7 +60,7 @@ class Party(models.Model):
     def get_absolute_url(self):
         return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
-    
+
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
     party       = models.ForeignKey('Party')
@@ -85,10 +85,12 @@ class Member(models.Model):
     family_status = models.CharField(blank=True, null=True,max_length=10)
     number_of_children = models.IntegerField(blank=True, null=True)
     date_of_birth  = models.DateField(blank=True, null=True)
-    place_of_birth = models.CharField(blank=True, null=True, max_length=100)    
+    place_of_birth = models.CharField(blank=True, null=True, max_length=100)
     date_of_death  = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
     is_current = models.BooleanField(default=True)
+    place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
+    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
 
     class Meta:
         ordering = ['name']
@@ -98,23 +100,23 @@ class Member(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
-    
+
     def title(self):
         return self.name
 
     def name_with_dashes(self):
         return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-')
 
-    def Party(self):    
+    def Party(self):
         return self.parties.all().order_by('-membership__start_date')[0]
 
     def PartiesString(self):
         return ", ".join([p.NameWithLink() for p in self.parties.all().order_by('membership__start_date')])
     PartiesString.allow_tags = True
-    
+
     def TotalVotesCount(self):
         return self.votes.exclude(voteaction__type='no-vote').count()
-    
+
     def for_votes(self):
         return self.votes.filter(voteaction__type='for')
 
@@ -129,24 +131,24 @@ class Member(models.Model):
 
     def abstain_votes(self):
         return self.votes.filter(voteaction__type='abstain')
-    
+
     def AbstainVotesCount(self):
         return self.abstain_votes().count()
-    
+
     def no_votes(self):
         return self.votes.filter(voteaction__type='no-vote')
-    
+
     def NoVotesCount(self):
         return self.no_votes().count()
-    
+
     def LowestCorrelations(self):
         return Correlation.objects.filter(m1=self.id).order_by('normalized_score')[0:4]
-    
+
     def HighestCorrelations(self):
         return Correlation.objects.filter(m1=self.id).order_by('-normalized_score')[0:4]
-    
+
     def CorrelationListToString(self,cl):
-        
+
         strings = []
         for c in cl:
             if c.m1 == self:
@@ -169,7 +171,7 @@ class Member(models.Model):
             return round(sum(hours)/len(hours),1)
         else:
             return None
-    
+
     def committee_meetings_count(self):
         return self.committee_meetings.count()
 
@@ -182,7 +184,7 @@ class Member(models.Model):
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
-    NameWithLink.allow_tags = True    
+    NameWithLink.allow_tags = True
 
 
 
