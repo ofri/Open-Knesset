@@ -2,8 +2,8 @@
 {% load i18n i18ninclude %}
 
 {% block extratitle %}{% trans 'About' %}{% endblock %}
-{% block h1content %}{% trans 'About' %}{% endblock %}
 {% block nav-about %} class="selected" {% endblock %}
+{% block header %}<h1>{% trans 'About' %}</h1>{% endblock %}
 {% block divcontent %}
 	{% i18ninclude "about.html" LANGUAGE_CODE %}
 {% endblock %}

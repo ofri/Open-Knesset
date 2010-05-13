@@ -2,8 +2,8 @@
 {% load i18n %}
 {% load mks %}
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
-{% block h1content %}{% trans 'User Profile' %}{% endblock %}
-{% block divcontent %}
+{% block header %}<h1>{% trans 'User Profile' %}</h1>{% endblock %}
+{% block content %}
 <form action="." method="post">{% csrf_token %}
     <table>
     {{ edit_form }}

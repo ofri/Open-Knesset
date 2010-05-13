@@ -59,7 +59,7 @@
             {% if user.is_authenticated %}
                 {% trans 'Logged in as ' %} {{ user }} &bull;
                     <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
-                    <a href="{% url logout %}">{% trans 'Logout' %}</a>
+                    <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
             {% else %}
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
@@ -86,7 +86,7 @@
 		<div id="columnwrap">
 			{% block columnwrap %}                
 				<div id="content-main">
-				{% block content %}TODO: add home content{% endblock %}
+				{% block content-main %}{% endblock %}
 				</div>
 				<!-- END #content-main -->
 			{% endblock %}
@@ -116,6 +116,8 @@
 			'finderfox.smarterfox.com/finderfox.js"%3E%3C/script%3E'));
 		</script>
         -->
+    {% block footer %}
+    {% endblock %}
 	</body>
 </html>
 

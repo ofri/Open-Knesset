@@ -1,16 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block content %}
-    <div id="messages" style="display:none;">
-        <span id="message_unknown">{% trans "Sorry, a strange error occured. Please try reloading the page." %}</span>
-        {% block message %} {% endblock %}
-    </div>
-    <div class="subnav">{% block subnav %} {% endblock %}</div>
-	<h1>
-		{% block h1content %} {% endblock %}
-	</h1>
+{% block content-main %}
+    <div style="display:none;"> {% block messages %}{% endblock %}</div>
+    <div id="subnav">{% block subnav %} {% endblock %}</div>
+    {% block header %} {% endblock %}
 	<div>
-		{% block divcontent %} ahm.. my child should replace this block{% endblock %}
+		{% block divcontent %} {% block content %}ahm.. my child should replace this block{% endblock %}{% endblock %}
 	</div>
 {% endblock %}
 

@@ -1,0 +1,50 @@
+{% extends "planet/base.html" %}
+{% load i18n pagination_tags tagging_tags planet_tags %}
+
+{% block page_title %}{{ tag }} - {% trans 'Posts in' %} {{ block.super }}{% endblock %}
+{% block extrameta %}
+    <meta name="DC.title" content="{{ tag }} {% trans 'tag in' %} {{ site.name }}" />
+    <meta name="description" content="{{ tag }} - {% trans 'Posts in' %} {{ site.name }}" />
+{% endblock %}
+
+{% block head_feeds %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'tag' %} {{ tag }} {% trans 'in' %} {{ site.name }} - RSS 2.0 Feed" href="{% url tag_rss_feed tag %}" />
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Posts in' %} {{ site.name }} - RSS 2.0 Feed" href="{% url rss_feed %}" />
+{% endblock %}
+
+{% block rss_feed %}
+    <a href="{% url tag_rss_feed tag %}" title="{% trans 'Suscribe to RSS feed for tag' %} {{ tag }}">
+        <img src="{{ MEDIA_URL }}images/rss20.png" alt="RSS 2.0 Feed"/>
+    </a>
+{% endblock %}
+
+{% block content %}
+    <h2>{% trans "Tag" %}: {{ tag }}</h2>
+    {% autopaginate posts 20 %}
+    {% for post in posts %}
+        <div class="post {% cycle 'even' 'odd' %} clearfix">
+            {% post_details post %}
+        </div>
+    {% endfor %}
+
+    {% paginate %}
+{% endblock %}
+
+{% block menu_extra %}
+<!--
+    <li>
+        <a href="{% url tag_authors_list tag.name %}" title="{% trans 'See the list of authors talking about this tag' %}">
+            {% trans 'People talking about this' %}
+        </a>
+    </li>
+    -->
+{% endblock %}
+
+{% block right_column %}
+    <div>
+        {% related_tags_for tag %}
+    </div>
+    <div>
+        {% feeds_about tag %}
+    </div>
+{% endblock %}

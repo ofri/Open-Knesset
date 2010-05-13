@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from datetime import date
+from planet.models import Blog
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -89,6 +90,7 @@ class Member(models.Model):
     date_of_death  = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
     is_current = models.BooleanField(default=True)
+    blog = models.OneToOneField(Blog, null=True)
 
     class Meta:
         ordering = ['name']
