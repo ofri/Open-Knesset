@@ -2,6 +2,7 @@
 <h2><a href=".">{{ object.name }}</a></h2>
 <div class="list-wrap">
 <h3>{% trans 'Statistics' %}</h3>
+<div id="residence_map"></div>
 <table id="party-info">
     <tr>
         <td>{% trans "Number of votes" %}</td>
@@ -14,11 +15,11 @@
     <tr>
         <td>{% trans "Factional discipline" %}</td>
         <td>{{ object.voting_statistics.discipline }}</td>
-    </tr>    
+    </tr>
     <tr>
         <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
         <td>{{ object.voting_statistics.coalition_discipline }}</td>
-    </tr>    
+    </tr>
 </table>
 <h3>{% trans 'Current MKs' %}</h3>
 {% for o in object.current_members.all %}

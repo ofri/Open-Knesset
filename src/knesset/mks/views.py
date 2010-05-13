@@ -1,4 +1,5 @@
 from datetime import date
+from django.conf import settings
 from django.template import Context
 from django.views.generic.list_detail import object_list, object_detail
 from django.db.models import Count, Sum
@@ -20,23 +21,23 @@ member_context = dict (quesryset =
 def member (request, pk=None):
     qs = Member.objects.all()
     if pk:
-        return object_detail(request, queryset=qs, object_id=pk, 
+        return object_detail(request, queryset=qs, object_id=pk,
                              template_name='mks/member.html')
     else:
-        return object_list(request, queryset=member_context['queryset'], 
+        return object_list(request, queryset=member_context['queryset'],
                            template_name='mks/members.html')
 
 def party (request, pk=None):
     qs = Party.objects.all()
     if pk:
-        return object_detail(request, queryset=qs, object_id=pk, 
+        return object_detail(request, queryset=qs, object_id=pk,
                              template_name='mks/party.html')
     else:
         # return a list
         qs = limit_by_request(qs, request)
         return object_list(request, queryset=qs,template_name='mks/parties.html')
 
-class MemberSelectView(ListDetailView):    
+class MemberSelectView(ListDetailView):
     def render_list(self,request, **kwargs):
         ec = dict(self.extra_context) or {}
         if 'extra_context' in kwargs:
@@ -50,7 +51,7 @@ class MemberSelectView(ListDetailView):
         if next:
             path = request.get_full_path()
             ec['next'] = path[path.find('=')+1:]
-                            
+
         return ListDetailView.render_list(self, request, queryset = qs, extra_context = ec, **kwargs)
 
     def handle_post(self, request, **kwargs):
@@ -63,28 +64,28 @@ class MemberSelectView(ListDetailView):
             if o_id in selected_mks:
                 del selected_mks[o_id]
             else:
-                selected_mks[o_id] = True        
+                selected_mks[o_id] = True
             request.session[key] = selected_mks
         except Exception, e:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))            
+            logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
         # post should return json
         return self.render_list(request, **kwargs)
 
 
-class MemberListView(ListDetailView):    
+class MemberListView(ListDetailView):
     def render_list(self,request, **kwargs):
         qs = self.queryset.all()
         info = request.GET.get('info','votes')
         ec = dict(self.extra_context) or {}
         if 'extra_context' in kwargs:
             ec.update(kwargs['extra_context'])
-        ec['friend_pages'] = [['.?info=abc',_('By ABC'), False], 
+        ec['friend_pages'] = [['.?info=abc',_('By ABC'), False],
                               ['.?info=votes', _('By number of votes per month'), False],
                               ['.?info=presence', _('By average weekly hours of presence'), False],
                               ['.?info=committees', _('By average monthly committee meetings'), False],
                               ['.?info=graph', _('Graphical view'), False]]
-        
+
         if info=='votes':
             qs = list(qs)
             for x in qs:
@@ -95,7 +96,7 @@ class MemberListView(ListDetailView):
                 x.extra = x.voting_statistics.average_votes_per_month()
             ec['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             ec['friend_pages'][1][2] = True
-            ec['norm_factor'] = float(qs[0].extra)/50.0            
+            ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of votes per month'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
         if info=='abc':
@@ -111,7 +112,7 @@ class MemberListView(ListDetailView):
                 x.extra = x.average_weekly_presence()
             ec['past_mks'].sort(key=lambda x:x.extra or 0, reverse=True)
             ec['friend_pages'][2][2] = True
-            ec['norm_factor'] = float(qs[0].extra)/50.0            
+            ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By average weekly hours of presence'))
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
         if info=='committees':
@@ -138,7 +139,8 @@ class MemberListView(ListDetailView):
         if request.user.is_authenticated():
             p = request.user.get_profile()
             qs = p.followed_members.filter(pk=object_id)
-            extra_context.update(dict(watched_member = bool(qs)))
+            extra_context.update(dict(watched_member = bool(qs),
+                                      google_maps_api_key = settings.GOOGLE_MAPS_API_KEY))
 
         return super(MemberListView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)
@@ -156,16 +158,16 @@ class PartyListView(ListDetailView):
             ec.update(kwargs['extra_context'])
         ec['coalition'] = qs.filter(is_coalition=True)
         ec['opposition'] = qs.filter(is_coalition=False)
-        ec['friend_pages'] = [['.',_('By Number of seats'), False], 
+        ec['friend_pages'] = [['.',_('By Number of seats'), False],
                               ['.?info=votes-per-seat', _('By votes per seat'), False],
                               ['.?info=discipline', _('By factional discipline'), False],
                               ['.?info=coalition-discipline', _('By coalition/opposition discipline'), False],
                               ]
-        
+
         if info:
             if info=='seats':
                 ec['coalition']  =  ec['coalition'].annotate(extra=Sum('number_of_seats')).order_by('-extra')
-                ec['opposition'] = ec['opposition'].annotate(extra=Sum('number_of_seats')).order_by('-extra')                
+                ec['opposition'] = ec['opposition'].annotate(extra=Sum('number_of_seats')).order_by('-extra')
                 ec['friend_pages'][0][2] = True
                 ec['norm_factor'] = 1
                 ec['baseline'] = 0
@@ -217,4 +219,3 @@ class PartyListView(ListDetailView):
 
 
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
-

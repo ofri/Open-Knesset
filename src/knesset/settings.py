@@ -146,5 +146,8 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s
 h.setFormatter(formatter)
 logger.addHandler(h)
 
-from local_settings import *
+GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
+                        'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
+GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
 
+from local_settings import *

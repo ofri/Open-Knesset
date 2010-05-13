@@ -29,7 +29,10 @@ def bar(number, is_for, norm_factor=1.2, baseline=0):
     """
     if not number:
         number = 0
-    width = round((number-baseline)/norm_factor,1)
+    if norm_factor:
+        width = round((number-baseline)/norm_factor,1)
+    else:
+        width = 0
     return {'width': width, 'is_for':is_for}
 
 @register.filter
@@ -77,7 +80,7 @@ def member_stand(v, m):
             return {'stand':stand, 'class':cls, 'name':m.name}
         except Exception, e:
             print e
-            return 
+            return
 
 @register.inclusion_tag('laws/_paginator.html')
 def pagination(page_obj, paginator, request):
@@ -97,10 +100,9 @@ def pagination(page_obj, paginator, request):
             first_pages = [[x,"?%s&page=%d"%(base_link,x),False] for x in range(1, 3)]
             last_pages = [[x,"?%s&page=%d"%(base_link,x),False] for x in range(paginator.num_pages-1, paginator.num_pages+1)]
             show_pages = [[x,"?%s&page=%d"%(base_link,x),False] for x in range(page_obj.number-2, page_obj.number+3)]
-            
+
         for i in show_pages:
             if i[0]==page_obj.number:
                 i[2] = True
 
     return locals()
-  
