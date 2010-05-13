@@ -176,6 +176,9 @@ class Member(models.Model):
         return self.committee_meetings.count()
 
     def committee_meetings_per_month(self):
+        service_time = self.service_time()
+        if not service_time:
+            return 0
         return round(self.committee_meetings.count() * 30.0 / self.service_time(),1)
 
     @models.permalink

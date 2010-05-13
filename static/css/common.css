@@ -1,4 +1,4 @@
-/* 
+/*
 djangoproject.com by Wilson Miner (wilson@lawrence.com)
 Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 */
@@ -55,11 +55,11 @@ a:link, a:visited { color:#ffffff; }
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
 #content-main, #footer { width:100%; }
-#content-main { 
-    min-height:372px; 
-    background:#dfe4e7; 
-    color:#311F1D; 
-    padding:1em 0; 
+#content-main {
+    min-height:414px;
+    background:#dfe4e7;
+    color:#311F1D;
+    padding:1em 0;
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
     border-radius:1em;
@@ -202,8 +202,8 @@ div.comment p { margin-left:1em; }
 /* FORMS */
 form.wide label { display: block; font-weight: bold; margin-top: 1.5em; margin-bottom: 0;}
 form.wide label span { font-weight: normal; color: #555; }
-form.wide input, 
-form.wide textarea, 
+form.wide input,
+form.wide textarea,
 form.wide select { width: 99%; padding: 1px; }
 form.wide p { margin: 0; }
 form.wide p.submit { text-align: right; margin-top: 1em; margin-right: 0;}
@@ -222,10 +222,10 @@ h3 .small { font-size:80%; }
 /*  CLEARFIX KLUDGE */
 
 #columnwrap:after {
-    content: "."; 
-    display: block; 
-    height: 0; 
-    clear: both; 
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
     visibility: hidden;
 }
 #columnwrap { display: inline-block; }
@@ -236,10 +236,10 @@ h3 .small { font-size:80%; }
 /* End hide from IE-mac */
 
 #subwrap:after {
-    content: "."; 
-    display: block; 
-    height: 0; 
-    clear: both; 
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
     visibility: hidden;
 }
 #subwrap { display: inline-block; }
@@ -255,24 +255,24 @@ a.disabled { color: #aaaaaa; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
 #content-main #vote-tags { display: inline-block; line-height:2.5em }
 
-#content-main .vote-up { 
-    background: url('/static/img/Thumbs-up.png') no-repeat center 0; 
+#content-main .vote-up {
+    background: url('/static/img/Thumbs-up.png') no-repeat center 0;
     padding-left: 1.1em;
     padding-right: 1.1em;
     padding-top:0.5em;
     padding-bottom:0.5em;
 }
-#content-main .vote-down { 
-    background: url('/static/img/Thumbs-down.png') no-repeat center 0; 
+#content-main .vote-down {
+    background: url('/static/img/Thumbs-down.png') no-repeat center 0;
     padding-left: 1.1em;
     padding-right: 1.1em;
     padding-top:0.5em;
     padding-bottom:0.5em;
 }
-#content-main .selected { 
+#content-main .selected {
     background-color: #333333;
 }
-#content-main .stand {    
+#content-main .stand {
     line-height:1.1;
     margin-left:0.2em;
     padding-left:0.1em;
@@ -298,11 +298,11 @@ a.disabled { color: #aaaaaa; }
 #content-main div.bar {
     background-color: #00AA00;
     margin:0em;
-    height:1em;  
+    height:1em;
     margin-bottom:-1.25em;
     position:relative;
     top:-1.25em;
-    right:4.5em;  
+    right:4.5em;
 }
 #content-main div.list-wrap > div.bar {
     right: 18em;
@@ -353,7 +353,7 @@ a.disabled { color: #aaaaaa; }
 #content-main .item .info {
     padding-right:2em;
     padding-bottom:0.1em;
-    margin:0em;    
+    margin:0em;
     line-height:1.5;
 }
 #content-main .item.dontwrap {
@@ -387,14 +387,14 @@ a.disabled { color: #aaaaaa; }
 
 }
 
-#content-main div.subnav > a.current { 
+#content-main div.subnav > a.current {
     background-color:#7777AA;
     color:#FFFFFF;
 }
 
 #content-main #pagination > a {
     background-color:#EFF4F7;
-    border:1px solid #FFFFFF;    
+    border:1px solid #FFFFFF;
     padding:0.3em;
 }
 #content-main #pagination > a:hover {
@@ -440,4 +440,11 @@ div #search {
 }
 #x-axis {
     clear:both;
+}
+
+/* mk maps css */
+#residence_map {
+    height: 300px;
+    width: 300px;
+    float: left;
 }

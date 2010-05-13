@@ -21,7 +21,7 @@ VOTE_ACTION_TYPE_CHOICES = (
 
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
-    
+
     def votes_against_party_count(self):
         return VoteAction.objects.filter(member__current_party=self.party, against_party=True).count()
 
@@ -42,8 +42,8 @@ class PartyVotingStatistics(models.Model):
             votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
         else:
             votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
-        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)                
-    
+        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
+
     def __unicode__(self):
         return "%s" % self.party.name
 
@@ -53,7 +53,7 @@ class MemberVotingStatistics(models.Model):
 
     def votes_against_party_count(self, from_date = None):
         if from_date:
-            return VoteAction.objects.filter(member=self.member, against_party=True, vote__time__gt=from_date).count()    
+            return VoteAction.objects.filter(member=self.member, against_party=True, vote__time__gt=from_date).count()
         else:
             return VoteAction.objects.filter(member=self.member, against_party=True).count()
 
@@ -62,12 +62,15 @@ class MemberVotingStatistics(models.Model):
             return VoteAction.objects.filter(member=self.member, vote__time__gt=from_date).exclude(type='no-vote').count()
         else:
             return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
-            
+
     def average_votes_per_month(self):
         if hasattr(self, '_average_votes_per_month'):
             return self._average_votes_per_month
         st = self.member.service_time()
-        self._average_votes_per_month =  30.0*self.votes_count()/st
+        if st:
+                self._average_votes_per_month =  30.0*self.votes_count()/st
+        else:
+                self._average_votes_per_month = 0
         return self._average_votes_per_month
 
     def discipline(self, from_date = None):
@@ -88,7 +91,7 @@ class MemberVotingStatistics(models.Model):
         if from_date:
             v = v.filter(vote__time__gt=from_date)
         votes_against_coalition = v.count()
-        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)                
+        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
 
 
     def __unicode__(self):
@@ -106,9 +109,9 @@ class VoteAction(models.Model):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
 
 class VoteManager(models.Manager):
-    # TODO: add i18n to the types so we'd have 
+    # TODO: add i18n to the types so we'd have
     #   {'law-approve': _('approve law'), ...
-    VOTE_TYPES = {'law-approve': u'אישור החוק', 'second-call': u'קריאה שנייה', 'demurrer': u'הסתייגות', 
+    VOTE_TYPES = {'law-approve': u'אישור החוק', 'second-call': u'קריאה שנייה', 'demurrer': u'הסתייגות',
                   'no-confidence': u'הצעת אי-אמון', 'pass-to-committee': u'להעביר את ', 'continuation': u'להחיל דין רציפות'}
 
     def filter_and_order(self, *args, **kwargs):
@@ -138,8 +141,8 @@ class VoteManager(models.Manager):
 
 class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
-    vote_number    = models.IntegerField(null=True,blank=True)    
-    src_id         = models.IntegerField(null=True,blank=True)    
+    vote_number    = models.IntegerField(null=True,blank=True)
+    src_id         = models.IntegerField(null=True,blank=True)
     src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
     title          = models.CharField(max_length=1000)
     time           = models.DateTimeField()
@@ -149,7 +152,7 @@ class Vote(models.Model):
     importance     = models.FloatField()
     controversy    = models.IntegerField(null=True, blank=True)
     against_party  = models.IntegerField(null=True, blank=True)
-    summary        = models.TextField(null=True,blank=True)    
+    summary        = models.TextField(null=True,blank=True)
     full_text      = models.TextField(null=True,blank=True)
     full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
 
@@ -210,7 +213,7 @@ class Vote(models.Model):
             return ''
         else:
             return '<a href="%s">link</a>' % self.full_text_url
-    full_text_link.allow_tags = True  
+    full_text_link.allow_tags = True
 
     @models.permalink
     def get_absolute_url(self):
@@ -222,7 +225,7 @@ class Vote(models.Model):
             ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
             t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
             t.score_positive = t.score > 0
-        tags = [t for t in tags]        
+        tags = [t for t in tags]
         tags.sort(key=lambda x:-x.score)
         return tags
 

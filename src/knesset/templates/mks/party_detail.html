@@ -1,7 +1,85 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% block extrahead %}
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
+            type="text/javascript"></script>
+    <script src="{{MEDIA_URL}}js/mapping.js" type="text/javascript"></script>
+{% endblock %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block divcontent %}
-	{% include "mks/_party_detail.html" %}
+    {% include "mks/_party_detail.html" %}
+    <script>
+    var g_member_residences = [];
+    function add_addresses() {
+        var address = null;
+        {% for mk in object.current_members.all %}
+            address = "{{mk.place_of_residence}}";
+            if (address) {
+                g_member_residences.push({address: address,
+                                         name: "{{mk.name}}"});
+            }
+        {% endfor %}
+    }
+    function draw_mk_residence_map() {
+            add_addresses();
+            if (g_member_residences.length == 0) {
+                $('#residence_map').hide();
+                return;
+            }
+            var map_dom = $('#residence_map')[0];
+            var map = new GMap2(map_dom);
+            var all_lat_lngs = [];
+
+            map.setUIToDefault();
+            //set the center & zoom for israel
+            map.setCenter(new GLatLng(32.0554, 34.7595), 7);
+            setTimeout(function() {
+                $('#residence_map > div').css({"white-space":"normal"});
+            }, 1000);
+            /*
+            //this code centers the map around the center of gravity
+            //for all members of the party, and sets the zoom level
+            //to contain them all.
+            var center_map = function() {
+                if (all_lat_lngs.length == g_member_residences.length) {
+                    var bounds = new GLatLngBounds();
+                    for (var idx in all_lat_lngs) {
+                        var lat_lng = all_lat_lngs[idx];
+                        bounds.extend(lat_lng);
+                    }
+                    var zoom = map.getBoundsZoomLevel(bounds);
+                    var center = bounds.getCenter();
+                    map.setCenter(bounds.getCenter(), zoom-1);
+                }
+            };*/
+
+            var geocoder = new GClientGeocoder();
+            for (var idx in g_member_residences) {
+                var tmp = g_member_residences[idx];
+                if (!tmp.address) {
+                    continue;
+                }
+                var add_mk = function(member_data) {
+                    var address = member_data.address;
+                    var name = member_data.name;
+                    geocoder.getLatLng(address + " israel", function(lat_lng) {
+                        if (!lat_lng) {
+                            $('#residence_map').add_class('hidden');
+                            return;
+                        }
+                        all_lat_lngs.push(lat_lng);
+                        var marker = new GMarker(lat_lng, {title: name});
+                        map.addOverlay(marker);
+                        //center_map();
+                    });
+                }
+                add_mk(tmp);
+            }
+        }
+
+        $(document).ready(function() {
+            draw_mk_residence_map();
+        });
+    </script>
 {% endblock %}

@@ -67,7 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',    
+    'django.middleware.csrf.CsrfViewMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -79,7 +79,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
-    
+
 )
 
 INSTALLED_APPS = (
@@ -140,5 +140,7 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s
 h.setFormatter(formatter)
 logger.addHandler(h)
 
-from local_settings import *
+GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
+                        'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 
+from local_settings import *
