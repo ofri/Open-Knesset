@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content-main %}
+    <div style="display:none;"> {% block messages %}{% endblock %}</div>
     <div id="subnav">{% block subnav %} {% endblock %}</div>
-	<h1>
-		{% block h1content %} {% endblock %}
-	</h1>
+    {% block header %} {% endblock %}
 	<div>
 		{% block divcontent %} {% block content %}ahm.. my child should replace this block{% endblock %}{% endblock %}
 	</div>

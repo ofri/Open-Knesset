@@ -44,7 +44,7 @@ img {border: none;}
 
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
-#subnav { position:absolute; top: 0.5em; }
+#subnav { padding-top: 0.5em; }
 #subnav h4 { display: inline; }
 #subnav ul { display: inline; }
 #subnav>a.current { background-color:#7777AA; color:#FFFFFF; }
@@ -92,7 +92,6 @@ img {border: none;}
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
-h1 { padding-top:1em; line-height:1.1em; }
 h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#251c1f; }
 h4 { font-size:100%; font-weight:bold; margin-bottom:-3px; margin-top:1.2em; text-transform:uppercase; letter-spacing:1px; }
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
@@ -336,7 +335,7 @@ a.disabled { color: #aaaaaa; }
 
 }
 
-#item-list { padding-top:3em; position: relative; }
+#item-list { position: relative; }
 #item-list .item { border-top: 1px solid #888; }
 #content-main .item {
     list-style-type:none;

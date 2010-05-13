@@ -133,6 +133,8 @@ MAX_TAG_LENGTH = 128
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
+LOGIN_REDIRECT_URL = '/'
+
 USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.2; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)"
 
 LOG_FILENAME = os.path.join(PROJECT_ROOT, 'open-knesset.log')

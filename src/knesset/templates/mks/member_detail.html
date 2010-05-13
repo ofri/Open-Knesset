@@ -4,13 +4,13 @@
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
-{% block message %}
+{% block messages %}
 <span id="message_login">
     {% trans "You have to be logged in to watch a user." %}
     {% trans "Please" %}
-    <a href="{% url login %}">{% trans "login" %}</a>
+    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
     {% trans "or" %}
-    <a href="{% url register %}">{% trans "register" %}</a>
+    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
 </span>
 {% endblock %}
 {% block subnav %}
