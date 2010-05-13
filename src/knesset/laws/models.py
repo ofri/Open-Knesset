@@ -2,6 +2,7 @@
 from datetime import date, timedelta
 from django.db import models
 from django.db.models import Count
+from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
@@ -46,6 +47,12 @@ class PartyVotingStatistics(models.Model):
     
     def __unicode__(self):
         return "%s" % self.party.name
+
+def handle_party_save(sender, created, instance, **kwargs):
+    if created:
+        PartyVotingStatistics.objects.create(party=instance)
+post_save.connect(handle_party_save, sender=Party)
+
 
 
 class MemberVotingStatistics(models.Model):
@@ -93,6 +100,11 @@ class MemberVotingStatistics(models.Model):
 
     def __unicode__(self):
         return "%s" % self.member.name
+
+def handle_mk_save(sender, created, instance, **kwargs):
+    if created:
+        MemberVotingStatistics.objects.create(member=instance)
+post_save.connect(handle_mk_save, sender=Member)
 
 
 class VoteAction(models.Model):
