@@ -25,6 +25,7 @@ from django.db import connection
 from django.db.models import Max,Count
 
 import mk_info_html_parser as mk_parser
+import parse_presence
 
 ENCODING = 'utf8'
 
@@ -879,7 +880,7 @@ class Command(NoArgsCommand):
                 for m in Member.objects.all():
                     for s0 in s:
                         if s0.find(m.name_with_dashes())>=0:
-                            print "found %s in %s" % (m.name, str(cm.id))
+                            #print "found %s in %s" % (m.name, str(cm.id))
                             cm.mks_attended.add(m)                        
             except Exception, e:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
@@ -977,6 +978,47 @@ class Command(NoArgsCommand):
             f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.current_party().__unicode__().encode('utf-8')))
         f.close()
 
+    def update_presence(self):
+        logger.debug("update presence")
+        try:
+            (presence, invalid_weeks) = parse_presence.parse_presence(filename=os.path.join(DATA_ROOT, 'presence.txt.gz'))
+        except IOError:
+            logger.error('Can\'t find presence file')
+            return
+        todays_timestamp = datetime.date.today().isocalendar()[:2]        
+        c = [b[0][0] for b in presence.values()]
+        c.sort()
+        min_timestamp = c[0]
+        c = None
+
+        for m in Member.objects.all():
+            if m.id not in presence:
+                logger.error('member %s (id=%d) not found in presence data', m.name, m.id)
+                continue
+            member_presence = dict(zip([b[0] for b in presence[m.id]], [b[1] for b in presence[m.id]]))            
+
+            if m.end_date:
+                end_timestamp = m.end_date.isocalendar()[:2]
+            else:
+                end_timestamp = todays_timestamp
+
+            current_timestamp = (m.start_date + timedelta(7)).isocalendar()[:2] # start searching on the monday after member joined the knesset
+            if current_timestamp < min_timestamp: # we don't have info in the current file that goes back so far
+                current_timestamp = min_timestamp
+
+            while current_timestamp != end_timestamp: # loop over weeks
+                if current_timestamp not in invalid_weeks: # if we have valid data for this week
+                    if current_timestamp in member_presence: # if this member was present this week
+                        hours = member_presence[current_timestamp] # check how many hours
+                    else:
+                        hours = 0.0                                # not present at all this week = 0 hours
+                    date = iso_to_gregorian(*current_timestamp, iso_day=0) # get real date of the week's monday
+                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date, hours=hours) 
+                    if created:
+                        wp.save()
+                else:
+                    date = iso_to_gregorian(*current_timestamp, iso_day=0) 
+                current_timestamp = (date+timedelta(8)).isocalendar()[:2]
 
     def handle_noargs(self, **options):
     
@@ -1017,6 +1059,8 @@ class Command(NoArgsCommand):
         if update:
             self.update_votes()
             self.update_laws_data()
+            self.update_presence()
+            self.get_protocols()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
@@ -1072,3 +1116,15 @@ def update_vote_properties(v):
     v.against_party = against_party_count
     v.votes_count = VoteAction.objects.filter(vote=v).count()
     v.save()
+
+def iso_year_start(iso_year):
+    "The gregorian calendar date of the first day of the given ISO year"
+    fourth_jan = datetime.date(iso_year, 1, 4)
+    delta = datetime.timedelta(fourth_jan.isoweekday()-1)
+    return fourth_jan - delta 
+
+def iso_to_gregorian(iso_year, iso_week, iso_day):
+    "Gregorian calendar date for the given ISO year, week and day"
+    year_start = iso_year_start(iso_year)
+    return year_start + datetime.timedelta(iso_day-1, 0, 0, 0, 0, 0, iso_week-1)
+
