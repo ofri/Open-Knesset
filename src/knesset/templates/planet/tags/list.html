@@ -1,0 +1,20 @@
+{% extends "planet/base.html" %}
+{% load i18n pagination_tags planet_tags  %}
+
+{% block page_title %}{% trans "Tags list" %} - {{ block.super }}{% endblock %}
+{% block extrameta %}
+    <meta name="DC.title" content="{% trans 'Tags list' %} - {{ site.name }}" />
+    <meta name="description" content="{% trans 'Tags list' %} - {{ site.name }}" />
+{% endblock %}
+
+{% block content %}
+<div class="tags list">
+    {% autopaginate tags_list 50 %}
+    <ul>
+    {% for tag in tags_list %}
+        <li><a href="{% url tag_detail tag.name %}" class="tag">{{ tag }}</a></li>
+    {% endfor %}
+    </ul>
+    {% paginate %}
+</div>
+{% endblock %}
