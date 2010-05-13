@@ -1,4 +1,9 @@
+{% extends "planet/base.html" %}
 {% load i18n %}
+
+{% block extratitle %}{% trans 'Home' %}{% endblock %}
+
+{% block content %}
 <span class="thumb">
     <a href="{{ post.feed.blog.member.get_absolute_url }}">
         <img src="{{ post.feed.blog.member.img_url }}" height="110" width="75">
@@ -10,7 +15,7 @@
         </a>
     </h3>
     <p class="content">
-        {{ post.content|safe|striptags|truncatewords:"100" }} 
+        {{ post.content|safe }} 
     </p>
     <p class="tags list">
         {% for tag in post.tags.all %}
@@ -23,3 +28,4 @@
     </div>
     <div class="date">{% trans "before:" %}&nbsp;{{ post.date_modified|timesince }}</div>
 </span>
+{% endblock %}

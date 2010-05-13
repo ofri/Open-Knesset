@@ -14,7 +14,11 @@
     {% for blog in blogs_list %}
         <li class="item">
             <h3>
-                <a href="{% url member-detail blog.member.pk %}" class="feed" title="{% trans 'See the full list of posts from this blog' %}">{{ blog.member.name }}</a>
+                {% if blog.member %}
+                    <a href="{% url member-detail blog.member.pk %}" class="feed" title="{% trans 'See the full list of posts from this blog' %}">{{ blog.member.name }}</a>
+                {% else %}
+                    {{ blog.title }}
+                {% endif %}
             </h3>
             <ul class="blog details">
                 <li>
