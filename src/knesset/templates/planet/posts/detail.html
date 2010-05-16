@@ -1,13 +1,17 @@
 {% extends "planet/base.html" %}
+{% load i18n mks %}
 {% load i18n %}
 
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 
 {% block content %}
 <span class="thumb">
-    <a href="{{ post.feed.blog.member.get_absolute_url }}">
-        <img src="{{ post.feed.blog.member.img_url }}" height="110" width="75">
+    {% get_member_for post as member %}
+    {% if member %}
+    <a href="{{ member.get_absolute_url }}">
+        <img src="{{ member.img_url }}" alt="{{ member.name }}" eight="110" width="75">
     </a>
+    {% endif %}
 </span>
 <span class="body">
     <h3><a href="{% url post_detail post.pk %}" title="{% trans 'read post' %} {{ post.title|safe }}">

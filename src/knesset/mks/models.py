@@ -1,9 +1,12 @@
 #encoding: utf-8
+from datetime import date
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from datetime import date
-from planet.models import Blog
+from django.db.models.signals import post_save
+from planet.models import Feed, Blog
+from knesset.utils import cannonize
+from knesset.links.models import Link
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -191,7 +194,15 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
-
+def connect_feed(sender, created, instance, **kwargs):
+    if created:
+        t = cannonize(instance.title)
+        for m in Member.objects.all():
+            if t.rfind(cannonize(m.name)) != -1:
+                Link.objects.create(url=instance.url, title = instance.title, content_object=m)
+                print u'connected feed to %s' % m
+                return
+post_save.connect(connect_feed, sender=Feed)
 
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
