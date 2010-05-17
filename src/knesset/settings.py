@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'south',
     'planet',
     'pagination',
+    'django_extensions',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
