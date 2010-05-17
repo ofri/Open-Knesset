@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 from planet.models import Feed, Blog
-from knesset.utils import cannonize
+from knesset.utils import cannonize, disable_for_loaddata
 from knesset.links.models import Link
 
 class Correlation(models.Model):
@@ -194,6 +194,7 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
+@disable_for_loaddata
 def connect_feed(sender, created, instance, **kwargs):
     if created:
         t = cannonize(instance.title)
