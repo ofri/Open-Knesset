@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 from haystack.forms import SearchForm
 from django.db import models
 from django.contrib.comments.views.comments import post_comment
@@ -32,4 +33,26 @@ def comment_post_wrapper(request):
             return HttpResponse("Access denied")
         return post_comment(request)
     return HttpResponse("Access denied")
+
+def cannonize(s):
+       if isinstance(s,unicode):
+           s = s.replace(u'\u201d','').replace(u'\u2013','')
+       else:
+           s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+       return re.sub(r'["\(\) ,-\xa0]', '', s)
+
+try:
+    from functools import wraps
+except ImportError:
+    from django.utils.functional import wraps
+import inspect
+
+def disable_for_loaddata(signal_handler):
+    @wraps(signal_handler)
+    def wrapper(*args, **kwargs):
+        for fr in inspect.stack():
+            if inspect.getmodulename(fr[1]) == 'loaddata':
+                return
+        signal_handler(*args, **kwargs)
+    return wrapper
 

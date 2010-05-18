@@ -4,6 +4,10 @@
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block content %}
 
+<p>
+{% trans "Below is a list of MKs blog posts as recieved from the their blogs." %}
+</p>
+
 <div style="padding-top:1em;">
     {% autopaginate posts 10 %}
     {% for post in posts %}

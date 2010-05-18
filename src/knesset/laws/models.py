@@ -7,6 +7,7 @@ from django.contrib.contenttypes import generic
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
+from knesset.utils import disable_for_loaddata
 
 from tagging.forms import TagField
 from django import forms
@@ -48,6 +49,7 @@ class PartyVotingStatistics(models.Model):
     def __unicode__(self):
         return "%s" % self.party.name
 
+@disable_for_loaddata
 def handle_party_save(sender, created, instance, **kwargs):
     if created:
         PartyVotingStatistics.objects.create(party=instance)
@@ -104,11 +106,11 @@ class MemberVotingStatistics(models.Model):
     def __unicode__(self):
         return "%s" % self.member.name
 
+@disable_for_loaddata
 def handle_mk_save(sender, created, instance, **kwargs):
     if created:
         MemberVotingStatistics.objects.create(member=instance)
 post_save.connect(handle_mk_save, sender=Member)
-
 
 class VoteAction(models.Model):
     type   = models.CharField(max_length=10,choices=VOTE_ACTION_TYPE_CHOICES)
