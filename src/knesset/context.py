@@ -8,7 +8,7 @@ import re
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from utils import SearchFormWithSpellSuggest
+from search_sites import SearchFormWithSpellSuggest
 
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
