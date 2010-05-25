@@ -10,7 +10,7 @@ from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.hashnav.views import SimpleView
-from utils import SearchFormWithSpellSuggest
+from search_sites import SearchFormWithSpellSuggest
 from haystack.views import SearchView
 from haystack.forms import SearchForm
 
@@ -32,7 +32,7 @@ js_info_dict = {
 about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
-main_view = SearchView(template='main.html', form_class=SearchForm)
+#main_view = SearchView(template='main.html', form_class=SearchForm)
 
 urlpatterns = patterns('',
     url(r'^$', 'planet.views.index', name='main'),
