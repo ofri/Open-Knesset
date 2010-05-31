@@ -6,6 +6,9 @@
 import re
 import urllib2
 import subprocess
+import logging
+
+logger = logging.getLogger("open-knesset.parse_knesset_bill_pdf")
 
 def parse(url):
     """This is the main function that should be used. pass a url of a law PDF to parse
@@ -19,7 +22,9 @@ def parse(url):
 
 
 def pdftotext():
-    rc = subprocess.call(['pdftotext','tmp.pdf'])    
+    rc = subprocess.call(['pdftotext', '-enc', 'UTF-8', 'tmp.pdf', 'tmp.txt'])   
+    if rc:
+        logger.error('pdftotext returned error code %d' % rc)
 
 
 def download_pdf(url,filename=None):
@@ -43,7 +48,10 @@ def parse_pdftxt(filename=None, url=None):
             if state==0:
                 title = lines[i+2].decode('utf8').replace(u'\u202b','')
                 if len(title)<=2 or title.find('חוק'.decode('utf8'))<0:
-                    title = lines[i].decode('utf8').replace(u'\u202b','')
+                    try:
+                        title = lines[i].decode('utf8').replace(u'\u202b','')
+                    except UnicodeDecodeError,e:
+                        logger.warn("%s\turl=%s" % (e, url)) 
                 law['title'] = title
                 state = 1
                 continue
@@ -53,7 +61,7 @@ def parse_pdftxt(filename=None, url=None):
                     if re.search('\w+/\d+/\d+', x, re.UNICODE):
                         break
                 if not re.search('\w+/\d+/\d+', x, re.UNICODE): # shit...
-                    print "Can't find expected string \w+\d+\d+ in url %s" % url 
+                    logger.warn("Can't find expected string \w+\d+\d+ in url %s" % url)
                 law['references'] = x
                 m = re.findall('\w+/\d+/\d+',x, re.UNICODE) # find IDs of original proposals
                 law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # inverse                   
