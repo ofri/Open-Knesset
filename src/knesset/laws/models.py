@@ -270,3 +270,34 @@ class Vote(models.Model):
 
 class TagForm(forms.Form):
     tags = TagField()
+
+class Law(models.Model):
+    title = models.CharField(max_length=1000)
+    
+    def __unicode__(self):
+        return self.title
+
+class BillProposal(models.Model):
+    knesset_id = models.IntegerField(blank=True, null=True)
+    law = models.ForeignKey('Law', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
+    title = models.CharField(max_length=1000)
+    date = models.DateField(blank=True, null=True)    
+    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+
+    class Meta:
+        abstract = True
+
+
+    def __unicode__(self):
+        return u"%s %s" % (self.law, self.title)
+
+class PrivateProposal(BillProposal):
+    proposal_id = models.IntegerField(blank=True, null=True)
+    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+    joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
+
+class KnessetProposal(BillProposal):
+    committee = models.ForeignKey('committees.Committee',related_name='bills', blank=True, null=True)
+    booklet_number = models.IntegerField(blank=True, null=True)
+    originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
+

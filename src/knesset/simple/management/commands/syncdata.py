@@ -26,6 +26,8 @@ from django.db.models import Max,Count
 
 import mk_info_html_parser as mk_parser
 import parse_presence
+import parse_laws
+from knesset import utils
 
 ENCODING = 'utf8'
 
@@ -46,6 +48,8 @@ class Command(NoArgsCommand):
             help="run post loading process."),
         make_option('--dump', action='store_true', dest='dump-to-file',
             help="write votes to tsv files (mainly for debug, or for research team)."),
+        make_option('--laws', action='store_true', dest='laws',
+            help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
             help="online update of votes data."),
         
@@ -375,7 +379,10 @@ class Command(NoArgsCommand):
 
 
     def get_search_string(self,s):
-        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+        if isinstance(s,unicode):
+            s = s.replace(u'\u201d','').replace(u'\u2013','')
+        else:
+            s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
         return re.sub(r'["\(\) ,-]', '', s)
 
     heb_months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
@@ -1020,6 +1027,94 @@ class Command(NoArgsCommand):
                     date = iso_to_gregorian(*current_timestamp, iso_day=0) 
                 current_timestamp = (date+timedelta(8)).isocalendar()[:2]
 
+    def parse_laws(self, update=True):
+        mks = Member.objects.values('id','name')
+        for mk in mks:
+            mk['cn'] = utils.cannonize(mk['name'])
+        
+        # private laws
+        logger.debug('parsing private laws')
+        if update:
+            days = 14
+        else:
+            days = (datetime.date.today() - datetime.date(2009,2,14)).days
+        proposals = parse_laws.ParsePrivateLaws(days)
+        for proposal in proposals.laws_data:
+
+            # find the Law this poposal is updating, or create a new one
+            law_name = proposal['law_name']
+            if proposal['comment']:
+                law_name += ' (%s)' % proposal['comment']
+        
+            (law, created) = Law.objects.get_or_create(title=law_name)
+            if created:
+                law.save()
+            
+            # create the bill proposal
+            if proposal['correction']:
+                title = proposal['correction']
+            else:
+                title = "חוק חדש"
+
+            (pl,created) = PrivateProposal.objects.get_or_create(proposal_id=proposal['law_id'], knesset_id=proposal['knesset_id'], 
+                                                                 date=proposal['proposal_date'], source_url=proposal['text_link'],
+                                                                 title=title, law=law)
+            if created:
+                pl.save()
+
+                # update proposers and joiners
+                for m0 in proposal['proposers']:
+                    found = False
+                    for mk in mks:
+                        if utils.cannonize(m0.decode('utf8'))==mk['cn']:
+                            pl.proposers.add(Member.objects.get(pk=mk['id']))
+                            found = True
+                            break
+                    if not found:
+                        logger.warn(u"can't find proposer: %s" % m0.decode('utf8'))
+                for m0 in proposal['joiners']:
+                    found = False
+                    for mk in mks:
+                        if utils.cannonize(m0.decode('utf8'))==mk['cn']:
+                            pl.joiners.add(Member.objects.get(pk=mk['id']))
+                            found = True
+                            break
+                    if not found:
+                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))        
+        # knesset laws
+        logger.debug('parsing knesset laws')
+        if update:
+            last_booklet = KnessetProposal.objects.aggregate(Max('booklet_number')).values()[0]
+        else:
+            last_booklet = 200
+        proposals = parse_laws.ParseKnessetLaws(last_booklet)
+        for proposal in proposals.laws_data:
+            law_name = proposal['law']
+            (law, created) = Law.objects.get_or_create(title=law_name)
+            if created:
+                law.save()
+            title = u''
+            if proposal['correction']:
+                title += proposal['correction']
+            if proposal['comment']:
+                title += ' ' + proposal['comment']
+            if len(title)<=1:
+                title = u'חוק חדש'
+            (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18, 
+                                                                 source_url=proposal['link'],
+                                                                 title=title, law=law)
+            for orig in proposal['original_ids']:
+                knesset_id = int(orig.split('/')[1])
+                if knesset_id != 18:
+                    continue
+                orig_id = int(orig.split('/')[0])
+                try:
+                    kl.originals.add(PrivateProposal.objects.get(proposal_id=orig_id))
+                except PrivateProposal.DoesNotExist:
+                    #print kl.title
+                    #print type(kl.title)
+                    logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
+
     def handle_noargs(self, **options):
     
         all_options = options.get('all', False)
@@ -1028,13 +1123,14 @@ class Command(NoArgsCommand):
         process = options.get('process', False)
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
+        laws = options.get('laws',False)
         if all_options:
             download = True
             load = True
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update)])):
+        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws)])):
             print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
@@ -1052,6 +1148,9 @@ class Command(NoArgsCommand):
             self.calculate_votes_importances()
             #self.calculate_correlations()
 
+        if laws:
+            self.parse_laws(update=False)
+
         if dump_to_file:
             print "writing votes to tsv file"
             self.dump_to_file()
@@ -1061,6 +1160,7 @@ class Command(NoArgsCommand):
             self.update_laws_data()
             self.update_presence()
             self.get_protocols()
+            self.parse_laws()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')

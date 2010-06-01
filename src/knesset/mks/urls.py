@@ -1,10 +1,11 @@
+from django.conf import settings
 from django.conf.urls.defaults import *
 from knesset.mks.models import Member, Party
 from knesset.hashnav.views import ListDetailView
 from views import *
                        
 member_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
-party_view = PartyListView(queryset = Party.objects.all(),) 
+party_view = PartyListView(queryset = Party.objects.all(),extra_context = {'maps_api_key':settings.GOOGLE_MAPS_API_KEY}) 
 member_select = MemberSelectView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)})
 
 mksurlpatterns = patterns('knesset.mks.views',

@@ -1,6 +1,5 @@
 from datetime import datetime
 import re
-from haystack.forms import SearchForm
 from django.db import models
 from django.contrib.comments.views.comments import post_comment
 from django.http import HttpResponse
@@ -18,11 +17,6 @@ def yearstart(year):
 def yearend(year):
     return datetime(year,12,31)
 
-class SearchFormWithSpellSuggest(SearchForm):
-    def search(self):
-        sqs = super(SearchFormWithSpellSuggest, self).search()
-        self.spl = sqs.spelling_suggestion()
-        return sqs
 
 
 def comment_post_wrapper(request):

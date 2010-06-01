@@ -136,7 +136,7 @@ class TagHandler(BaseHandler):
             tags_ids = TaggedItem.objects.filter(object_id=vote_id).values_list('tag', flat=True)
             return Tag.objects.filter(id__in=tags_ids)
 
-        return Tag.objects.all().order_by('name')
+        return Tag.objects.usage_for_model(Vote)
     
     @classmethod
     def number_of_items(self, tag):

@@ -8,7 +8,7 @@ import re
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from utils import SearchFormWithSpellSuggest
+from search_sites import SearchFormWithSpellSuggest
 
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
@@ -29,5 +29,6 @@ def processor(request):
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
     
     d['search_form'] = SearchFormWithSpellSuggest()
+    d['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
 
     return d
