@@ -5,6 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 
 from managers import LinksManager
 
+
+class LinkType(models.Model):
+    title = models.CharField(max_length=200, verbose_name=_('title'))
+    image = models.ImageField(upload_to='icons')
+
+    def __unicode__(self):
+        return self.title
+
 class Link(models.Model):
     url = models.URLField(verbose_name='URL')
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -13,6 +21,7 @@ class Link(models.Model):
             related_name="content_type_set_for_%(class)s")
     object_pk      = models.TextField(_('object ID'))
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+    link_type = models.ForeignKey(LinkType, null=True, blank=True)
 
     objects = LinksManager()
 
