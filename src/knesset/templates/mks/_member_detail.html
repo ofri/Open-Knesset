@@ -1,8 +1,14 @@
 {% load i18n %}
-{% load links_extra %}
+{% load links %}
 {% load laws_extra %}
-<img id="member-photo" src="{{ object.img_url }}"/><h2>{{ object.name }}<h2>
 <table id="member-info">
+    <tr>
+        <td colspan="3" style="text-align:center;"><h2>{{ object.name }}</h2></td>
+    </tr>
+    <tr>
+        <td rowspan="9" style="vertical-align:middle;"> <img id="member-photo" src="{{ object.img_url }}"/></td>
+        <td colspan="2"></td>
+    </tr>
     <tr>
         <td>{% trans "party" %}</td>
         <td><a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></td>
@@ -43,9 +49,12 @@
         <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
     </tr>
     
-    {% object_links_as_table object %}
 
 </table>
+
+<h2>{% trans "Links" %}</h2>
+    {% object_links object %}
+
 <h2>{% trans "Statistics" %}</h2>
 <table>
     <tr>
