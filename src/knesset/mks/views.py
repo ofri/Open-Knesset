@@ -135,13 +135,19 @@ class MemberListView(ListDetailView):
             return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
 
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
-    def render_object(self, request, object_id, extra_context={}, **kwargs):
-        if request.user.is_authenticated():
-            p = request.user.get_profile()
-            qs = p.followed_members.filter(pk=object_id)
-            extra_context.update(dict(watched_member = bool(qs),
-                                      google_maps_api_key = settings.GOOGLE_MAPS_API_KEY))
 
+    def get_object_context (self, user, object_id):
+        if user.is_authenticated():
+            p = user.get_profile()
+            qs = p.followed_members.filter(pk=object_id)
+            watched = bool(qs)
+        else:
+            watched = False
+        return {'watched_member': watched}
+
+    def render_object(self, request, object_id, extra_context={}, **kwargs):
+        context = self.get_object_context(request.user, object_id)
+        extra_context.update(context)
         return super(MemberListView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)
 

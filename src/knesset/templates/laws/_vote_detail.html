@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
-{% load links_extra %}
+{% load links %}
 {% load comments %}
 
 
@@ -97,7 +97,8 @@
         <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>                
     {% endif %}
 
-    {% object_links_as_div object %} 
+    {% trans "Links" %}
+    {% object_links object %} 
 
 
 {% if object.summary %}
