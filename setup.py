@@ -16,6 +16,7 @@ install_requires = [
     'django-planet',
     'django-piston',
     'django-extensions',
+    'django-activity-stream',
     ]
 setup(
         name = "Open-Knesset",
