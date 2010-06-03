@@ -26,3 +26,9 @@ class TestFollowing(unittest.TestCase):
         self.assertEquals(p.followed_members.count(), 1)
         self.assertEquals(p.followed_members.all()[0], self.yosef)
 
+    def tearDown(self):
+        self.jacob.delete()
+        self.david.delete()
+        self.yosef.delete()
+        self.moshe.delete()
+

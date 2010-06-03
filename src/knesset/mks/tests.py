@@ -19,11 +19,6 @@ class TestViews(unittest.TestCase):
         anon = AnonymousUser()
         context = self.member_list_view.get_object_context(anon, self.david.id)
         self.assertFalse(context['watched_member'])
-        '''
-        c = Client()
-        loggedin = c.login(username='jacob', password='JKM')
-        self.assertTrue(loggedin)
-        '''
         # test autherized user
         context = self.member_list_view.get_object_context(self.jacob, self.david.id)
         self.assertFalse(context['watched_member'])

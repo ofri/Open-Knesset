@@ -12,6 +12,7 @@ install_requires = [
     'pyth',
     'django-debug-toolbar',
     'feedparser',
+    'pil',
     'django-pagination',
     'django-planet',
     'django-piston',
