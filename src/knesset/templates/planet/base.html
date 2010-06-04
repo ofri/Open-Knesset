@@ -12,7 +12,7 @@
             <a href="{% url posts_list %}">{% trans 'Posts' %}</a>
         </li>
         <li>
-            <a href="{% url tags_cloud %}">{% trans 'Tag Cloud' %}</a>
+            <a href="{% url tags_cloud %}?sort=size">{% trans 'Tag Cloud' %}</a>
         </li>
         {% block menu_extra %}
         {% endblock %}

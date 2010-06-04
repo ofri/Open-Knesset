@@ -1,17 +1,21 @@
 {% load i18n %}
 {% load mks %}
+{% get_member_for post as member %}
 <span class="thumb">
-    {% get_member_for post as member %}
     {% if member %}
     <a href="{{ member.get_absolute_url }}">
-        <img src="{{ member.img_url }}" alt="{{ member.name }}" eight="110" width="75">
+        <img src="{{ member.img_url }}" alt="{{ member.name }}" title="{{member.name}}" eight="110" width="75">
     </a>
     {% endif %}
 </span>
 <span class="body">
-    <h3><a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title|safe }}">
+    <h3>
+	    <a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title|safe }}">
             {{ post.title|striptags|safe }}
         </a>
+    {% if member %}
+		<span class="source">({{ member.name|safe }})</span>
+    {% endif %}
     </h3>
     <p class="content">
         {{ post.content|safe|striptags|truncatewords:"100" }} 
