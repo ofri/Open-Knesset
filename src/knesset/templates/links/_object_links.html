@@ -1,0 +1,18 @@
+{% load i18n %}
+{% if links %}
+    <ul class="links">
+    {% for link in links %}
+    <li><a href="{{ link.url|safe }}">
+        {{ link.title }}
+        {% if link.link_type %}
+            &nbsp;
+            {% if link.link_type.image %}
+            <img src="{{MEDIA_URL}}{{link.link_type.image}}" alt="{% trans link.link_type.title %}">
+            {% else %}
+                ({% trans link.link_type.title %})
+            {% endif %}
+        {% endif %}
+    </a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
