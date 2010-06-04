@@ -277,13 +277,28 @@ class Law(models.Model):
     def __unicode__(self):
         return self.title
 
+    def merge(self, another_law):
+        """ Merges another_law into this one 
+            (move all pointers from another_law to self, then delete another_law
+        """
+        if another_law == self:
+            return # don't accidentally delete myself by trying to merge.
+        for pp in another_law.laws_privateproposal_related.all():
+            pp.law = self
+            pp.save()
+        for kp in another_law.laws_knessetproposal_related.all():
+            kp.law = self
+            kp.save()
+        another_law.delete()
+
 class BillProposal(models.Model):
     knesset_id = models.IntegerField(blank=True, null=True)
     law = models.ForeignKey('Law', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     title = models.CharField(max_length=1000)
     date = models.DateField(blank=True, null=True)    
     source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
-
+    committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
+    votes = models.ManyToManyField('Vote', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     class Meta:
         abstract = True
 
