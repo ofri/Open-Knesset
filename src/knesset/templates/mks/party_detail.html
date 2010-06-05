@@ -28,10 +28,23 @@
                 return;
             }
             var map_dom = $('#residence_map')[0];
-            var map = new GMap2(map_dom);
+	        var copyOSM = new google.maps.CopyrightCollection("<a href=\"http://www.openstreetmap.org/\">OpenStreetMap</a>");
+	        copyOSM.addCopyright(new google.maps.Copyright(1, new google.maps.LatLngBounds(new google.maps.LatLng(-90,-180), new google.maps.LatLng(90,180)), 0, " "));
+            var tilesMapnik     = new google.maps.TileLayer(copyOSM, 1, 17, {tileUrlTemplate: 'http://tile.openstreetmap.org/{Z}/{X}/{Y}.png'});
+	        var mapMapnik     = new google.maps.MapType([tilesMapnik],
+														G_NORMAL_MAP.getProjection(),
+														"מפת רחובות",
+														{ maxResolution: 18 });
+			var mapSatellite  = new google.maps.MapType(G_SATELLITE_MAP.getTileLayers(),
+														G_SATELLITE_MAP.getProjection(),
+														"תמונת לווין");
+			var map           = new google.maps.Map2(map_dom, { mapTypes: [ mapMapnik,mapSatellite ] });
+			map.addControl(new google.maps.LargeMapControl());
+			map.addControl(new google.maps.MapTypeControl());
+
             var all_lat_lngs = [];
 
-            map.setUIToDefault();
+            //map.setUIToDefault();
             //set the center & zoom for israel
             map.setCenter(new GLatLng(32.0554, 34.7595), 7);
             setTimeout(function() {
