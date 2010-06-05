@@ -39,7 +39,7 @@
 														G_SATELLITE_MAP.getProjection(),
 														"תמונת לווין");
 			var map           = new google.maps.Map2(map_dom, { mapTypes: [ mapMapnik,mapSatellite ] });
-			map.addControl(new google.maps.LargeMapControl());
+			map.addControl(new google.maps.SmallMapControl());
 			map.addControl(new google.maps.MapTypeControl());
 
             var all_lat_lngs = [];
