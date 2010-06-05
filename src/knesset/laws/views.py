@@ -5,21 +5,34 @@ from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from knesset.utils import limit_by_request
-from knesset.laws.models import Vote
-from django.http import HttpResponseRedirect, HttpResponse
-from knesset.laws.models import TagForm
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.db.models import Count
+
 from tagging.models import Tag, TaggedItem
-from knesset.tagvotes.models import TagVote
-
-from django.http import Http404
 from tagging.views import tagged_object_list
-
+from knesset.utils import limit_by_request
+from knesset.laws.models import *
+from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
 
-from django.db.models import Count
 import urllib
 import urllib2
+
+class LawView (ListDetailView):
+
+    def render_object(self, request, object_id, extra_context=None, **kwargs):
+        if not extra_context:
+            extra_context = {}
+        law = Law.objects.get(pk=object_id)
+        pps = PrivateProposal.objects.filter(law=law).annotate(c=Count('knesset_proposals')).filter(c=0).order_by('title')
+        kps = KnessetProposal.objects.filter(law=law)
+        extra_context['pps'] = pps
+        extra_context['kps'] = kps
+        extra_context['title'] = law.title
+        return super(LawView, self).render_object(request, object_id,
+                              extra_context=extra_context, **kwargs)
+
+
 
 class VoteListView(ListDetailView):
 

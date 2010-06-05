@@ -33,7 +33,9 @@ def cannonize(s):
            s = s.replace(u'\u201d','').replace(u'\u2013','')
        else:
            s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
-       return re.sub(r'["\(\) ,-\xa0]', '', s)
+       s.replace('&nbsp',' ')
+       s.replace('\n','')
+       return re.sub("""["'`\(\) /.,\-\xa0\d]""", '', s)
 
 try:
     from functools import wraps
