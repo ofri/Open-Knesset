@@ -1,0 +1,24 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load laws_extra %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-laws %}class="selected"{% endblock %}
+{% block divcontent %}
+<h2>{{ object.law }}: {{ object.title }}</h2>
+    {% if object.originals.all %}
+        <a href="{{ object.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 
+        {% trans 'Based on' %}:<br>
+        {% for orig in object.originals.all %}
+            {{ orig.title }} {% trans 'by' %} 
+            {% for proposer in orig.proposers.all %}
+                <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+            {% endfor %} {% trans 'that was proposed on' %} {{ orig.date }} (<a href="{{ orig.source_url }}">{% trans 'Bill on knesset website' %}</a>)<br>
+        {% endfor %}<br>
+        {% if object.committee_meetings.count %}
+            <span>{% trans 'This bill is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

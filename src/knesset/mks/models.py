@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 from planet.models import Feed, Blog
 from knesset.utils import cannonize, disable_for_loaddata
 from knesset.links.models import Link
@@ -96,6 +97,7 @@ class Member(models.Model):
     blog = models.OneToOneField(Blog, blank=True, null=True)
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
+    user = models.ForeignKey(User,null=True)
 
     class Meta:
         ordering = ['name']

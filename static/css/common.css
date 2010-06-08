@@ -462,6 +462,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .post .tags {padding-bottom: 1.2em;}
 .post .tags>a {padding-left: 1em;}
 .post .date { position:absolute; bottom: 0; font-size:80%; }
+.post .source { font-size:70%; color:#7f7f7f; }
 #subnav .tags a { padding-left:2em;}
 .cloud {font-size:140%;}
 #content-main .tags a { padding-left:1em;}
@@ -477,3 +478,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
     float: left;
 }
 
+#content-main .inline_bill {
+    position:relative;
+    right:30px;
+}

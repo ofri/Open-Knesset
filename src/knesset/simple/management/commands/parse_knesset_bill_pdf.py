@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 """This file contains some util function to help parse the PDF files,
    found in http://www.knesset.gov.il/laws/heb/template.asp?Type=3
 """
