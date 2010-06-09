@@ -12,7 +12,7 @@
     {% autopaginate posts 10 %}
     {% for post in posts %}
         <div class="item post clearfix">
-            {% post_details post %}
+            {% post_full_details post %}
         </div>
     {% endfor %}
     {% paginate %}
