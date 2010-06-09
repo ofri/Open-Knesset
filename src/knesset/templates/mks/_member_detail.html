@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load links %}
 {% load laws_extra %}
+{% load activity_tags %}
+{% load pagination_tags %}
 <table id="member-info">
     <tr>
         <td colspan="3" style="text-align:center;"><h2>{{ object.name }}</h2></td>
@@ -85,40 +87,12 @@
 
 </table>
 
-
-
-<h2>{% trans "Votes"%}</h2>
-
-<div class="member_votes">
-    <h3>{% trans "For" %}</h3>
-    <ul>
-    {% for vote in object.for_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div class="member_votes">
-    <h3>{% trans "Against" %}</h3>
-    <ul>
-    {% for vote in object.against_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div class="member_votes">
-    <h3>{% trans "Abstain" %}</h3>
-    <ul>
-    {% for vote in object.abstain_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div class="member_votes">
-    <h3>{% trans "No Vote" %}</h3>
-    <ul>
-    {% for vote in object.no_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div style="clear:both"></div>
+<h2>{% trans "Activity"%}</h2>
+{% autopaginate actions %}
+{% for action in actions %}
+    {% with action.timestamp|timesince as since %}
+     {% ifchanged %}<h3><span>{{ since }}</span></h3>{% endifchanged %}
+    {% endwith %}
+    {% display_action action %}
+{% endfor %}
+{% paginate %}
