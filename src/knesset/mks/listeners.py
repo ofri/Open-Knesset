@@ -1,7 +1,9 @@
 from django.db.models.signals import post_save
-from planet.models import Feed
+from planet.models import Feed, Post
+from actstream import action
 from knesset.utils import cannonize, disable_for_loaddata
 from knesset.laws.models import VoteAction
+from knesset.links.models import Link
 
 @disable_for_loaddata
 def connect_feed(sender, created, instance, **kwargs):
@@ -16,11 +18,19 @@ post_save.connect(connect_feed, sender=Feed)
 
 @disable_for_loaddata
 def record_vote_action(sender, created, instance, **kwargs):
-    from actstream import action
     if created:
         action.send(instance.member, verb='voted',
                     description=instance.type,
                     target = instance,
                     timestamp=instance.vote.time)
 post_save.connect(record_vote_action, sender=VoteAction)
+
+@disable_for_loaddata
+def record_post_action(sender, created, instance, **kwargs):
+    if created:
+        member = Link.objects.get(url=instance.feed.url).content_object
+        action.send(member, verb='posted',
+                    target = instance,
+                    timestamp=instance.date_modified or instance.date_created)
+post_save.connect(record_post_action, sender=Post)
 
