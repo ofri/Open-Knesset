@@ -4,8 +4,13 @@
 {% if action.description == 'no-vote' %}
     {% trans "present and didn't vote" %}
 {% else %}
-    <span class="action-verb"> {% trans action.verb %}&nbsp;{% trans action.description %}</span> 
+    {% if action.actor.is_female %}
+    <span class="action-verb">הצביעה&nbsp;{% trans action.description %}</span> 
+    {% else %}
+    <span class="action-verb">הצביע&nbsp;{% trans action.description %}</span> 
+    {% endif %}
 {% endif %}
+:
 {% with action.target as vote %}
     <a  class="action-target" ref="{{ vote.get_absolute_url }}">{{ vote.title }}</a>
 {% endwith %}
