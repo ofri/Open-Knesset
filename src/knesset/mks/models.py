@@ -8,6 +8,11 @@ from planet.models import Blog
 from knesset.utils import cannonize
 from knesset.links.models import Link
 
+GENDER_CHOICES = (
+    (u'M', _('Male')),
+    (u'F', _('Female')),
+)
+
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
     m2 = models.ForeignKey('Member', related_name = 'm2')
@@ -97,12 +102,16 @@ class Member(models.Model):
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
     user = models.ForeignKey(User,null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
 
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
 
+    def is_male(self):
+        ''' if it ain't a female it's male '''
+        return self.gender!='F'
 
     def __unicode__(self):
         return "%s" % self.name
