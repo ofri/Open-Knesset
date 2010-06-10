@@ -4,5 +4,6 @@ bin/
 downloads/
 src/Open_Knesset.egg-info/
 develop-eggs/
+.*
 *.pyc
 *.db
