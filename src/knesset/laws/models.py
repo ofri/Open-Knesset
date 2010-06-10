@@ -14,10 +14,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 VOTE_ACTION_TYPE_CHOICES = (
-        (u'for', u'For'),
-        (u'against', u'Against'),
-        (u'abstain', u'Abstain'),
-        (u'no-vote', u'No Vote'),
+        (u'for', _('For')),
+        (u'against', _('Against')),
+        (u'abstain', _('Abstain')),
+        (u'no-vote', _('No Vote')),
 )
 
 
