@@ -87,12 +87,14 @@
 
 </table>
 
-<h2>{% trans "Activity"%}</h2>
+<div class='activities'>
 {% autopaginate actions %}
 {% for action in actions %}
     {% with action.timestamp|timesince as since %}
-     {% ifchanged %}<h3><span>{{ since }}</span></h3>{% endifchanged %}
+    {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
     {% endwith %}
-    {% display_action action %}
+    <p>
+        {% display_action action %}
+    </p>
 {% endfor %}
 {% paginate %}

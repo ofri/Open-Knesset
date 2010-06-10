@@ -79,7 +79,7 @@ img {border: none;}
     border-radius:1em;
 }
 #content-main { width:100%; padding: 0 1em 1em; position:relative;}
-#content-main>div { clear:both; padding-top:0.5em;}
+#content-main>div { clear:both; padding-top:0.5em;max-width:60em;}
 .sidebar { font-size:92%; }
 .sidebar * { margin-left:14px; margin-right:14px; }
 .sidebar * * { margin-left:0; margin-right:0; }
@@ -482,3 +482,13 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
     position:relative;
     right:30px;
 }
+
+/* action stream */
+.activities > h3 {
+    border-bottom: 1px dotted #aaaaaa;
+    margin-bottom:0.4em;
+}
+.activities > p {
+    margin-right: 2em;
+}
+

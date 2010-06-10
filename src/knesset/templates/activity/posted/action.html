@@ -1,4 +1,9 @@
-{% load planet_tags %}
 {% load i18n %}
-{% trans "Posted: " %}
-{% post_details action.target %}
+{% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.get_absolute_url }}">{{ action.actor }}</a>
+{% else %}<span class="action-actor">{{ action.actor }}</span>{% endif %}
+<span class="action-verb"> {% trans action.verb %}</span>
+{% with action.target as post %}
+    <a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title|safe }}">
+        {{ post.title|striptags|safe }}
+    </a>
+{% endwith %}
