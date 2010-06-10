@@ -10,7 +10,7 @@
 </span>
 <span class="body">
     <h3>
-	    <a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title|safe }}">
+	    <a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title }}">
             {{ post.title|striptags|safe }}
         </a>
     {% if member %}
