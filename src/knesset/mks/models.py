@@ -109,9 +109,8 @@ class Member(models.Model):
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
 
-    def is_male(self):
-        ''' if it ain't a female it's male '''
-        return self.gender!='F'
+    def is_female(self):
+        return self.gender=='F'
 
     def __unicode__(self):
         return "%s" % self.name
