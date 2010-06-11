@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
+from knesset.laws.models import MemberVotingStatistics
 from knesset.hashnav.views import ListDetailView
 
 from django.contrib.auth.decorators import login_required
@@ -88,8 +89,10 @@ class MemberListView(ListDetailView):
 
         if info=='votes':
             qs = list(qs)
+            vs = list(MemberVotingStatistics.objects.all())
+            vs = dict(zip([x.member_id for x in vs],vs))
             for x in qs:
-                x.extra = x.voting_statistics.average_votes_per_month()
+                x.extra = vs[x.id].average_votes_per_month()
             qs.sort(key=lambda x:x.extra, reverse=True)
             ec['past_mks'] = list(ec['past_mks'])
             for x in ec['past_mks']:
