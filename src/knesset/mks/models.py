@@ -51,7 +51,7 @@ class Party(models.Model):
         return "/admin/simple/party/%d" % self.id
 
     def NameWithLink(self):
-        return '<a href="%s">%s</a>' %(self.Url(),self.name)
+        return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
     def MembersString(self):
