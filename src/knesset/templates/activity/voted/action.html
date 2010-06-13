@@ -1,8 +1,12 @@
 {% load i18n %}
 {% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.get_absolute_url }}">{{ action.actor }}</a>
 {% else %}<span class="action-actor">{{ action.actor }}</span>{% endif %}
-{% if action.description == 'no-vote' %}
-    {% trans "present and didn't vote" %}
+{% if action.description == 'No Vote' %}
+    {% if action.actor.is_female %}
+        נכחה ולא הצביעה
+    {% else %}
+        {% trans "present and didn't vote" %}
+    {% endif %}
 {% else %}
     {% if action.actor.is_female %}
     <span class="action-verb">הצביעה&nbsp;{% trans action.description %}</span> 
