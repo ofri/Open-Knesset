@@ -482,3 +482,14 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
     position:relative;
     right:30px;
 }
+
+/* action stream */
+.activities { clear:both; padding-top:1em; max-width:60em;}
+.activities > h3 { border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; }
+.activities > p { margin-right: 2em; }
+.member-details>div {float: right; margin: 0.5em;}
+.member-details h3 { border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; margin-top:0;}
+.member-details ul { padding-right: 0.5em; }
+.member-details li { list-style-type:none; }
+.member-photo { padding-top:0.7em; }
+.pagination {padding-top:1em; text-align:center;}

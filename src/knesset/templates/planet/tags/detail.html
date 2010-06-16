@@ -23,7 +23,7 @@
     {% autopaginate posts 20 %}
     {% for post in posts %}
         <div class="post {% cycle 'even' 'odd' %} clearfix">
-            {% post_details post %}
+            {% post_full_details post %}
         </div>
     {% endfor %}
 

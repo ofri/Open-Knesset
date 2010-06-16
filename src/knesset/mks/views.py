@@ -140,13 +140,16 @@ class MemberListView(ListDetailView):
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
 
     def get_object_context (self, user, object_id):
+        from actstream import actor_stream
+
+        member = Member.objects.get(pk=object_id)
         if user.is_authenticated():
             p = user.get_profile()
-            qs = p.followed_members.filter(pk=object_id)
-            watched = bool(qs)
+            watched = member in p.followed_members.all()
         else:
             watched = False
-        return {'watched_member': watched}
+        return {'watched_member': watched,
+                'actions': actor_stream(member), }
 
     def render_object(self, request, object_id, extra_context={}, **kwargs):
         context = self.get_object_context(request.user, object_id)

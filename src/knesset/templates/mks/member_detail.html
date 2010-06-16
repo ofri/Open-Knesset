@@ -2,6 +2,11 @@
 {% load i18n %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
+{% block extrahead %}
+    <style>
+        .action-actor { display: none; }
+    </style>
+{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
 {% block messages %}

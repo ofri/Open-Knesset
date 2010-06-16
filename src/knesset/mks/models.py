@@ -3,11 +3,15 @@ from datetime import date
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from planet.models import Feed, Blog
-from knesset.utils import cannonize, disable_for_loaddata
+from planet.models import Blog
+from knesset.utils import cannonize
 from knesset.links.models import Link
+
+GENDER_CHOICES = (
+    (u'M', _('Male')),
+    (u'F', _('Female')),
+)
 
 class Correlation(models.Model):
     m1 = models.ForeignKey('Member', related_name = 'm1')
@@ -98,12 +102,15 @@ class Member(models.Model):
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
     user = models.ForeignKey(User,null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
 
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
 
+    def is_female(self):
+        return self.gender=='F'
 
     def __unicode__(self):
         return "%s" % self.name
@@ -196,17 +203,6 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
-@disable_for_loaddata
-def connect_feed(sender, created, instance, **kwargs):
-    if created:
-        t = cannonize(instance.title)
-        for m in Member.objects.all():
-            if t.rfind(cannonize(m.name)) != -1:
-                Link.objects.create(url=instance.url, title = instance.title, content_object=m)
-                print u'connected feed to %s' % m
-                return
-post_save.connect(connect_feed, sender=Feed)
-
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
@@ -214,3 +210,6 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+
+from listeners import *
+

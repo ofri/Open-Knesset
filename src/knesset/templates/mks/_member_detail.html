@@ -1,124 +1,108 @@
 {% load i18n %}
 {% load links %}
 {% load laws_extra %}
-<table id="member-info">
-    <tr>
-        <td colspan="3" style="text-align:center;"><h2>{{ object.name }}</h2></td>
-    </tr>
-    <tr>
-        <td rowspan="9" style="vertical-align:middle;"> <img id="member-photo" src="{{ object.img_url }}"/></td>
-        <td colspan="2"></td>
-    </tr>
-    <tr>
-        <td>{% trans "party" %}</td>
-        <td><a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></td>
-    </tr>    
-    <tr>
-        <td>{% trans "age" %}</td>
-        <td>{{ object.date_of_birth|timesince }}</td>
-    </tr>
-    {% if object.year_of_aliyah %}
-    <tr>
-        <td>{% trans "year of aliyah" %}</td>
-        <td>{{ object.year_of_aliyah }}</td>
-    </tr>
-    {% endif %}
-    <tr>
-        <td>{% trans "family status" %}</td>
-        <td>{{ object.family_status }}</td>
-    </tr>
-    <tr>
-        <td>{% trans "place of birth" %}</td>
-        <td>{{ object.place_of_birth }}</td>
-    </tr>
-    <tr>
-        <td>{% trans "place of residence" %}</td>
-        <td>{{ object.place_of_residence }}</td>
-    </tr>
+{% load activity_tags %}
+{% load pagination_tags %}
+<h2> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h2>
+<div class="member-details">
+    <div class="member-photo"><img src="{{ object.img_url }}"/></div>
+    <div>
+        <h3> {% trans "Personal Information" %}</h3>
+        <table id="member-info">
+            <tr>
+                <td>{% trans "age" %}</td>
+                <td>{{ object.date_of_birth|timesince }}</td>
+            </tr>
+            {% if object.year_of_aliyah %}
+            <tr>
+                <td>{% trans "year of aliyah" %}</td>
+                <td>{{ object.year_of_aliyah }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>{% trans "family status" %}</td>
+                <td>{{ object.family_status }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "place of birth" %}</td>
+                <td>{{ object.place_of_birth }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "place of residence" %}</td>
+                <td>{{ object.place_of_residence }}</td>
+            </tr>
 
-    <tr>
-        <td>{% trans "phone" %}</td>
-        <td>{{ object.phone }}</td>
-    </tr>
-    <tr>
-        <td>{% trans "fax" %}</td>
-        <td>{{ object.fax }}</td>
-    </tr>
-    <tr>
-        <td>{% trans "e-mail address" %}</td>
-        <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
-    </tr>
-    
+        </table>
+    </div>
 
-</table>
+    <div>
+        <h3>{% trans "Statistics" %}</h3>
+        <table>
+            <tr>
+                <td>{% trans "Number of votes" %}</td>
+                <td>{{ object.voting_statistics.votes_count }}</td>
+                <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Factional discipline" %}</td>
+                <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
+            </tr>
+            <tr>
+                <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
+                <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
+            </tr>   
+            <tr>
+                <td>{% trans "Average weekly hours" %}</td>
+                <td>{% if object.average_weekly_presence %}{{ object.average_weekly_presence }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Average number of committee meetings per month" %}</td>
+                <td>{{ object.committee_meetings_per_month }}</td>
+            </tr>
+               
+         
 
-<h2>{% trans "Links" %}</h2>
-    {% object_links object %}
+        </table>
+    </div>
+    <div>
+        <h3> {% trans "Contact Information" %}</h3>
+        <table>
+            <tr>
+                <td>{% trans "phone" %}</td>
+                <td>{{ object.phone }}</td>
+            </tr>
+            {% if object.fax %}
+                <tr>
+                    <td>{% trans "fax" %}</td>
+                    <td>{{ object.fax }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td>{% trans "e-mail address" %}</td>
+                <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h3>{% trans "Links" %}</h3>
+            {% object_links object %}
+    </div>
 
-<h2>{% trans "Statistics" %}</h2>
-<table>
-    <tr>
-        <td>{% trans "Number of votes" %}</td>
-        <td>{{ object.voting_statistics.votes_count }}</td>
-        <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
-    </tr>
-    <tr>
-        <td>{% trans "Factional discipline" %}</td>
-        <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
-        <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
-    </tr>
-    <tr>
-        <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-        <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
-        <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
-    </tr>   
-    <tr>
-        <td>{% trans "Average weekly hours" %}</td>
-        <td>{% if object.average_weekly_presence %}{{ object.average_weekly_presence }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
-    </tr>
-    <tr>
-        <td>{% trans "Average number of committee meetings per month" %}</td>
-        <td>{{ object.committee_meetings_per_month }}</td>
-    </tr>
-       
- 
-
-</table>
-
-
-
-<h2>{% trans "Votes"%}</h2>
-
-<div class="member_votes">
-    <h3>{% trans "For" %}</h3>
-    <ul>
-    {% for vote in object.for_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
 </div>
-<div class="member_votes">
-    <h3>{% trans "Against" %}</h3>
-    <ul>
-    {% for vote in object.against_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
+
+
+<div class="activities" >
+{% autopaginate actions %}
+{% for action in actions %}
+    {% with action.timestamp|timesince as since %}
+    {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
+    {% endwith %}
+    <p>
+        {% display_action action %}
+    </p>
+{% endfor %}
+{% paginate %}
 </div>
-<div class="member_votes">
-    <h3>{% trans "Abstain" %}</h3>
-    <ul>
-    {% for vote in object.abstain_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div class="member_votes">
-    <h3>{% trans "No Vote" %}</h3>
-    <ul>
-    {% for vote in object.no_votes %}
-        <li class="item"><a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<div style="clear:both"></div>
+<div style="clear:both;"></div>
