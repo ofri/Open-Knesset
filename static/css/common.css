@@ -399,16 +399,16 @@ a.disabled { color: #aaaaaa; }
     color:#FFFFFF;
 }
 
-#content-main #pagination > a {
+.pagination > a {
     background-color:#EFF4F7;
     border:1px solid #FFFFFF;
     padding:0.3em;
 }
-#content-main #pagination > a:hover {
+.pagination > a:hover {
     background-color:#CFD4D7;
     color:#000;
 }
-#content-main #pagination > a.current {
+.pagination > a.current {
     border:1px solid #000;
 }
 #content-main .inline-form {
