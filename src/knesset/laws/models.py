@@ -308,7 +308,7 @@ class BillProposal(models.Model):
 
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
-    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+    proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
     joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
 
 class KnessetProposal(BillProposal):
@@ -316,3 +316,24 @@ class KnessetProposal(BillProposal):
     booklet_number = models.IntegerField(blank=True, null=True)
     originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
 
+BILL_STAGE_CHOICES = (
+        (u'1', u'Proposed'),
+        (u'2', u'Pre-Approved'),
+        (u'3', u'In Committee'),
+        (u'4', u'First Vote'),
+        (u'5', u'Committee Corrections'),
+        (u'6', u'Approved'),
+)
+
+class Bill(models.Model):
+    title = models.CharField(max_length=1000)
+    law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
+    stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
+    stage_date = models.DateField(blank=True, null=True)
+    proposals = models.ManyToManyField('PrivateProposal', related_name='bills', blank=True, null=True)
+    pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True)
+    first_committee_meetings = models.ManyToManyField('committees.Committee',related_name='bills_first', blank=True, null=True)     
+    first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True)
+    second_committee_meetings = models.ManyToManyField('committees.Committee',related_name='bills_second', blank=True, null=True)
+    approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
+    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
