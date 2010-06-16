@@ -113,7 +113,7 @@ class Member(models.Model):
         return self.gender=='F'
 
     def __unicode__(self):
-        return "%s" % self.name
+        return self.name
 
     def title(self):
         return self.name
