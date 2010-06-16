@@ -6,6 +6,7 @@
     <style>
         .action-actor { display: none; }
     </style>
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
 {% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}

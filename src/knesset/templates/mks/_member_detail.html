@@ -3,7 +3,7 @@
 {% load laws_extra %}
 {% load activity_tags %}
 {% load pagination_tags %}
-<h2> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h2>
+<h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
 <div class="member-details">
     <div class="member-photo"><img src="{{ object.img_url }}"/></div>
     <div>
