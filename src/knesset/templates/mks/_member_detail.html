@@ -73,10 +73,12 @@
                 <td>{% trans "phone" %}</td>
                 <td>{{ object.phone }}</td>
             </tr>
-            <tr>
-                <td>{% trans "fax" %}</td>
-                <td>{{ object.fax }}</td>
-            </tr>
+            {% if object.fax %}
+                <tr>
+                    <td>{% trans "fax" %}</td>
+                    <td>{{ object.fax }}</td>
+                </tr>
+            {% endif %}
             <tr>
                 <td>{% trans "e-mail address" %}</td>
                 <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
