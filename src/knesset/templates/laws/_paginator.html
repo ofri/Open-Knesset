@@ -10,7 +10,7 @@
     {{ paginator.num_pages }}
     {{ paginator.page_range }}
 {% endcomment %}
-<div id="pagination">{% trans 'Pages' %}: 
+<div class="pagination">{% trans 'Pages' %}:
 {% if first_pages %}
     {% for page in first_pages %}
         <a href="{{ page.1 }}">{{ page.0 }}</a>  

@@ -22,6 +22,8 @@
     <a id="watch" class="button" href="."></a>
 &bull;
     <a class="button" href="{% url member-list %}">{% trans "All Members" %}</a>
+&bull;
+<a class="button" href="{% url member-activity-feed object.id %}">{% trans "feed" %}</a>
 {% endblock %}
 {% block divcontent %}
 	{% include "mks/_member_detail.html" %}
