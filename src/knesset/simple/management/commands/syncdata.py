@@ -664,7 +664,7 @@ class Command(NoArgsCommand):
         except Exception,e:
             logger.warn(e)
             if retry < 5:
-                logger.warn("waiting some time and trying again... (# of retries = %d)" % retry+1)
+                logger.warn("waiting some time and trying again... (# of retries = %d)" % (retry+1) )
                 page = read_votes_page(self,voteId, retry+1)
             else:
                 logger.error("failed too many times. last error: %s", e)
