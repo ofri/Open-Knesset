@@ -22,3 +22,6 @@ class KnessetProposalAdmin(admin.ModelAdmin):
     pass
 admin.site.register(KnessetProposal, KnessetProposalAdmin)
 
+class BillAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Bill, BillAdmin)

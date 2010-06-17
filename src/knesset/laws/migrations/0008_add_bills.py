@@ -15,6 +15,7 @@ class Migration(SchemaMigration):
             ('law', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='bills', null=True, to=orm['laws.Law'])),
             ('stage', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('stage_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('knesset_proposal', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='bills', null=True, to=orm['laws.KnessetProposal'])),
             ('first_vote', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='bills_first', null=True, to=orm['laws.Vote'])),
             ('approval_vote', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='bill_approved', unique=True, null=True, to=orm['laws.Vote'])),
         ))
@@ -40,17 +41,17 @@ class Migration(SchemaMigration):
         db.create_table('laws_bill_first_committee_meetings', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('bill', models.ForeignKey(orm['laws.bill'], null=False)),
-            ('committee', models.ForeignKey(orm['committees.committee'], null=False))
+            ('committeemeeting', models.ForeignKey(orm['committees.committeemeeting'], null=False))
         ))
-        db.create_unique('laws_bill_first_committee_meetings', ['bill_id', 'committee_id'])
+        db.create_unique('laws_bill_first_committee_meetings', ['bill_id', 'committeemeeting_id'])
 
         # Adding M2M table for field second_committee_meetings on 'Bill'
         db.create_table('laws_bill_second_committee_meetings', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('bill', models.ForeignKey(orm['laws.bill'], null=False)),
-            ('committee', models.ForeignKey(orm['committees.committee'], null=False))
+            ('committeemeeting', models.ForeignKey(orm['committees.committeemeeting'], null=False))
         ))
-        db.create_unique('laws_bill_second_committee_meetings', ['bill_id', 'committee_id'])
+        db.create_unique('laws_bill_second_committee_meetings', ['bill_id', 'committeemeeting_id'])
 
         # Adding M2M table for field proposers on 'Bill'
         db.create_table('laws_bill_proposers', (
@@ -139,14 +140,15 @@ class Migration(SchemaMigration):
         'laws.bill': {
             'Meta': {'object_name': 'Bill'},
             'approval_vote': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'bill_approved'", 'unique': 'True', 'null': 'True', 'to': "orm['laws.Vote']"}),
-            'first_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_first'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.Committee']"}),
+            'first_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_first'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
             'first_vote': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills_first'", 'null': 'True', 'to': "orm['laws.Vote']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'knesset_proposal': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'to': "orm['laws.KnessetProposal']"}),
             'law': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'to': "orm['laws.Law']"}),
             'pre_votes': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_pre_votes'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.Vote']"}),
             'proposals': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.PrivateProposal']"}),
             'proposers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
-            'second_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_second'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.Committee']"}),
+            'second_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_second'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
             'stage': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'stage_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
@@ -234,6 +236,7 @@ class Migration(SchemaMigration):
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'family_status': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'is_current': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),

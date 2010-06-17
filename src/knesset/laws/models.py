@@ -332,8 +332,13 @@ class Bill(models.Model):
     stage_date = models.DateField(blank=True, null=True)
     proposals = models.ManyToManyField('PrivateProposal', related_name='bills', blank=True, null=True)
     pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True)
-    first_committee_meetings = models.ManyToManyField('committees.Committee',related_name='bills_first', blank=True, null=True)     
+    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True)     
+    knesset_proposal = models.ForeignKey('KnessetProposal', related_name='bills', blank=True, null=True)
     first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True)
-    second_committee_meetings = models.ManyToManyField('committees.Committee',related_name='bills_second', blank=True, null=True)
+    second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True)
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+
+    def __unicode__(self):
+        return u"%s %s" % (self.law, self.title)
+
