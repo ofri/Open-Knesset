@@ -296,7 +296,7 @@ class Command(NoArgsCommand):
 
         for id in range(self.last_downloaded_member_id+1,900): # TODO - find max member id in knesset website and use here
             m = mk_parser.MKHtmlParser(id).Dict
-            if (m.has_key('name') and m['name'] != None): name = m['name'].encode(ENCODING).replace('&nbsp;',' ').replace(u'\xa0',' ')
+            if (m.has_key('name') and m['name'] != None): name = m['name'].replace(u'\xa0',u' ').encode(ENCODING).replace('&nbsp;',' ')
             else: continue
             f.write("%d\t%s\t" % (  id, name ))
             for field in fields:
@@ -664,7 +664,7 @@ class Command(NoArgsCommand):
         except Exception,e:
             logger.warn(e)
             if retry < 5:
-                logger.warn("waiting some time and trying again... (# of retries = %d)" % retry+1)
+                logger.warn("waiting some time and trying again... (# of retries = %d)" % (retry+1) )
                 page = read_votes_page(self,voteId, retry+1)
             else:
                 logger.error("failed too many times. last error: %s", e)
