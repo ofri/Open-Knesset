@@ -46,7 +46,7 @@ def parse_pdftxt(filename=None, url=None):
     result = []
     law = {}
     for (i,line) in enumerate(lines):
-        m = re.search('(\d{4,4})[\.|\w](\d+)[\.|\w](\d+)', line)
+        m = re.search('(\d{4,4})[\.|\s](\d+)[\.|\s](\d+)', line)
         if m:
             d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
             
