@@ -16,5 +16,5 @@
 {% endif %}
 :
 {% with action.target as vote %}
-    <a  class="action-target" ref="{{ vote.get_absolute_url }}">{{ vote.title }}</a>
+    <a  class="action-target" href="{{ vote.get_absolute_url }}">{{ vote.title }}</a>
 {% endwith %}
