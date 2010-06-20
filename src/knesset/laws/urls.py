@@ -7,8 +7,11 @@ from views import *
 
 vote_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes':True,'title':ugettext('Votes')})
 law_view = LawView(queryset=Law.objects.filter(title__contains='חוק').order_by('title'), paginate_by=20, extra_context={'title':ugettext('Laws')})
+bill_view = BillView(queryset=Bill.objects.all().order_by('-stage_date'), paginate_by=20,extra_context={'title':ugettext('Bills')})
 
 lawsurlpatterns = patterns ('',
+    url(r'^bill/$', bill_view, name='bill-list'),
+    url(r'^bill/(?P<object_id>\d+)/$', bill_view, name='bill-detail'),
     url(r'^law/$', law_view, name='law-list'),
     url(r'^law/(?P<object_id>\d+)/$', law_view, name='law-detail'),
     url(r'^vote/$', vote_view, name='vote-list'),
