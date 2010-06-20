@@ -7,6 +7,7 @@ import re
 import urllib2
 import subprocess
 import logging
+from datetime import date
 
 logger = logging.getLogger("open-knesset.parse_knesset_bill_pdf")
 
@@ -41,9 +42,14 @@ def parse_pdftxt(filename=None, url=None):
     f = open(filename,'rt')
     lines = f.read().split('\n')
     state = 0
+    d = None
     result = []
     law = {}
     for (i,line) in enumerate(lines):
+        m = re.search('(\d{4,4})\.(\d+)\.(\d+)', line)
+        if m:
+            d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
+            
         if line.find('*')>=0 and line.find('**')==-1:
             if state==0:
                 title = lines[i+2].decode('utf8').replace(u'\u202b','')
@@ -64,8 +70,10 @@ def parse_pdftxt(filename=None, url=None):
                     logger.warn("Can't find expected string \w+\d+\d+ in url %s" % url)
                 law['references'] = x
                 m = re.findall('\w+/\d+/\d+',x, re.UNICODE) # find IDs of original proposals
-                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # inverse                   
+                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # inverse                                   
                 result.append(law)
                 law = {}
                 state = 0
+    for l in result:
+        l['date'] = d
     return result

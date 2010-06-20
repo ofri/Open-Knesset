@@ -168,7 +168,7 @@ class ParseKnessetLaws(ParseLaws):
                     law = law[5:]
 
                 self.laws_data.append({'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
-                                       'comment':comment, 'original_ids':pdf_data[j]['original_ids']})
+                                       'comment':comment, 'original_ids':pdf_data[j]['original_ids'],'date':pdf_data[j]['date']})
 	
     def update_booklet(self):
         return int(self.laws_data[-1]['booklet'])
