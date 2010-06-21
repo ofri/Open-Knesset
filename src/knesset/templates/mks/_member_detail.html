@@ -89,6 +89,26 @@
         <h3>{% trans "Links" %}</h3>
             {% object_links object %}
     </div>
+    <div>
+        <h3>{% trans "Bills" %}</h3>
+        {% for bill in object.bills.all %}
+            {% if forloop.first %}
+                <h4>{% trans "Proposed" %}</h4>
+            {% endif %}
+            <a href="{{ bill.get_absolute_url }}">{{ bill }}</a>
+        {% empty %}
+            {% trans "Hasn't proposed any laws" %}
+        {% endfor %}
+        {% for proposal in object.bills_joined.all %}
+            {% if forloop.first %}
+                <h4>{% trans "Joined" %}</h4>
+            {% endif %}
+            {% with proposal.bills.all.0 as bill %}
+                <a href="{{ bill.get_absolute_url }}">{{ bill }}</a>
+            {% endwith %}
+        {% endfor %}
+
+    </div>
 
 </div>
 
