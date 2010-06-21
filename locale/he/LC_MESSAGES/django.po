@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-20 20:23+0300\n"
-"PO-Revision-Date: 2010-06-20 20:24+0200\n"
+"POT-Creation-Date: 2010-06-22 01:40+0300\n"
+"PO-Revision-Date: 2010-06-22 01:41+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -163,11 +163,12 @@ msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
 #: laws/urls.py:9
-#: templates/base.html:75
 msgid "Laws"
 msgstr "חוקים"
 
 #: laws/urls.py:10
+#: templates/base.html:75
+#: templates/mks/_member_detail.html:93
 msgid "Bills"
 msgstr "הצעות חוק"
 
@@ -513,7 +514,7 @@ msgstr "ראשי"
 msgid "Committees"
 msgstr "ועדות"
 
-#: templates/base.html:97
+#: templates/base.html:108
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות."
 
@@ -1011,7 +1012,23 @@ msgstr "ישיבות וועדות בחודש"
 msgid "Contact Information"
 msgstr "יצירת קשר"
 
-#: templates/mks/_member_detail.html:100
+#: templates/mks/_member_detail.html:96
+msgid "Bold: passed, red: failed"
+msgstr "מודגש: אושר, אדום: נפל"
+
+#: templates/mks/_member_detail.html:97
+msgid "MK Proposed"
+msgstr "הציע/ה"
+
+#: templates/mks/_member_detail.html:101
+msgid "Hasn't proposed any laws"
+msgstr "לא הציע/ה חוקים"
+
+#: templates/mks/_member_detail.html:105
+msgid "Joined"
+msgstr "הצטרף/ה"
+
+#: templates/mks/_member_detail.html:121
 msgid "before"
 msgstr "לפני"
 
@@ -1391,6 +1408,9 @@ msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/.
 msgid "email address"
 msgstr "כתובת דוא\"ל"
 
+#, fuzzy
+#~ msgid "Intiated"
+#~ msgstr "מאומתים?"
 #~ msgid "read original post"
 #~ msgstr "קרא בבלוג"
 #~ msgid "DjangoIL unless otherwise noted."
@@ -2313,8 +2333,6 @@ msgstr "כתובת דוא\"ל"
 #~ msgstr "אין עדיין תגובות"
 #~ msgid "Email"
 #~ msgstr "כתובת דוא\"ל"
-#~ msgid "Authenticated?"
-#~ msgstr "מאומתים?"
 #~ msgid "IP Address"
 #~ msgstr "כתובת IP"
 #~ msgid "yes"
@@ -2404,10 +2422,6 @@ msgstr "כתובת דוא\"ל"
 #~ msgid_plural "%(value).1f trillion"
 #~ msgstr[0] "%(value).1f טריליון"
 #~ msgstr[1] "%(value).1f טריליונים"
-
-#, fuzzy
-#~ msgid "one"
-#~ msgstr "אין"
 #~ msgid "two"
 #~ msgstr "שניים"
 #~ msgid "three"

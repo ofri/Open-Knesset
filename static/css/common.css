@@ -93,7 +93,6 @@ img {border: none;}
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
 h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#251c1f; }
-h4 { font-size:100%; font-weight:bold; margin-bottom:-3px; margin-top:1.2em; text-transform:uppercase; letter-spacing:1px; }
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
 h5 { font-size:1em; font-weight:bold; margin-top:1.5em; margin-bottom:3px; }
 p, ul, dl { margin-top:.6em; margin-bottom:.8em; }
@@ -489,7 +488,16 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .activities > p { margin-right: 2em; }
 .member-details>div {float: right; margin: 0.5em;}
 .member-details h3 { border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; margin-top:0;}
+.member-details h4 { font-weight:bold; margin: 0.2em 0; }
 .member-details ul { padding-right: 0.5em; }
 .member-details li { list-style-type:none; }
 .member-photo { padding-top:0.7em; }
 .pagination {padding-top:1em; text-align:center;}
+
+/* bill colors */
+#content-main .member-details>div>a {font-weight:normal;}
+#content-main .member-details>div>a.s6 {font-weight:bold;}
+#content-main .member-details>div>a.s-2 {color:#CE4C66;}
+#content-main .member-details>div>a.s-4 {color:#CE4C66;}
+#content-main .member-details>div>a.s-6 {color:#CE4C66;}
+

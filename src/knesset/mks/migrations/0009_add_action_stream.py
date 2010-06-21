@@ -10,6 +10,10 @@ class Migration(DataMigration):
         value = getattr(self, field.attname)
         return force_unicode(dict(field.flatchoices).get(value, value), strings_only=True)
 
+    depends_on = (
+        ('committees', '0001_startapp_committees'),
+        ('laws', '0001_initial'),
+    )
 
     def forwards(self, orm):
         from actstream import action 
