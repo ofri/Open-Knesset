@@ -493,3 +493,11 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .member-details li { list-style-type:none; }
 .member-photo { padding-top:0.7em; }
 .pagination {padding-top:1em; text-align:center;}
+
+/* bill colors */
+#content-main .member-details>div>a {font-weight:normal;}
+#content-main .member-details>div>a.s6 {font-weight:bold;}
+#content-main .member-details>div>a.s-2 {color:#CE4C66;}
+#content-main .member-details>div>a.s-4 {color:#CE4C66;}
+#content-main .member-details>div>a.s-6 {color:#CE4C66;}
+
