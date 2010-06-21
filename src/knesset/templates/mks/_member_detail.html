@@ -89,6 +89,16 @@
         <h3>{% trans "Links" %}</h3>
             {% object_links object %}
     </div>
+    {% with object.bills.all as bills %}
+    {% if bills %}
+    <div>
+        <h3>{% trans "Bills" %}</h3>
+            {% for bill in bills %}
+                <a href="{{ bill.get_absolute_url }}">{{ bill.title }}</a>
+            {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
 
 </div>
 
