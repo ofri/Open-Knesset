@@ -319,11 +319,17 @@ class KnessetProposal(BillProposal):
 BILL_STAGE_CHOICES = (
         (u'1', u'Proposed'),
         (u'2', u'Pre-Approved'),
+        (u'-2', u'Failed Pre-Approval'),
         (u'3', u'In Committee'),
         (u'4', u'First Vote'),
+        (u'-4', u'Failed First Vote'),
         (u'5', u'Committee Corrections'),
         (u'6', u'Approved'),
+        (u'-6',u'Failed Approval'),
 )
+# get them translated:
+(_(u'Proposed'),_(u'Pre-Approved'),_(u'Failed Pre-Approval'),_(u'In Committee'),
+ _(u'First Vote'),_(u'Failed First Vote'),_(u'Committee Corrections'),_(u'Approved'),_(u'Failed Approval'))
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)

@@ -190,8 +190,11 @@ class ListDetailView(ClassBasedView):
             object
                 the object
         """
-        ec = self.extra_context or {}
-        ec.update(extra_context or {}) 
+        if self.extra_context:
+            ec = dict(self.extra_context) 
+        else:
+            ec = {}
+        ec.update(extra_context or {})     
         model = self.queryset.model
 
         if object_id:

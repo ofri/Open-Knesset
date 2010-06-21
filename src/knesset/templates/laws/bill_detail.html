@@ -1,0 +1,71 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load laws_extra %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-laws %}class="selected"{% endblock %}
+{% block divcontent %}
+<h1>{{ object.law.title }} {{ object.title }}</h1>
+    {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
+    {% trans 'stage date' %}: {{ object.stage_date }}<br>
+    {% trans 'Proposed by' %}:
+    {% for proposer in object.proposers.all %}
+        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+    {% endfor %}<br>
+
+    <h2>{% trans 'Bill initiation' %}</h2>
+    {% for pp in object.proposals.all %}
+        p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a> 
+        {% trans 'Proposed by' %}:
+        {% for proposer in pp.proposers.all %}
+            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+        {% endfor %}
+        <br>
+    {% empty %}
+        {% trans 'No Info' %}
+    {% endfor %}
+
+    <h2>{% trans 'Pre Vote' %}</h2>
+    {% for v in object.pre_votes.all %}
+        <a class="item" href="{% url vote-detail v.id %}">{{ v.title }} {{ v.time }}</a>({% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }})<br>
+    {% empty %}
+        {% trans 'No Info' %}
+    {% endfor %}     
+    
+    <h2>{% trans 'Committee Meetings' %}</h2>
+    {% for cm in object.first_committee_meetings.all %}
+        <a class="item" href="{% url committee-meeting cm.id %}">{{ cm.committee.name }} {{ cm.date }}</a><br>
+    {% empty %}
+        {% trans 'No Info' %}
+    {% endfor %}     
+
+    <h2>{% trans 'Bill formulated by the committee' %}</h2> 
+    {% if object.knesset_proposal %}
+        {{ object.knesset_proposal.title }} <a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a> 
+    {% else %}
+        {% trans 'No Info' %}
+    {% endif %}     
+
+    <h2>{% trans 'First Vote' %}</h2>
+    {% if object.first_vote %}
+        <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
+    {% else %}
+        {% trans 'No Info' %}
+    {% endif %}     
+
+    <h2>{% trans 'Committee Meetings' %}</h2>
+    {% for cm in object.second_committee_meetings.all %}
+        <a class="item" href="{% url committee-meeting cm.id %}">{{ cm.committee.name }} {{ cm.date }}</a><br>
+    {% empty %}
+        {% trans 'No Info' %}
+    {% endfor %}     
+        
+    <h2>{% trans 'Bill Approval' %}</h2>
+    {% if object.approval_vote %}
+        <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
+    {% else %}
+        {% trans 'No Info' %}
+    {% endif %}     
+    
+{% endblock %}

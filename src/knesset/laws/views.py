@@ -18,6 +18,38 @@ from knesset.hashnav.views import ListDetailView
 import urllib
 import urllib2
 
+class BillView (ListDetailView):
+
+    def render_object(self, request, object_id, extra_context=None, **kwargs):
+        if not extra_context:
+            extra_context = {}
+        bill = Bill.objects.get(pk=object_id)
+        extra_context['title'] = "%s %s" % (bill.law.title, bill.title)
+        return super(BillView, self).render_object(request, object_id,
+                              extra_context=extra_context, **kwargs)
+
+    friend_pages = [
+            ('stage','all',_('All stages')),
+    ]
+    friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
+
+    def render_list(self, request, extra_context=None, **kwargs):
+        stage_filter = request.GET.get('stage',None)
+        r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
+        if stage_filter and stage_filter!='all':
+            queryset = self.queryset.filter(stage=stage_filter)
+            for x in r:
+                if x[3]==stage_filter:
+                    x[2] = True
+                    break
+        else:
+            queryset = self.queryset
+            r[0][2] = True
+        if not extra_context:
+            extra_context = {}
+        extra_context['friend_pages'] = r
+        return super(BillView, self).render_list(request, queryset=queryset, extra_context=extra_context,**kwargs)
+
 class LawView (ListDetailView):
 
     def render_object(self, request, object_id, extra_context=None, **kwargs):
@@ -32,7 +64,8 @@ class LawView (ListDetailView):
         return super(LawView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)
 
-
+        
+        
 
 class VoteListView(ListDetailView):
 

@@ -1100,9 +1100,9 @@ class Command(NoArgsCommand):
                 title += ' ' + proposal['comment']
             if len(title)<=1:
                 title = u'חוק חדש'
-            (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18, 
+            (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
                                                                  source_url=proposal['link'],
-                                                                 title=title, law=law)
+                                                                 title=title, law=law, date=proposal['date'])
             for orig in proposal['original_ids']:
                 knesset_id = int(orig.split('/')[1])
                 if knesset_id != 18:
