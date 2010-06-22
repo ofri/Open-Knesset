@@ -16,6 +16,7 @@ class ParseLaws(object):
     url = None
 	
     def get_page_with_param(self,params):
+        print self.url
         if params == None : 
             html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
             return BeautifulSoup(html_page)

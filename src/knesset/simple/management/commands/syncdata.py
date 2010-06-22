@@ -982,7 +982,7 @@ class Command(NoArgsCommand):
 
         f = open('members.tsv','wt')
         for m in Member.objects.filter(end_date__gte=datetime.date(2009,2,24)):
-            f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.current_party().__unicode__().encode('utf-8')))
+            f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.current_party.__unicode__().encode('utf-8') if m.current_party != None else ''))
         f.close()
 
     def update_presence(self):

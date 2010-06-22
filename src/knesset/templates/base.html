@@ -26,6 +26,7 @@
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/pages.js"></script>
+	    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
 
         <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -88,6 +89,17 @@
 			{% block columnwrap %}                
 				<div id="content-main">
 				{% block content-main %}{% endblock %}
+					<table style="border:0px;vertical-align:middle;margin-top:70px;">
+					  	<tr>
+					  	<td>
+							<a title="Post to Google Buzz" class="google-buzz-button" href="http://www.google.com/buzz/post" data-button-style="normal-count" data-locale="iw"></a>
+							<script type="text/javascript" src="http://www.google.com/buzz/api/button.js"></script>
+					  	</td>
+					  	<td>
+						<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Foknesset.org{{ request.path|iriencode }}&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
+					  	</td>
+					  	</tr>
+					</table>
 				</div>
 				<!-- END #content-main -->
 			{% endblock %}

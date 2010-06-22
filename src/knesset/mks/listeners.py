@@ -11,7 +11,7 @@ from knesset.mks.models import Member
 def connect_feed(sender, created, instance, **kwargs):
     if created:
         t = cannonize(instance.title)
-        rss_type = LinkType.objects.get(title='רסס')
+        rss_type, _  = LinkType.objects.get_or_create(title='רסס')
         for m in Member.objects.all():
             if t.rfind(cannonize(m.name)) != -1:
                 Link.objects.create(url=instance.url, title = instance.title,
@@ -32,9 +32,10 @@ post_save.connect(record_vote_action, sender=VoteAction)
 @disable_for_loaddata
 def record_post_action(sender, created, instance, **kwargs):
     if created:
-        member = Link.objects.get(url=instance.feed.url).content_object
+        link, _ = Link.objects.get_or_create(url=instance.feed.url)
+        member  = link.content_object
         action.send(member, verb='posted',
                     target = instance,
                     timestamp=instance.date_modified or instance.date_created)
-post_save.connect(record_post_action, sender=Post)
+#post_save.connect(record_post_action, sender=Post)
 
