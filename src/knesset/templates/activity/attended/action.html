@@ -9,6 +9,6 @@
 :
 {% with action.target as meeting %}
     <a href="{{ meeting.get_absolute_url }}" title="{% trans 'read meeting protocol' %}">
-        {{ meeting.committee.name}} - {{ meeting.topics }}
+        {{ meeting.committee.name}} - {{ meeting.topics|safe }}
     </a>
 {% endwith %}
