@@ -104,7 +104,7 @@
             {% if forloop.first %}
                 <h4>{% trans "Joined" %}</h4>
             {% endif %}
-            {% with proposal.bills.all.0 as bill %}
+            {% with proposal.bill as bill %}
                 <a class="bill s{{bill.stage}}" href="{{ bill.get_absolute_url }}">{{ bill }}</a>
             {% endwith %}
         {% endfor %}
