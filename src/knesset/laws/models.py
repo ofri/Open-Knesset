@@ -302,7 +302,6 @@ class BillProposal(models.Model):
     class Meta:
         abstract = True
 
-
     def __unicode__(self):
         return u"%s %s" % (self.law, self.title)
 
@@ -321,19 +320,16 @@ class KnessetProposal(BillProposal):
                                  blank=True, null=True)
 
 BILL_STAGE_CHOICES = (
-        (u'1', u'Proposed'),
-        (u'2', u'Pre-Approved'),
-        (u'-2', u'Failed Pre-Approval'),
-        (u'3', u'In Committee'),
-        (u'4', u'First Vote'),
-        (u'-4', u'Failed First Vote'),
-        (u'5', u'Committee Corrections'),
-        (u'6', u'Approved'),
-        (u'-6',u'Failed Approval'),
+        (u'1', _(u'Proposed')),
+        (u'2', _(u'Pre-Approved')),
+        (u'-2',_( u'Failed Pre-Approval')),
+        (u'3', _(u'In Committee')),
+        (u'4', _(u'First Vote')),
+        (u'-4',_( u'Failed First Vote')),
+        (u'5', _(u'Committee Corrections')),
+        (u'6', _(u'Approved')),
+        (u'-6',_(u'Failed Approval')),
 )
-# get them translated:
-(_(u'Proposed'),_(u'Pre-Approved'),_(u'Failed Pre-Approval'),_(u'In Committee'),
- _(u'First Vote'),_(u'Failed First Vote'),_(u'Committee Corrections'),_(u'Approved'),_(u'Failed Approval'))
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
@@ -348,7 +344,7 @@ class Bill(models.Model):
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
 
     def __unicode__(self):
-        return u"%s %s" % (self.law, self.title)
+        return u"%s %s (%s)" % (self.law, self.title, self.get_stage_display())
 
     @models.permalink
     def get_absolute_url(self):
