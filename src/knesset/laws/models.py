@@ -302,7 +302,6 @@ class BillProposal(models.Model):
     class Meta:
         abstract = True
 
-
     def __unicode__(self):
         return u"%s %s" % (self.law, self.title)
 
@@ -310,43 +309,42 @@ class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
     joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
+    bill = models.ForeignKey('Bill', related_name='proposals', 
+                             blank=True, null=True)
 
 class KnessetProposal(BillProposal):
     committee = models.ForeignKey('committees.Committee',related_name='bills', blank=True, null=True)
     booklet_number = models.IntegerField(blank=True, null=True)
     originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
+    bill = models.OneToOneField('Bill', related_name='knesset_proposal',
+                                 blank=True, null=True)
 
 BILL_STAGE_CHOICES = (
-        (u'1', u'Proposed'),
-        (u'2', u'Pre-Approved'),
-        (u'-2', u'Failed Pre-Approval'),
-        (u'3', u'In Committee'),
-        (u'4', u'First Vote'),
-        (u'-4', u'Failed First Vote'),
-        (u'5', u'Committee Corrections'),
-        (u'6', u'Approved'),
-        (u'-6',u'Failed Approval'),
+        (u'1', _(u'Proposed')),
+        (u'2', _(u'Pre-Approved')),
+        (u'-2',_( u'Failed Pre-Approval')),
+        (u'3', _(u'In Committee')),
+        (u'4', _(u'First Vote')),
+        (u'-4',_( u'Failed First Vote')),
+        (u'5', _(u'Committee Corrections')),
+        (u'6', _(u'Approved')),
+        (u'-6',_(u'Failed Approval')),
 )
-# get them translated:
-(_(u'Proposed'),_(u'Pre-Approved'),_(u'Failed Pre-Approval'),_(u'In Committee'),
- _(u'First Vote'),_(u'Failed First Vote'),_(u'Committee Corrections'),_(u'Approved'),_(u'Failed Approval'))
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
     stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
     stage_date = models.DateField(blank=True, null=True)
-    proposals = models.ManyToManyField('PrivateProposal', related_name='bills', blank=True, null=True)
     pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True)
     first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True)     
-    knesset_proposal = models.ForeignKey('KnessetProposal', related_name='bills', blank=True, null=True)
     first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True)
     second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True)
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
 
     def __unicode__(self):
-        return u"%s %s" % (self.law, self.title)
+        return u"%s %s (%s)" % (self.law, self.title, self.get_stage_display())
 
     @models.permalink
     def get_absolute_url(self):

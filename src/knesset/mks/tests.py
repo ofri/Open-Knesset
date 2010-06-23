@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, AnonymousUser
 from knesset.mks.models import Member
 from knesset.mks.views import MemberListView
+from knesset.utils import RequestFactory
 
 class TestViews(unittest.TestCase):
 
@@ -16,16 +17,20 @@ class TestViews(unittest.TestCase):
     def testMemberDetailsContext(self):
 
         # test anonymous user
+        rf = RequestFactory()
         anon = AnonymousUser()
-        context = self.member_list_view.get_object_context(anon, self.david.id)
+        request = rf.get('/')
+        request.user = anon
+        context = self.member_list_view.get_object_context(request, self.david.id)
         self.assertFalse(context['watched_member'])
         # test autherized user
-        context = self.member_list_view.get_object_context(self.jacob, self.david.id)
+        request.user = self.jacob
+        context = self.member_list_view.get_object_context(request, self.david.id)
         self.assertFalse(context['watched_member'])
         # test autherized user that follows
         p = self.jacob.get_profile()
         p.followed_members.add(self.david)
-        context = self.member_list_view.get_object_context(self.jacob, self.david.id)
+        context = self.member_list_view.get_object_context(request, self.david.id)
         self.assertTrue(context['watched_member'])
 
     def tearDown(self):

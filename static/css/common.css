@@ -257,7 +257,7 @@ a.disabled { color: #aaaaaa; }
 #content-main .member_votes ul { padding-left:1.5em; padding-right:0; }
 
 #content-main .bold-link { font-weight:bold; }
-#content-main label { display: block; width: 6em; float:right}
+#content-main label { display: block; float:right}
 
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
@@ -413,9 +413,6 @@ a.disabled { color: #aaaaaa; }
 #content-main .inline-form {
     display:inline;
 }
-#content-main form {
-    margin-right: 1em;
-}
 #content-main > form > p {
     margin: 0.4em;
 }
@@ -483,16 +480,20 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 }
 
 /* action stream */
-.activities { clear:both; padding-top:1em; max-width:60em;}
-.activities > h3 { border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; }
+.activities { clear:both; border: 1px solid #CFD4D7; max-width:60em; }
+.activities > h3 { clear:both; border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; }
 .activities > p { margin-right: 2em; }
+.activities form.select { border-top:1px solid #CFD4D7; font-size:120%}
+.activities .select label { padding-left:1em;} 
+.activities .select ul { display: inline;} 
+.activities .select li { list-style-type:none; display: inline; } 
 .member-details>div {float: right; margin: 0.5em;}
 .member-details h3 { border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; margin-top:0;}
 .member-details h4 { font-weight:bold; margin: 0.2em 0; }
 .member-details ul { padding-right: 0.5em; }
 .member-details li { list-style-type:none; }
 .member-photo { padding-top:0.7em; }
-.pagination {padding-top:1em; text-align:center;}
+.pagination {padding:1em 0; margin-top: 1em; text-align:center; }
 
 /* bill colors */
 #content-main .member-details>div>a {font-weight:normal;}
@@ -501,3 +502,29 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 #content-main .member-details>div>a.s-4 {color:#CE4C66;}
 #content-main .member-details>div>a.s-6 {color:#CE4C66;}
 
+.awesome-button, .awesome-button:visited {
+    background: #222 url(/static/img/overlay.png) repeat-x;
+    display: inline-block;
+    padding: 5px 10px 6px;
+    color: #fff;
+    text-decoration: none;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-top:0; border-right:0; border-left:0;
+    position: relative;
+    cursor: pointer
+}
+.small.awesome-button, .small.awesome-button:visited { font-size: 11px}
+.medium.awesome-button, .medium.awesome-button:visited { 
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1;
+}
+.large.awesome-button, .large.awesome-button:visited { font-size: 14px; padding: 8px 14px 9px; }
+.super.awesome-button, .super.awesome-button:visited { font-size: 34px; padding: 8px 14px 9px; }
+.awesome-button, .awesome-button:visited {background-color:#0d204a;}
+.awesome-button:hover {background-color:#0a1a3c;}

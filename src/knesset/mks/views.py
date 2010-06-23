@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
+from knesset.mks.forms import VerbsForm
 from knesset.laws.models import MemberVotingStatistics
 from knesset.hashnav.views import ListDetailView
 
@@ -139,20 +140,30 @@ class MemberListView(ListDetailView):
 
         return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
 
-    def get_object_context (self, user, object_id):
+    def get_object_context (self, request, object_id):
         from actstream import actor_stream
 
         member = Member.objects.get(pk=object_id)
-        if user.is_authenticated():
-            p = user.get_profile()
+        if request.user.is_authenticated():
+            p = request.user.get_profile()
             watched = member in p.followed_members.all()
         else:
             watched = False
+        if 'verbs' in request.GET:
+            verbs_form = VerbsForm(request.GET)
+            verbs_form.is_valid()
+            verbs=verbs_form.cleaned_data['verbs']
+        else:
+            verbs = ('proposed', 'posted')
+            verbs_form = VerbsForm({'verbs': verbs})
+
         return {'watched_member': watched,
-                'actions': actor_stream(member), }
+                'actions': actor_stream(member).filter(verb__in=verbs),
+                'verbs_form': verbs_form,
+               }
 
     def render_object(self, request, object_id, extra_context={}, **kwargs):
-        context = self.get_object_context(request.user, object_id)
+        context = self.get_object_context(request, object_id)
         extra_context.update(context)
         return super(MemberListView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)

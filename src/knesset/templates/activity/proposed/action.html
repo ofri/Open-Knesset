@@ -2,13 +2,17 @@
 {% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.get_absolute_url }}">{{ action.actor }}</a>
 {% else %}<span class="action-actor">{{ action.actor }}</span>{% endif %}
 {% if action.actor.is_female %}
-<span class="action-verb">נכחה</span>
+<span class="action-verb">הציעה</span>
 {% else %}
-<span class="action-verb">נכח</span>
+<span class="action-verb">הציע</span>
 {% endif %}
 :
-{% with action.target as meeting %}
-    <a href="{{ meeting.get_absolute_url }}" title="{% trans 'read meeting protocol' %}">
-        {{ meeting.committee.name}} - {{ meeting.topics|safe }}
-    </a>
+{% with action.target.bill as bill %}
+    {% if bill %}
+        <a href="{{ bill.get_absolute_url }}">
+            {{ bill }}
+        </a>
+    {% else %}
+        {{ action.target }}
+    {% endif %}
 {% endwith %}

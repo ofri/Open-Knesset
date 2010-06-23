@@ -89,32 +89,14 @@
         <h3>{% trans "Links" %}</h3>
             {% object_links object %}
     </div>
-    <div>
-        <h3>{% trans "Bills" %}</h3>
-        {% for bill in object.bills.all %}
-            {% if forloop.first %}
-                ({% trans "Bold: passed, red: failed" %})
-                <h4>{% trans "MK Proposed" %}</h4>  
-            {% endif %}
-            <a class="bill s{{bill.stage}}" href="{{ bill.get_absolute_url }}">{{ bill }}</a>
-        {% empty %}
-            {% trans "Hasn't proposed any laws" %}
-        {% endfor %}
-        {% for proposal in object.bills_joined.all %}
-            {% if forloop.first %}
-                <h4>{% trans "Joined" %}</h4>
-            {% endif %}
-            {% with proposal.bills.all.0 as bill %}
-                <a class="bill s{{bill.stage}}" href="{{ bill.get_absolute_url }}">{{ bill }}</a>
-            {% endwith %}
-        {% endfor %}
-
-    </div>
-
 </div>
 
 
 <div class="activities" >
+        <form class="select" method="get" action=".">
+            {{verbs_form}}
+            <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
+        </form>
 {% autopaginate actions %}
 {% for action in actions %}
     {% with action.timestamp|timesince as since %}

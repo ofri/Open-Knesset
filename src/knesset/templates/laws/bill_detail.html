@@ -15,6 +15,76 @@
     {% endfor %}<br>
     <div id="bill-canvas">
     </div>
+
+    <script type="text/javascript">
+		function connect_el_to_div( el, div ) {
+			el.click( function () {
+				$(".bill-stage").css("visibility","hidden");
+				$("#"+div+".bill-stage").css("visibility","visible");
+				return true;
+			} );
+		}
+
+    	Raphael.fn.my_arrow = function ( x,y,div,active ) {
+			var paper = this;
+			var realx = 850 - x;
+			var path_params;
+			if ( active ) {
+			 	path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
+			} else {
+			 	path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
+			}
+			var l = paper.path(["M",realx,y,"h",-90,"l",-15,30,"l",15,30,"h",90,"l",-15,-30,"Z"]).attr(path_params);
+			 
+		    
+			function add_animation(el,l) {
+	            el.hover(function () {
+		            l.attr({"stroke-width": "2px",
+		            		"stroke":"#224",
+		            		"scale": [1.1,1.1]});
+	                return true;
+	            },
+	            function () {
+		            l.attr({"stroke-width": "1px",
+		            		"stroke":"#777",
+		            		"scale": [1,1]});
+	                return true;
+	            });
+			}
+			if ( active ) {
+				l.toBack();
+				$(l.node).css("cursor","pointer");
+				add_animation(l,l);
+            	connect_el_to_div(l,div);
+			}
+		    return l;
+		};
+
+    	Raphael.fn.approved = function ( _x,y,approved ) {
+			var paper = this;
+			var s=paper.set(),
+			    im,
+				x = 850-_x,
+				circle_radius = 15,
+				circle_x = x + circle_radius,
+				circle_y = y + circle_radius,
+				c = paper.circle(circle_x,circle_y,circle_radius);
+        	if ( approved == null ) {
+            	im = paper.image("{{MEDIA_URL}}img/unknown.png",x,y,30,30);
+        	} else if ( approved ) {
+            	c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#4c4"});
+            	im = paper.image("{{MEDIA_URL}}img/ok.png",x,y,30,30);
+        	} else {
+            	c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#c44"});
+            	im = paper.image("{{MEDIA_URL}}img/stop.png",x,y,30,30);
+        	}
+        	s.push(c,im);
+        	return s;
+    	}
+    		
+		var paper = Raphael("bill-canvas", 850, 300);
+		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,58);
+	</script>
         
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
@@ -28,6 +98,15 @@
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}
+    <script type="text/javascript">
+		var rect1 = paper.my_arrow(10,10,"bill-initiation", 
+    {% if object.proposals.all %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	</script>
     </div>
 
     <div id="bill-pre-vote" class="bill-stage">
@@ -37,6 +116,15 @@
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}     
+    <script type="text/javascript">
+		var rect2 = paper.my_arrow(110,10,"bill-pre-vote", 
+    {% if object.pre_votes.all %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	</script>
     </div>
     
     <div id="bill-first-committee-meetings" class="bill-stage">
@@ -46,6 +134,18 @@
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}     
+    <script type="text/javascript">
+		var rect3 = paper.my_arrow(210,10,"bill-first-committee-meetings", 
+    {% if object.first_committee_meetings.all %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+    {% for v in object.pre_votes.all %}
+	    var im2 = paper.approved(235,25,{{ v.for_votes_count }}  > {{ v.against_votes_count }});
+	{% endfor %}     
+	</script>
 	</div>
 
     <div id="bill-after-committee" class="bill-stage">
@@ -55,6 +155,15 @@
     {% else %}
         {% trans 'No Info' %}
     {% endif %}  
+    <script type="text/javascript">
+		var rect4 = paper.my_arrow(310,10,"bill-after-committee", 
+    {% if object.knesset_proposal %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	</script>
 	</div>  
 
 	<div id="bill-first-vote" class="bill-stage">
@@ -64,6 +173,15 @@
     {% else %}
         {% trans 'No Info' %}
     {% endif %}
+    <script type="text/javascript">
+		var rect5 = paper.my_arrow(410,10,"bill-first-vote", 
+    {% if object.first_vote %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	</script>
     </div>     
 
     <div id="bill-second-committee-meetings" class="bill-stage">
@@ -73,6 +191,18 @@
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}
+    <script type="text/javascript">
+		var rect6 = paper.my_arrow(510,10,"bill-second-committee-meetings", 
+    {% if object.second_committee_meetings.all %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	{% if object.first_vote %}
+	    var im5 = paper.approved(535,25,{{ object.first_vote.for_votes_count }}  > {{ object.first_vote.against_votes_count }});
+	{% endif %}     
+	</script>
     </div>     
         
     <div id="bill-approval" class="bill-stage">
@@ -82,69 +212,25 @@
     {% else %}
         {% trans 'No Info' %}
     {% endif %}
+    <script type="text/javascript">
+		var rect7 = paper.my_arrow(610,10,"bill-approval", 
+    {% if object.approval_vote %}
+		true
+    {% else %}
+	    false
+    {% endif %}
+    );
+	{% if object.approval_vote %}
+	    var im7 = paper.approved(735,25,{{ object.approval_vote.for_votes_count }}  > {{ object.approval_vote.against_votes_count }});
+	    var bg = paper.circle(70,40,38).attr({"fill":"#fff","stroke-width":"3px","stroke":"#ff8"}),
+	    	law = paper.image("{{MEDIA_URL}}img/law.png",40,8,60,66);
+	{% endif %}     
+	</script>
     </div>     
     
-    <script type="text/javascript">
-		function connect_el_to_div( el, div ) {
-			$(el.node).click( 
-					function () {
-						$(".bill-stage").css("visibility","hidden");
-						$("#"+div+".bill-stage").css("visibility","visible");
-					}
-			);
-		}
-
-    	Raphael.fn.my_arrow = function ( x,y,text, div ) {
-			var paper = this;
-			var splits = text.split(" ",10),
-			    realtext = "";
-			var c = this.set(),
-			    realx = 750 - x,
-			    path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"},
-			    text_params = {fill: "black", opacity: 1.0, "font-family": 'Fontin-Sans, Arial', "font-size": "14px"},
-			    l = paper.path(["M",realx,y,"h",-90,"l",-15,30,"l",15,30,"h",90,"l",-15,-30,"Z"]).attr(path_params);
-		    
-			function add_animation(el,l) {
-	            el.mouseover(function () {
-	                l.animate({"stroke-width": "2px"}, 50, ">");
-	                l.animate({"stroke":"black"}, 500, ">");
-	                l.animate({"scale": [1.15,1.05]}, 500,"bounce");
-	            }).mouseout(function () {
-	                l.animate({"stroke-width": "1px"}, 50, ">");
-	                l.animate({"stroke":"#777"}, 200, ">");
-	                l.animate({"scale":[1,1]}, 200,">");
-	            });
-			}
-			add_animation(l,l);
-            connect_el_to_div(l,div);
-
-            var starty = 40 - ((splits.length+(splits.length % 2))/2)*10; 
-            for ( var i = 0 ; i < splits.length ; i+=2 ) {
-                if ( (i % 2) == 0 ) {
-                	var split = splits[i];
-                    if ( splits.length > i+1  ) {
-						split = split+" "+splits[i+1];
-                    }
-			    	var t = paper.text(realx-55,y+starty+20*(i/2),split).attr(text_params);
-	            	connect_el_to_div(t,div);
-	            	add_animation(t,l);
-			    	c.push(t)
-                }
-			}
-			
-		    c.push(l);
-		    return l;
-		};
+	<script type="text/javascript">
+		$(titles.node).attr("pointer-events","none");
 		
-		var paper = Raphael("bill-canvas", 750, 400);
-		var rect1 = paper.my_arrow(10,10,"{% trans 'Bill initiation' %}","bill-initiation");
-		var rect2 = paper.my_arrow(110,10,"{% trans 'Pre Vote' %}", "bill-pre-vote" );
-		var rect3 = paper.my_arrow(210,10,"{% trans 'Committee Meetings' %}", "bill-first-committee-meetings");
-		var rect4 = paper.my_arrow(310,10,"{% trans 'Bill formulated by the committee' %}", "bill-after-committee");
-		var rect5 = paper.my_arrow(410,10,"{% trans 'First Vote' %}", "bill-first-vote");
-		var rect6 = paper.my_arrow(510,10,"{% trans 'Committee Meetings' %}", "bill-second-committee-meetings");
-		var rect7 = paper.my_arrow(610,10,"{% trans 'Bill Approval' %}", "bill-approval");
-
 		var pos = $("#bill-canvas").position();
 		$(".bill-stage").css("position","absolute");
 		$(".bill-stage").css("top",pos.top + 100);
