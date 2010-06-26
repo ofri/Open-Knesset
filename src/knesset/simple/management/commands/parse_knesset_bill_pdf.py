@@ -63,7 +63,7 @@ def parse_pdftxt(filename=None, url=None):
                 s = re.search(r'[^\d]\d{2,3}[^\d]',title+' ',re.UNICODE) # find numbers of 2-3 digits
                 if s:
                     (a,b) = s.span()
-                    title = title[:a] + title[b-1:a-1:-1] + title[b:] # reverse them
+                    title = title[:a+1] + title[b-2:a:-1] + title[b-1:] # reverse them
                 law['title'] = title
                 state = 1
                 continue

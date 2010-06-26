@@ -30,6 +30,14 @@ class ParseLaws(object):
             html_page = url_data.read().decode('windows-1255').encode('utf-8')
             return BeautifulSoup(html_page)
 
+def fix_dash(s):
+    """returns s with normalized spaces before and after the dash"""
+    if not s:
+        return None
+    m = re.match(r'(תיקון)( ?)(-)( ?)(.*)'.decode('utf8'),s)
+    if not m:
+        return s
+    return ' '.join(m.groups()[0:5:2])
 
 class ParsePrivateLaws(ParseLaws):
     """a class that parses private laws proposed
@@ -91,7 +99,7 @@ class ParsePrivateLaws(ParseLaws):
                     x['correction'] = comment1.strip().replace('\n','').replace('&nbsp;',' ')
                 else:
                     x['correction'] = None
-                
+            x['correction'] = fix_dash(x['correction'])
             x['law_year'] = m.group(7)
             x['proposal_date'] = datetime.datetime.strptime(tds[4].string.strip(), '%d/%m/%Y').date() 
             names_string = ''.join([str(y) for y in tds[5].findAll('font')[0].contents])
@@ -152,7 +160,7 @@ class ParseKnessetLaws(ParseLaws):
             pdf_data = parse_knesset_bill_pdf.parse(pdf_link)
             for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
                 title = pdf_data[j]['title']
-                m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)                
+                m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
                 try:
                     comment = m[-1].strip().replace('\n','').replace('&nbsp;',' ')
                     law = title[:title.find(comment)-1]
@@ -164,6 +172,7 @@ class ParseKnessetLaws(ParseLaws):
                     law = title[:title.find(correction)-1]
                 except:
                     correction = None
+                correction = fix_dash(correction)
                 law = law.strip().replace('\n','').replace('&nbsp;',' ')
                 if law.find("הצעת ".decode("utf8"))==0:
                     law = law[5:]
