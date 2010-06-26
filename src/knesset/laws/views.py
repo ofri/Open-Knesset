@@ -17,6 +17,7 @@ from knesset.hashnav.views import ListDetailView
 
 import urllib
 import urllib2
+import difflib
 
 class BillView (ListDetailView):
 
@@ -25,6 +26,16 @@ class BillView (ListDetailView):
             extra_context = {}
         bill = Bill.objects.get(pk=object_id)
         extra_context['title'] = "%s %s" % (bill.law.title, bill.title)
+        try:
+            kp = bill.knesset_proposal
+            t = kp.law.title + ' ' + kp.title
+            vs = Vote.objects.values('title','id')
+            vs_titles = [v['title'] for v in vs]
+            close_votes = difflib.get_close_matches(t, vs_titles, cutoff=0.5)
+            close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes]            
+            extra_context['close_votes'] = close_votes
+        except Exception, e:
+            pass
         return super(BillView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)
 
