@@ -12,7 +12,8 @@ from knesset.utils import disable_for_loaddata
 from tagging.forms import TagField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+import logging 
+logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', _('For')),
         (u'against', _('Against')),
@@ -350,4 +351,78 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
 
-
+    def merge(self,another_bill):
+        """Merges another_bill into self, and delete another_bill
+        """
+        if self==another_bill:
+            return
+        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))            
+        for pv in another_bill.pre_votes.all():
+            self.pre_votes.add(pv)
+        for cm in another_bill.first_committee_meetings.all():
+            self.first_committee_meetings.add(cm)
+        if not(self.first_vote) and another_bill.first_vote:
+            self.first_vote = another_bill.first_vote
+        for cm in another_bill.second_committee_meetings.all():
+            self.second_committee_meetings.add(cm)
+        if not(self.approval_vote) and another_bill.approval_vote:
+            self.approval_vote = another_bill.approval_vote
+        for m in another_bill.proposers.all():
+            self.proposers.add(m)
+        for pp in another_bill.proposals.all():
+            pp.bill = self
+            pp.save()
+        try:
+            another_bill.knesset_proposal.bill = self
+            another_bill.knesset_proposal.save()
+        except:
+            pass
+        another_bill.delete()
+        self.update_stage()
+    
+    def update_stage(self):
+        """Updates the stage for this bill according to all current data
+        """
+        if self.approval_vote:
+            if self.approval_vote.for_votes_count() > self.approval_vote.against_votes_count():
+                self.stage = '6'
+            else:
+                self.stage = '-6'
+            self.stage_date = self.approval_vote.time.date()
+            self.save()
+            return
+        for cm in self.second_committee_meetings.all():
+            if not(self.stage_date) or self.stage_date < cm.date:
+                self.stage = '5'
+                self.stage_date = cm.date
+        if self.first_vote:
+            if self.first_vote.for_votes_count() > self.first_vote.against_votes_count():
+                self.stage = '4'
+            else:
+                self.stage = '-4'
+            self.stage_date = self.first_vote.time.date()
+            self.save()
+            return
+        try:
+            kp = self.knesset_proposal
+            if not(self.stage_date) or self.stage_date < kp.date:
+                self.stage = '3'
+                self.stage_date = kp.date
+        except KnessetProposal.DoesNotExist:
+            pass
+        for cm in self.first_committee_meetings.all():
+            if not(self.stage_date) or self.stage_date < cm.date:
+                self.stage = '3'
+                self.stage_date = cm.date
+        for v in self.pre_votes.all():
+            if not(self.stage_date) or self.stage_date < v.time.date():
+                if v.for_votes_count() > v.against_votes_count():
+                    self.stage = '2'
+                else:
+                    self.stage = '-2'
+                self.stage_date = v.time.date()
+        for pp in self.proposals.all():
+            if not(self.stage_date) or self.stage_date < pp.date:
+                self.stage = '1'
+                self.stage_date = pp.date
+        self.save()

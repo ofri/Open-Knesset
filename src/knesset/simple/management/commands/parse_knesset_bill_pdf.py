@@ -45,6 +45,7 @@ def parse_pdftxt(filename=None, url=None):
     d = None
     result = []
     law = {}
+    
     for (i,line) in enumerate(lines):
         m = re.search('(\d{4,4})[\.|\s](\d+)[\.|\s](\d+)', line)
         if m:
@@ -57,7 +58,12 @@ def parse_pdftxt(filename=None, url=None):
                     try:
                         title = lines[i].decode('utf8').replace(u'\u202b','')
                     except UnicodeDecodeError,e:
-                        logger.warn("%s\turl=%s" % (e, url)) 
+                        logger.warn("%s\turl=%s" % (e, url))
+
+                s = re.search(r'[^\d]\d{2,3}[^\d]',title+' ',re.UNICODE) # find numbers of 2-3 digits
+                if s:
+                    (a,b) = s.span()
+                    title = title[:a+1] + title[b-2:a:-1] + title[b-1:] # reverse them
                 law['title'] = title
                 state = 1
                 continue
@@ -70,7 +76,7 @@ def parse_pdftxt(filename=None, url=None):
                     logger.warn("Can't find expected string \w+\d+\d+ in url %s" % url)
                 law['references'] = x
                 m = re.findall('\w+/\d+/\d+',x, re.UNICODE) # find IDs of original proposals
-                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # inverse                                   
+                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # reverse                                   
                 result.append(law)
                 law = {}
                 state = 0
