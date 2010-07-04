@@ -32,7 +32,13 @@ class BillView (ListDetailView):
             vs = Vote.objects.values('title','id')
             vs_titles = [v['title'] for v in vs]
             close_votes = difflib.get_close_matches(t, vs_titles, cutoff=0.5)
-            close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes]            
+            all_bill_votes = []
+            all_bill_votes.extend(bill.pre_votes.values_list('id',flat=True))
+            if bill.first_vote:
+                all_bill_votes.add(bill.first_vote.id)
+            if bill.approval_vote:
+                all_bill_votes.add(bill.approval_vote.id)
+            close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes and v['id'] not in all_bill_votes]
             extra_context['close_votes'] = close_votes
         except Exception, e:
             pass

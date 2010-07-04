@@ -274,13 +274,14 @@ class TagForm(forms.Form):
 
 class Law(models.Model):
     title = models.CharField(max_length=1000)
-    
+    merged_into = models.ForeignKey('Law', related_name='duplicates', blank=True, null=True)
     def __unicode__(self):
         return self.title
 
     def merge(self, another_law):
-        """ Merges another_law into this one 
-            (move all pointers from another_law to self, then delete another_law
+        """ Merges another_law into this one. 
+            Move all pointers from another_law to self, 
+            Then mark another_law as deleted by setting its merged_into field to self.
         """
         if another_law == self:
             return # don't accidentally delete myself by trying to merge.
@@ -290,7 +291,11 @@ class Law(models.Model):
         for kp in another_law.laws_knessetproposal_related.all():
             kp.law = self
             kp.save()
-        another_law.delete()
+        for bill in another_law.bills.all():
+            bill.law = self
+            bill.save()
+        another_law.merged_into = self
+        another_law.save()
 
 class BillProposal(models.Model):
     knesset_id = models.IntegerField(blank=True, null=True)
@@ -354,9 +359,24 @@ class Bill(models.Model):
     def merge(self,another_bill):
         """Merges another_bill into self, and delete another_bill
         """
+        if not(self.id):
+            logger.debug('trying to merge into a bill with id=None, title=%s', self.title)
+            self.save()
+        if not(another_bill.id):
+            logger.debug('trying to merge a bill with id=None, title=%s', another_bill.title)
+            another_bill.save()
+
         if self==another_bill:
+            logger.debug('abort merging bill %d into itself' % self.id)
             return
-        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))            
+        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))
+
+        other_kp = KnessetProposal.objects.filter(bill=another_bill)
+        my_kp = KnessetProposal.objects.filter(bill=self)
+        if(len(my_kp) and len(other_kp)):
+            logger.debug('abort merging bill %d into bill %d, because both have KPs' % (another_bill.id, self.id))
+            return
+        
         for pv in another_bill.pre_votes.all():
             self.pre_votes.add(pv)
         for cm in another_bill.first_committee_meetings.all():
@@ -371,12 +391,10 @@ class Bill(models.Model):
             self.proposers.add(m)
         for pp in another_bill.proposals.all():
             pp.bill = self
-            pp.save()
-        try:
-            another_bill.knesset_proposal.bill = self
-            another_bill.knesset_proposal.save()
-        except:
-            pass
+            pp.save()        
+        if len(other_kp):
+            other_kp[0].bill = self
+            other_kp[0].save()
         another_bill.delete()
         self.update_stage()
     
