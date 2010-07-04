@@ -13,6 +13,7 @@ from knesset.hashnav.views import SimpleView
 from search_sites import SearchFormWithSpellSuggest
 from haystack.views import SearchView
 from haystack.forms import SearchForm
+from hitcount.views import update_hit_count_ajax
 
 admin.autodiscover()
 
@@ -54,7 +55,7 @@ urlpatterns = patterns('',
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
-
+     url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'), 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'pagination',
     'django_extensions',
     'actstream',
+    'hitcount',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
