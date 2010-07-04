@@ -97,6 +97,7 @@
             {{verbs_form}}
             <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
         </form>
+    <div style="clear:both;"></div>
 {% autopaginate actions %}
 {% for action in actions %}
     {% with action.timestamp|timesince as since %}
@@ -104,6 +105,10 @@
     {% endwith %}
     <p>
         {% display_action action %}
+    </p>
+{% empty %}
+    <p>
+    {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
     </p>
 {% endfor %}
 {% paginate %}
