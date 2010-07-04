@@ -101,6 +101,8 @@ class Member(models.Model):
     blog = models.OneToOneField(Blog, blank=True, null=True)
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
+    place_of_residence_lat = models.CharField(blank=True, null=True, max_length=16)
+    place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
     user = models.ForeignKey(User,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
 
