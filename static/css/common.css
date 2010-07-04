@@ -469,8 +469,10 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 
 /* mk maps css */
 #residence_map {
-    height: 300px;
+    height: 350px;
     width: 300px;
+    position:relative;
+    top:-50px;
     float: left;
 }
 
