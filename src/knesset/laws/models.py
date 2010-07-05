@@ -398,6 +398,22 @@ class Bill(models.Model):
         another_bill.delete()
         self.update_stage()
     
+    def update_votes(self):
+        kp = KnessetProposal.objects.filter(bill=self)
+        if len(kp):
+            for this_v in kp[0].votes.all():
+                if (this_v.title.find('אישור'.decode('utf8')) == 0):
+                    self.approval_vote = this_v
+                if this_v.title.find('להעביר את'.decode('utf8')) == 0:
+                    self.first_vote = this_v
+        pps = PrivateProposal.objects.filter(bill=self)
+        if len(pps):
+            for pp in pps:
+                for this_v in pp.votes.all():
+                    self.pre_votes.add(this_v)
+        self.update_stage()
+
+    
     def update_stage(self):
         """Updates the stage for this bill according to all current data
         """

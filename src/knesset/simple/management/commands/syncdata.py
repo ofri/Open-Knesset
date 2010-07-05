@@ -1140,10 +1140,16 @@ class Command(NoArgsCommand):
                     kl.originals.add(pp) # and add a link to it
                     if pp.bill:
                         if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
-                            kl.bill = pp.bill
-                            kl.save()
-                            kl.bill.title = kl.title # update the title
-                            kl.bill.save()
+                            if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
+                                logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
+                            else:
+                                kl.bill = pp.bill
+                                kl.save()
+                                kl.bill.title = kl.title # update the title
+                                if kl.bill.stage_date < kl.date:
+                                    kl.bill.stage_date = kl.date
+                                    kl.bill.stage = '3'
+                                kl.bill.save()
                         else: # this kl already had a bill (from another PP)
                             kl.bill.merge(pp.bill) # merge them
                             
@@ -1225,12 +1231,7 @@ class Command(NoArgsCommand):
                         p.votes.add(this_v)
                         #print "add KP %d to Vote %d" % (kp['id'], this_v.id)
                         if p.bill:
-                            if (this_v.title.find('אישור'.decode('utf8')) >= 0) or (this_v.title.find('קריאה שנייה'.decode('utf8')) >= 0):
-                                p.bill.approval_vote = this_v
-                                p.bill.update_stage()
-                            if this_v.title.find('להעביר את'.decode('utf8')) >= 0:
-                                p.bill.first_vote = this_v
-                                p.bill.update_stage()
+                            p.bill.update_votes()
                         
             for pp in pps:
                 if v['c'].find(pp['c1'])>=0:
@@ -1240,8 +1241,7 @@ class Command(NoArgsCommand):
                         p.votes.add(this_v)
                         #print "add PP %d to Vote %d" % (pp['id'], this_v.id)
                         if p.bill:
-                            p.bill.pre_votes.add(this_v)
-                            p.bill.update_stage()    
+                            p.bill.update_votes()
 
     def merge_duplicate_laws(self):
         """Find and merge duplicate laws, and identical bills of each law"""
