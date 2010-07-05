@@ -318,12 +318,24 @@ class PrivateProposal(BillProposal):
     bill = models.ForeignKey('Bill', related_name='proposals', 
                              blank=True, null=True)
 
+    def get_absolute_url(self):
+        if self.bill:
+            return self.bill.get_absolute_url()
+        else:
+            return ""
+    
+
 class KnessetProposal(BillProposal):
     committee = models.ForeignKey('committees.Committee',related_name='bills', blank=True, null=True)
     booklet_number = models.IntegerField(blank=True, null=True)
     originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
     bill = models.OneToOneField('Bill', related_name='knesset_proposal',
                                  blank=True, null=True)
+    def get_absolute_url(self):
+        if self.bill:
+            return self.bill.get_absolute_url()
+        else:
+            return ""
 
 BILL_STAGE_CHOICES = (
         (u'1', _(u'Proposed')),
