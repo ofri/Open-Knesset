@@ -139,10 +139,14 @@ class VoteManager(models.Manager):
 
         qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
 
+        # In dealing with 'tagged' we use an ugly workaround for the fact that generic relations
+        # don't work as expected with annotations. 
+        # please read http://code.djangoproject.com/ticket/10461 before trying to change this code
         if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'false':
-            qs = qs.annotate(c=Count('tagged_items')).filter(c=0)
+            qs = qs.exclude(tagged_items__isnull=False)
         if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'true':
-            qs = qs.annotate(c=Count('tagged_items')).filter(c__gt=0)
+            untagged_ids = Vote.objects.exclude(tagged_items__isnull=False).values_list('id',flat=True)
+            qs = qs.exclude(id__in=untagged_ids)
 
 
         if 'order' in kwargs:
