@@ -4,6 +4,7 @@ from django.template import Context
 from django.views.generic.list_detail import object_list, object_detail
 from django.db.models import Count, Sum
 from django.utils.translation import ugettext as _
+from django.shortcuts import get_object_or_404
 
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
@@ -142,8 +143,7 @@ class MemberListView(ListDetailView):
 
     def get_object_context (self, request, object_id):
         from actstream import actor_stream
-
-        member = Member.objects.get(pk=object_id)
+        member = get_object_or_404(Member,pk=object_id)
         if request.user.is_authenticated():
             p = request.user.get_profile()
             watched = member in p.followed_members.all()

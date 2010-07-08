@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -24,7 +25,7 @@ class BillView (ListDetailView):
     def render_object(self, request, object_id, extra_context=None, **kwargs):
         if not extra_context:
             extra_context = {}
-        bill = Bill.objects.get(pk=object_id)
+        bill = get_object_or_404(Bill, pk=object_id)
         extra_context['title'] = "%s %s" % (bill.law.title, bill.title)
         try:
             kp = bill.knesset_proposal
