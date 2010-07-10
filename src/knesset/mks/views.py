@@ -215,9 +215,16 @@ class MemberListView(ListDetailView):
             verbs = ('proposed', 'posted')
             verbs_form = VerbsForm({'verbs': verbs})
 
+        bills_statistics = {}
+        bills_statistics['proposed'] = member.bills.count()
+        bills_statistics['pre'] = member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+        bills_statistics['first'] = member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+        bills_statistics['approved'] = member.bills.filter(stage='6').count()
+
         return {'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
+                'bills_statistics':bills_statistics,
                }
 
     def render_object(self, request, object_id, extra_context={}, **kwargs):
