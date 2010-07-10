@@ -205,11 +205,13 @@ class MemberListView(ListDetailView):
             watched = member in p.followed_members.all()
         else:
             watched = False
+            
+        verbs = None
         if 'verbs' in request.GET:
             verbs_form = VerbsForm(request.GET)
-            verbs_form.is_valid()
-            verbs=verbs_form.cleaned_data['verbs']
-        else:
+            if verbs_form.is_valid():
+                verbs = verbs_form.cleaned_data['verbs']
+        if verbs==None:
             verbs = ('proposed', 'posted')
             verbs_form = VerbsForm({'verbs': verbs})
 
