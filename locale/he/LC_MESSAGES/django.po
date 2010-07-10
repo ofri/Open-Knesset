@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-10 22:44+0300\n"
-"PO-Revision-Date: 2010-07-10 22:46+0200\n"
+"POT-Creation-Date: 2010-07-10 23:02+0300\n"
+"PO-Revision-Date: 2010-07-10 23:03+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -40,10 +40,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:34
-#: mks/views.py:253
-#: mks/views.py:267
-#: mks/views.py:282
-#: mks/views.py:297
+#: mks/views.py:262
+#: mks/views.py:276
+#: mks/views.py:291
+#: mks/views.py:306
 #: templates/base.html:79
 msgid "Parties"
 msgstr "מפלגות"
@@ -411,19 +411,19 @@ msgstr "לפי מספר ישיבות וועדות בחודש"
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: mks/views.py:240
+#: mks/views.py:249
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:241
+#: mks/views.py:250
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:242
+#: mks/views.py:251
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:243
+#: mks/views.py:252
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
@@ -683,17 +683,17 @@ msgid "place of birth"
 msgstr "מקום לידה"
 
 #: templates/include/member_detail.html:27
-#: templates/mks/_member_detail.html:73
+#: templates/mks/_member_detail.html:89
 msgid "phone"
 msgstr "טלפון"
 
 #: templates/include/member_detail.html:31
-#: templates/mks/_member_detail.html:78
+#: templates/mks/_member_detail.html:94
 msgid "fax"
 msgstr "פקס"
 
 #: templates/include/member_detail.html:35
-#: templates/mks/_member_detail.html:83
+#: templates/mks/_member_detail.html:99
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
@@ -829,7 +829,7 @@ msgid "This vote is mentioned in the following committe meetings"
 msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
 
 #: templates/laws/_vote_detail.html:100
-#: templates/mks/_member_detail.html:89
+#: templates/mks/_member_detail.html:105
 msgid "Links"
 msgstr "קישורים"
 
@@ -1056,19 +1056,35 @@ msgstr "שעות שבועיות בממוצע"
 msgid "Average number of committee meetings per month"
 msgstr "ישיבות וועדות בחודש"
 
-#: templates/mks/_member_detail.html:70
+#: templates/mks/_member_detail.html:65
+msgid "Number of bills proposed"
+msgstr "מספר הצעות חוק שהוצעו"
+
+#: templates/mks/_member_detail.html:69
+msgid "Bills passed pre-vote"
+msgstr "הצעות חוק שאושרו טרומית"
+
+#: templates/mks/_member_detail.html:73
+msgid "Bills passed first vote"
+msgstr "הצעות חוק שאושרו בקריאה ראשונה"
+
+#: templates/mks/_member_detail.html:77
+msgid "Bills approved"
+msgstr "הצעות חוק שאושרו סופית"
+
+#: templates/mks/_member_detail.html:86
 msgid "Contact Information"
 msgstr "יצירת קשר"
 
-#: templates/mks/_member_detail.html:98
+#: templates/mks/_member_detail.html:114
 msgid "Refresh"
 msgstr "רענן"
 
-#: templates/mks/_member_detail.html:104
+#: templates/mks/_member_detail.html:120
 msgid "before"
 msgstr "לפני"
 
-#: templates/mks/_member_detail.html:111
+#: templates/mks/_member_detail.html:127
 msgid "Sorry, no data is available, try selecting more actions and refresh"
 msgstr "מצטערים, אין נתונים. נסו לבחור יותר פעולות ולרענן."
 
