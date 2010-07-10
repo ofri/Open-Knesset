@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-04 17:29+0300\n"
-"PO-Revision-Date: 2010-07-04 17:33+0200\n"
-"Last-Translator: benny daon <bennydaon@gmail.com>\n"
+"POT-Creation-Date: 2010-07-10 22:44+0300\n"
+"PO-Revision-Date: 2010-07-10 22:46+0200\n"
+"Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,11 +17,15 @@ msgstr ""
 
 #: context.py:15
 #: mks/models.py:112
-#: mks/views.py:104
-#: mks/views.py:108
-#: mks/views.py:120
-#: mks/views.py:133
-#: mks/views.py:138
+#: mks/views.py:97
+#: mks/views.py:109
+#: mks/views.py:122
+#: mks/views.py:135
+#: mks/views.py:148
+#: mks/views.py:164
+#: mks/views.py:177
+#: mks/views.py:190
+#: mks/views.py:195
 #: templates/base.html:78
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
@@ -36,10 +40,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:34
-#: mks/views.py:197
-#: mks/views.py:211
-#: mks/views.py:226
-#: mks/views.py:241
+#: mks/views.py:253
+#: mks/views.py:267
+#: mks/views.py:282
+#: mks/views.py:297
 #: templates/base.html:79
 msgid "Parties"
 msgstr "מפלגות"
@@ -112,11 +116,11 @@ msgstr "נמנע"
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
-#: laws/models.py:183
+#: laws/models.py:187
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:184
+#: laws/models.py:188
 #: laws/urls.py:8
 #: templates/include/member_detail.html:47
 #: templates/laws/law_detail.html:20
@@ -125,41 +129,41 @@ msgstr "הצבעה"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/models.py:324
+#: laws/models.py:345
 #: mks/forms.py:6
 msgid "Proposed"
 msgstr "הצעה"
 
-#: laws/models.py:325
+#: laws/models.py:346
 msgid "Pre-Approved"
 msgstr "עברה קריאה טרומית"
 
-#: laws/models.py:326
+#: laws/models.py:347
 msgid "Failed Pre-Approval"
 msgstr "נפלה בקריאה טרומית"
 
-#: laws/models.py:327
+#: laws/models.py:348
 msgid "In Committee"
 msgstr "בוועדה"
 
-#: laws/models.py:328
+#: laws/models.py:349
 #: templates/laws/bill_detail.html:170
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
-#: laws/models.py:329
+#: laws/models.py:350
 msgid "Failed First Vote"
 msgstr "נפלה בקריאה ראשונה"
 
-#: laws/models.py:330
+#: laws/models.py:351
 msgid "Committee Corrections"
 msgstr "בתיקונים בוועדה"
 
-#: laws/models.py:331
+#: laws/models.py:352
 msgid "Approved"
 msgstr "אושרה"
 
-#: laws/models.py:332
+#: laws/models.py:353
 msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
@@ -172,83 +176,83 @@ msgstr "חוקים"
 msgid "Bills"
 msgstr "הצעות חוק"
 
-#: laws/views.py:43
+#: laws/views.py:50
 msgid "All stages"
 msgstr "כל השלבים"
 
-#: laws/views.py:86
+#: laws/views.py:93
 msgid "All votes"
 msgstr "כל ההצבעות"
 
-#: laws/views.py:87
+#: laws/views.py:94
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: laws/views.py:88
+#: laws/views.py:95
 msgid "Second Call"
 msgstr "קריאה שניה"
 
-#: laws/views.py:89
+#: laws/views.py:96
 msgid "Demurrer"
 msgstr "הסתייגויות"
 
-#: laws/views.py:90
+#: laws/views.py:97
 msgid "Motion of no confidence"
 msgstr "הצבעות אי-אמון"
 
-#: laws/views.py:91
+#: laws/views.py:98
 msgid "Pass to committee"
 msgstr "העברה לוועדה"
 
-#: laws/views.py:92
+#: laws/views.py:99
 msgid "Continuation"
 msgstr "החלת דין רציפות"
 
-#: laws/views.py:93
+#: laws/views.py:100
 msgid "All"
 msgstr "הכל"
 
-#: laws/views.py:94
+#: laws/views.py:101
 msgid "Untagged Votes"
 msgstr "הצבעות לא מתויגות"
 
-#: laws/views.py:95
+#: laws/views.py:102
 msgid "Tagged Votes"
 msgstr "הצבעות מתויגות"
 
-#: laws/views.py:96
+#: laws/views.py:103
 msgid "Last Week"
 msgstr "שבוע אחרון"
 
-#: laws/views.py:97
+#: laws/views.py:104
 msgid "Last Month"
 msgstr "חודש אחרון"
 
-#: laws/views.py:98
+#: laws/views.py:105
 msgid "All times"
 msgstr "כל הזמנים"
 
-#: laws/views.py:99
+#: laws/views.py:106
 #: templates/include/vote_detail.html:9
 #: templates/laws/_vote_detail.html:11
 msgid "Time"
 msgstr "זמן"
 
-#: laws/views.py:100
+#: laws/views.py:107
 msgid "Controversy"
 msgstr "מידת המחלוקת"
 
-#: laws/views.py:101
+#: laws/views.py:108
 msgid "Against Party"
 msgstr "הצבעות נגד המפלגה"
 
-#: laws/views.py:102
+#: laws/views.py:109
 #: templates/mks/_member_detail.html:42
 #: templates/mks/_party_detail.html:8
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: laws/views.py:194
+#: laws/views.py:201
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
@@ -363,43 +367,63 @@ msgstr "אזור מגורים (למשל, \"נגב\")"
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/views.py:85
+#: mks/views.py:86
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: mks/views.py:86
-#: mks/views.py:104
+#: mks/views.py:87
+#: mks/views.py:109
+msgid "By number of bills proposed"
+msgstr "לפי מספר הצעות חוק שהוצעו"
+
+#: mks/views.py:88
+#: mks/views.py:122
+msgid "By number of bills pre-approved"
+msgstr "לפי מספר הצעות חוק שאושרו טרומית"
+
+#: mks/views.py:89
+#: mks/views.py:135
+msgid "By number of bills first-approved"
+msgstr "לפי מספר הצעות חוק שאושרו בקריאה ראשונה"
+
+#: mks/views.py:90
+#: mks/views.py:148
+msgid "By number of bills approved"
+msgstr "לפי מספר הצעות חוק שאושרו סופית"
+
+#: mks/views.py:91
+#: mks/views.py:164
 msgid "By number of votes per month"
 msgstr "לפי מספר הצבעות ממוצע בחודש"
 
-#: mks/views.py:87
-#: mks/views.py:120
+#: mks/views.py:92
+#: mks/views.py:177
 msgid "By average weekly hours of presence"
 msgstr "לפי ממוצע שעות שבועיות"
 
-#: mks/views.py:88
-#: mks/views.py:133
+#: mks/views.py:93
+#: mks/views.py:190
 msgid "By average monthly committee meetings"
 msgstr "לפי מספר ישיבות וועדות בחודש"
 
-#: mks/views.py:89
-#: mks/views.py:138
+#: mks/views.py:94
+#: mks/views.py:195
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: mks/views.py:184
+#: mks/views.py:240
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:185
+#: mks/views.py:241
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:186
+#: mks/views.py:242
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:187
+#: mks/views.py:243
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
@@ -537,6 +561,11 @@ msgstr "ועדות"
 #: templates/base.html:109
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות."
+
+#: templates/accounts/email_validation.txt:2
+#: templates/accounts/email_validation_subject.txt:1
+msgid "email validation for"
+msgstr "אימות דואר אלקטרוני עבור"
 
 #: templates/accounts/email_validation_sent.html:8
 msgid "An email has been sent to"
@@ -943,9 +972,8 @@ msgid "Bill Approval"
 msgstr "אישור הצעת החוק"
 
 #: templates/laws/bill_detail.html:244
-#, fuzzy
 msgid "suggested votes"
-msgstr "הצבעות מתויגות"
+msgstr "הצבעות מוצעות"
 
 #: templates/laws/knessetproposal_detail.html:12
 #: templates/laws/knessetproposal_list.html:15
@@ -1420,8 +1448,6 @@ msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/.
 msgid "email address"
 msgstr "כתובת דוא\"ל"
 
-#~ msgid "email validation for"
-#~ msgstr "אימות דואר אלקטרוני עבור"
 #~ msgid "Bold: passed, red: failed"
 #~ msgstr "מודגש: אושר, אדום: נפל"
 #~ msgid "MK Proposed"
@@ -1458,8 +1484,6 @@ msgstr "כתובת דוא\"ל"
 #~ msgstr "&rlm;OpenID"
 #~ msgid "Google"
 #~ msgstr "גוגל"
-#~ msgid "By number of seats"
-#~ msgstr "מספר ח\"כים"
 #~ msgid "By votes per seats"
 #~ msgstr "הצבעות לח\"כ"
 
