@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import Q
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
@@ -14,7 +15,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved')
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -46,6 +47,22 @@ class MemberHandler(BaseHandler):
             return round(x,2)
         else:
             return None
+
+    @classmethod
+    def bills_proposed(self, member):
+        return member.bills.count()
+
+    @classmethod
+    def bills_passed_pre_vote(self, member):
+        return member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+
+    @classmethod
+    def bills_passed_first_vote(self, member):
+        return member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+
+    @classmethod
+    def bills_approved(self, member):
+        return member.bills.filter(stage='6').count()
 
     @classmethod
     def member (self, member):
