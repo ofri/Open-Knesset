@@ -445,9 +445,9 @@ class Bill(models.Model):
             if not(self.stage_date) or self.stage_date < cm.date:
                 self.stage = '5'
                 self.stage_date = cm.date
-            if self.stage == '5':
-                self.save()
-                return            
+        if self.stage == '5':
+            self.save()
+            return            
         if self.first_vote:
             if self.first_vote.for_votes_count() > self.first_vote.against_votes_count():
                 self.stage = '4'
