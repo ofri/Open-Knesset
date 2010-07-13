@@ -100,7 +100,11 @@
     {% trans "Links" %}
     {% object_links object %} 
 
-
+{% if bill %}
+    <a href={% url bill-detail bill.id %}>{{ bill }}</a><br>
+{% else %}
+    {% trans 'No bill is associated with this vote' %}
+{% endif %}
 {% if object.summary %}
     <h3>{% trans 'summary' %}</h3>
     {{ object.summary|safe }}

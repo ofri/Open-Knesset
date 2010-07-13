@@ -51,12 +51,10 @@
 	                return true;
 	            });
 			}
-			if ( active ) {
-				l.toBack();
-				$(l.node).css("cursor","pointer");
-				add_animation(l,l);
-            	connect_el_to_div(l,div);
-			}
+			l.toBack();
+			$(l.node).css("cursor","pointer");
+			add_animation(l,l);
+        	connect_el_to_div(l,div);
 		    return l;
 		};
 
@@ -210,7 +208,10 @@
     {% if object.approval_vote %}
         <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
     {% else %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="approval vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}
     {% endif %}
     <script type="text/javascript">
 		var rect7 = paper.my_arrow(610,10,"bill-approval", 

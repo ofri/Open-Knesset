@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from django.template import loader, RequestContext
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -19,6 +20,18 @@ from knesset.hashnav.views import ListDetailView
 import urllib
 import urllib2
 import difflib
+import logging 
+logger = logging.getLogger("open-knesset.laws.views")
+
+def bill_by_knesset_booklet(request, booklet_num):
+    kps = KnessetProposal.objects.filter(booklet_number=booklet_num).values_list('id',flat=True)
+    queryset = Bill.objects.filter(knesset_proposal__in=kps)
+    context = {'title':'Bills published in knesset booklet number %s' % booklet_num ,
+               'object_list': queryset}
+    template_name = "laws/bill_list.html"
+    c = RequestContext(request, context)
+    t = loader.get_template(template_name)
+    return HttpResponse(t.render(c))
 
 class BillView (ListDetailView):
 
@@ -68,6 +81,18 @@ class BillView (ListDetailView):
         extra_context['friend_pages'] = r
         return super(BillView, self).render_list(request, queryset=queryset, extra_context=extra_context,**kwargs)
 
+    def handle_post(self, request, object_id, extra_context=None, **kwargs):
+        try:
+            bill = Bill.objects.get(pk=object_id)
+            user_input_type = request.POST.get('user_input_type')
+            if user_input_type == 'approval vote':            
+                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
+                bill.approval_vote = vote
+                bill.update_stage()
+        except Exception,e:
+            logger.error(e)
+        return HttpResponseRedirect(".")
+        
 class LawView (ListDetailView):
 
     def render_object(self, request, object_id, extra_context=None, **kwargs):
@@ -80,9 +105,7 @@ class LawView (ListDetailView):
         extra_context['kps'] = kps
         extra_context['title'] = law.title
         return super(LawView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)
-
-        
+                              extra_context=extra_context, **kwargs)       
         
 
 class VoteListView(ListDetailView):
@@ -161,6 +184,18 @@ class VoteListView(ListDetailView):
 
         self.extra_context['watched_members'] = watched_members
         return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
+
+    def render_object(self, request, object_id, extra_context=None, **kwargs):
+        vote = get_object_or_404(Vote, pk=object_id)
+        if not extra_context:
+            extra_context = {}
+        extra_context['title'] = vote.title
+        if vote.title.startswith('אישור'.decode('utf8')):
+            if Bill.objects.filter(approval_vote=vote).count()>0:
+                extra_context['bill'] = vote.bill_approved
+        return super(VoteListView, self).render_object(request, object_id,
+                              extra_context=extra_context, **kwargs)       
+
 
 @login_required
 def submit_tags(request,object_id):
