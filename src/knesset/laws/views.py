@@ -51,9 +51,9 @@ class BillView (ListDetailView):
             all_bill_votes = []
             all_bill_votes.extend(bill.pre_votes.values_list('id',flat=True))
             if bill.first_vote:
-                all_bill_votes.add(bill.first_vote.id)
+                all_bill_votes.append(bill.first_vote.id)
             if bill.approval_vote:
-                all_bill_votes.add(bill.approval_vote.id)
+                all_bill_votes.append(bill.approval_vote.id)
             close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes and v['id'] not in all_bill_votes]
             extra_context['close_votes'] = close_votes
         except Exception, e:
