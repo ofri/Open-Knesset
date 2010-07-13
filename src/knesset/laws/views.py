@@ -12,6 +12,7 @@ from django.template import loader, RequestContext
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
+from actstream import action
 from knesset.utils import limit_by_request
 from knesset.laws.models import *
 from knesset.tagvotes.models import TagVote
@@ -21,6 +22,7 @@ import urllib
 import urllib2
 import difflib
 import logging 
+import datetime
 logger = logging.getLogger("open-knesset.laws.views")
 
 def bill_by_knesset_booklet(request, booklet_num):
@@ -81,7 +83,10 @@ class BillView (ListDetailView):
         extra_context['friend_pages'] = r
         return super(BillView, self).render_list(request, queryset=queryset, extra_context=extra_context,**kwargs)
 
+    
     def handle_post(self, request, object_id, extra_context=None, **kwargs):
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(".")            
         try:
             bill = Bill.objects.get(pk=object_id)
             user_input_type = request.POST.get('user_input_type')
@@ -91,6 +96,10 @@ class BillView (ListDetailView):
                 bill.update_stage()
         except Exception,e:
             logger.error(e)
+        action.send(request.user, verb='merged',
+                    description=vote,
+                    target=bill,
+                    timestamp=datetime.datetime.now())    
         return HttpResponseRedirect(".")
         
 class LawView (ListDetailView):
