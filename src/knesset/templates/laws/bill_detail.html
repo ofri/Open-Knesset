@@ -112,7 +112,10 @@
     {% for v in object.pre_votes.all %}
         <a class="item" href="{% url vote-detail v.id %}">{{ v.title }} {{ v.time }}</a>({% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }})<br>
     {% empty %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="pre vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}                
     {% endfor %}     
     <script type="text/javascript">
 		var rect2 = paper.my_arrow(110,10,"bill-pre-vote", 
@@ -169,7 +172,10 @@
     {% if object.first_vote %}
         <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
     {% else %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="first vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}        
     {% endif %}
     <script type="text/javascript">
 		var rect5 = paper.my_arrow(410,10,"bill-first-vote", 
