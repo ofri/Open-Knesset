@@ -199,9 +199,13 @@ class VoteListView(ListDetailView):
         if not extra_context:
             extra_context = {}
         extra_context['title'] = vote.title
-        if vote.title.startswith('אישור'.decode('utf8')):
-            if Bill.objects.filter(approval_vote=vote).count()>0:
-                extra_context['bill'] = vote.bill_approved
+
+        related_bills = list(vote.bills_pre_votes.all())
+        if Bill.objects.filter(approval_vote=vote).count()>0:
+            related_bills.append(vote.bill_approved)
+        if Bill.objects.filter(first_vote=vote).count()>0:
+            related_bills.extend(vote.bills_first.all())
+        extra_context['bills'] = related_bills
         return super(VoteListView, self).render_object(request, object_id,
                               extra_context=extra_context, **kwargs)       
 

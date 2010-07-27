@@ -92,7 +92,7 @@ img {border: none;}
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
-h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; color:#251c1f; }
+h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; margin-left:1.5em; color:#251c1f; display:inline}
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
 h5 { font-size:1em; font-weight:bold; margin-top:1.5em; margin-bottom:3px; }
 p, ul, dl { margin-top:.6em; margin-bottom:.8em; }
@@ -257,7 +257,7 @@ a.disabled { color: #aaaaaa; }
 #content-main .member_votes ul { padding-left:1.5em; padding-right:0; }
 
 #content-main .bold-link { font-weight:bold; }
-#content-main label { display: block; float:right}
+#content-main label { display: block; float:right; margin-left:1em;}
 
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
