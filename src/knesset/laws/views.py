@@ -87,6 +87,7 @@ class BillView (ListDetailView):
     def handle_post(self, request, object_id, extra_context=None, **kwargs):
         if not request.user.is_authenticated():
             return HttpResponseRedirect(".")            
+        vote = None
         try:
             bill = Bill.objects.get(pk=object_id)
             user_input_type = request.POST.get('user_input_type')
@@ -94,12 +95,21 @@ class BillView (ListDetailView):
                 vote = Vote.objects.get(pk=request.POST.get('vote_id'))
                 bill.approval_vote = vote
                 bill.update_stage()
-        except Exception,e:
-            logger.error(e)
-        action.send(request.user, verb='merged',
+            if user_input_type == 'first vote':            
+                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
+                bill.first_vote = vote
+                bill.update_stage()
+            if user_input_type == 'pre vote':            
+                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
+                bill.pre_votes.add(vote)
+                bill.update_stage()
+
+            action.send(request.user, verb='merged',
                     description=vote,
                     target=bill,
-                    timestamp=datetime.datetime.now())    
+                    timestamp=datetime.datetime.now())
+        except Exception,e:
+            logger.error(e)
         return HttpResponseRedirect(".")
         
 class LawView (ListDetailView):
