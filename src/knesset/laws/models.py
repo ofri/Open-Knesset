@@ -188,7 +188,7 @@ class Vote(models.Model):
         verbose_name_plural = _('Votes')
 
     def __unicode__(self):
-        return "%d %s (%s)" % (self.id, self.title, self.time_string)
+        return "%s (%s)" % (self.title, self.time_string)
 
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
@@ -364,6 +364,10 @@ class Bill(models.Model):
     second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True)
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('Bill')
+        verbose_name_plural = _('Bills')
 
     def __unicode__(self):
         return u"%s %s (%s)" % (self.law, self.title, self.get_stage_display())

@@ -64,6 +64,7 @@ class CommitteeMeetingView(ListDetailView):
                 mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
                 mk = Member.objects.get(name=mk_name)
                 cm.mks_attended.add(mk)
+                cm.save() # just to signal, so the attended Action gets created.
                 action.send(request.user, verb='merged',
                     description=cm,
                     target=mk,
