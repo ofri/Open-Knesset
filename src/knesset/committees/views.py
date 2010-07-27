@@ -7,7 +7,7 @@ import datetime
 import re
 
 from knesset.hashnav.views import ListDetailView
-from knesset.laws.models import Bill
+from knesset.laws.models import Bill, PrivateProposal
 from models import *
 
 
@@ -36,12 +36,15 @@ class CommitteeMeetingView(ListDetailView):
             user_input_type = request.POST.get('user_input_type')
             if user_input_type == 'bill':
                 bill_id = request.POST.get('bill_id')
-                if not bill_id.isdigit(): 
+                if bill_id.isdigit(): 
+                    bill = Bill.objects.get(pk=bill_id)
+                else: # not a number, maybe its p/1234
                     m = re.findall('\d+',bill_id)
                     if len(m)!=1:
                         raise ValueError("didn't find exactly 1 number in bill_id=%s" % bill_id)
-                    bill_id = m[0]
-                bill = Bill.objects.get(pk=bill_id)
+                    pp = PrivateProposal.objects.get(proposal_id=m[0])
+                    bill = pp.bill                    
+                
                 if bill.stage in ['1','2','-2','3']: # this bill is in early stage, so cm must be one of the first meetings
                     bill.first_committee_meetings.add(cm)
                 else: # this bill is in later stages
