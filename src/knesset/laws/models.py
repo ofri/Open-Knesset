@@ -376,6 +376,22 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
 
+    def _get_tags(self):
+        tags = Tag.objects.get_for_object(self)
+        for t in tags:
+            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
+            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
+            t.score_positive = t.score > 0
+        tags = [t for t in tags]
+        tags.sort(key=lambda x:-x.score)
+        return tags
+
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
+
+    tags = property(_get_tags, _set_tags)
+
+
     def merge(self,another_bill):
         """Merges another_bill into self, and delete another_bill
         """

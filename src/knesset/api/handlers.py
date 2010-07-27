@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
@@ -146,11 +147,16 @@ class TagHandler(BaseHandler):
             id = kwargs['id']        
         if id:
             return Tag.objects.filter(pk=id)
-        vote_id = None
-        if 'vote_id' in kwargs:
-            vote_id = kwargs['vote_id']
-        if vote_id:
-            tags_ids = TaggedItem.objects.filter(object_id=vote_id).values_list('tag', flat=True)
+        object_id = None
+        ctype = None
+        if 'object_id' in kwargs and 'object_type' in kwargs:
+            object_id = kwargs['object_id']
+            try:
+                ctype = ContentType.objects.get(model=kwargs['object_type'])
+            except ContentType.DoesNotExist:
+                pass
+        if object_id and ctype:
+            tags_ids = TaggedItem.objects.filter(object_id=object_id).filter(content_type=ctype).values_list('tag', flat=True)
             return Tag.objects.filter(id__in=tags_ids)
 
         return Tag.objects.usage_for_model(Vote)

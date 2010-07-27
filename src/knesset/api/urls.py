@@ -18,6 +18,6 @@ urlpatterns = patterns('',
       url(r'^party/(?P<id>[0-9]+)/$', party_handler),
       url(r'^tag/$', tag_handler),
       url(r'^tag/(?P<id>[0-9]+)/$', tag_handler),
-      url(r'^tag/vote/(?P<vote_id>[0-9]+)/$', tag_handler),
+      url(r'^tag/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', tag_handler),
       )
 

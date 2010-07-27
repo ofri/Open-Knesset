@@ -1,6 +1,8 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
+{% load tagging_tags %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -83,6 +85,41 @@
 		var paper = Raphael("bill-canvas", 850, 300);
 		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,58);
 	</script>
+
+    <div id="tagging-container">
+    {% if user.is_authenticated %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="vote-tags">
+            {% for t in object.tags %}
+                {% user_votes user object t %} <br />        
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />        
+        {% endif %}
+        <div id="add_tags">
+            <span>{% trans "Suggest Tags" %}</span> 
+            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+            </span>
+        </div>
+
+    {% else %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="tags">
+            {% for t in object.tags %}
+               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />
+        {% endif %}
+
+        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+    {% endif %}
+    </div>
+
         
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>

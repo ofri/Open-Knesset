@@ -221,39 +221,37 @@ class VoteListView(ListDetailView):
 
 
 @login_required
-def submit_tags(request,object_id):
-    if request.method == 'POST': # If the form has been submitted...
-        form = TagForm(request.POST) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
-            v = Vote.objects.get(pk=object_id)
-            v.tags = u'%s,' % form.cleaned_data['tags'].replace('"',u'”') # add comma in the end to force treatment as comma-separated list
-                                                                          # replace " with ” to support hebrew initials
-
-
-    return HttpResponseRedirect("/vote/%s" % object_id)
-
-@login_required
-def suggest_tag(request,object_id):
+def suggest_tag(request, object_type, object_id):
+    """add a POSTed tag_id to object_type object_id, and also vote this tagging up by the current user"""
+    try:
+        ctype = ContentType.objects.get(model=object_type)
+        model_class = ctype.model_class()
+    except:
+        return HttpResponse("Object type not found!")
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        v = Vote.objects.get(pk=object_id)
-        tag = Tag.objects.get(pk=request.POST['tag_id'])
-        ctype = ContentType.objects.get_for_model(v)
+        #o = model_class.objects.get(pk=object_id)
+        tag = Tag.objects.get(pk=request.POST['tag_id'])        
         (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
         (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
         tv.vote = +1
         tv.save()
     return HttpResponse("OK")
 
-
-
 @login_required
-def vote_on_tag(request,object_id,tag_id,vote):
-    v = Vote.objects.get(pk=object_id)
-    ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=v.id)[0]
-    (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
-    tv.vote = vote
-    tv.save()
-    return HttpResponseRedirect("/vote/%s" % object_id)
+def vote_on_tag(request, object_type, object_id, tag_id, vote):
+    """request.user is voting vote (-1/0/+1) for tag on object_type with object_id
+       Can be used to vote on a tagged vote, or a tagged bill"""       
+    try:
+        ctype = ContentType.objects.get(model=object_type)
+        model_class = ctype.model_class()        
+        o = model_class.objects.get(pk=object_id)
+        ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=o.id)[0]
+        (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
+        tv.vote = vote # this is -1,0,+1 (not a Vote model)
+        tv.save()
+    except:
+        pass
+    return HttpResponseRedirect("/%s/%s" % (object_type,object_id))
 
 def tagged(request,tag):
     title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}

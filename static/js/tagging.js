@@ -10,7 +10,8 @@ function get_tags_list_callback(data) {
             $('<a class="item dontwrap">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#possible_tags");            
             $("#possible_tags").append(document.createTextNode(" "));
           });
-    $.getJSON('/api/tag/vote/'+window.location.pathname.split('/')[2]+'/', mark_selected_tags);
+    $.getJSON('/api/tag/'+window.location.pathname.split('/')[1]+
+        '/'+window.location.pathname.split('/')[2]+'/', mark_selected_tags);
 }
 
 function mark_selected_tags(data){
