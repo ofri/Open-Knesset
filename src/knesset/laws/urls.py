@@ -11,6 +11,8 @@ bill_view = BillView(queryset=Bill.objects.all().filter(law__merged_into=None).o
 
 lawsurlpatterns = patterns ('',
     url(r'^bill/$', bill_view, name='bill-list'),
+    url(r'^bill/tag/$', bill_tags_cloud, name='bill-tags-cloud'),
+    url(r'^bill/tag/(?P<tag>.*)/$', bill_tag, name='bill-tag'),
     url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', bill_by_knesset_booklet, name='bill-by-knesset-booklet'),
     url(r'^bill/(?P<object_id>\d+)/$', bill_view, name='bill-detail'),
     url(r'^law/$', law_view, name='law-list'),
