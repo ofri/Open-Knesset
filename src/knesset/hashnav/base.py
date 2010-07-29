@@ -39,7 +39,7 @@ class View(object):
         if callback:
             # The request is passed around with args and kwargs like this so 
             # they appear as views for decorators
-            return callback(request, *args, **kwargs)
+            return callback(*args, **kwargs)
         allowed_methods = [m for m in view.allowed_methods if hasattr(view, m)]
         return http.HttpResponseNotAllowed(allowed_methods)
     
@@ -48,16 +48,6 @@ class View(object):
         Based on the request's HTTP method, get the callback on this class that 
         returns a response. If the method isn't allowed, None is returned.
         """
-        def strip_request(f):
-            """ 
-            remove the first positional argument - 'request'. This is use to
-            simplify 'request' passing by using an instance variable while
-            maintaing backward compatibility with existing decorators
-            """
-            def decorate(request, *args, **kwargs):
-                return f(*args, **kwargs)
-            return decorate
-
         method = self.request.method.upper()
         if method not in self.allowed_methods:
             if self.strict_allowed_methods:
@@ -65,11 +55,6 @@ class View(object):
             else:
                 method = 'GET'
         callback = getattr(self, method, getattr(self, 'GET', None))
-        if callback:
-            callback = strip_request(callback)
-            if self.decorators is not None:
-                for decorator in self.decorators:
-                    callback = decorator(callback)
         return callback
     
     def GET(self, *args, **kwargs):
