@@ -29,7 +29,7 @@ class DetailView(View):
         obj = self.get_object(*args, **kwargs)
         return {self.get_template_resource_name(obj): obj}
     
-    def get_object(self, pk=None, slug=None):
+    def get_object(self, object_id=None, slug=None):
         """
         FIXME: Does separating this out from get_resource suck?
         This might suck.
@@ -39,8 +39,8 @@ class DetailView(View):
         queryset = self.get_queryset()
 
         # Next, try looking up by primary key.
-        if pk:
-            queryset = queryset.filter(pk=pk)
+        if object_id:
+            queryset = queryset.filter(pk=object_id)
 
         # Next, try looking up by slug.
         elif slug:
