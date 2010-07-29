@@ -1,38 +1,25 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 import logging 
 logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
 import re
 
-from knesset.hashnav.views import ListDetailView
+from knesset.hashnav import ListView, DetailView
 from knesset.laws.models import Bill, PrivateProposal
 from models import *
 
+class MeetingDetailView(DetailView):
 
-class CommitteesView(ListDetailView):
+    allowed_methods = ['GET', 'POST'],
 
-    def render_object(self, request, object_id, **kwargs):
-        if not self.extra_context: self.extra_context = {}
-        self.extra_context['meetings_list'] = CommitteeMeeting.objects.filter(committee__pk=object_id)[:10]
-        return super(CommitteesView, self).render_object(request, object_id, **kwargs)
-
-class CommitteeMeetingView(ListDetailView):
-
-    def render_object(self,request, object_id=None,**kwargs):
-        if not self.extra_context: self.extra_context = {}
-        cm = CommitteeMeeting.objects.get(pk=object_id)
-        self.extra_context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
-        return super(CommitteeMeetingView, self).render_object(request, object_id, **kwargs)
-
-    def handle_post(self, request, object_id, **kwargs):
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect(".")            
-
+    @login_required
+    def POST(self, object_id, **kwargs):
         bill = None
+        request = self.request
         try:
-            cm = CommitteeMeeting.objects.get(pk=object_id)
             user_input_type = request.POST.get('user_input_type')
             if user_input_type == 'bill':
                 bill_id = request.POST.get('bill_id')
@@ -75,15 +62,16 @@ class CommitteeMeetingView(ListDetailView):
         
         return HttpResponseRedirect(".")
 
-    def render_list(self, request, committee_id=None, **kwargs):
-        if not self.extra_context: self.extra_context = {}
-        c = Committee.objects.get(pk=committee_id)      
-        self.extra_context['title'] = _('All meetings by %(committee)s') % {'committee':c.name}
-        return super(CommitteeMeetingView, self).render_list(request, **kwargs)
+class MeetingsListView(ListView):
 
-    def pre (self, request, **kwargs):
-        if 'committee_id' in kwargs:            
-            self.queryset = CommitteeMeeting.objects.filter(committee__id=kwargs['committee_id'])
+    def get_context(self, *args, **kwargs):
+        context = super(MeetingsListView, self).get_context(*args, **kwargs)
+        context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
+        return context 
+
+    def get_queryset (self, **kwargs):
+        if 'committee_id' in kwargs:
+            return CommitteeMeeting.objects.filter(committee__id=kwargs['committee_id'])
         else:
-            self.queryset = CommitteeMeeting.objects.all()
+            return CommitteeMeeting.objects.all()
         
