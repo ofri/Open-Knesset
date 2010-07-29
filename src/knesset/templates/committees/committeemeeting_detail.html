@@ -6,27 +6,27 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
-    <h2>{% blocktrans with committee_meeting.name as committee and committee_meeting.date_string as date %}
+    <h2>{% blocktrans with object.name as committee and object.date_string as date %}
         {{committee}} meeting on {{date}}
     {% endblocktrans %}</h2>
-    <a href="{% url committee-detail committee_meeting.committee.id %}">{% trans 'Back to committee' %}</a><br>
-    <h3>{% trans 'Topics' %}</h3> {{ committee_meeting.topics|safe }}<br>
-    <h3>{% trans 'MKs attended' %}</h3> {% for m in committee_meeting.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.current_party.name }}" />{{ m.name }}</a> &nbsp; {% endfor %}<br>
+    <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
+    <h3>{% trans 'Topics' %}</h3> {{ object.topics|safe }}<br>
+    <h3>{% trans 'MKs attended' %}</h3> {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.current_party.name }}" />{{ m.name }}</a> &nbsp; {% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                
     
-    <h3>{% trans 'Bills' %}</h3> {% for b in committee_meeting.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
-                                 {% for b in committee_meeting.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
+    <h3>{% trans 'Bills' %}</h3> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
+                                 {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
     <br>
     {% if user.is_authenticated %}
         {% trans 'Suggest a matching bill' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="bill"></input><input type="text" name="bill_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                
 
     <h3>{% trans 'Protocol' %}</h3>
-    <div class="protocol">{{ committee_meeting.protocol_text|linebreaks }}</div>
+    <div class="protocol">{{ object.protocol_text|linebreaks }}</div>
 
-{% get_comment_list for committee_meeting as comment_list %}
+{% get_comment_list for object as comment_list %}
 {% if comment_list %}
     <h3>{% trans 'User comments' %}</h3>
     {% for comment in comment_list %}
@@ -40,7 +40,7 @@
 
 {% if user.is_authenticated %}
     {% if perms.comments.add_comment %}
-        {% render_comment_form for committee_meeting %}
+        {% render_comment_form for object %}
     {% else %}
         {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
     {% endif %}

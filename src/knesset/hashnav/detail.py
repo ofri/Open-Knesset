@@ -27,7 +27,7 @@ class DetailView(View):
         subclasses can override this to return any object.
         """
         obj = self.get_object(*args, **kwargs)
-        return {self.get_template_resource_name(obj): obj}
+        return {self.template_resource_name: obj}
     
     def get_object(self, object_id=None, slug=None):
         """
@@ -107,14 +107,3 @@ class DetailView(View):
             ))
 
         return names
-
-    def get_template_resource_name(self, obj):
-        """
-        Get the name to use for the resource.
-        """
-        if hasattr(obj, '_meta'):
-            return re.sub('[^a-zA-Z0-9]+', '_', 
-                    obj._meta.verbose_name.lower())
-        else:
-            return self.template_resource_name
-    
