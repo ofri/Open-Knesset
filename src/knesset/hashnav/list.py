@@ -22,16 +22,16 @@ class ListView(View):
 
     def GET(self, *args, **kwargs):
         self.page = kwargs.get('page', None)
-        self.items = self.get_items()
+        self.items = self.get_items(*args, **kwargs)
         paginator, page, self.items = self.paginate_items()
         return super(ListView, self).GET(paginator, page)
 
-    def get_items(self):
+    def get_items(self, *args, **kwargs):
         """
         Get the list of items for this view. This must be an interable, and may
         be a queryset (in which qs-specific behavior will be enabled).
         """
-        queryset = self.get_queryset() 
+        queryset = self.get_queryset(*args, **kwargs)
         if queryset:
             return queryset
         if self.itemsset is not None:
@@ -90,7 +90,6 @@ class ListView(View):
         Return a list of template names to be used for the request. Must return
         a list. May not be called if get_template is overridden.
         """
-        import pdb ; pdb.set_trace()
         names = super(ListView, self).get_template_names()
 
         # If the list is a queryset, we'll invent a template name based on the
@@ -103,19 +102,17 @@ class ListView(View):
 
         return names
 
-    def get_context(self, paginator, page, context=None):
+    def get_context(self, paginator, page):
         """
         Get the context for this view.
         """
-        if not context:
-            context = {}
+        context = super(ListView, self).get_context()
         context.update({
             'paginator': paginator,
             'object_list': self.items,
             'page_obj': page,
             'is_paginated':  paginator is not None
         })
-        context = super(ListView, self).get_context(context)
         template_obj_name = self.get_template_object_name()
         context[template_obj_name or 'object_list'] = self.items
         return context

@@ -27,6 +27,7 @@ class View(object):
             format_mimetypes = {
                 'html': 'text/html'
             },
+            extra_context = {},
         )
         if kwargs:
             raise TypeError("__init__() got an unexpected keyword argument '%s'" % iter(kwargs).next())
@@ -160,9 +161,15 @@ class View(object):
         """
         Get the template context. Must return a Context (or subclass) instance.
         """
-        resource = self.get_resource(*args, **kwargs)
+        dictionary = self.get_resource(*args, **kwargs)
+        for key, value in self.extra_context.items():
+            if callable(value):
+                dictionary[key] = value()
+            else:
+                dictionary[key] = value
+
         context_processors = self.get_context_processors()
-        return RequestContext(self.request, resource, context_processors)
+        return RequestContext(self.request, dictionary, context_processors)
     
     def get_context_processors(self):
         """
