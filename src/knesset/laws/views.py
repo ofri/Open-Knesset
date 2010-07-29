@@ -17,6 +17,7 @@ from knesset.utils import limit_by_request
 from knesset.laws.models import *
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
+from knesset.hashnav import DetailView, ListView, method_decorator
 
 import urllib
 import urllib2
@@ -35,13 +36,12 @@ def bill_by_knesset_booklet(request, booklet_num):
     t = loader.get_template(template_name)
     return HttpResponse(t.render(c))
 
-class BillView (ListDetailView):
-
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        if not extra_context:
-            extra_context = {}
-        bill = get_object_or_404(Bill, pk=object_id)
-        extra_context['title'] = "%s %s" % (bill.law.title, bill.title)
+class BillDetailView (DetailView):
+    allowed_methods = ['GET', 'POST']
+    def get_context(self, *args, **kwargs):
+        context = super(BillDetailView, self).get_context(*args, **kwargs)       
+        bill = context['object']
+        context['title'] = "%s %s" % (bill.law.title, bill.title)
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
@@ -55,76 +55,75 @@ class BillView (ListDetailView):
             if bill.approval_vote:
                 all_bill_votes.append(bill.approval_vote.id)
             close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes and v['id'] not in all_bill_votes]
-            extra_context['close_votes'] = close_votes
+            context['close_votes'] = close_votes
         except Exception, e:
             pass
-        return super(BillView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)
+        return context
 
+    @method_decorator(login_required)
+    def POST(self, object_id, **kwargs):
+        vote = None
+        bill = get_object_or_404(Bill, pk=object_id)
+        user_input_type = self.request.POST.get('user_input_type')
+        if user_input_type == 'approval vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.approval_vote = vote
+            bill.update_stage()
+        if user_input_type == 'first vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.first_vote = vote
+            bill.update_stage()
+        if user_input_type == 'pre vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.pre_votes.add(vote)
+            bill.update_stage()
+
+        action.send(self.request.user, verb='merged',
+                description=vote,
+                target=bill,
+                timestamp=datetime.datetime.now())
+        return HttpResponseRedirect(".")
+
+class BillListView (ListView):
     friend_pages = [
             ('stage','all',_('All stages')),
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    def render_list(self, request, extra_context=None, **kwargs):
-        stage_filter = request.GET.get('stage',None)
+    def GET(self, *args, **kwargs):
+        self.stage_filter = self.request.GET.get('stage',None)
+        return super(BillListView, self).GET(*args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        if self.stage_filter and self.stage_filter!='all':
+            return self.queryset._clone().filter(stage=self.stage_filter)
+        else:
+            return self.queryset._clone()
+
+    def get_context(self, *args, **kwargs):
+        context = super(BillListView, self).get_context(*args, **kwargs)       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
-        if stage_filter and stage_filter!='all':
-            queryset = self.queryset.filter(stage=stage_filter)
+        if self.stage_filter and self.stage_filter!='all':
             for x in r:
-                if x[3]==stage_filter:
+                if x[3]==self.stage_filter:
                     x[2] = True
                     break
         else:
-            queryset = self.queryset
             r[0][2] = True
-        if not extra_context:
-            extra_context = {}
-        extra_context['friend_pages'] = r
-        return super(BillView, self).render_list(request, queryset=queryset, extra_context=extra_context,**kwargs)
+        context['friend_pages'] = r
+        return context
 
     
-    def handle_post(self, request, object_id, extra_context=None, **kwargs):
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect(".")            
-        vote = None
-        try:
-            bill = Bill.objects.get(pk=object_id)
-            user_input_type = request.POST.get('user_input_type')
-            if user_input_type == 'approval vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.approval_vote = vote
-                bill.update_stage()
-            if user_input_type == 'first vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.first_vote = vote
-                bill.update_stage()
-            if user_input_type == 'pre vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.pre_votes.add(vote)
-                bill.update_stage()
-
-            action.send(request.user, verb='merged',
-                    description=vote,
-                    target=bill,
-                    timestamp=datetime.datetime.now())
-        except Exception,e:
-            logger.error(e)
-        return HttpResponseRedirect(".")
         
-class LawView (ListDetailView):
+class LawView (DetailView):
 
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        if not extra_context:
-            extra_context = {}
+    def get_context(self, *args, **kwargs):
         law = Law.objects.get(pk=object_id)
         pps = PrivateProposal.objects.filter(law=law).annotate(c=Count('knesset_proposals')).filter(c=0).order_by('title')
         kps = KnessetProposal.objects.filter(law=law)
-        extra_context['pps'] = pps
+        context['pps'] = pps
         extra_context['kps'] = kps
         extra_context['title'] = law.title
-        return super(LawView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)       
         
 
 class VoteListView(ListDetailView):
