@@ -94,14 +94,15 @@ class BillListView (ListView):
         self.stage_filter = self.request.GET.get('stage',None)
         return super(BillListView, self).GET(*args, **kwargs)
 
-    def get_queryset(self, *args, **kwargs):
-        if self.stage_filter and self.stage_filter!='all':
-            return self.queryset._clone().filter(stage=self.stage_filter)
+    def get_queryset(self):
+        filter = getattr(self, 'stage_filter', False)
+        if filter and filter!='all':
+            return self.queryset._clone().filter(stage=filter)
         else:
             return self.queryset._clone()
 
-    def get_context(self, *args, **kwargs):
-        context = super(BillListView, self).get_context(*args, **kwargs)       
+    def get_context(self):
+        context = super(BillListView, self).get_context()       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         if self.stage_filter and self.stage_filter!='all':
             for x in r:

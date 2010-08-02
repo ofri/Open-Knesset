@@ -35,6 +35,7 @@ class View(object):
     def __call__(self, request, *args, **kwargs):
         view = copy.copy(self)
         view.request = request
+        view.parse_params(*args, **kwargs)
         callback = view.get_callback()
         if callback:
             # The request is passed around with args and kwargs like this so 
@@ -43,6 +44,14 @@ class View(object):
         allowed_methods = [m for m in view.allowed_methods if hasattr(view, m)]
         return http.HttpResponseNotAllowed(allowed_methods)
     
+    def parse_params(self, *args, **kwargs):
+        """
+        this method is used to parse the parameters from the url
+        and store them on self.
+        """
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
     def get_callback(self):
         """
         Based on the request's HTTP method, get the callback on this class that 
@@ -103,7 +112,7 @@ class View(object):
         """
         Render a template with a given resource
         """
-        context = self.get_context(*args, **kwargs)
+        context = self.get_context()
         return self.get_template().render(context)
     
     def get_template(self):
@@ -142,11 +151,11 @@ class View(object):
         import django.template.loader
         return self.template_loader or django.template.loader
     
-    def get_context(self, *args, **kwargs):
+    def get_context(self):
         """
         Get the template context. Must return a Context (or subclass) instance.
         """
-        dictionary = self.get_resource(*args, **kwargs)
+        dictionary = self.get_resource()
         for key, value in self.extra_context.items():
             if callable(value):
                 dictionary[key] = value()

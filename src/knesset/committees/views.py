@@ -64,14 +64,15 @@ class MeetingDetailView(DetailView):
 
 class MeetingsListView(ListView):
 
-    def get_context(self, *args, **kwargs):
-        context = super(MeetingsListView, self).get_context(*args, **kwargs)
+    def get_context(self):
+        context = super(MeetingsListView, self).get_context()
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
         return context 
 
-    def get_queryset (self, **kwargs):
-        if 'committee_id' in kwargs:
-            return CommitteeMeeting.objects.filter(committee__id=kwargs['committee_id'])
+    def get_queryset (self):
+        c_id = getattr(self, 'committee_id', None)
+        if c_id:
+            return CommitteeMeeting.objects.filter(committee__id=c_id)
         else:
             return CommitteeMeeting.objects.all()
         

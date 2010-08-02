@@ -20,16 +20,16 @@ class DetailView(View):
         )
         super(DetailView, self).__init__(**kwargs)
     
-    def get_resource(self, *args, **kwargs):
+    def get_resource(self):
         """
         Get the resource this request wraps. By default this requires
         `self.queryset` and a `pk` or `slug` argument in the URLconf, but
         subclasses can override this to return any object.
         """
-        obj = self.get_object(*args, **kwargs)
+        obj = self.get_object()
         return {self.template_resource_name: obj}
     
-    def get_object(self, object_id=None, slug=None):
+    def get_object(self):
         """
         FIXME: Does separating this out from get_resource suck?
         This might suck.
@@ -39,9 +39,10 @@ class DetailView(View):
         queryset = self.get_queryset()
 
         # Next, try looking up by primary key.
+        object_id = getattr(self, 'object_id', None)
+        slug = getattr(self, 'slug', None)
         if object_id:
             queryset = queryset.filter(pk=object_id)
-
         # Next, try looking up by slug.
         elif slug:
             slug_field = self.get_slug_field()
