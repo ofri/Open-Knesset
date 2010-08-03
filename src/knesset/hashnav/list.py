@@ -14,8 +14,8 @@ class ListView(View):
         self._load_config_values(kwargs, 
             paginate_by = None,
             allow_empty = True,
-            template_object_name = None,
-           queryset = None,
+            template_object_name = 'object',
+            queryset = None,
             itemsset = None,
         )
         super(ListView, self).__init__(**kwargs)
@@ -111,22 +111,8 @@ class ListView(View):
         context = super(ListView, self).get_context()
         context.update({
             'paginator': self.paginator,
-            'object_list': self.items,
             'page_obj': self.page,
             'is_paginated':  self.paginator is not None
         })
-        template_obj_name = self.get_template_object_name()
-        context[template_obj_name or 'object_list'] = self.items
+        context['%s_list' % self.template_object_name] = self.items
         return context
-
-    def get_template_object_name(self):
-        """
-        Get the name of the item to be used in the context.
-        """
-        if self.template_object_name:
-            return "%s_list" % self.template_object_name
-        elif hasattr(self.items, 'model'):
-            return smart_str(self.items.model._meta.verbose_name_plural)
-        else:
-            return None
-    
