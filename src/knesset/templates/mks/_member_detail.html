@@ -61,6 +61,22 @@
                 <td>{% trans "Average number of committee meetings per month" %}</td>
                 <td>{{ object.committee_meetings_per_month }}</td>
             </tr>
+            <tr>
+                <td>{% trans "Number of bills proposed" %}</td>
+                <td>{{ bills_statistics.proposed }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Bills passed pre-vote" %}</td>
+                <td>{{ bills_statistics.pre }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Bills passed first vote" %}</td>
+                <td>{{ bills_statistics.first }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Bills approved" %}</td>
+                <td>{{ bills_statistics.approved }}</td>
+            </tr>
                
          
 

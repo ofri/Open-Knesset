@@ -1,6 +1,8 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
+{% load tagging_tags %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -51,12 +53,10 @@
 	                return true;
 	            });
 			}
-			if ( active ) {
-				l.toBack();
-				$(l.node).css("cursor","pointer");
-				add_animation(l,l);
-            	connect_el_to_div(l,div);
-			}
+			l.toBack();
+			$(l.node).css("cursor","pointer");
+			add_animation(l,l);
+        	connect_el_to_div(l,div);
 		    return l;
 		};
 
@@ -85,6 +85,41 @@
 		var paper = Raphael("bill-canvas", 850, 300);
 		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,58);
 	</script>
+
+    <div id="tagging-container">
+    {% if user.is_authenticated %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="vote-tags">
+            {% for t in object.tags %}
+                {% user_votes user object t %} <br />        
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />        
+        {% endif %}
+        <div id="add_tags">
+            <span>{% trans "Suggest Tags" %}</span> 
+            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+            </span>
+        </div>
+
+    {% else %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="tags">
+            {% for t in object.tags %}
+               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />
+        {% endif %}
+
+        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+    {% endif %}
+    </div>
+
         
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
@@ -114,7 +149,10 @@
     {% for v in object.pre_votes.all %}
         <a class="item" href="{% url vote-detail v.id %}">{{ v.title }} {{ v.time }}</a>({% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }})<br>
     {% empty %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="pre vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}                
     {% endfor %}     
     <script type="text/javascript">
 		var rect2 = paper.my_arrow(110,10,"bill-pre-vote", 
@@ -171,7 +209,10 @@
     {% if object.first_vote %}
         <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
     {% else %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="first vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}        
     {% endif %}
     <script type="text/javascript">
 		var rect5 = paper.my_arrow(410,10,"bill-first-vote", 
@@ -210,7 +251,10 @@
     {% if object.approval_vote %}
         <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
     {% else %}
-        {% trans 'No Info' %}
+        {% trans 'No Info' %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="approval vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}
     {% endif %}
     <script type="text/javascript">
 		var rect7 = paper.my_arrow(610,10,"bill-approval", 
@@ -234,7 +278,7 @@
 		var pos = $("#bill-canvas").position();
 		$(".bill-stage").css("position","absolute");
 		$(".bill-stage").css("top",pos.top + 100);
-		$(".bill-stage").css("height","100%");
+		
 		$(".bill-stage").css("visibility","hidden");
 		$("#bill-initiation.bill-stage").css("visibility","visible");
 	</script>

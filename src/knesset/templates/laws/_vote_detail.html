@@ -8,7 +8,7 @@
 <h2><a href=".">{{ object.title }}</a></h2>
 <div id="vote-info">
     <div>
-        <label for="time">{% trans "Time" %}</label>
+        <h3>{% trans "Time" %}</h3>
         {{ object.time_string }} 
         {% if object.get_next_by_time %}
         &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_next_by_time.id %}">{% trans 'Go to next vote by time' %}</a>
@@ -16,10 +16,10 @@
         {% if object.get_previous_by_time %}
         &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_previous_by_time.id %}">{% trans 'Go to previous vote by time' %}</a>
         {% endif %}
-    </div>    
+    </div>
     <div>
-        <label for="for-votes">{% trans "For" %}</label>        
-        {% if object.for_votes_count %}        
+        <h3>{% trans "For" %}</h3>
+        {% if object.for_votes_count %}
             {% blocktrans count object.for_votes|length as counter %}
             {{ counter }} MK
             {% plural %}
@@ -39,7 +39,7 @@
         {% endif %}
     </div>
     <div>
-        <label for="against-votes">{% trans "Against" %}</label>
+        <h3>{% trans "Against" %}</h3>
         {% if object.against_votes_count %}        
             {% blocktrans count object.against_votes|length as counter %}
             {{ counter }} MK
@@ -59,9 +59,18 @@
             {% trans 'none' %}
         {% endif %}
     </div>
+
+    <br>    
+    <h3>{% trans 'Bill' %}</h3>
+    {% for bill in bills %}
+        <a href={% url bill-detail bill.id %}>{{ bill }}</a><br>
+    {% empty %}    
+        {% trans 'No bill is associated with this vote' %}
+    {% endfor %}<br>    
+    
     <div id="tagging-container">
     {% if user.is_authenticated %}
-        <label for="tags">{% trans "Tags" %}</label>
+        <h3>{% trans "Tags" %}</h3>
         {% if object.tags %}
             <div id="vote-tags">
             {% for t in object.tags %}
@@ -78,7 +87,7 @@
         </div>
 
     {% else %}
-        <label for="tags">{% trans "Tags" %}</label>
+        <h3>{% trans "Tags" %}</h3>
         {% if object.tags %}
             <div id="tags">
             {% for t in object.tags %}
@@ -89,7 +98,7 @@
             {% trans "No tags yet" %}<br />
         {% endif %}
 
-        ({% trans 'Login to edit tags' %})
+        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
     {% endif %}
     </div>
 
@@ -97,22 +106,21 @@
         <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>                
     {% endif %}
 
-    {% trans "Links" %}
+    <h3>{% trans "Links" %}</h3>
     {% object_links object %} 
+    <br><br>
+        
+    {% if object.summary %}        
+        <h3>{% trans 'summary' %}</h3>
+        {{ object.summary|safe }}
+        <br><br>
+    {% endif %}
 
-
-{% if object.summary %}
-    <h3>{% trans 'summary' %}</h3>
-    {{ object.summary|safe }}
-{% else %}
-    {% trans 'No summary for this vote' %}
-{% endif %}
-<br />
-
-{% if object.full_text %}
-    <h3>{% trans 'Bill Text' %}</h3>
-    {{ object.full_text|safe }}
-{% endif %}
+    {% if object.full_text %}
+        <h3>{% trans 'Bill Text' %}</h3>
+        {{ object.full_text|safe }}
+        <br><br>
+    {% endif %}
 
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}
@@ -133,6 +141,6 @@
         {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
     {% endif %}
 {% else %}
-    {% trans 'Please login to comment' %}
+    <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a>
 {% endif %}
 

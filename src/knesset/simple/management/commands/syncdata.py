@@ -1052,6 +1052,8 @@ class Command(NoArgsCommand):
             (law, created) = Law.objects.get_or_create(title=law_name)
             if created:
                 law.save()
+            if law.merged_into:
+                law = law.merged_into
             
             # create the bill proposal
             if proposal['correction']:
@@ -1113,6 +1115,8 @@ class Command(NoArgsCommand):
             (law, created) = Law.objects.get_or_create(title=law_name)
             if created:
                 law.save()
+            if law.merged_into:
+                law = law.merged_into
             title = u''
             if proposal['correction']:
                 title += proposal['correction']
@@ -1136,10 +1140,16 @@ class Command(NoArgsCommand):
                     kl.originals.add(pp) # and add a link to it
                     if pp.bill:
                         if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
-                            kl.bill = pp.bill
-                            kl.save()
-                            kl.bill.title = kl.title # update the title
-                            kl.bill.save()
+                            if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
+                                logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
+                            else:
+                                kl.bill = pp.bill
+                                kl.save()
+                                kl.bill.title = kl.title # update the title
+                                if kl.bill.stage_date < kl.date:
+                                    kl.bill.stage_date = kl.date
+                                    kl.bill.stage = '3'
+                                kl.bill.save()
                         else: # this kl already had a bill (from another PP)
                             kl.bill.merge(pp.bill) # merge them
                             
@@ -1221,12 +1231,7 @@ class Command(NoArgsCommand):
                         p.votes.add(this_v)
                         #print "add KP %d to Vote %d" % (kp['id'], this_v.id)
                         if p.bill:
-                            if (this_v.title.find('אישור'.decode('utf8')) >= 0) or (this_v.title.find('קריאה שנייה'.decode('utf8')) >= 0):
-                                p.bill.approval_vote = this_v
-                                p.bill.update_stage()
-                            if this_v.title.find('להעביר את'.decode('utf8')) >= 0:
-                                p.bill.first_vote = this_v
-                                p.bill.update_stage()
+                            p.bill.update_votes()
                         
             for pp in pps:
                 if v['c'].find(pp['c1'])>=0:
@@ -1236,8 +1241,33 @@ class Command(NoArgsCommand):
                         p.votes.add(this_v)
                         #print "add PP %d to Vote %d" % (pp['id'], this_v.id)
                         if p.bill:
-                            p.bill.pre_votes.add(this_v)
-                            p.bill.update_stage()    
+                            p.bill.update_votes()
+
+    def merge_duplicate_laws(self):
+        """Find and merge duplicate laws, and identical bills of each law"""
+        
+        laws = Law.objects.values('id','title','merged_into')
+
+        for l in laws:
+            l['c'] = cannonize(l['title'])
+
+        for (i,l) in enumerate(laws):
+            for j in range(i+1, len(laws)):
+                l2 = laws[j]
+                if l2['c']==l['c'] and l2['merged_into']==None and None==l['merged_into']:
+                    law1 = Law.objects.get(pk=l['id'])
+                    law2 = Law.objects.get(pk=l2['id'])
+                    if law1.bills.count() > law2.bills.count():
+                        law1.merge(law2)
+                    else:
+                        law2.merge(law1)
+
+        for l in Law.objects.all():
+            bills = l.bills.all()
+            for (i,b) in enumerate(bills):
+                for i2 in range(i+1,len(bills)):
+                    if cannonize(b.title)==cannonize(bills[i2].title):
+                        b.merge(bills[i2])
 
 
 
@@ -1277,6 +1307,7 @@ class Command(NoArgsCommand):
         if laws:
             self.parse_laws()
             self.find_proposals_in_other_data()
+            self.merge_duplicate_laws()
 
         if dump_to_file:
             print "writing votes to tsv file"
@@ -1289,6 +1320,7 @@ class Command(NoArgsCommand):
             self.get_protocols()
             self.parse_laws()
             self.find_proposals_in_other_data()
+            self.merge_duplicate_laws()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')

@@ -16,13 +16,13 @@
         </table>
         {% if query %}
             {% if form.spl %}
-            <a href="{% url haystack_search %}?q={{ form.spl }}">{% trans 'Did you mean' %} "{{ form.spl }}"?</a>
+            <a href="{% url haystack_search %}?q={{ form.spl }}">{% trans 'Did you mean' %} "{{ form.spl }}"?</a><br>
             {% endif %}
-            <h3>{% trans 'Results' %}</h3>
+            <h3>{% trans 'Results' %}</h3><br>
 
             {% for result in page.object_list %}
                 <p>
-                    ({{ result.verbose_name }}) <a href="{{ result.object.get_absolute_url }}">{% if result.object.title %}{{ result.object.title }}{% else %}{{ result.object }}{% endif %}</a>
+                    ({{ result.verbose_name }}) <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
                 </p>
             {% empty %}
                 <p>{% trans 'No results found.' %}</p>

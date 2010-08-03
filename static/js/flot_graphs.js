@@ -20,7 +20,17 @@ function sortNumber(a, b)
 
 function load_data_callback(original_data){
     all_data = original_data;
-    $(".axis_combobox").html('<select><option value="discipline">משמעת</option><option value="service_time">זמן בכנסת ה-18</option><option value="votes_count">כמות הצבעות</option><option value="votes_per_month">ממוצע הצבעות בחודש</option><option value="average_weekly_presence">ממוצע שעות נוכחות שבועיות</option><option value="committee_meetings_per_month">ישיבות וועדות בחודש</option></select>')    
+    $(".axis_combobox").html('<select><option value="discipline">' + gettext('Factional discipline') + 
+            '</option><option value="service_time">' + gettext('service time') + 
+            '</option><option value="votes_count">כמות הצבעות' + 
+            '</option><option value="votes_per_month">ממוצע הצבעות בחודש' + 
+            '</option><option value="average_weekly_presence">ממוצע שעות נוכחות שבועיות' + 
+            '</option><option value="committee_meetings_per_month">ישיבות וועדות בחודש' + 
+            '</option><option value="bills_proposed">הצעות חוק שהוצעו' +
+            '</option><option value="bills_passed_pre_vote">הצעות חוק שאושרו טרומית' +  
+            '</option><option value="bills_passed_first_vote">הצעות חוק שאושרו בקריאה ראשונה' +  
+            '</option><option value="bills_approved">הצעות חוק שאושרו סופית' +             
+            '</select>')    
     $("#y-axis>select").val('votes_per_month');
     $(".axis_combobox").change(function() {
         update_graph(all_data);

@@ -33,10 +33,11 @@ js_info_dict = {
 about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
-#main_view = SearchView(template='main.html', form_class=SearchForm)
+#main_view = SimpleView(template='main.html')
+from knesset.auxiliary.views import main
 
 urlpatterns = patterns('',
-    url(r'^$', 'planet.views.index', name='main'),
+    url(r'^$', main, name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
     (r'^user/', include('knesset.user.urls')),

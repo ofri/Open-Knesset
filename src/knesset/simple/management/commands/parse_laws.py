@@ -127,20 +127,21 @@ class ParseKnessetLaws(ParseLaws):
         self.url =r"http://www.knesset.gov.il/laws/heb/template.asp?Type=3"
         self.pdf_url=r"http://www.knesset.gov.il"
         self.laws_data=[]
-        self.parse_pages_booklet(min_booklet)	
+        self.min_booklet = min_booklet
+        self.parse_pages_booklet()	
 
-    def parse_pages_booklet(self,booklet):
-        last_booklet = booklet+1
+    def parse_pages_booklet(self):
+        full_page_parsed = True
         index = None
-        while last_booklet > booklet:
+        while full_page_parsed:
             if index:
                 params = {'First':index[0],'Start':index[1]}	
             else:
                 params = None
             soup_current_page = self.get_page_with_param(params)
             index = self.get_param(soup_current_page)
-            self.parse_knesset_laws_page(soup_current_page)
-            last_booklet = self.update_booklet()
+            full_page_parsed = self.parse_knesset_laws_page(soup_current_page)
+            
 
 	
 	
@@ -157,6 +158,8 @@ class ParseKnessetLaws(ParseLaws):
         for tag in name_tag:
             pdf_link = self.pdf_url + tag['href']
             booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
+            if int(booklet) <= self.min_booklet:
+                return False
             pdf_data = parse_knesset_bill_pdf.parse(pdf_link)
             for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
                 title = pdf_data[j]['title']
@@ -179,6 +182,7 @@ class ParseKnessetLaws(ParseLaws):
 
                 self.laws_data.append({'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
                                        'comment':comment, 'original_ids':pdf_data[j]['original_ids'],'date':pdf_data[j]['date']})
+        return True               
 	
     def update_booklet(self):
         return int(self.laws_data[-1]['booklet'])

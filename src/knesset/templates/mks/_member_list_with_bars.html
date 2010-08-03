@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load laws_extra %}
 <div class="list-wrap">
-<h3>{% trans 'Current MKs' %}</h3>
+<h1>{% trans 'Current MKs' %}</h1>
 {% for o in object_list %}
     {% if o.is_current %}
 	    <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a> ({{ o.extra|floatformat }})
@@ -11,7 +11,7 @@
     {% trans "Data base empty, no objects" %}
 {% endfor %}
 </table>
-<h3>{% trans 'Past MKs' %}</h3>
+<h1>{% trans 'Past MKs' %}</h1>
 {% for o in past_mks %}
 	<a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a> ({{ o.extra|floatformat }})
     {% bar o.extra 1 norm_factor %}

@@ -139,10 +139,14 @@ class VoteManager(models.Manager):
 
         qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
 
+        # In dealing with 'tagged' we use an ugly workaround for the fact that generic relations
+        # don't work as expected with annotations. 
+        # please read http://code.djangoproject.com/ticket/10461 before trying to change this code
         if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'false':
-            qs = qs.annotate(c=Count('tagged_items')).filter(c=0)
+            qs = qs.exclude(tagged_items__isnull=False)
         if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'true':
-            qs = qs.annotate(c=Count('tagged_items')).filter(c__gt=0)
+            untagged_ids = Vote.objects.exclude(tagged_items__isnull=False).values_list('id',flat=True)
+            qs = qs.exclude(id__in=untagged_ids)
 
 
         if 'order' in kwargs:
@@ -184,7 +188,7 @@ class Vote(models.Model):
         verbose_name_plural = _('Votes')
 
     def __unicode__(self):
-        return "%d %s (%s)" % (self.id, self.title, self.time_string)
+        return "%s (%s)" % (self.title, self.time_string)
 
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
@@ -274,13 +278,14 @@ class TagForm(forms.Form):
 
 class Law(models.Model):
     title = models.CharField(max_length=1000)
-    
+    merged_into = models.ForeignKey('Law', related_name='duplicates', blank=True, null=True)
     def __unicode__(self):
         return self.title
 
     def merge(self, another_law):
-        """ Merges another_law into this one 
-            (move all pointers from another_law to self, then delete another_law
+        """ Merges another_law into this one. 
+            Move all pointers from another_law to self, 
+            Then mark another_law as deleted by setting its merged_into field to self.
         """
         if another_law == self:
             return # don't accidentally delete myself by trying to merge.
@@ -290,7 +295,11 @@ class Law(models.Model):
         for kp in another_law.laws_knessetproposal_related.all():
             kp.law = self
             kp.save()
-        another_law.delete()
+        for bill in another_law.bills.all():
+            bill.law = self
+            bill.save()
+        another_law.merged_into = self
+        another_law.save()
 
 class BillProposal(models.Model):
     knesset_id = models.IntegerField(blank=True, null=True)
@@ -313,12 +322,24 @@ class PrivateProposal(BillProposal):
     bill = models.ForeignKey('Bill', related_name='proposals', 
                              blank=True, null=True)
 
+    def get_absolute_url(self):
+        if self.bill:
+            return self.bill.get_absolute_url()
+        else:
+            return ""
+    
+
 class KnessetProposal(BillProposal):
     committee = models.ForeignKey('committees.Committee',related_name='bills', blank=True, null=True)
     booklet_number = models.IntegerField(blank=True, null=True)
     originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
     bill = models.OneToOneField('Bill', related_name='knesset_proposal',
                                  blank=True, null=True)
+    def get_absolute_url(self):
+        if self.bill:
+            return self.bill.get_absolute_url()
+        else:
+            return ""
 
 BILL_STAGE_CHOICES = (
         (u'1', _(u'Proposed')),
@@ -344,6 +365,10 @@ class Bill(models.Model):
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
 
+    class Meta:
+        verbose_name = _('Bill')
+        verbose_name_plural = _('Bills')
+
     def __unicode__(self):
         return u"%s %s (%s)" % (self.law, self.title, self.get_stage_display())
 
@@ -351,12 +376,43 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
 
+    def _get_tags(self):
+        tags = Tag.objects.get_for_object(self)
+        for t in tags:
+            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
+            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
+            t.score_positive = t.score > 0
+        tags = [t for t in tags]
+        tags.sort(key=lambda x:-x.score)
+        return tags
+
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
+
+    tags = property(_get_tags, _set_tags)
+
+
     def merge(self,another_bill):
         """Merges another_bill into self, and delete another_bill
         """
+        if not(self.id):
+            logger.debug('trying to merge into a bill with id=None, title=%s', self.title)
+            self.save()
+        if not(another_bill.id):
+            logger.debug('trying to merge a bill with id=None, title=%s', another_bill.title)
+            another_bill.save()
+
         if self==another_bill:
+            logger.debug('abort merging bill %d into itself' % self.id)
             return
-        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))            
+        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))
+
+        other_kp = KnessetProposal.objects.filter(bill=another_bill)
+        my_kp = KnessetProposal.objects.filter(bill=self)
+        if(len(my_kp) and len(other_kp)):
+            logger.debug('abort merging bill %d into bill %d, because both have KPs' % (another_bill.id, self.id))
+            return
+        
         for pv in another_bill.pre_votes.all():
             self.pre_votes.add(pv)
         for cm in another_bill.first_committee_meetings.all():
@@ -371,14 +427,28 @@ class Bill(models.Model):
             self.proposers.add(m)
         for pp in another_bill.proposals.all():
             pp.bill = self
-            pp.save()
-        try:
-            another_bill.knesset_proposal.bill = self
-            another_bill.knesset_proposal.save()
-        except:
-            pass
+            pp.save()        
+        if len(other_kp):
+            other_kp[0].bill = self
+            other_kp[0].save()
         another_bill.delete()
         self.update_stage()
+    
+    def update_votes(self):
+        kp = KnessetProposal.objects.filter(bill=self)
+        if len(kp):
+            for this_v in kp[0].votes.all():
+                if (this_v.title.find('אישור'.decode('utf8')) == 0):
+                    self.approval_vote = this_v
+                if this_v.title.find('להעביר את'.decode('utf8')) == 0:
+                    self.first_vote = this_v
+        pps = PrivateProposal.objects.filter(bill=self)
+        if len(pps):
+            for pp in pps:
+                for this_v in pp.votes.all():
+                    self.pre_votes.add(this_v)
+        self.update_stage()
+
     
     def update_stage(self):
         """Updates the stage for this bill according to all current data
@@ -395,6 +465,9 @@ class Bill(models.Model):
             if not(self.stage_date) or self.stage_date < cm.date:
                 self.stage = '5'
                 self.stage_date = cm.date
+        if self.stage == '5':
+            self.save()
+            return            
         if self.first_vote:
             if self.first_vote.for_votes_count() > self.first_vote.against_votes_count():
                 self.stage = '4'

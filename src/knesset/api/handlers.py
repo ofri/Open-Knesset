@@ -1,4 +1,6 @@
 from datetime import datetime
+from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
@@ -14,7 +16,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved')
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -46,6 +48,22 @@ class MemberHandler(BaseHandler):
             return round(x,2)
         else:
             return None
+
+    @classmethod
+    def bills_proposed(self, member):
+        return member.bills.count()
+
+    @classmethod
+    def bills_passed_pre_vote(self, member):
+        return member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+
+    @classmethod
+    def bills_passed_first_vote(self, member):
+        return member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+
+    @classmethod
+    def bills_approved(self, member):
+        return member.bills.filter(stage='6').count()
 
     @classmethod
     def member (self, member):
@@ -129,11 +147,16 @@ class TagHandler(BaseHandler):
             id = kwargs['id']        
         if id:
             return Tag.objects.filter(pk=id)
-        vote_id = None
-        if 'vote_id' in kwargs:
-            vote_id = kwargs['vote_id']
-        if vote_id:
-            tags_ids = TaggedItem.objects.filter(object_id=vote_id).values_list('tag', flat=True)
+        object_id = None
+        ctype = None
+        if 'object_id' in kwargs and 'object_type' in kwargs:
+            object_id = kwargs['object_id']
+            try:
+                ctype = ContentType.objects.get(model=kwargs['object_type'])
+            except ContentType.DoesNotExist:
+                pass
+        if object_id and ctype:
+            tags_ids = TaggedItem.objects.filter(object_id=object_id).filter(content_type=ctype).values_list('tag', flat=True)
             return Tag.objects.filter(id__in=tags_ids)
 
         return Tag.objects.usage_for_model(Vote)

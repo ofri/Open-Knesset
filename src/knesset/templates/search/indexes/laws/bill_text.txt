@@ -1,0 +1,5 @@
+{{ object.law.title }} {{ object.title }}
+{% for p in object.proposals.all %}
+    {{ p.law.title }} {{ p.title }}
+{% endfor %}
+{{ object.knesset_proposal.law.title }}{{ object.knesset_proposal.title }}
