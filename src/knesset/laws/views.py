@@ -94,31 +94,26 @@ class BillListView (ListView):
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    def GET(self, *args, **kwargs):
-        self.stage_filter = self.request.GET.get('stage',None)
-        return super(BillListView, self).GET(*args, **kwargs)
-
     def get_queryset(self):
-        filter = getattr(self, 'stage_filter', False)
-        if filter and filter!='all':
-            return self.queryset._clone().filter(stage=filter)
+        stage = self.request.GET.get('stage', False)
+        if stage and stage!='all':
+            return self.queryset._clone().filter(stage=stage)
         else:
             return self.queryset._clone()
 
     def get_context(self):
         context = super(BillListView, self).get_context()       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
-        if self.stage_filter and self.stage_filter!='all':
+        stage = self.request.GET.get('stage', False)
+        if stage and stage!='all':
             for x in r:
-                if x[3]==self.stage_filter:
+                if x[3]==stage:
                     x[2] = True
                     break
         else:
             r[0][2] = True
         context['friend_pages'] = r
         return context
-
-    
         
 class LawView (DetailView):
 
