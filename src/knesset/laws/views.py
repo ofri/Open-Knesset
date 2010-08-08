@@ -41,7 +41,11 @@ class BillDetailView (DetailView):
     def get_context(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context(*args, **kwargs)       
         bill = context['object']
-        context['title'] = "%s %s" % (bill.law.title, bill.title)
+        try:
+            context['title'] = "%s %s" % (bill.law.title, bill.title)
+        except AttributeError:
+            context['title'] = bill.title
+
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
