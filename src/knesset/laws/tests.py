@@ -19,7 +19,7 @@ class ListViewTest(TestCase):
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
-        self.bill_2 = Bill.objects.create(stage='2', title='bill 1')
+        self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
         self.mk_1 = Member.objects.create(name='mk 1')
 
     def testBillList(self):
@@ -29,6 +29,16 @@ class ListViewTest(TestCase):
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
                          [ self.bill_1.id, self.bill_2.id, ])
+        res = self.client.get(reverse('bill-list'), {'stage': 'all'})
+        object_list = res.context['object_list']
+        self.assertEqual(map(just_id, object_list), 
+                         [ self.bill_1.id, self.bill_2.id, ])
+        res = self.client.get(reverse('bill-list'), {'stage': '1'})
+        object_list = res.context['object_list']
+        self.assertEqual(map(just_id, object_list), [self.bill_1.id])
+        res = self.client.get(reverse('bill-list'), {'stage': '2'})
+        object_list = res.context['object_list']
+        self.assertEqual(map(just_id, object_list), [self.bill_2.id])
 
     def testBillDetail(self):
         res = self.client.get(reverse('bill-detail',
