@@ -1,6 +1,7 @@
 #encoding: UTF-8
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
+from django.views.generic.simple import redirect_to
 from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import ListView
 from models import *
@@ -12,7 +13,8 @@ bill_detail_view = BillDetailView(queryset=Bill.objects.all(), extra_context={'t
 
 lawsurlpatterns = patterns ('',
     url(r'^bill/$', bill_list_view, name='bill-list'),
-    url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', bill_by_knesset_booklet, name='bill-by-knesset-booklet'),
+    url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', redirect_to,
+        {'url': '/bill/?booklet=%(booklet_num)s', 'premanent': True }),
     url(r'^bill/(?P<object_id>\d+)/$', bill_detail_view, name='bill-detail'),
     url(r'^vote/$', vote_view, name='vote-list'),
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/suggest-tag/$', suggest_tag),

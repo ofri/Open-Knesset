@@ -26,16 +26,6 @@ import logging
 import datetime
 logger = logging.getLogger("open-knesset.laws.views")
 
-def bill_by_knesset_booklet(request, booklet_num):
-    kps = KnessetProposal.objects.filter(booklet_number=booklet_num).values_list('id',flat=True)
-    queryset = Bill.objects.filter(knesset_proposal__in=kps)
-    context = {'title':'Bills published in knesset booklet number %s' % booklet_num ,
-               'object_list': queryset}
-    template_name = "laws/bill_list.html"
-    c = RequestContext(request, context)
-    t = loader.get_template(template_name)
-    return HttpResponse(t.render(c))
-
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
     def get_context(self, *args, **kwargs):
@@ -96,8 +86,12 @@ class BillListView (ListView):
 
     def get_queryset(self):
         stage = self.request.GET.get('stage', False)
+        booklet = self.request.GET.get('booklet', False)
         if stage and stage!='all':
             return self.queryset._clone().filter(stage=stage)
+        elif booklet:
+            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
+            return self.queryset._clone().filter(knesset_proposal__in=kps)
         else:
             return self.queryset._clone()
 
@@ -105,11 +99,14 @@ class BillListView (ListView):
         context = super(BillListView, self).get_context()       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         stage = self.request.GET.get('stage', False)
+        booklet = self.request.GET.get('booklet', False)
         if stage and stage!='all':
             for x in r:
                 if x[3]==stage:
                     x[2] = True
                     break
+        elif booklet:
+            context['title']=_('Bills published in knesset booklet number %s') % booklet 
         else:
             r[0][2] = True
         context['friend_pages'] = r
