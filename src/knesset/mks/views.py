@@ -5,6 +5,9 @@ from django.views.generic.list_detail import object_list, object_detail
 from django.db.models import Count, Sum, Q
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
@@ -78,8 +81,11 @@ class MemberSelectView(ListDetailView):
 
 class MemberListView(ListDetailView):
     def render_list(self,request, **kwargs):
-        qs = self.queryset.all()
         info = request.GET.get('info','bills_pre')
+        response = cache.get('mks_list_by_%s' % info)
+        if response:
+            return response
+        qs = self.queryset.all()
         ec = dict(self.extra_context) or {}
         if 'extra_context' in kwargs:
             ec.update(kwargs['extra_context'])
@@ -92,10 +98,12 @@ class MemberListView(ListDetailView):
                               ['.?info=presence', _('By average weekly hours of presence'), False],
                               ['.?info=committees', _('By average monthly committee meetings'), False],
                               ['.?info=graph', _('Graphical view'), False]]
+        template_name='mks/member_list_with_bars.html'
         if info=='abc':
             ec['friend_pages'][0][2] = True
             ec['title'] = _('Members')
-        if info=='bills_proposed':
+            template_name='mks/member_list.html'
+        elif info=='bills_proposed':
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.count()
@@ -107,8 +115,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][1][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of bills proposed'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        if info=='bills_pre':
+        elif info=='bills_pre':
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
@@ -120,8 +127,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][2][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of bills pre-approved'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        if info=='bills_first':
+        elif info=='bills_first':
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
@@ -133,8 +139,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][3][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of bills first-approved'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        if info=='bills_approved':
+        elif info=='bills_approved':
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(stage='6').count()
@@ -146,9 +151,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][4][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of bills approved'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-
-        if info=='votes':
+        elif info=='votes':
             qs = list(qs)
             vs = list(MemberVotingStatistics.objects.all())
             vs = dict(zip([x.member_id for x in vs],vs))
@@ -162,8 +165,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][5][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By number of votes per month'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        if info=='presence':
+        elif info=='presence':
             qs = list(qs)
             for x in qs:
                 x.extra = x.average_weekly_presence()
@@ -175,8 +177,7 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][6][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0
             ec['title'] = "%s %s" % (_('Members'), _('By average weekly hours of presence'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-        if info=='committees':
+        elif info=='committees':
             qs = list(qs)
             for x in qs:
                 x.extra = x.committee_meetings_per_month()
@@ -188,14 +189,15 @@ class MemberListView(ListDetailView):
             ec['friend_pages'][7][2] = True
             ec['norm_factor'] = float(qs[0].extra)/50.0            
             ec['title'] = "%s %s" % (_('Members'), _('By average monthly committee meetings'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_list_with_bars.html', **kwargs)
-
-        if info=='graph':
+        elif info=='graph':
             ec['friend_pages'][8][2] = True
             ec['title'] = "%s %s" % (_('Members'), _('Graphical view'))
-            return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, template_name='mks/member_graph.html', **kwargs)
+            template_name='mks/member_graph.html'
 
-        return ListDetailView.render_list(self,request, queryset=qs, extra_context=ec, **kwargs)
+        response = ListDetailView.render_list(self,request, queryset=qs,
+                                  template_name=template_name, extra_context=ec, **kwargs)
+        cache.set('mks_list_by_%s' % info, response, 30*60)
+        return response
 
     def get_object_context (self, request, object_id):
         from actstream import actor_stream
@@ -227,6 +229,7 @@ class MemberListView(ListDetailView):
                 'bills_statistics':bills_statistics,
                }
 
+    @method_decorator(cache_page(30*60))
     def render_object(self, request, object_id, extra_context={}, **kwargs):
         context = self.get_object_context(request, object_id)
         extra_context.update(context)
