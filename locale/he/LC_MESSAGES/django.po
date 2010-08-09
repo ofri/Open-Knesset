@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-07-28 22:19+0300\n"
-"PO-Revision-Date: 2010-07-28 22:22+0200\n"
+"PO-Revision-Date: 2010-08-09 17:16+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -576,7 +576,7 @@ msgstr "ועדות"
 
 #: templates/base.html:109
 msgid "Some rights reserved."
-msgstr "חלק מהזכויות שמורות."
+msgstr "חלק מהזכויות שמורות. לפרטים לחץ כאן. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
 #: templates/accounts/email_validation.txt:2
 #: templates/accounts/email_validation_subject.txt:1
