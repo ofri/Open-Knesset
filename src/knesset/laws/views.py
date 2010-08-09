@@ -112,35 +112,24 @@ class BillListView (ListView):
         context['friend_pages'] = r
         return context
         
-class LawView (DetailView):
-
-    def get_context(self, *args, **kwargs):
-        law = Law.objects.get(pk=object_id)
-        pps = PrivateProposal.objects.filter(law=law).annotate(c=Count('knesset_proposals')).filter(c=0).order_by('title')
-        kps = KnessetProposal.objects.filter(law=law)
-        context['pps'] = pps
-        extra_context['kps'] = kps
-        extra_context['title'] = law.title
-        
-
-class VoteListView(ListDetailView):
+class VoteListView(ListView):
 
     session_votes_key = 'selected_votes'
     
     friend_pages = [
-            ('vote_type','all',_('All votes')),
-            ('vote_type','law-approve', _('Law Approvals')),
-            ('vote_type','second-call', _('Second Call')),
-            ('vote_type','demurrer', _('Demurrer')),
-            ('vote_type','no-confidence', _('Motion of no confidence')),
-            ('vote_type','pass-to-committee', _('Pass to committee')),
-            ('vote_type','continuation', _('Continuation')),
+            ('type','all',_('All votes')),
+            ('type','law-approve', _('Law Approvals')),
+            ('type','second-call', _('Second Call')),
+            ('type','demurrer', _('Demurrer')),
+            ('type','no-confidence', _('Motion of no confidence')),
+            ('type','pass-to-committee', _('Pass to committee')),
+            ('type','continuation', _('Continuation')),
             ('tagged','all',_('All')),
             ('tagged','false',_('Untagged Votes')),
             ('tagged','true',_('Tagged Votes')),            
-            ('time','7',_('Last Week')),
-            ('time','30',_('Last Month')),
-            ('time','all',_('All times')),
+            ('since','7',_('Last Week')),
+            ('since','30',_('Last Month')),
+            ('since','all',_('All times')),
             ('order','time',_('Time')),
             ('order','controversy', _('Controversy')),
             ('order','against-party',_('Against Party')),
@@ -148,33 +137,24 @@ class VoteListView(ListDetailView):
             
         ]
 
-    def pre (self, request, **kwargs):
-
-        pass
+    def get_queryset(self, **kwargs):
+        saved_selection = self.request.session.get(self.session_votes_key, dict())
+        self.options = {}
+        for key in ['type', 'tagged', 'since', 'order']:
+            self.options[key] = self.request.GET.get(key, 
+                                         saved_selection.get(key, None))
         
-
-    def render_list(self,request, **kwargs):
-
+        return Vote.objects.filter_and_order(**self.options)
         
-        if not self.extra_context: self.extra_context = {}
-
-        saved_selection = request.session.get(self.session_votes_key, dict())
-        options = {
-            'type': request.GET.get('vote_type', saved_selection.get('vote_type', None)),
-            'since': request.GET.get('time', saved_selection.get('time',None)),
-            'order': request.GET.get('order', saved_selection.get('order', None)),
-            'tagged': request.GET.get('tagged', saved_selection.get('tagged', None)),
-        }
-        
-        queryset = Vote.objects.filter_and_order(**options)
-        
+    def get_context(self):
+        context = super(VoteListView, self).get_context()       
         friend_page = {}
-        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type',saved_selection.get('vote_type','all')).encode('utf8'))
-        friend_page['tagged'] = urllib.quote(request.GET.get('tagged', saved_selection.get('tagged','all')).encode('utf8'))
-        friend_page['time'] = urllib.quote(request.GET.get('time', saved_selection.get('time','all')).encode('utf8'))
-        friend_page['order'] = urllib.quote(request.GET.get('order',saved_selection.get('order','time')).encode('utf8'))
-
-        request.session[self.session_votes_key] = friend_page
+        for key in ['type', 'tagged', 'since', 'order']:
+            if self.options[key]:
+                friend_page[key] = urllib.quote(self.options[key].encode('utf8'))
+            else:
+                friend_page[key] = 'all' if key!='order' else 'time'
+        self.request.session[self.session_votes_key] = friend_page
         
         r = {}
 
@@ -183,8 +163,8 @@ class VoteListView(ListDetailView):
             current = False
             if page[key]==value:
                 current = True
-                if key=='vote_type':
-                    self.extra_context['title'] = name
+                if key=='type':
+                    context['title'] = name
             else:
                 page[key] = value
             url =  "./?%s" % urllib.urlencode(page)
@@ -192,28 +172,28 @@ class VoteListView(ListDetailView):
                 r[key] = []
             r[key].append((url, name, current))        
 
-        #[(_('all'),'&'.join([time,order])), (_('law approval'))],[],[]]        
-        self.extra_context['friend_pages'] = r
-        watched_members = request.user.get_profile().followed_members.all()\
-                if request.user.is_authenticated() else False
+        context['friend_pages'] = r
+        if self.request.user.is_authenticated():
+            context['watched_members'] = \
+                self.request.user.get_profile().followed_members.all()
+        else:
+            context['watched_members'] = False
 
-        self.extra_context['watched_members'] = watched_members
-        return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
+        return context
 
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        vote = get_object_or_404(Vote, pk=object_id)
-        if not extra_context:
-            extra_context = {}
-        extra_context['title'] = vote.title
+class VoteDetailView(DetailView):
+    def get_context(self):
+        context = super(VoteDetailView, self).get_context()       
+        vote = context['object']
+        context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
         if Bill.objects.filter(approval_vote=vote).count()>0:
             related_bills.append(vote.bill_approved)
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
-        extra_context['bills'] = related_bills
-        return super(VoteListView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)       
+        context['bills'] = related_bills
+        return context
 
 
 @login_required

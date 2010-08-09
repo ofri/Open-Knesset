@@ -9,7 +9,7 @@ from models import *
 
 just_id = lambda x: x.id
 
-class ListViewTest(TestCase):
+class BillViewsTest(TestCase):
 
     def setUp(self):
         self.vote_1 = Vote.objects.create(time=datetime.now(),
@@ -117,3 +117,31 @@ class ListViewTest(TestCase):
         self.jacob.delete()
         self.mk_1.delete()
 
+class VoteViewsTest(TestCase):
+
+    def setUp(self):
+        self.vote_1 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 1')
+        self.vote_2 = Vote.objects.create(time=datetime.now(), 
+                                          title='vote 2')
+
+    def testVoteList(self):
+        res = self.client.get(reverse('vote-list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'laws/vote_list.html')
+        object_list = res.context['object_list']
+        self.assertEqual(map(just_id, object_list), 
+                         [ self.vote_2.id, self.vote_1.id, ])
+
+    def testVoteDetail(self):
+        res = self.client.get(reverse('vote-detail',
+                                 kwargs={'object_id': self.vote_1.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/vote_detail.html')
+        self.assertEqual(res.context['object'].id, self.vote_1.id)
+
+    def tearDown(self):
+        self.vote_1.delete()
+        self.vote_2.delete()
+# TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views
