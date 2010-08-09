@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 
 from tagging.models import Tag, TaggedItem
@@ -26,6 +26,17 @@ import logging
 import datetime
 logger = logging.getLogger("open-knesset.laws.views")
 
+def bill_tags_cloud(request, min_posts_count=1):
+    title = _('Bills by tag')
+    tags_cloud = Tag.objects.cloud_for_model(Bill)
+    return render_to_response("laws/bill_tags_cloud.html",
+        {"tags_cloud": tags_cloud, "title":title}, context_instance=RequestContext(request))
+
+def bill_tag(request, tag):
+    title = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+    return tagged_object_list(request, queryset_or_model=Bill, tag=tag, 
+            template_name='laws/bill_list_by_tag.html', extra_context={'title':title})
+
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
     def get_context(self, *args, **kwargs):
@@ -35,7 +46,6 @@ class BillDetailView (DetailView):
             context['title'] = "%s %s" % (bill.law.title, bill.title)
         except AttributeError:
             context['title'] = bill.title
-
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title

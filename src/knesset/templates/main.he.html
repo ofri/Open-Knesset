@@ -1,0 +1,23 @@
+{% extends "site_base.html" %}
+{% load i18n i18ninclude %}
+
+{% block extratitle %}{% trans 'Home' %}{% endblock %}
+{% block nav-main-page %} class="selected" {% endblock %}
+{% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
+{% block divcontent %}
+האתר בו תוכלו לגלות מה חברי הכנסת עושים באמת, ולא רק מה שהם דואגים לפרסם לנו בתקשורת.
+
+<h2>מה אפשר לעשות באתר?</h2>
+<ul style="font-size:120%; line-height:2em;">
+    <li>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.
+    <li>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</li>
+    <li>לראות איך כל חבר כנסת הצביע בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>. לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></li>
+    <li>לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמטרית שלהם. לדוגמה, הדף של <a href="{% url member-detail member.id %}">{{ member.name }}<img height="50em" src="{{ member.img_url }}"/></a></li>
+    <li>לקרוא את הפרוטוקולים של כל <a href="{% url committee-list %}">וועדות הכנסת</a> (למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</li>
+    <li>ואנחנו כל הזמן עובדים על עוד...</li>    
+</ul>
+
+<h3>חשוב לזכור:</h3> האתר עדיין בפיתוח, ואנחנו לא יכולים להתחייב ב- 100% שאין שגיאות בנתונים. רוצים לדעת איך זה עובד או לעזור? <a href="{% url about %}">קראו עוד אודות הפרויקט.</a>
+
+{% endblock %}
+

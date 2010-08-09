@@ -15,6 +15,8 @@ vote_detail_view = VoteDetailView(queryset = Vote.objects.all(), extra_context={
 
 lawsurlpatterns = patterns ('',
     url(r'^bill/$', bill_list_view, name='bill-list'),
+    url(r'^bill/tag/$', bill_tags_cloud, name='bill-tags-cloud'),
+    url(r'^bill/tag/(?P<tag>.*)/$', bill_tag, name='bill-tag'),
     url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', redirect_to,
         {'url': '/bill/?booklet=%(booklet_num)s', 'premanent': True }),
     url(r'^bill/(?P<object_id>\d+)/$', bill_detail_view, name='bill-detail'),
