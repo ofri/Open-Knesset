@@ -20,7 +20,8 @@ class Committee(models.Model):
        
 
 class CommitteeMeeting(models.Model):
-    committee = models.ForeignKey(Committee)
+    committee = models.ForeignKey(Committee, related_name='meetings')
+    # TODO: do we really need a date string? can't we just format date?
     date_string = models.CharField(max_length=256)
     date = models.DateField()
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')

@@ -36,16 +36,22 @@ class PartyVotingStatistics(models.Model):
 
     def discipline(self):
         total_votes = self.votes_count()
-        votes_against_party = self.votes_against_party_count()
-        return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        if total_votes > 0:
+            votes_against_party = self.votes_against_party_count()
+            return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        else:
+            return _('N/A')
 
     def coalition_discipline(self): # if party is in opposition this actually returns opposition_discipline
         total_votes = self.votes_count()
-        if self.party.is_coalition:
-            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
+        if total_votes > 0:
+            if self.party.is_coalition:
+                votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
+            else:
+                votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
+            return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
         else:
-            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
-        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
+            return _('N/A')
 
     def __unicode__(self):
         return "%s" % self.party.name
