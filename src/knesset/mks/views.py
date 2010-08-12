@@ -153,9 +153,9 @@ class MemberListView(ListView):
 class MemberDetailView(DetailView):
 
     # TODO: there should be a simpler way, no?
-    # @method_decorator(cache_page(30*60))
-    def render_html(self, *args, **kwargs):
-        return super(MemberDetailView, self).render_html(*args, **kwargs)
+    @method_decorator(cache_page(30*60))
+    def GET(self, *args, **kwargs):
+        return super(MemberDetailView, self).GET(*args, **kwargs)
 
     def get_context (self):
         context = super(MemberDetailView, self).get_context()
