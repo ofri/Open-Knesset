@@ -10,6 +10,10 @@ class LinkType(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
     image = models.ImageField(upload_to='icons')
 
+    class Meta:
+        verbose_name = _('link type')
+        verbose_name_plural = _('link types')
+
     def __unicode__(self):
         return self.title
 
