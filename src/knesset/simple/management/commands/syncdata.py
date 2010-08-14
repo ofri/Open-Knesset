@@ -988,7 +988,7 @@ class Command(NoArgsCommand):
     def update_presence(self):
         logger.debug("update presence")
         try:
-            (presence, invalid_weeks) = parse_presence.parse_presence(filename=os.path.join(DATA_ROOT, 'presence.txt.gz'))
+            (presence, valid_weeks) = parse_presence.parse_presence(filename=os.path.join(DATA_ROOT, 'presence.txt.gz'))
         except IOError:
             logger.error('Can\'t find presence file')
             return
@@ -1014,7 +1014,7 @@ class Command(NoArgsCommand):
                 current_timestamp = min_timestamp
 
             while current_timestamp != end_timestamp: # loop over weeks
-                if current_timestamp not in invalid_weeks: # if we have valid data for this week
+                if current_timestamp in valid_weeks: # if we have valid data for this week
                     if current_timestamp in member_presence: # if this member was present this week
                         hours = member_presence[current_timestamp] # check how many hours
                     else:

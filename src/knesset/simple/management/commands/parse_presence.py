@@ -19,10 +19,10 @@ def parse_presence(filename=None):
     total_time = 0.0
     f = gzip.open(filename,'r')
     workdays = [6,0,1,2,3]
-    last_timestamp = None
+    last_timestamp = None    
     todays_timestamp = date.today().isocalendar()[:2]
     reports = []
-    not_enough_data = []
+    enough_data = []
     line = f.readline()
     data = line.split(',')
     time = datetime.strptime(data[0],'%Y-%m-%d %H:%M:%S')
@@ -38,7 +38,8 @@ def parse_presence(filename=None):
         if current_timestamp == todays_timestamp:
             break
         if current_timestamp != last_timestamp: # when we move to next timestamp (week), parse the last weeks data
-            if len(reports) > 100: # only if we have enough reports from this week (~25 hours sampled)
+            if len(reports) > 200: # only if we have enough reports from this week (~50 hours sampled)
+                enough_data.append(last_timestamp) # record that we had enough reports this week
                 subtotals = dict()
                 subtotal_time = 0
                 for m in reports:
@@ -55,10 +56,10 @@ def parse_presence(filename=None):
                     else:
                         totals[m] = float(subtotals[m])
                 total_time += subtotal_time
-            else:
-                if last_timestamp!=None:
-                    not_enough_data.append(last_timestamp)
-
+            else: # not enough data this week.
+                #if last_timestamp!=None:
+                #    not_enough_data.append(last_timestamp)
+                pass
             # delete the reports list
             reports = []
             
@@ -74,4 +75,4 @@ def parse_presence(filename=None):
 
         # for every report in the file, add it to the array as a tuple: (time, [list of member ids])
         reports.append(((time-last_time).seconds/60,[int(x) for x in data[1:] if len(x.strip())>0]))
-    return (member_totals, not_enough_data)
+    return (member_totals, enough_data)
