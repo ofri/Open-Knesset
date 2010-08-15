@@ -14,7 +14,7 @@ import tagging
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
-from knesset.laws.models import MemberVotingStatistics
+from knesset.laws.models import MemberVotingStatistics, Bill
 from knesset.hashnav import ListView, DetailView, method_decorator
 
 from actstream import actor_stream
@@ -205,6 +205,12 @@ class PartyListView(ListView):
                               ['.?info=votes-per-seat', _('By votes per seat'), False],
                               ['.?info=discipline', _('By factional discipline'), False],
                               ['.?info=coalition-discipline', _('By coalition/opposition discipline'), False],
+                              ['.?info=residence-centrality', _('By residence centrality'), False],
+                              ['.?info=residence-economy', _('By residence economy'), False],
+                              ['.?info=bills-proposed', _('By bills proposed'), False],
+                              ['.?info=bills-pre', _('By bills passed pre vote'), False],
+                              ['.?info=bills-first', _('By bills passed first vote'), False],
+                              ['.?info=bills-approved', _('By bills approved'), False],
                               ]
 
         if info:
@@ -259,4 +265,100 @@ class PartyListView(ListView):
                 context['norm_factor'] = (100.0-m)/15
                 context['baseline'] = m - 2
                 context['title'] = "%s" % (_('Parties'))
+                
+            if info=='residence-centrality':
+                m = 10
+                for p in context['coalition']:
+                    rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][4][2] = True
+                context['norm_factor'] = (10.0-m)/15
+                context['baseline'] = m-1
+                context['title'] = "%s" % (_('Parties by residence centrality'))
+
+            if info=='residence-economy':
+                m = 10
+                for p in context['coalition']:
+                    rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][5][2] = True
+                context['norm_factor'] = (10.0-m)/15
+                context['baseline'] = m-1
+                context['title'] = "%s" % (_('Parties by residence economy'))
+
+            if info=='bills-proposed':
+                m = 9999
+                for p in context['coalition']:
+                    p.extra = len(set(Bill.objects.filter(proposers__current_party=p).values_list('id',flat=True)))/p.number_of_seats
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    p.extra = len(set(Bill.objects.filter(proposers__current_party=p).values_list('id',flat=True)))/p.number_of_seats
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][6][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by number of bills proposed per seat'))
+
+            if info=='bills-pre':
+                m = 9999
+                for p in context['coalition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][7][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by number of bills passed pre vote per seat'))
+
+            if info=='bills-first':
+                m = 9999
+                for p in context['coalition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][8][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by number of bills passed first vote per seat'))
+
+            if info=='bills-approved':
+                m = 9999
+                for p in context['coalition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(proposers__current_party=p,stage='6').values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    p.extra = round(float(len(set(Bill.objects.filter(proposers__current_party=p,stage='6').values_list('id',flat=True))))/p.number_of_seats,1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][9][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))
+
+                    
         return context

@@ -103,6 +103,8 @@ class Member(models.Model):
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
     place_of_residence_lat = models.CharField(blank=True, null=True, max_length=16)
     place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
+    residence_centrality = models.IntegerField(blank=True, null=True)
+    residence_economy = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
 
