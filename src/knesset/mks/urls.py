@@ -7,8 +7,8 @@ from feeds import MemberActivityFeed
                        
 member_list_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
 member_detail_view = MemberDetailView(queryset = Member.objects.all())
-party_list_view = PartyListView(queryset = Party.objects.all(),extra_context = {'maps_api_key':settings.GOOGLE_MAPS_API_KEY}) 
-party_detail_view = DetailView(queryset = Party.objects.all())
+party_list_view = PartyListView(queryset = Party.objects.all()) 
+party_detail_view = DetailView(queryset = Party.objects.all(),extra_context = {'maps_api_key':settings.GOOGLE_MAPS_API_KEY})
 
 mksurlpatterns = patterns('knesset.mks.views',
     url(r'^member/$', member_list_view, name='member-list'),
