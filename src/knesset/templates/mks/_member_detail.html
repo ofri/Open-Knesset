@@ -76,12 +76,20 @@
             <tr>
                 <td>{% trans "Bills approved" %}</td>
                 <td>{{ bills_statistics.approved }}</td>
-            </tr>
-               
-         
+            </tr>       
 
         </table>
     </div>
+    <div>
+        <h3> {% trans "Topics" %}</h3>
+        <table >
+            <tr>
+                <td>{% trans "Proposed bills topics" %}</td>
+                <td  style="max-width:25em"><div class="tags cloud">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div></td>
+            </tr>           
+        </table>
+    </div>
+    
     <div>
         <h3> {% trans "Contact Information" %}</h3>
         <table>

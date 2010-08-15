@@ -9,6 +9,8 @@ from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
+from tagging.models import Tag
+import tagging
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
@@ -181,10 +183,14 @@ class MemberDetailView(DetailView):
         bills_statistics['first'] = member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
         bills_statistics['approved'] = member.bills.filter(stage='6').count()
 
+        bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
+        #bills_tags.sort(key=lambda x:x.count,reverse=True)
+        bills_tags = tagging.utils.calculate_cloud(bills_tags)
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
+                'bills_tags':bills_tags,
                })
         return context
 

@@ -7,7 +7,7 @@
 {% block nav-laws %}class="selected"{% endblock %}
 {% block divcontent %}
     <h1>{{ title }}</h1>
-    <a href="{% url bill-tags-cloud %}">{% trans 'Choose another tag' %}</a><br>
+    <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div id="item-list">
         {% for o in object_list %}
             <div class="item">

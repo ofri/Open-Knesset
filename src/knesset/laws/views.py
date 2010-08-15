@@ -12,9 +12,11 @@ from django.template import loader, RequestContext
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
+import tagging
 from actstream import action
 from knesset.utils import limit_by_request
 from knesset.laws.models import *
+from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import DetailView, ListView, method_decorator
@@ -27,15 +29,29 @@ import datetime
 logger = logging.getLogger("open-knesset.laws.views")
 
 def bill_tags_cloud(request, min_posts_count=1):
-    title = _('Bills by tag')
-    tags_cloud = Tag.objects.cloud_for_model(Bill)
+    member = None
+    if 'member' in request.GET: 
+        member = get_object_or_404(Member, pk=request.GET['member'])
+        tags_cloud = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
+        tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
+        title = _('Bills by %(member)s by tag') % {'member':member.name}
+    else:
+        title = _('Bills by tag')
+        tags_cloud = Tag.objects.cloud_for_model(Bill)
     return render_to_response("laws/bill_tags_cloud.html",
-        {"tags_cloud": tags_cloud, "title":title}, context_instance=RequestContext(request))
+        {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
 
 def bill_tag(request, tag):
-    title = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
-    return tagged_object_list(request, queryset_or_model=Bill, tag=tag, 
-            template_name='laws/bill_list_by_tag.html', extra_context={'title':title})
+    member = None
+    if 'member' in request.GET: 
+        member = get_object_or_404(Member, pk=request.GET['member'])
+        title = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':member.name}
+        qs = member.bills.all()
+    else: # only tag is given
+        title = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+        qs = Bill
+    return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+        template_name='laws/bill_list_by_tag.html', extra_context={'title':title, "member":member})
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
