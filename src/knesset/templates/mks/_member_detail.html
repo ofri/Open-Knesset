@@ -63,19 +63,19 @@
             </tr>
             <tr>
                 <td>{% trans "Number of bills proposed" %}</td>
-                <td>{{ bills_statistics.proposed }}</td>
+                <td><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
             </tr>
             <tr>
                 <td>{% trans "Bills passed pre-vote" %}</td>
-                <td>{{ bills_statistics.pre }}</td>
+                <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</a></td>
             </tr>
             <tr>
                 <td>{% trans "Bills passed first vote" %}</td>
-                <td>{{ bills_statistics.first }}</td>
+                <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
             </tr>
             <tr>
                 <td>{% trans "Bills approved" %}</td>
-                <td>{{ bills_statistics.approved }}</td>
+                <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
             </tr>       
 
         </table>
