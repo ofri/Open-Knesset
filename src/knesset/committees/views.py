@@ -16,6 +16,13 @@ class MeetingDetailView(DetailView):
 
     allowed_methods = ('GET', 'POST')
 
+    def get_context(self, *args, **kwargs):
+        context = super(MeetingDetailView, self).get_context(*args, **kwargs)  
+        cm = context['object']
+        context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
+        return context 
+
+
     @method_decorator(login_required)
     def POST(self, object_id, **kwargs):
         cm = get_object_or_404(CommitteeMeeting, pk=object_id)
