@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-15 21:58+0300\n"
-"PO-Revision-Date: 2010-08-15 22:31+0200\n"
+"PO-Revision-Date: 2010-08-15 22:58+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1433,7 +1433,7 @@ msgstr "לעיונך, רשימת מאמרים שכתבו חברי הכנסת ב�
 #: templates/planet/tags/cloud.html.py:6
 #: templates/planet/tags/cloud.html:7
 msgid "Tags cloud"
-msgstr "אנן תגיות"
+msgstr "ענן תגיות"
 
 #: templates/planet/tags/detail.html:4
 #: templates/planet/tags/detail.html:7
