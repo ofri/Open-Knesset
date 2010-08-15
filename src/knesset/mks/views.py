@@ -205,6 +205,8 @@ class PartyListView(ListView):
                               ['.?info=votes-per-seat', _('By votes per seat'), False],
                               ['.?info=discipline', _('By factional discipline'), False],
                               ['.?info=coalition-discipline', _('By coalition/opposition discipline'), False],
+                              ['.?info=residence-centrality', _('By residence centrality'), False],
+                              ['.?info=residence-economy', _('By residence economy'), False],
                               ]
 
         if info:
@@ -259,4 +261,39 @@ class PartyListView(ListView):
                 context['norm_factor'] = (100.0-m)/15
                 context['baseline'] = m - 2
                 context['title'] = "%s" % (_('Parties'))
+                
+            if info=='residence-centrality':
+                m = 10
+                for p in context['coalition']:
+                    rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][4][2] = True
+                context['norm_factor'] = (10.0-m)/15
+                context['baseline'] = m-1
+                context['title'] = "%s" % (_('Parties by residence centrality'))
+
+            if info=='residence-economy':
+                m = 10
+                for p in context['coalition']:
+                    rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
+                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][5][2] = True
+                context['norm_factor'] = (10.0-m)/15
+                context['baseline'] = m-1
+                context['title'] = "%s" % (_('Parties by residence economy'))
+                
         return context
