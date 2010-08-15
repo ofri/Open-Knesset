@@ -174,7 +174,7 @@ class Vote(models.Model):
     time_string    = models.CharField(max_length=100)
     votes          = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
     votes_count    = models.IntegerField(null=True, blank=True)
-    importance     = models.FloatField()
+    importance     = models.FloatField(default=0.0)
     controversy    = models.IntegerField(null=True, blank=True)
     against_party  = models.IntegerField(null=True, blank=True)
     summary        = models.TextField(null=True,blank=True)
