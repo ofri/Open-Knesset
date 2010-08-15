@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-15 21:10+0300\n"
-"PO-Revision-Date: 2010-08-15 21:12+0200\n"
+"POT-Creation-Date: 2010-08-15 21:58+0300\n"
+"PO-Revision-Date: 2010-08-15 22:16+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -40,10 +40,10 @@ msgstr "ח\"כים"
 
 #: context.py:16
 #: mks/models.py:34
-#: mks/views.py:219
-#: mks/views.py:233
-#: mks/views.py:248
-#: mks/views.py:263
+#: mks/views.py:223
+#: mks/views.py:237
+#: mks/views.py:252
+#: mks/views.py:267
 #: templates/base.html:79
 msgid "Parties"
 msgstr "מפלגות"
@@ -483,13 +483,45 @@ msgstr "לפי מדד מרכזיות מקום מגורים"
 msgid "By residence economy"
 msgstr "לפי מדד סוציואקונומי של מקום מגורים"
 
-#: mks/views.py:280
+#: mks/views.py:210
+msgid "By bills proposed"
+msgstr "לפי לפי מספר הצעות חוק שהוצעו"
+
+#: mks/views.py:211
+msgid "By bills passed pre vote"
+msgstr "לפי הצעות חוק שאושרו טרומית"
+
+#: mks/views.py:212
+msgid "By bills passed first vote"
+msgstr "לפי הצעות חוק שאושרו בקריאה ראשונה"
+
+#: mks/views.py:213
+msgid "By bills approved"
+msgstr "לפי הצעות חוק שאושרו סופית"
+
+#: mks/views.py:284
 msgid "Parties by residence centrality"
 msgstr "מפלגות לפי מדד מרכזיות של מקום מגורים"
 
-#: mks/views.py:299
+#: mks/views.py:301
 msgid "Parties by residence economy"
 msgstr "מפלגות לפי מדד סוציואקונומי של מקום מגורים"
+
+#: mks/views.py:316
+msgid "Parties by number of bills proposed per seat"
+msgstr "מפלגות לפי מספר הצעות חוק שהוצעו לכל ח\"כ"
+
+#: mks/views.py:331
+msgid "Parties by number of bills passed pre vote per seat"
+msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
+
+#: mks/views.py:346
+msgid "Parties by number of bills passed first vote per seat"
+msgstr "מפלגות לפי מספר הצעות חוק שאושרו בקריאה ראשונה לכל ח\"כ"
+
+#: mks/views.py:361
+msgid "Parties by number of bills passed approved per seat"
+msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
 
 #: tagvotes/models.py:11
 msgid "tagged item"
