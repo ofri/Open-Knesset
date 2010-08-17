@@ -137,10 +137,13 @@ class Migration(DataMigration):
         economy = [5,4,8,3,5,8,8,8,8,4,4,7,9,5,3,4,5,6,5,4,6,4,7,4,4,6,7,4,4,8,8,8,5,8,4,6,4,4,8,8,8,7,4,8,8,4,4,7,4,8,None,3,4,4,1,8,8,8,4,8,8,8,4,5,4,4,8,8,5,5,8,9,6,8,8,8,8,4,6,3,3,6,6,4,2,5,2,8,7,6,4,6,8,8,4,5,7,8,3,8,8,5,2,3,3,8,5,6,8,4,4,6,4,7,6,8,8,8,7,5,8,7,5]
         centrality = [6,5,10,7,8,10,10,8,7,6,9,7,7,4,7,5,7,8,5,9,6,8,9,9,6,9,9,9,6,10,7,10,6,10,4,5,9,9,7,8,10,6,9,8,8,9,9,5,9,7,None,5,4,6,4,10,7,8,5,10,8,10,5,6,9,4,7,10,3,6,7,5,6,10,9,8,10,9,7,4,5,5,8,9,4,6,10,7,6,5,9,6,7,10,9,7,9,10,4,8,10,5,6,6,6,7,4,8,10,9,6,7,4,9,6,10,7,7,5,3,10,9,5]
         for (i,m) in enumerate(mks):
-            member = Member.objects.get(name = m)
-            member.residence_economy = economy[i]
-            member.residence_centrality = centrality[i]
-            member.save()
+            try:
+                member = orm.Member.objects.get(name = m)
+                member.residence_economy = economy[i]
+                member.residence_centrality = centrality[i]
+                member.save()
+            except orm.Member.DoesNotExist:
+                print 'memer %s not found in db' % m
 
     def backwards(self, orm):
         "Write your backwards methods here."
