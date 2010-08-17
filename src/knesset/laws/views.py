@@ -9,9 +9,11 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import Count, Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
+from django.core.urlresolvers import reverse
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
+from tagging.utils import get_tag
 import tagging
 from actstream import action
 from knesset.utils import limit_by_request
@@ -42,16 +44,36 @@ def bill_tags_cloud(request, min_posts_count=1):
         {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
 
 def bill_tag(request, tag):
-    member = None
+    tag_instance = get_tag(tag)
+    if tag_instance is None:
+        raise Http404(_('No Tag found matching "%s".') % tag)        
+    
+    extra_context = {'tag':tag_instance}
+    extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
     if 'member' in request.GET: 
-        member = get_object_or_404(Member, pk=request.GET['member'])
-        title = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':member.name}
-        qs = member.bills.all()
+        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
+        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
+        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+        qs = extra_context['member'].bills.all()
     else: # only tag is given
-        title = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
         qs = Bill
-    return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
-        template_name='laws/bill_list_by_tag.html', extra_context={'title':title, "member":member})
+
+    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+    bill_proposers = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag_instance)]
+    d = {}
+    for bill in bill_proposers:
+        for p in bill:
+            d[p] = d.get(p,0)+1
+    # now d is a dict: MK -> number of proposals in this tag
+    mks = d.keys()
+    for mk in mks:
+        mk.count = d[mk]
+    mks = tagging.utils.calculate_cloud(mks)
+    extra_context['members'] = mks
+    return object_list(request, queryset,
+    #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+        template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
