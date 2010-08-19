@@ -38,6 +38,6 @@ class UserProfile(models.Model):
         return self.followed_parties.all()
 
 def handle_user_save(sender, created, instance, **kwargs):
-    if created:
+    if created and instance._state.db=='default':
         UserProfile.objects.create(user=instance)
 post_save.connect(handle_user_save, sender=User)
