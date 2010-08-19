@@ -120,7 +120,7 @@ class BillViewsTest(TestCase):
 class VoteViewsTest(TestCase):
 
     def setUp(self):
-        self.vote_1 = Vote.objects.create(time=datetime.now(),
+        self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(), 
                                           title='vote 2')
