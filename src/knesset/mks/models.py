@@ -105,8 +105,8 @@ class Member(models.Model):
     place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
     residence_centrality = models.IntegerField(blank=True, null=True)
     residence_economy = models.IntegerField(blank=True, null=True)
-    user = models.ForeignKey(User,null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
+    user = models.ForeignKey(User,blank=True,null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
 
     class Meta:
         ordering = ['name']
