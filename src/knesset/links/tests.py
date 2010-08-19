@@ -1,5 +1,6 @@
 import unittest
 import re
+import os
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core.files import File
@@ -27,7 +28,7 @@ class TestViews(unittest.TestCase):
 
     def testImageType(self):
         # test a link with  a type image
-        f = open("testdata/testimage.png","r")
+        f = open(os.path.join("testdata", "testimage.png"),"r")
         self.type_a.image=File(f)
         self.type_a.save()
         c = Context ({'obj': self.obj})
