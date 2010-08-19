@@ -170,7 +170,7 @@ class MemberDetailView(DetailView):
             
         verbs = None
         if 'verbs' in self.request.GET:
-            verbs_form = VerbsForm(request.GET)
+            verbs_form = VerbsForm(self.request.GET)
             if verbs_form.is_valid():
                 verbs = verbs_form.cleaned_data['verbs']
         if verbs==None:

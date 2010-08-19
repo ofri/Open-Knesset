@@ -29,6 +29,4 @@ def processor(request):
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
     
     d['search_form'] = SearchFormWithSpellSuggest()
-    d['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
-
     return d

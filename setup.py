@@ -14,9 +14,9 @@ install_requires = [
     'feedparser',
     'pil',
     'django-pagination',
-    'django-planet',
     'django-piston',
     'django-extensions',
+    'python-memcached',
     ]
 setup(
         name = "Open-Knesset",
