@@ -36,7 +36,7 @@ class GetMemberFor(template.Node):
     def render(self, context):
         p = context[self.object_var_name]
         try:
-            context[self.return_var_name] = Link.objects.get(url=p.feed.url).content_object
+            context[self.return_var_name] = Link.objects.filter(url=p.feed.url)[0].content_object
         except:
             context[self.return_var_name] = None
         return ''
