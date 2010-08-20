@@ -2,8 +2,8 @@ from knesset.hashnav import DetailView, ListView, method_decorator
 from django.utils.translation import ugettext_lazy as _
 
 class AgendaListView (ListView):
-    pass
-    
+    def queryset(self):
+        return Agendas.objects.all()
     
 class AgendaDetailView (DetailView):
     def get_context(self, *args, **kwargs):
