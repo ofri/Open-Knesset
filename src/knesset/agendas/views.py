@@ -5,7 +5,7 @@ class AgendaListView (ListView):
     pass
     
     
-class AgendaDetailView (ListView):
+class AgendaDetailView (DetailView):
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
