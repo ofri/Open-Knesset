@@ -8,7 +8,7 @@ agenda_list_view = AgendaListView(queryset = Agenda.objects.all(),paginate_by=20
 agenda_detail_view = AgendaDetailView(queryset = Agenda.objects.all())
 
 
-lawsurlpatterns = patterns ('',
-    url(r'^agenda/$', agenda_list_view, name='agenda-list'),
-    url(r'^agenda/(?P<object_id>\d+)/$', agenda_detail_view, name='agenda-detail'),
+urlpatterns = patterns('',
+    url(r'^$', agenda_list_view, name='agenda-list'),
+    url(r'^(?P<object_id>\d+)/$', agenda_detail_view, name='agenda-detail'),
 )
