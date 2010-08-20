@@ -45,6 +45,10 @@ class UserProfile(models.Model):
         return map(lambda x: x.actor, 
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('public-profile', (), {'object_id': self.user.id})
+
 def handle_user_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
         UserProfile.objects.create(user=instance)
