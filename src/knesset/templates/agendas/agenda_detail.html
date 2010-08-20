@@ -10,4 +10,37 @@
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
 {% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block divcontent %}
+    <h2><a href=".">{{ object.name }}</a></h2>
+    <div id="agenda-info">
+        <div>
+            <h3>{% trans "Edited by" %}</h3>
+            {% for editor in object.editors.all %}
+                <a href="#">{{ editor.first_name }}&nbsp;{{ editor.last_name }}</a>
+            {% endfor %}
+        </div>
+        <div>
+            <h3> {% trans "Description" %}</h3>
+            {{ object.description }}
+        </div>
+    	<div id="item-list">
+
+        {% for vote in object.votes.all %}
+            <div class="item">
+                <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
+                    {{ vote.title }}<br/>
+                </a>
+
+            </div>
+            {% empty %}
+            {% trans "No results found" %}
+        {% endfor %}
+    </div> {# id="agenda-info" #}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
+
+
 
