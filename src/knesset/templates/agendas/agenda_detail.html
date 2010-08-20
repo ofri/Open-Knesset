@@ -1,0 +1,13 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load tagging_tags %}
+{% load laws_extra %}
+{% load links %}
+{% load comments %}
+{% block extratitle %}{{ object.title }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.title }} - {% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+
