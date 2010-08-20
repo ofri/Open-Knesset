@@ -7,7 +7,12 @@
 {% block divcontent %}
 	<div id="list-wrap">
         {% for o in object_list %}
-            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>&nbsp;
+            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
+            <span class="agenda owner">
+            {% for owner in o.owners.all %}
+                {{ owner.first_name }}&nbsp;{{ owner.last_name }}
+            {% endfor %}
+            </span><br />
         {% endfor %}
 	</div>
 {% endblock %}
