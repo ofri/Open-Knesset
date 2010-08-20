@@ -237,7 +237,7 @@ class VoteListView(ListView):
         context['friend_pages'] = r
         if self.request.user.is_authenticated():
             context['watched_members'] = \
-                self.request.user.get_profile().followed_members.all()
+                self.request.user.get_profile().members
         else:
             context['watched_members'] = False
 

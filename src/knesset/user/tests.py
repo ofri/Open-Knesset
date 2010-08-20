@@ -20,11 +20,11 @@ class TestFollowing(unittest.TestCase):
         self.assertTrue(loggedin)
         response = c.post(reverse('follow-members'), {'watch': self.david.id})
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(p.followed_members.all()[0], self.david)
+        self.assertEquals(p.members[0], self.david)
         response = c.post(reverse('follow-members'), {'watch': self.yosef.id})
         response = c.post(reverse('follow-members'), {'unwatch': self.david.id})
-        self.assertEquals(p.followed_members.count(), 1)
-        self.assertEquals(p.followed_members.all()[0], self.yosef)
+        self.assertEquals(len(p.members), 1)
+        self.assertEquals(p.members[0], self.yosef)
 
     def tearDown(self):
         self.jacob.delete()
