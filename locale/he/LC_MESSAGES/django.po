@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-20 16:29+0300\n"
+"POT-Creation-Date: 2010-08-20 19:35+0300\n"
 "PO-Revision-Date: 2010-08-17 20:03+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -622,6 +622,11 @@ msgstr ""
 "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט "
 "וקישור לאתר."
 
+#: templates/accounts/email_validation.txt:2
+#: templates/accounts/email_validation_subject.txt:1
+msgid "email validation for"
+msgstr "אימות דואר אלקטרוני עבור"
+
 #: templates/accounts/email_validation_sent.html:8
 msgid "An email has been sent to"
 msgstr "נשלח דואר ל"
@@ -647,6 +652,14 @@ msgstr "קריאת  מאמר"
 #: templates/activity/voted/action.html:8
 msgid "present and didn't vote"
 msgstr "נכח ולא הצביע"
+
+#: templates/agendas/agenda_list.html:9
+msgid "Your Agendas"
+msgstr "אג'נדות שלך"
+
+#: templates/agendas/agenda_list.html:20
+msgid "All Agendas"
+msgstr "כל האג'נדות"
 
 #: templates/comments/form.html:17
 msgid "Post comment"
@@ -1551,9 +1564,6 @@ msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/.
 #: user/forms.py:23
 msgid "email address"
 msgstr "כתובת דוא\"ל"
-
-#~ msgid "email validation for"
-#~ msgstr "אימות דואר אלקטרוני עבור"
 
 #~ msgid "Laws"
 #~ msgstr "חוקים"
