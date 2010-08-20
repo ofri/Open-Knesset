@@ -63,7 +63,6 @@ msgstr "אג'נדה"
 #: agendas/models.py:19 agendas/urls.py:7 templates/base.html:81
 #: templates/agendas/agenda_list.html:3 templates/agendas/agenda_list.html:4
 #: templates/agendas/agenda_list.html:5
-#, fuzzy
 msgid "Agendas"
 msgstr "אג'נדות"
 
