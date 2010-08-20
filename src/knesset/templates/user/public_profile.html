@@ -3,20 +3,23 @@
 {% load mks %}
 {% load activity_tags %}
 {% load pagination_tags %}
+{% load gravatar_tags %}
 {% block extratitle %}{{object.username}}{% endblock %}
 {% block header %}<h1>{{object.username}}</h1>{% endblock %}
 {% block content %}
-    {% trans 'Following Members' %}: &nbsp;
+    <div>
+        <img src="{% get_gravatar_for_email object.email 75 'r' %}" />
+    </div>
+    <h2>{% trans 'Following Members' %}:</h2>
     <ul class='favorites-list'>
     {% for member in object.get_profile.members %}
         <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+    {% empty %}
+        {% trans 'Not following any memebers.' %}
     {% endfor %}
     </ul>
     <div class="activities" >
-            <form class="select" method="get" action=".">
-                {{verbs_form}}
-                <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
-            </form>
+        <h2>{% trans 'Activities' %}</h2>
         <div style="clear:both;"></div>
     {% autopaginate actions %}
     {% for action in actions %}
