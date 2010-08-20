@@ -107,7 +107,9 @@ class Member(models.Model):
     residence_economy = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User,blank=True,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
-
+    current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
+    
+    
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
