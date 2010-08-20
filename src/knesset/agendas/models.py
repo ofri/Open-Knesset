@@ -11,7 +11,7 @@ class AgendaVote(models.Model):
 class Agenda(models.Model):
     name = models.CharField(max_length=300,unique=True)
     description = models.TextField(null=True,blank=True)
-    owners = models.ManyToManyField('auth.User')
+    editors = models.ManyToManyField('auth.User')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
 
     class Meta:
