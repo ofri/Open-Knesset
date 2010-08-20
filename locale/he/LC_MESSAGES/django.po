@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-17 19:59+0300\n"
-"PO-Revision-Date: 2010-08-17 20:03+0200\n"
+"PO-Revision-Date: 2010-08-20 19:49+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1193,7 +1193,7 @@ msgstr "אין ח\"כים במעקב. אפשר להוסיף על ידי לחיצ
 
 #: templates/mks/member_detail.html:19
 msgid "You have to be logged in to watch a user."
-msgstr "כדי לעקוב אחר חבר כנסת צריך להכנס לחשבון"
+msgstr "כדי לעקוב אחר חבר כנסת צריך להכנס לחשבון."
 
 #: templates/mks/member_detail.html:23
 #: templates/user/create_user.html:8
