@@ -4,7 +4,7 @@
 {% load laws_extra %}
 {% load links %}
 {% load comments %}
-{% block extratitle %}{{ object.title }}{% endblock %}
+{% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
@@ -24,17 +24,28 @@
             {{ object.description }}
         </div>
     	<div id="item-list">
+        
+        <table id="agenda-votes">
+            {% for agendavote in object.agendavote_set.all %}
+                <tr>
+                    <td>
+                        <div class="agenda-score">
+                            {{ agendavote.score }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item">
+                            <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
+                                {{ agendavote.vote.title }}<br/>
+                            </a>
 
-        {% for vote in object.votes.all %}
-            <div class="item">
-                <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
-                    {{ vote.title }}<br/>
-                </a>
-
-            </div>
+                        </div>
+                    </td>
+                </tr>
             {% empty %}
-            {% trans "No results found" %}
-        {% endfor %}
+                {% trans "No results found" %}
+            {% endfor %}
+        </table>
     </div> {# id="agenda-info" #}
     {% if paginator %}
         {% pagination page_obj paginator request %}
