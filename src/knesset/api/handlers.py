@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
@@ -16,7 +18,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_desc', 'committees', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -64,6 +66,43 @@ class MemberHandler(BaseHandler):
     @classmethod
     def bills_approved(self, member):
         return member.bills.filter(stage='6').count()
+
+    @classmethod
+    def roles (self, member):
+        return u'Unknown'
+
+    @classmethod
+    def average_weekly_presence_desc (self, member):
+        ''' Calculate the distribution of presence and place the user on a 5 level scale '''
+        SCALE = 5
+
+        avg = member.average_weekly_presence()
+        if not avg:
+            return None
+
+        presence_list = cache.get('average_presence_list')
+        if not presence_list:
+            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
+            cache.set('average_presence_list', presence_list, 60*60*24)
+
+        rel_location= cache.get('average_presence_location_%d' % member.id)
+        if not rel_location:
+            # Find member's relative location in the list
+            for pos, item in enumerate(presence_list):
+                if item > avg:
+                    location = pos
+                    break
+            else:
+                location = len(presence_list)
+
+            rel_location = location / (len(presence_list) / SCALE)
+            cache.set('average_presence_location_%d' % member.id, rel_location, 60*60*24)
+
+        return rel_location
+
+    @classmethod
+    def committees (self, member):
+        return dict(map(lambda committee: (str(committee), reverse('committee-meeting', args=[committee.id])), member.committee_meetings.all()))
 
     @classmethod
     def member (self, member):
