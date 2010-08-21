@@ -21,3 +21,10 @@ class Agenda(models.Model):
     def __unicode__(self):
         return "%s" % self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('agenda-detail', [str(self.id)])
+
+    @models.permalink
+    def get_edit_absolute_url(self):
+        return ('agenda-detail-edit', [str(self.id)])

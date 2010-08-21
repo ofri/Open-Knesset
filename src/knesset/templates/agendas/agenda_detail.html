@@ -12,6 +12,11 @@
 {% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block divcontent %}
     <h2><a href=".">{{ object.name }}</a></h2>
+    {% if user in object.editors.all %}
+        <div class="edit">
+            <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+        </div>
+    {% endif %}
     <div id="agenda-info">
         <div>
             <h3>{% trans "Edited by" %}</h3>
