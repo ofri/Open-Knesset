@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, AnonymousUser
+from actstream import follow
 from knesset.mks.models import Member, Party, Membership
 from knesset.mks.views import MemberListView
 from knesset.utils import RequestFactory
@@ -60,8 +61,7 @@ class MemberViewsTest(TestCase):
         res = self.client.get(mk_1_url)
         self.assertFalse(res.context['watched_member'])
         # test autherized user that follows
-        p = self.jacob.get_profile()
-        p.followed_members.add(self.mk_1)
+        follow(self.jacob, self.mk_1)
         res = self.client.get(mk_1_url)
         self.assertTrue(res.context['watched_member'])
 
