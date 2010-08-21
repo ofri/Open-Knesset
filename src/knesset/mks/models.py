@@ -248,5 +248,15 @@ def find_possible_members(name):
         results.append({'id':mks[mk_names.index(p)][1], 'name':p})
     return results
 
+def find_possible_parties(name):
+    parties = Party.objects.values_list('name','id')
+    party_names = [party[0] for party in parties]
+    possible = difflib.get_close_matches(name, party_names, cutoff=0.6, n=5)
+    results = []
+    for p in possible:
+        results.append({'id':parties[party_names.index(p)][1], 'name':p})
+    return results
+
+
 from listeners import *
 

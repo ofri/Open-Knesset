@@ -14,7 +14,7 @@ import json
 from tagging.models import Tag
 import tagging
 from knesset.utils import limit_by_request
-from knesset.mks.models import Member, Party, find_possible_members
+from knesset.mks.models import Member, Party, find_possible_members, find_possible_parties
 from knesset.mks.forms import VerbsForm
 from knesset.laws.models import MemberVotingStatistics, Bill
 from knesset.hashnav import ListView, DetailView, method_decorator
@@ -376,18 +376,25 @@ def member_auto_complete(request):
 
     return HttpResponse(json.dumps(result), mimetype='application/json')
 
-        
-def member_by_name(request, name):
-    name = name.replace('%20',' ')
-    results = find_possible_members(name)
+
+object_finders = {'member':find_possible_members, 'party':find_possible_parties}        
+def object_by_name(request, name, object_type):
+    name = name.replace('%20',' ')    
+    results = object_finders[object_type](name)
     if request.is_ajax():
         try:
             for r in results:
-                r['url'] = reverse('member-detail',args=[r['id']])
-            return HttpResponse(json.dumps({'possible_mks':results}))
+                r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
+            return HttpResponse(json.dumps({'possible':results}))
         except Exception,e:
             print e
     if results:
-        return HttpResponseRedirect(reverse('member-detail',args=[results[0]['id']]))
-    raise Http404(_('No Member found matching "%s".') % name)
+        return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
+    raise Http404(_('No %s found matching "%s".') % (object_type,name))
+
+def party_by_name(request, name):
+    return object_by_name(request, name, 'party')
+    
+def member_by_name(request, name):
+    return object_by_name(request, name, 'member')
 
