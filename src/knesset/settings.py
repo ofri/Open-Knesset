@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'actstream',
     'gravatar',
+    'annotatetext',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',

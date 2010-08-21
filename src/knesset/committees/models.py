@@ -18,7 +18,6 @@ class Committee(models.Model):
     def get_absolute_url(self):
         return ('committee-detail', [str(self.id)])
        
-
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
     # TODO: do we really need a date string? can't we just format date?
@@ -37,6 +36,27 @@ class CommitteeMeeting(models.Model):
   
     class Meta:
         ordering = ('-date',)
+
+class ProtocolPartManager(models.Manager):
+    def list(self):
+        return self.order_by("order")
+
+class ProtocolPart(models.Model):
+    meeting = models.ForeignKey(CommitteeMeeting, related_name='parts')
+    order = models.IntegerField()
+    header = models.TextField(blank=True)
+    body = models.TextField(blank=True)
+
+    objects = ProtocolPartManager()
+
+    annotatable = True
+
+    def get_absolute_url(self): 
+        if self.ordernr == 1: 
+            return self.mmeting.get_absolute_url() 
+        else: 
+            return self.mmeting.get_absolute_url()+"-%d" % self.ordernr 
+
 
 @disable_for_loaddata
 def handle_cm_save(sender, created, instance, **kwargs):
