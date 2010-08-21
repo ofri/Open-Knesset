@@ -19,14 +19,34 @@ class Migration(DataMigration):
                 follow(user, party)
 
     def backwards(self, orm):
-        "Write your backwards methods here."
-        for i in orm.Follow.objects.filter( 
+        ''' This back migration fails, sorry
+        for i in orm['actstream.follow'].objects.filter( 
             content_type__in = (ContentType.objects.get_for_model(Party),
                                ContentType.objects.get_for_model(Member))):
             i.delete()
-
+        '''
+        pass
 
     models = {
+        'actstream.action': {
+            'Meta': {'object_name': 'Action'},
+            'actor_content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actor'", 'to': "orm['contenttypes.ContentType']"}),
+            'actor_object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'public': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
+            'target_content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'target'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
+            'target_object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'verb': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+        },
+        'actstream.follow': {
+            'Meta': {'object_name': 'Follow'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -127,4 +147,4 @@ class Migration(DataMigration):
         }
     }
 
-    complete_apps = ['user']
+    complete_apps = ['user', 'actstream']
