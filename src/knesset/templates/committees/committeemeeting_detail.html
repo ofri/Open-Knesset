@@ -62,8 +62,8 @@
                  serviceUrl:'/bill/auto_complete',
                  minChars:2, 
                  maxHeight:400,
-                 width:800,
-                 deferRequestBy: 300, //miliseconds
+                 width:400,
+                 deferRequestBy: 100, //miliseconds
                  onSelect: function(value, data, me){ 
                     me.siblings("input[name$='bill_id']").val(data);
                     me.siblings("input[type$='submit']").removeAttr('disabled'); },
@@ -73,8 +73,8 @@
                  serviceUrl:'/member/auto_complete',
                  minChars:0, 
                  maxHeight:400,
-                 width:800,
-                 deferRequestBy: 300, //miliseconds
+                 width:150,
+                 deferRequestBy: 100, //miliseconds
                  };
 
             $('input.bill_input').autocomplete(options_bill);
