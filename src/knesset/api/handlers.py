@@ -9,6 +9,7 @@ from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
 from tagging.models import Tag, TaggedItem
+import math
 
 DEFAULT_PAGE_LEN = 20
 def limit_by_request(qs, request):
@@ -70,41 +71,38 @@ class MemberHandler(BaseHandler):
 
     @classmethod
     def roles (self, member):
-        return u'Unknown'
+        return member.current_role_descriptions or ''
 
     @classmethod
     def average_weekly_presence_rank (self, member):
         ''' Calculate the distribution of presence and place the user on a 5 level scale '''
         SCALE = 5
 
-        avg = member.average_weekly_presence()
-        if not avg:
-            return None
-
-        presence_list = cache.get('average_presence_list')
-        if not presence_list:
-            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
-            cache.set('average_presence_list', presence_list, 60*60*24)
-
-        rel_location= cache.get('average_presence_location_%d' % member.id)
+        rel_location = cache.get('average_presence_location_%d' % member.id)
         if not rel_location:
-            # Find member's relative location in the list
-            for pos, item in enumerate(presence_list):
-                if item > avg:
-                    location = pos
-                    break
-            else:
-                location = len(presence_list)
 
-            rel_location = location / (len(presence_list) / SCALE)
-            cache.set('average_presence_location_%d' % member.id, rel_location, 60*60*24)
+            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
+            presence_groups = int(math.ceil(len(presence_list) / float(SCALE)))
 
+            # Generate cache for all members
+            for mk in Member.objects.all():
+                avg = mk.average_weekly_presence()
+                if avg:
+                    mk_location = 1 + (presence_list.index(avg) / presence_groups)
+                else:
+                    mk_location = 0
+
+                cache.set('average_presence_location_%d' % mk.id, mk_location, 60*60*24)
+
+                if mk.id == member.id:
+                    rel_location = mk_location 
+        
         return rel_location
 
     @classmethod
     def committees (self, member):
         temp_list = member.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
-        return (map(lambda item: (item['id__count'], item['committee__name'], reverse('committee-meeting', args=[item['committee']])), temp_list))
+        return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
 
     @classmethod
     def member (self, member):
