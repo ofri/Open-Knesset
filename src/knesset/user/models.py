@@ -37,7 +37,8 @@ class UserProfile(models.Model):
     def members(self):
         #TODO: ther has to be a faster way
         return map(lambda x: x.actor, 
-            Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Member)))
+            Follow.objects.filter(user=self.user, 
+                content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
 
     @property
     def parties(self):
