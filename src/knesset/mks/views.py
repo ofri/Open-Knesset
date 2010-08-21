@@ -8,13 +8,13 @@ from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-from django.http import HttpResponseRedirect, HttpResponse, Http404
-import simplejson
-
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+import json
 from tagging.models import Tag
 import tagging
 from knesset.utils import limit_by_request
-from knesset.mks.models import Member, Party
+from knesset.mks.models import Member, Party, find_possible_members
 from knesset.mks.forms import VerbsForm
 from knesset.laws.models import MemberVotingStatistics, Bill
 from knesset.hashnav import ListView, DetailView, method_decorator
@@ -360,9 +360,7 @@ class PartyListView(ListView):
                 context['friend_pages'][9][2] = True
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
-                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))
-
-                    
+                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
         return context
 
 def member_auto_complete(request):
@@ -376,5 +374,20 @@ def member_auto_complete(request):
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions }
 
-    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), mimetype='application/json')
+
+        
+def member_by_name(request, name):
+    name = name.replace('%20',' ')
+    results = find_possible_members(name)
+    if request.is_ajax():
+        try:
+            for r in results:
+                r['url'] = reverse('member-detail',args=[r['id']])
+            return HttpResponse(json.dumps({'possible_mks':results}))
+        except Exception,e:
+            print e
+    if results:
+        return HttpResponseRedirect(reverse('member-detail',args=[results[0]['id']]))
+    raise Http404(_('No Member found matching "%s".') % name)
 
