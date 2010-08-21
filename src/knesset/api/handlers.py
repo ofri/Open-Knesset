@@ -71,7 +71,7 @@ class MemberHandler(BaseHandler):
 
     @classmethod
     def roles (self, member):
-        return member.current_role_descriptions or ''
+        return member.get_role
 
     @classmethod
     def average_weekly_presence_rank (self, member):
