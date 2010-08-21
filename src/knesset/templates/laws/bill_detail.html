@@ -155,7 +155,13 @@
     {% empty %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="pre vote"></input><input type="text" class="vote_input" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="user_input_type" value="pre vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="text" id="foo" name="vote_id"></input>
+            <input type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}                
     {% endfor %}     
     <script type="text/javascript">
@@ -215,7 +221,14 @@
     {% else %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="first vote"></input><input type="text" class="vote_input" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">
+            {% csrf_token %}
+            <input type="hidden" name="user_input_type" value="first vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="text" name="vote_id"></input>
+            <input type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}        
     {% endif %}
     <script type="text/javascript">
@@ -257,7 +270,13 @@
     {% else %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="approval vote"></input><input type="text" class="vote_input" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="user_input_type" value="approval vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="text" name="vote_id"></input>
+            <input type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}
     {% endif %}
     <script type="text/javascript">
@@ -293,6 +312,7 @@
                  maxHeight:400,
                  width:800,
                  deferRequestBy: 10, //miliseconds
+                 onSelect: function(value, data, me){ me.siblings("input[name$='vote_id']").val(data); },
                  };
 
             $('.vote_input').each(function(item) { $(this).autocomplete(options); });
