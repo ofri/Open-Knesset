@@ -159,8 +159,8 @@
         <form method="post" action=".">{% csrf_token %}
             <input type="hidden" name="user_input_type" value="pre vote"></input>
             <input type="text" class="vote_input" name="vote_string"></input>
-            <input type="text" id="foo" name="vote_id"></input>
-            <input type="submit" value="{% trans 'Submit' %}"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
         </form>
         {% endif %}                
     {% endfor %}     
@@ -226,8 +226,8 @@
             {% csrf_token %}
             <input type="hidden" name="user_input_type" value="first vote"></input>
             <input type="text" class="vote_input" name="vote_string"></input>
-            <input type="text" name="vote_id"></input>
-            <input type="submit" value="{% trans 'Submit' %}"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
         </form>
         {% endif %}        
     {% endif %}
@@ -274,8 +274,8 @@
         <form method="post" action=".">{% csrf_token %}
             <input type="hidden" name="user_input_type" value="approval vote"></input>
             <input type="text" class="vote_input" name="vote_string"></input>
-            <input type="text" name="vote_id"></input>
-            <input type="submit" value="{% trans 'Submit' %}"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
         </form>
         {% endif %}
     {% endif %}
@@ -311,11 +311,19 @@
                  minChars:2, 
                  maxHeight:400,
                  width:800,
-                 deferRequestBy: 10, //miliseconds
-                 onSelect: function(value, data, me){ me.siblings("input[name$='vote_id']").val(data); },
+                 deferRequestBy: 300, //miliseconds
+                 onSelect: function(value, data, me){ 
+                    me.siblings("input[name$='vote_id']").val(data);
+                    me.siblings("input[type$='submit']").removeAttr('disabled'); },
                  };
 
-            $('.vote_input').each(function(item) { $(this).autocomplete(options); });
+            $('.vote_input').each(function(item) { 
+                 $(this).autocomplete(options); 
+                 $(this).keydown(function() { 
+                    $(this).siblings("input[name$='vote_id']").val('');
+                    $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); 
+                 });
+            });
           });
 	</script>
     

@@ -5,6 +5,10 @@
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
+{% block extrahead %} 
+<link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+{% endblock %}
 {% block divcontent %}
     <h2>{{ title }}</h2>
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
@@ -18,7 +22,13 @@
                                  {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
     <br>
     {% if user.is_authenticated %}
-        {% trans 'Suggest a matching bill' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="bill"></input><input type="text" name="bill_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+    {% trans 'Suggest a matching bill' %}
+    <form method="post" action=".">{% csrf_token %}
+        <input type="hidden" name="user_input_type" value="bill"></input>
+        <input type="text" class="bill_input" name="bill_text"></input>
+        <input type="hidden" name="bill_id"></input>
+        <input type="submit" value="{% trans 'Submit' %}"></input>
+    </form>
     {% endif %}                
 
     <h3>{% trans 'Protocol' %}</h3>
@@ -45,6 +55,35 @@
 {% else %}
     {% trans 'Please login to comment' %}
 {% endif %}
+
+	<script type="text/javascript">
+        $(document).ready(function() {
+            var options_bill = { 
+                 serviceUrl:'/bill/auto_complete',
+                 minChars:2, 
+                 maxHeight:400,
+                 width:800,
+                 deferRequestBy: 300, //miliseconds
+                 onSelect: function(value, data, me){ 
+                    me.siblings("input[name$='bill_id']").val(data);
+                    me.siblings("input[type$='submit']").removeAttr('disabled'); },
+                 };
+
+            var options_mk = { 
+                 serviceUrl:'/member/auto_complete',
+                 minChars:0, 
+                 maxHeight:400,
+                 width:800,
+                 deferRequestBy: 300, //miliseconds
+                 };
+
+            $('input.bill_input').autocomplete(options_bill);
+            $('input.bill_input').keydown(function() { 
+                $(this).siblings("input[name$='bill_id']").val('');
+                $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
+            $("input[name$='mk_name']").autocomplete(options_mk);
+          });
+	</script>
 
 
 {% endblock %}

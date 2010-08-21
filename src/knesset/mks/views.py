@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+import simplejson
 
 from tagging.models import Tag
 import tagging
@@ -362,3 +364,17 @@ class PartyListView(ListView):
 
                     
         return context
+
+def member_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    suggestions = map(lambda member: member.name, Member.objects.filter(name__icontains=request.GET['query'])[:30])
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+

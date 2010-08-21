@@ -76,6 +76,25 @@ def bill_tag(request, tag):
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
 
+def bill_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Bill.objects.filter(title__icontains=request.GET['query'])[:30]
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+
+
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
     def get_context(self, *args, **kwargs):
