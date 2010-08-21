@@ -8,6 +8,8 @@ from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
+from datetime import datetime, timedelta
+
 from actstream import unfollow, follow
 from actstream.models import Action
 from forms import EditProfileForm
@@ -23,9 +25,49 @@ class PublicUserProfile(DetailView):
 
     def get_context(self):
         context = super(PublicUserProfile, self).get_context()
-        context['actions'] = Action.objects.stream_for_actor(context['object'])
+        context['aggr_actions'] = aggregate_stream(Action.objects.stream_for_actor(context['object']))
         return context
 
+
+class AggregatedAction:
+    def __init__(self, actor, verb):
+        self.actor = actor
+        self.verb = verb
+        self.targets = {}
+        self.timestamp = datetime.now()
+    
+    def __str__(self):
+        return self.actor.__str__()+" "+self.verb.__str__()+" "+self.targets.__str__()
+
+AGGREGATION_BREAK_PERIOD = timedelta(0, 15*60) #15 minutes
+
+def aggregate_stream(actions):
+    aggr_stream = []
+    
+    aggr_action = None
+    for action in actions:
+        if aggr_action is None: # first item in the action list
+            pass
+        elif aggr_action.verb != action.verb or aggr_action.actor != action.actor or (aggr_action.timestamp-action.timestamp)>AGGREGATION_BREAK_PERIOD:
+            # break aggregation
+            aggr_stream.append(aggr_action)
+        elif aggr_action.targets.has_key(action.target):
+            aggr_action.targets[action.target] += 1
+            continue
+        else:
+            aggr_action.targets[action.target] = 1;
+            continue
+        
+        # create a new aggregated action based on the current action
+        aggr_action = AggregatedAction(action.actor, action.verb)
+        aggr_action.targets[action.target] = 1
+        aggr_action.timestamp = action.timestamp
+  
+    # add the last aggregated action to the stream
+    if aggr_action is not None:
+        aggr_stream.append(aggr_action)
+            
+    return aggr_stream
 
 def create_user(request):
     if request.method == 'POST':
