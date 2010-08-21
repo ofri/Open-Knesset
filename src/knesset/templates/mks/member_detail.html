@@ -223,5 +223,20 @@
         })
     </script>
 
+    <div id="embed_code" style="margin-top:10px;">
+        <a href="#" onclick="$('#embed_code_box').toggle();return false;">{% trans "Embed in external site" %}</a>
+        <div id="embed_code_box" style="display:none">
+            <form><textarea id="embed_code_value" cols="120" rows="5" style="direction:ltr;text-align:left;">
+<script type="text/javascript" src="http://oknesset.org/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://oknesset.org/static/js/oknesset_widget.js"></script>
+<script type="text/javascript">
+ generateMkFrameSet('code',{MkIds:[{{ object.id }}],classHook:'oknesset_lookup'},{width:480},'oknesset_container');
+</script>
+            </textarea></form>
+            <p>{% trans "Add the code above to your site, to get a dynamically generated info" %}</p>
+        </div>
+    </div>
+
+
 {% endblock %}
 
