@@ -26,4 +26,5 @@ lawsurlpatterns = patterns ('',
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/tag-votes/(?P<tag_id>\d+)/(?P<vote>[+\-\d]+)/$', vote_on_tag, name='vote-on-tag'),  
     url(r'^vote/(?P<object_id>\d+)/$', vote_view, name='vote-detail'),
     url(r'^votes/tagged/(?P<tag>.*)/$', tagged, name='tagged-votes'),    
+    url(r'^vote/auto_complete/$', vote_auto_complete, name='vote-auto-complete'),
 )
