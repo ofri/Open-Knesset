@@ -58,7 +58,7 @@
 	<div id="container">
         <div id="accounts">
             {% if user.is_authenticated %}
-                {% trans 'Logged in as ' %} {{ user }} &bull;
+                {% trans 'Logged in as ' %} <a href="{{user.get_profile.get_absolute_url}}">{{ user }}</a>&bull;
                     <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
                     <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
             {% else %}

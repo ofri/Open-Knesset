@@ -2,7 +2,7 @@
 from datetime import date
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
@@ -107,7 +107,9 @@ class Member(models.Model):
     residence_economy = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User,blank=True,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
-
+    current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
+    
+    
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
@@ -207,6 +209,27 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
+    @property
+    def get_role(self):
+        if self.current_role_descriptions:
+            return self.current_role_descriptions
+        if self.is_current:
+            if self.is_female():
+                if self.current_party.is_coalition:
+                    return ugettext('Coalition Member (female)')
+                else:
+                    return ugettext('Opposition Member (female)')
+            else:
+                if self.current_party.is_coalition:
+                    return ugettext('Coalition Member (male)')
+                else:
+                    return ugettext('Opposition Member (male)')
+            
+        if self.is_female():
+            return ugettext('Past Member (female)')
+        else:
+            return ugettext('Past Member (male)')
+    
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
