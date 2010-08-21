@@ -3,14 +3,29 @@ from django.contrib.auth import login, authenticate
 from forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
+from actstream import unfollow, follow
+from actstream.models import Action
 from forms import EditProfileForm
 
 from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
+from knesset.hashnav import DetailView
+
+class PublicUserProfile(DetailView):
+
+    queryset = User.objects.all()
+    template_name = 'user/public_profile.html'
+
+    def get_context(self):
+        context = super(PublicUserProfile, self).get_context()
+        context['actions'] = Action.objects.stream_for_actor(context['object'])
+        return context
+
 
 def create_user(request):
     if request.method == 'POST':
@@ -57,14 +72,15 @@ def follow_members(request):
     if request.method == 'POST':
         unwatch_id = request.POST.get('unwatch', None)
         if unwatch_id:
-            p.followed_members.remove(int(unwatch_id))
+            member = get_object_or_404(Member, pk=unwatch_id)
+            unfollow(request.user, member)
         else:
             watch_id = request.POST.get('watch', None)
             if not watch_id:
                 return HttpResponseServerError('neither "watch" nor "unwatch" arguments specified')
             try:
-                member = Member.objects.get(pk=watch_id)
-                p.followed_members.add(member)
+                member = get_object_or_404(Member, pk=watch_id)
+                follow(request.user, member)
             except Member.DoesNotExist:
                 return HttpResponseBadRequest('bad member id')
         return HttpResponse('OK')
