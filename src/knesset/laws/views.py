@@ -1,6 +1,7 @@
 #encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -74,6 +75,25 @@ def bill_tag(request, tag):
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
+
+def bill_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Bill.objects.filter(title__icontains=request.GET['query'])[:30]
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
@@ -237,7 +257,7 @@ class VoteListView(ListView):
         context['friend_pages'] = r
         if self.request.user.is_authenticated():
             context['watched_members'] = \
-                self.request.user.get_profile().followed_members.all()
+                self.request.user.get_profile().members
         else:
             context['watched_members'] = False
 
@@ -261,18 +281,18 @@ class VoteDetailView(DetailView):
 @login_required
 def suggest_tag(request, object_type, object_id):
     """add a POSTed tag_id to object_type object_id, and also vote this tagging up by the current user"""
-    try:
-        ctype = ContentType.objects.get(model=object_type)
-        model_class = ctype.model_class()
-    except:
-        return HttpResponse("Object type not found!")
+    ctype = get_object_or_404(ContentType,model=object_type)
+    model_class = ctype.model_class()
+    
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
         #o = model_class.objects.get(pk=object_id)
-        tag = Tag.objects.get(pk=request.POST['tag_id'])        
+        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
         (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
         (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
         tv.vote = +1
         tv.save()
+        
+        action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
     return HttpResponse("OK")
 
 @login_required
@@ -285,8 +305,18 @@ def vote_on_tag(request, object_type, object_id, tag_id, vote):
         o = model_class.objects.get(pk=object_id)
         ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=o.id)[0]
         (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
-        tv.vote = vote # this is -1,0,+1 (not a Vote model)
-        tv.save()
+                
+        vote = int(vote) # vote is u'-1',u'0',u'+1' (not a Vote model)                
+        if vote > 0: 
+            tv.vote = 1
+            action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
+        elif vote < 0:
+            tv.vote = -1
+            action.send(request.user,verb='voted down on a tag', target=ti, description='Vote Down')
+        else:       
+            tv.vote = 0
+        tv.save()      
+      
     except:
         pass
     return HttpResponseRedirect("/%s/%s" % (object_type,object_id))
@@ -297,4 +327,23 @@ def tagged(request,tag):
         return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
     except Http404:
         return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
+
+def vote_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Vote.objects.filter(title__icontains=request.GET['query'])[:30]
+
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 

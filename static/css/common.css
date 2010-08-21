@@ -438,6 +438,15 @@ a.disabled { color: #aaaaaa; }
     max-width:15em;
     padding:0.2em;
 }
+
+input.vote_input {
+    width:600px; 
+}
+
+input.bill_input { 
+    width:400px; 
+}
+
 div #search {
     float:left;
     margin-top:6px;

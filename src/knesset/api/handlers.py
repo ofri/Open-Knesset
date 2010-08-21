@@ -1,11 +1,15 @@
 from datetime import datetime
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.core.cache import cache
+from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
 from tagging.models import Tag, TaggedItem
+import math
 
 DEFAULT_PAGE_LEN = 20
 def limit_by_request(qs, request):
@@ -16,7 +20,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -64,6 +68,41 @@ class MemberHandler(BaseHandler):
     @classmethod
     def bills_approved(self, member):
         return member.bills.filter(stage='6').count()
+
+    @classmethod
+    def roles (self, member):
+        return member.get_role
+
+    @classmethod
+    def average_weekly_presence_rank (self, member):
+        ''' Calculate the distribution of presence and place the user on a 5 level scale '''
+        SCALE = 5
+
+        rel_location = cache.get('average_presence_location_%d' % member.id)
+        if not rel_location:
+
+            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
+            presence_groups = int(math.ceil(len(presence_list) / float(SCALE)))
+
+            # Generate cache for all members
+            for mk in Member.objects.all():
+                avg = mk.average_weekly_presence()
+                if avg:
+                    mk_location = 1 + (presence_list.index(avg) / presence_groups)
+                else:
+                    mk_location = 0
+
+                cache.set('average_presence_location_%d' % mk.id, mk_location, 60*60*24)
+
+                if mk.id == member.id:
+                    rel_location = mk_location 
+        
+        return rel_location
+
+    @classmethod
+    def committees (self, member):
+        temp_list = member.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
+        return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
 
     @classmethod
     def member (self, member):
