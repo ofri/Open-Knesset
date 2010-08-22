@@ -9,20 +9,35 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
         for m in orm.CommitteeMeeting.objects.all():
+        
+            # first, fix places where the colon is in the begining of next line 
+            # (move it to the end of the correct line)
+            protocol_text = []
+            for (i,line) in enumerate(m.protocol_text.split('\n')):
+                if line.startswith(':'):
+                    protocol_text[-1] += ':'
+                    protocol_text.append(line[1:])                    
+                else:
+                    protocol_text.append(line)
+
             i = 1
             section = []
             header = ''
-            for line in m.protocol_text.split('\n'):
+                
+            # now create the secions    
+            for line in protocol_text:
                 if line.endswith(':') and len(line)<40:
-                    if section:
-                        orm.ProtocolPart(meeting=m, order=i,
-                            header=header, body='\n'.join(section)).save()
-                        i += 1
+                    orm.ProtocolPart(meeting=m, order=i,
+                        header=header, body='\n'.join(section)).save()
+                    i += 1
                     header = line[:-1]
                     section = []
                 else:
                     section.append (line)
-
+                    
+            # don't forget the last section
+            orm.ProtocolPart(meeting=m, order=i,
+                header=header, body='\n'.join(section)).save()
 
 
     def backwards(self, orm):

@@ -35,12 +35,10 @@
     <h3>{% trans 'Protocol' %}</h3>
     <table class="protocol">
         <tr>
-        <th>{% trans "Name" %}</th>
-        <th></th>
     {% for section in object.parts.list %}
       <tr>
         <th style='width:15em;text-align:right;vertical-align:top;'>{{section.header}}</th>
-        <td><p>{{ section.bodylinebreaks }}</p><td>
+        <td><p>{{ section.body|linebreaks }}</p><td>
         <td style='width:30em;'></td>
       </tr>
     {% endfor %}
