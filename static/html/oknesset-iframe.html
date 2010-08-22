@@ -25,7 +25,7 @@
   var ok_domain = "http://oknesset.org/";
   var mkId = getUrlVars()["id"];
 
-  $.getJSON("http://oknesset.org/api/member/"+mkId, function(data){
+  $.getJSON(ok_domain+"api/member/"+mkId, function(data){
  function $E(s){
     return $(document.createElement(s));
   }
@@ -43,7 +43,7 @@
 			class:"oknesset_image"}));
   oknesset_content_top.append($E("div").attr({class:"oknesset_name"})
                               .append($E("a")
-                              .attr({href: ok_domain + "/member/"+data.id})
+                              .attr({href: ok_domain + "member/"+data.id})
                               .html(data.name))
                               .append(" - " + data.party));
   
@@ -58,7 +58,7 @@
   oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_desc"})
                             .append($E("a")
                             .attr({
-	              href:ok_domain + "/bill/?member="+data.id+"&stage=proposed"
+	              href:ok_domain + "bill/?member="+data.id+"&stage=proposed"
 	            })
 	            .html("הצעות חוק")));
   oknesset_law_flow.append(oknesset_proposals);
@@ -99,7 +99,7 @@
   var $oknesset_link = $E("div").attr({class:"oknesset_link"})
 	                .append($E("a")
 	                .attr({
-		  href:ok_domain + "/member/"+data.id
+		  href:ok_domain + "member/"+data.id
 		})
 	                .html( "לדף האישי של "+data.name+" בכנסת הפתוחה" ) );
 
