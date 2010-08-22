@@ -1,4 +1,4 @@
-generateMkFrameSet('code',{MkIds:[780],classHook:''},{width:480},'oknesset_container');
+//generateMkFrameSet('code',{MkIds:[780],classHook:''},{width:480},'oknesset_container');
 function generateMkFrameSet(action,Mks,style,targetId){
     style = typeof(style) != 'undefined' ? style : {width:414};
     targetId = typeof(targetId) != 'undefined' ? targetId : '';
@@ -32,8 +32,11 @@ function generateMkFrameSet(action,Mks,style,targetId){
     return MkIds;
 
   function createMkFrame( mkId, width ){
+    if ( typeof frameNum=="undefined" ) { 
+        frameNum = 0; 
+    }
     var mkFrame = document.createElement("iframe");
-    mkFrame.src = "http://oknesset.org/static/html/oknesset-iframe.html?id="+mkId;
+    mkFrame.src = "http://127.0.0.1:8000/static/html/oknesset-iframe.html?id="+mkId;
     mkFrame.style.display = "block";
     mkFrame.style.border =  "0px";
     mkFrame.style.margin =  "3px 0";

@@ -22,10 +22,10 @@
   return vars;
   }
 
-  var ok_domain = "http://oknesset.org/";
+  var ok_domain = "http://127.0.0.1:8000";
   var mkId = getUrlVars()["id"];
 
-  $.getJSON("http://oknesset.org/api/member/"+mkId, function(data){
+  $.getJSON(ok_domain + "/api/member/"+mkId, function(data){
  function $E(s){
     return $(document.createElement(s));
   }
@@ -73,7 +73,7 @@
   oknesset_laws.append($E("div")
                            .attr({class:"oknesset_laws_number"}).html(data.bills_approved));
   oknesset_laws.append($E("div").attr({class:"oknesset_laws_desc"})
-                       .append($E("a").attr({href:ok_domain + "bill/?member="+data.id+"&stage=approved"}).html("חוקים התקבלו")));
+                       .append($E("a").attr({href:ok_domain + "/bill/?member="+data.id+"&stage=approved"}).html("חוקים התקבלו")));
   oknesset_law_flow.append(oknesset_laws);
   oknesset_content_top.append(oknesset_law_flow);
   oknesset_content_top.append($E("div").attr({class:"oknesset_attendance"}).html("נוכחות במשכן הכנסת: ").append($E("span").attr({class:"oknesset_attendance_value"}).html(average_weekly_presence_des[data.average_weekly_presence_rank])));
