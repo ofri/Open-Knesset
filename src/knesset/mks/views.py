@@ -378,23 +378,24 @@ def member_auto_complete(request):
 
 
 object_finders = {'member':find_possible_members, 'party':find_possible_parties}        
-def object_by_name(request, name, object_type):
+def object_by_name(request, object_type):
+    name = request.GET.get('q','')
     name = name.replace('%20',' ')    
     results = object_finders[object_type](name)
-    if request.is_ajax():
+    if (request.is_ajax())or(request.GET.has_key('xhr')):
         try:
             for r in results:
                 r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
-            return HttpResponse(json.dumps({'possible':results}))
+            return HttpResponse(json.dumps({'possible':results},ensure_ascii=False))
         except Exception,e:
             print e
     if results:
         return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
     raise Http404(_('No %s found matching "%s".') % (object_type,name))
 
-def party_by_name(request, name):
-    return object_by_name(request, name, 'party')
+def party_by_name(request):
+    return object_by_name(request, 'party')
     
-def member_by_name(request, name):
-    return object_by_name(request, name, 'member')
+def member_by_name(request):
+    return object_by_name(request, 'member')
 
