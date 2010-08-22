@@ -1,5 +1,5 @@
 #encoding: utf-8
-import urllib,urllib2
+import urllib2
 from BeautifulSoup import BeautifulSoup
 from BeautifulSoup import BeautifulStoneSoup
 import datetime
@@ -11,7 +11,15 @@ from itertools import *
 logger = logging.getLogger("open-knesset.parse_gov_legislation_comm")
 
 def soupifyPage(url):
-    html_page = urllib2.urlopen(url).read()
+    html_page = None
+    retry_count = 0
+    while not(html_page):
+        try:
+            html_page = urllib2.urlopen(url, timeout=15).read()
+        except urllib2.URLError:
+            retry_count += 1
+            if retry_count >= 10:
+                raise urllib2.URLError('URL %s failed too many times' % url)
     return BeautifulSoup(html_page)
 
 
@@ -22,7 +30,7 @@ class ParseGLC:
         self.pmo_url = r"http://www.pmo.gov.il"
         self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2010/"
         self.scraped_data = self.parse_pages_per_month(year_num, month)
-
+        
     def parse_pages_per_month(self, year_num, month):
         res = []
         num_pages = self.figure_number_of_page_per_month(year_num, month)
@@ -63,7 +71,17 @@ class ParseGLC:
             url = self.pmo_url + match['href']
             
             # Not using beautiful soup since it can't handle this page =(
-            html_page = urllib2.urlopen(url).read()
+            html_page = None
+            retry_count = 0
+            while not(html_page):
+                try:
+                    html_page = urllib2.urlopen(url, timeout=15).read()
+                    break
+                except urllib2.URLError,e:
+                    retry_count += 1
+                    if retry_count >= 10:
+                        raise urllib2.URLError('URL %s failed too many times')
+                
             parsed = self.parse_entry(html_page)
             parsed['url'] = url
             res.append(parsed)
@@ -74,13 +92,17 @@ class ParseGLC:
     def parse_entry(self, html_page):
         subtitle = self.parse_entry_part_by_span_id(html_page, "SUB_TITLE_PH")
         title = self.parse_entry_part_by_span_id(html_page, "SUBJECT_PH")
-        decision = self.parse_entry_part_by_span_id(html_page, "TEXT_PH")
-        
+        #decision = self.parse_entry_part_by_span_id(html_page, "TEXT_PH")
+        soup = BeautifulSoup(html_page)
+        decision = soup.find('span',{'id':"TEXT_PH"}).contents
+        decision = '\n'.join([unicode(x) for x in decision])
+        decision = decision.replace('&nbsp;',' ').replace('<br />','')
+        decision = self.decode_html_chars(decision)
         return {'subtitle': subtitle, 'title':title, 'decision':decision}
         
     # Parse the content of the span with the given id from a given entry page.
     def parse_entry_part_by_span_id(self, html_page, span_id):
-        val_re = re.search("\<span id=\"%s\"[^\>]*\>([^\<]*)\<" % span_id, html_page)
+        val_re = re.search("\<span id=\"%s\"[^\>]*\>([^\<]*)\<span>" % span_id, html_page)
         if not val_re or (len(val_re.groups()) == 0):
             return None        
 
