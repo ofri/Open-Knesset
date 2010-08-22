@@ -6,7 +6,7 @@ from itertools import chain
 from difflib import get_close_matches
 from collections import namedtuple
 
-import pyfribidi
+#import pyfribidi
 
 from util import flatten
 from textutil import reverse_numbers, asblocks, fix_superscripts
@@ -15,7 +15,8 @@ from pdftools import pdftotext, pdfinfo
 def readable(txt):
     if isinstance(txt, list):
         txt = '\n'.join(txt)
-    return '\n'.join([pyfribidi.log2vis(unicode(l)) for l in txt.split('\n')])
+    #return '\n'.join([pyfribidi.log2vis(unicode(l)) for l in txt.split('\n')])
+    return '\n'.join([unicode(l) for l in txt.split('\n')])
 
 def show_blocks(bs):
     return readable(flatten(zip(bs, ['\n']*len(bs))))
