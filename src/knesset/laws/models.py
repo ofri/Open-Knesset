@@ -58,8 +58,9 @@ class PartyVotingStatistics(models.Model):
 
 @disable_for_loaddata
 def handle_party_save(sender, created, instance, **kwargs):
-    if created:
-        PartyVotingStatistics.objects.create(party=instance)
+    if created and instance._state.db=='default':
+        pvs = PartyVotingStatistics(party=instance)
+        pvs.save()
 post_save.connect(handle_party_save, sender=Party)
 
 
@@ -115,8 +116,9 @@ class MemberVotingStatistics(models.Model):
 
 @disable_for_loaddata
 def handle_mk_save(sender, created, instance, **kwargs):
-    if created:
-        MemberVotingStatistics.objects.create(member=instance)
+    if created and instance._state.db=='default':
+        mvs = MemberVotingStatistics(member=instance)
+        mvs.save()
 post_save.connect(handle_mk_save, sender=Member)
 
 class VoteAction(models.Model):

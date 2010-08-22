@@ -4,6 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+
+from actstream import follow
+from actstream.models import Follow
 
 from knesset.mks.models import Party, Member
 
@@ -15,29 +19,37 @@ class UserProfile(models.Model):
     >>> daonb = User.objects.create(username='daonb')
     >>> profile = daonb.get_profile()
     >>> legalize = Party.objects.create(name='legalize')
-    >>> profile.followed_parties.add(legalize)
+    >>> follow(daonb, legalize)
+    <Follow: daonb -> legalize>
     >>> legalize == daonb.get_profile().parties[0]
     True
     >>> dbg = Member.objects.create(name='david ben gurion')
-    >>> profile.followed_members.add(dbg)
+    >>> follow(daonb, dbg)
+    <Follow: daonb -> david ben gurion>
     >>> dbg == daonb.get_profile().members[0]
     True
 
     '''
 
     user = models.ForeignKey(User, unique=True)
-    followed_parties = models.ManyToManyField(Party, related_name='followers')
-    followed_members = models.ManyToManyField(Member, related_name='followers')
 
     @property
     def members(self):
-        return self.followed_members.all()
+        return map(lambda x: x.actor, 
+            Follow.objects.filter(user=self.user, 
+                content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
 
     @property
     def parties(self):
-        return self.followed_parties.all()
+        #TODO: ther has to be a faster way
+        return map(lambda x: x.actor, 
+            Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('public-profile', (), {'object_id': self.user.id})
 
 def handle_user_save(sender, created, instance, **kwargs):
-    if created:
+    if created and instance._state.db=='default':
         UserProfile.objects.create(user=instance)
 post_save.connect(handle_user_save, sender=User)

@@ -152,7 +152,7 @@ class MemberDetailView(DetailView):
         member = context['object']
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
-            watched = member in p.followed_members.all()
+            watched = member in p.members
         else:
             watched = False
             

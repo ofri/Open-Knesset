@@ -27,6 +27,7 @@ from django.db.models import Max,Count
 import mk_info_html_parser as mk_parser
 import parse_presence
 import parse_laws
+import mk_roles_parser
 from knesset import utils
 
 ENCODING = 'utf8'
@@ -1269,7 +1270,30 @@ class Command(NoArgsCommand):
                     if cannonize(b.title)==cannonize(bills[i2].title):
                         b.merge(bills[i2])
 
-
+    def update_mk_role_descriptions(self):
+        mk_govt_roles = mk_roles_parser.parse_mk_govt_roles()
+        for (mk,roles) in mk_govt_roles.items():
+            try:
+                member = Member.objects.get(pk=mk)
+                if not member.current_role_descriptions:
+                    member.current_role_descriptions = unicode(roles)
+                    member.save()
+            except Member.DoesNotExist:
+                logger.warn('Found MK in govt roles with no matching MK: %s' % mk)
+        mk_knesset_roles = mk_roles_parser.parse_mk_knesset_roles()
+        for (mk,roles) in mk_knesset_roles.items():
+            try:
+                member = Member.objects.get(pk=mk)
+                if not member.current_role_descriptions:
+                    member.current_role_descriptions = unicode(roles)
+                    member.save()
+            except Member.DoesNotExist:
+                logger.warn('Found MK in knesset roles with no matching MK: %s' % mk)
+        
+        intersection = set(mk_knesset_roles.keys()).intersection(set(mk_govt_roles.keys()))
+        if len(intersection):
+            logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
+            
 
     def handle_noargs(self, **options):
     
@@ -1321,6 +1345,7 @@ class Command(NoArgsCommand):
             self.parse_laws()
             self.find_proposals_in_other_data()
             self.merge_duplicate_laws()
+            self.update_mk_role_descriptions()
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')

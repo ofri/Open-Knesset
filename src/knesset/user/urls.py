@@ -1,4 +1,7 @@
 from django.conf.urls.defaults import *
+from views import PublicUserProfile
+
+user_public_profile = PublicUserProfile()
 
 # views coded in this app
 urlpatterns = patterns('knesset.user.views',
@@ -10,6 +13,7 @@ urlpatterns = patterns('knesset.user.views',
 # views coded elsewhere
 urlpatterns += patterns('',
     (r'^registration/', include('knesset.accounts.urls')),
+    url(r'^(?P<object_id>\d+)/$', user_public_profile, name='public-profile'),
     )
 
 urlpatterns += patterns('django.contrib.auth.views',

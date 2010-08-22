@@ -1,10 +1,10 @@
-import unittest
-from django.test.client import Client
+from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from knesset.mks.models import Member
+from actstream import action
 
-class TestFollowing(unittest.TestCase):
+class TestFollowing(TestCase):
 
     def setUp(self):
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
@@ -12,19 +12,34 @@ class TestFollowing(unittest.TestCase):
         self.david = Member.objects.create(name='david')
         self.yosef = Member.objects.create(name='yosef')
         self.moshe = Member.objects.create(name='moshe')
+        action.send(self.jacob, verb='farted', target=self.david)
+        action.send(self.jacob, verb='hit', target=self.yosef)
+        
 
     def testFollowing(self):
-        c = Client()
         p = self.jacob.get_profile()
-        loggedin = c.login(username='jacob', password='JKM')
+        loggedin = self.client.login(username='jacob', password='JKM')
         self.assertTrue(loggedin)
-        response = c.post(reverse('follow-members'), {'watch': self.david.id})
+        response = self.client.post(reverse('follow-members'), {'watch': self.david.id})
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(p.followed_members.all()[0], self.david)
-        response = c.post(reverse('follow-members'), {'watch': self.yosef.id})
-        response = c.post(reverse('follow-members'), {'unwatch': self.david.id})
-        self.assertEquals(p.followed_members.count(), 1)
-        self.assertEquals(p.followed_members.all()[0], self.yosef)
+        self.assertEquals(p.members[0], self.david)
+        response = self.client.post(reverse('follow-members'), {'watch': self.yosef.id})
+        response = self.client.post(reverse('follow-members'), {'unwatch': self.david.id})
+        self.assertEquals(len(p.members), 1)
+        self.assertEquals(p.members[0], self.yosef)
+        self.client.logout()
+
+    def testPublicProfile(self):
+        res = self.client.get(reverse('public-profile',
+                                 kwargs={'object_id': self.jacob.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'user/public_profile.html')
+        actions = res.context['actions']
+        actions_list = map(lambda x: (x.verb, x.target), actions)
+        actions_list.sort()
+        self.assertEqual(actions_list,
+                         [('farted', self.david), ('hit', self.yosef)])
 
     def tearDown(self):
         self.jacob.delete()
