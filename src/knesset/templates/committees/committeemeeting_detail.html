@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load comments %}
+{% load annotatetags %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -32,7 +33,19 @@
     {% endif %}                
 
     <h3>{% trans 'Protocol' %}</h3>
-    <div class="protocol">{{ object.protocol_text|linebreaks }}</div>
+    <table class="protocol">
+        <tr>
+        <th>{% trans "Name" %}</th>
+        <th></th>
+    {% for section in object.parts.list %}
+      <tr>
+        <th style='width:15em;text-align:right;vertical-align:top;'>{{section.header}}</th>
+        <td><p>{{ section.bodylinebreaks }}</p><td>
+        <td style='width:30em;'></td>
+      </tr>
+    {% endfor %}
+    </table>
+
 
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}
