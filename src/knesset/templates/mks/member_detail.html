@@ -80,12 +80,12 @@
                 </tr>
                 <tr>
                     <td>{% trans "Factional discipline" %}</td>
-                    <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                    <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
                     <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
                 </tr>
                 <tr>
                     <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
                     <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
                 </tr>   
                 <tr>
