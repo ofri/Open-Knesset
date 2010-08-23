@@ -31,7 +31,7 @@ class UserProfile(models.Model):
 
     '''
 
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True, related_name='profiles')
 
     @property
     def members(self):
@@ -45,10 +45,18 @@ class UserProfile(models.Model):
         return map(lambda x: x.actor, 
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
 
+    def get_badges(self):
+        badges = self.badges.all()
+        badges.sort(lambda x, y: cmp(x.__str__(), y.__str__()))
+        return badges
+        
     @models.permalink
     def get_absolute_url(self):
         return ('public-profile', (), {'object_id': self.user.id})
 
+    def has(self, badge_type):
+        return self.badges.filter(badge_type=badge_type).count()>0
+        
 def handle_user_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
         UserProfile.objects.create(user=instance)

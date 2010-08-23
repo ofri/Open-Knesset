@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.get_absolute_url }}">{{ action.actor }}</a>
+{% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.profile.get_absolute_url }}">{{ action.actor }}</a>
 {% else %}<span class="action-actor">{{ action.actor }}</span>{% endif %}
 {% if action.description == 'Vote Up' %}
     {% trans "voted up on tag" %}
