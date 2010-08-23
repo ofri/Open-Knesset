@@ -1,4 +1,4 @@
- # This Python file uses the following encoding: utf-8
+# This Python file uses the following encoding: utf-8
 import os,sys,traceback
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
@@ -33,7 +33,7 @@ from knesset import utils
 ENCODING = 'utf8'
 
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
-                    os.path.join(settings.PROJECT_ROOT, 'data'))
+                    os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
 
 logger = logging.getLogger("open-knesset.syncdata")
 

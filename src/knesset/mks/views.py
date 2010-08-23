@@ -391,7 +391,7 @@ def object_by_name(request, object_type):
             print e
     if results:
         return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
-    raise Http404(_('No %s found matching "%s".') % (object_type,name))
+    raise Http404(_('No %(object_type)s found matching "%(name)s".', {'object_type':object_type,'name':name}))
 
 def party_by_name(request):
     return object_by_name(request, 'party')
