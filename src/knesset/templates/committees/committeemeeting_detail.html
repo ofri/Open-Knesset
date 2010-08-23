@@ -12,10 +12,6 @@
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
-{% block extrahead %} 
-<link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
-<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
-{% endblock %}
 {% block divcontent %}
     <h2>{{ title }}</h2>
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
