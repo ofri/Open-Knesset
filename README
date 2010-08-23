@@ -5,6 +5,7 @@ Installation:
 $ python bootstrap.py
 $ bin/buildout
 $ bin/test
-$ bin/django syncdb --migrate
-$ bin/django loaddata full_data.json
+$ bin/django syncdb --migrate # do not create a superuser account
+$ bin/django loaddata dev
+$ bin/django createsuperuser # to create your superuser account
 $ bin/django runserver

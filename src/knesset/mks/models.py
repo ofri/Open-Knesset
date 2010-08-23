@@ -2,11 +2,12 @@
 from datetime import date
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
 from knesset.links.models import Link
+import difflib
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -209,6 +210,27 @@ class Member(models.Model):
         return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
     NameWithLink.allow_tags = True
 
+    @property
+    def get_role(self):
+        if self.current_role_descriptions:
+            return self.current_role_descriptions
+        if self.is_current:
+            if self.is_female():
+                if self.current_party.is_coalition:
+                    return ugettext('Coalition Member (female)')
+                else:
+                    return ugettext('Opposition Member (female)')
+            else:
+                if self.current_party.is_coalition:
+                    return ugettext('Coalition Member (male)')
+                else:
+                    return ugettext('Opposition Member (male)')
+            
+        if self.is_female():
+            return ugettext('Past Member (female)')
+        else:
+            return ugettext('Past Member (male)')
+    
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
@@ -216,6 +238,25 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+
+def find_possible_members(name):
+    mks = Member.objects.values_list('name','id')
+    mk_names = [mk[0] for mk in mks]
+    possible = difflib.get_close_matches(name, mk_names, cutoff=0.5, n=5)
+    results = []
+    for p in possible:
+        results.append({'id':mks[mk_names.index(p)][1], 'name':p})
+    return results
+
+def find_possible_parties(name):
+    parties = Party.objects.values_list('name','id')
+    party_names = [party[0] for party in parties]
+    possible = difflib.get_close_matches(name, party_names, cutoff=0.6, n=5)
+    results = []
+    for p in possible:
+        results.append({'id':parties[party_names.index(p)][1], 'name':p})
+    return results
+
 
 from listeners import *
 

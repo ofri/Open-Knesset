@@ -8,11 +8,13 @@ from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+import json
 from tagging.models import Tag
 import tagging
 from knesset.utils import limit_by_request
-from knesset.mks.models import Member, Party
+from knesset.mks.models import Member, Party, find_possible_members, find_possible_parties
 from knesset.mks.forms import VerbsForm
 from knesset.laws.models import MemberVotingStatistics, Bill
 from knesset.hashnav import ListView, DetailView, method_decorator
@@ -358,7 +360,42 @@ class PartyListView(ListView):
                 context['friend_pages'][9][2] = True
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
-                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))
-
-                    
+                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
         return context
+
+def member_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    suggestions = map(lambda member: member.name, Member.objects.filter(name__icontains=request.GET['query'])[:30])
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions }
+
+    return HttpResponse(json.dumps(result), mimetype='application/json')
+
+
+object_finders = {'member':find_possible_members, 'party':find_possible_parties}        
+def object_by_name(request, object_type):
+    name = request.GET.get('q','')
+    name = name.replace('%20',' ')    
+    results = object_finders[object_type](name)
+    if (request.is_ajax())or(request.GET.has_key('xhr')):
+        try:
+            for r in results:
+                r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
+            return HttpResponse(json.dumps({'possible':results},ensure_ascii=False))
+        except Exception,e:
+            print e
+    if results:
+        return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
+    raise Http404(_('No %s found matching "%s".') % (object_type,name))
+
+def party_by_name(request):
+    return object_by_name(request, 'party')
+    
+def member_by_name(request):
+    return object_by_name(request, 'member')
+

@@ -1,6 +1,7 @@
 #encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -74,6 +75,25 @@ def bill_tag(request, tag):
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
+
+def bill_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Bill.objects.filter(title__icontains=request.GET['query'])[:30]
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
@@ -307,4 +327,23 @@ def tagged(request,tag):
         return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
     except Http404:
         return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
+
+def vote_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Vote.objects.filter(title__icontains=request.GET['query'])[:30]
+
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 

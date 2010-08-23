@@ -1,52 +1,31 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from actstream import follow
-from django.contrib.auth.models import User
-from knesset.mks.models import Party, Member
 
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        for profile in orm.UserProfile.objects.all():
-            user = User.objects.get(pk=profile.user.id)
-            for mk in profile.followed_members.all():
-                follow(user, mk)
-            for party in profile.followed_parties.all():
-                follow(user, party)
+        
+        # Adding model 'ProtocolPart'
+        db.create_table('committees_protocolpart', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('meeting', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['committees.CommitteeMeeting'])),
+            ('order', self.gf('django.db.models.fields.IntegerField')()),
+            ('header', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ('body', self.gf('django.db.models.fields.TextField')(blank=True)),
+        ))
+        db.send_create_signal('committees', ['ProtocolPart'])
+
 
     def backwards(self, orm):
-        ''' This back migration fails, sorry
-        for i in orm['actstream.follow'].objects.filter( 
-            content_type__in = (ContentType.objects.get_for_model(Party),
-                               ContentType.objects.get_for_model(Member))):
-            i.delete()
-        '''
-        pass
+        
+        # Deleting model 'ProtocolPart'
+        db.delete_table('committees_protocolpart')
+
 
     models = {
-        'actstream.action': {
-            'Meta': {'object_name': 'Action'},
-            'actor_content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actor'", 'to': "orm['contenttypes.ContentType']"}),
-            'actor_object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'public': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
-            'target_content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'target'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'target_object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'verb': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        'actstream.follow': {
-            'Meta': {'object_name': 'Follow'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -76,6 +55,31 @@ class Migration(DataMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        'committees.committee': {
+            'Meta': {'object_name': 'Committee'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
+        'committees.committeemeeting': {
+            'Meta': {'object_name': 'CommitteeMeeting'},
+            'committee': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'meetings'", 'to': "orm['committees.Committee']"}),
+            'date': ('django.db.models.fields.DateField', [], {}),
+            'date_string': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mks_attended': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committee_meetings'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'protocol_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'topics': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'votes_mentioned': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'committee_meetings'", 'blank': 'True', 'to': "orm['laws.Vote']"})
+        },
+        'committees.protocolpart': {
+            'Meta': {'object_name': 'ProtocolPart'},
+            'body': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'header': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['committees.CommitteeMeeting']"}),
+            'order': ('django.db.models.fields.IntegerField', [], {})
+        },
         'contenttypes.contenttype': {
             'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -83,11 +87,41 @@ class Migration(DataMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'laws.vote': {
+            'Meta': {'object_name': 'Vote'},
+            'against_party': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'controversy': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'full_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'full_text_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'importance': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
+            'meeting_number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'src_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'src_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'summary': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'time': ('django.db.models.fields.DateTimeField', [], {}),
+            'time_string': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'}),
+            'vote_number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'votes': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'votes'", 'blank': 'True', 'through': "orm['laws.VoteAction']", 'to': "orm['mks.Member']"}),
+            'votes_count': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'laws.voteaction': {
+            'Meta': {'object_name': 'VoteAction'},
+            'against_coalition': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'against_opposition': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'against_party': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'member': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mks.Member']"}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'vote': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['laws.Vote']"})
+        },
         'mks.member': {
             'Meta': {'object_name': 'Member'},
             'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'blog': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['planet.Blog']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'current_party': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'members'", 'null': 'True', 'to': "orm['mks.Party']"}),
+            'current_role_descriptions': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
             'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_of_death': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
@@ -138,13 +172,18 @@ class Migration(DataMigration):
             'title': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '255', 'blank': 'True'}),
             'url': ('django.db.models.fields.URLField', [], {'unique': 'True', 'max_length': '1024', 'db_index': 'True'})
         },
-        'user.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            'followed_members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followers'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
-            'followed_parties': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'followers'", 'symmetrical': 'False', 'to': "orm['mks.Party']"}),
+        'tagging.tag': {
+            'Meta': {'object_name': 'Tag'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'})
+        },
+        'tagging.taggeditem': {
+            'Meta': {'unique_together': "(('tag', 'content_type', 'object_id'),)", 'object_name': 'TaggedItem'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['tagging.Tag']"})
         }
     }
 
-    complete_apps = ['user', 'actstream']
+    complete_apps = ['committees']
