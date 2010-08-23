@@ -11,13 +11,6 @@ urlpatterns = patterns('knesset.user.views',
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
     )
 
-# views coded elsewhere
-urlpatterns += patterns('',
-    (r'^registration/', include('knesset.accounts.urls')),
-    url(r'^(?P<object_id>\d+)/$', user_public_profile, name='public-profile'),
-    url(r'^(?P<slug>\w+)/$', user_public_profile, name='public-profile'),
-    url(r'^$', profile_list, name='profile-list'),
-    )
 
 urlpatterns += patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'user/login.html'}, name='login'),
@@ -26,8 +19,12 @@ urlpatterns += patterns('django.contrib.auth.views',
     url(r'^password_reset/done/$', 'password_reset_done', {'template_name': 'user/password_reset_done.html'}),
     url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'password_reset_confirm', {'template_name': 'user/password_reset_confirm.html'}),
     url(r'^reset/done/$', 'password_reset_complete', {'template_name': 'user/password_reset_complete.html'}),
-
-
     )
 
-
+# views coded elsewhere
+urlpatterns += patterns('',
+    (r'^registration/', include('knesset.accounts.urls')),
+    url(r'^(?P<object_id>\d+)/$', user_public_profile, name='public-profile'),
+    url(r'^(?P<slug>\w+)/$', user_public_profile, name='public-profile'),
+    url(r'^$', profile_list, name='profile-list'),
+    )

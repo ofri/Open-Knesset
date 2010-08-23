@@ -127,7 +127,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 LOCAL_DEV = True
 
-LOGIN_URL = '/user/login/'
+LOGIN_URL = '/users/login/'
 
 SITE_NAME = 'Open-Knesset'
 HAYSTACK_SITECONF = 'knesset.search_sites'
