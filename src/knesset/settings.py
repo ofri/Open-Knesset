@@ -2,6 +2,9 @@
 import os
 import logging
 
+# dummy gettext, to get django-admin makemessages to find i18n texts in this file
+gettext = lambda x: x
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -158,6 +161,15 @@ GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_Nr
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
 
 CACHE_BACKEND = 'dummy://'
+ANNOTATETEXT_FLAGS = (gettext('Statement'),
+                    gettext('Funny :-)'),
+                    gettext('False fact'),
+                    gettext('Source?'),
+                    gettext('Found source'),
+                    gettext('Cross reference'),
+                    gettext('Important'),
+                    gettext('Formatting/Error!'),
+                    gettext('Comment'),)
 
 
 # if you add a local_settings.py file, it will override settings here

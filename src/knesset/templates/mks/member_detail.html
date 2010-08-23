@@ -4,6 +4,7 @@
 {% load laws_extra %}
 {% load activity_tags %}
 {% load pagination_tags %}
+{% load cache %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
@@ -30,8 +31,9 @@
 <a class="button" href="{% url member-activity-feed object.id %}">{% trans "feed" %}</a>
 {% endblock %}
 {% block divcontent %}
-<h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
-<h2> {{ object.get_role }} </h2>
+{% cache 600 mks object.id request.page %}
+    <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+    <h2> {{ object.get_role }} </h2>
     <div class="member-details">
         <div class="member-photo"><img src="{{ object.img_url }}"/></div>
         <div>
@@ -174,6 +176,7 @@
     {% paginate %}
     </div>
     <div style="clear:both;"></div>
+    {% endcache %}
     <script>
         $(document).ready(function() {
             var member_id = {{object.id}};

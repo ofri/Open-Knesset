@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from annotatetext.models import Annotation
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
 from models import *
@@ -15,13 +17,43 @@ class ListViewTest(TestCase):
         self.committee_1 = Committee.objects.create(name='c1')
         self.committee_2 = Committee.objects.create(name='c2')
         self.meeting_1 = self.committee_1.meetings.create(date=datetime.now(),
-                                                         protocol_text='m1')
+                                 protocol_text='''jacob:
+I am a perfectionist
+adrian:
+I have a deadline''')
         self.meeting_2 = self.committee_1.meetings.create(date=datetime.now(),
                                                          protocol_text='m2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
+
+    def testProtocolPart(self):
+        parts_list = self.meeting_1.parts.list()
+        self.assertEqual(parts_list.count(), 2)
+        self.assertEqual(parts_list[0].header, u'jacob')
+        self.assertEqual(parts_list[0].body, 'I am a perfectionist')
+        self.assertEqual(parts_list[1].header, u'adrian')
+        self.assertEqual(parts_list[1].body, 'I have a deadline')
+
+    def testPartAnnotation(self):
+        '''this is more about testing the annotatext app '''
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        part = self.meeting_1.parts.list()[0]
+        res = self.client.post(reverse('annotatetext-post_annotation'),
+                        {'selection_start': 7,
+                         'selection_end': 14,
+                         'flags': 0,
+                         'color': '#000',
+                         'lengthcheck': len(part.body),
+                         'comment' : 'just perfect',
+                         'object_id': part.id,
+                         'content_type': ContentType.objects.get_for_model(part).id,
+                        })
+        self.assertEqual(res.status_code, 302)
+        annotation = Annotation.objects.get(object_id=part.id,
+                         content_type=ContentType.objects.get_for_model(part).id)
+        self.assertEqual(annotation.selection, 'perfect')
 
     def testCommitteeList(self):
         res = self.client.get(reverse('committee-list'))
