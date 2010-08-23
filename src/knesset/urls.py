@@ -56,6 +56,7 @@ urlpatterns = patterns('',
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
+     (r'^annotate/', include('annotatetext.urls')),
 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns

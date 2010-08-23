@@ -1,0 +1,53 @@
+* {
+    padding:0;
+    margin:0;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    max-width:1010px;
+    margin:0 auto;
+    padding: 0 10px;
+    z-index:2;
+}
+
+.hideme{
+    display:block;
+    position:absolute;
+    left:-999em;
+}
+
+blockquote {
+    padding:0.25em;
+    font-size: 12pt;
+    line-height:16pt;
+}
+
+.selectableText {
+    font-family:Helvetica;
+    font-size: 12pt;
+    overflow-y:hidden;
+    outline:none;
+    border:0;
+    display:block;
+    width:99%;
+    margin:2px;
+    background:#ddf;
+    border:1px solid #dd0;
+    padding:1px 0px;
+    resize: none;
+    line-height:16pt;
+}
+
+
+a.annotation_meta, a.annotation_meta:hover {
+    font-weight:normal;
+    text-decoration:none;
+    color:#000;
+}
+
+
+.selectionhint {
+    padding:2px;
+    background:#ccc;
+}

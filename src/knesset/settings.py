@@ -3,6 +3,8 @@ import sys, socket, os
 import logging
 hostname = socket.gethostname() # to add host specific overrides
 
+# dummy gettext
+gettext = lambda x: x
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -155,5 +157,14 @@ GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_Nr
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
 
 CACHE_BACKEND = 'dummy://'
+ANNOTATETEXT_FLAGS = (gettext('Statement'),
+                    gettext('Funny :-)'),
+                    gettext('False fact'),
+                    gettext('Source?'),
+                    gettext('Found source'),
+                    gettext('Cross reference'),
+                    gettext('Important'),
+                    gettext('Formatting/Error!'),
+                    gettext('Comment'),)
 
 from local_settings import *

@@ -27,15 +27,51 @@ class CommitteeMeeting(models.Model):
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
+
+    class Meta:
+        ordering = ('-date',)
+
     def __unicode__(self):
         return "%s %s" % (self.committee.name, self.date_string)
     
     @models.permalink
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
-  
-    class Meta:
-        ordering = ('-date',)
+
+    def save(self, **kwargs):
+        super(CommitteeMeeting, self).save(**kwargs)
+        self.parts.all().delete()
+
+        # break the protocol to its parts
+        # first, fix places where the colon is in the begining of next line 
+        # (move it to the end of the correct line)
+        protocol_text = []
+        for line in self.protocol_text.split('\n'):
+            if line.startswith(':'):
+                protocol_text[-1] += ':'
+                protocol_text.append(line[1:])                    
+            else:
+                protocol_text.append(line)
+
+        i = 1
+        section = []
+        header = ''
+            
+        # now create the sections    
+        for line in protocol_text:
+            if line.endswith(':') and len(line)<40:
+                if section:
+                    ProtocolPart(meeting=self, order=i,
+                        header=header, body='\n'.join(section)).save()
+                i += 1
+                header = line[:-1]
+                section = []
+            else:
+                section.append (line)
+                
+        # don't forget the last section
+        ProtocolPart(meeting=self, order=i,
+            header=header, body='\n'.join(section)).save()
 
 class ProtocolPartManager(models.Manager):
     def list(self):
@@ -52,10 +88,11 @@ class ProtocolPart(models.Model):
     annotatable = True
 
     def get_absolute_url(self): 
-        if self.ordernr == 1: 
-            return self.mmeting.get_absolute_url() 
+        if self.order == 1: 
+            return self.meeting.get_absolute_url() 
         else: 
-            return self.mmeting.get_absolute_url()+"-%d" % self.ordernr 
+            return "%s#speech-%d-%d" % (self.meeting.get_absolute_url(),
+                                        self.meeting.id, self.order)
 
 
 @disable_for_loaddata

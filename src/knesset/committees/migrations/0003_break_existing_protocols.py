@@ -9,21 +9,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
         for m in orm.CommitteeMeeting.objects.all():
-            i = 1
-            section = []
-            header = ''
-            for line in m.protocol_text.split('\n'):
-                if line.endswith(':') and len(line)<40:
-                    if section:
-                        orm.ProtocolPart(meeting=m, order=i,
-                            header=header, body='\n'.join(section)).save()
-                        i += 1
-                    header = line[:-1]
-                    section = []
-                else:
-                    section.append (line)
-
-
+            m.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
