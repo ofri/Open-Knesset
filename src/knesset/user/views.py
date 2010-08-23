@@ -14,7 +14,7 @@ from forms import EditProfileForm
 
 from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
-from knesset.hashnav import DetailView
+from knesset.hashnav import DetailView, ListView
 
 class PublicUserProfile(DetailView):
 
@@ -26,6 +26,11 @@ class PublicUserProfile(DetailView):
         context['actions'] = Action.objects.stream_for_actor(context['object'])
         return context
 
+        
+class ProfileListView(ListView):
+
+    queryset = User.objects.order_by('username').all()
+    template_name = 'user/profile_list.html'
 
 def create_user(request):
     if request.method == 'POST':
