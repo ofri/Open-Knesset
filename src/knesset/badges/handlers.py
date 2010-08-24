@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext
 
 from actstream import action
 from actstream.models import Follow
@@ -45,8 +45,8 @@ class FirstFollowHandler(PostFollowSaveHandler):
     """    
     def __init__(self):
         # These two lines make sure translation identifies these strings
-        name = ugettext_lazy(u'FirstFollow')._proxy__args[0]
-        description = ugettext_lazy(u'You are following something')._proxy__args[0]
+        name = ugettext(u'FirstFollow')
+        description = ugettext(u'You are following something')
         
         super(FirstFollowHandler, self).__init__(badge_name=name, badge_description=description)
         
@@ -63,8 +63,8 @@ class FirstFollowMKHandler(FirstFollowHandler):
     """   
     def __init__(self):
         # These two lines make sure translation identifies these strings
-        name = ugettext_lazy(u'FirstMKFollow')._proxy__args[0]
-        description = ugettext_lazy(u'You are following an MK')._proxy__args[0]
+        name = ugettext(u'FirstMKFollow')
+        description = ugettext(u'You are following an MK')
         
         super(FirstFollowHandler, self).__init__(badge_name=name, badge_description=description)
     
