@@ -116,6 +116,29 @@
         {% object_links object %} 
         <br><br>
             
+		<div id="agendas">
+			{% if object.agendavote_set.all %}
+		        <h3>{% trans "Ascribed agendas" %}</h3>
+                <div class="list-wrap indented">
+		        {% for agendavote in object.agendavote_set.all %}
+	                <a class="hashnav item dontwrap" id="detail-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
+	                &nbsp;
+		        {% endfor %}
+		        </div>
+			{% endif %}
+			<br>    
+			{% if user.agenda_set.all %}
+		        <h3>{% trans "Ascribe your agendas" %}</h3>
+                <div class="list-wrap indented">
+		        {% for agenda in user.agenda_set.all %}
+	                <a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}"/>{{ agenda }}</a>
+	                &nbsp;
+		        {% endfor %}
+		        </div>
+			{% endif %}
+		</div>
+        <br>
+                    
         {% if object.summary %}        
             <h3>{% trans 'summary' %}</h3>
             {{ object.summary|safe }}
