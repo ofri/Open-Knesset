@@ -46,7 +46,7 @@
             {% firstof speech_part.header "&nbsp;" %}
         </div>
         <div class="text-content" id="annotations-{{ speech_part.id }}_content">
-            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content">{{ speech_part.body|simple_formatting }}</blockquote>
+            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content">{{ speech_part.body }}</blockquote>
         </div>
         <div style="display:none" class="annotationtoolbox annotating" id="annotationtoolbox-{{ speech_part.id }}">
             <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
