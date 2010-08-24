@@ -22,10 +22,10 @@
   return vars;
   }
 
-  var ok_domain = "http://oknesset.org/";
+  var ok_domain = "http://oknesset.org";
   var mkId = getUrlVars()["id"];
 
-  $.getJSON(ok_domain+"api/member/"+mkId, function(data){
+  $.getJSON(ok_domain+"/api/member/"+mkId, function(data){
  function $E(s){
     return $(document.createElement(s));
   }
@@ -43,7 +43,7 @@
 			class:"oknesset_image"}));
   oknesset_content_top.append($E("div").attr({class:"oknesset_name"})
                               .append($E("a")
-                              .attr({href: ok_domain + "member/"+data.id})
+                              .attr({href: ok_domain + "/member/"+data.id})
                               .html(data.name))
                               .append(" - " + data.party));
   
@@ -58,7 +58,7 @@
   oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_desc"})
                             .append($E("a")
                             .attr({
-	              href:ok_domain + "bill/?member="+data.id+"&stage=proposed"
+	              href:ok_domain + "/bill/?member="+data.id+"&stage=proposed"
 	            })
 	            .html("הצעות חוק")));
   oknesset_law_flow.append(oknesset_proposals);
@@ -73,7 +73,7 @@
   oknesset_laws.append($E("div")
                            .attr({class:"oknesset_laws_number"}).html(data.bills_approved));
   oknesset_laws.append($E("div").attr({class:"oknesset_laws_desc"})
-                       .append($E("a").attr({href:ok_domain + "bill/?member="+data.id+"&stage=approved"}).html("חוקים התקבלו")));
+                       .append($E("a").attr({href:ok_domain + "/bill/?member="+data.id+"&stage=approved"}).html("חוקים התקבלו")));
   oknesset_law_flow.append(oknesset_laws);
   oknesset_content_top.append(oknesset_law_flow);
   oknesset_content_top.append($E("div").attr({class:"oknesset_attendance"}).html("נוכחות במשכן הכנסת: ").append($E("span").attr({class:"oknesset_attendance_value"}).html(average_weekly_presence_des[data.average_weekly_presence_rank])));
@@ -87,7 +87,7 @@
     for (var i = 0; (i < 3) && (i < data.committees.length); ++i) {
     $oknesset_committees_ul.append($E("li").append($E("a")
 	          .attr({
-	              href: ok_domain + data.committees[i][1]
+	              href: ok_domain +"/"+ data.committees[i][1]
 	          })
 	          .html(data.committees[i][0])));
     }
@@ -99,7 +99,7 @@
   var $oknesset_link = $E("div").attr({class:"oknesset_link"})
 	                .append($E("a")
 	                .attr({
-		  href:ok_domain + "member/"+data.id
+		  href:ok_domain + "/member/"+data.id
 		})
 	                .html( "לדף האישי של "+data.name+" בכנסת הפתוחה" ) );
 
