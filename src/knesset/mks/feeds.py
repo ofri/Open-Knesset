@@ -33,7 +33,8 @@ class MemberActivityFeed(Feed):
         if stream:
             if self.verbs:
                 stream = stream.filter(verb__in = self.verbs)
-            return stream[:20]
+            return (item for item in stream[:20] if item.target) # remove items with None target, or invalid target
+        return []
 
     def item_title(self, item):
         title = _(item.verb)
@@ -47,6 +48,8 @@ class MemberActivityFeed(Feed):
 
     def item_link(self, item):
         target = item.target
+        if not target:
+            print item
         try:
             return getattr(target, 'url')
         except:

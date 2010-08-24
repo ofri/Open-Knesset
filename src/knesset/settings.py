@@ -1,8 +1,9 @@
 # Django settings for knesset project.
-import sys, socket, os
+import os
 import logging
-hostname = socket.gethostname() # to add host specific overrides
 
+# dummy gettext, to get django-admin makemessages to find i18n texts in this file
+gettext = lambda x: x
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,10 +14,10 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'         # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'knesset'  # Or path to database file if using sqlite3.
-DATABASE_USER = 'knesset'      # Not used with sqlite3.
-DATABASE_PASSWORD = '123456'      # Not used with sqlite3.
+DATABASE_ENGINE = 'django.db.backends.sqlite3'         # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'dev.db'  # Or path to database file if using sqlite3.
+DATABASE_USER = ''      # Not used with sqlite3.
+DATABASE_PASSWORD = ''      # Not used with sqlite3.
 DATABASE_HOST = ''                  # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''                  # Set to empty string for default. Not used with sqlite3.
 
@@ -38,15 +39,15 @@ SITE_ID = 1
 USE_I18N = True
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
+DATA_ROOT = os.path.join(PROJECT_ROOT, os.path.pardir,os.path.pardir,'data','')
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir,os.path.pardir,'static', ''))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -100,6 +101,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'actstream',
     'gravatar',
+    'annotatetext',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
@@ -110,6 +112,7 @@ INSTALLED_APPS = (
     'knesset.links',
     'knesset.user',
     'knesset.agendas',
+    'knesset.badges',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
@@ -120,11 +123,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "knesset.context.processor",
 )
 INTERNAL_IPS = ('127.0.0.1',)
+# Add the following line to your local_settings.py files to disable django-debug-toolar:
+#INTERNAL_IPS = ()
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-LOGIN_URL = '/user/login/'
+LOCAL_DEV = True
+
+LOGIN_URL = '/users/login/'
 
 SITE_NAME = 'Open-Knesset'
 HAYSTACK_SITECONF = 'knesset.search_sites'
@@ -155,5 +162,20 @@ GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_Nr
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
 
 CACHE_BACKEND = 'dummy://'
+ANNOTATETEXT_FLAGS = (gettext('Statement'),
+                    gettext('Funny :-)'),
+                    gettext('False fact'),
+                    gettext('Source?'),
+                    gettext('Found source'),
+                    gettext('Cross reference'),
+                    gettext('Important'),
+                    gettext('Formatting/Error!'),
+                    gettext('Comment'),)
 
-from local_settings import *
+
+# if you add a local_settings.py file, it will override settings here
+# but please, don't commit it to git.
+try: 
+    from local_settings import *
+except ImportError:
+    pass

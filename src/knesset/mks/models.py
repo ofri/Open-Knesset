@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
 from knesset.links.models import Link
+import difflib
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -237,6 +238,25 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+
+def find_possible_members(name):
+    mks = Member.objects.values_list('name','id')
+    mk_names = [mk[0] for mk in mks]
+    possible = difflib.get_close_matches(name, mk_names, cutoff=0.5, n=5)
+    results = []
+    for p in possible:
+        results.append({'id':mks[mk_names.index(p)][1], 'name':p})
+    return results
+
+def find_possible_parties(name):
+    parties = Party.objects.values_list('name','id')
+    party_names = [party[0] for party in parties]
+    possible = difflib.get_close_matches(name, party_names, cutoff=0.6, n=5)
+    results = []
+    for p in possible:
+        results.append({'id':parties[party_names.index(p)][1], 'name':p})
+    return results
+
 
 from listeners import *
 

@@ -421,8 +421,6 @@ a.disabled { color: #aaaaaa; }
 }
 
 #content-main .protocol {
-    height: 30em;
-    overflow: auto;
     background-color:#EEE;
     padding:0.5em;
 }
@@ -438,6 +436,15 @@ a.disabled { color: #aaaaaa; }
     max-width:15em;
     padding:0.2em;
 }
+
+input.vote_input {
+    width:600px; 
+}
+
+input.bill_input { 
+    width:400px; 
+}
+
 div #search {
     float:left;
     margin-top:6px;
@@ -542,3 +549,42 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .super.awesome-button, .super.awesome-button:visited { font-size: 34px; padding: 8px 14px 9px; }
 .awesome-button, .awesome-button:visited {background-color:#0d204a;}
 .awesome-button:hover {background-color:#0a1a3c;}
+
+.speech-container { clear:both; }
+/* .speech-container>div { height: 100%; float: right;} */
+.speech-container .text-speaker { float:right; width: 10%; }
+.speech-container .text-content { float:right; width: 50%; }
+.tool-links { float: right; }
+.aannotationtoolbox { float:left; }
+.annotation-content, .annotation-form {float: left; width: 39%;}
+.comments { clear:both; }
+div.color_picker {
+  height: 16px;
+  width: 16px;
+  padding: 0 !important;
+  border: 1px solid #ccc;
+  background: url(arrow.gif) no-repeat top right;
+  cursor: pointer;
+  line-height: 16px;
+}
+
+div#color_selector {
+  width: 110px;
+  position: absolute;
+  border: 1px solid #598FEF;
+  background-color: #EFEFEF;
+  padding: 2px;
+}
+  div#color_custom {width: 100%; float:left }
+  div#color_custom label {font-size: 95%; color: #2F2F2F; margin: 5px 2px; width: 25%}
+  div#color_custom input {margin: 5px 2px; padding: 0; font-size: 95%; border: 1px solid #000; width: 65%; }
+
+div.color_swatch {
+  height: 12px;
+  width: 12px;
+  border: 1px solid #000;
+  margin: 2px;
+  float: left;
+  cursor: pointer;
+  line-height: 12px;
+}

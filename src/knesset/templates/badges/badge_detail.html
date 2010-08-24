@@ -1,0 +1,14 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% block extratitle %}{{object}}{% endblock %}
+{% block header %}<h1>{{object}}</h1>{% endblock %}
+{% block content %}
+    {% autopaginate badges %}
+    <ul class="badge-list">
+    {% for badge in badges %}
+        <li><a href="{{badge.profile.get_absolute_url}}">{{badge.profile.user}}</a></li>
+    {% endfor %}
+    </ul>
+    {% paginate %}
+{% endblock %}
