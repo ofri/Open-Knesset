@@ -1,8 +1,5 @@
 # coding=utf-8
 
-import os
-import re
-from itertools import chain
 from difflib import get_close_matches
 from collections import namedtuple
 
@@ -136,8 +133,8 @@ def parse_proposal_page(top_text, bottom_text):
         explanation_blocks_1 = top_blocks[explanation_block_start:]
         before_single_line_removal = sum(map(len, explanation_blocks_1))
         explanation_blocks = map(list,map(remove_single_char_lines, explanation_blocks_1))
-        after_single_line_reomval = sum(map(len, explanation_blocks))
-        if before_single_line_removal != after_single_line_reomval:
+        after_single_line_removal = sum(map(len, explanation_blocks))
+        if before_single_line_removal != after_single_line_removal:
             print "removed %d single lines" % (before_single_line_removal - after_single_line_removal)
         proposal_blocks = top_blocks[proposal_block_start:explanation_block_start]
         # pdftotext doesn't correctly get the blocks - they are single
