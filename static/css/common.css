@@ -552,7 +552,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 
 .speech-container { clear:both; }
 /* .speech-container>div { height: 100%; float: right;} */
-.speech-container .text-speaker { float:right; width: 10%; }
+.speech-container .text-speaker { float:right; width: 10%; padding-bottom:1em;}
 .speech-container .text-content { float:right; width: 50%; }
 .tool-links { float: right; }
 .aannotationtoolbox { float:left; }
