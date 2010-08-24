@@ -507,3 +507,5 @@ class Bill(models.Model):
                 self.stage = '1'
                 self.stage_date = pp.date
         self.save()
+        
+from listeners import *        
