@@ -102,6 +102,7 @@ INSTALLED_APPS = (
     'actstream',
     'gravatar',
     'annotatetext',
+    'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
