@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -79,7 +80,8 @@ I have a deadline''')
                            kwargs={'object_id': self.meeting_1.id}))
         self.assertFalse(self.bill_1 in self.meeting_1.bills_first.all())
         self.assertEqual(res.status_code, 302)
-        self.assertTrue(res['location'].startswith('http://testserver/user/login/'))
+        self.assertTrue(res['location'].startswith('%s%s'  %
+                                       ('http://testserver', settings.LOGIN_URL)))
 
     def testConnectToMK(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
