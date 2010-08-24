@@ -34,6 +34,7 @@ class MemberActivityFeed(Feed):
             if self.verbs:
                 stream = stream.filter(verb__in = self.verbs)
             return stream[:20]
+        return []
 
     def item_title(self, item):
         title = _(item.verb)
