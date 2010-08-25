@@ -8,6 +8,7 @@ from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
+from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 import math
 
@@ -204,4 +205,17 @@ class TagHandler(BaseHandler):
     def number_of_items(self, tag):
         return tag.items.count()
 
+class AgendaHandler(BaseHandler):
+    fields = ('id', 'name', 'number_of_items')
+    allowed_methods = ('GET',)
+    model = Agenda
 
+    def read(self, request, id=None):
+        if id is None:
+            return Agenda.objects.all()       
+        else:
+            return Agenda.objects.filter(pk=id)
+
+    @classmethod
+    def number_of_items(self, agenda):
+        return agenda.agendavote_set.count()
