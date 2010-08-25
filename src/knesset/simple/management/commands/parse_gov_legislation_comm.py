@@ -2,11 +2,8 @@
 import urllib2
 from BeautifulSoup import BeautifulSoup
 from BeautifulSoup import BeautifulStoneSoup
-import datetime
 import re
-#import parse_knesset_bill_pdf
 import logging
-from itertools import *
 
 logger = logging.getLogger("open-knesset.parse_gov_legislation_comm")
 
@@ -77,7 +74,7 @@ class ParseGLC:
                 try:
                     html_page = urllib2.urlopen(url, timeout=15).read()
                     break
-                except urllib2.URLError,e:
+                except urllib2.URLError:
                     retry_count += 1
                     if retry_count >= 10:
                         raise urllib2.URLError('URL %s failed too many times')
@@ -90,15 +87,32 @@ class ParseGLC:
         
     # Parse the content of an entry page
     def parse_entry(self, html_page):
-        subtitle = self.parse_entry_part_by_span_id(html_page, "SUB_TITLE_PH")
-        title = self.parse_entry_part_by_span_id(html_page, "SUBJECT_PH")
+        #subtitle = self.parse_entry_part_by_span_id(html_page, "SUB_TITLE_PH")
+        #title = self.parse_entry_part_by_span_id(html_page, "SUBJECT_PH")
         #decision = self.parse_entry_part_by_span_id(html_page, "TEXT_PH")
+        title = None
+        subtitle = None
+        decision = None
+        number = None
         soup = BeautifulSoup(html_page)
-        decision = soup.find('span',{'id':"TEXT_PH"}).contents
-        decision = '\n'.join([unicode(x) for x in decision])
-        decision = decision.replace('&nbsp;',' ').replace('<br />','')
-        decision = self.decode_html_chars(decision)
-        return {'subtitle': subtitle, 'title':title, 'decision':decision}
+        try:
+            decision = soup.find('span',{'id':"TEXT_PH"}).contents
+            decision = '\n'.join([unicode(x) for x in decision])
+            decision = decision.replace('&nbsp;',' ').replace('<br />','')
+            decision = self.decode_html_chars(decision)
+            title = soup.find('span',{'id':"SUBJECT_PH"}).contents
+            title = '\n'.join([unicode(x) for x in title])
+            title = title.replace('&nbsp;',' ').replace('<br />','')
+            title = self.decode_html_chars(title)
+            subtitle = soup.find('span',{'id':"SUB_TITLE_PH"}).contents
+            subtitle = '\n'.join([unicode(x) for x in subtitle])
+            subtitle = subtitle.replace('&nbsp;',' ').replace('<br />','')
+            subtitle = self.decode_html_chars(subtitle)
+            number = re.search(r'הוא (\d+)'.decode('utf8'),subtitle).group(1)
+        except Exception,e:
+            print e
+            
+        return {'subtitle': subtitle, 'title':title, 'decision':decision,'number':number}
         
     # Parse the content of the span with the given id from a given entry page.
     def parse_entry_part_by_span_id(self, html_page, span_id):

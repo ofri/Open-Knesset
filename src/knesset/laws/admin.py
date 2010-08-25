@@ -1,9 +1,6 @@
-from knesset.laws.models import *
+from knesset.laws.models import Vote,Law,PrivateProposal,KnessetProposal,Bill,GovLegislationCommitteeDecision
 
-from django import forms
 from django.contrib import admin
-from django.forms.models import modelformset_factory
-from django.forms.models import inlineformset_factory
 
 class VoteAdmin(admin.ModelAdmin):
 #    filter_horizontal = ('voted_for','voted_against','voted_abstain','didnt_vote')
@@ -25,3 +22,8 @@ admin.site.register(KnessetProposal, KnessetProposalAdmin)
 class BillAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Bill, BillAdmin)
+
+class GovLegislationCommitteeDecisionAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(GovLegislationCommitteeDecision, GovLegislationCommitteeDecisionAdmin)
+
