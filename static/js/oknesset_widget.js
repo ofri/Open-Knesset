@@ -1,8 +1,8 @@
-//generateMkFrameSet('code',{MkIds:[780],classHook:''},{width:480},'oknesset_container');
-function generateMkFrameSet(action,Mks,style,targetId){
+function generateMkFrameSet(Mks,style,targetId){
     style = typeof(style) != 'undefined' ? style : {width:414};
     targetId = typeof(targetId) != 'undefined' ? targetId : '';
     
+    var frameNum = 0;
     var MkIds = {};
     if (Mks.MkIds) 
         getMkIdsFromIdList( Mks.MkIds );
@@ -21,42 +21,30 @@ function generateMkFrameSet(action,Mks,style,targetId){
             MkIds[MkElements[i].innerHTML] = true;
         }
     }
+
+    function createMkFrame( mkId, width ){
+      var mkFrame = document.createElement("iframe");
+      mkFrame.src = "http://oknesset.org/static/html/oknesset-iframe.html?id="+mkId;
+      mkFrame.style.display = "block";
+      mkFrame.style.border =  "0px";
+      mkFrame.style.margin =  "3px 0";
+      mkFrame.style.width = width+"px";
+      mkFrame.scrolling = "no";
+      mkFrame.id = "mkFrame_"+frameNum;
+      frameNum++;
+      return mkFrame;
+    }
     
     for ( var key in MkIds ) {
-        MkIds[key] = createMkFrame(key, style.width );
+      MkIds[key] = createMkFrame(key, style.width );
+      document.getElementById(targetId).appendChild(MkIds[key])        
     }
-    
-    if ( action == "embed" )
-      embedFrames( targetId );
-    
-    return MkIds;
 
-  function createMkFrame( mkId, width ){
-    if ( typeof frameNum=="undefined" ) { 
-        frameNum = 0; 
-    }
-    var mkFrame = document.createElement("iframe");
-    mkFrame.src = "http://127.0.0.1:8000/static/html/oknesset-iframe.html?id="+mkId;
-    mkFrame.style.display = "block";
-    mkFrame.style.border =  "0px";
-    mkFrame.style.margin =  "3px 0";
-    mkFrame.style.width = width+"px";
-    mkFrame.scrolling = "no";
-    mkFrame.id = "mkFrame_"+frameNum;
-    frameNum++;
-    return mkFrame;
-  }
-  
-  function embedFrames( targetId ) {
-    for (var key in MkIds) {
-      $('#' + targetId).append( MkIds[key] );
-    }
     resizeFrames();
-  }
   
   function resizeFrames() {
   // iframe height adjustment
-    jQuery(document).ready(function()
+    document.onload = (function()
     {
         // Set specific variable to represent all iframe tags.
         var iFrames = document.getElementsByTagName('iframe');
@@ -73,14 +61,13 @@ function generateMkFrameSet(action,Mks,style,targetId){
         }
 
         // Check if browser is Safari or Opera.
-        if (jQuery.browser.safari || jQuery.browser.opera)
+        if (navigator.appCodeName == "safari" || navigator.appCodeName == "opera")
         {
           // Start timer when loaded.
-          jQuery('iframe').load(function()
+          getElementsByTagName('iframe').onload = function()
             {
               setTimeout(iResize, 0);
-            }
-          );
+            };
 
           // Safari and Opera need a kick-start.
           for (var i = 0, j = iFrames.length; i < j; i++)
@@ -93,12 +80,11 @@ function generateMkFrameSet(action,Mks,style,targetId){
         else
         {
           // For other good browsers.
-          jQuery('iframe').load(function()
+          getElementsByTagName('iframe').onload = function()
             {
               // Set inline style to equal the body height of the iframed content.
               this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
-            }
-          );
+            };
         }
       }
     );
