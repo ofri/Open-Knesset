@@ -2,7 +2,8 @@
 
 from difflib import get_close_matches
 from collections import namedtuple
-
+import re
+import datetime
 #import pyfribidi
 
 from util import flatten
@@ -235,7 +236,15 @@ class GovProposal(object):
         return self._full_pages[key]
 
     def get_date(self):
-        pass
+        self._parse_doc()
+        for page_nr in xrange(len(self._pages)):
+            page_text = '\n'.join([x for x in flatten(self._pages[page_nr]) if isinstance(x,unicode)])
+            m = re.search('\d{1,2}\.\d{1,2}\.\d{4}',page_text)
+            try:
+                return datetime.datetime.strptime(m.group(0),'%d.%m.%Y').date()
+            except AttributeError:
+                pass
+        return None
 
     def _parse_doc(self):
         if len(self._pages) > 0:

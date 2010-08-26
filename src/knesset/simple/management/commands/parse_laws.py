@@ -185,6 +185,8 @@ class ParseKnessetLaws(ParseLaws):
                                        'comment':comment, 'date':pdf_data[j]['date']}
                 if 'original_ids' in pdf_data[j]:
                     law_data['original_ids'] = pdf_data[j]['original_ids']
+                if 'bill' in pdf_data[j]:
+                    law_data['bill'] = pdf_data[j]['bill']
                 self.laws_data.append(law_data)
         return True               
 
@@ -207,9 +209,10 @@ class ParseGovLaws(ParseKnessetLaws):
         f.write(d.read())
         f.close()
         prop = GovProposal(filename)
-        return [{'title':prop.get_title(),'date':datetime.date.today()}] # TODO: fix this. the parsing doesn't get date yet.
-                                                                        # TODO: check if parsing handles more than 1 prop in a booklet
-        
+
+        # TODO: fix this. the parsing doesn't get date yet.
+        # TODO: check if parsing handles more than 1 prop in a booklet                
+        return [{'title':prop.get_title(),'date':prop.get_date(), 'bill':prop}]
 #############
 #   Main    #
 #############	
