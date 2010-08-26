@@ -180,9 +180,12 @@ class ParseKnessetLaws(ParseLaws):
                 law = law.strip().replace('\n','').replace('&nbsp;',' ')
                 if law.find("הצעת ".decode("utf8"))==0:
                     law = law[5:]
-
-                self.laws_data.append({'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
-                                       'comment':comment, 'original_ids':pdf_data[j]['original_ids'],'date':pdf_data[j]['date']})
+                
+                law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
+                                       'comment':comment, 'date':pdf_data[j]['date']}
+                if 'original_ids' in pdf_data[j]:
+                    law_data['original_ids'] = pdf_data[j]['original_ids']
+                self.laws_data.append(law_data)
         return True               
 
     def update_booklet(self):
@@ -204,6 +207,8 @@ class ParseGovLaws(ParseKnessetLaws):
         f.write(d.read())
         f.close()
         prop = GovProposal(filename)
+        return [{'title':prop.get_title(),'date':datetime.date.today()}] # TODO: fix this. the parsing doesn't get date yet.
+                                                                        # TODO: check if parsing handles more than 1 prop in a booklet
         
 #############
 #   Main    #
