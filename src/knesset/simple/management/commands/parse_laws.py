@@ -209,10 +209,10 @@ class ParseGovLaws(ParseKnessetLaws):
         f.write(d.read())
         f.close()
         prop = GovProposal(filename)
-
-        # TODO: fix this. the parsing doesn't get date yet.
+        
         # TODO: check if parsing handles more than 1 prop in a booklet                
         return [{'title':prop.get_title(),'date':prop.get_date(), 'bill':prop}]
+        
 #############
 #   Main    #
 #############	
