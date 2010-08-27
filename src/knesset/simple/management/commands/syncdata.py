@@ -1,39 +1,37 @@
- # This Python file uses the following encoding: utf-8
+# encoding: utf-8
 import os,sys,traceback
-from django.core.management.base import NoArgsCommand
-from optparse import make_option
-from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-
 import urllib2,urllib
 import cookielib
 import re
 import gzip
-import simplejson
 import datetime
 import time
 import logging
 from cStringIO import StringIO
 from pyth.plugins.rtf15.reader import Rtf15Reader
+from optparse import make_option
 
-from knesset.mks.models import *
-from knesset.laws.models import *
-from knesset.links.models import *
-from knesset.committees.models import *
-
-from django.db import connection
+from django.core.management.base import NoArgsCommand
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
+
+from knesset.mks.models import Member,Party,Membership,WeeklyPresence
+from knesset.laws.models import Vote,VoteAction,Bill,Law,PrivateProposal,KnessetProposal,GovLegislationCommitteeDecision
+from knesset.links.models import Link
+from knesset.committees.models import Committee,CommitteeMeeting
+from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser
 import parse_presence
 import parse_laws
 import mk_roles_parser
-from knesset import utils
+from parse_gov_legislation_comm import ParseGLC
 
 ENCODING = 'utf8'
 
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
-                    os.path.join(settings.PROJECT_ROOT, 'data'))
+                    os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
 
 logger = logging.getLogger("open-knesset.syncdata")
 
@@ -171,8 +169,7 @@ class Command(NoArgsCommand):
                         month = self.heb_months.index(i)+1
                 day = re.search("""(\d\d?)""", vote_time_string).group(1)
                 year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
-                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
-                vote_date = datetime.date(int(year),int(month),int(day))
+                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )                
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 #vote_label_for_search = self.get_search_string(vote_label)
 
@@ -205,8 +202,6 @@ class Command(NoArgsCommand):
                     if(voter_party in self.party_aliases):
                         voter_party = self.party_aliases[voter_party]
 
-                    p = Party.objects.get(name=voter_party)
-                                    
                     # get the member voting                
                     try:
                         m = Member.objects.get(pk=int(voter_id))
@@ -345,7 +340,7 @@ class Command(NoArgsCommand):
             if len(line) <= 1:
                 continue
             (member_id, name, img_url, phone, fax, website, email, family_status, number_of_children, 
-             date_of_birth, year_of_birth, place_of_birth, date_of_death, year_of_aliyah, extra) = line.split('\t') 
+             date_of_birth, year_of_birth, place_of_birth, date_of_death, year_of_aliyah, _) = line.split('\t') 
             if email != '':
                 email = email.split(':')[1]
             try:
@@ -423,10 +418,9 @@ class Command(NoArgsCommand):
             parties = dict() # key: party-name; value: Party
             members = dict() # key: member-name; value: Member
             votes   = dict() # key: id; value: Vote
-            memberships = dict() # key: (member.id,party.id)
-            current_vote = None # used to track what vote we are on, to create vote objects only for new votes
+            memberships = dict() # key: (member.id,party.id)            
             current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
-            if current_max_src_id == None: # the db contains no votes, meanins its empty
+            if current_max_src_id == None: # the db contains no votes, meaning its empty
                 current_max_src_id = 0
 
             logger.debug("processing votes data")
@@ -435,7 +429,7 @@ class Command(NoArgsCommand):
             for line in content:
                 if len(line) <= 1:
                     continue
-                (vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t') 
+                (vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, _, _, _, _) = line.split('\t') 
                 #if vote_id < current_max_src_id: # skip votes already parsed.
                 #    continue  
                 vote_time_string = vote_time_string.replace('&nbsp;',' ')
@@ -469,10 +463,10 @@ class Command(NoArgsCommand):
                         pass
                     v.src_url = vote_src_url
                     for law in laws:
-                        (law_name,law_name_for_search,law_exp,law_link) = law
+                        (_,law_name_for_search,law_exp,law_link) = law
                         if vote_label_for_search.find(law_name_for_search) >= 0:
                             v.summary = law_exp
-                            v.full_text_url = law_link                    
+                            v.full_text_url = law_link
                     v.save()
                     if v.full_text_url != None:
                         l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
@@ -594,64 +588,6 @@ class Command(NoArgsCommand):
             v.importance = float(v.votes.filter(voteaction__type='for').count() + v.votes.filter(voteaction__type='against').count()) / 120
             v.save()
         
-    def calculate_correlations(self):
-        """
-        Calculates member pairs correlation on votes.
-        """
-        # TODO: refactor the hell out of this one...
-        return 
-        print "Calculate Correlations"
-        try:     
-            cursor = connection.cursor()
-            print "%s truncate correlations table" % str(datetime.datetime.now())
-            Correlation.objects.all().delete()
-            print "%s calculate correlations"  % str(datetime.datetime.now())
-            cursor.execute("""insert into mks_correlation (m1_id,m2_id,score) (
-                select m1 as m1_id, m2 as m2_id,sum(score) as score from (
-                select a1.member_id as m1,a2.member_id as m2, count(*) as score from (
-                (select * from laws_votes where type='for') a1,
-                (select * from laws_votes where type='for') a2
-                ) where a1.vote_id = a2.vote_id and a1.member_id < a2.member_id group by a1.member_id,a2.member_id
-                union
-                select a1.member_id as m1,a2.member_id as m2, count(*) as score from (
-                (select * from laws_votes where type='against') a1,
-                (select * from laws_votes where type='against') a2
-                ) where a1.vote_id = a2.vote_id and a1.member_id < a2.member_id group by a1.member_id,a2.member_id
-                union
-                select a1.member_id as m1,a2.member_id as m2, -count(*) as score from (
-                (select * from laws_votes where type='for') a1,
-                (select * from laws_votes where type='against') a2
-                ) where a1.vote_id = a2.vote_id and a1.member_id < a2.member_id group by a1.member_id,a2.member_id
-                union
-                select a1.member_id as m1,a2.member_id as m2, -count(*) as score from (
-                (select * from laws_votes where type='against') a1,
-                (select * from laws_votes where type='for') a2
-                ) where a1.vote_id = a2.vote_id and a1.member_id < a2.member_id group by a1.member_id,a2.member_id
-                
-                ) a group by m1,m2
-                )""".replace('\n',''))
-            print "%s done"  % str(datetime.datetime.now())
-            print "%s normalizing correlation"  % str(datetime.datetime.now())
-            cursor.execute("""update mks_correlation,
-                (select member_id,sum(vote_count) as vote_count from (
-                select member_id,count(*) as vote_count from laws_votes where type='for' group by member_id
-                union
-                select member_id,count(*) as vote_count from laws_votes where type='against' group by member_id
-                ) a 
-                group by member_id) a1,
-                (select member_id,sum(vote_count) as vote_count from (
-                select member_id,count(*) as vote_count from laws_votes where type='for' group by member_id
-                union
-                select member_id,count(*) as vote_count from laws_votes where type='against' group by member_id
-                ) a 
-                group by member_id) a2
-                set mks_correlation.normalized_score = mks_correlation.score / sqrt(a1.vote_count) / sqrt(a2.vote_count)*100 
-                where mks_correlation.m1_id = a1.member_id and mks_correlation.m2_id = a2.member_id""")
-
-        except Exception,e:
-            print "error: %s" % e
-     
-
     def read_votes_page(self,voteId, retry=0):
         """
         Gets a votes page from the knesset website.
@@ -666,7 +602,7 @@ class Command(NoArgsCommand):
             logger.warn(e)
             if retry < 5:
                 logger.warn("waiting some time and trying again... (# of retries = %d)" % (retry+1) )
-                page = read_votes_page(self,voteId, retry+1)
+                page = self.read_votes_page(voteId, retry+1)
             else:
                 logger.error("failed too many times. last error: %s", e)
                 return None
@@ -683,6 +619,7 @@ class Command(NoArgsCommand):
         results = []
         pattern = re.compile("""Vote_Bord""")
         match = pattern.split(page)
+        last_party = None
         for i in match:
             vote = ""
             if(re.match("""_R1""", i)):
@@ -732,28 +669,6 @@ class Command(NoArgsCommand):
         date = re.search("""תאריך: </td>[^<]*<[^>]*>([^<]*)<""",page).group(1)
         return (name, meeting_num, vote_num, date)
 
-    def find_pdf(self,vote_title):
-        """
-        Gets a vote title, and searches google for relevant files about it.
-        NOT FINISHED, AND CURRENTLY NOT USED.
-        """
-        r = ''
-        try:        
-            q = vote_title.replace('-',' ').replace('"','').replace("'","").replace("`","").replace(",","").replace('(',' ').replace(')',' ').replace('  ',' ').replace(' ','+')
-            q = q.replace('אישור החוק','')
-            q = q+'+pdf'
-            q = urllib2.quote(q)
-            url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % q
-            r = simplejson.loads(urllib2.urlopen(url).read().decode('utf-8'))['responseData']['results']
-        except Exception,e:
-            print "error: %s" % e
-            return ''
-        if len(r) > 0:
-            print "full_text_url for vote %s : %s" % (q,r[0]['url'].encode('utf-8'))
-            return r[0]['url']
-        else:
-            #print "didn't find a full_text_url for vote %s , q = %s" % (vote_title,q)
-            return ''
 
     def find_synced_protocol(self, v):
         try:
@@ -777,7 +692,7 @@ class Command(NoArgsCommand):
                 return
             l = Link(title=u'פרוטוקול מסונכרן (וידאו וטקסט) של הישיבה', url='http://online.knesset.gov.il/eprotocol/PLAYER/PEPlayer.aspx?ProtocolID=%s' % m.group(1), content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
             l.save()
-        except Exception, e:
+        except Exception:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nsearch_text='+search_text.encode('utf8')+'\nvote.title='+v.title.encode('utf8'))
 
@@ -890,7 +805,7 @@ class Command(NoArgsCommand):
                         if s0.find(m.name_with_dashes())>=0:
                             #print "found %s in %s" % (m.name, str(cm.id))
                             cm.mks_attended.add(m)                        
-            except Exception, e:
+            except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
 
@@ -954,7 +869,7 @@ class Command(NoArgsCommand):
 
                 v.full_text = ''.join(content_list)
                 v.save()
-        except Exception, e:
+        except Exception:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nvote.title='+v.title.encode('utf8'))
 
@@ -1010,7 +925,7 @@ class Command(NoArgsCommand):
             else:
                 end_timestamp = todays_timestamp
 
-            current_timestamp = (m.start_date + timedelta(7)).isocalendar()[:2] # start searching on the monday after member joined the knesset
+            current_timestamp = (m.start_date + datetime.timedelta(7)).isocalendar()[:2] # start searching on the monday after member joined the knesset
             if current_timestamp < min_timestamp: # we don't have info in the current file that goes back so far
                 current_timestamp = min_timestamp
 
@@ -1026,12 +941,12 @@ class Command(NoArgsCommand):
                         wp.save()
                 else:
                     date = iso_to_gregorian(*current_timestamp, iso_day=0) 
-                current_timestamp = (date+timedelta(8)).isocalendar()[:2]
+                current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
 
     def parse_laws(self):
         mks = Member.objects.values('id','name')
         for mk in mks:
-            mk['cn'] = utils.cannonize(mk['name'])
+            mk['cn'] = cannonize(mk['name'])
         
         # private laws
         logger.debug('parsing private laws')
@@ -1072,7 +987,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['proposers']:
                     found = False
                     for mk in mks:
-                        if utils.cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0.decode('utf8'))==mk['cn']:
                             pl.proposers.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
@@ -1081,7 +996,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
-                        if utils.cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0.decode('utf8'))==mk['cn']:
                             pl.joiners.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
@@ -1293,6 +1208,44 @@ class Command(NoArgsCommand):
         intersection = set(mk_knesset_roles.keys()).intersection(set(mk_govt_roles.keys()))
         if len(intersection):
             logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
+
+    def update_gov_law_decisions(self):
+        t = datetime.date.today()
+        month = t.month-1
+        if month==0:
+            month=12
+        try:
+            parser = ParseGLC(t.year-2000, month)
+        except urllib2.URLError,e:
+            logger.error(e)
+            return
+        for d in parser.scraped_data:
+            logger.debug("parsed url: %s, subtitle: %s" %(d['url'],d['subtitle']))
+            if d['subtitle']:
+                m = re.search(r'ביום (\d+\.\d+.\d{4})'.decode('utf8'),d["subtitle"])
+                if not m:
+                    print "didn't find date on %s" % d['url']
+                    continue
+                date = datetime.datetime.strptime(m.group(1),'%d.%m.%Y').date()
+                (decision,created) = GovLegislationCommitteeDecision.objects.get_or_create(date=date,
+                                               source_url=d['url'],title=d['title'],subtitle=d['subtitle'],
+                                               text=d['decision'],number=int(d['number']))                                               
+                if created:
+                    if re.search(r'להתנגד'.decode('utf8'), d['decision']):
+                        decision.stand = -1
+                    if re.search(r'לתמוך'.decode('utf8'), d['decision']):
+                        decision.stand = 1                    
+                    decision.save()
+                    try:
+                        pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                        re.search(r'[2009|2010]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
+                                                                                        # TODO: fix in 2011
+                        decision.bill = PrivateProposal.objects.get(proposal_id=pp_id).bill
+                        decision.save()
+                    except AttributeError: # one of the regex failed
+                        print("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
+                    except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
+                        logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
             
 
     def handle_noargs(self, **options):
@@ -1346,11 +1299,11 @@ class Command(NoArgsCommand):
             self.find_proposals_in_other_data()
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
-
+            self.update_gov_law_decisions()
+            
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
-    party_ids = [x[0] for x in party_id_member_count_coalition]
-    party_member_count = [x[1] for x in party_id_member_count_coalition]
+    party_ids = [x[0] for x in party_id_member_count_coalition]    
     party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
 
     for_party_ids = [va.member.current_party.id for va in v.for_votes()]    

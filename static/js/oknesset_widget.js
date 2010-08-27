@@ -22,9 +22,22 @@ function generateMkFrameSet(Mks,style,targetId){
         }
     }
 
+
+
     function createMkFrame( mkId, width ){
+      var myDomain = (function(scripts) {
+            var scripts = document.getElementsByTagName('script'),
+                script = scripts[scripts.length - 2];
+
+            if (script.getAttribute.length !== undefined) {
+                return script.src.match('http://[^/]*/')
+            }
+
+            return script.getAttribute('src', -1)
+        }());
+              
       var mkFrame = document.createElement("iframe");
-      mkFrame.src = "http://oknesset.org/static/html/oknesset-iframe.html?id="+mkId;
+      mkFrame.src = myDomain + "static/html/oknesset-iframe.html?id="+mkId;//"http://oknesset.org/static/html/oknesset-iframe.html?id="+mkId;
       mkFrame.style.display = "block";
       mkFrame.style.border =  "0px";
       mkFrame.style.margin =  "3px 0";

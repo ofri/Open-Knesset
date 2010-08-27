@@ -21,11 +21,19 @@
     }
   return vars;
   }
+  var ok_domain = (function(scripts) {
+            var scripts = document.getElementsByTagName('script'),
+                script = scripts[scripts.length - 2];
 
-  var ok_domain = "http://oknesset.org";
+            if (script.getAttribute.length !== undefined) {
+                return script.src.match('http://[^/]*')
+            }
+
+            return script.getAttribute('src', -1)
+        }());  
   var mkId = getUrlVars()["id"];
 
-  $.getJSON(ok_domain+"/api/member/"+mkId, function(data){
+  $.getJSON(ok_domain + "/api/member/"+mkId+"/", function(data){
  function $E(s){
     return $(document.createElement(s));
   }
@@ -87,7 +95,7 @@
     for (var i = 0; (i < 3) && (i < data.committees.length); ++i) {
     $oknesset_committees_ul.append($E("li").append($E("a")
 	          .attr({
-	              href: ok_domain +"/"+ data.committees[i][1]
+	              href: ok_domain + data.committees[i][1]
 	          })
 	          .html(data.committees[i][0])));
     }

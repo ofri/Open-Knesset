@@ -5,12 +5,11 @@ from django.views.generic.list_detail import object_list, object_detail
 from django.db.models import Count, Sum, Q
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
-from django.core.cache import cache
-from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 import json
+from django.core.cache import cache
 from tagging.models import Tag
 import tagging
 from knesset.utils import limit_by_request
@@ -27,16 +26,6 @@ logger = logging.getLogger("open-knesset.mks")
 
 class MemberListView(ListView):
 
-    def render_html(self, *args, **kwargs):
-        ''' cache the html returned by render_html '''
-        info = self.request.GET.get('info','bills_pre')
-        response = cache.get('mks_list_by_%s' % info)
-        if response:
-            return response
-        response = super(MemberListView, self).render_html(*args, **kwargs)
-        cache.set('mks_list_by_%s' % info, response, 30*60)
-        return response
-
     def get_template_names(self):
         info = self.request.GET.get('info','bills_pre')
         if info=='abc':
@@ -47,8 +36,11 @@ class MemberListView(ListView):
             return ['mks/member_list_with_bars.html']
 
     def get_context(self):
-        context = super(MemberListView, self).get_context()
         info = self.request.GET.get('info','bills_pre')
+        context = cache.get('member_list_by_%s' % info)
+        if context:
+            return context
+        context = super(MemberListView, self).get_context()
         qs = context['object_list']
         context['friend_pages'] = [['.?info=abc',_('By ABC'), False],
                               ['.?info=bills_proposed',_('By number of bills proposed'), False],
@@ -152,14 +144,10 @@ class MemberListView(ListView):
             context['friend_pages'][8][2] = True
             context['title'] = "%s %s" % (_('Members'), _('Graphical view'))
         context['object_list']=qs
+        cache.set('member_list_by_%s' % info, context, 900)
         return context
 
 class MemberDetailView(DetailView):
-
-    # TODO: there should be a simpler way, no?
-    @method_decorator(cache_page(30*60))
-    def GET(self, *args, **kwargs):
-        return super(MemberDetailView, self).GET(*args, **kwargs)
 
     def get_context (self):
         context = super(MemberDetailView, self).get_context()
@@ -378,23 +366,24 @@ def member_auto_complete(request):
 
 
 object_finders = {'member':find_possible_members, 'party':find_possible_parties}        
-def object_by_name(request, name, object_type):
+def object_by_name(request, object_type):
+    name = request.GET.get('q','')
     name = name.replace('%20',' ')    
     results = object_finders[object_type](name)
-    if request.is_ajax():
+    if (request.is_ajax())or(request.GET.has_key('xhr')):
         try:
             for r in results:
                 r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
-            return HttpResponse(json.dumps({'possible':results}))
+            return HttpResponse(json.dumps({'possible':results},ensure_ascii=False))
         except Exception,e:
             print e
     if results:
         return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
-    raise Http404(_('No %s found matching "%s".') % (object_type,name))
+    raise Http404(_('No %(object_type)s found matching "%(name)s".', {'object_type':object_type,'name':name}))
 
-def party_by_name(request, name):
-    return object_by_name(request, name, 'party')
+def party_by_name(request):
+    return object_by_name(request, 'party')
     
-def member_by_name(request, name):
-    return object_by_name(request, name, 'member')
+def member_by_name(request):
+    return object_by_name(request, 'member')
 

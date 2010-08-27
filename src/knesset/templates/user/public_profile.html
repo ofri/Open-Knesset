@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load mks %}
 {% load activity_tags %}
+{% load aggregated_activity_tags %}
 {% load pagination_tags %}
 {% load gravatar_tags %}
 {% block extratitle %}{{object.username}}{% endblock %}
@@ -10,28 +11,40 @@
     <div>
         <img src="{% get_gravatar_for_email object.email 75 'r' %}" />
     </div>
-    <h2>{% trans 'Following Members' %}:</h2>
-    <ul class='favorites-list'>
-    {% for member in object.get_profile.members %}
-        <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
-    {% empty %}
-        {% trans 'Not following any memebers.' %}
-    {% endfor %}
-    </ul>
+    <div>
+        <h2>{% trans 'Following Members' %}:</h2>
+        <ul class='favorites-list'>
+        {% for member in object.get_profile.members %}
+            <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+        {% empty %}
+            <li>{% trans 'Not following any memebers.' %}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h2>{% trans 'Badges' %}:</h2>
+        <ul class='favorites-list'>
+        {% for badge in object.get_profile.get_badges %}
+            <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
+        {% empty %}
+            <li>{% trans 'No badges yet.' %}</li>
+        {% endfor %}
+        </ul>
+    </div>
     <div class="activities" >
         <h2>{% trans 'Activities' %}</h2>
         <div style="clear:both;"></div>
-    {% autopaginate actions %}
-    {% for action in actions %}
-        {% with action.timestamp|timesince as since %}
+    {% autopaginate aggr_actions %}
+    {% for aggr_action in aggr_actions %}
+        {% with aggr_action.timestamp|timesince as since %}
         {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
         {% endwith %}
         <p>
-            {% display_action action %}
+        	{% display_aggr_action aggr_action %} 
         </p>
     {% empty %}
         <p>
-        {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
+        {% trans "Sorry, no data is available" %}
         </p>
     {% endfor %}
     {% paginate %}

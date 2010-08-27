@@ -40,7 +40,8 @@ urlpatterns = patterns('',
     url(r'^$', cache_page(main, 60*10), name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
-    (r'^user/', include('knesset.user.urls')),
+    (r'^users/', include('knesset.user.urls')),    
+    (r'^badges/', include('knesset.badges.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -56,6 +57,7 @@ urlpatterns = patterns('',
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
+     (r'^annotate/', include('annotatetext.urls')),
 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns

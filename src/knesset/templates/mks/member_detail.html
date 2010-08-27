@@ -4,6 +4,7 @@
 {% load laws_extra %}
 {% load activity_tags %}
 {% load pagination_tags %}
+{% load cache %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
@@ -30,7 +31,9 @@
 <a class="button" href="{% url member-activity-feed object.id %}">{% trans "feed" %}</a>
 {% endblock %}
 {% block divcontent %}
+{% cache 600 mks object.id request.page %}
     <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+    <h2> {{ object.get_role }} </h2>
     <div class="member-details">
         <div class="member-photo"><img src="{{ object.img_url }}"/></div>
         <div>
@@ -80,12 +83,12 @@
                 </tr>
                 <tr>
                     <td>{% trans "Factional discipline" %}</td>
-                    <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                    <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
                     <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
                 </tr>
                 <tr>
                     <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
                     <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
                 </tr>   
                 <tr>
@@ -173,6 +176,7 @@
     {% paginate %}
     </div>
     <div style="clear:both;"></div>
+    {% endcache %}
     <script>
         $(document).ready(function() {
             var member_id = {{object.id}};
@@ -221,6 +225,21 @@
             })
         })
     </script>
+
+    <div id="embed_code" style="margin-top:10px;">
+        <a href="#" onclick="$('#embed_code_box').toggle();return false;">{% trans "Embed in external site" %}</a>
+        <div id="embed_code_box" style="display:none">
+            <form><textarea id="embed_code_value" cols="120" rows="5" style="direction:ltr;text-align:left;">
+<script type="text/javascript" src="http://oknesset.org/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://oknesset.org/static/js/oknesset_widget.js"></script>
+<script type="text/javascript">
+ generateMkFrameSet('code',{MkIds:[{{ object.id }}],classHook:'oknesset_lookup'},{width:480},'oknesset_container');
+</script>
+            </textarea></form>
+            <p>{% trans "Add the code above to your site, to get a dynamically generated info" %}</p>
+        </div>
+    </div>
+
 
 {% endblock %}
 

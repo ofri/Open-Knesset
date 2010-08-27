@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -59,7 +60,8 @@ class BillViewsTest(TestCase):
         res = self.client.post(reverse('bill-detail',
                            kwargs={'object_id': self.bill_1.id}))
         self.assertEqual(res.status_code, 302)
-        self.assertTrue(res['location'].startswith('http://testserver/user/login/'))
+        self.assertTrue(res['location'].startswith('%s%s'  %
+                                       ('http://testserver', settings.LOGIN_URL)))
 
     def testPOSTApprovalVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
