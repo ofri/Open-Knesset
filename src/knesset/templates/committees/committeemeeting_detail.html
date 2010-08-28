@@ -10,6 +10,8 @@
     <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
+    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />  
+    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
@@ -99,6 +101,35 @@
 {% endblock %}
 
 {% block footer %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var options_bill = { 
+                 serviceUrl:'/bill/auto_complete',
+                 minChars:2, 
+                 maxHeight:400,
+                 width:400,
+                 deferRequestBy: 100, //miliseconds
+                 onSelect: function(value, data, me){ 
+                    me.siblings("input[name$='bill_id']").val(data);
+                    me.siblings("input[type$='submit']").removeAttr('disabled'); },
+                 };
+
+            var options_mk = { 
+                 serviceUrl:'/member/auto_complete',
+                 minChars:0, 
+                 maxHeight:400,
+                 width:150,
+                 deferRequestBy: 100, //miliseconds
+                 };
+
+            $('input.bill_input').autocomplete(options_bill);
+            $('input.bill_input').keydown(function() { 
+                $(this).siblings("input[name$='bill_id']").val('');
+                $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
+            $("input[name$='mk_name']").autocomplete(options_mk);
+          });
+    </script>
+
     <script type="text/javascript" charset="utf-8">
     $(function(){
         $(".annotation-form").hide();
