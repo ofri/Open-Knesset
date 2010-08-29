@@ -88,7 +88,7 @@ img {border: none;}
 #content-secondary { clear:both; background:#487858; margin-left:0; margin-right:0; margin-top:15px; margin-bottom:-10px; padding:10px 24px; color:white; }
 .subcol-primary, .subcol-secondary { width:40%; float:left; padding-bottom:1.2em; }
 .subcol-primary { margin-right:1%; }
-
+.content-footer {clear: both; border:0px;vertical-align:middle;margin:2em auto;}
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
@@ -223,7 +223,7 @@ form.wide p.errors { margin: 0; padding: 0; font-weight: bold; color: red; }
 .small { font-size:90%; }
 h3 .small { font-size:80%; }
 .quiet { font-weight:normal; }
-.clear { clear:both; }
+.clear {height:0; overflow:hidden; clear:both;}
 #content-main .quiet { color:#487858; }
 #content-secondary .quiet { color:#90ba9e; }
 
@@ -420,10 +420,7 @@ a.disabled { color: #aaaaaa; }
     width: 8em;
 }
 
-#content-main .protocol {
-    background-color:#EEE;
-    padding:0.5em;
-}
+#content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
 #content-main .display_note {
     -moz-border-radius:0.6em 0.6em 0.6em 0.6em;
@@ -556,14 +553,19 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .speech-container .text-content { float:right; width: 50%; }
 .tool-links { float: right; }
 .aannotationtoolbox { float:left; }
+.annotationfields { margin: 0.2em 1.2em 0.8em 0 !important; }
+.annotationlicensing { float:left; font-size: 80%}
 .annotation-content, .annotation-form {float: left; width: 39%;}
+.annotation-form { padding-bottom: 1em !important; }
+.annotationselection { margin-top:0.5em;}
+.selectionempty { color: Coral;}
 .comments { clear:both; }
-div.color_picker {
-  height: 16px;
-  width: 16px;
-  padding: 0 !important;
+.color_picker {
+  display: inline;
+  padding-left: 8px !important; 
+  margin: 2px;
   border: 1px solid #ccc;
-  background: url(arrow.gif) no-repeat top right;
+  background: url(../img/arrow.gif) no-repeat bottom left;
   cursor: pointer;
   line-height: 16px;
 }
@@ -588,3 +590,4 @@ div.color_swatch {
   cursor: pointer;
   line-height: 12px;
 }
+.jGrowl-message a { color: inherit; }

@@ -90,8 +90,9 @@
 		<div id="columnwrap">
 			{% block columnwrap %}                
 				<div id="content-main">
-				{% block content-main %}{% endblock %}
-					<table style="border:0px;vertical-align:middle;margin-top:70px;">
+                    {% block content-main %}{% endblock %}
+                    <div class="clear"></div>
+                    <table class="content-footer">
 					  	<tr>
 					  	<td>
 							<a title="Post to Google Buzz" class="google-buzz-button" href="http://www.google.com/buzz/post" data-button-style="normal-count" data-locale="iw"></a>

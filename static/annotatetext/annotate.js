@@ -401,16 +401,18 @@ Annotations.prototype = {
           if(selected_text.length > 40){
             selected_text = this.text.substring(selStart, selStart+20)+"[&hellip;]"+this.text.substring(selEnd-20, selEnd);
           }
-          $("#selectionhint-"+this.id).html('קטע: "'+selected_text+'"');
-          $("#selectionhint-"+this.id).css("color", "#0a0");
+          $("#selectionhint-"+this.id).html('"'+selected_text+'"');
+          $("#selectionempty-"+this.id).hide();
+          $("#selectionhint-"+this.id).show();
         }
         else{
-          $("#selectionhint-"+this.id).html('לא נבחר קטע');
-          $("#selectionhint-"+this.id).css("color", "#a00");
+          $("#selectionempty-"+this.id).show();
+          $("#selectionhint-"+this.id).hide();
         }
       }
       else{
-        $("#selectionhint-"+this.id).css("color", "#a00");
+          $("#selectionempty-"+this.id).show();
+          $("#selectionhint-"+this.id).hide();
       }
     },
     updateDefaultAnnotationColor : function(color){
