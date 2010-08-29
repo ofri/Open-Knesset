@@ -9,7 +9,14 @@
 {% block description %}{{ object.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
-{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/agendas.js"></script>
+    <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{MEDIA_URL}}css/agendas.css" rel="stylesheet" type="text/css" media="screen" />
+{% endblock %}
 {% block divcontent %}
     <h2><a href=".">{{ object.title }}</a></h2>
     <div id="vote-info">
@@ -116,31 +123,53 @@
         {% object_links object %} 
         <br><br>
             
+
+
 		<div id="agendas">
+
+			 List of ascribed agendas 
 			{% if object.agendavote_set.all %}
 		        <h3>{% trans "Ascribed agendas" %}</h3>
-                <div class="list-wrap indented">
-		        {% for agendavote in object.agendavote_set.all %}
-	                <a class="hashnav item dontwrap" id="detail-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
-	                &nbsp;
+                <div id="ascribed-agendas" class="list-wrap indented">
+		        {% for agenda in object.agenda_set.all %}
+	                <a class="hashnav item dontwrap" id="ascribed-agenda-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}"/>{{ agenda }}</a>
 		        {% endfor %}
 		        </div>
 			{% endif %}
 			<br>    
+
 			{% if user.agenda_set.all %}
 		        <h3>{% trans "Ascribe your agendas" %}</h3>
-                <div class="list-wrap indented">
+                <div id="ascribe-your-agendas" class="list-wrap indented" id="agendas-choose">
 		        {% for agenda in user.agenda_set.all %}
-	                <a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}"/>{{ agenda }}</a>
-	                &nbsp;
+	                <a class="hashnav item dontwrap agendavote {% if agenda in object.agenda_set.all %}selected{% endif %}" id="your-agenda-{{ agenda.id }}" agenda_name="{{ agenda.name }}" agenda_id="{{ agenda.id }}" vote_id="{{ object.id }}" href="#">{{ agenda }}</a>
 		        {% endfor %}
 		        </div>
 			{% endif %}
-		</div>
+			
+			<div class="popup">
+				<div id="popupContact">
+					<a id="popupContactClose">x</a>
+					<h1></h1>
+					<p id="contactArea">
+ 						<form style="margin-top: 1em;"> 
+							<div id="radioset"> 
+								<input type="radio" id="radio1" name="radio" /><label for="radio1">{% trans "Ascribe" %}</label> 
+								<input type="radio" id="radio2" name="radio" checked="checked" /><label for="radio2">{% trans "Remove" %}</label> 
+							</div> 
+						</form> 
+					</p>
+				</div>
+				<div id="backgroundPopup"></div>
+		    </div> 
+		    
+		</div> 
         <br>
+
+
                     
         {% if object.summary %}        
-            <h3>{% trans 'summary' %}</h3>
+            --><h3>{% trans 'summary' %}</h3>
             {{ object.summary|safe }}
             <br><br>
         {% endif %}

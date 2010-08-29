@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from forms import EditAgendaForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
-from models import Agenda
+from knesset.laws.models import Vote
+from models import Agenda, AgendaVote
 #from django.core.urlresolvers import reverse
 
 class AgendaListView (ListView):
@@ -54,3 +55,21 @@ class AgendaDetailEditView (DetailView):
         else:
             self.form = form
             return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
+
+@login_required
+def ascribe_agenda_to_vote(request, agenda_id, vote_id):
+    """
+    This function toggles agenda to vote relation
+    """
+    agenda = get_object_or_404(Agenda, pk=agenda_id)
+    vote   = get_object_or_404(Vote, pk=vote_id)
+    if request.user in agenda.editors.all():
+        if vote in agenda.votes.all():
+            agenda.agendavote_set.get(vote=vote).delete()
+        else:
+            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
+            agenda_vote.save()
+    else:
+        HttpResponse("This is not the correct user") 
+    return HttpResponse("OK") 
+

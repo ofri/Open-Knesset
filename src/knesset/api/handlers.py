@@ -210,11 +210,29 @@ class AgendaHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Agenda
 
-    def read(self, request, id=None):
-        if id is None:
-            return Agenda.objects.all()       
-        else:
-            return Agenda.objects.filter(pk=id)
+    def read(self, request, **kwargs):
+        
+        # Handle API calls of type /agenda/[agenda_id]
+        id = None
+        if 'id' in kwargs:
+            id = kwargs['id']        
+            if id is not None:
+                return Agenda.objects.filter(pk=id)
+        
+        # Handle API calls of type /agenda/vote/[vote_id]
+        # Used to return the agendas ascribed to a specific vote
+        object_id = None
+        ctype = None
+        if 'object_id' in kwargs and 'object_type' in kwargs:
+            object_id = kwargs['object_id']
+            try:
+                ctype = ContentType.objects.get(model=kwargs['object_type'])
+            except ContentType.DoesNotExist:
+                pass
+            if object_id and (ctype == 'vote'):
+                return Agenda.objects.filter(votes__id=object_id)
+        else:        
+            return Agenda.objects.all()
 
     @classmethod
     def number_of_items(self, agenda):

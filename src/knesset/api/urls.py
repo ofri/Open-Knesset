@@ -22,5 +22,6 @@ urlpatterns = patterns('',
       url(r'^tag/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', tag_handler),
       url(r'^agenda/$', agenda_handler),
       url(r'^agenda/(?P<id>[0-9]+)/$', agenda_handler),
+      url(r'^agenda/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', agenda_handler),
       )
 
