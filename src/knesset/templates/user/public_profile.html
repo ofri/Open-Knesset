@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load mks %}
 {% load activity_tags %}
+{% load aggregated_activity_tags %}
 {% load pagination_tags %}
 {% load gravatar_tags %}
 {% block extratitle %}{{object.username}}{% endblock %}
@@ -33,13 +34,13 @@
     <div class="activities" >
         <h2>{% trans 'Activities' %}</h2>
         <div style="clear:both;"></div>
-    {% autopaginate actions %}
-    {% for action in actions %}
-        {% with action.timestamp|timesince as since %}
+    {% autopaginate aggr_actions %}
+    {% for aggr_action in aggr_actions %}
+        {% with aggr_action.timestamp|timesince as since %}
         {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
         {% endwith %}
         <p>
-            {% display_action action %}
+        	{% display_aggr_action aggr_action %} 
         </p>
     {% empty %}
         <p>

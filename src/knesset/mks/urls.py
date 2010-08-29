@@ -15,6 +15,7 @@ mksurlpatterns = patterns('knesset.mks.views',
     url(r'^member/(?P<object_id>\d+)/$', member_detail_view, name='member-detail'),
     url(r'^member/(?P<object_id>\d+)/rss/$', MemberActivityFeed(), name='member-activity-feed'),
     url(r'^member/(?P<object_id>\d+)/(?P<slug>[\w\-\"]+)/$', member_detail_view, name='member-detail-with-slug'),
+    # TODO:the next url is hardcoded in a js file
     url(r'^member/auto_complete/$', member_auto_complete, name='member-auto-complete'),
     url(r'^member/search/?$', member_by_name, name='member-by-name'), 
     url(r'^party/$', party_list_view, name='party-list'),

@@ -9,8 +9,10 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block extrahead %}
     <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />  
     <script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block messages %}

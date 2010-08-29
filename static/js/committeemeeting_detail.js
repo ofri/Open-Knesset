@@ -9,6 +9,31 @@ function hide_annotation_form(annoid) {
     }
 }
 $(function(){
+    var options_bill = { 
+         serviceUrl:'/bill/auto_complete/',
+         minChars:2, 
+         maxHeight:400,
+         width:400,
+         deferRequestBy: 100, //miliseconds
+         onSelect: function(value, data, me){ 
+            me.siblings("input[name$='bill_id']").val(data);
+            me.siblings("input[type$='submit']").removeAttr('disabled'); },
+         };
+
+    var options_mk = { 
+         serviceUrl:'/member/auto_complete/',
+         minChars:0, 
+         maxHeight:400,
+         width:150,
+         deferRequestBy: 100, //miliseconds
+         };
+
+    $('input.bill_input').autocomplete(options_bill);
+    $('input.bill_input').keydown(function() { 
+        $(this).siblings("input[name$='bill_id']").val('');
+        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
+    $("input[name$='mk_name']").autocomplete(options_mk);
+
     $(".annotation-form").hide();
     $(".annotation-content").each(function(){
         var annoid = $(this).attr("id").split("-")[1];

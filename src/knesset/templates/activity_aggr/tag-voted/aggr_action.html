@@ -1,0 +1,18 @@
+{% load i18n %}
+{% if aggr_action.actor.get_absolute_url %}<a class="action-actor" href="{{ aggr_action.actor.get_absolute_url }}">{{ aggr_action.actor }}</a>
+{% else %}<span class="action-actor">{{ aggr_action.actor }}</span>{% endif %}
+{% if aggr_action.targets|length > 3 %}
+    {% trans "voted on several tags" %}
+{% else %}
+	{% if aggr_action.targets|length > 1 %}
+	    {% trans "voted on tags" %}
+	{% else %}
+	    {% trans "voted on tag" %}
+	{% endif %}
+:
+	{% for target in aggr_action.targets.keys %}
+		{% with target as tagged_item %}
+	    	<a class="action-target" href="{{ tagged_item.tag }}">{{ tagged_item.tag.name}}</a> {% trans "of" %} <a  class="action-target" href="{{ tagged_item.object.get_absolute_url }}">{{ tagged_item.object }}</a>{% endwith %}{% if not forloop.last %}, {% endif %}
+	{% endfor %}
+{% endif %}
+

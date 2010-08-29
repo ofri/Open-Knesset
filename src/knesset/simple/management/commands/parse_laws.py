@@ -5,6 +5,7 @@ import datetime
 import re
 import parse_knesset_bill_pdf
 import logging
+from parse_government_bill_pdf import GovProposal
 
 logger = logging.getLogger("open-knesset.parse_laws")
 
@@ -14,7 +15,7 @@ class ParseLaws(object):
     """
 
     url = None
-	
+    
     def get_page_with_param(self,params):
         #print self.url
         if params == None : 
@@ -24,7 +25,7 @@ class ParseLaws(object):
             data = urllib.urlencode(params)
             try:
                 url_data = urllib2.urlopen(self.url,data)
-            except urllib2.URLError,e:
+            except urllib2.URLError:
                 logger.error("can't open URL: %s" % self.url)
                 return None
             html_page = url_data.read().decode('windows-1255').encode('utf-8')
@@ -49,8 +50,8 @@ class ParsePrivateLaws(ParseLaws):
         self.rtf_url=r"http://www.knesset.gov.il/privatelaw"
         self.laws_data=[]
         self.parse_pages_days_back(days_back)
-		
-	#parses the required pages data
+
+    #parses the required pages data
     def parse_pages_days_back(self,days_back):
         today = datetime.date.today()
         last_required_date = today + datetime.timedelta(days=-days_back)
@@ -115,7 +116,7 @@ class ParsePrivateLaws(ParseLaws):
             x['proposers'] = proposers
             x['joiners'] = joiners
             self.laws_data.append(x)
-							
+
     def update_last_date(self):
         return self.laws_data[-1]['proposal_date']
 
@@ -140,11 +141,8 @@ class ParseKnessetLaws(ParseLaws):
                 params = None
             soup_current_page = self.get_page_with_param(params)
             index = self.get_param(soup_current_page)
-            full_page_parsed = self.parse_knesset_laws_page(soup_current_page)
-            
+            full_page_parsed = self.parse_laws_page(soup_current_page)
 
-	
-	
     def get_param(self,soup):
         name_tag = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and re.match("javascript:SndSelf\((\d+),(\d+)\);",tag['href']))
         if name_tag:
@@ -152,15 +150,18 @@ class ParseKnessetLaws(ParseLaws):
             return m.groups()
         else:
             return None
-		
-    def parse_knesset_laws_page(self,soup):
+
+    def parse_pdf(self,pdf_url):
+        return parse_knesset_bill_pdf.parse(pdf_url)
+
+    def parse_laws_page(self,soup):
         name_tag = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and tag['href'].find(".pdf")>=0)
         for tag in name_tag:
             pdf_link = self.pdf_url + tag['href']
             booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
             if int(booklet) <= self.min_booklet:
                 return False
-            pdf_data = parse_knesset_bill_pdf.parse(pdf_link)
+            pdf_data = self.parse_pdf(pdf_link)
             for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
                 title = pdf_data[j]['title']
                 m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
@@ -179,18 +180,42 @@ class ParseKnessetLaws(ParseLaws):
                 law = law.strip().replace('\n','').replace('&nbsp;',' ')
                 if law.find("הצעת ".decode("utf8"))==0:
                     law = law[5:]
-
-                self.laws_data.append({'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
-                                       'comment':comment, 'original_ids':pdf_data[j]['original_ids'],'date':pdf_data[j]['date']})
+                
+                law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
+                                       'comment':comment, 'date':pdf_data[j]['date']}
+                if 'original_ids' in pdf_data[j]:
+                    law_data['original_ids'] = pdf_data[j]['original_ids']
+                if 'bill' in pdf_data[j]:
+                    law_data['bill'] = pdf_data[j]['bill']
+                self.laws_data.append(law_data)
         return True               
-	
+
     def update_booklet(self):
         return int(self.laws_data[-1]['booklet'])
-	
+
+class ParseGovLaws(ParseKnessetLaws):
+
+    def __init__(self,min_booklet):
+        self.url =r"http://www.knesset.gov.il/laws/heb/template.asp?Type=4"
+        self.pdf_url=r"http://www.knesset.gov.il"
+        self.laws_data=[]
+        self.min_booklet = min_booklet
+        self.parse_pages_booklet()
+
+    def parse_pdf(self,pdf_url):
+        filename = 'tmp.pdf'
+        f = open(filename,'wb')
+        d = urllib2.urlopen(pdf_url)
+        f.write(d.read())
+        f.close()
+        prop = GovProposal(filename)
+        
+        # TODO: check if parsing handles more than 1 prop in a booklet                
+        return [{'title':prop.get_title(),'date':prop.get_date(), 'bill':prop}]
+        
 #############
 #   Main    #
 #############	
-
 
 if __name__ == '__main__':
     m = ParsePrivateLaws(15)

@@ -46,7 +46,7 @@ class UserProfile(models.Model):
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
 
     def get_badges(self):
-        badges = self.badges.all()
+        badges = list(self.badges.all())
         badges.sort(lambda x, y: cmp(x.__str__(), y.__str__()))
         return badges
         
@@ -56,6 +56,9 @@ class UserProfile(models.Model):
 
     def has(self, badge_type):
         return self.badges.filter(badge_type=badge_type).count()>0
+
+    def __unicode__(self):
+        return self.user.__unicode__()
         
 def handle_user_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
