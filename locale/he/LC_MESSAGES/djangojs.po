@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-29 15:10+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: daonb <bennydaon@gmail.com>\n"
 "Language-Team: \n"
@@ -28,7 +29,7 @@ msgstr "בחר הכל"
 #: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:50
 #: parts/django/django/contrib/admin/media/js/SelectFilter2.js:50
 msgid "Add"
-msgstr ""
+msgstr "הוסיפו"
 
 #: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:52
 #: parts/django/django/contrib/admin/media/js/SelectFilter2.js:52
@@ -150,7 +151,7 @@ msgstr "צהריים"
 #: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:188
 #: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:91
 #: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:188
-#: static/js/committeemeeting_detail.js:25
+#: static/js/committeemeeting_detail.js:64
 msgid "Cancel"
 msgstr "בטל"
 
@@ -196,9 +197,21 @@ msgstr "טוען..."
 msgid "more"
 msgstr "עוד"
 
-#: static/js/committeemeeting_detail.js:18
+#: static/js/committeemeeting_detail.js:4
 msgid "Annotate"
 msgstr "האירו"
+
+#: static/js/committeemeeting_detail.js:55
+msgid "Sorry, only logged users can annotate."
+msgstr "מצטער, רק משתמשים יכולים להאיר"
+
+#: static/js/committeemeeting_detail.js:82
+msgid "Please make a selection."
+msgstr "אנא סמנו את הקטע אליו מתייחסת ההארה"
+
+#: static/js/committeemeeting_detail.js:94
+msgid "Delete can not be un-done. Are you sure?"
+msgstr "לא ניתן לבטל מחיקה, האם אתה בטוח?"
 
 #: static/js/flot_graphs.js:23
 msgid "Factional discipline"
@@ -229,7 +242,7 @@ msgstr "הצבעות"
 
 #: static/js/pages.js:34
 msgid "law-approve"
-msgstr ""
+msgstr "אישור חוק"
 
 #: static/js/pages.js:46
 #: static/js/states.js:95

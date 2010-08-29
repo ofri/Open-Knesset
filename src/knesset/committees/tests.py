@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
+from actstream.models import Action
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
 from models import *
@@ -55,6 +56,12 @@ I have a deadline''')
         annotation = Annotation.objects.get(object_id=part.id,
                          content_type=ContentType.objects.get_for_model(part).id)
         self.assertEqual(annotation.selection, 'perfect')
+        # ensure the activity has been recorded
+        stream = Action.objects.stream_for_actor(self.jacob)
+        self.assertEqual(stream.count(), 1)
+        activity = stream[0]
+        self.assertEqual(activity.verb, 'annotated')
+        self.assertEqual(activity.target.id, annotation.id)
 
     def testCommitteeList(self):
         res = self.client.get(reverse('committee-list'))
