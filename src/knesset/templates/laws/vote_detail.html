@@ -148,7 +148,6 @@
 			
 			<div class="popup">
 				<div id="popupContact">
-					<a id="popupContactClose">x</a>
 					<h1></h1>
 					<p id="contactArea">
   						<form style="margin-top: 1em;"> 
@@ -168,7 +167,9 @@
 							</div>
 						</form>
 						<br>
-						<textarea id="reasoning"></textarea>
+						<h3>{% trans "Reasoning" %}</h3><textarea id="reasoning"></textarea>
+						<br>
+						<input id="popupContactClose" type="submit" value="{% trans 'Submit' %}">
 					</p>
 				</div>
 				<div id="backgroundPopup"></div>

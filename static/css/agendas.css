@@ -6,7 +6,6 @@ border:0pt none;
 font-family:inherit;  
 font-size:100%;  
 font-style:inherit;  
-font-weight:inherit;  
 margin:0pt;  
 padding:0pt;  
 vertical-align:baseline;  
@@ -56,7 +55,6 @@ z-index:1;
 display:none;  
 position:fixed;  
 _position:absolute; /* hack for internet explorer 6*/  
-height:384px;  
 width:auto;
 background:#dfe4e7;  
 border:2px solid #cecece;  
@@ -73,19 +71,20 @@ border-bottom:1px dotted #D3D3D3;
 padding-bottom:2px;  
 margin-bottom:20px;  
 }  
-.popup #popupContactClose{  
-font-size:14px;  
-line-height:14px;  
-right:6px;  
-top:4px;  
-position:absolute;  
-color:#6fa5fd;  
-font-weight:700;  
-display:block;  
-}  
 
 .jquery label{
 	float:left ! important;
 	margin-left:0em ! important;
 }
 
+.popup #popupContactClose {
+	padding:8px;  
+	margin-top:20px; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;	
+}
+
+.popup textarea {
+	width:100%;
+}
