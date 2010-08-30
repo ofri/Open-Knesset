@@ -1,0 +1,32 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans "Agendas" %}{% endblock %}
+{% block keywords %}{{% trans "Agendas" %}{% endblock %}
+{% block description %}{% trans "Agendas" %} - {% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
+{% block divcontent %}
+	<div id="list-wrap">
+        <h3> {% trans "Your Agendas" %} </h3>
+        {% for o in user.agenda_set.all %}
+            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
+            <span class="agenda owner">
+            {% for editor in o.editors.all %}
+                {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+            {% endfor %}
+            </span><br />
+        {% endfor %}
+	</div>
+	<div id="list-wrap">
+        <h3> {% trans "All Agendas" %} </h3>
+        {% for o in object_list %}
+            {% if not user in o.editors.all %}
+                <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
+                <span class="agenda owner">
+                    {% for editor in o.editors.all %}
+                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+                    {% endfor %}
+                </span><br />
+	    {% endif %}
+        {% endfor %}
+	</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+.popup, .popup div, .popup span, .popup applet, .popup object, .popup iframe, .popup h1, .popup h2, .popup h3, .popup h4, .popup h5, .popup h6, .popup p, .popup blockquote, .popup pre, .popup a, .popup abbr, .popup acronym, .popup address, .popup big, .popup cite, .popup code, .popup del, .popup dfn, .popup em, .popup  
+font, .popup img, .popup ins, .popup kbd, .popup q, .popup s, .popup samp, .popup small, .popup strike, .popup strong, .popup sub, .popup sup, .popup tt, .popup var, .popup dl, .popup dt, .popup dd, .popup ol, .popup ul, .popup li, .popup fieldset, .popup form, .popup label, .popup legend, .popup table, .popup caption, .popup tbody, .popup  
+tfoot, .popup thead, .popup tr, .popup th, .popup td
+{  
+border:0pt none;  
+font-family:inherit;  
+font-size:100%;  
+font-style:inherit;  
+font-weight:inherit;  
+margin:0pt;  
+padding:0pt;  
+vertical-align:baseline;  
+}  
+.popup{  
+background:#fff none repeat scroll 0%;  
+line-height:1.25;  
+font-size: 12px;  
+font-family:arial,sans-serif;  
+margin:0pt;  
+height:100%;  
+}  
+.popup table {  
+border-collapse:separate;  
+border-spacing:0pt;  
+}  
+.popup caption, .popup th, .popup td {  
+font-weight:normal;  
+text-align:left;  
+}  
+.popup blockquote:before, .popup blockquote:after, .popup q:before, .popup q:after {  
+content:"";  
+}  
+.popup blockquote, .popup q {  
+quotes:"" "";  
+}  
+.popup a{  
+cursor: pointer;  
+text-decoration:none;  
+}  
+.popup br.both{  
+clear:both;  
+}  
+.popup #backgroundPopup{  
+display:none;  
+position:fixed;  
+_position:absolute; /* hack for internet explorer 6*/  
+height:100%;  
+width:100%;  
+top:0;  
+left:0;  
+background:#000000;  
+border:1px solid #cecece;  
+z-index:1;  
+}  
+.popup #popupContact{  
+display:none;  
+position:fixed;  
+_position:absolute; /* hack for internet explorer 6*/  
+height:384px;  
+width:auto;
+background:#dfe4e7;  
+border:2px solid #cecece;  
+z-index:2;  
+padding:12px;  
+font-size:13px;
+}  
+.popup #popupContact h1{  
+text-align:center;  
+color:#6FA5FD;  
+font-size:22px;  
+font-weight:700;  
+border-bottom:1px dotted #D3D3D3;  
+padding-bottom:2px;  
+margin-bottom:20px;  
+}  
+.popup #popupContactClose{  
+font-size:14px;  
+line-height:14px;  
+right:6px;  
+top:4px;  
+position:absolute;  
+color:#6fa5fd;  
+font-weight:700;  
+display:block;  
+}  
+
+.jquery label{
+	float:left ! important;
+	margin-left:0em ! important;
+}
+

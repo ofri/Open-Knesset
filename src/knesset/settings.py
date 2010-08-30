@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'knesset.accounts',
     'knesset.links',
     'knesset.user',
+    'knesset.agendas',
     'knesset.badges',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
