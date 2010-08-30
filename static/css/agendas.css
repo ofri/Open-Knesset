@@ -13,7 +13,7 @@ vertical-align:baseline;
 }  
 .popup{  
 background:#fff none repeat scroll 0%;  
-line-height:1;  
+line-height:1.25;  
 font-size: 12px;  
 font-family:arial,sans-serif;  
 margin:0pt;  
@@ -57,7 +57,7 @@ display:none;
 position:fixed;  
 _position:absolute; /* hack for internet explorer 6*/  
 height:384px;  
-width:408px;  
+width:auto;
 background:#dfe4e7;  
 border:2px solid #cecece;  
 z-index:2;  
@@ -83,3 +83,9 @@ color:#6fa5fd;
 font-weight:700;  
 display:block;  
 }  
+
+.jquery label{
+	float:left ! important;
+	margin-left:0em ! important;
+}
+

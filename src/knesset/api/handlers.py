@@ -11,6 +11,7 @@ from knesset.laws.models import Vote, VoteAction
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 import math
+from django.forms import model_to_dict
 
 DEFAULT_PAGE_LEN = 20
 def limit_by_request(qs, request):
@@ -117,7 +118,8 @@ class MemberHandler(BaseHandler):
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 
               'summary','full_text',
-              'for_votes', 'against_votes' , 'abstain_votes' , 'didnt_vote' ,
+              'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
+              'agendas',
              )
     exclude = ('member')
     allowed_methods = ('GET',)
@@ -164,6 +166,19 @@ class VoteHandler(BaseHandler):
     @classmethod
     def didnt_vote(self, vote):
         return vote.get_voters_id('no-vote')
+
+    @classmethod
+    def agendas(cls, vote):
+        # Augment agenda with reasonings from agendavote and
+        # arrange it so that it will be accessible using the
+        # agenda's id in JavaScript
+        agendavotes = vote.agendavote_set.all()
+        agendas     = [model_to_dict(av.agenda) for av in agendavotes]
+        reasonings  = [av.reasoning for av in agendavotes]
+        text_scores = [av.get_text_score() for av in agendavotes]
+        for i in range(len(agendas)):
+            agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
+        return dict(zip([a['id'] for a in agendas],agendas)) 
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')

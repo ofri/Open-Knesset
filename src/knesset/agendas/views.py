@@ -57,19 +57,38 @@ class AgendaDetailEditView (DetailView):
             return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
 
 @login_required
-def ascribe_agenda_to_vote(request, agenda_id, vote_id):
+def update_agendavote(request, agenda_id, vote_id):
     """
-    This function toggles agenda to vote relation
+    Update agendavote relation for specific agenda-vote pair 
     """
     agenda = get_object_or_404(Agenda, pk=agenda_id)
     vote   = get_object_or_404(Vote, pk=vote_id)
-    if request.user in agenda.editors.all():
-        if vote in agenda.votes.all():
-            agenda.agendavote_set.get(vote=vote).delete()
-        else:
-            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
-            agenda_vote.save()
+    
+    if request.method == 'POST':
+        if request.user not in agenda.editors.all():
+            HttpResponse("This is not the correct user")
+        if vote not in agenda.votes.all():
+            if request.POST['action']=='ascribe':
+                agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
+                agenda_vote.save()
+                return HttpResponse("Agenda ascribed to vote")
+            else:
+                return HttpResponse("You must ascribe the agenda before anything else")
+        else: # Agenda already ascribed to the vote
+            agendavote = agenda.agendavote_set.get(vote=vote) 
+            if request.POST['action']=='remove':
+                agendavote.delete()
+                return HttpResponse("Agenda removed from vote")
+            
+            if request.POST['action']=='reasoning':
+                agendavote.reasoning = request.POST['reasoning']
+                agendavote.save()
+                return HttpResponse("Agenda-vote updated with reasoning")
+            
+            agendavote.set_score_by_text(request.POST['action'])
+            agendavote.save()
+            return HttpResponse("Agenda-vote updated with %s score" % request.POST['action'])
     else:
-        HttpResponse("This is not the correct user") 
-    return HttpResponse("OK") 
+        return HttpResponse("Only POST allowed")
+        
 

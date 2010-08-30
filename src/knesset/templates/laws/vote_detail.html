@@ -14,8 +14,8 @@
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/agendas.js"></script>
-    <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/agendas.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
 {% block divcontent %}
     <h2><a href=".">{{ object.title }}</a></h2>
@@ -127,7 +127,6 @@
 
 		<div id="agendas">
 
-			 List of ascribed agendas 
 			{% if object.agendavote_set.all %}
 		        <h3>{% trans "Ascribed agendas" %}</h3>
                 <div id="ascribed-agendas" class="list-wrap indented">
@@ -152,12 +151,24 @@
 					<a id="popupContactClose">x</a>
 					<h1></h1>
 					<p id="contactArea">
- 						<form style="margin-top: 1em;"> 
-							<div id="radioset"> 
-								<input type="radio" id="radio1" name="radio" /><label for="radio1">{% trans "Ascribe" %}</label> 
-								<input type="radio" id="radio2" name="radio" checked="checked" /><label for="radio2">{% trans "Remove" %}</label> 
-							</div> 
-						</form> 
+  						<form style="margin-top: 1em;"> 
+							<div id="ascribe-agenda-radioset" class="jquery"> 
+								<input type="radio" id="radio1" name="radio" /><label id="ascribe" for="radio1">{% trans "Ascribe" %}</label> 
+								<input type="radio" id="radio2" name="radio" /><label id="remove" for="radio2">{% trans "Remove" %}</label>
+							</div>
+						</form>
+						<br>
+  						<form style="margin-top: 1em;"> 
+							<div id="agenda-vote-compliance-radioset" class="jquery"> 
+								<input type="radio" id="aradio1" name="radio" /><label id="complies-fully" for="aradio1">{% trans "Complies fully" %}</label> 
+								<input type="radio" id="aradio2" name="radio" /><label id="complies-partially" for="aradio2">{% trans "Complies partially" %}</label>
+								<input type="radio" id="aradio3" name="radio" /><label id="agnostic" for="aradio3">{% trans "Agnostic" %}</label>
+								<input type="radio" id="aradio4" name="radio" /><label id="opposes-partially" for="aradio4">{% trans "Opposes partially" %}</label>
+								<input type="radio" id="aradio5" name="radio" /><label id="opposes-fully" for="aradio5">{% trans "Opposes fully" %}</label>
+							</div>
+						</form>
+						<br>
+						<textarea id="reasoning"></textarea>
 					</p>
 				</div>
 				<div id="backgroundPopup"></div>
