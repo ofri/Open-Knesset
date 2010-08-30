@@ -1,1 +1,1 @@
-from parse_goverment_bill_pdf import *
+from parse_government_bill_pdf import *

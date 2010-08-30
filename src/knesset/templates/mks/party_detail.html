@@ -22,11 +22,11 @@
         </tr>
         <tr>
             <td>{% trans "Factional discipline" %}</td>
-            <td>{{ object.voting_statistics.discipline }}</td>
+            <td>{{ object.voting_statistics.discipline }}%</td>
         </tr>
         <tr>
             <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-            <td>{{ object.voting_statistics.coalition_discipline }}</td>
+            <td>{{ object.voting_statistics.coalition_discipline }}%</td>
         </tr>
     </table>
     <h3>{% trans 'Current MKs' %}</h3>
