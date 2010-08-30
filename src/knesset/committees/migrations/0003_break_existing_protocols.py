@@ -3,12 +3,13 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from knesset.committees.models import CommitteeMeeting
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for m in orm.CommitteeMeeting.objects.all():
+        for m in CommitteeMeeting.objects.all():
             m.save()
 
     def backwards(self, orm):
