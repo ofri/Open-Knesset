@@ -42,8 +42,7 @@ jQuery(document).ready(function() {
 		if ($(this).attr("id") == 'ascribe') {
 			popup_agenda_marked = true
 			getVoteInfo()
-			var agenda = vote_info.agendas[popup_agenda_id]
-			$("#agenda-vote-compliance-radioset #"+$(".popup #"+agenda.text_score).attr("for")).attr("checked","checked")
+			$("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked")
 			$("#agenda-vote-compliance-radioset").button("refresh")
 		}
 		if ($(this).attr("id") == 'remove') {
@@ -57,13 +56,10 @@ jQuery(document).ready(function() {
 });
 
 function getVoteInfo() {
-	$.get("/api/vote/"+window.location.pathname.split('/')[2]+"/", keepVoteInfo)
+	$.get("/api/vote/"+window.location.pathname.split('/')[2]+"/", function(data) {
+		vote_info = data;
+	})
 }
-
-function keepVoteInfo(data) {
-	vote_info = data;
-}
-
 
 //loading popup with jQuery magic!
 function loadPopup(agenda_name, agenda_id, vote_id, is_agenda_marked){  
