@@ -5,7 +5,7 @@ from forms import EditAgendaForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from knesset.laws.models import Vote
-from models import Agenda, AgendaVote
+from models import Agenda, AgendaVote, score_text_to_score
 #from django.core.urlresolvers import reverse
 
 class AgendaListView (ListView):
@@ -64,31 +64,43 @@ def update_agendavote(request, agenda_id, vote_id):
     agenda = get_object_or_404(Agenda, pk=agenda_id)
     vote   = get_object_or_404(Vote, pk=vote_id)
     
-    if request.method == 'POST':
-        if request.user not in agenda.editors.all():
-            HttpResponse("This is not the correct user")
-        if vote not in agenda.votes.all():
-            if request.POST['action']=='ascribe':
-                agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
-                agenda_vote.save()
-                return HttpResponse("Agenda ascribed to vote")
-            else:
-                return HttpResponse("You must ascribe the agenda before anything else")
-        else: # Agenda already ascribed to the vote
-            agendavote = agenda.agendavote_set.get(vote=vote) 
-            if request.POST['action']=='remove':
-                agendavote.delete()
-                return HttpResponse("Agenda removed from vote")
-            
-            if request.POST['action']=='reasoning':
-                agendavote.reasoning = request.POST['reasoning']
-                agendavote.save()
-                return HttpResponse("Agenda-vote updated with reasoning")
-            
-            agendavote.set_score_by_text(request.POST['action'])
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    
+    if request.user not in agenda.editors.all():
+        return HttpResponseForbidden("User %s does not have privileges to change agenda %s" % (request.user,agenda))
+
+    try:
+        action = request.POST['action']
+    except KeyError:
+        return HttpResponseForbidden("POST must have an 'action' attribute")
+    
+    if vote in agenda.votes.all():
+        agendavote = agenda.agendavote_set.get(vote=vote) 
+
+        if action=='remove':
+            agendavote.delete()
+            return HttpResponse("Agenda removed from vote")
+        
+        if action=='reasoning':
+            agendavote.reasoning = request.POST['reasoning']
             agendavote.save()
-            return HttpResponse("Agenda-vote updated with %s score" % request.POST['action'])
-    else:
-        return HttpResponse("Only POST allowed")
+            return HttpResponse("Agenda-vote updated with reasoning")
+        
+        if action in score_text_to_score.keys():
+            agendavote.set_score_by_text(action)
+            agendavote.save()
+            return HttpResponse("Agenda-vote updated with '%s' score" % action)
+
+        return HttpResponse("Action '%s' wasn't accepted" % action)
+    
+    else: # agenda is not ascribed to this vote
+        if request.POST['action']=='ascribe':
+            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
+            agenda_vote.save()
+            return HttpResponse("Agenda ascribed to vote")
+
+        return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
+
         
 
