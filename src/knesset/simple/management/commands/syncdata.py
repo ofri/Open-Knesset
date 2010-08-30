@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
 from knesset.mks.models import Member,Party,Membership,WeeklyPresence
-from knesset.laws.models import Vote,VoteAction,Bill,Law,PrivateProposal,KnessetProposal,GovLegislationCommitteeDecision
+from knesset.laws.models import Vote,VoteAction,Bill,Law,PrivateProposal,KnessetProposal,GovProposal,GovLegislationCommitteeDecision
 from knesset.links.models import Link
 from knesset.committees.models import Committee,CommitteeMeeting
 from knesset.utils import cannonize
@@ -1077,12 +1077,51 @@ class Command(NoArgsCommand):
                 b.save()
                 kl.bill = b
                 kl.save()
+        
+        # parse gov proposals
+        logger.debug('parsing gov laws')
+        last_booklet = GovProposal.objects.aggregate(Max('booklet_number')).values()[0]
+        if not last_booklet: # there were no KPs in the DB
+            last_booklet = 500
+        proposals = parse_laws.ParseGovLaws(last_booklet)
+        for proposal in proposals.laws_data:
+            if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
+                continue
+            law_name = proposal['law']
+            (law, created) = Law.objects.get_or_create(title=law_name)
+            if created:
+                law.save()
+            if law.merged_into:
+                law = law.merged_into
+            title = u''
+            if proposal['correction']:
+                title += proposal['correction']
+            if proposal['comment']:
+                title += ' ' + proposal['comment']
+            if len(title)<=1:
+                title = u'חוק חדש'
+            (gp,created) = GovProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
+                                                                 source_url=proposal['link'],
+                                                                 title=title, law=law, date=proposal['date'])
+            if created:
+                gp.save()
+            
+            b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
+            b.save()
+            gp.bill = b
+            gp.save()
 
     def find_proposals_in_other_data(self):
         """
         Find proposals in other data (committee meetings, votes).
         Calculates the cannonical names and then calls specific functions to do the actual work
         """
+        gps = GovProposal.objects.values('id','title','law__title')
+        for gp in gps:
+            gp['t1'] = gp['law__title'] + ' ' + gp['title']
+            gp['c1'] = cannonize(gp['law__title'] + gp['title'])
+            gp['c2'] = cannonize(gp['title'] + gp['law__title'])               
+        
         kps = KnessetProposal.objects.values('id','title', 'law__title')
         for kp in kps:
             kp['t1'] = kp['law__title'] + ' ' + kp['title']
@@ -1099,10 +1138,10 @@ class Command(NoArgsCommand):
                 pp['t1'] = pp['law__title'] + ' ' + pp['title']
             pp['c2'] = cannonize(pp['title'] + pp['law__title'])
 
-        self.find_proposals_in_committee_meetings(kps,pps)
-        self.find_proposals_in_votes(kps,pps)
+        self.find_proposals_in_committee_meetings(gps,kps,pps)
+        self.find_proposals_in_votes(gps,kps,pps)
 
-    def find_proposals_in_committee_meetings(self, kps, pps):
+    def find_proposals_in_committee_meetings(self, gps, kps, pps):
         """
         Find Private proposals and Knesset proposals in committee meetings. update bills that are connected.
         kps and pps are dicts computed by find_proposals_in_other_data with canonical names.
@@ -1111,6 +1150,15 @@ class Command(NoArgsCommand):
         d = datetime.date.today()-datetime.timedelta(60) # only look through cms in last 60 days.
         for cm in CommitteeMeeting.objects.filter(date__gt=d).exclude(protocol_text=None):
             c = cannonize(cm.protocol_text)
+            for gp in gps:
+                if c.find(gp['c1'])>=0 or c.find(gp['c2'])>=0:
+                    p = GovProposal.objects.get(pk=gp['id'])
+                    if cm not in p.committee_meetings.all():
+                        p.committee_meetings.add(cm)
+                        if p.bill:
+                            p.bill.second_committee_meetings.add(cm)
+                            p.bill.update_stage()
+                        logger.debug('gov proposal %s found in cm %d' % (p.title,cm.id))
             for kp in kps:
                 if c.find(kp['c1'])>=0 or c.find(kp['c2'])>=0:
                     p = KnessetProposal.objects.get(pk=kp['id'])
@@ -1130,7 +1178,7 @@ class Command(NoArgsCommand):
                             p.bill.update_stage()
                         #print "add PP %d to CM %d" % (pp['id'], cm.id)
 
-    def find_proposals_in_votes(self,kps,pps):
+    def find_proposals_in_votes(self,gps,kps,pps):
         """
         Find Private proposals and Knesset proposals in votes. update bills that are connected.
         kps and pps are dicts computed by find_proposals_in_other_data with canonical names.
@@ -1139,6 +1187,17 @@ class Command(NoArgsCommand):
 
         for v in votes:
             v['c'] = cannonize(v['title'])
+
+            for gp in gps:
+                if v['c'].find(gp['c1'])>=0:
+                    p = GovProposal.objects.get(pk=gp['id'])
+                    this_v = Vote.objects.get(pk=v['id'])
+                    if this_v not in p.votes.all():
+                        p.votes.add(this_v)                        
+                        if p.bill:
+                            p.bill.update_votes()
+                        logger.debug('gov proposal %s found in vote %s' % (p.title,this_v.title))
+
             for kp in kps:
                 if v['c'].find(kp['c1'])>=0:
                     p = KnessetProposal.objects.get(pk=kp['id'])
