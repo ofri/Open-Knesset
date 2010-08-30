@@ -20,22 +20,11 @@ jQuery(document).ready(function() {
 				  $(this).attr("vote_id"), is_agenda_marked);
 	});
 
-	// CLOSING POPUP
-	// Click the x event!
+	// User click on submit button
 	$("#popupContactClose").click(function() {
 		disablePopup();
 		window.location.replace(".");
 	});
-	// Click out event!
-	$("#backgroundPopup").click(function() {
-		disablePopup();
-	});
-	// Press Escape event!
-	$(document).keypress(function(e) {
-		if (e.keyCode == 27 && popupStatus == 1) {
-			disablePopup();
-		}
-	});  
 
 	$(".popup label").click(function () {
 		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")});
