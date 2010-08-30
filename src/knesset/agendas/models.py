@@ -8,6 +8,8 @@ score_text_to_score = {'complies-fully':         1.0,
                        'opposes-fully':         -1.0,
                        }
 
+score_to_score_text = dict(zip(score_text_to_score.values(), score_text_to_score.keys()))
+
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda')
     vote = models.ForeignKey('laws.Vote')
@@ -17,7 +19,7 @@ class AgendaVote(models.Model):
     def set_score_by_text(self,score_text):
         self.score = score_text_to_score[score_text]
     def get_text_score(self):
-        return [score_text for score_text, score in score_text_to_score.iteritems() if score == self.score][0]
+        return score_to_score_text[self.score]
     
 
 class Agenda(models.Model):
