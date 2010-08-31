@@ -19,7 +19,10 @@ class AgendaVote(models.Model):
     def set_score_by_text(self,score_text):
         self.score = score_text_to_score[score_text]
     def get_text_score(self):
-        return score_to_score_text[self.score]
+        try:
+            return score_to_score_text[self.score]
+        except KeyError:
+            return None
     
 
 class Agenda(models.Model):
