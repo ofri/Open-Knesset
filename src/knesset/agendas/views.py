@@ -1,9 +1,9 @@
 from knesset.hashnav import DetailView, ListView, method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
-from forms import EditAgendaForm
+from forms import EditAgendaForm, AddAgendaForm
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render_to_response
 from knesset.laws.models import Vote
 from models import Agenda, AgendaVote, score_text_to_score
 #from django.core.urlresolvers import reverse
@@ -103,4 +103,20 @@ def update_agendavote(request, agenda_id, vote_id):
         return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
 
         
+@login_required
+def agenda_add_view(request):
+    allowed_methods = ['GET', 'POST']
+    template_name = 'agendas/agenda_add.html'
+    
+    if request.method == 'POST':
+        form = AddAgendaForm(request.POST)
+        if form.is_valid():
+            agenda = Agenda()
+            agenda.name = form.cleaned_data['name']
+            agenda.description = form.cleaned_data['description']
+            agenda.save()
+            return HttpResponseRedirect('/agenda/') # Redirect after POST
+    else:
+        form = AddAgendaForm() # An unbound form
 
+    return render_to_response(template_name, {'form': form})

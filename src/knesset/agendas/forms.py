@@ -1,7 +1,10 @@
 from django import forms
+from django.forms import ModelForm
 #from django.contrib.auth.models import User, Permission
 #from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
+
+from models import Agenda
 
 class EditAgendaForm(forms.Form):
     name = forms.CharField(max_length=300, label=_(u'Agenda name'), error_messages={'required': _('Please enter an agenda n'),
@@ -17,3 +20,7 @@ class EditAgendaForm(forms.Form):
                             'description': self.agenda.description,
                             }
    
+class AddAgendaForm(ModelForm):
+    class Meta:
+        model = Agenda
+        fields = ('name', 'description')
