@@ -1,16 +1,20 @@
-from knesset.hashnav import DetailView, ListView, method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
-from forms import EditAgendaForm, AddAgendaForm
-from django.http import HttpResponseRedirect, HttpResponse
+from django.template import RequestContext
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
-from knesset.laws.models import Vote
-from models import Agenda, AgendaVote, score_text_to_score
 #from django.core.urlresolvers import reverse
+
+from knesset.hashnav import DetailView, ListView, method_decorator
+from knesset.laws.models import Vote
+
+from forms import EditAgendaForm, AddAgendaForm
+from models import Agenda, AgendaVote, score_text_to_score
+
 
 class AgendaListView (ListView):
     def queryset(self):
-        return Agendas.objects.all()
+        return Agenda.objects.all()
     
 class AgendaDetailView (DetailView):
     def get_context(self, *args, **kwargs):
@@ -119,4 +123,4 @@ def agenda_add_view(request):
     else:
         form = AddAgendaForm() # An unbound form
 
-    return render_to_response(template_name, {'form': form})
+    return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))
