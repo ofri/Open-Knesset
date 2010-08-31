@@ -30,4 +30,4 @@ class Badge(models.Model):
     
     class Meta:
         unique_together=('profile','badge_type')
-
+        ordering = ('profile', 'badge_type')
