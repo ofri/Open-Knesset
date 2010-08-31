@@ -5,4 +5,4 @@
     {% if target.get_absolute_url %}<a href="{{ target.get_absolute_url }}">{{ target }}</a>
     {% else %}{{ target }}{% endif %}{% if not forloop.last %}, {% endif %}  
 {% endfor %}
-{{ aggr_action.timestamp|timesince }} ago
+{% trans "before" %}&nbsp;{{ aggr_action.timestamp|timesince }}
