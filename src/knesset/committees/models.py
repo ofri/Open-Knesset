@@ -35,6 +35,9 @@ class CommitteeMeeting(models.Model):
         super(CommitteeMeeting, self).save(**kwargs)
         self.parts.all().delete()
 
+        if not self.protocol_text: # sometimes there are empty protocols
+            return # then we don't need to do anything here.
+            
         # break the protocol to its parts
         # first, fix places where the colon is in the begining of next line 
         # (move it to the end of the correct line)
