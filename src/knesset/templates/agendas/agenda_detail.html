@@ -4,6 +4,7 @@
 {% load laws_extra %}
 {% load links %}
 {% load comments %}
+{% load user %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.title }} - {% endblock %}
@@ -11,25 +12,26 @@
 {% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
 {% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block divcontent %}
-    <h2><a href=".">{{ object.name }}</a></h2>
-    {% if user in object.editors.all %}
-        <div class="edit">
-            <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-        </div>
-    {% endif %}
+    <h1>{{ object.name }}</h1>
     <div id="agenda-info">
         <div>
             <h3>{% trans "Edited by" %}</h3>
             {% for editor in object.editors.all %}
-                <a href="#">{{ editor.first_name }}&nbsp;{{ editor.last_name }}</a>
+                {% user editor %}
             {% endfor %}
+            {% if user in object.editors.all %}
+                <div class="edit">
+                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+                </div>
+            {% endif %}            
         </div>
         <div>
-            <h3> {% trans "Description" %}</h3>
+            <h2> {% trans "Description" %}</h2>
             {{ object.description }}
         </div>
     	<div id="item-list">
         
+        <h2> {% trans "Ascribed Votes" %}</h2>
         <table id="agenda-votes">
             {% for agendavote in object.agendavote_set.all %}
                 <tr>
