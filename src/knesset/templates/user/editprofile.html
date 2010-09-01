@@ -8,7 +8,7 @@
     <table>
     {{ edit_form }}
     <tr>
-        <th>{% trans "Following Members:" %}</th>
+        <th>{% trans "Following Members" %}:</th>
         <td>
             {% for member in request.user.get_profile.members %}
                 {% mk member 'x' %}

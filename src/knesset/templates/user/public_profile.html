@@ -8,46 +8,51 @@
 {% block extratitle %}{{object.username}}{% endblock %}
 {% block header %}<h1>{{object.username}}</h1>{% endblock %}
 {% block content %}
-    <div>
-        <img src="{% get_gravatar_for_email object.email 75 'r' %}" />
-    </div>
-    <div>
-        <h2>{% trans 'Following Members' %}:</h2>
-        <ul class='favorites-list'>
-        {% for member in object.get_profile.members %}
-            <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+    {% if object.get_profile.public_profile %}
+        <div>
+            <img class="user_img" src="{% get_gravatar_for_email object.email 75 'r' %}" />
+            <p>{{ object.get_profile.description }}</p>
+        </div>
+        <div style="clear:both">
+            <h2>{% trans 'Following Members' %}:</h2>
+            <ul class='favorites-list'>
+            {% for member in object.get_profile.members %}
+                <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+            {% empty %}
+                <li>{% trans 'Not following any memebers.' %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h2>{% trans 'Badges' %}:</h2>
+            <ul class='favorites-list'>
+            {% for badge in object.get_profile.get_badges %}
+                <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
+            {% empty %}
+                <li>{% trans 'No badges yet.' %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="activities" >
+            <h2>{% trans 'Activities' %}</h2>
+            <div style="clear:both;"></div>
+        {% autopaginate aggr_actions %}
+        {% for aggr_action in aggr_actions %}
+            {% with aggr_action.timestamp|timesince as since %}
+            {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
+            {% endwith %}
+            <p>
+            	{% display_aggr_action aggr_action %} 
+            </p>
         {% empty %}
-            <li>{% trans 'Not following any memebers.' %}</li>
+            <p>
+            {% trans "Sorry, no data is available" %}
+            </p>
         {% endfor %}
-        </ul>
-    </div>
-    <div>
-        <h2>{% trans 'Badges' %}:</h2>
-        <ul class='favorites-list'>
-        {% for badge in object.get_profile.get_badges %}
-            <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
-        {% empty %}
-            <li>{% trans 'No badges yet.' %}</li>
-        {% endfor %}
-        </ul>
-    </div>
-    <div class="activities" >
-        <h2>{% trans 'Activities' %}</h2>
-        <div style="clear:both;"></div>
-    {% autopaginate aggr_actions %}
-    {% for aggr_action in aggr_actions %}
-        {% with aggr_action.timestamp|timesince as since %}
-        {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
-        {% endwith %}
-        <p>
-        	{% display_aggr_action aggr_action %} 
-        </p>
-    {% empty %}
-        <p>
-        {% trans "Sorry, no data is available" %}
-        </p>
-    {% endfor %}
-    {% paginate %}
-    </div>
+        {% paginate %}
+        </div>
+    {% else %}
+        {% trans "Sorry, this user has selected not to share his profile" %}
+    {% endif %}
 <br/>
 {% endblock %}

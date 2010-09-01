@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from actstream import follow
 from actstream.models import Follow
 
-from knesset.mks.models import Party, Member
+from knesset.mks.models import Party, Member, GENDER_CHOICES
 
 class UserProfile(models.Model):
     ''' 
@@ -32,6 +32,9 @@ class UserProfile(models.Model):
     '''
 
     user = models.ForeignKey(User, unique=True, related_name='profiles')
+    public_profile = models.BooleanField(default=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    description = models.TextField(null=True,blank=True)
 
     @property
     def members(self):
