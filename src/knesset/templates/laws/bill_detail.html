@@ -2,7 +2,11 @@
 {% load i18n %}
 {% load laws_extra %}
 {% load tagging_tags %}
-{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block extrahead %} 
+<link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+{% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -151,7 +155,13 @@
     {% empty %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="pre vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="user_input_type" value="pre vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}                
     {% endfor %}     
     <script type="text/javascript">
@@ -211,7 +221,14 @@
     {% else %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="first vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">
+            {% csrf_token %}
+            <input type="hidden" name="user_input_type" value="first vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}        
     {% endif %}
     <script type="text/javascript">
@@ -253,7 +270,13 @@
     {% else %}
         {% trans 'No Info' %}<br>
         {% if user.is_authenticated %}
-            {% trans 'Suggest a matching vote' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="approval vote"></input><input type="text" name="vote_id"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% trans 'Suggest a matching vote' %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="user_input_type" value="approval vote"></input>
+            <input type="text" class="vote_input" name="vote_string"></input>
+            <input type="hidden" name="vote_id"></input>
+            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+        </form>
         {% endif %}
     {% endif %}
     <script type="text/javascript">
@@ -280,7 +303,28 @@
 		$(".bill-stage").css("top",pos.top + 100);
 		
 		$(".bill-stage").css("visibility","hidden");
-		$("#bill-initiation.bill-stage").css("visibility","visible");
+        $("#bill-initiation.bill-stage").css("visibility","visible");
+
+        $(document).ready(function() {
+            var options = { 
+                 serviceUrl:'/vote/auto_complete',
+                 minChars:2, 
+                 maxHeight:400,
+                 width:600,
+                 deferRequestBy: 100, //miliseconds
+                 onSelect: function(value, data, me){ 
+                    me.siblings("input[name$='vote_id']").val(data);
+                    me.siblings("input[type$='submit']").removeAttr('disabled'); },
+                 };
+
+            $('.vote_input').each(function(item) { 
+                 $(this).autocomplete(options); 
+                 $(this).keydown(function() { 
+                    $(this).siblings("input[name$='vote_id']").val('');
+                    $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); 
+                 });
+            });
+          });
 	</script>
     
     {% if close_votes %}

@@ -1,9 +1,15 @@
 parts/
 eggs/
 bin/
+build/
+dist/
 downloads/
 src/Open_Knesset.egg-info/
+src/knesset/local_settings.py
+src/knesset/open-knesset.log
+src/knesset/whoosh_index/
 develop-eggs/
 .*
 *.pyc
 *.db
+*~

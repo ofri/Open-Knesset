@@ -1,0 +1,21 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load mks %}
+{% load activity_tags %}
+{% load pagination_tags %}
+{% load gravatar_tags %}
+{% block extratitle %}{% trans 'Users' %}{% endblock %}
+{% block header %}<h1>{% trans 'Users' %}</h1>{% endblock %}
+{% block content %}
+    {% autopaginate object_list %}
+    <ul class="user-list">
+    {% for user in object_list %}
+        <li><a href="{{user.get_absolute_url}}">{{user}}</a></li>
+    {% empty %}
+        <p>
+        {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
+        </p>
+    {% endfor %}
+    </ul>
+    {% paginate %}
+{% endblock %}

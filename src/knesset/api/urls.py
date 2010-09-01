@@ -8,6 +8,7 @@ vote_handler = Resource(VoteHandler)
 member_handler = Resource(MemberHandler)
 party_handler = Resource(PartyHandler)
 tag_handler = Resource(TagHandler)
+agenda_handler = Resource(AgendaHandler)
 
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler),
@@ -19,5 +20,8 @@ urlpatterns = patterns('',
       url(r'^tag/$', tag_handler),
       url(r'^tag/(?P<id>[0-9]+)/$', tag_handler),
       url(r'^tag/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', tag_handler),
+      url(r'^agenda/$', agenda_handler),
+      url(r'^agenda/(?P<id>[0-9]+)/$', agenda_handler),
+      url(r'^agenda/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', agenda_handler),
       )
 

@@ -12,7 +12,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
 
-        for mk in Member.objects.all():
+        for mk in orm.Member.objects.all():
             if mk.place_of_residence != None:
                 if mk.place_of_residence in static_geocoder.keys():
                     lat, lon = static_geocoder[mk.place_of_residence]

@@ -1,0 +1,62 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load tagging_tags %}
+{% load laws_extra %}
+{% load links %}
+{% load comments %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.title }} - {% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block divcontent %}
+    <h2><a href=".">{{ object.name }}</a></h2>
+    {% if user in object.editors.all %}
+        <div class="edit">
+            <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+        </div>
+    {% endif %}
+    <div id="agenda-info">
+        <div>
+            <h3>{% trans "Edited by" %}</h3>
+            {% for editor in object.editors.all %}
+                <a href="#">{{ editor.first_name }}&nbsp;{{ editor.last_name }}</a>
+            {% endfor %}
+        </div>
+        <div>
+            <h3> {% trans "Description" %}</h3>
+            {{ object.description }}
+        </div>
+    	<div id="item-list">
+        
+        <table id="agenda-votes">
+            {% for agendavote in object.agendavote_set.all %}
+                <tr>
+                    <td>
+                        <div class="agenda-score">
+                            {{ agendavote.score }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item">
+                            <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
+                                {{ agendavote.vote.title }}<br/>
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                {% trans "No results found" %}
+            {% endfor %}
+        </table>
+    </div> {# id="agenda-info" #}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
+
+
+

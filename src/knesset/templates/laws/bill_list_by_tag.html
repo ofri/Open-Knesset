@@ -6,8 +6,12 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block divcontent %}
-    <h1>{{ title }}</h1>
-    <a href="{% url bill-tags-cloud %}">{% trans 'Choose another tag' %}</a><br>
+    {% if member %}
+        <h1>{% blocktrans %}Bills tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+    {% else %}
+        <h1>{% blocktrans %}Bills tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
+    {% endif %}
+    <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div id="item-list">
         {% for o in object_list %}
             <div class="item">
@@ -16,6 +20,12 @@
         {% empty %}
             {% trans "No results found" %}
         {% endfor %}
+	</div>
+	<div><h2>{% blocktrans %}MKs that proposed bill related to {{ tag }}{% endblocktrans %}</h2>
+	<div class="tags cloud">
+	{% for mk in members %}
+	<a href="{% url bill-tag tag=tag %}?member={{mk.id}}" class="level{{ mk.font_size }}">{{ mk }}</a>
+	{% endfor %}</div>
 	</div>
     {% if paginator %}
         {% pagination page_obj paginator request %}

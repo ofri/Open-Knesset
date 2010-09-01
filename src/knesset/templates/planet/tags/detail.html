@@ -1,7 +1,7 @@
 {% extends "planet/base.html" %}
 {% load i18n pagination_tags tagging_tags planet_tags %}
 
-{% block page_title %}{{ tag }} - {% trans 'Posts in' %} {{ block.super }}{% endblock %}
+{% block extratitle %}{{ tag }} - {% trans 'Posts' %}{% endblock %}
 {% block extrameta %}
     <meta name="DC.title" content="{{ tag }} {% trans 'tag in' %} {{ site.name }}" />
     <meta name="description" content="{{ tag }} - {% trans 'Posts in' %} {{ site.name }}" />

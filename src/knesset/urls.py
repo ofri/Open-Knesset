@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.simple import direct_to_template, redirect_to
+from django.views.decorators.cache import cache_page
 
 from django.contrib.comments.models import Comment
 from django.contrib import admin
@@ -37,10 +38,12 @@ about_view = SimpleView(template='about.html')
 from knesset.auxiliary.views import main
 
 urlpatterns = patterns('',
-    url(r'^$', main, name='main'),
+    url(r'^$', cache_page(main, 60*10), name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
-    (r'^user/', include('knesset.user.urls')),
+    (r'^agenda/', include('knesset.agendas.urls')),
+    (r'^users/', include('knesset.user.urls')),    
+    (r'^badges/', include('knesset.badges.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -57,6 +60,8 @@ urlpatterns = patterns('',
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
      url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'), 
+     (r'^annotate/', include('annotatetext.urls')),
+
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

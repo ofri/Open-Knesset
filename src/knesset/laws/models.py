@@ -1,7 +1,6 @@
 #encoding: utf-8
 from datetime import date, timedelta
 from django.db import models
-from django.db.models import Count
 from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
 from knesset.mks.models import Member, Party
@@ -12,7 +11,7 @@ from knesset.utils import disable_for_loaddata
 from tagging.forms import TagField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-import logging 
+import logging
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', _('For')),
@@ -36,24 +35,31 @@ class PartyVotingStatistics(models.Model):
 
     def discipline(self):
         total_votes = self.votes_count()
-        votes_against_party = self.votes_against_party_count()
-        return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        if total_votes > 0:
+            votes_against_party = self.votes_against_party_count()
+            return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        else:
+            return _('N/A')
 
     def coalition_discipline(self): # if party is in opposition this actually returns opposition_discipline
         total_votes = self.votes_count()
-        if self.party.is_coalition:
-            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
+        if total_votes > 0:
+            if self.party.is_coalition:
+                votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_coalition=True).count()
+            else:
+                votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
+            return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
         else:
-            votes_against_coalition = VoteAction.objects.filter(member__current_party=self.party, against_opposition=True).count()
-        return round(100.0*(total_votes-votes_against_coalition)/total_votes,1)
+            return _('N/A')
 
     def __unicode__(self):
         return "%s" % self.party.name
 
 @disable_for_loaddata
 def handle_party_save(sender, created, instance, **kwargs):
-    if created:
-        PartyVotingStatistics.objects.create(party=instance)
+    if created and instance._state.db=='default':
+        pvs = PartyVotingStatistics(party=instance)
+        pvs.save()
 post_save.connect(handle_party_save, sender=Party)
 
 
@@ -109,8 +115,9 @@ class MemberVotingStatistics(models.Model):
 
 @disable_for_loaddata
 def handle_mk_save(sender, created, instance, **kwargs):
-    if created:
-        MemberVotingStatistics.objects.create(member=instance)
+    if created and instance._state.db=='default':
+        mvs = MemberVotingStatistics(member=instance)
+        mvs.save()
 post_save.connect(handle_mk_save, sender=Member)
 
 class VoteAction(models.Model):
@@ -168,7 +175,7 @@ class Vote(models.Model):
     time_string    = models.CharField(max_length=100)
     votes          = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
     votes_count    = models.IntegerField(null=True, blank=True)
-    importance     = models.FloatField()
+    importance     = models.FloatField(default=0.0)
     controversy    = models.IntegerField(null=True, blank=True)
     against_party  = models.IntegerField(null=True, blank=True)
     summary        = models.TextField(null=True,blank=True)
@@ -315,6 +322,12 @@ class BillProposal(models.Model):
     def __unicode__(self):
         return u"%s %s" % (self.law, self.title)
 
+    def get_absolute_url(self):
+        if self.bill:
+            return self.bill.get_absolute_url()
+        else:
+            return ""
+
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
@@ -322,24 +335,17 @@ class PrivateProposal(BillProposal):
     bill = models.ForeignKey('Bill', related_name='proposals', 
                              blank=True, null=True)
 
-    def get_absolute_url(self):
-        if self.bill:
-            return self.bill.get_absolute_url()
-        else:
-            return ""
-    
-
 class KnessetProposal(BillProposal):
     committee = models.ForeignKey('committees.Committee',related_name='bills', blank=True, null=True)
     booklet_number = models.IntegerField(blank=True, null=True)
     originals = models.ManyToManyField('PrivateProposal', related_name='knesset_proposals', blank=True, null=True)
     bill = models.OneToOneField('Bill', related_name='knesset_proposal',
                                  blank=True, null=True)
-    def get_absolute_url(self):
-        if self.bill:
-            return self.bill.get_absolute_url()
-        else:
-            return ""
+
+class GovProposal(BillProposal):
+    booklet_number = models.IntegerField(blank=True, null=True)
+    bill = models.OneToOneField('Bill', related_name='gov_proposal',
+                                 blank=True, null=True)
 
 BILL_STAGE_CHOICES = (
         (u'1', _(u'Proposed')),
@@ -499,3 +505,17 @@ class Bill(models.Model):
                 self.stage = '1'
                 self.stage_date = pp.date
         self.save()
+
+class GovLegislationCommitteeDecision(models.Model):
+    title = models.CharField(max_length=1000)
+    subtitle = models.TextField(null=True,blank=True)
+    text = models.TextField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    bill = models.ForeignKey('Bill', blank=True, null=True, related_name='gov_decisions')
+    stand = models.IntegerField(blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True)
+    def __unicode__(self):
+        return u"%s" % (self.title)
+
+from listeners import *

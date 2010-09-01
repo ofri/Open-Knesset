@@ -1,22 +1,28 @@
 #encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
+from django.core.urlresolvers import reverse
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
+from tagging.utils import get_tag
+import tagging
 from actstream import action
 from knesset.utils import limit_by_request
 from knesset.laws.models import *
+from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
+from knesset.hashnav import DetailView, ListView, method_decorator
 
 import urllib
 import urllib2
@@ -25,35 +31,79 @@ import logging
 import datetime
 logger = logging.getLogger("open-knesset.laws.views")
 
-def bill_by_knesset_booklet(request, booklet_num):
-    kps = KnessetProposal.objects.filter(booklet_number=booklet_num).values_list('id',flat=True)
-    queryset = Bill.objects.filter(knesset_proposal__in=kps)
-    context = {'title':'Bills published in knesset booklet number %s' % booklet_num ,
-               'object_list': queryset}
-    template_name = "laws/bill_list.html"
-    c = RequestContext(request, context)
-    t = loader.get_template(template_name)
-    return HttpResponse(t.render(c))
-
 def bill_tags_cloud(request, min_posts_count=1):
-    title = _('Bills by tag')
-    tags_cloud = Tag.objects.cloud_for_model(Bill)
+    member = None
+    if 'member' in request.GET: 
+        member = get_object_or_404(Member, pk=request.GET['member'])
+        tags_cloud = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
+        tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
+        title = _('Bills by %(member)s by tag') % {'member':member.name}
+    else:
+        title = _('Bills by tag')
+        tags_cloud = Tag.objects.cloud_for_model(Bill)
     return render_to_response("laws/bill_tags_cloud.html",
-        {"tags_cloud": tags_cloud, "title":title}, context_instance=RequestContext(request))
+        {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
 
 def bill_tag(request, tag):
-    title = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
-    return tagged_object_list(request, queryset_or_model=Bill, tag=tag, 
-            template_name='laws/bill_list_by_tag.html', extra_context={'title':title})
+    tag_instance = get_tag(tag)
+    if tag_instance is None:
+        raise Http404(_('No Tag found matching "%s".') % tag)        
+    
+    extra_context = {'tag':tag_instance}
+    extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
+    if 'member' in request.GET: 
+        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
+        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
+        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+        qs = extra_context['member'].bills.all()
+    else: # only tag is given
+        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+        qs = Bill
+
+    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+    bill_proposers = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag_instance)]
+    d = {}
+    for bill in bill_proposers:
+        for p in bill:
+            d[p] = d.get(p,0)+1
+    # now d is a dict: MK -> number of proposals in this tag
+    mks = d.keys()
+    for mk in mks:
+        mk.count = d[mk]
+    mks = tagging.utils.calculate_cloud(mks)
+    extra_context['members'] = mks
+    return object_list(request, queryset,
+    #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+        template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
+
+def bill_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Bill.objects.filter(title__icontains=request.GET['query'])[:30]
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 
 
-class BillView (ListDetailView):
-
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        if not extra_context:
-            extra_context = {}
-        bill = get_object_or_404(Bill, pk=object_id)
-        extra_context['title'] = "%s %s" % (bill.law.title, bill.title)
+class BillDetailView (DetailView):
+    allowed_methods = ['GET', 'POST']
+    def get_context(self, *args, **kwargs):
+        context = super(BillDetailView, self).get_context(*args, **kwargs)       
+        bill = context['object']
+        try:
+            context['title'] = "%s %s" % (bill.law.title, bill.title)
+        except AttributeError:
+            context['title'] = bill.title
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
@@ -67,96 +117,101 @@ class BillView (ListDetailView):
             if bill.approval_vote:
                 all_bill_votes.append(bill.approval_vote.id)
             close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes and v['id'] not in all_bill_votes]
-            extra_context['close_votes'] = close_votes
+            context['close_votes'] = close_votes
         except Exception, e:
             pass
-        return super(BillView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)
+        return context
 
+    @method_decorator(login_required)
+    def POST(self, object_id, **kwargs):
+        vote = None
+        bill = get_object_or_404(Bill, pk=object_id)
+        user_input_type = self.request.POST.get('user_input_type')
+        if user_input_type == 'approval vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.approval_vote = vote
+            bill.update_stage()
+        if user_input_type == 'first vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.first_vote = vote
+            bill.update_stage()
+        if user_input_type == 'pre vote':
+            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            bill.pre_votes.add(vote)
+            bill.update_stage()
+
+        action.send(self.request.user, verb='merged',
+                description=vote,
+                target=bill,
+                timestamp=datetime.datetime.now())
+        return HttpResponseRedirect(".")
+
+class BillListView (ListView):
     friend_pages = [
             ('stage','all',_('All stages')),
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    def render_list(self, request, extra_context=None, **kwargs):
-        stage_filter = request.GET.get('stage',None)
+    bill_stages = { 'proposed':Q(stage__isnull=False),
+                    'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
+                    'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
+                    'approved':Q(stage='6'),
+                  }
+
+    def get_queryset(self):
+        stage = self.request.GET.get('stage', False)
+        booklet = self.request.GET.get('booklet', False)
+        member = self.request.GET.get('member', False)
+        if member:
+            member = get_object_or_404(Member, pk=member)
+            qs = member.bills.all()
+        else:
+            qs = self.queryset._clone()
+        if stage and stage!='all':
+            if stage in self.bill_stages:
+                qs = qs.filter(self.bill_stages[stage])
+            else:
+                qs = qs.filter(stage=stage)            
+        elif booklet:
+            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
+            qs = qs.filter(knesset_proposal__in=kps)        
+        return qs
+
+    def get_context(self):
+        context = super(BillListView, self).get_context()       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
-        if stage_filter and stage_filter!='all':
-            queryset = self.queryset.filter(stage=stage_filter)
+        stage = self.request.GET.get('stage', False)
+        booklet = self.request.GET.get('booklet', False)
+        if stage and stage!='all':
             for x in r:
-                if x[3]==stage_filter:
+                if x[3]==stage:
                     x[2] = True
                     break
+        elif booklet:
+            context['title']=_('Bills published in knesset booklet number %s') % booklet 
         else:
-            queryset = self.queryset
             r[0][2] = True
-        if not extra_context:
-            extra_context = {}
-        extra_context['friend_pages'] = r
-        return super(BillView, self).render_list(request, queryset=queryset, extra_context=extra_context,**kwargs)
-
-    
-    def handle_post(self, request, object_id, extra_context=None, **kwargs):
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect(".")            
-        vote = None
-        try:
-            bill = Bill.objects.get(pk=object_id)
-            user_input_type = request.POST.get('user_input_type')
-            if user_input_type == 'approval vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.approval_vote = vote
-                bill.update_stage()
-            if user_input_type == 'first vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.first_vote = vote
-                bill.update_stage()
-            if user_input_type == 'pre vote':            
-                vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-                bill.pre_votes.add(vote)
-                bill.update_stage()
-
-            action.send(request.user, verb='merged',
-                    description=vote,
-                    target=bill,
-                    timestamp=datetime.datetime.now())
-        except Exception,e:
-            logger.error(e)
-        return HttpResponseRedirect(".")
+        context['friend_pages'] = r
+        return context
         
-class LawView (ListDetailView):
-
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        if not extra_context:
-            extra_context = {}
-        law = Law.objects.get(pk=object_id)
-        pps = PrivateProposal.objects.filter(law=law).annotate(c=Count('knesset_proposals')).filter(c=0).order_by('title')
-        kps = KnessetProposal.objects.filter(law=law)
-        extra_context['pps'] = pps
-        extra_context['kps'] = kps
-        extra_context['title'] = law.title
-        return super(LawView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)       
-        
-
-class VoteListView(ListDetailView):
+class VoteListView(ListView):
 
     session_votes_key = 'selected_votes'
     
     friend_pages = [
-            ('vote_type','all',_('All votes')),
-            ('vote_type','law-approve', _('Law Approvals')),
-            ('vote_type','second-call', _('Second Call')),
-            ('vote_type','demurrer', _('Demurrer')),
-            ('vote_type','no-confidence', _('Motion of no confidence')),
-            ('vote_type','pass-to-committee', _('Pass to committee')),
-            ('vote_type','continuation', _('Continuation')),
+            ('type','all',_('All votes')),
+            ('type','law-approve', _('Law Approvals')),
+            ('type','second-call', _('Second Call')),
+            ('type','demurrer', _('Demurrer')),
+            ('type','no-confidence', _('Motion of no confidence')),
+            ('type','pass-to-committee', _('Pass to committee')),
+            ('type','continuation', _('Continuation')),
             ('tagged','all',_('All')),
             ('tagged','false',_('Untagged Votes')),
             ('tagged','true',_('Tagged Votes')),            
-            ('time','7',_('Last Week')),
-            ('time','30',_('Last Month')),
-            ('time','all',_('All times')),
+            ('since','7',_('Last Week')),
+            ('since','30',_('Last Month')),
+            ('since','all',_('All times')),
             ('order','time',_('Time')),
             ('order','controversy', _('Controversy')),
             ('order','against-party',_('Against Party')),
@@ -164,33 +219,24 @@ class VoteListView(ListDetailView):
             
         ]
 
-    def pre (self, request, **kwargs):
-
-        pass
+    def get_queryset(self, **kwargs):
+        saved_selection = self.request.session.get(self.session_votes_key, dict())
+        self.options = {}
+        for key in ['type', 'tagged', 'since', 'order']:
+            self.options[key] = self.request.GET.get(key, 
+                                         saved_selection.get(key, None))
         
-
-    def render_list(self,request, **kwargs):
-
+        return Vote.objects.filter_and_order(**self.options)
         
-        if not self.extra_context: self.extra_context = {}
-
-        saved_selection = request.session.get(self.session_votes_key, dict())
-        options = {
-            'type': request.GET.get('vote_type', saved_selection.get('vote_type', None)),
-            'since': request.GET.get('time', saved_selection.get('time',None)),
-            'order': request.GET.get('order', saved_selection.get('order', None)),
-            'tagged': request.GET.get('tagged', saved_selection.get('tagged', None)),
-        }
-        
-        queryset = Vote.objects.filter_and_order(**options)
-        
+    def get_context(self):
+        context = super(VoteListView, self).get_context()       
         friend_page = {}
-        friend_page['vote_type'] = urllib.quote(request.GET.get('vote_type',saved_selection.get('vote_type','all')).encode('utf8'))
-        friend_page['tagged'] = urllib.quote(request.GET.get('tagged', saved_selection.get('tagged','all')).encode('utf8'))
-        friend_page['time'] = urllib.quote(request.GET.get('time', saved_selection.get('time','all')).encode('utf8'))
-        friend_page['order'] = urllib.quote(request.GET.get('order',saved_selection.get('order','time')).encode('utf8'))
-
-        request.session[self.session_votes_key] = friend_page
+        for key in ['type', 'tagged', 'since', 'order']:
+            if self.options[key]:
+                friend_page[key] = urllib.quote(self.options[key].encode('utf8'))
+            else:
+                friend_page[key] = 'all' if key!='order' else 'time'
+        self.request.session[self.session_votes_key] = friend_page
         
         r = {}
 
@@ -199,8 +245,8 @@ class VoteListView(ListDetailView):
             current = False
             if page[key]==value:
                 current = True
-                if key=='vote_type':
-                    self.extra_context['title'] = name
+                if key=='type':
+                    context['title'] = name
             else:
                 page[key] = value
             url =  "./?%s" % urllib.urlencode(page)
@@ -208,45 +254,45 @@ class VoteListView(ListDetailView):
                 r[key] = []
             r[key].append((url, name, current))        
 
-        #[(_('all'),'&'.join([time,order])), (_('law approval'))],[],[]]        
-        self.extra_context['friend_pages'] = r
-        watched_members = request.user.get_profile().followed_members.all()\
-                if request.user.is_authenticated() else False
+        context['friend_pages'] = r
+        if self.request.user.is_authenticated():
+            context['watched_members'] = \
+                self.request.user.get_profile().members
+        else:
+            context['watched_members'] = False
 
-        self.extra_context['watched_members'] = watched_members
-        return super(VoteListView, self).render_list(request, queryset=queryset, **kwargs)
+        return context
 
-    def render_object(self, request, object_id, extra_context=None, **kwargs):
-        vote = get_object_or_404(Vote, pk=object_id)
-        if not extra_context:
-            extra_context = {}
-        extra_context['title'] = vote.title
+class VoteDetailView(DetailView):
+    def get_context(self):
+        context = super(VoteDetailView, self).get_context()       
+        vote = context['object']
+        context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
         if Bill.objects.filter(approval_vote=vote).count()>0:
             related_bills.append(vote.bill_approved)
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
-        extra_context['bills'] = related_bills
-        return super(VoteListView, self).render_object(request, object_id,
-                              extra_context=extra_context, **kwargs)       
+        context['bills'] = related_bills
+        return context
 
 
 @login_required
 def suggest_tag(request, object_type, object_id):
     """add a POSTed tag_id to object_type object_id, and also vote this tagging up by the current user"""
-    try:
-        ctype = ContentType.objects.get(model=object_type)
-        model_class = ctype.model_class()
-    except:
-        return HttpResponse("Object type not found!")
+    ctype = get_object_or_404(ContentType,model=object_type)
+    model_class = ctype.model_class()
+    
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
         #o = model_class.objects.get(pk=object_id)
-        tag = Tag.objects.get(pk=request.POST['tag_id'])        
+        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
         (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
         (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
         tv.vote = +1
         tv.save()
+        
+        action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
     return HttpResponse("OK")
 
 @login_required
@@ -259,8 +305,18 @@ def vote_on_tag(request, object_type, object_id, tag_id, vote):
         o = model_class.objects.get(pk=object_id)
         ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=o.id)[0]
         (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
-        tv.vote = vote # this is -1,0,+1 (not a Vote model)
-        tv.save()
+                
+        vote = int(vote) # vote is u'-1',u'0',u'+1' (not a Vote model)                
+        if vote > 0: 
+            tv.vote = 1
+            action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
+        elif vote < 0:
+            tv.vote = -1
+            action.send(request.user,verb='voted down on a tag', target=ti, description='Vote Down')
+        else:       
+            tv.vote = 0
+        tv.save()      
+      
     except:
         pass
     return HttpResponseRedirect("/%s/%s" % (object_type,object_id))
@@ -271,4 +327,23 @@ def tagged(request,tag):
         return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
     except Http404:
         return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
+
+def vote_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    options = Vote.objects.filter(title__icontains=request.GET['query'])[:30]
+
+    data = []
+    suggestions = []
+    for i in options:
+        data.append(i.id)
+        suggestions.append(i.title)
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
+
+    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 

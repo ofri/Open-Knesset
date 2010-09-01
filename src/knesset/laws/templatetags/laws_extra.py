@@ -5,6 +5,7 @@ from knesset.laws.models import VoteAction, VOTE_ACTION_TYPE_CHOICES, MemberVoti
 from knesset.mks.models import Member
 from datetime import date, timedelta
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 import logging
 logger = logging.getLogger("open-knesset.laws.templatetags")
 
@@ -19,6 +20,7 @@ def user_votes(user, vote, tag):
         cv = tv.vote
     except Exception:
         cv = 0
+    vote.ctype = ContentType.objects.get_for_model(vote).name
     return {'user': user, 'vote':vote, 'tag':tag, 'current_vote_up':cv==1, 'current_vote_down':cv==-1}
 
 @register.inclusion_tag('laws/_bar.html')

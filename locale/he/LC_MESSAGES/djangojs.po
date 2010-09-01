@@ -1,40 +1,256 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-29 15:10+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: daonb <bennydaon@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-msgid ""
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:37
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:37
+#, perl-format
+msgid "Available %s"
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 18:52+0300\n"
-"PO-Revision-Date: 2009-09-15 18:51+0200\n"
-"Last-Translator: benny daon <bennydaon@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 
-#: js/base.js:104
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:45
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:45
+msgid "Choose all"
+msgstr "בחר הכל"
+
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:50
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:50
+msgid "Add"
+msgstr "הוסיפו"
+
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:52
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:52
+msgid "Remove"
+msgstr "הסר"
+
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:57
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:57
+#, perl-format
+msgid "Chosen %s"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:58
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:58
+msgid "Select your choice(s) and click "
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/SelectFilter2.js:63
+#: parts/django/django/contrib/admin/media/js/SelectFilter2.js:63
+msgid "Clear all"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/actions.js:18
+#: downloads/django-svn/django/contrib/admin/media/js/actions.min.js:1
+#: parts/django/django/contrib/admin/media/js/actions.js:18
+#: parts/django/django/contrib/admin/media/js/actions.min.js:1
+msgid "%(sel)s of %(cnt)s selected"
+msgid_plural "%(sel)s of %(cnt)s selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/actions.js:109
+#: downloads/django-svn/django/contrib/admin/media/js/actions.min.js:5
+#: parts/django/django/contrib/admin/media/js/actions.js:109
+#: parts/django/django/contrib/admin/media/js/actions.min.js:5
+msgid "You have unsaved changes on individual editable fields. If you run an action, your unsaved changes will be lost."
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/actions.js:121
+#: downloads/django-svn/django/contrib/admin/media/js/actions.min.js:6
+#: parts/django/django/contrib/admin/media/js/actions.js:121
+#: parts/django/django/contrib/admin/media/js/actions.min.js:6
+msgid "You have selected an action, but you haven't saved your changes to individual fields yet. Please click OK to save. You'll need to re-run the action."
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/actions.js:123
+#: downloads/django-svn/django/contrib/admin/media/js/actions.min.js:6
+#: parts/django/django/contrib/admin/media/js/actions.js:123
+#: parts/django/django/contrib/admin/media/js/actions.min.js:6
+msgid "You have selected an action, and you haven't made any changes on individual fields. You're probably looking for the Go button rather than the Save button."
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/calendar.js:24
+#: downloads/django-svn/django/contrib/admin/media/js/dateparse.js:32
+#: parts/django/django/contrib/admin/media/js/calendar.js:24
+#: parts/django/django/contrib/admin/media/js/dateparse.js:32
+msgid "January February March April May June July August September October November December"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/calendar.js:25
+#: parts/django/django/contrib/admin/media/js/calendar.js:25
+msgid "S M T W T F S"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/collapse.js:9
+#: downloads/django-svn/django/contrib/admin/media/js/collapse.js:21
+#: downloads/django-svn/django/contrib/admin/media/js/collapse.min.js:1
+#: parts/django/django/contrib/admin/media/js/collapse.js:9
+#: parts/django/django/contrib/admin/media/js/collapse.js:21
+#: parts/django/django/contrib/admin/media/js/collapse.min.js:1
+msgid "Show"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/collapse.js:16
+#: downloads/django-svn/django/contrib/admin/media/js/collapse.min.js:1
+#: parts/django/django/contrib/admin/media/js/collapse.js:16
+#: parts/django/django/contrib/admin/media/js/collapse.min.js:1
+msgid "Hide"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/dateparse.js:33
+#: parts/django/django/contrib/admin/media/js/dateparse.js:33
+msgid "Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:49
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:84
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:49
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:84
+msgid "Now"
+msgstr "עכשיו"
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:53
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:53
+msgid "Clock"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:80
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:80
+msgid "Choose a time"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:85
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:85
+msgid "Midnight"
+msgstr "חצות"
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:86
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:86
+msgid "6 a.m."
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:87
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:87
+msgid "Noon"
+msgstr "צהריים"
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:91
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:188
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:91
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:188
+#: static/js/committeemeeting_detail.js:64
+msgid "Cancel"
+msgstr "בטל"
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:133
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:182
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:133
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:182
+msgid "Today"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:137
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:137
+msgid "Calendar"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:180
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:180
+msgid "Yesterday"
+msgstr ""
+
+#: downloads/django-svn/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:184
+#: parts/django/django/contrib/admin/media/js/admin/DateTimeShortcuts.js:184
+msgid "Tomorrow"
+msgstr ""
+
+#: downloads/django-svn/tests/regressiontests/makemessages/javascript.js:3
+#: parts/django/tests/regressiontests/makemessages/javascript.js:3
+msgid "This literal should be included."
+msgstr ""
+
+#: downloads/django-svn/tests/regressiontests/makemessages/javascript.js:5
+#: parts/django/tests/regressiontests/makemessages/javascript.js:5
+msgid "This one as well."
+msgstr ""
+
+#: static/js/base.js:103
 msgid "Loading..."
 msgstr "טוען..."
 
-#: js/base.js:133
+#: static/js/base.js:132
+#: static/js/pages.js:28
+#: static/js/pages.js.py:39
 msgid "more"
 msgstr "עוד"
 
-#: js/states.js:9
+#: static/js/committeemeeting_detail.js:4
+msgid "Annotate"
+msgstr "האירו"
+
+#: static/js/committeemeeting_detail.js:55
+msgid "Sorry, only logged users can annotate."
+msgstr "מצטער, רק משתמשים יכולים להאיר"
+
+#: static/js/committeemeeting_detail.js:82
+msgid "Please make a selection."
+msgstr "אנא סמנו את הקטע אליו מתייחסת ההארה"
+
+#: static/js/committeemeeting_detail.js:94
+msgid "Delete can not be un-done. Are you sure?"
+msgstr "לא ניתן לבטל מחיקה, האם אתה בטוח?"
+
+#: static/js/flot_graphs.js:23
+msgid "Factional discipline"
+msgstr "משמעת סיעתית"
+
+#: static/js/flot_graphs.js:24
+msgid "service time"
+msgstr ""
+
+#: static/js/pageobject.js:46
+msgid "no more"
+msgstr "אין עוד"
+
+#: static/js/pages.js:9
+msgid "main"
+msgstr ""
+
+#: static/js/pages.js:16
+#: static/js/states.js:9
 msgid "members"
 msgstr "ח\"כים"
 
-#: js/states.js:24
+#: static/js/pages.js:23
+#: static/js/states.js:24
+#: static/js/states.js.py:59
 msgid "votes"
 msgstr "הצבעות"
 
-#: js/states.js:60
+#: static/js/pages.js:34
+msgid "law-approve"
+msgstr "אישור חוק"
+
+#: static/js/pages.js:46
+#: static/js/states.js:95
 msgid "parties"
 msgstr "מפלגות"
 
-#: js/states.js:76
+#: static/js/pages.js:53
+#: static/js/states.js:111
 msgid "about"
 msgstr "אודות"
+

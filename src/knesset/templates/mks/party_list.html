@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load laws_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block subnav %}
@@ -8,5 +9,23 @@
         {% endfor %}
 {% endblock %}
 {% block divcontent %}
-		{% include "mks/_party_list.html" %}
+    <div class="list-wrap">
+        <h2>{% trans 'Coalition' %}</h2>
+        {% for o in coalition %}
+            <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
+            {% bar o.extra 1 norm_factor baseline %}
+        {% empty %}
+            {% trans "Data base empty, no objects" %}
+        {% endfor %}
+    </div>
+    <div class="list-wrap">
+        <h2>{% trans 'Opposition' %}</h2>
+        {% for o in opposition %}
+            <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
+            {% bar o.extra 1 norm_factor baseline %}
+        {% empty %}
+            {% trans "Data base empty, no objects" %}
+        {% endfor %}
+
+    </div>
 {% endblock %}

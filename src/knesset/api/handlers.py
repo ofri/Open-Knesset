@@ -1,11 +1,17 @@
 from datetime import datetime
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.core.cache import cache
+from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
+from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
+import math
+from django.forms import model_to_dict
 
 DEFAULT_PAGE_LEN = 20
 def limit_by_request(qs, request):
@@ -16,7 +22,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved')
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -66,6 +72,41 @@ class MemberHandler(BaseHandler):
         return member.bills.filter(stage='6').count()
 
     @classmethod
+    def roles (self, member):
+        return member.get_role
+
+    @classmethod
+    def average_weekly_presence_rank (self, member):
+        ''' Calculate the distribution of presence and place the user on a 5 level scale '''
+        SCALE = 5
+
+        rel_location = cache.get('average_presence_location_%d' % member.id)
+        if not rel_location:
+
+            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
+            presence_groups = int(math.ceil(len(presence_list) / float(SCALE)))
+
+            # Generate cache for all members
+            for mk in Member.objects.all():
+                avg = mk.average_weekly_presence()
+                if avg:
+                    mk_location = 1 + (presence_list.index(avg) / presence_groups)
+                else:
+                    mk_location = 0
+
+                cache.set('average_presence_location_%d' % mk.id, mk_location, 60*60*24)
+
+                if mk.id == member.id:
+                    rel_location = mk_location 
+        
+        return rel_location
+
+    @classmethod
+    def committees (self, member):
+        temp_list = member.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
+        return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
+
+    @classmethod
     def member (self, member):
         qs = self.qs.filter(member=member)
         return map(lambda o: dict(url=o.party.get_absolute_url(),
@@ -77,7 +118,8 @@ class MemberHandler(BaseHandler):
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 
               'summary','full_text',
-              'for_votes', 'against_votes' , 'abstain_votes' , 'didnt_vote' ,
+              'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
+              'agendas',
              )
     exclude = ('member')
     allowed_methods = ('GET',)
@@ -125,6 +167,19 @@ class VoteHandler(BaseHandler):
     def didnt_vote(self, vote):
         return vote.get_voters_id('no-vote')
 
+    @classmethod
+    def agendas(cls, vote):
+        # Augment agenda with reasonings from agendavote and
+        # arrange it so that it will be accessible using the
+        # agenda's id in JavaScript
+        agendavotes = vote.agendavote_set.all()
+        agendas     = [model_to_dict(av.agenda) for av in agendavotes]
+        reasonings  = [av.reasoning for av in agendavotes]
+        text_scores = [av.get_text_score() for av in agendavotes]
+        for i in range(len(agendas)):
+            agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
+        return dict(zip([a['id'] for a in agendas],agendas)) 
+
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
     allowed_methods = ('GET',)
@@ -165,4 +220,35 @@ class TagHandler(BaseHandler):
     def number_of_items(self, tag):
         return tag.items.count()
 
+class AgendaHandler(BaseHandler):
+    fields = ('id', 'name', 'number_of_items')
+    allowed_methods = ('GET',)
+    model = Agenda
 
+    def read(self, request, **kwargs):
+        
+        # Handle API calls of type /agenda/[agenda_id]
+        id = None
+        if 'id' in kwargs:
+            id = kwargs['id']        
+            if id is not None:
+                return Agenda.objects.filter(pk=id)
+        
+        # Handle API calls of type /agenda/vote/[vote_id]
+        # Used to return the agendas ascribed to a specific vote
+        object_id = None
+        ctype = None
+        if 'object_id' in kwargs and 'object_type' in kwargs:
+            object_id = kwargs['object_id']
+            try:
+                ctype = ContentType.objects.get(model=kwargs['object_type'])
+            except ContentType.DoesNotExist:
+                pass
+            if object_id and (ctype == 'vote'):
+                return Agenda.objects.filter(votes__id=object_id)
+        else:        
+            return Agenda.objects.all()
+
+    @classmethod
+    def number_of_items(self, agenda):
+        return agenda.agendavote_set.count()
