@@ -208,6 +208,7 @@ class Command(NoArgsCommand):
                     except:
                         exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                         logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), str(voter_id))
+                        continue
                         
                     # add the current member's vote
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
