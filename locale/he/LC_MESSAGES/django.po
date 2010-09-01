@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 21:43+0300\n"
-"PO-Revision-Date: 2010-09-01 21:44+0200\n"
+"POT-Creation-Date: 2010-09-01 22:38+0300\n"
+"PO-Revision-Date: 2010-09-01 22:41+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -125,7 +125,7 @@ msgstr ""
 #: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:11
 #: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:12
 #: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:11
-#: src/knesset/laws/views.py:215
+#: src/knesset/laws/views.py:217
 #: src/knesset/templates/include/vote_detail.html:9
 #: src/knesset/templates/laws/vote_detail.html:24
 msgid "Time"
@@ -624,8 +624,8 @@ msgstr "מאמרים"
 #: src/knesset/templates/laws/bill_detail.html:374
 #: src/knesset/templates/laws/vote_detail.html:86
 #: src/knesset/templates/laws/vote_detail.html:103
-#: src/knesset/templates/laws/vote_list.html:10
-#: src/knesset/templates/laws/vote_list.html:53
+#: src/knesset/templates/laws/vote_list.html:11
+#: src/knesset/templates/laws/vote_list.html:54
 msgid "Tags"
 msgstr "תגיות"
 
@@ -1988,12 +1988,20 @@ msgstr "עוקב אחר חבר כנסת"
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: src/knesset/committees/views.py:22
+#: src/knesset/committees/views.py:23
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: src/knesset/committees/views.py:74
+#: src/knesset/committees/views.py:70
+msgid "added-bill-to-cm"
+msgstr "קישר/ה הצעת חוק לישיבת ועדה"
+
+#: src/knesset/committees/views.py:71
+msgid "added-mk-to-cm"
+msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
+
+#: src/knesset/committees/views.py:77
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
@@ -2006,7 +2014,7 @@ msgstr "כל הישיבות של %(committee)s "
 #: src/knesset/templates/laws/bill_detail.html:247
 #: src/knesset/templates/laws/bill_detail.html:296
 #: src/knesset/templates/laws/vote_detail.html:34
-#: src/knesset/templates/laws/vote_list.html:23
+#: src/knesset/templates/laws/vote_list.html:24
 msgid "For"
 msgstr "בעד"
 
@@ -2018,7 +2026,7 @@ msgstr "בעד"
 #: src/knesset/templates/laws/bill_detail.html:247
 #: src/knesset/templates/laws/bill_detail.html:296
 #: src/knesset/templates/laws/vote_detail.html:55
-#: src/knesset/templates/laws/vote_list.html:24
+#: src/knesset/templates/laws/vote_list.html:25
 msgid "Against"
 msgstr "נגד"
 
@@ -2121,98 +2129,102 @@ msgstr "הצעות חוק של %(member)s בנושא %(tag)s"
 msgid "Bills tagged %(tag)s"
 msgstr "הצעות חוק בנושא %(tag)s"
 
-#: src/knesset/laws/views.py:151
+#: src/knesset/laws/views.py:149
+msgid "added-vote-to-bill"
+msgstr "קישר/ה הצבעה להצעת חוק"
+
+#: src/knesset/laws/views.py:153
 msgid "All stages"
 msgstr "כל השלבים"
 
-#: src/knesset/laws/views.py:191
+#: src/knesset/laws/views.py:193
 #, python-format
 msgid "Bills published in knesset booklet number %s"
 msgstr "חוקים שפורסמו בחוברת הכנסת מספר %s"
 
-#: src/knesset/laws/views.py:202
+#: src/knesset/laws/views.py:204
 msgid "All votes"
 msgstr "כל ההצבעות"
 
-#: src/knesset/laws/views.py:203
+#: src/knesset/laws/views.py:205
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: src/knesset/laws/views.py:204
+#: src/knesset/laws/views.py:206
 msgid "Second Call"
 msgstr "קריאה שניה"
 
-#: src/knesset/laws/views.py:205
+#: src/knesset/laws/views.py:207
 msgid "Demurrer"
 msgstr "הסתייגויות"
 
-#: src/knesset/laws/views.py:206
+#: src/knesset/laws/views.py:208
 msgid "Motion of no confidence"
 msgstr "הצבעות אי-אמון"
 
-#: src/knesset/laws/views.py:207
+#: src/knesset/laws/views.py:209
 msgid "Pass to committee"
 msgstr "העברה לוועדה"
 
-#: src/knesset/laws/views.py:208
+#: src/knesset/laws/views.py:210
 msgid "Continuation"
 msgstr "החלת דין רציפות"
 
-#: src/knesset/laws/views.py:209
+#: src/knesset/laws/views.py:211
 msgid "All"
 msgstr "הכל"
 
-#: src/knesset/laws/views.py:210
+#: src/knesset/laws/views.py:212
 msgid "Untagged Votes"
 msgstr "הצבעות לא מתויגות"
 
-#: src/knesset/laws/views.py:211
+#: src/knesset/laws/views.py:213
 msgid "Tagged Votes"
 msgstr "הצבעות מתויגות"
 
-#: src/knesset/laws/views.py:212
+#: src/knesset/laws/views.py:214
 msgid "Last Week"
 msgstr "שבוע אחרון"
 
-#: src/knesset/laws/views.py:213
+#: src/knesset/laws/views.py:215
 msgid "Last Month"
 msgstr "חודש אחרון"
 
-#: src/knesset/laws/views.py:214
+#: src/knesset/laws/views.py:216
 msgid "All times"
 msgstr "כל הזמנים"
 
-#: src/knesset/laws/views.py:216
+#: src/knesset/laws/views.py:218
 msgid "Controversy"
 msgstr "מידת המחלוקת"
 
-#: src/knesset/laws/views.py:217
+#: src/knesset/laws/views.py:219
 msgid "Against Party"
 msgstr "הצבעות נגד המפלגה"
 
-#: src/knesset/laws/views.py:218
+#: src/knesset/laws/views.py:220
 #: src/knesset/templates/mks/member_detail.html:80
 #: src/knesset/templates/mks/party_detail.html:16
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: src/knesset/laws/views.py:325
+#: src/knesset/laws/views.py:327
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
 
-#: src/knesset/laws/templatetags/laws_extra.py:44
-#: src/knesset/laws/templatetags/laws_extra.py:47
-#: src/knesset/laws/templatetags/laws_extra.py:53
-#: src/knesset/laws/templatetags/laws_extra.py:56
-#: src/knesset/laws/templatetags/laws_extra.py:65
+#: src/knesset/laws/templatetags/laws_extra.py:30
+#: src/knesset/laws/templatetags/laws_extra.py:33
+#: src/knesset/laws/templatetags/laws_extra.py:39
+#: src/knesset/laws/templatetags/laws_extra.py:42
+#: src/knesset/laws/templatetags/laws_extra.py:51
 #: src/knesset/templates/mks/member_detail.html:86
 #: src/knesset/templates/mks/member_detail.html:91
 #: src/knesset/templates/mks/member_detail.html:96
 msgid "Not enough data"
 msgstr "אין מספיק נתונים"
 
-#: src/knesset/laws/templatetags/laws_extra.py:79
+#: src/knesset/laws/templatetags/laws_extra.py:65
 msgid "Absent"
 msgstr "לא נוכח"
 
@@ -2651,7 +2663,7 @@ msgstr "הצבעות משויכות"
 #: src/knesset/templates/laws/bill_list_by_tag.html:21
 #: src/knesset/templates/laws/knessetproposal_list.html:26
 #: src/knesset/templates/laws/law_list.html:15
-#: src/knesset/templates/laws/vote_list.html:73
+#: src/knesset/templates/laws/vote_list.html:74
 msgid "No results found"
 msgstr "לא נמצאו תוצאות"
 
@@ -2893,7 +2905,7 @@ msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
 #: src/knesset/templates/include/vote_list.html:15
-#: src/knesset/templates/laws/vote_list.html:60
+#: src/knesset/templates/laws/vote_list.html:61
 msgid "No tags"
 msgstr "אין תגיות"
 
@@ -3168,27 +3180,27 @@ msgstr " כדי להגיב"
 msgid "Please login to comment"
 msgstr "יש להכנס לחשבון כדי להגיב"
 
-#: src/knesset/templates/laws/vote_list.html:9
+#: src/knesset/templates/laws/vote_list.html:10
 msgid "Vote types"
 msgstr "סוגי הצבעות"
 
-#: src/knesset/templates/laws/vote_list.html:11
+#: src/knesset/templates/laws/vote_list.html:12
 msgid "Time range"
 msgstr "טווח זמנים"
 
-#: src/knesset/templates/laws/vote_list.html:12
+#: src/knesset/templates/laws/vote_list.html:13
 msgid "Order by"
 msgstr "מיון לפי"
 
-#: src/knesset/templates/laws/vote_list.html:26
+#: src/knesset/templates/laws/vote_list.html:27
 msgid "Full text is available"
 msgstr "יש פירוט זמין עבור הצבעה זו"
 
-#: src/knesset/templates/laws/vote_list.html:27
+#: src/knesset/templates/laws/vote_list.html:28
 msgid "Summary is available"
 msgstr "יש תקציר זמין עבור הצבעה זו"
 
-#: src/knesset/templates/laws/vote_list.html:29
+#: src/knesset/templates/laws/vote_list.html:30
 #, python-format
 msgid ""
 "\n"
@@ -3205,7 +3217,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים הצביעו שונה ממרבית חברי מפלגותיהם"
 
-#: src/knesset/templates/laws/vote_list.html:36
+#: src/knesset/templates/laws/vote_list.html:37
 #, python-format
 msgid ""
 "\n"
@@ -3222,7 +3234,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי קואליציה הצביעו שונה משאר חברי הקואליציה"
 
-#: src/knesset/templates/laws/vote_list.html:43
+#: src/knesset/templates/laws/vote_list.html:44
 #, python-format
 msgid ""
 "\n"
@@ -3239,7 +3251,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי אופוזיציה הצביעו שונה משאר חברי האופוזיציה"
 
-#: src/knesset/templates/laws/vote_list.html:66
+#: src/knesset/templates/laws/vote_list.html:67
 msgid "No watched members. click me to select members to watch"
 msgstr "אין ח\"כים במעקב. אפשר להוסיף על ידי לחיצה כאן"
 

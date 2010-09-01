@@ -1,16 +1,17 @@
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging 
 logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
 import re
-
+from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
-from django.shortcuts import get_object_or_404
-from models import *
+from knesset.mks.models import Member
+from models import CommitteeMeeting
 
 class MeetingDetailView(DetailView):
 
@@ -49,7 +50,7 @@ class MeetingDetailView(DetailView):
                 else: # otherwise, assume its first cms.
                     bill.first_committee_meetings.add(cm)
             bill.update_stage()
-            action.send(request.user, verb='merged',
+            action.send(request.user, verb='added-bill-to-cm',
                 description=cm,
                 target=bill,
                 timestamp=datetime.datetime.now())
@@ -60,12 +61,14 @@ class MeetingDetailView(DetailView):
             mk = Member.objects.get(name=mk_name)
             cm.mks_attended.add(mk)
             cm.save() # just to signal, so the attended Action gets created.
-            action.send(request.user, verb='merged',
+            action.send(request.user, verb='added-mk-to-cm',
                 description=cm,
                 target=mk,
                 timestamp=datetime.datetime.now())
 
         return HttpResponseRedirect(".")
+_('added-bill-to-cm')
+_('added-mk-to-cm')
 
 class MeetingsListView(ListView):
 
