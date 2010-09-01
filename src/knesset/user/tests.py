@@ -14,6 +14,7 @@ class TestFollowing(TestCase):
         self.moshe = Member.objects.create(name='moshe')
         action.send(self.jacob, verb='farted', target=self.david)
         action.send(self.jacob, verb='hit', target=self.yosef)
+        action.send(self.jacob, verb='hit', target=self.moshe)
         
 
     def testFollowing(self):
@@ -35,11 +36,11 @@ class TestFollowing(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'user/public_profile.html')
-        actions = res.context['actions']
-        actions_list = map(lambda x: (x.verb, x.target), actions)
+        actions = res.context['aggr_actions']
+        actions_list = map(lambda x: (x.verb, x.targets.keys()), actions)
         actions_list.sort()
         self.assertEqual(actions_list,
-                         [('farted', self.david), ('hit', self.yosef)])
+                         [('farted', [self.david]), ('hit', [self.yosef,self.moshe])])
 
     def tearDown(self):
         self.jacob.delete()

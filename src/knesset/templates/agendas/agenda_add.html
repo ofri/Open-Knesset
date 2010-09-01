@@ -1,0 +1,25 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load tagging_tags %}
+{% load laws_extra %}
+{% load links %}
+{% load comments %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.title }} - {% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block header %}<h1>{% trans 'Add agenda' %}</h1>{% endblock %}
+{% block divcontent %}
+    <form action="." method="post">{% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <p><input type="submit" name="save" value="{% trans 'save' %}" /></p>
+    </form>
+
+{% endblock %} {# divcontent #}
+
+
+

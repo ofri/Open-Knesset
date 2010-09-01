@@ -46,9 +46,7 @@ class UserProfile(models.Model):
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
 
     def get_badges(self):
-        badges = list(self.badges.all())
-        badges.sort(lambda x, y: cmp(x.__str__(), y.__str__()))
-        return badges
+        return self.badges.all()
         
     @models.permalink
     def get_absolute_url(self):

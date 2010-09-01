@@ -29,9 +29,15 @@ class BadgeHandler(object):
         
     def create_badge(self, profile):
         """Create badge, if not exist"""
-        (badge_type, created) = BadgeType.objects.get_or_create(name=self.badge_name, description=self.badge_description)
-        (badge, created) = Badge.objects.get_or_create(profile = profile, badge_type = badge_type)
-        if created:
+        try:
+            badge_type = BadgeType.objects.get(name=self.badge_name)
+            if badge_type.description != self.badge_description: # badge description was changed?
+                badge_type.description = self.badge_description
+                badge_type.save()
+        except BadgeType.DoesNotExist:
+            badge_type = BadgeType.objects.create(name=self.badge_name, description=self.badge_description)
+        if Badge.objects.filter(profile = profile, badge_type = badge_type).count()==0:
+            badge = Badge.objects.create(profile = profile, badge_type = badge_type)        
             action.send(profile.user, verb='got badge', target=badge)
 
 class PostFollowSaveHandler(BadgeHandler):

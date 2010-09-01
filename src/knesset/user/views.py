@@ -118,7 +118,7 @@ def follow_members(request):
         unwatch_id = request.POST.get('unwatch', None)
         if unwatch_id:
             member = get_object_or_404(Member, pk=unwatch_id)
-            unfollow(request.user, member)
+            unfollow(request.user, member, send_action=True)
         else:
             watch_id = request.POST.get('watch', None)
             if not watch_id:

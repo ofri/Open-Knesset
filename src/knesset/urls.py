@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^$', cache_page(main, 60*10), name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
+    (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),    
     (r'^badges/', include('knesset.badges.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
