@@ -28,12 +28,12 @@ class EmailValidationManager(models.Manager):
         ev.save()
         logger.debug("activation key = %s", ev.activation_key)
         current_site = Site.objects.get_current()
-        subject = render_to_string('accounts/email_validation_subject.txt',
+        subject = render_to_string('accounts/email_validation_subject.html',
                                    { 'site': current_site })
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
         
-        message = render_to_string('accounts/email_validation.txt',
+        message = render_to_string('accounts/email_validation.html',
                                    { 'activation_key': ev.activation_key,                                 
                                      'site': current_site })
         try:
