@@ -33,7 +33,7 @@
     </div>
     <div class="activities" >
         <h2>{% trans 'Activities' %}</h2>
-        <div style="clear:both;"></div>
+        <div class="clear"></div>
     {% autopaginate aggr_actions %}
     {% for aggr_action in aggr_actions %}
         {% with aggr_action.timestamp|timesince as since %}
