@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if aggr_action.actor.get_absolute_url %}<a href="{{ aggr_action.actor.get_absolute_url }}">{{ aggr_action.actor }}</a>
 {% else %}{{ aggr_action.actor }}{% endif %}
 {{ aggr_action.verb }}
