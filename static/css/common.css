@@ -523,6 +523,9 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 #content-main .member-details>div>a.s-4 {color:#CE4C66;}
 #content-main .member-details>div>a.s-6 {color:#CE4C66;}
 
+.gov-stand {font-weight:bold; font-size:120%}
+#visible-bill-stage {min-height:120px; margin-bottom:1em; padding-right:1em}
+
 .awesome-button, .awesome-button:visited {
     background: #222 url(/static/img/overlay.png) repeat-x;
     display: inline-block;

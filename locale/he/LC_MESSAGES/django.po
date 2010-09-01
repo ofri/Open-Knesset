@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 18:30+0300\n"
-"PO-Revision-Date: 2010-09-01 18:32+0200\n"
+"POT-Creation-Date: 2010-09-01 21:43+0300\n"
+"PO-Revision-Date: 2010-09-01 21:44+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -620,8 +620,8 @@ msgstr "מאמרים"
 #: src/knesset/templates/include/vote_detail.html:53
 #: src/knesset/templates/include/vote_detail.html:61
 #: src/knesset/templates/include/vote_list.html:8
-#: src/knesset/templates/laws/bill_detail.html:95
-#: src/knesset/templates/laws/bill_detail.html:112
+#: src/knesset/templates/laws/bill_detail.html:357
+#: src/knesset/templates/laws/bill_detail.html:374
 #: src/knesset/templates/laws/vote_detail.html:86
 #: src/knesset/templates/laws/vote_detail.html:103
 #: src/knesset/templates/laws/vote_list.html:10
@@ -2001,9 +2001,10 @@ msgstr "כל הישיבות של %(committee)s "
 #: src/knesset/laws/models.py:17
 #: src/knesset/templates/include/member_detail.html:50
 #: src/knesset/templates/include/vote_detail.html:13
-#: src/knesset/templates/laws/bill_detail.html:154
-#: src/knesset/templates/laws/bill_detail.html:220
-#: src/knesset/templates/laws/bill_detail.html:269
+#: src/knesset/templates/laws/bill_detail.html:133
+#: src/knesset/templates/laws/bill_detail.html:181
+#: src/knesset/templates/laws/bill_detail.html:247
+#: src/knesset/templates/laws/bill_detail.html:296
 #: src/knesset/templates/laws/vote_detail.html:34
 #: src/knesset/templates/laws/vote_list.html:23
 msgid "For"
@@ -2012,9 +2013,10 @@ msgstr "בעד"
 #: src/knesset/laws/models.py:18
 #: src/knesset/templates/include/member_detail.html:58
 #: src/knesset/templates/include/vote_detail.html:30
-#: src/knesset/templates/laws/bill_detail.html:154
-#: src/knesset/templates/laws/bill_detail.html:220
-#: src/knesset/templates/laws/bill_detail.html:269
+#: src/knesset/templates/laws/bill_detail.html:136
+#: src/knesset/templates/laws/bill_detail.html:181
+#: src/knesset/templates/laws/bill_detail.html:247
+#: src/knesset/templates/laws/bill_detail.html:296
 #: src/knesset/templates/laws/vote_detail.html:55
 #: src/knesset/templates/laws/vote_list.html:24
 msgid "Against"
@@ -2067,7 +2069,7 @@ msgid "In Committee"
 msgstr "בוועדה"
 
 #: src/knesset/laws/models.py:355
-#: src/knesset/templates/laws/bill_detail.html:218
+#: src/knesset/templates/laws/bill_detail.html:245
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
@@ -2724,9 +2726,9 @@ msgstr "הוספת חבר כנסת"
 
 #: src/knesset/templates/committees/committeemeeting_detail.html:35
 #: src/knesset/templates/committees/committeemeeting_detail.html:47
-#: src/knesset/templates/laws/bill_detail.html:163
-#: src/knesset/templates/laws/bill_detail.html:230
-#: src/knesset/templates/laws/bill_detail.html:278
+#: src/knesset/templates/laws/bill_detail.html:190
+#: src/knesset/templates/laws/bill_detail.html:257
+#: src/knesset/templates/laws/bill_detail.html:305
 #: src/knesset/templates/laws/vote_detail.html:172
 msgid "Submit"
 msgstr "אישור"
@@ -2863,7 +2865,7 @@ msgstr[1] ""
 "%(counter)s ח\"כים"
 
 #: src/knesset/templates/include/vote_detail.html:65
-#: src/knesset/templates/laws/bill_detail.html:123
+#: src/knesset/templates/laws/bill_detail.html:385
 #: src/knesset/templates/laws/vote_detail.html:114
 msgid "Login to edit tags"
 msgstr "דרושה הרשמה קצרה כדי לערוך תגיות"
@@ -2917,35 +2919,37 @@ msgid "stage date"
 msgstr "תאריך עדכון אחרון"
 
 #: src/knesset/templates/laws/bill_detail.html:18
-#: src/knesset/templates/laws/bill_detail.html:132
+#: src/knesset/templates/laws/bill_detail.html:159
 #: src/knesset/templates/laws/law_detail.html:13
 #: src/knesset/templates/laws/law_detail.html:39
 msgid "Proposed by"
 msgstr "הוצע על ידי"
 
-#: src/knesset/templates/laws/bill_detail.html:103
-#: src/knesset/templates/laws/bill_detail.html:120
-#: src/knesset/templates/laws/vote_detail.html:94
-#: src/knesset/templates/laws/vote_detail.html:111
-msgid "No tags yet"
-msgstr "אין עדיין תגיות"
-
-#: src/knesset/templates/laws/bill_detail.html:106
-#: src/knesset/templates/laws/vote_detail.html:97
-msgid "Suggest Tags"
-msgstr "הוספת תגיות"
-
-#: src/knesset/templates/laws/bill_detail.html:107
-#: src/knesset/templates/laws/vote_detail.html:98
-msgid "Click here"
-msgstr "יש ללחוץ כאן"
-
 #: src/knesset/templates/laws/bill_detail.html:129
+msgid "Government Stand"
+msgstr "עמדת הממשלה"
+
+#: src/knesset/templates/laws/bill_detail.html:139
+msgid "Decision on government website"
+msgstr "ההחלטה באתר משרד ראש הממשלה"
+
+#: src/knesset/templates/laws/bill_detail.html:142
+#: src/knesset/templates/laws/bill_detail.html:165
+#: src/knesset/templates/laws/bill_detail.html:183
+#: src/knesset/templates/laws/bill_detail.html:210
+#: src/knesset/templates/laws/bill_detail.html:231
+#: src/knesset/templates/laws/bill_detail.html:249
+#: src/knesset/templates/laws/bill_detail.html:277
+#: src/knesset/templates/laws/bill_detail.html:298
+msgid "No Info"
+msgstr "אין נתונים"
+
+#: src/knesset/templates/laws/bill_detail.html:156
 msgid "Bill initiation"
 msgstr "יזום הצעת החוק"
 
-#: src/knesset/templates/laws/bill_detail.html:131
-#: src/knesset/templates/laws/bill_detail.html:202
+#: src/knesset/templates/laws/bill_detail.html:158
+#: src/knesset/templates/laws/bill_detail.html:229
 #: src/knesset/templates/laws/knessetproposal_detail.html:11
 #: src/knesset/templates/laws/knessetproposal_detail.html:17
 #: src/knesset/templates/laws/law_detail.html:12
@@ -2954,43 +2958,50 @@ msgstr "יזום הצעת החוק"
 msgid "Bill on knesset website"
 msgstr "ההצעה באתר הכנסת"
 
-#: src/knesset/templates/laws/bill_detail.html:138
-#: src/knesset/templates/laws/bill_detail.html:156
-#: src/knesset/templates/laws/bill_detail.html:183
-#: src/knesset/templates/laws/bill_detail.html:204
-#: src/knesset/templates/laws/bill_detail.html:222
-#: src/knesset/templates/laws/bill_detail.html:250
-#: src/knesset/templates/laws/bill_detail.html:271
-msgid "No Info"
-msgstr "אין נתונים"
-
-#: src/knesset/templates/laws/bill_detail.html:152
+#: src/knesset/templates/laws/bill_detail.html:179
 msgid "Pre Vote"
 msgstr "קריאה טרומית"
 
-#: src/knesset/templates/laws/bill_detail.html:158
-#: src/knesset/templates/laws/bill_detail.html:224
-#: src/knesset/templates/laws/bill_detail.html:273
+#: src/knesset/templates/laws/bill_detail.html:185
+#: src/knesset/templates/laws/bill_detail.html:251
+#: src/knesset/templates/laws/bill_detail.html:300
 msgid "Suggest a matching vote"
 msgstr "הצעת הצבעה מתאימה"
 
-#: src/knesset/templates/laws/bill_detail.html:179
-#: src/knesset/templates/laws/bill_detail.html:246
+#: src/knesset/templates/laws/bill_detail.html:206
+#: src/knesset/templates/laws/bill_detail.html:273
 #: src/knesset/templates/laws/law_detail.html:18
 #: src/knesset/templates/laws/law_detail.html:31
 #: src/knesset/templates/laws/law_detail.html:44
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: src/knesset/templates/laws/bill_detail.html:200
+#: src/knesset/templates/laws/bill_detail.html:227
 msgid "Bill formulated by the committee"
 msgstr "נוסח הצעת החוק של הוועדה"
 
-#: src/knesset/templates/laws/bill_detail.html:267
+#: src/knesset/templates/laws/bill_detail.html:294
 msgid "Bill Approval"
 msgstr "אישור הצעת החוק"
 
-#: src/knesset/templates/laws/bill_detail.html:332
+#: src/knesset/templates/laws/bill_detail.html:365
+#: src/knesset/templates/laws/bill_detail.html:382
+#: src/knesset/templates/laws/vote_detail.html:94
+#: src/knesset/templates/laws/vote_detail.html:111
+msgid "No tags yet"
+msgstr "אין עדיין תגיות"
+
+#: src/knesset/templates/laws/bill_detail.html:368
+#: src/knesset/templates/laws/vote_detail.html:97
+msgid "Suggest Tags"
+msgstr "הוספת תגיות"
+
+#: src/knesset/templates/laws/bill_detail.html:369
+#: src/knesset/templates/laws/vote_detail.html:98
+msgid "Click here"
+msgstr "יש ללחוץ כאן"
+
+#: src/knesset/templates/laws/bill_detail.html:391
 msgid "suggested votes"
 msgstr "הצבעות מוצעות"
 
