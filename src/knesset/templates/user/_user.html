@@ -1,0 +1,4 @@
+{% load i18n %}
+{% if user %}
+    <a href="{% url public-profile user.id %}">{{ user.username }}</a>
+{% endif %}
