@@ -1,6 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% load laws_extra %}
+{% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{% trans 'Members' %}{% endblock %}
 {% block description %}{% trans 'Members' %} - {% endblock %}
@@ -17,7 +17,7 @@
     {% for o in object_list %}
         {% if o.is_current %}
             <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a> ({{ o.extra|floatformat }})
-            {% bar o.extra 1 norm_factor %}
+            {% bar o.extra "for" norm_factor %}
         {% endif %}
     {% empty %}
         {% trans "Data base empty, no objects" %}
@@ -26,7 +26,7 @@
     <h1>{% trans 'Past MKs' %}</h1>
     {% for o in past_mks %}
         <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a> ({{ o.extra|floatformat }})
-        {% bar o.extra 1 norm_factor %}
+        {% bar o.extra "for" norm_factor %}
     {% endfor %}
 
     </div>

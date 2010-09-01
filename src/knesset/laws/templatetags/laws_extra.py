@@ -23,20 +23,6 @@ def user_votes(user, vote, tag):
     vote.ctype = ContentType.objects.get_for_model(vote).name
     return {'user': user, 'vote':vote, 'tag':tag, 'current_vote_up':cv==1, 'current_vote_down':cv==-1}
 
-@register.inclusion_tag('laws/_bar.html')
-def bar(number, is_for, norm_factor=1.2, baseline=0):
-    """ draws a bar to represent number of voters.
-        number - number of people voted this way.
-        is_for - is this a "for" bar. false means "against" bar.
-    """
-    if not number:
-        number = 0
-    if norm_factor:
-        width = round((number-baseline)/norm_factor,1)
-    else:
-        width = 0
-    return {'width': width, 'is_for':is_for}
-
 @register.filter
 def recent_discipline(m):
     d = date.today() - timedelta(30)

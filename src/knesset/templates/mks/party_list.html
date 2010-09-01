@@ -1,6 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% load laws_extra %}
+{% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block subnav %}
@@ -13,7 +13,7 @@
         <h2>{% trans 'Coalition' %}</h2>
         {% for o in coalition %}
             <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
-            {% bar o.extra 1 norm_factor baseline %}
+            {% bar o.extra "for" norm_factor baseline %}
         {% empty %}
             {% trans "Data base empty, no objects" %}
         {% endfor %}
@@ -22,7 +22,7 @@
         <h2>{% trans 'Opposition' %}</h2>
         {% for o in opposition %}
             <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
-            {% bar o.extra 1 norm_factor baseline %}
+            {% bar o.extra "for" norm_factor baseline %}
         {% empty %}
             {% trans "Data base empty, no objects" %}
         {% endfor %}
