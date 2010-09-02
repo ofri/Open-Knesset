@@ -10,6 +10,7 @@ def bar(weight, bar_class, norm_factor=1.2, baseline=0):
     """
     if not weight:
         weight = 0
+    weight=abs(weight)
     if norm_factor:
         width = round((weight-baseline)/norm_factor,1)
     else:
