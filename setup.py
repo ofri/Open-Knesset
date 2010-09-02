@@ -17,6 +17,7 @@ install_requires = [
     'django-piston',
     'django-extensions',
     'python-memcached',
+    'BeautifulSoup',
     ]
 setup(
         name = "Open-Knesset",
