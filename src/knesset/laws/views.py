@@ -140,11 +140,13 @@ class BillDetailView (DetailView):
             bill.pre_votes.add(vote)
             bill.update_stage()
 
-        action.send(self.request.user, verb='merged',
+        action.send(self.request.user, verb='added-vote-to-bill',
                 description=vote,
                 target=bill,
                 timestamp=datetime.datetime.now())
         return HttpResponseRedirect(".")
+
+_('added-vote-to-bill')
 
 class BillListView (ListView):
     friend_pages = [

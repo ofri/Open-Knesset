@@ -39,6 +39,7 @@ class BadgeHandler(object):
         if Badge.objects.filter(profile = profile, badge_type = badge_type).count()==0:
             badge = Badge.objects.create(profile = profile, badge_type = badge_type)        
             action.send(profile.user, verb='got badge', target=badge)
+            ugettext('got badge') # so we'll have a translation for this
 
 class PostFollowSaveHandler(BadgeHandler):
     def get_profile(self, sender, **kwargs):
@@ -50,11 +51,14 @@ class FirstFollowHandler(PostFollowSaveHandler):
     First Follow Badge is a badge you get when you follow something for the first time
     """    
     def __init__(self):
-        # These two lines make sure translation identifies these strings
-        name = ugettext(u'FirstFollow')
-        description = ugettext(u'You are following something')
-        
+        name = u'FirstFollow' 
+        description = u'You are following something' 
         super(FirstFollowHandler, self).__init__(badge_name=name, badge_description=description)
+
+        # These two lines make sure translation identifies these strings        
+        ugettext(u'FirstFollow')
+        ugettext(u'You are following something')
+                
         
     def test(self, sender, **kwargs):
         return True # on each follow, this achivment is granted
@@ -68,11 +72,15 @@ class FirstFollowMKHandler(FirstFollowHandler):
     First Follow Badge is a badge you get when you follow an MK.
     """   
     def __init__(self):
-        # These two lines make sure translation identifies these strings
-        name = ugettext(u'FirstMKFollow')
-        description = ugettext(u'You are following an MK')
         
+        name = u'FirstMKFollow'
+        description = u'You are following an MK'
         super(FirstFollowHandler, self).__init__(badge_name=name, badge_description=description)
+        
+        # These two lines make sure translation identifies these strings
+        ugettext(u'FirstMKFollow')
+        ugettext(u'You are following an MK')
+        
     
     def test(self, sender, **kwargs):
         instance = kwargs.get('instance',None)
@@ -81,4 +89,3 @@ class FirstFollowMKHandler(FirstFollowHandler):
 def first_follow_mk_handler(sender, **kwargs):
     FirstFollowMKHandler().__call__(sender, **kwargs)
 post_save.connect(first_follow_mk_handler, sender=Follow)
-

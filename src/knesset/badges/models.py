@@ -13,7 +13,7 @@ class BadgeType(models.Model):
     def get_absolute_url(self):
         return ('badge-detail', (), {'object_id': self.id})
   
-    def __str__(self):
+    def __unicode__(self):
         return _(self.name)
   
 class Badge(models.Model):
@@ -25,8 +25,8 @@ class Badge(models.Model):
     def get_absolute_url(self):
         return ('badge-detail', (), {'object_id': self.badge_type.id})
     
-    def __str__(self):
-        return self.badge_type.__str__()
+    def __unicode__(self):
+        return self.badge_type.__unicode__()
     
     class Meta:
         unique_together=('profile','badge_type')

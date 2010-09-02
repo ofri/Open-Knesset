@@ -119,6 +119,7 @@ def agenda_add_view(request):
             agenda.name = form.cleaned_data['name']
             agenda.description = form.cleaned_data['description']
             agenda.save()
+            agenda.editors.add(request.user)
             return HttpResponseRedirect('/agenda/') # Redirect after POST
     else:
         form = AddAgendaForm() # An unbound form

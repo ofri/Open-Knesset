@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
+{% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -20,8 +21,8 @@
     {{ o.title }}<br/>
     <div class="info">
 
-        <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count 1 %}
-        <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count 0 %}
+        <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count "for" %}
+        <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count "against" %}
         <p class="date">{{ o.time_string }}</p> &nbsp; 
             {% if o.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
             {% if o.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}

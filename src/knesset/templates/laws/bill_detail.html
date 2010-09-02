@@ -25,8 +25,7 @@
     <script type="text/javascript">
 		function connect_el_to_div( el, div ) {
 			el.click( function () {
-				$(".bill-stage").css("visibility","hidden");
-				$("#"+div+".bill-stage").css("visibility","visible");
+                $("#visible-bill-stage").html($("#"+div).html());
 				return true;
 			} );
 		}
@@ -64,6 +63,39 @@
 		    return l;
 		};
 
+        Raphael.fn.my_box = function ( x,y,div,active ) {
+            var paper = this;
+            var realx = 850 - x;
+            var path_params;
+            if ( active ) {
+                 path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
+            } else {
+                 path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
+            }
+            var l = paper.path(["M",realx,y,"h",-500,"l",-7,15,"l",7,15,"h",500,"l",7,-15,"Z"]).attr(path_params);
+             
+            
+            function add_animation(el,l) {
+                el.hover(function () {
+                    l.attr({"stroke-width": "2px",
+                            "stroke":"#224",
+                            "scale": [1.01,1.1]});
+                    return true;
+                },
+                function () {
+                    l.attr({"stroke-width": "1px",
+                            "stroke":"#777",
+                            "scale": [1,1]});
+                    return true;
+                });
+            }
+            l.toBack();
+            $(l.node).css("cursor","pointer");
+            add_animation(l,l);
+            connect_el_to_div(l,div);
+            return l;
+        };
+
     	Raphael.fn.approved = function ( _x,y,approved ) {
 			var paper = this;
 			var s=paper.set(),
@@ -86,44 +118,39 @@
         	return s;
     	}
     		
-		var paper = Raphael("bill-canvas", 850, 300);
-		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,58);
+		var paper = Raphael("bill-canvas", 850, 150);
+		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,130);
 	</script>
 
-    <div id="tagging-container">
-    {% if user.is_authenticated %}
-        <h3>{% trans "Tags" %}</h3>
-        {% if object.tags %}
-            <div id="vote-tags">
-            {% for t in object.tags %}
-                {% user_votes user object t %} <br />        
-            {% endfor %}
-            </div>
-        {% else %}
-            {% trans "No tags yet" %}<br />        
-        {% endif %}
-        <div id="add_tags">
-            <span>{% trans "Suggest Tags" %}</span> 
-            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
-            </span>
-        </div>
-
-    {% else %}
-        <h3>{% trans "Tags" %}</h3>
-        {% if object.tags %}
-            <div id="tags">
-            {% for t in object.tags %}
-               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
-            {% endfor %}
-            </div>
-        {% else %}
-            {% trans "No tags yet" %}<br />
-        {% endif %}
-
-        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
-    {% endif %}
+    <div id="visible-bill-stage">
     </div>
 
+    <div id="gov-decision" class="bill-stage">
+    <h2>{% trans 'Government Stand' %}</h2>
+    {% for d in object.gov_decisions.all %}
+        <p class="gov-decision">
+        {% if d.stand == 1 %}
+            <span class="gov-stand">{% trans 'For' %}</span>
+        {% else %}
+            {% if d.stand == -1 %}
+                <span class="gov-stand">{% trans 'Against' %}</span>
+            {% endif %}
+        {% endif %}
+        {{ d.date }} {{ d.title }}<br>{{ d.subtitle }}<br>{{ d.text }}<br><a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a><br> 
+        </p>
+    {% empty %}
+        {% trans 'No Info' %}
+    {% endfor %}
+    <script type="text/javascript">
+        var rect1 = paper.my_box(105,80,"gov-decision", 
+    {% if object.gov_decisions.all %}
+        true
+    {% else %}
+        false
+    {% endif %}
+    );
+    </script>
+    </div>
         
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
@@ -300,10 +327,9 @@
 		
 		var pos = $("#bill-canvas").position();
 		$(".bill-stage").css("position","absolute");
-		$(".bill-stage").css("top",pos.top + 100);
-		
+		$(".bill-stage").css("top",pos.top + 200);		
 		$(".bill-stage").css("visibility","hidden");
-        $("#bill-initiation.bill-stage").css("visibility","visible");
+        $("#visible-bill-stage").html($("#bill-initiation").html());
 
         $(document).ready(function() {
             var options = { 
@@ -326,7 +352,40 @@
             });
           });
 	</script>
-    
+    <div id="tagging-container">
+    {% if user.is_authenticated %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="vote-tags">
+            {% for t in object.tags %}
+                {% user_votes user object t %} <br />        
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />        
+        {% endif %}
+        <div id="add_tags">
+            <span>{% trans "Suggest Tags" %}</span> 
+            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+            </span>
+        </div>
+
+    {% else %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="tags">
+            {% for t in object.tags %}
+               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />
+        {% endif %}
+
+        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+    {% endif %}
+    </div>
+        
     {% if close_votes %}
         <div id="suggested-votes">
         <h2>{% trans 'suggested votes' %}</h2>

@@ -25,6 +25,6 @@ urlpatterns += patterns('django.contrib.auth.views',
 urlpatterns += patterns('',
     (r'^registration/', include('knesset.accounts.urls')),
     url(r'^(?P<object_id>\d+)/$', user_public_profile, name='public-profile'),
-    url(r'^(?P<slug>\w+)/$', user_public_profile, name='public-profile'),
+    url(r'^(?P<slug>.+)/$', user_public_profile, name='public-profile'),
     url(r'^$', profile_list, name='profile-list'),
     )

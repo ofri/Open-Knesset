@@ -497,6 +497,9 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
     right:30px;
 }
 
+/* user profile */
+.user_img { float:right; margin-left:1em; margin-bottom:1em; }
+
 /* action stream */
 .activities { clear:both; border: 1px solid #CFD4D7; max-width:60em; }
 .activities > h3 { clear:both; border-bottom: 1px dotted #aaaaaa; margin-bottom:0.4em; }
@@ -519,6 +522,9 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 #content-main .member-details>div>a.s-2 {color:#CE4C66;}
 #content-main .member-details>div>a.s-4 {color:#CE4C66;}
 #content-main .member-details>div>a.s-6 {color:#CE4C66;}
+
+.gov-stand {font-weight:bold; font-size:120%}
+#visible-bill-stage {min-height:120px; margin-bottom:1em; padding-right:1em}
 
 .awesome-button, .awesome-button:visited {
     background: #222 url(/static/img/overlay.png) repeat-x;
