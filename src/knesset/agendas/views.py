@@ -24,6 +24,15 @@ class AgendaDetailView (DetailView):
             context['title'] = "%s" % agenda.name
         except AttributeError:
             context['title'] = _('None')
+
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = agenda in p.agendas
+        else:
+            watched = False
+
+        context.update({'watched_object': watched})
+
         return context
     
 class AgendaDetailEditView (DetailView):

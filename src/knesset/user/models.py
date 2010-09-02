@@ -10,11 +10,13 @@ from actstream import follow
 from actstream.models import Follow
 
 from knesset.mks.models import Party, Member
+from knesset.agendas.models import Agenda
 
 class UserProfile(models.Model):
     ''' 
     This model is extending the builtin user model.  
-    The extension includes a list of followed parties and members.
+    The extension includes a list of followed objects,
+    such as parties, members and agendas.
 
     >>> daonb = User.objects.create(username='daonb')
     >>> profile = daonb.get_profile()
@@ -44,6 +46,12 @@ class UserProfile(models.Model):
         #TODO: ther has to be a faster way
         return map(lambda x: x.actor, 
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
+
+    @property
+    def agendas(self):
+        return map(lambda x: x.actor, 
+            Follow.objects.filter(user=self.user, 
+                content_type=ContentType.objects.get_for_model(Agenda)).select_related('actor'))
 
     def get_badges(self):
         return self.badges.all()

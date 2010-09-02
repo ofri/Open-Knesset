@@ -10,7 +10,21 @@
 {% block description %}{{ object.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
-{% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
+{% block extrahead %}
+	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
+			register_watch({{object.id}}, "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url follow-agendas %}");
+		});
+	</script>
+{% endblock %}
+{% block subnav %}
+	<a id="watch" class="button" href="."></a>
+	&bull;
+    <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+{% endblock %}
 {% block divcontent %}
     <h1>{{ object.name }}</h1>
     <div id="agenda-info">
