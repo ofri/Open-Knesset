@@ -4,43 +4,60 @@
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
             type="text/javascript"></script>
 {% endblock %}
+{% load common_visual_elements %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block divcontent %}
     <h2><a href=".">{{ object.name }}</a></h2>
     <div class="list-wrap">
-    <h3>{% trans 'Statistics' %}</h3>
-    <div id="residence_map"></div>
-    <table id="party-info">
-        <tr>
-            <td>{% trans "Number of votes" %}</td>
-            <td>{{ object.voting_statistics.votes_count }}</td>
-        </tr>
-        <tr>
-            <td>{% trans "Average votes per MK" %}</td>
-            <td>{{ object.voting_statistics.votes_per_seat }}</td>
-        </tr>
-        <tr>
-            <td>{% trans "Factional discipline" %}</td>
-            <td>{{ object.voting_statistics.discipline }}%</td>
-        </tr>
-        <tr>
-            <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-            <td>{{ object.voting_statistics.coalition_discipline }}%</td>
-        </tr>
-    </table>
-    <h3>{% trans 'Current MKs' %}</h3>
-    {% for o in object.current_members.all %}
-        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
-    {% empty %}
-        {% trans "Data base empty, no objects" %}
-    {% endfor %}
-    {% if object.past_members %}
-        <h3>{% trans 'Past MKs' %}</h3>
-        {% for o in object.past_members %}
-            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
-        {% endfor %}
-    {% endif %}
+	    <h3>{% trans 'Statistics' %}</h3>
+	    <div id="residence_map"></div>
+	    <table id="party-info">
+	        <tr>
+	            <td>{% trans "Number of votes" %}</td>
+	            <td>{{ object.voting_statistics.votes_count }}</td>
+	        </tr>
+	        <tr>
+	            <td>{% trans "Average votes per MK" %}</td>
+	            <td>{{ object.voting_statistics.votes_per_seat }}</td>
+	        </tr>
+	        <tr>
+	            <td>{% trans "Factional discipline" %}</td>
+	            <td>{{ object.voting_statistics.discipline }}%</td>
+	        </tr>
+	        <tr>
+	            <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
+	            <td>{{ object.voting_statistics.coalition_discipline }}%</td>
+	        </tr>
+	    </table>
+	    <h3>{% trans 'Current MKs' %}</h3>
+	    {% for o in object.current_members.all %}
+	        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
+	    {% empty %}
+	        {% trans "Data base empty, no objects" %}
+	    {% endfor %}
+	    {% if object.past_members %}
+	        <h3>{% trans 'Past MKs' %}</h3>
+	        {% for o in object.past_members %}
+	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
+	        {% endfor %}
+	    {% endif %}
+
+        <div>
+	    	<h3>{% trans "Agendas" %}</h3>
+	    	<div class="list-wrap">
+				<table>
+		     	{% for agenda in agendas %}
+		     		<tr>
+		     			<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a></td>
+		     			<td>{{agenda.score}}</td>
+		     			<td class="column-bar">{% bar agenda.score agenda.class 0.1 %}</td>
+		    			</tr>
+		     	{% endfor %}
+		     	</table>
+	    	</div>
+	    </div>
+
     </div>
     <script>
     var g_member_residences = [];
@@ -71,11 +88,11 @@
             var tilesMapnik     = new google.maps.TileLayer(copyOSM, 1, 17, {tileUrlTemplate: 'http://tile.openstreetmap.org/{Z}/{X}/{Y}.png'});
 	        var mapMapnik     = new google.maps.MapType([tilesMapnik],
 														G_NORMAL_MAP.getProjection(),
-														"מפת רחובות",
+														"׳�׳₪׳× ׳¨׳—׳•׳‘׳•׳×",
 														{ maxResolution: 18 });
 			var mapSatellite  = new google.maps.MapType(G_SATELLITE_MAP.getTileLayers(),
 														G_SATELLITE_MAP.getProjection(),
-														"תמונת לווין");
+														"׳×׳�׳•׳ ׳× ׳�׳•׳•׳™׳�");
 			var map           = new google.maps.Map2(map_dom, { mapTypes: [ mapMapnik,mapSatellite ] });
 			map.addControl(new google.maps.SmallMapControl());
 			map.addControl(new google.maps.MapTypeControl());
