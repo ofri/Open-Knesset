@@ -67,3 +67,5 @@ class Agenda(models.Model):
         if against_score == None:
             against_score = 0 
         return (for_score - against_score)
+
+from listeners import *
