@@ -20,9 +20,18 @@
     <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">
     {{ o.title }}<br/>
     <div class="info">
-
-        <p class="for-count">{% trans 'For' %}: {{ o.for_votes_count }}</p>{% bar o.for_votes_count "for" %}
-        <p class="against-count">{% trans 'Against' %}: {{ o.against_votes_count }}</p>{% bar o.against_votes_count "against" %}
+		<table>
+	        <tr>
+	        	<td>{% trans 'For' %}:</td>
+	        	<td>{{ o.for_votes_count }}</td>
+	        	<td class="column-bar">{% bar o.for_votes_count "for" %}</td>
+	        </tr>
+	        <tr>
+	        	<td>{% trans 'Against' %}:</td>
+	        	<td>{{ o.against_votes_count }}</td>
+	        	<td class="column-bar">{% bar o.against_votes_count "against" %}</td>
+	        </tr>
+        </table>
         <p class="date">{{ o.time_string }}</p> &nbsp; 
             {% if o.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
             {% if o.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}
