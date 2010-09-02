@@ -11,21 +11,31 @@
 {% block divcontent %}
     <div class="list-wrap">
         <h2>{% trans 'Coalition' %}</h2>
+        <table>
         {% for o in coalition %}
-            <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
-            {% bar o.extra "for" norm_factor baseline %}
+        	<tr>
+	            <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
+	            <td>{{ o.extra }}</td>
+	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
+            </tr>
         {% empty %}
             {% trans "Data base empty, no objects" %}
         {% endfor %}
+        </table>
     </div>
     <div class="list-wrap">
         <h2>{% trans 'Opposition' %}</h2>
+        <table>
         {% for o in opposition %}
-            <a class="hashnav item" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }} ({{ o.extra }})</a>
-            {% bar o.extra "for" norm_factor baseline %}
+        	<tr>
+	            <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
+	            <td>{{ o.extra }}</td>
+	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
+            </tr>
         {% empty %}
             {% trans "Data base empty, no objects" %}
         {% endfor %}
+        </table>
 
     </div>
 {% endblock %}
