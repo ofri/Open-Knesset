@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load links %}
 {% load laws_extra %}
+{% load common_visual_elements %}
 {% load activity_tags %}
 {% load pagination_tags %}
 {% load cache %}
@@ -117,6 +118,16 @@
                 </tr>       
 
             </table>
+        </div>
+        <div>
+        	<h3>{% trans "Agendas" %}</h3>
+        	<div class="list-wrap">
+	        	{% for agenda in agendas %}
+		            <a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a>
+	        		({{agenda.score}})
+        			{% bar agenda.score agenda.class 0.1 %}
+	        	{% endfor %}
+        	</div>
         </div>
         <div>
             <h3> {% trans "Topics" %}</h3>

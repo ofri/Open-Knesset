@@ -1,6 +1,6 @@
 from django.db import models
+from django.db.models import Q, Sum
 from django.utils.translation import ugettext_lazy as _
-
 score_text_to_score = {'complies-fully':         1.0,
                        'complies-partially':     0.5,
                        'agnostic':               0.0,
@@ -45,3 +45,15 @@ class Agenda(models.Model):
     @models.permalink
     def get_edit_absolute_url(self):
         return ('agenda-detail-edit', [str(self.id)])
+    
+    def mk_score(self, member):
+        # Find all votes that
+        #   1) This agenda is ascribed to
+        #   2) the member participated in and either voted for or against
+        for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct().aggregate(Sum('score'))['score__sum']
+        against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct().aggregate(Sum('score'))['score__sum']
+        if for_score == None:
+            for_score = 0 
+        if against_score == None:
+            against_score = 0 
+        return (for_score - against_score)
