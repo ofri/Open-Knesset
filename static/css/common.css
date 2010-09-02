@@ -261,7 +261,7 @@ a.disabled { color: #aaaaaa; }
 
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
-#content-main #vote-tags { display: inline-block; line-height:2.5em }
+#content-main #vote-tags { margin-right:2em; line-height:2.5em }
 
 #content-main .vote-up {
     background: url('/static/img/Thumbs-up.png') no-repeat center 0;
