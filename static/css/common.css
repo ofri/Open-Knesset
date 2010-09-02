@@ -305,16 +305,20 @@ a.disabled { color: #aaaaaa; }
 }
 #content-main div.bar {
     background-color: #00AA00;
-    margin:0em;
+/*    margin:0em;*/
     height:1em;
-    margin-bottom:-1.25em;
+/*    margin-bottom:-1.25em;
     position:relative;
     top:-1.25em;
-    right:5em;
+    right:5em;*/
 }
-#content-main div.list-wrap > div.bar {
+/*#content-main div.list-wrap div.bar {
     right: 18em;
     top:-1.75em;
+}*/
+
+#content-main .column-bar {
+	width: 100%;
 }
 
 #content-main div.against {
@@ -597,3 +601,7 @@ div.color_swatch {
   line-height: 12px;
 }
 .jGrowl-message a { color: inherit; }
+
+.box-agenda {
+	clear:both;
+}
