@@ -12,6 +12,13 @@ from actstream.models import Follow
 from knesset.mks.models import Party, Member, GENDER_CHOICES
 from knesset.agendas.models import Agenda
 
+
+NOTIFICATION_PERIOD_CHOICES = (
+    (u'N', _('None')),
+    (u'D', _('Daily')),
+    (u'W', _('Weekly')),
+)
+
 class UserProfile(models.Model):
     ''' 
     This model is extending the builtin user model.  
@@ -37,6 +44,7 @@ class UserProfile(models.Model):
     public_profile = models.BooleanField(default=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     description = models.TextField(null=True,blank=True)
+    email_notification = models.CharField(max_length=1, choices=NOTIFICATION_PERIOD_CHOICES, blank=True, null=True) 
 
     @property
     def members(self):

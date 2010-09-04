@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from knesset.mks.models import GENDER_CHOICES
+from knesset.user.models import NOTIFICATION_PERIOD_CHOICES
 
 
 class RegistrationForm(UserCreationForm):
@@ -34,7 +35,11 @@ class EditProfileForm(forms.Form):
                                label=_('Gender'))
     description = forms.CharField(required=False,
                                   label=_('Tell us and other users bit about yourself'), 
-                                  widget=forms.Textarea)   
+                                  widget=forms.Textarea)
+    email_notification = forms.ChoiceField(choices = NOTIFICATION_PERIOD_CHOICES,
+                                           label = _('E-Mail Notifications'),
+                                           help_text = _('Should we send you e-mail notification about updates to things you follow on the site?'))
+                                           
 
     def __init__(self, user=None, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
@@ -48,6 +53,7 @@ class EditProfileForm(forms.Form):
                         'public_profile': self.userprofile.public_profile,
                         'gender': self.userprofile.gender,
                         'description': self.userprofile.description,
+                        'email_notification': self.userprofile.email_notification,
                         }
         self.has_email = True if user.email else False
 
@@ -80,6 +86,7 @@ class EditProfileForm(forms.Form):
         self.userprofile.gender = self.cleaned_data['gender']
         self.userprofile.public_profile = self.cleaned_data['public_profile']
         self.userprofile.description = self.cleaned_data['description']
+        self.userprofile.email_notification = self.cleaned_data['email_notification']
         
         if commit:
             user.save()

@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.conf import settings
 import datetime
+from optparse import make_option
 
 from actstream.models import Follow, Action
 from mailer import send_html_mail
@@ -42,13 +43,34 @@ class Command(NoArgsCommand):
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
     days_back = getattr(settings, 'DEFAULT_NOTIFICATION_DAYS_BACK', 10)
     domain = Site.objects.get_current().domain
+
+    option_list = NoArgsCommand.option_list + (
+        make_option('--daily', action='store_true', dest='daily',
+            help="send notifications to users that requested a daily update"),
+        make_option('--weekly', action='store_true', dest='weekly',
+            help="send notifications to users that requested a daily update"))
+            
+    help = "Send e-mail notification to users that requested it."
     
     def handle_noargs(self, **options):
+        daily = options.get('daily', False)
+        weekly = options.get('weekly', False)
+        if not daily and not weekly:
+            print "use --daily or --weekly"
+            return
+        
+        email_notification = []
+        if daily:
+            email_notification.append('D')
+        if weekly:
+            email_notification.append('W')
+        
         queued = 0
         for user in User.objects.all():
             user_profile = user.get_profile()
-            #if user_profile and user_profile.send_emails: # if this user requested emails
-            if user_profile:
+            
+            # TODO: send only to users with validated email.
+            if user_profile and user_profile.email_notification in email_notification: # if this user requested emails in the frequency we are handling now                        
                 updates = dict(zip(self.update_models, ([] for x in self.update_models))) # will contain the updates to be sent
                 updates_html = dict(zip(self.update_models, ([] for x in self.update_models)))
                 follows = Follow.objects.filter(user=user) # everything this user is following
@@ -101,24 +123,24 @@ class Command(NoArgsCommand):
                         updates[key].append(action_output)
                         updates_html[key].append(action_output_html)
                         
-            email_body = []
-            email_body_html = []
-            for (model_class,title,title_html) in self.update_topics:
-                if updates[model_class]: # this model has some updates, add it to the email
-                    email_body.append(title.format())
-                    email_body.append('\n'.join(updates[model_class]))
-                    email_body_html.append(title_html.format())
-                    email_body_html.append(''.join(updates_html[model_class]))
-            if email_body: # there are some updates. generate email
-                header = render_to_string(('notify/header.txt'),{ 'user':user })
-                footer = render_to_string(('notify/footer.txt'),{ 'user':user,'domain':self.domain })
-                header_html = render_to_string(('notify/header.html'),{ 'user':user })
-                footer_html = render_to_string(('notify/footer.html'),{ 'user':user,'domain':self.domain })
-                send_html_mail(_('Open Knesset Updates'), "%s\n%s\n%s" % (header, '\n'.join(email_body), footer), 
-                                                          "%s\n%s\n%s" % (header_html, ''.join(email_body_html), footer_html),
-                                                          self.from_email,
-                                                          [user.email],
-                                                          )
-                queued += 1
+                email_body = []
+                email_body_html = []
+                for (model_class,title,title_html) in self.update_topics:
+                    if updates[model_class]: # this model has some updates, add it to the email
+                        email_body.append(title.format())
+                        email_body.append('\n'.join(updates[model_class]))
+                        email_body_html.append(title_html.format())
+                        email_body_html.append(''.join(updates_html[model_class]))
+                if email_body: # there are some updates. generate email
+                    header = render_to_string(('notify/header.txt'),{ 'user':user })
+                    footer = render_to_string(('notify/footer.txt'),{ 'user':user,'domain':self.domain })
+                    header_html = render_to_string(('notify/header.html'),{ 'user':user })
+                    footer_html = render_to_string(('notify/footer.html'),{ 'user':user,'domain':self.domain })
+                    send_html_mail(_('Open Knesset Updates'), "%s\n%s\n%s" % (header, '\n'.join(email_body), footer), 
+                                                              "%s\n%s\n%s" % (header_html, ''.join(email_body_html), footer_html),
+                                                              self.from_email,
+                                                              [user.email],
+                                                              )
+                    queued += 1
                 
         print "%d email notifications queued for sending" % queued
