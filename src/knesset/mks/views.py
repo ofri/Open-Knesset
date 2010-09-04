@@ -362,6 +362,22 @@ class PartyListView(ListView):
                 context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
         return context
 
+class PartyDetailView(DetailView):
+    def get_context (self):
+        context = super(PartyDetailView, self).get_context()
+        party = context['object']
+        agendas = []
+        for agenda in Agenda.objects.all():
+            agendas.append( {'name':agenda.name,'id':agenda.id,'score':agenda.party_score(party)} )
+            if agendas[-1]['score'] < 0:
+                agendas[-1]['class'] = 'against'
+            else: 
+                agendas[-1]['class'] = 'for' 
+        agendas.sort(key=itemgetter('score'), reverse=True)
+        context.update({'agendas':agendas})
+        return context
+
+
 def member_auto_complete(request):
     if request.method != 'GET':
         raise Http404

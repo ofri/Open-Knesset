@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 score_text_to_score = {'complies-fully':         1.0,
                        'complies-partially':     0.5,
@@ -57,3 +57,15 @@ class Agenda(models.Model):
         if against_score == None:
             against_score = 0 
         return (for_score - against_score)
+    
+    def party_score(self, party):
+        # party_members_ids = party.members.all().values_list('id',flat=True)
+        for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum']
+        against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="against").aggregate(Sum('score'))['score__sum']
+        if for_score == None:
+            for_score = 0 
+        if against_score == None:
+            against_score = 0 
+        return (for_score - against_score)
+
+from listeners import *

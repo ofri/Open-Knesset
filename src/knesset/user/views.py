@@ -16,6 +16,7 @@ from forms import EditProfileForm
 
 from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
+from knesset.agendas.models import Agenda
 from knesset.hashnav import DetailView, ListView
 
 class PublicUserProfile(DetailView):
@@ -128,6 +129,27 @@ def follow_members(request):
                 follow(request.user, member)
             except Member.DoesNotExist:
                 return HttpResponseBadRequest('bad member id')
+        return HttpResponse('OK')
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+def follow_agendas(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
+    if request.method == 'POST':
+        unwatch_id = request.POST.get('unwatch', None)
+        if unwatch_id:
+            agenda = get_object_or_404(Agenda, pk=unwatch_id)
+            unfollow(request.user, agenda, send_action=True)
+        else:
+            watch_id = request.POST.get('watch', None)
+            if not watch_id:
+                return HttpResponseServerError('neither "watch" nor "unwatch" arguments specified')
+            try:
+                agenda = get_object_or_404(Agenda, pk=watch_id)
+                follow(request.user, agenda)
+            except Agenda.DoesNotExist:
+                return HttpResponseBadRequest('bad agenda id')
         return HttpResponse('OK')
     else:
         return HttpResponseNotAllowed(['POST'])
