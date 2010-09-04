@@ -25,6 +25,14 @@
 	&bull;
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
 {% endblock %}
+{% block messages %}
+<span id="message_login">
+    {% trans "You have to be logged in to enable the watch feature." %}<br>
+    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
+    {% trans "or" %}
+    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
+</span>
+{% endblock %}
 {% block divcontent %}
     <h1>{{ object.name }}</h1>
     <div id="agenda-info">

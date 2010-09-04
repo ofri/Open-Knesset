@@ -18,12 +18,13 @@
 {% block nav-members %}class="selected"{% endblock %}
 {% block messages %}
 <span id="message_login">
-    {% trans "You have to be logged in to watch a user." %}
+    {% trans "You have to be logged in to enable the watch feature." %}<br>
     <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
     {% trans "or" %}
     <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
 </span>
 {% endblock %}
+
 {% block subnav %}
     <a id="watch" class="button" href="."></a>
 &bull;
