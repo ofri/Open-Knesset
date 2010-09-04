@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.vote.get_absolute_url as url and action.target.vote.title as vote %}
+The vote <a href="http://{{domain}}{{ url }}">{{ vote }}</a> has been ascribed to the adenga.
+{% endblocktrans %}<br>

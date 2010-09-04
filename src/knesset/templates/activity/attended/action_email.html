@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if action.actor.is_female %}
+<span class="action-verb">נכחה</span>
+{% else %}
+<span class="action-verb">נכח</span>
+{% endif %}
+
+{% with action.target as meeting %}<a href="http://{{ domain }}{{ meeting.get_absolute_url }}" title="{% trans 'read meeting protocol' %}"> בישיבה של {{meeting.committee.name}}</a>
+ בנושא: {{ meeting.topics|safe }}
+{% endwith %}<br>

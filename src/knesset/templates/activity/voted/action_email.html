@@ -1,0 +1,19 @@
+{% load i18n %}
+{% if action.description == 'No Vote' %}
+    {% if action.actor.is_female %}
+        נכחה ולא הצביעה
+    {% else %}
+        {% trans "present and didn't vote" %}
+    {% endif %}
+{% else %}
+    {% if action.actor.is_female %}
+    <span class="action-verb">הצביעה ‏{% trans action.description %}‏</span> 
+    {% else %}
+    <span class="action-verb">הצביע ‏{% trans action.description %}‏</span> 
+    {% endif %}
+{% endif %}
+:
+{% with action.target as vote %}
+    <a  class="action-target" href="http://{{ domain }}{{ vote.get_absolute_url }}">{{ vote.title }}</a>
+{% endwith %}
+<br>

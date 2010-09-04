@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if action.actor.is_female %}
+<span class="action-verb">הצטרפה</span>
+{% else %}
+<span class="action-verb">הצטרף</span>
+{% endif %}
+ להצעה: 
+{% with action.target.bill as bill %}
+    {% if bill %}
+        <a href="http://{{ domain }}{{ bill.get_absolute_url }}">
+            {{ bill }}
+        </a>
+    {% else %}
+        {{ action.target }}
+    {% endif %}
+{% endwith %}<br>

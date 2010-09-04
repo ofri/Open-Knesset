@@ -1,0 +1,4 @@
+{% load i18n %}
+{% if action.description == 'No Vote' %}{% if action.actor.is_female %}נכחה ולא הצביעה{% else %}{% trans "present and didn't vote" %}{% endif %}
+{% else %}{% if action.actor.is_female %}הצביעה {% else %}הצביע {% trans action.description %} {% endif %}{% endif %}: {{ action.target.title }}
+

@@ -102,6 +102,7 @@ INSTALLED_APPS = (
     'actstream',
     'gravatar',
     'annotatetext',
+    'mailer',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -114,6 +115,7 @@ INSTALLED_APPS = (
     'knesset.user',
     'knesset.agendas',
     'knesset.badges',
+    'knesset.notify',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",

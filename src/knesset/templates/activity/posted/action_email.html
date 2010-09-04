@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if action.actor.is_female %}
+<span class="action-verb">פרסמה מאמר</span>
+{% else %}
+<span class="action-verb">פרסם מאמר</span>
+{% endif %}
+:
+{% with action.target as post %}
+    <a href="{{ post.url }}" title="{% trans 'read post' %} {{ post.title|safe }}">
+        {{ post.title|striptags|safe }}
+    </a>
+{% endwith %}<br>
