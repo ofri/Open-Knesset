@@ -32,7 +32,8 @@ class EditProfileForm(forms.Form):
                                         help_text = _('Allow other users to view your profile on the site'))
     gender = forms.ChoiceField(choices = GENDER_CHOICES, 
                                label=_('Gender'))
-    description = forms.CharField(label=_('Tell us and other users bit about yourself'), 
+    description = forms.CharField(required=False,
+                                  label=_('Tell us and other users bit about yourself'), 
                                   widget=forms.Textarea)   
 
     def __init__(self, user=None, *args, **kwargs):
