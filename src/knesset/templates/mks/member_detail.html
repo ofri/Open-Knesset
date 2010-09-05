@@ -123,16 +123,7 @@
         <div>
             <h3>{% trans "Proposed bills topics" %}</h3>
                 <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
-        </div>
-        <div>
-            <h3> {% trans "Topics" %}</h3>
-            <table >
-                <tr>
-                    <td>{% trans "Proposed bills topics" %}</td>
-                    <td  style="max-width:25em"><div class="tags cloud">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div></td>
-                </tr>           
-            </table>
-        </div>        
+        </div>       
         <div>
             <h3> {% trans "Contact Information" %}</h3>
             <table>
@@ -156,22 +147,23 @@
             <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
         </div>
+        <div class="box-agenda">
+        	<h3>{% trans "Agendas" %}</h3>
+        	<div class="list-wrap">
+        		<table>
+         	{% for agenda in agendas %}
+         		<tr>
+         			<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a></td>
+         			<td>{{agenda.score}}</td>
+         			<td class="column-bar">{% bar agenda.score agenda.class 0.01 %}</td>
+        			</tr>
+         	{% endfor %}
+         	</table>
+        	</div>
+        </div>
+        
     </div>
 
-    <div class="box-agenda">
-    	<h3>{% trans "Agendas" %}</h3>
-    	<div class="list-wrap">
-    		<table>
-     	{% for agenda in agendas %}
-     		<tr>
-     			<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a></td>
-     			<td>{{agenda.score}}</td>
-     			<td class="column-bar">{% bar agenda.score agenda.class 0.1 %}</td>
-    			</tr>
-     	{% endfor %}
-     	</table>
-    	</div>
-    </div>
 
     <div class="activities" >
             <form class="select" method="get" action=".">
