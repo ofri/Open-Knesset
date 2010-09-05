@@ -4,10 +4,48 @@ unittest). These will both pass when you run "manage.py test".
 
 Replace these with more appropriate tests for your application.
 """
-
+from datetime import datetime
 from django.test import TestCase
+from django.contrib.auth.models import User
+
+from knesset.agendas.models import Agenda
+from knesset.mks.models import Member
+from knesset.laws.models import  Vote
+from management.commands import notify
+from actstream import follow, action
+
 
 class SimpleTest(TestCase):
+    def setUp(self):
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.mk_1 = Member.objects.create(name='mk 1')
+        self.agenda_1 = Agenda.objects.create(name='agenda 1')
+        self.vote_1 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 1')
+
+    def test_empty_email(self):
+        cmd = notify.Command()
+        email, email_html = cmd.get_email_for_user(self.jacob)
+        self.assertEqual(email, [])
+        follow (self.jacob, self.mk_1)
+        action.send(self.mk_1, verb='farted on', target=self.agenda_1)
+        email, email_html = cmd.get_email_for_user(self.jacob)
+        self.assertEqual(email, [u'\n\nfollowed MKs\n\n', 
+                                 u'Member mk 1\n\nmk 1 farted on agenda 1\n\n'])
+        follow (self.jacob, self.agenda_1)
+        action.send(self.mk_1, verb='voted for', target=self.agenda_1)
+        action.send(self.agenda_1, verb='supports', target=self.mk_1)
+        email, email_html = cmd.get_email_for_user(self.jacob)
+        self.assertEqual(email, [u'\n\nfollowed MKs\n\n', 
+                                 u'Member mk 1\n\nmk 1 voted for agenda 1\n\n', 
+                                 u'Agendas', 
+                                 u'Agenda agenda 1\n\nagenda 1 supports mk 1\n\n'])
+        email, email_html = cmd.get_email_for_user(self.jacob)
+        self.assertEqual(email, [])
+        
+
+
     def test_basic_addition(self):
         """
         Tests that 1 + 1 always equals 2.
