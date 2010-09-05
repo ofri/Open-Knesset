@@ -1,0 +1,33 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load laws_extra %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-votes %}class="selected"{% endblock %}
+{% block divcontent %}
+    {% if member %}
+        <h1>{% blocktrans %}Votes tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+    {% else %}
+        <h1>{% blocktrans %}Votes tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
+    {% endif %}
+    <a href="{% url vote-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
+	<div id="item-list">
+        {% for o in object_list %}
+            <div class="item">
+                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a><br/>
+            </div>
+        {% empty %}
+            {% trans "No results found" %}
+        {% endfor %}
+	</div>
+	<div><h2>{% blocktrans %}MKs attendance in votes related to {{ tag }}{% endblocktrans %}</h2>
+	<div class="tags cloud">
+	{% for mk in members %}
+	<a href="{% url vote-tag tag=tag %}?member={{mk.id}}" class="level{{ mk.font_size }}">{{ mk }}</a>
+	{% endfor %}</div>
+	</div>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}

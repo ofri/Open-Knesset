@@ -11,6 +11,7 @@
         {% trans 'Tags' %}: {% for link in friend_pages.tagged %}        <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Time range' %}: {% for link in friend_pages.since %}     <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Order by' %}:   {% for link in friend_pages.order %}    <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
+        <a href="{% url vote-tags-cloud %}">{% trans 'Choose by tag' %}</a>
 {% endblock %}
 {% block divcontent %}
 	<div id="item-list">
