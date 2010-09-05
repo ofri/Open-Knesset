@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 22:38+0300\n"
-"PO-Revision-Date: 2010-09-01 22:41+0200\n"
+"POT-Creation-Date: 2010-09-05 10:24+0300\n"
+"PO-Revision-Date: 2010-09-05 10:35+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,2853 +13,1154 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: build/lib/knesset/context.py:12
-#: src/knesset/context.py:15
-#: src/knesset/mks/models.py:117
-#: src/knesset/mks/views.py:56
-#: src/knesset/mks/views.py:68
-#: src/knesset/mks/views.py:80
-#: src/knesset/mks/views.py:92
-#: src/knesset/mks/views.py:104
-#: src/knesset/mks/views.py:118
-#: src/knesset/mks/views.py:130
-#: src/knesset/mks/views.py:142
-#: src/knesset/mks/views.py:145
-#: src/knesset/templates/base.html:79
-#: src/knesset/templates/mks/member_graph.html:3
-#: src/knesset/templates/mks/member_graph.html:4
-#: src/knesset/templates/mks/member_graph.html:5
-#: src/knesset/templates/mks/member_list.html:4
-#: src/knesset/templates/mks/member_list.html:5
-#: src/knesset/templates/mks/member_list.html:6
-#: src/knesset/templates/mks/member_list_with_bars.html:5
-#: src/knesset/templates/mks/member_list_with_bars.html:6
+#: context.py:15
+#: mks/models.py:117
+#: mks/views.py:58
+#: mks/views.py:70
+#: mks/views.py:82
+#: mks/views.py:94
+#: mks/views.py:106
+#: mks/views.py:120
+#: mks/views.py:132
+#: mks/views.py:144
+#: mks/views.py:147
+#: templates/base.html:79
+#: templates/mks/member_graph.html:3
+#: templates/mks/member_graph.html.py:4
+#: templates/mks/member_graph.html:5
+#: templates/mks/member_list.html:4
+#: templates/mks/member_list.html.py:5
+#: templates/mks/member_list.html:6
+#: templates/mks/member_list_with_bars.html:5
+#: templates/mks/member_list_with_bars.html:6
 msgid "Members"
 msgstr "ח\"כים"
 
-#: build/lib/knesset/context.py:13
-#: src/knesset/context.py:16
-#: src/knesset/mks/models.py:35
-#: src/knesset/mks/views.py:213
-#: src/knesset/mks/views.py:227
-#: src/knesset/mks/views.py:242
-#: src/knesset/mks/views.py:257
-#: src/knesset/templates/base.html:80
+#: context.py:16
+#: mks/models.py:35
+#: mks/views.py:224
+#: mks/views.py:238
+#: mks/views.py:253
+#: mks/views.py:268
+#: templates/base.html:80
 msgid "Parties"
 msgstr "מפלגות"
 
-#: build/lib/knesset/context.py:14
-#: src/knesset/context.py:17
-#: src/knesset/templates/base.html:78
+#: context.py:17
+#: templates/base.html:78
 msgid "Past Votes"
 msgstr "הצבעות"
 
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/cache.py:90
-#, python-format
-msgid "Cache: %.2fms"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/cache.py:93
-#, fuzzy
-msgid "Cache Usage"
-msgstr "הערה לשינוי"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/headers.py:36
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/headers.py:39
-msgid "HTTP Headers"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/logger.py:56
-#, fuzzy
-msgid "Logging"
-msgstr "כניסה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/logger.py:63
-#, fuzzy
-msgid "Log Messages"
-msgstr "הודעה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/request_vars.py:13
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/request_vars.py:16
-msgid "Request Vars"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/settings_vars.py:16
-msgid "Settings"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/settings_vars.py:19
-#, python-format
-msgid "Settings from <code>%s</code>"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/signals.py:39
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/signals.py:42
-#, fuzzy
-msgid "Signals"
-msgstr "סינאלוה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/sql.py:147
-msgid "SQL"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/sql.py:161
-#, fuzzy
-msgid "SQL Queries"
-msgstr "ערוך פרופיל"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/template.py:48
-#, fuzzy
-msgid "Templates"
-msgstr "תבנית"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/template.py:53
-#, python-format
-msgid "Templates (%(num_templates)s rendered)"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:35
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:39
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/logger.html:7
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:5
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:11
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:12
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:11
-#: src/knesset/laws/views.py:217
-#: src/knesset/templates/include/vote_detail.html:9
-#: src/knesset/templates/laws/vote_detail.html:24
-msgid "Time"
-msgstr "זמן"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:47
-#, fuzzy
-msgid "Resource Usage"
-msgstr "הערה לשינוי"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:78
-#, fuzzy
-msgid "User CPU time"
-msgstr "פרופיל משתמש"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:79
-#, fuzzy
-msgid "System CPU time"
-msgstr "פרופיל משתמש"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:80
-#, fuzzy
-msgid "Total CPU time"
-msgstr "פרופיל משתמש"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:81
-msgid "Elapsed time"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/timer.py:82
-#, fuzzy
-msgid "Context switches"
-msgstr "סוגי תוכן"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/version.py:20
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/panels/version.py:29
-#, fuzzy
-msgid "Versions"
-msgstr "התחברויות"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/base.html:12
-#, fuzzy
-msgid "Hide Toolbar"
-msgstr "הצג הכל"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/base.html:12
-#, fuzzy
-msgid "Hide"
-msgstr "הינדי"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/base.html:37
-#, fuzzy
-msgid "Show Toolbar"
-msgstr "הצג הכל"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/base.html:43
-#, fuzzy
-msgid "Close"
-msgstr "צבע"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/redirect.html:7
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/logger.html:9
-#, fuzzy
-msgid "Location"
-msgstr "פעולה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/redirect.html:9
-msgid "The Django Debug Toolbar has intercepted a redirect to the above URL for debug viewing purposes.  You can click the above link to continue with the redirect as normal.  If you'd like to disable this feature, set the <code>DEBUG_TOOLBAR_CONFIG</code> dictionary's key <code>INTERCEPT_REDIRECTS</code> to <code>False</code>."
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:14
-msgid "Total Calls"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:16
-msgid "Total Time"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:18
-#, fuzzy
-msgid "Hits"
-msgstr "אתרים"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:20
-#, fuzzy
-msgid "Misses"
-msgstr "מיי"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:35
-msgid "Breakdown"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:40
-msgid "Type"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:41
-#, fuzzy
-msgid "Parameters"
-msgstr "מפלגות"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/cache.html:42
-#, fuzzy
-msgid "Function"
-msgstr "פעולה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/headers.html:5
-msgid "Key"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/headers.html:6
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:39
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:65
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:87
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:109
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/settings_vars.html:6
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/timer.html:10
-#, fuzzy
-msgid "Value"
-msgstr "זכר"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/logger.html:6
-#, fuzzy
-msgid "Level"
-msgstr "לביצה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/logger.html:8
-#, fuzzy
-msgid "Message"
-msgstr "הודעה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/logger.html:24
-#, fuzzy
-msgid "No messages logged"
-msgstr "הודעה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:3
-#, fuzzy
-msgid "View information"
-msgstr "ניהול אתר"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:7
-#, fuzzy
-msgid "View Function"
-msgstr "פעולה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:8
-#, fuzzy
-msgid "args"
-msgstr "ארגאו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:9
-#, fuzzy
-msgid "kwargs"
-msgstr "ארגאו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:29
-#, fuzzy
-msgid "COOKIES Variables"
-msgstr "וו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:38
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:64
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:86
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:108
-#, fuzzy
-msgid "Variable"
-msgstr "וו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:52
-msgid "No COOKIE data"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:55
-#, fuzzy
-msgid "SESSION Variables"
-msgstr "וו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:78
-msgid "No SESSION data"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:81
-#, fuzzy
-msgid "GET Variables"
-msgstr "וו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:100
-#, fuzzy
-msgid "No GET data"
-msgstr "אין מספיק נתונים"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:103
-#, fuzzy
-msgid "POST Variables"
-msgstr "וו"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:122
-msgid "No POST data"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/settings_vars.html:5
-msgid "Setting"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/signals.html:5
-#, fuzzy
-msgid "Signal"
-msgstr "סינאלוה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/signals.html:6
-msgid "Providing Args"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/signals.html:7
-msgid "Receivers"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:6
-#, fuzzy
-msgid "Action"
-msgstr "פעולה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:7
-msgid "Stacktrace"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:8
-#, fuzzy
-msgid "Query"
-msgstr "משתמש"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:38
-#, fuzzy
-msgid "Line"
-msgstr "תשעה"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:39
-msgid "Method"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql.html:40
-#, fuzzy
-msgid "File"
-msgstr "סינון"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:3
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:3
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:3
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/template_source.html:3
-msgid "Back"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:4
-msgid "SQL Explained"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:9
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:10
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:9
-msgid "Executed SQL"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:4
-#, fuzzy
-msgid "SQL Profiled"
-msgstr "ערוך פרופיל"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:35
-msgid "Error"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:4
-msgid "SQL Selected"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:34
-msgid "Empty set"
-msgstr ""
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/template_source.html:4
-#, fuzzy
-msgid "Template Source"
-msgstr "שם תבנית"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:2
-#, fuzzy
-msgid "Template path"
-msgstr "שם תבנית"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:13
-#, fuzzy
-msgid "Template"
-msgstr "תבנית"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:21
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:37
-#, fuzzy
-msgid "Toggle Context"
-msgstr "הצבעות מתויגות"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:28
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:43
-#: src/knesset/agendas/views.py:26
-msgid "None"
-msgstr "ללא"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/templates.html:31
-#, fuzzy
-msgid "Context processor"
-msgstr "סוגי תוכן"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/timer.html:9
-#, fuzzy
-msgid "Resource"
-msgstr "הערה לשינוי"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/versions.html:6
-#, fuzzy
-msgid "Package"
-msgstr "פראג"
-
-#: eggs/django_debug_toolbar-0.8.3-py2.6.egg/debug_toolbar/templates/debug_toolbar/panels/versions.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:67
-#: parts/planet/planet/models.py:69
-#, fuzzy
-msgid "Version"
-msgstr "פרסית"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/admin/__init__.py:121
-msgid "and"
-msgstr "ו"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/admin/__init__.py:123
-#, python-format
-msgid "Use the left field to do %(model_name)s lookups in the fields %(field_list)s."
-msgstr ""
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:15
-msgid "created"
-msgstr ""
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:16
-msgid "modified"
-msgstr ""
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:26
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:46
-#: parts/planet/planet/models.py:48
-#: src/knesset/links/models.py:10
-#: src/knesset/links/models.py:22
-msgid "title"
-msgstr "כותרת"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:27
-#, fuzzy
-msgid "slug"
-msgstr "טלגו"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:28
-#, fuzzy
-msgid "description"
-msgstr "תאור"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:50
-#, fuzzy
-msgid "Inactive"
-msgstr "Iwate"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:51
-#, fuzzy
-msgid "Active"
-msgstr "פעילויות"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:53
-#, fuzzy
-msgid "status"
-msgstr "מצב משפחתי"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:56
-msgid "keep empty for an immediate activation"
-msgstr ""
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/db/models.py:58
-msgid "keep empty for indefinite activation"
-msgstr ""
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/management/commands/show_urls.py:33
-#, python-format
-msgid "%s does not appear to be a urlpattern object"
-msgstr "לא נראה ש-%s הוא אובייקט urlpattern"
-
-#: eggs/django_extensions-0.5-py2.6.egg/django_extensions/templates/django_extensions/widgets/foreignkey_searchinput.html:4
-msgid "Lookup"
-msgstr "חפש"
-
-#: eggs/django_haystack-1.0.1_final-py2.6.egg/haystack/forms.py:18
-#: src/knesset/templates/_main.html:10
-#: src/knesset/templates/base.html:70
-#: src/knesset/templates/search/search.html:3
-#: src/knesset/templates/search/search.html:5
-#: src/knesset/templates/search/search.html:13
-msgid "Search"
-msgstr "חיפוש"
-
-#: eggs/django_haystack-1.0.1_final-py2.6.egg/haystack/forms.py:69
-#, fuzzy
-msgid "Search In"
-msgstr "חיפוש ב"
-
-#: eggs/django_pagination-1.0.7-py2.6.egg/pagination/templates/pagination/pagination.html:5
-#: eggs/django_pagination-1.0.7-py2.6.egg/pagination/templates/pagination/pagination.html:7
-#: src/knesset/templates/pagination/pagination.html:5
-#: src/knesset/templates/pagination/pagination.html:7
-msgid "previous"
-msgstr "העמוד הקודם"
-
-#: eggs/django_pagination-1.0.7-py2.6.egg/pagination/templates/pagination/pagination.html:21
-#: eggs/django_pagination-1.0.7-py2.6.egg/pagination/templates/pagination/pagination.html:23
-#: src/knesset/templates/pagination/pagination.html:21
-#: src/knesset/templates/pagination/pagination.html:23
-msgid "next"
-msgstr "העמוד הבא"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:55
-#: parts/planet/planet/feeds.py:50
-#, fuzzy, python-format
-msgid "Posts in %s"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:58
-#: parts/planet/planet/feeds.py:53
-#, fuzzy
-msgid "All posts"
-msgstr "כל ההצבעות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:85
-#: parts/planet/planet/feeds.py:67
-#, fuzzy, python-format
-msgid "Posts by %(author_name)s - %(site_name)s"
-msgstr "ההערות האחרונות על %(site_name)s"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:111
-#, python-format
-msgid "Posts in %(feed_title)s - %(site_name)s"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:142
-#: parts/planet/planet/feeds.py:81
-#, python-format
-msgid "Posts under %(tag)s tag - %(site_name)s"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:173
-#: parts/planet/planet/feeds.py:97
-#, python-format
-msgid "Posts by %(author_name)s under %(tag)s tag - %(site_name)s"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:223
-#: eggs/django_planet-0.1-py2.6.egg/planet/feeds.py:228
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:11
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:22
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:12
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:11
-#: parts/planet/planet/templates/planet/authors/detail.html:11
-#: parts/planet/planet/templates/planet/posts/details.html:22
-#: parts/planet/planet/templates/planet/posts/full_details.html:12
-#: parts/planet/planet/templates/planet/tags/detail.html:11
-#: src/knesset/templates/planet/tags/detail.html:11
-msgid "in"
-msgstr "ב"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/forms.py:9
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:220
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:17
-#: parts/planet/planet/forms.py:9
-#: parts/planet/planet/models.py:222
-#: parts/planet/planet/templates/planet/base.html:17
-#: src/knesset/templates/base.html:83
-#: src/knesset/templates/planet/base.html:12
-#: src/knesset/templates/planet/posts/list.html:4
-#: src/knesset/templates/planet/tags/detail.html:4
-msgid "Posts"
-msgstr "מאמרים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/forms.py:10
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/list.html:11
-#: parts/planet/planet/forms.py:10
-#: parts/planet/planet/templates/planet/tags/list.html:11
-#: src/knesset/templates/include/vote_detail.html:49
-#: src/knesset/templates/include/vote_detail.html:53
-#: src/knesset/templates/include/vote_detail.html:61
-#: src/knesset/templates/include/vote_list.html:8
-#: src/knesset/templates/laws/bill_detail.html:357
-#: src/knesset/templates/laws/bill_detail.html:374
-#: src/knesset/templates/laws/vote_detail.html:86
-#: src/knesset/templates/laws/vote_detail.html:103
-#: src/knesset/templates/laws/vote_list.html:11
-#: src/knesset/templates/laws/vote_list.html:54
-msgid "Tags"
-msgstr "תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/forms.py:11
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:55
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:23
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:11
-#: parts/planet/planet/forms.py:11
-#: parts/planet/planet/models.py:57
-#: parts/planet/planet/templates/planet/base.html:23
-#: parts/planet/planet/templates/planet/blogs/list.html:11
-#, fuzzy
-msgid "Blogs"
-msgstr "רשימת בלוגים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/forms.py:12
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:250
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:20
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:11
-#: parts/planet/planet/forms.py:12
-#: parts/planet/planet/models.py:252
-#: parts/planet/planet/templates/planet/base.html:20
-#: parts/planet/planet/templates/planet/authors/list.html:11
-msgid "Authors"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/forms.py:13
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:129
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:26
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:11
-#: parts/planet/planet/forms.py:13
-#: parts/planet/planet/models.py:131
-#: parts/planet/planet/templates/planet/base.html:26
-#: parts/planet/planet/templates/planet/feeds/list.html:11
-#, fuzzy
-msgid "Feeds"
-msgstr "פיד"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:47
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:66
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:91
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:206
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:264
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:286
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:309
-#: parts/planet/planet/models.py:49
-#: parts/planet/planet/models.py:68
-#: parts/planet/planet/models.py:93
-#: parts/planet/planet/models.py:208
-#: parts/planet/planet/models.py:266
-#: parts/planet/planet/models.py:288
-#: parts/planet/planet/models.py:311
-#, fuzzy
-msgid "Url"
-msgstr "אורי"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:48
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:186
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:213
-#: parts/planet/planet/models.py:50
-#: parts/planet/planet/models.py:188
-#: parts/planet/planet/models.py:215
-msgid "Date created"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:54
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:11
-#: parts/planet/planet/models.py:56
-#: parts/planet/planet/templates/planet/blogs/detail.html:4
-#: parts/planet/planet/templates/planet/blogs/detail.html:6
-#: parts/planet/planet/templates/planet/blogs/detail.html:7
-#: parts/planet/planet/templates/planet/blogs/detail.html:11
-#, fuzzy
-msgid "Blog"
-msgstr "כניסה לחשבון"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:65
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:240
-#: parts/planet/planet/models.py:67
-#: parts/planet/planet/models.py:242
-msgid "Name"
-msgstr "שם"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:73
-#: parts/planet/planet/models.py:75
-#, fuzzy
-msgid "Generator"
-msgstr "ג'נבה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:74
-#: parts/planet/planet/models.py:76
-#, fuzzy
-msgid "Generators"
-msgstr "ג'נבה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:93
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:204
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:287
-#: parts/planet/planet/models.py:95
-#: parts/planet/planet/models.py:206
-#: parts/planet/planet/models.py:289
-#, fuzzy
-msgid "Title"
-msgstr "כותרת"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:95
-#: parts/planet/planet/models.py:97
-#, fuzzy
-msgid "Subtitle"
-msgstr "כותרת"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:97
-#: parts/planet/planet/models.py:99
-#, fuzzy
-msgid "Rights"
-msgstr "שמונה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:101
-#: parts/planet/planet/models.py:103
-#, fuzzy
-msgid "Infos"
-msgstr "אין נתונים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:103
-#: parts/planet/planet/models.py:105
-msgid "Language"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:105
-#: parts/planet/planet/models.py:107
-msgid "Global Unique Identifier"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:108
-#: parts/planet/planet/models.py:110
-msgid "Icon URL"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:110
-#: parts/planet/planet/models.py:112
-msgid "Image URL"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:113
-#: parts/planet/planet/models.py:115
-#, fuzzy
-msgid "Etag"
-msgstr "תג:"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:116
-#: parts/planet/planet/models.py:118
-msgid "Last modified"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:119
-#: parts/planet/planet/models.py:121
-#, fuzzy
-msgid "Last checked"
-msgstr "שבוע אחרון"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:121
-#: parts/planet/planet/models.py:123
-#, fuzzy
-msgid "Is active"
-msgstr "שמירה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:122
-#: parts/planet/planet/models.py:124
-msgid "If disabled, this feed will not be further updated."
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:128
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:29
-#: parts/planet/planet/models.py:130
-#: parts/planet/planet/templates/planet/feeds/detail.html:4
-#: parts/planet/planet/templates/planet/feeds/detail.html:6
-#: parts/planet/planet/templates/planet/feeds/detail.html:7
-#: parts/planet/planet/templates/planet/feeds/detail.html:29
-#, fuzzy
-msgid "Feed"
-msgstr "פיד"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:185
-#: parts/planet/planet/models.py:187
-msgid "Is Contributor?"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:189
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:190
-#: parts/planet/planet/models.py:191
-#: parts/planet/planet/models.py:192
-msgid "Post Author Data"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:207
-#: parts/planet/planet/models.py:209
-msgid "Guid"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:208
-#: parts/planet/planet/models.py:210
-#: src/knesset/links/admin.py:13
-msgid "Content"
-msgstr "תוכן"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:209
-#: parts/planet/planet/models.py:211
-#, fuzzy
-msgid "Comments URL"
-msgstr "תגובה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:211
-#: parts/planet/planet/models.py:213
-#, fuzzy
-msgid "Date modified"
-msgstr "תאריך הצטרפות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:219
-#: parts/planet/planet/models.py:221
-#, fuzzy
-msgid "Post"
-msgstr "מאמרים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:242
-#: parts/planet/planet/models.py:244
-msgid "Author email"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:243
-#: parts/planet/planet/models.py:245
-#, fuzzy
-msgid "Profile URL"
-msgstr "עריכת פרופיל"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:249
-#: parts/planet/planet/models.py:251
-#, fuzzy
-msgid "Author"
-msgstr "שעה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:262
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:284
-#: parts/planet/planet/models.py:264
-#: parts/planet/planet/models.py:286
-msgid "Relation"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:263
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:285
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:308
-#: parts/planet/planet/models.py:265
-#: parts/planet/planet/models.py:287
-#: parts/planet/planet/models.py:310
-msgid "MIME type"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:270
-#: parts/planet/planet/models.py:272
-#, fuzzy
-msgid "Feed Link"
-msgstr "רשימת הפידים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:271
-#: parts/planet/planet/models.py:273
-#, fuzzy
-msgid "Feed Links"
-msgstr "רשימת הפידים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:293
-#: parts/planet/planet/models.py:295
-#, fuzzy
-msgid "Post Link"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:294
-#: parts/planet/planet/models.py:296
-#, fuzzy
-msgid "Post Links"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:307
-#: parts/planet/planet/models.py:309
-#, fuzzy
-msgid "Length"
-msgstr "דרנתה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:315
-#: parts/planet/planet/models.py:317
-#, fuzzy
-msgid "Post Enclosure"
-msgstr "פרסום תגובה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/models.py:316
-#: parts/planet/planet/models.py:318
-msgid "Post Enclosures"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/site_base.html:62
-#: parts/planet/planet/templates/site_base.html:62
-msgid "Theme heavly based on the minimal and beautiful <a href=\"http://blog.montylounge.com/\" title=\"Visit Mounty Lounge Industries blog\">Mounty Lounge Industries blog's</a> design"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:14
-#: parts/planet/planet/templates/planet/base.html:14
-#, fuzzy
-msgid "Browse"
-msgstr "עיון"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:29
-#: parts/planet/planet/templates/planet/base.html:29
-#: src/knesset/templates/planet/base.html:15
-msgid "Tag Cloud"
-msgstr "ענן תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:38
-#: parts/planet/planet/templates/planet/base.html:38
-#: src/knesset/templates/planet/base.html:24
-msgid "Search in"
-msgstr "חיפוש ב"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:40
-#: parts/planet/planet/templates/planet/base.html:40
-#: src/knesset/templates/planet/base.html:26
-msgid "ok"
-msgstr "להמשך"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:52
-#: parts/planet/planet/templates/planet/base.html:52
-#: src/knesset/templates/planet/base.html:38
-msgid "Suscribe to RSS feed"
-msgstr "הרשמה לפיד"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:72
-#: parts/planet/planet/templates/planet/base.html:72
-#: src/knesset/templates/planet/base.html:58
-msgid "This is a django powered site!"
-msgstr "זהו אתר מבוסס django!"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/base.html:81
-#: parts/planet/planet/templates/planet/base.html:81
-msgid "A <a href=\"http://github.com/matagus/django-planet/tree\" title=\"django-planet Powered\">django-planet</a> powered site"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:36
-#: parts/planet/planet/templates/planet/authors/detail.html:4
-#: parts/planet/planet/templates/planet/authors/detail.html:6
-#: parts/planet/planet/templates/planet/authors/detail.html:7
-#: parts/planet/planet/templates/planet/authors/detail.html:36
-msgid "has written the following posts"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:11
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:22
-#: parts/planet/planet/templates/planet/authors/detail.html:11
-#: parts/planet/planet/templates/planet/posts/details.html:22
-#, fuzzy
-msgid "blog"
-msgstr "כניסה לחשבון"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:15
-#: parts/planet/planet/templates/planet/authors/detail.html:15
-#, fuzzy
-msgid "Suscribe to RSS feed for blog"
-msgstr "הרשמה לפיד של התג הזה "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:23
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:13
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:35
-#: parts/planet/planet/templates/planet/authors/detail.html:23
-#: parts/planet/planet/templates/planet/feeds/detail.html:13
-#: parts/planet/planet/templates/planet/tags/detail.html:35
-#: src/knesset/templates/planet/tags/detail.html:36
-msgid "See the list of authors talking about this tag"
-msgstr "רשימה של כותבים שכתבו על תג זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:24
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:14
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:36
-#: parts/planet/planet/templates/planet/authors/detail.html:24
-#: parts/planet/planet/templates/planet/feeds/detail.html:14
-#: parts/planet/planet/templates/planet/tags/detail.html:36
-#: src/knesset/templates/planet/tags/detail.html:37
-msgid "People talking about this"
-msgstr "ח\"כים המדברים על זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:28
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:38
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:18
-#: parts/planet/planet/templates/planet/authors/detail.html:28
-#: parts/planet/planet/templates/planet/blogs/detail.html:38
-#: parts/planet/planet/templates/planet/feeds/detail.html:18
-#, fuzzy
-msgid "See the list of blogs talking about this tag"
-msgstr "רשימה של כותבים שכתבו על תג זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:29
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:19
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:41
-#: parts/planet/planet/templates/planet/authors/detail.html:29
-#: parts/planet/planet/templates/planet/feeds/detail.html:19
-#: parts/planet/planet/templates/planet/tags/detail.html:41
-#, fuzzy
-msgid "Feeds talking about this"
-msgstr "ח\"כים המדברים על זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:40
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:26
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:49
-#: parts/planet/planet/templates/planet/authors/detail.html:40
-#: parts/planet/planet/templates/planet/blogs/detail.html:26
-#: parts/planet/planet/templates/planet/feeds/detail.html:49
-#, fuzzy
-msgid "Posts under tag"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:41
-#: parts/planet/planet/templates/planet/authors/detail.html:41
-msgid "See all posts by"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/detail.html:42
-#: parts/planet/planet/templates/planet/authors/detail.html:42
-#, fuzzy
-msgid "See the complete list of posts by this author"
-msgstr "רשימה מלאה של מאמרים מהבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:7
-#: parts/planet/planet/templates/planet/authors/list.html:4
-#: parts/planet/planet/templates/planet/authors/list.html:6
-#: parts/planet/planet/templates/planet/authors/list.html:7
-#, fuzzy
-msgid "Authors list"
-msgstr "רשימת בלוגים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:17
-#: parts/planet/planet/templates/planet/authors/list.html:17
-msgid "Author:"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list.html:21
-#: parts/planet/planet/templates/planet/authors/list.html:21
-msgid "writes for"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/list_for_tag.html:5
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/blocks/list_for_tag.html:3
-#: parts/planet/planet/templates/planet/authors/list_for_tag.html:5
-#: parts/planet/planet/templates/planet/authors/blocks/list_for_tag.html:3
-#, fuzzy
-msgid "Authors talking about"
-msgstr "ח\"כים המדברים על זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/blocks/list.html:3
-#: parts/planet/planet/templates/planet/authors/blocks/list.html:3
-msgid "Authrs"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/blocks/list.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/blocks/list_for_tag.html:7
-#: parts/planet/planet/templates/planet/authors/blocks/list.html:7
-#: parts/planet/planet/templates/planet/authors/blocks/list_for_tag.html:7
-msgid "Author of"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/authors/blocks/list_for_feed.html:2
-#: parts/planet/planet/templates/planet/authors/blocks/list_for_feed.html:2
-#, fuzzy
-msgid "Authors for this feed"
-msgstr "הרשמה לפיד זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:12
-#: parts/planet/planet/templates/planet/blogs/detail.html:4
-#: parts/planet/planet/templates/planet/blogs/detail.html:6
-#: parts/planet/planet/templates/planet/blogs/detail.html:7
-#: parts/planet/planet/templates/planet/feeds/detail.html:4
-#: parts/planet/planet/templates/planet/feeds/detail.html:6
-#: parts/planet/planet/templates/planet/feeds/detail.html:7
-#: parts/planet/planet/templates/planet/tags/detail.html:4
-#: parts/planet/planet/templates/planet/tags/detail.html:7
-#: parts/planet/planet/templates/planet/tags/detail.html:12
-#: src/knesset/templates/planet/tags/detail.html:7
-#: src/knesset/templates/planet/tags/detail.html:12
-msgid "Posts in"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:14
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:22
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:44
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:28
-#: parts/planet/planet/templates/planet/blogs/detail.html:14
-#: parts/planet/planet/templates/planet/blogs/list.html:22
-#: parts/planet/planet/templates/planet/feeds/detail.html:44
-#: parts/planet/planet/templates/planet/feeds/list.html:28
-#: src/knesset/templates/planet/blogs/list.html:25
-#: src/knesset/templates/planet/feeds/list.html:27
-msgid "web"
-msgstr "אתר"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:14
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:22
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:44
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:28
-#: parts/planet/planet/templates/planet/blogs/detail.html:14
-#: parts/planet/planet/templates/planet/blogs/list.html:22
-#: parts/planet/planet/templates/planet/feeds/detail.html:44
-#: parts/planet/planet/templates/planet/feeds/list.html:28
-#: src/knesset/templates/planet/blogs/list.html:25
-#: src/knesset/templates/planet/feeds/list.html:27
-msgid "Go to the original blog"
-msgstr "ביקור בבלוג המקורי"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:18
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:30
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:35
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:38
-#: parts/planet/planet/templates/planet/blogs/detail.html:18
-#: parts/planet/planet/templates/planet/blogs/list.html:30
-#: parts/planet/planet/templates/planet/feeds/detail.html:35
-#: parts/planet/planet/templates/planet/feeds/detail.html:38
-#: src/knesset/templates/planet/blogs/list.html:33
-msgid "Subscribe to "
-msgstr "הרשמה ל"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:19
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:31
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:36
-#: parts/planet/planet/templates/planet/blogs/detail.html:19
-#: parts/planet/planet/templates/planet/blogs/list.html:31
-#: parts/planet/planet/templates/planet/feeds/detail.html:36
-#: src/knesset/templates/planet/blogs/list.html:34
-msgid "RSS 2.0 Feed"
-msgstr "פיד רסס"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:21
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:29
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:38
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:25
-#: parts/planet/planet/templates/planet/blogs/detail.html:21
-#: parts/planet/planet/templates/planet/blogs/list.html:29
-#: parts/planet/planet/templates/planet/feeds/detail.html:38
-#: parts/planet/planet/templates/planet/feeds/list.html:25
-#: src/knesset/templates/mks/member_detail.html:31
-#: src/knesset/templates/planet/blogs/list.html:32
-#: src/knesset/templates/planet/feeds/list.html:24
-msgid "feed"
-msgstr "פיד"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:21
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:29
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:18
-#: parts/planet/planet/templates/planet/blogs/detail.html:21
-#: parts/planet/planet/templates/planet/blogs/list.html:29
-#: parts/planet/planet/templates/planet/feeds/list.html:18
-#: src/knesset/templates/planet/blogs/list.html:32
-#: src/knesset/templates/planet/feeds/list.html:17
-msgid "See the full list of post from this feed"
-msgstr "רשימת המאמרים המלאה מהבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/detail.html:39
-#: parts/planet/planet/templates/planet/blogs/detail.html:39
-#, fuzzy
-msgid "Other blogs talking about "
-msgstr "ח\"כים המדברים על זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:7
-#: parts/planet/planet/templates/planet/blogs/list.html:4
-#: parts/planet/planet/templates/planet/blogs/list.html:6
-#: parts/planet/planet/templates/planet/blogs/list.html:7
-#: src/knesset/templates/planet/blogs/list.html:4
-#: src/knesset/templates/planet/blogs/list.html:6
-#: src/knesset/templates/planet/blogs/list.html:7
-msgid "Blogs list"
-msgstr "רשימת בלוגים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:18
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:25
-#: parts/planet/planet/templates/planet/blogs/list.html:18
-#: parts/planet/planet/templates/planet/blogs/list.html:25
-#: src/knesset/templates/planet/blogs/list.html:18
-#: src/knesset/templates/planet/blogs/list.html:28
-msgid "See the full list of posts from this blog"
-msgstr "רשימה מלאה של מאמרים מהבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:25
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:31
-#: parts/planet/planet/templates/planet/blogs/list.html:25
-#: parts/planet/planet/templates/planet/feeds/list.html:31
-#: src/knesset/templates/planet/blogs/list.html:28
-#: src/knesset/templates/planet/feeds/list.html:30
-msgid "browse"
-msgstr "עיון"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/blogs/list.html:25
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:31
-#: parts/planet/planet/templates/planet/blogs/list.html:25
-#: parts/planet/planet/templates/planet/feeds/list.html:31
-#: src/knesset/templates/planet/blogs/list.html:28
-#: src/knesset/templates/planet/feeds/list.html:30
-msgid "latest posts"
-msgstr "מאמרים אחרונים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:27
-#: parts/planet/planet/templates/planet/feeds/detail.html:27
-#, fuzzy
-msgid "Feed icon"
-msgstr "רשימת הפידים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/detail.html:41
-#: parts/planet/planet/templates/planet/feeds/detail.html:41
-msgid "generator"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:7
-#: parts/planet/planet/templates/planet/feeds/list.html:4
-#: parts/planet/planet/templates/planet/feeds/list.html:6
-#: parts/planet/planet/templates/planet/feeds/list.html:7
-#: src/knesset/templates/planet/feeds/list.html:4
-#: src/knesset/templates/planet/feeds/list.html:6
-#: src/knesset/templates/planet/feeds/list.html:7
-msgid "Feeds list"
-msgstr "רשימת הפידים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:22
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list_for_tag.html:10
-#: parts/planet/planet/templates/planet/feeds/list.html:22
-#: parts/planet/planet/templates/planet/feeds/list_for_tag.html:10
-#: src/knesset/templates/planet/feeds/list.html:21
-msgid "Subscribe to feed of"
-msgstr "הרשמה לפיד של "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:25
-#: parts/planet/planet/templates/planet/feeds/list.html:25
-#: src/knesset/templates/planet/feeds/list.html:24
-msgid "Subscribe to this feed"
-msgstr "הרשמה לפיד זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list.html:31
-#: parts/planet/planet/templates/planet/feeds/list.html:31
-#: src/knesset/templates/planet/feeds/list.html:30
-msgid "See the full list of posts from this feed"
-msgstr "רשימת מאמרים מלאה מפיד זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/list_for_tag.html:5
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/feeds/blocks/list_for_tag.html:3
-#: parts/planet/planet/templates/planet/feeds/list_for_tag.html:5
-#: parts/planet/planet/templates/planet/feeds/blocks/list_for_tag.html:3
-#, fuzzy
-msgid "Feeds talking about"
-msgstr "ח\"כים המדברים על זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:3
-#: parts/planet/planet/templates/planet/posts/details.html:3
-msgid "Read "
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:8
-#: parts/planet/planet/templates/planet/posts/details.html:8
-msgid "published in"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:8
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:12
-#: parts/planet/planet/templates/planet/posts/details.html:8
-#: parts/planet/planet/templates/planet/posts/full_details.html:12
-#, fuzzy
-msgid "See all posts for this feed"
-msgstr "רשימת מאמרים מלאה מפיד זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:14
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:26
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:457
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:467
-#: parts/planet/planet/templates/planet/posts/details.html:14
-#: parts/planet/planet/templates/planet/posts/full_details.html:26
-#: parts/tagging/tagging/models.py:467
-#: src/knesset/templates/planet/posts/full_details.html:25
-msgid "tags"
-msgstr "תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:19
-#: parts/planet/planet/templates/planet/posts/details.html:19
-#, fuzzy
-msgid "Read more"
-msgstr "להסיר"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:22
-#: parts/planet/planet/templates/planet/posts/details.html:22
-#, fuzzy
-msgid "Read original post"
-msgstr "קרא בבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/details.html:22
-#: parts/planet/planet/templates/planet/posts/details.html:22
-msgid "read original post"
-msgstr "קרא בבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:5
-#: parts/planet/planet/templates/planet/posts/full_details.html:5
-msgid "published"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:7
-#: parts/annotatetext/annotatetext/templates/annotatetext/_annotation.html:5
-#: parts/planet/planet/templates/planet/posts/full_details.html:7
-#: src/knesset/templates/annotatetext/_annotation.html:5
-#: src/knesset/templates/laws/knessetproposal_detail.html:14
-#: src/knesset/templates/laws/knessetproposal_list.html:17
-msgid "by"
-msgstr "על ידי"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:8
-#: parts/planet/planet/templates/planet/posts/full_details.html:8
-#, fuzzy
-msgid "See all posts for this author"
-msgstr "רשימה מלאה של מאמרים מהבלוג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:18
-#: parts/planet/planet/templates/planet/posts/full_details.html:18
-#, fuzzy
-msgid "original entry"
-msgstr "רישום יומן"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/full_details.html:21
-#: parts/planet/planet/templates/planet/posts/full_details.html:21
-msgid "in blog"
-msgstr ""
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/list.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/list.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/list.html:7
-#: parts/planet/planet/templates/planet/posts/list.html:4
-#: parts/planet/planet/templates/planet/posts/list.html:6
-#: parts/planet/planet/templates/planet/posts/list.html:7
-#, fuzzy
-msgid "Posts list"
-msgstr "מאמרים ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/posts/list.html:11
-#: parts/planet/planet/templates/planet/posts/list.html:11
-#, fuzzy
-msgid "Latest posts"
-msgstr "מאמרים אחרונים"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/cloud.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/cloud.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/cloud.html:7
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/cloud.html:11
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/blocks/cloud.html:2
-#: parts/planet/planet/templates/planet/tags/cloud.html:4
-#: parts/planet/planet/templates/planet/tags/cloud.html:6
-#: parts/planet/planet/templates/planet/tags/cloud.html:7
-#: parts/planet/planet/templates/planet/tags/cloud.html:11
-#: parts/planet/planet/templates/planet/tags/blocks/cloud.html:2
-#: src/knesset/templates/planet/tags/cloud.html:4
-#: src/knesset/templates/planet/tags/cloud.html:6
-#: src/knesset/templates/planet/tags/cloud.html:7
-msgid "Tags cloud"
-msgstr "ענן תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:6
-#: parts/planet/planet/templates/planet/tags/detail.html:6
-#: src/knesset/templates/planet/tags/detail.html:6
-msgid "tag in"
-msgstr "תג ב "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:11
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:456
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:466
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:466
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:476
-#: parts/planet/planet/templates/planet/tags/detail.html:11
-#: parts/tagging/tagging/models.py:466
-#: parts/tagging/tagging/models.py:476
-#: src/knesset/templates/planet/tags/detail.html:11
-msgid "tag"
-msgstr "תג:"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:16
-#: parts/planet/planet/templates/planet/tags/detail.html:16
-#: src/knesset/templates/planet/tags/detail.html:16
-msgid "Suscribe to RSS feed for tag"
-msgstr "הרשמה לפיד של התג הזה "
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:22
-#: parts/planet/planet/templates/planet/tags/detail.html:22
-#: src/knesset/templates/planet/tags/detail.html:22
-msgid "Tag"
-msgstr "תג"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/detail.html:40
-#: parts/planet/planet/templates/planet/tags/detail.html:40
-#, fuzzy
-msgid "See the list of feeds talking about this tag"
-msgstr "רשימה של כותבים שכתבו על תג זה"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/list.html:4
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/list.html:6
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/list.html:7
-#: parts/planet/planet/templates/planet/tags/list.html:4
-#: parts/planet/planet/templates/planet/tags/list.html:6
-#: parts/planet/planet/templates/planet/tags/list.html:7
-#: src/knesset/templates/planet/tags/list.html:4
-#: src/knesset/templates/planet/tags/list.html:6
-#: src/knesset/templates/planet/tags/list.html:7
-msgid "Tags list"
-msgstr "רשימת תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/blocks/authors_cloud.html:3
-#: parts/planet/planet/templates/planet/tags/blocks/authors_cloud.html:3
-#, fuzzy
-msgid "Tags cloud for author"
-msgstr "ענן תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/blocks/blogs_cloud.html:3
-#: parts/planet/planet/templates/planet/tags/blocks/blogs_cloud.html:3
-#, fuzzy
-msgid "Tags cloud for blog"
-msgstr "ענן תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/blocks/feeds_cloud.html:3
-#: parts/planet/planet/templates/planet/tags/blocks/feeds_cloud.html:3
-#, fuzzy
-msgid "Tags cloud for feed"
-msgstr "ענן תגיות"
-
-#: eggs/django_planet-0.1-py2.6.egg/planet/templates/planet/tags/blocks/related_list.html:3
-#: parts/planet/planet/templates/planet/tags/blocks/related_list.html:3
-#, fuzzy
-msgid "Related tags"
-msgstr "הצביע על תגיות"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/__init__.py:22
-#, python-format
-msgid "The model %s has already been registered."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/fields.py:69
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/fields.py:69
-#: parts/tagging/tagging/fields.py:66
-#, python-format
-msgid "%s can only be set on instances."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:19
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/forms.py:19
-#: parts/tagging/tagging/forms.py:19
-msgid "Multiple tags were given."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:22
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/forms.py:22
-#: parts/tagging/tagging/forms.py:22
-#, fuzzy, python-format
-msgid "A tag may be no more than %s characters long."
-msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/forms.py:38
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/forms.py:38
-#: parts/tagging/tagging/forms.py:38
-#, fuzzy, python-format
-msgid "Each tag may be no more than %s characters long."
-msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:58
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:58
-#: parts/tagging/tagging/models.py:58
-#, python-format
-msgid "No tags were given: \"%s\"."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:60
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:60
-#: parts/tagging/tagging/models.py:60
-#, python-format
-msgid "Multiple tags were given: \"%s\"."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:450
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:460
-#: parts/tagging/tagging/models.py:460
-msgid "name"
-msgstr "שם"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:467
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:477
-#: parts/tagging/tagging/models.py:477
-#: src/knesset/links/models.py:24
-msgid "content type"
-msgstr "סוג תוכן"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:468
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:478
-#: parts/tagging/tagging/models.py:478
-msgid "object id"
-msgstr "מזהה אובייקט"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:476
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:486
-#: parts/tagging/tagging/models.py:486
-#: src/knesset/tagvotes/models.py:11
-msgid "tagged item"
-msgstr "פריט מתויג"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/models.py:477
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/models.py:487
-#: parts/tagging/tagging/models.py:487
-#, fuzzy
-msgid "tagged items"
-msgstr "פריט מתויג"
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:189
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/utils.py:189
-#: parts/tagging/tagging/utils.py:189
-msgid "If a list or tuple of tags is provided, they must all be tag names, Tag objects or Tag ids."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:191
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/utils.py:191
-#: parts/tagging/tagging/utils.py:191
-msgid "The tag input given was invalid."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/utils.py:236
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/utils.py:236
-#: parts/tagging/tagging/utils.py:236
-#, python-format
-msgid "Invalid distribution algorithm specified: %s."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:33
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/views.py:33
-#: parts/tagging/tagging/views.py:33
-msgid "tagged_object_list must be called with a queryset or a model."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:39
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/views.py:39
-#: parts/tagging/tagging/views.py:39
-msgid "tagged_object_list must be called with a tag."
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/views.py:43
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/views.py:43
-#: parts/tagging/tagging/views.py:43
-#: src/knesset/laws/views.py:50
-#, python-format
-msgid "No Tag found matching \"%s\"."
-msgstr "לא נמצאו הצעות חוק בנושא \"%s\""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:19
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:19
-#: parts/tagging/tagging/templatetags/tagging_tags.py:19
-#, python-format
-msgid "tags_for_model tag was given an invalid model: %s"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:32
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:32
-#: parts/tagging/tagging/templatetags/tagging_tags.py:32
-#, python-format
-msgid "tag_cloud_for_model tag was given an invalid model: %s"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:56
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:56
-#: parts/tagging/tagging/templatetags/tagging_tags.py:56
-#, python-format
-msgid "tagged_objects tag was given an invalid model: %s"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:89
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:89
-#: parts/tagging/tagging/templatetags/tagging_tags.py:89
-#, python-format
-msgid "%s tag requires either three or five arguments"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:91
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:143
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:198
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:91
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:143
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:198
-#: parts/tagging/tagging/templatetags/tagging_tags.py:91
-#: parts/tagging/tagging/templatetags/tagging_tags.py:143
-#: parts/tagging/tagging/templatetags/tagging_tags.py:198
-#, python-format
-msgid "second argument to %s tag must be 'as'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:94
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:147
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:94
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:147
-#: parts/tagging/tagging/templatetags/tagging_tags.py:94
-#: parts/tagging/tagging/templatetags/tagging_tags.py:147
-#, python-format
-msgid "if given, fourth argument to %s tag must be 'with'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:96
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:96
-#: parts/tagging/tagging/templatetags/tagging_tags.py:96
-#, python-format
-msgid "if given, fifth argument to %s tag must be 'counts'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:141
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:141
-#: parts/tagging/tagging/templatetags/tagging_tags.py:141
-#, python-format
-msgid "%s tag requires either three or between five and seven arguments"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:155
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:155
-#: parts/tagging/tagging/templatetags/tagging_tags.py:155
-#, python-format
-msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:164
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:164
-#: parts/tagging/tagging/templatetags/tagging_tags.py:164
-#, python-format
-msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:170
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:170
-#: parts/tagging/tagging/templatetags/tagging_tags.py:170
-#, python-format
-msgid "%(tag)s tag was given an invalid option: '%(option)s'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:175
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:175
-#: parts/tagging/tagging/templatetags/tagging_tags.py:175
-#, python-format
-msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:196
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:196
-#: parts/tagging/tagging/templatetags/tagging_tags.py:196
-#, python-format
-msgid "%s tag requires exactly three arguments"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:221
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:221
-#: parts/tagging/tagging/templatetags/tagging_tags.py:221
-#, python-format
-msgid "%s tag requires exactly five arguments"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:223
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:223
-#: parts/tagging/tagging/templatetags/tagging_tags.py:223
-#, python-format
-msgid "second argument to %s tag must be 'in'"
-msgstr ""
-
-#: eggs/django_tagging-0.3-py2.6.egg/tagging/templatetags/tagging_tags.py:225
-#: eggs/django_tagging-0.3.1-py2.6.egg/tagging/templatetags/tagging_tags.py:225
-#: parts/tagging/tagging/templatetags/tagging_tags.py:225
-#, python-format
-msgid "fourth argument to %s tag must be 'as'"
-msgstr ""
-
-#: parts/activity_stream/actstream/__init__.py:23
-msgid "started following"
-msgstr "התחיל/ה לעקוב אחרי"
-
-#: parts/activity_stream/actstream/__init__.py:44
-msgid "stopped following"
-msgstr "הפסיק/ה לעקוב אחרי"
-
-#: parts/activity_stream/example_project/registration/admin.py:23
-#, fuzzy
-msgid "Activate users"
-msgstr "פעילויות"
-
-#: parts/activity_stream/example_project/registration/admin.py:43
-#, fuzzy
-msgid "Re-send activation emails"
-msgstr "שליחת דואר אלקטרוני לאימות"
-
-#: parts/activity_stream/example_project/registration/forms.py:35
-#: src/knesset/user/forms.py:9
-#: src/knesset/user/forms.py:27
-msgid "Username"
-msgstr "שם משתמש"
-
-#: parts/activity_stream/example_project/registration/forms.py:36
-msgid "This value must contain only letters, numbers and underscores."
-msgstr "ערך זה חייב להכיל אותיות, ספרות וקווים תחתונים בלבד."
-
-#: parts/activity_stream/example_project/registration/forms.py:39
-msgid "Email address"
-msgstr "כתובת דוא\"ל"
-
-#: parts/activity_stream/example_project/registration/forms.py:41
-msgid "Password"
-msgstr "סיסמה"
-
-#: parts/activity_stream/example_project/registration/forms.py:43
-msgid "Password (again)"
-msgstr "סיסמה (שוב)"
-
-#: parts/activity_stream/example_project/registration/forms.py:55
-msgid "A user with that username already exists."
-msgstr "משתמש עם שם משתמש זה קיים כבר"
-
-#: parts/activity_stream/example_project/registration/forms.py:67
-msgid "The two password fields didn't match."
-msgstr "שני שדות הסיסמה אינם זהים."
-
-#: parts/activity_stream/example_project/registration/forms.py:78
-msgid "I have read and agree to the Terms of Service"
-msgstr ""
-
-#: parts/activity_stream/example_project/registration/forms.py:79
-msgid "You must agree to the terms to register"
-msgstr ""
-
-#: parts/activity_stream/example_project/registration/forms.py:95
-msgid "This email address is already in use. Please supply a different email address."
-msgstr ""
-
-#: parts/activity_stream/example_project/registration/forms.py:122
-msgid "Registration using free email addresses is prohibited. Please supply a different email address."
-msgstr ""
-
-#: parts/activity_stream/example_project/registration/models.py:168
-#: src/knesset/tagvotes/models.py:12
-msgid "user"
-msgstr "משתמש"
-
-#: parts/activity_stream/example_project/registration/models.py:169
-#: src/knesset/accounts/models.py:50
-msgid "activation key"
-msgstr "קוד אימות"
-
-#: parts/activity_stream/example_project/registration/models.py:174
-#, fuzzy
-msgid "registration profile"
-msgstr "הרשמה נדרשת"
-
-#: parts/activity_stream/example_project/registration/models.py:175
-#, fuzzy
-msgid "registration profiles"
-msgstr "הרשמה נדרשת"
-
-#: parts/annotatetext/annotatetext/forms.py:23
-msgid "Bogus color"
-msgstr ""
-
-#: parts/annotatetext/annotatetext/forms.py:30
-#, fuzzy
-msgid "Bogus Flag"
-msgstr "רשימת בלוגים"
-
-#: parts/annotatetext/annotatetext/forms.py:38
-#, fuzzy
-msgid "Missing Parameter"
-msgstr "מפלגות"
-
-#: parts/annotatetext/annotatetext/forms.py:42
-#, fuzzy
-msgid "Bogus content"
-msgstr "תוכן"
-
-#: parts/annotatetext/annotatetext/forms.py:46
-#: parts/annotatetext/annotatetext/forms.py:54
-#, fuzzy
-msgid "Bogus object"
-msgstr "הצג מזהה אובייקט"
-
-#: parts/annotatetext/annotatetext/forms.py:51
-#, fuzzy
-msgid "Invalid object"
-msgstr "סוג גיאומטרי שגוי."
-
-#: parts/annotatetext/annotatetext/forms.py:57
-#, fuzzy
-msgid "Text changed"
-msgstr "העמוד הבא"
-
-#: parts/annotatetext/annotatetext/forms.py:59
-msgid "Missing Parameter for selection"
-msgstr ""
-
-#: parts/annotatetext/annotatetext/forms.py:61
-msgid "Bogus selection"
-msgstr ""
-
-#: parts/annotatetext/annotatetext/forms.py:66
-#, fuzzy
-msgid "Missing parameters"
-msgstr "מפלגות"
-
-#: parts/annotatetext/annotatetext/models.py:16
-#, fuzzy
-msgid "Annotation"
-msgstr "האירו"
-
-#: parts/annotatetext/annotatetext/models.py:58
-#, python-format
-msgid "Annotation on '%s'"
-msgstr ""
-
-#: parts/annotatetext/annotatetext/templates/annotatetext/_annotation.html:5
-#: src/knesset/templates/annotatetext/_annotation.html:5
-#: src/knesset/templates/committees/committeemeeting_detail.html:72
-msgid "Permalink"
-msgstr "קישור קבוע"
-
-#: src/knesset/settings.py:166
+#: settings.py:168
 msgid "Statement"
 msgstr "הצהרה"
 
-#: src/knesset/settings.py:167
+#: settings.py:169
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: src/knesset/settings.py:168
+#: settings.py:170
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: src/knesset/settings.py:169
+#: settings.py:171
 msgid "Source?"
 msgstr "מקור?"
 
-#: src/knesset/settings.py:170
+#: settings.py:172
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: src/knesset/settings.py:171
+#: settings.py:173
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: src/knesset/settings.py:172
+#: settings.py:174
 msgid "Important"
 msgstr "חשוב!"
 
-#: src/knesset/settings.py:173
+#: settings.py:175
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: src/knesset/settings.py:174
+#: settings.py:176
 msgid "Comment"
 msgstr "תגובה"
 
-#: src/knesset/accounts/models.py:60
+#: accounts/models.py:50
+msgid "activation key"
+msgstr "קוד אימות"
+
+#: accounts/models.py:60
 #, python-format
 msgid "%(key)s does not look like an activation key."
 msgstr "%(key)s לא נראה כמו קוד אימות חוקי."
 
-#: src/knesset/accounts/models.py:64
+#: accounts/models.py:64
 msgid "The user has updated the email since this activation key was sent."
 msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נשלח."
 
-#: src/knesset/accounts/models.py:66
+#: accounts/models.py:66
 msgid "This activation key has expired."
 msgstr "פג תוקפו של קוד אימות זה."
 
-#: src/knesset/accounts/models.py:75
+#: accounts/models.py:75
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
-#: src/knesset/agendas/forms.py:11
-#: src/knesset/agendas/forms.py:31
+#: agendas/forms.py:11
+#: agendas/forms.py:31
 msgid "Agenda name"
 msgstr "שם האג'נדה"
 
-#: src/knesset/agendas/forms.py:12
-#: src/knesset/agendas/forms.py:32
+#: agendas/forms.py:12
+#: agendas/forms.py:32
 msgid "Please enter an agenda name"
 msgstr "נא להזין שם אג'נדה"
 
-#: src/knesset/agendas/forms.py:13
-#: src/knesset/agendas/forms.py:33
+#: agendas/forms.py:13
+#: agendas/forms.py:33
 msgid "Agenda name must be shorter than 300 characters"
 msgstr "שם אגנ'דה צריך להיות עד 300 תווים"
 
-#: src/knesset/agendas/forms.py:15
-#: src/knesset/agendas/forms.py:35
+#: agendas/forms.py:15
+#: agendas/forms.py:35
 msgid "Agenda description"
 msgstr "תאור האג'נדה"
 
-#: src/knesset/agendas/forms.py:16
-#: src/knesset/agendas/forms.py:36
+#: agendas/forms.py:16
+#: agendas/forms.py:36
 msgid "Please enter a description for this agenda"
 msgstr "נא להזין תאור עבור אג'נדה זו"
 
-#: src/knesset/agendas/forms.py:17
-#: src/knesset/agendas/forms.py:37
+#: agendas/forms.py:17
+#: agendas/forms.py:37
 msgid "Agenda description must be at least 15 characters long"
 msgstr "תאור אג'נדה צריך להיות באורך 15 תווים לפחות"
 
-#: src/knesset/agendas/models.py:35
+#: agendas/models.py:35
 msgid "Agenda"
 msgstr "אג'נדה"
 
-#: src/knesset/agendas/models.py:36
-#: src/knesset/agendas/urls.py:7
-#: src/knesset/templates/base.html:82
-#: src/knesset/templates/agendas/agenda_list.html:3
-#: src/knesset/templates/agendas/agenda_list.html:4
-#: src/knesset/templates/agendas/agenda_list.html:5
+#: agendas/models.py:36
+#: agendas/urls.py:7
+#: templates/base.html:82
+#: templates/agendas/agenda_list.html:3
+#: templates/agendas/agenda_list.html:4
+#: templates/agendas/agenda_list.html:5
+#: templates/mks/member_detail.html:162
+#: templates/mks/party_detail.html:47
 msgid "Agendas"
 msgstr "אג'נדות"
 
-#: src/knesset/auxiliary/views.py:13
-#: src/knesset/templates/main.he.html:4
+#: agendas/views.py:26
+#: user/models.py:17
+msgid "None"
+msgstr "ללא"
+
+#: auxiliary/views.py:13
+#: templates/main.he.html:4
 msgid "Home"
 msgstr "דף הבית"
 
-#: src/knesset/badges/handlers.py:42
+#: badges/handlers.py:42
 msgid "got badge"
 msgstr "קיבל/ה אות"
 
-#: src/knesset/badges/handlers.py:59
+#: badges/handlers.py:59
 msgid "FirstFollow"
 msgstr "עוקב"
 
-#: src/knesset/badges/handlers.py:60
+#: badges/handlers.py:60
 msgid "You are following something"
 msgstr "עוקב/ת אחר משהו באתר"
 
-#: src/knesset/badges/handlers.py:81
+#: badges/handlers.py:81
 msgid "FirstMKFollow"
 msgstr "עוקב אחר חבר כנסת"
 
-#: src/knesset/badges/handlers.py:82
+#: badges/handlers.py:82
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: src/knesset/committees/views.py:23
+#: committees/views.py:23
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: src/knesset/committees/views.py:70
+#: committees/views.py:70
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: src/knesset/committees/views.py:71
+#: committees/views.py:71
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: src/knesset/committees/views.py:77
+#: committees/views.py:77
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: src/knesset/laws/models.py:17
-#: src/knesset/templates/include/member_detail.html:50
-#: src/knesset/templates/include/vote_detail.html:13
-#: src/knesset/templates/laws/bill_detail.html:133
-#: src/knesset/templates/laws/bill_detail.html:181
-#: src/knesset/templates/laws/bill_detail.html:247
-#: src/knesset/templates/laws/bill_detail.html:296
-#: src/knesset/templates/laws/vote_detail.html:34
-#: src/knesset/templates/laws/vote_list.html:24
+#: laws/models.py:17
+#: templates/include/member_detail.html:50
+#: templates/include/vote_detail.html:13
+#: templates/laws/bill_detail.html:133
+#: templates/laws/bill_detail.html:181
+#: templates/laws/bill_detail.html:247
+#: templates/laws/bill_detail.html:296
+#: templates/laws/vote_detail.html:34
+#: templates/laws/vote_list.html:25
 msgid "For"
 msgstr "בעד"
 
-#: src/knesset/laws/models.py:18
-#: src/knesset/templates/include/member_detail.html:58
-#: src/knesset/templates/include/vote_detail.html:30
-#: src/knesset/templates/laws/bill_detail.html:136
-#: src/knesset/templates/laws/bill_detail.html:181
-#: src/knesset/templates/laws/bill_detail.html:247
-#: src/knesset/templates/laws/bill_detail.html:296
-#: src/knesset/templates/laws/vote_detail.html:55
-#: src/knesset/templates/laws/vote_list.html:25
+#: laws/models.py:18
+#: templates/include/member_detail.html:58
+#: templates/include/vote_detail.html:30
+#: templates/laws/bill_detail.html:136
+#: templates/laws/bill_detail.html:181
+#: templates/laws/bill_detail.html:247
+#: templates/laws/bill_detail.html:296
+#: templates/laws/vote_detail.html:55
+#: templates/laws/vote_list.html:30
 msgid "Against"
 msgstr "נגד"
 
-#: src/knesset/laws/models.py:19
-#: src/knesset/templates/include/member_detail.html:66
+#: laws/models.py:19
+#: templates/include/member_detail.html:66
 msgid "Abstain"
 msgstr "נמנע"
 
-#: src/knesset/laws/models.py:20
-#: src/knesset/templates/include/member_detail.html:74
+#: laws/models.py:20
+#: templates/include/member_detail.html:74
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
-#: src/knesset/laws/models.py:42
-#: src/knesset/laws/models.py:53
+#: laws/models.py:42
+#: laws/models.py:53
 msgid "N/A"
 msgstr "לא ישים"
 
-#: src/knesset/laws/models.py:194
+#: laws/models.py:194
 msgid "Vote"
 msgstr "הצבעה"
 
-#: src/knesset/laws/models.py:195
-#: src/knesset/laws/urls.py:10
-#: src/knesset/laws/urls.py:13
-#: src/knesset/templates/include/member_detail.html:47
-#: src/knesset/templates/laws/law_detail.html:20
-#: src/knesset/templates/laws/law_detail.html:33
-#: src/knesset/templates/laws/law_detail.html:46
+#: laws/models.py:195
+#: laws/urls.py:10
+#: laws/urls.py:13
+#: templates/include/member_detail.html:47
+#: templates/laws/law_detail.html:20
+#: templates/laws/law_detail.html.py:33
+#: templates/laws/law_detail.html:46
 msgid "Votes"
 msgstr "הצבעות"
 
-#: src/knesset/laws/models.py:351
-#: src/knesset/mks/forms.py:6
+#: laws/models.py:351
+#: mks/forms.py:6
 msgid "Proposed"
 msgstr "הצעה"
 
-#: src/knesset/laws/models.py:352
+#: laws/models.py:352
 msgid "Pre-Approved"
 msgstr "עברה קריאה טרומית"
 
-#: src/knesset/laws/models.py:353
+#: laws/models.py:353
 msgid "Failed Pre-Approval"
 msgstr "נפלה בקריאה טרומית"
 
-#: src/knesset/laws/models.py:354
+#: laws/models.py:354
 msgid "In Committee"
 msgstr "בוועדה"
 
-#: src/knesset/laws/models.py:355
-#: src/knesset/templates/laws/bill_detail.html:245
+#: laws/models.py:355
+#: templates/laws/bill_detail.html:245
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
-#: src/knesset/laws/models.py:356
+#: laws/models.py:356
 msgid "Failed First Vote"
 msgstr "נפלה בקריאה ראשונה"
 
-#: src/knesset/laws/models.py:357
+#: laws/models.py:357
 msgid "Committee Corrections"
 msgstr "בתיקונים בוועדה"
 
-#: src/knesset/laws/models.py:358
+#: laws/models.py:358
 msgid "Approved"
 msgstr "אושרה"
 
-#: src/knesset/laws/models.py:359
+#: laws/models.py:359
 msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
-#: src/knesset/laws/models.py:375
-#: src/knesset/templates/laws/vote_detail.html:77
+#: laws/models.py:375
+#: templates/laws/vote_detail.html:77
 msgid "Bill"
 msgstr "הצעת חוק"
 
-#: src/knesset/laws/models.py:376
-#: src/knesset/laws/urls.py:11
-#: src/knesset/laws/urls.py:12
-#: src/knesset/templates/base.html:77
-#: src/knesset/templates/committees/committeemeeting_detail.html:38
+#: laws/models.py:376
+#: laws/urls.py:11
+#: laws/urls.py:12
+#: templates/base.html:77
+#: templates/committees/committeemeeting_detail.html:38
 msgid "Bills"
 msgstr "הצעות חוק"
 
-#: src/knesset/laws/views.py:40
+#: laws/views.py:40
 #, python-format
 msgid "Bills by %(member)s by tag"
 msgstr "הצעות חוק של %(member)s לפי נושא"
 
-#: src/knesset/laws/views.py:42
+#: laws/views.py:42
 msgid "Bills by tag"
 msgstr "הצעות חוק לפי נושא"
 
-#: src/knesset/laws/views.py:57
+#: laws/views.py:50
+#, python-format
+msgid "No Tag found matching \"%s\"."
+msgstr "לא נמצאו הצעות חוק בנושא \"%s\""
+
+#: laws/views.py:57
 #, python-format
 msgid "Bills tagged %(tag)s by %(member)s"
 msgstr "הצעות חוק של %(member)s בנושא %(tag)s"
 
-#: src/knesset/laws/views.py:60
+#: laws/views.py:60
 #, python-format
 msgid "Bills tagged %(tag)s"
 msgstr "הצעות חוק בנושא %(tag)s"
 
-#: src/knesset/laws/views.py:149
+#: laws/views.py:149
 msgid "added-vote-to-bill"
 msgstr "קישר/ה הצבעה להצעת חוק"
 
-#: src/knesset/laws/views.py:153
+#: laws/views.py:153
 msgid "All stages"
 msgstr "כל השלבים"
 
-#: src/knesset/laws/views.py:193
+#: laws/views.py:193
 #, python-format
 msgid "Bills published in knesset booklet number %s"
 msgstr "חוקים שפורסמו בחוברת הכנסת מספר %s"
 
-#: src/knesset/laws/views.py:204
+#: laws/views.py:204
 msgid "All votes"
 msgstr "כל ההצבעות"
 
-#: src/knesset/laws/views.py:205
+#: laws/views.py:205
 msgid "Law Approvals"
 msgstr "אישור חוקים"
 
-#: src/knesset/laws/views.py:206
+#: laws/views.py:206
 msgid "Second Call"
 msgstr "קריאה שניה"
 
-#: src/knesset/laws/views.py:207
+#: laws/views.py:207
 msgid "Demurrer"
 msgstr "הסתייגויות"
 
-#: src/knesset/laws/views.py:208
+#: laws/views.py:208
 msgid "Motion of no confidence"
 msgstr "הצבעות אי-אמון"
 
-#: src/knesset/laws/views.py:209
+#: laws/views.py:209
 msgid "Pass to committee"
 msgstr "העברה לוועדה"
 
-#: src/knesset/laws/views.py:210
+#: laws/views.py:210
 msgid "Continuation"
 msgstr "החלת דין רציפות"
 
-#: src/knesset/laws/views.py:211
+#: laws/views.py:211
 msgid "All"
 msgstr "הכל"
 
-#: src/knesset/laws/views.py:212
+#: laws/views.py:212
 msgid "Untagged Votes"
 msgstr "הצבעות לא מתויגות"
 
-#: src/knesset/laws/views.py:213
+#: laws/views.py:213
 msgid "Tagged Votes"
 msgstr "הצבעות מתויגות"
 
-#: src/knesset/laws/views.py:214
+#: laws/views.py:214
 msgid "Last Week"
 msgstr "שבוע אחרון"
 
-#: src/knesset/laws/views.py:215
+#: laws/views.py:215
 msgid "Last Month"
 msgstr "חודש אחרון"
 
-#: src/knesset/laws/views.py:216
+#: laws/views.py:216
 msgid "All times"
 msgstr "כל הזמנים"
 
-#: src/knesset/laws/views.py:218
+#: laws/views.py:217
+#: templates/include/vote_detail.html:9
+#: templates/laws/vote_detail.html:24
+msgid "Time"
+msgstr "זמן"
+
+#: laws/views.py:218
 msgid "Controversy"
 msgstr "מידת המחלוקת"
 
-#: src/knesset/laws/views.py:219
+#: laws/views.py:219
 msgid "Against Party"
 msgstr "הצבעות נגד המפלגה"
 
-#: src/knesset/laws/views.py:220
-#: src/knesset/templates/mks/member_detail.html:80
-#: src/knesset/templates/mks/party_detail.html:16
+#: laws/views.py:220
+#: templates/mks/member_detail.html:82
+#: templates/mks/party_detail.html:17
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: src/knesset/laws/views.py:327
+#: laws/views.py:327
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
 
-#: src/knesset/laws/templatetags/laws_extra.py:30
-#: src/knesset/laws/templatetags/laws_extra.py:33
-#: src/knesset/laws/templatetags/laws_extra.py:39
-#: src/knesset/laws/templatetags/laws_extra.py:42
-#: src/knesset/laws/templatetags/laws_extra.py:51
-#: src/knesset/templates/mks/member_detail.html:86
-#: src/knesset/templates/mks/member_detail.html:91
-#: src/knesset/templates/mks/member_detail.html:96
+#: laws/templatetags/laws_extra.py:30
+#: laws/templatetags/laws_extra.py:33
+#: laws/templatetags/laws_extra.py:39
+#: laws/templatetags/laws_extra.py:42
+#: laws/templatetags/laws_extra.py:51
+#: templates/mks/member_detail.html:88
+#: templates/mks/member_detail.html:93
+#: templates/mks/member_detail.html:98
 msgid "Not enough data"
 msgstr "אין מספיק נתונים"
 
-#: src/knesset/laws/templatetags/laws_extra.py:65
+#: laws/templatetags/laws_extra.py:65
 msgid "Absent"
 msgstr "לא נוכח"
 
-#: src/knesset/links/models.py:14
+#: links/admin.py:13
+msgid "Content"
+msgstr "תוכן"
+
+#: links/models.py:10
+#: links/models.py:22
+msgid "title"
+msgstr "כותרת"
+
+#: links/models.py:14
 msgid "link type"
 msgstr "סוג קישור"
 
-#: src/knesset/links/models.py:15
+#: links/models.py:15
 msgid "link types"
 msgstr "סוגי קישורים"
 
-#: src/knesset/links/models.py:26
+#: links/models.py:24
+#: notify/models.py:10
+msgid "content type"
+msgstr "סוג תוכן"
+
+#: links/models.py:26
+#: notify/models.py:12
 msgid "object ID"
 msgstr "מזהה אובייקט"
 
-#: src/knesset/links/models.py:33
+#: links/models.py:33
 msgid "link"
 msgstr "קישור"
 
-#: src/knesset/links/models.py:34
+#: links/models.py:34
 msgid "links"
 msgstr "קישורים"
 
-#: src/knesset/mks/feeds.py:8
+#: mks/feeds.py:8
 msgid "voted"
 msgstr "הצביע"
 
-#: src/knesset/mks/feeds.py:8
+#: mks/feeds.py:8
 msgid "posted"
 msgstr "פִרסם"
 
-#: src/knesset/mks/feeds.py:9
+#: mks/feeds.py:9
 msgid "attended"
 msgstr "נכח"
 
-#: src/knesset/mks/feeds.py:9
+#: mks/feeds.py:9
 msgid "committee meeting"
 msgstr "ישיבת וועדה"
 
-#: src/knesset/mks/feeds.py:23
+#: mks/feeds.py:23
 #, python-format
 msgid "Member activity feed for %s"
 msgstr "פעילות עבור חבר/ת הכנסת %s"
 
-#: src/knesset/mks/feeds.py:29
+#: mks/feeds.py:29
 #, python-format
 msgid "Actions of %s, including votes, attended committees and posted articles"
 msgstr "פעילות עבור %s כולל הצבעות, פירסומים ונוכחות בוועדות"
 
-#: src/knesset/mks/forms.py:7
+#: mks/forms.py:7
 msgid "Joined"
 msgstr "הצטרף/ה"
 
-#: src/knesset/mks/forms.py:8
+#: mks/forms.py:8
 msgid "Posted"
 msgstr "פִרסם/ה"
 
-#: src/knesset/mks/forms.py:9
+#: mks/forms.py:9
 msgid "Attended"
 msgstr "נכח/ה"
 
-#: src/knesset/mks/forms.py:10
+#: mks/forms.py:10
 msgid "Voted"
 msgstr "הצביע/ה"
 
-#: src/knesset/mks/forms.py:12
+#: mks/forms.py:12
 msgid "Displaying Actions"
 msgstr "מציג  פעולות"
 
-#: src/knesset/mks/models.py:13
+#: mks/models.py:13
 msgid "Male"
 msgstr "זכר"
 
-#: src/knesset/mks/models.py:14
+#: mks/models.py:14
 msgid "Female"
 msgstr "נקבה"
 
-#: src/knesset/mks/models.py:34
+#: mks/models.py:34
 msgid "Party"
 msgstr "מפלגה"
 
-#: src/knesset/mks/models.py:103
+#: mks/models.py:103
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: src/knesset/mks/models.py:104
+#: mks/models.py:104
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
-#: src/knesset/mks/models.py:116
+#: mks/models.py:116
 msgid "Member"
 msgstr "ח\"כ"
 
-#: src/knesset/mks/models.py:220
+#: mks/models.py:220
 msgid "Coalition Member (female)"
 msgstr "חברת כנסת בקואליציה"
 
-#: src/knesset/mks/models.py:222
+#: mks/models.py:222
 msgid "Opposition Member (female)"
 msgstr "חברת כנסת באופוזיציה"
 
-#: src/knesset/mks/models.py:225
+#: mks/models.py:225
 msgid "Coalition Member (male)"
 msgstr "חבר כנסת בקואליציה"
 
-#: src/knesset/mks/models.py:227
+#: mks/models.py:227
 msgid "Opposition Member (male)"
 msgstr "חבר כנסת באופוזיציה"
 
-#: src/knesset/mks/models.py:230
+#: mks/models.py:230
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: src/knesset/mks/models.py:232
+#: mks/models.py:232
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: src/knesset/mks/views.py:45
+#: mks/views.py:47
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: src/knesset/mks/views.py:46
-#: src/knesset/mks/views.py:68
+#: mks/views.py:48
+#: mks/views.py:70
 msgid "By number of bills proposed"
 msgstr "לפי מספר הצעות חוק שהוצעו"
 
-#: src/knesset/mks/views.py:47
-#: src/knesset/mks/views.py:80
+#: mks/views.py:49
+#: mks/views.py:82
 msgid "By number of bills pre-approved"
 msgstr "לפי מספר הצעות חוק שאושרו טרומית"
 
-#: src/knesset/mks/views.py:48
-#: src/knesset/mks/views.py:92
+#: mks/views.py:50
+#: mks/views.py:94
 msgid "By number of bills first-approved"
 msgstr "לפי מספר הצעות חוק שאושרו בקריאה ראשונה"
 
-#: src/knesset/mks/views.py:49
-#: src/knesset/mks/views.py:104
+#: mks/views.py:51
+#: mks/views.py:106
 msgid "By number of bills approved"
 msgstr "לפי מספר הצעות חוק שאושרו סופית"
 
-#: src/knesset/mks/views.py:50
-#: src/knesset/mks/views.py:118
+#: mks/views.py:52
+#: mks/views.py:120
 msgid "By number of votes per month"
 msgstr "לפי מספר הצבעות ממוצע בחודש"
 
-#: src/knesset/mks/views.py:51
-#: src/knesset/mks/views.py:130
+#: mks/views.py:53
+#: mks/views.py:132
 msgid "By average weekly hours of presence"
 msgstr "לפי ממוצע שעות שבועיות"
 
-#: src/knesset/mks/views.py:52
-#: src/knesset/mks/views.py:142
+#: mks/views.py:54
+#: mks/views.py:144
 msgid "By average monthly committee meetings"
 msgstr "לפי מספר ישיבות וועדות בחודש"
 
-#: src/knesset/mks/views.py:53
-#: src/knesset/mks/views.py:145
+#: mks/views.py:55
+#: mks/views.py:147
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: src/knesset/mks/views.py:194
+#: mks/views.py:205
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: src/knesset/mks/views.py:195
+#: mks/views.py:206
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: src/knesset/mks/views.py:196
+#: mks/views.py:207
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: src/knesset/mks/views.py:197
+#: mks/views.py:208
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
-#: src/knesset/mks/views.py:198
+#: mks/views.py:209
 msgid "By residence centrality"
 msgstr "לפי מדד מרכזיות מקום מגורים"
 
-#: src/knesset/mks/views.py:199
+#: mks/views.py:210
 msgid "By residence economy"
 msgstr "לפי מדד סוציואקונומי של מקום מגורים"
 
-#: src/knesset/mks/views.py:200
+#: mks/views.py:211
 msgid "By bills proposed"
 msgstr "לפי לפי מספר הצעות חוק שהוצעו"
 
-#: src/knesset/mks/views.py:201
+#: mks/views.py:212
 msgid "By bills passed pre vote"
 msgstr "לפי הצעות חוק שאושרו טרומית"
 
-#: src/knesset/mks/views.py:202
+#: mks/views.py:213
 msgid "By bills passed first vote"
 msgstr "לפי הצעות חוק שאושרו בקריאה ראשונה"
 
-#: src/knesset/mks/views.py:203
+#: mks/views.py:214
 msgid "By bills approved"
 msgstr "לפי הצעות חוק שאושרו סופית"
 
-#: src/knesset/mks/views.py:274
+#: mks/views.py:285
 msgid "Parties by residence centrality"
 msgstr "מפלגות לפי מדד מרכזיות של מקום מגורים"
 
-#: src/knesset/mks/views.py:291
+#: mks/views.py:302
 msgid "Parties by residence economy"
 msgstr "מפלגות לפי מדד סוציואקונומי של מקום מגורים"
 
-#: src/knesset/mks/views.py:306
+#: mks/views.py:317
 msgid "Parties by number of bills proposed per seat"
 msgstr "מפלגות לפי מספר הצעות חוק שהוצעו לכל ח\"כ"
 
-#: src/knesset/mks/views.py:321
+#: mks/views.py:332
 msgid "Parties by number of bills passed pre vote per seat"
 msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
 
-#: src/knesset/mks/views.py:336
+#: mks/views.py:347
 msgid "Parties by number of bills passed first vote per seat"
 msgstr "מפלגות לפי מספר הצעות חוק שאושרו בקריאה ראשונה לכל ח\"כ"
 
-#: src/knesset/mks/views.py:351
+#: mks/views.py:362
 msgid "Parties by number of bills passed approved per seat"
 msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
 
-#: src/knesset/mks/views.py:382
+#: mks/views.py:409
 #, python-format
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 
-#: src/knesset/tagvotes/models.py:18
+#: notify/management/commands/notify.py:37
+msgid "Other Updates"
+msgstr "עדכונים שונים"
+
+#: notify/management/commands/notify.py:139
+#: templates/notify/header.html:3
+#: templates/notify/header.txt:2
+msgid "Open Knesset Updates"
+msgstr "עדכוני כנסת פתוחה"
+
+#: tagvotes/models.py:11
+msgid "tagged item"
+msgstr "פריט מתויג"
+
+#: tagvotes/models.py:12
+msgid "user"
+msgstr "משתמש"
+
+#: tagvotes/models.py:18
 msgid "tag vote"
 msgstr "הצבעה על תיוג"
 
-#: src/knesset/tagvotes/models.py:19
+#: tagvotes/models.py:19
 msgid "tag votes"
 msgstr "הצבעות על תגיות"
 
-#: src/knesset/templates/404.html:3
-#: src/knesset/templates/404.html.py:4
+#: templates/404.html:3
+#: templates/404.html.py:4
 msgid "Page not found"
 msgstr "דף לא קיים"
 
-#: src/knesset/templates/500.html:8
-#: src/knesset/templates/base.html:9
-#: src/knesset/templates/base.html.py:17
-#: src/knesset/templates/main.he.html:6
+#: templates/500.html:8
+#: templates/base.html:9
+#: templates/base.html.py:17
+#: templates/main.he.html:6
 msgid "Open Knesset"
 msgstr "כנסת פתוחה"
 
-#: src/knesset/templates/500.html:8
-#: src/knesset/templates/500.html.py:11
+#: templates/500.html:8
+#: templates/500.html.py:11
 msgid "Something went wrong!"
 msgstr "משהו השתבש!"
 
-#: src/knesset/templates/500.html:13
+#: templates/500.html:13
 msgid "Whatever you did caused some kind of an error in our server. But hey! its OK. We don't blame you. On the contrary. You just helped us find a bug, and our team will investigate it ASAP."
 msgstr "משהו שעשית גרם לשגיאה בשרת שלנו. אבל הי! אנחנו לא מאשימים אותך. להפך. עזרת לנו למצוא באג, והצוות שלנו יתפנה מייד לטפל בו. אז תודה רבה לך!"
 
-#: src/knesset/templates/500.html:15
-#: src/knesset/templates/accounts/email_validation_failed.html:9
-#: src/knesset/templates/accounts/email_validation_sent.html:10
-#: src/knesset/templates/accounts/email_validation_successful.html:9
+#: templates/500.html:15
+#: templates/accounts/email_validation_failed.html:9
+#: templates/accounts/email_validation_sent.html:10
+#: templates/accounts/email_validation_successful.html:9
 msgid "Back to the main page"
 msgstr "חזרה לעמוד הראשי"
 
-#: src/knesset/templates/_about.html:2
+#: templates/_about.html:2
 msgid "Open Knesset a project aimed at exposing the knesset's work to the public."
 msgstr "פרויקט זה מיועד לחשוף את פעילות הכנסת לציבור."
 
-#: src/knesset/templates/_about.html:3
+#: templates/_about.html:3
 msgid "After all, they work for us, don't they?"
 msgstr "בסופו של דבר, הם עובדים בשבילנו, לא?"
 
-#: src/knesset/templates/_about.html:4
+#: templates/_about.html:4
 msgid "All the work is done by volunteers, with no support from any political or commercial entity."
 msgstr "כל העבודה מתבצעת בהתנדבות בלי תמיכה של גוף פוליטי או מסחרי (פרט לאירוח האתר)."
 
-#: src/knesset/templates/_about.html:5
+#: templates/_about.html:5
 msgid "Most of the data is taken from the Knesset website."
 msgstr "רוב הנתונים נלקחים מאתר הכנסת."
 
-#: src/knesset/templates/_about.html:6
+#: templates/_about.html:6
 msgid "All the source code is available"
 msgstr "קוד המקור נמצא "
 
-#: src/knesset/templates/_about.html:6
-#: src/knesset/templates/_about.html:7
+#: templates/_about.html:6
+#: templates/_about.html.py:7
 msgid "here"
 msgstr "כאן"
 
-#: src/knesset/templates/_about.html:7
+#: templates/_about.html:7
 msgid "The project's mailing list is"
 msgstr "קבוצת הדיון נמצאת "
 
-#: src/knesset/templates/_main.html:2
+#: templates/_main.html:2
 msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
-#: src/knesset/templates/_main.html:3
-#: src/knesset/templates/committees/committeemeeting_detail.html:21
-#: src/knesset/templates/mks/member_detail.html:22
+#: templates/_main.html:3
+#: templates/agendas/agenda_detail.html:32
+#: templates/committees/committeemeeting_detail.html:21
+#: templates/mks/member_detail.html:23
 msgid "or"
 msgstr "או"
 
-#: src/knesset/templates/about.html:4
-#: src/knesset/templates/about.html.py:6
-#: src/knesset/templates/base.html:84
+#: templates/_main.html:10
+#: templates/base.html:70
+#: templates/search/search.html:3
+#: templates/search/search.html.py:5
+#: templates/search/search.html:13
+msgid "Search"
+msgstr "חיפוש"
+
+#: templates/about.html:4
+#: templates/about.html.py:6
+#: templates/base.html:84
 msgid "About"
 msgstr "אודות"
 
-#: src/knesset/templates/base.html:18
+#: templates/base.html:18
 msgid "I'm just sitting here watching the wheels go round and round."
 msgstr "אתר הכנסת הפתוחה"
 
-#: src/knesset/templates/base.html:62
+#: templates/base.html:62
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: src/knesset/templates/base.html:63
+#: templates/base.html:63
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
 
-#: src/knesset/templates/base.html:64
-#: src/knesset/templates/user/login.html:9
+#: templates/base.html:64
+#: templates/user/login.html:9
 msgid "Logout"
 msgstr "יציאה מהחשבון"
 
-#: src/knesset/templates/base.html:66
-#: src/knesset/templates/committees/committeemeeting_detail.html:20
-#: src/knesset/templates/mks/member_detail.html:21
-#: src/knesset/templates/user/login.html:4
-#: src/knesset/templates/user/login.html:17
+#: templates/base.html:66
+#: templates/agendas/agenda_detail.html:31
+#: templates/committees/committeemeeting_detail.html:20
+#: templates/mks/member_detail.html:22
+#: templates/user/login.html:4
+#: templates/user/login.html.py:17
 msgid "login"
 msgstr "כניסה לחשבון"
 
-#: src/knesset/templates/base.html:76
+#: templates/base.html:76
 msgid "Main"
 msgstr "ראשי"
 
-#: src/knesset/templates/base.html:81
-#: src/knesset/templates/committees/committee_list.html:3
-#: src/knesset/templates/committees/committee_list.html:4
-#: src/knesset/templates/committees/committee_list.html:5
+#: templates/base.html:81
+#: templates/committees/committee_list.html:3
+#: templates/committees/committee_list.html:4
+#: templates/committees/committee_list.html:5
 msgid "Committees"
 msgstr "ועדות"
 
-#: src/knesset/templates/base.html:113
+#: templates/base.html:83
+#: templates/planet/base.html:12
+#: templates/planet/posts/list.html:4
+#: templates/planet/tags/detail.html:4
+msgid "Posts"
+msgstr "מאמרים"
+
+#: templates/base.html:113
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
-#: src/knesset/templates/accounts/email_validation.html:2
-#: src/knesset/templates/accounts/email_validation_subject.html:1
+#: templates/accounts/email_validation.html:2
+#: templates/accounts/email_validation_subject.html:1
 msgid "email validation for"
 msgstr "אימות דואר אלקטרוני עבור"
 
-#: src/knesset/templates/accounts/email_validation_sent.html:8
+#: templates/accounts/email_validation_sent.html:8
 msgid "An email has been sent to"
 msgstr "נשלח דואר ל"
 
-#: src/knesset/templates/accounts/email_validation_sent.html:9
+#: templates/accounts/email_validation_sent.html:9
 msgid "Please use the link in the email to validate."
 msgstr "אנא השתמש/י בקישור שנשלח במייל כדי לאשר שכתובת המייל שסופקה אכן שלך."
 
-#: src/knesset/templates/accounts/email_validation_successful.html:8
+#: templates/accounts/email_validation_successful.html:8
 msgid "Your email has been validated, so you can now edit stuff!"
 msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לערוך."
 
-#: src/knesset/templates/activity/attended/action.html:11
+#: templates/activity/agenda_ascribed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"The vote <a href=\"http://%(domain)s%(url)s\">%(vote)s</a> has been ascribed to the adenga.\n"
+msgstr ""
+"\n"
+"ההצבעה <a href=\"http://%(domain)s%(url)s\">%(vote)s</a> שויכה לאג'נדה.\n"
+
+#: templates/activity/attended/action.html:11
+#: templates/activity/attended/action_email.html:8
 msgid "read meeting protocol"
 msgstr "קריאת את פרוטוקול הישיבה"
 
-#: src/knesset/templates/activity/posted/action.html:11
-#: src/knesset/templates/planet/posts/details.html:4
-#: src/knesset/templates/planet/posts/full_details.html:13
+#: templates/activity/posted/action.html:11
+#: templates/activity/posted/action_email.html:9
+#: templates/planet/posts/details.html:4
+#: templates/planet/posts/full_details.html:13
 msgid "read post"
 msgstr "קריאת  מאמר"
 
-#: src/knesset/templates/activity/tag-voted/action.html:5
+#: templates/activity/tag-voted/action.html:5
 msgid "voted up on tag"
 msgstr "הצביע בעד תגית"
 
-#: src/knesset/templates/activity/tag-voted/action.html:7
+#: templates/activity/tag-voted/action.html:7
 msgid "voted down on tag"
 msgstr "הצביע נגד תגית"
 
-#: src/knesset/templates/activity/tag-voted/action.html:11
-#: src/knesset/templates/activity_aggr/tag-voted/aggr_action.html:15
+#: templates/activity/tag-voted/action.html:10
+#: templates/activity_aggr/tag-voted/aggr_action.html:14
 msgid "of"
 msgstr "של"
 
-#: src/knesset/templates/activity/voted/action.html:8
+#: templates/activity/voted/action.html:8
+#: templates/activity/voted/action_email.html:6
+#: templates/activity/voted/action_email.txt:2
 msgid "present and didn't vote"
 msgstr "נכח ולא הצביע"
 
-#: src/knesset/templates/activity_aggr/tag-voted/aggr_action.html:5
+#: templates/activity_aggr/tag-voted/aggr_action.html:5
 msgid "voted on several tags"
 msgstr "הצביע על תגיות"
 
-#: src/knesset/templates/activity_aggr/tag-voted/aggr_action.html:8
+#: templates/activity_aggr/tag-voted/aggr_action.html:8
 msgid "voted on tags"
 msgstr "הצביע על תגיות"
 
-#: src/knesset/templates/activity_aggr/tag-voted/aggr_action.html:10
+#: templates/activity_aggr/tag-voted/aggr_action.html:10
 msgid "voted on tag"
 msgstr "הצביע על תגית"
 
-#: src/knesset/templates/agendas/agenda_add.html:13
+#: templates/agendas/agenda_add.html:13
 msgid "Add agenda"
 msgstr "הוספת אג'נדה"
 
-#: src/knesset/templates/agendas/agenda_add.html:19
-#: src/knesset/templates/agendas/agenda_detail_edit.html:19
-#: src/knesset/templates/user/editprofile.html:18
+#: templates/agendas/agenda_add.html:19
+#: templates/agendas/agenda_detail_edit.html:19
+#: templates/user/editprofile.html:18
 msgid "save"
 msgstr "שמירה"
 
-#: src/knesset/templates/agendas/agenda_detail.html:18
-msgid "Edited by"
-msgstr "בעריכת"
+#: templates/agendas/agenda_detail.html:18
+#: templates/agendas/agenda_detail.html:19
+#: templates/mks/member_detail.html:207
+#: templates/mks/member_detail.html:218
+msgid "Watch"
+msgstr "מעקב"
 
-#: src/knesset/templates/agendas/agenda_detail.html:24
-msgid "Edit"
-msgstr "עריכה"
+#: templates/agendas/agenda_detail.html:18
+#: templates/agendas/agenda_detail.html:19
+#: templates/mks/member_detail.html:204
+#: templates/mks/member_detail.html:235
+msgid "Unwatch"
+msgstr "הפסק מעקב"
 
-#: src/knesset/templates/agendas/agenda_detail.html:29
-msgid "Description"
-msgstr "תאור"
-
-#: src/knesset/templates/agendas/agenda_detail.html:34
-msgid "Ascribed Votes"
-msgstr "הצבעות משויכות"
-
-#: src/knesset/templates/agendas/agenda_detail.html:53
-#: src/knesset/templates/laws/bill_list.html:19
-#: src/knesset/templates/laws/bill_list_by_tag.html:21
-#: src/knesset/templates/laws/knessetproposal_list.html:26
-#: src/knesset/templates/laws/law_list.html:15
-#: src/knesset/templates/laws/vote_list.html:74
-msgid "No results found"
-msgstr "לא נמצאו תוצאות"
-
-#: src/knesset/templates/agendas/agenda_detail_edit.html:13
-msgid "Edit agenda"
-msgstr "עריכת אג'נדה"
-
-#: src/knesset/templates/agendas/agenda_list.html:9
-msgid "Your Agendas"
-msgstr "האג'נדות שלך"
-
-#: src/knesset/templates/agendas/agenda_list.html:11
-msgid "Please login to see agendas you can edit"
-msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
-
-#: src/knesset/templates/agendas/agenda_list.html:22
-msgid "Add"
-msgstr "הוספה"
-
-#: src/knesset/templates/agendas/agenda_list.html:28
+#: templates/agendas/agenda_detail.html:26
+#: templates/agendas/agenda_list.html:28
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
-#: src/knesset/templates/badges/all_badge_list.html:4
-#: src/knesset/templates/badges/all_badge_list.html:5
-#: src/knesset/templates/user/public_profile.html:27
-msgid "Badges"
-msgstr "אותות"
+#: templates/agendas/agenda_detail.html:30
+#: templates/mks/member_detail.html:21
+msgid "You have to be logged in to enable the watch feature."
+msgstr "כדי להשתמש ביכולת המעקב צריך להכנס לחשבון."
 
-#: src/knesset/templates/comments/form.html:17
-msgid "Post comment"
-msgstr "פרסום תגובה"
-
-#: src/knesset/templates/committees/committee_detail.html:10
-msgid "Last Meetings"
-msgstr "ישיבות אחרונות"
-
-#: src/knesset/templates/committees/committee_detail.html:16
-msgid "Full meetings list"
-msgstr "רשימת הישיבות המלאה"
-
-#: src/knesset/templates/committees/committeemeeting_detail.html:22
-#: src/knesset/templates/mks/member_detail.html:23
-#: src/knesset/templates/user/create_user.html:8
+#: templates/agendas/agenda_detail.html:33
+#: templates/committees/committeemeeting_detail.html:22
+#: templates/mks/member_detail.html:24
+#: templates/user/create_user.html:8
 msgid "register"
 msgstr "הרשמה"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:25
+#: templates/agendas/agenda_detail.html:40
+msgid "Edited by"
+msgstr "בעריכת"
+
+#: templates/agendas/agenda_detail.html:46
+msgid "Edit"
+msgstr "עריכה"
+
+#: templates/agendas/agenda_detail.html:51
+msgid "Description"
+msgstr "תאור"
+
+#: templates/agendas/agenda_detail.html:56
+msgid "Ascribed Votes"
+msgstr "הצבעות משויכות"
+
+#: templates/agendas/agenda_detail.html:75
+#: templates/laws/bill_list.html:19
+#: templates/laws/bill_list_by_tag.html:21
+#: templates/laws/knessetproposal_list.html:26
+#: templates/laws/law_list.html:15
+#: templates/laws/vote_list.html:83
+msgid "No results found"
+msgstr "לא נמצאו תוצאות"
+
+#: templates/agendas/agenda_detail_edit.html:13
+msgid "Edit agenda"
+msgstr "עריכת אג'נדה"
+
+#: templates/agendas/agenda_list.html:9
+msgid "Your Agendas"
+msgstr "האג'נדות שלך"
+
+#: templates/agendas/agenda_list.html:11
+msgid "Please login to see agendas you can edit"
+msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
+
+#: templates/agendas/agenda_list.html:22
+msgid "Add"
+msgstr "הוספה"
+
+#: templates/annotatetext/_annotation.html:5
+#: templates/laws/knessetproposal_detail.html:14
+#: templates/laws/knessetproposal_list.html:17
+msgid "by"
+msgstr "על ידי"
+
+#: templates/annotatetext/_annotation.html:5
+#: templates/committees/committeemeeting_detail.html:72
+msgid "Permalink"
+msgstr "קישור קבוע"
+
+#: templates/badges/all_badge_list.html:4
+#: templates/badges/all_badge_list.html:5
+#: templates/user/public_profile.html:27
+msgid "Badges"
+msgstr "אותות"
+
+#: templates/comments/form.html:17
+msgid "Post comment"
+msgstr "פרסום תגובה"
+
+#: templates/committees/committee_detail.html:10
+msgid "Last Meetings"
+msgstr "ישיבות אחרונות"
+
+#: templates/committees/committee_detail.html:16
+msgid "Full meetings list"
+msgstr "רשימת הישיבות המלאה"
+
+#: templates/committees/committeemeeting_detail.html:25
 msgid "Sorry, only editor can delete annotations."
 msgstr "מצטער, רק עורכים יכולים למחוק הערות"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:26
+#: templates/committees/committeemeeting_detail.html:26
 msgid "Please email editors if an annotation should be deleted"
 msgstr "אנא שלח דואל לעורכי האתר את צריך למחוק את ההארה"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:31
+#: templates/committees/committeemeeting_detail.html:31
 msgid "Back to committee"
 msgstr "חזרה לוועדה"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:32
-#: src/knesset/templates/mks/member_detail.html:122
+#: templates/committees/committeemeeting_detail.html:32
+#: templates/mks/member_detail.html:128
 msgid "Topics"
 msgstr "נושאים"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:33
+#: templates/committees/committeemeeting_detail.html:33
 msgid "MKs attended"
 msgstr "ח\"כים נוכחים"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:35
+#: templates/committees/committeemeeting_detail.html:35
 msgid "Suggest an MK"
 msgstr "הוספת חבר כנסת"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:35
-#: src/knesset/templates/committees/committeemeeting_detail.html:47
-#: src/knesset/templates/laws/bill_detail.html:190
-#: src/knesset/templates/laws/bill_detail.html:257
-#: src/knesset/templates/laws/bill_detail.html:305
-#: src/knesset/templates/laws/vote_detail.html:172
+#: templates/committees/committeemeeting_detail.html:35
+#: templates/committees/committeemeeting_detail.html:47
+#: templates/laws/bill_detail.html:190
+#: templates/laws/bill_detail.html:257
+#: templates/laws/bill_detail.html:305
+#: templates/laws/vote_detail.html:172
 msgid "Submit"
 msgstr "אישור"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:42
+#: templates/committees/committeemeeting_detail.html:42
 msgid "Suggest a matching bill"
 msgstr "הוספת הצעת חוק מתאימה"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:53
+#: templates/committees/committeemeeting_detail.html:53
 msgid "Protocol"
 msgstr "פרוטוקול"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:66
+#: templates/committees/committeemeeting_detail.html:66
 msgid "View all"
 msgstr "הצגת כל ההערות"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:70
+#: templates/committees/committeemeeting_detail.html:70
 msgid "Annotate"
 msgstr "האירו"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:87
+#: templates/committees/committeemeeting_detail.html:87
 msgid "Please Mark Passage"
 msgstr "אנא סמנו קטע"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:90
+#: templates/committees/committeemeeting_detail.html:90
 msgid "Beginning with"
 msgstr "מתחיל ב"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:92
+#: templates/committees/committeemeeting_detail.html:92
 msgid "Ending with"
 msgstr "מסתיים ב"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:97
+#: templates/committees/committeemeeting_detail.html:97
 msgid "Type your note"
 msgstr "סוג ההארה"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:100
+#: templates/committees/committeemeeting_detail.html:100
 msgid "Color"
 msgstr "צבע"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:107
+#: templates/committees/committeemeeting_detail.html:107
 msgid "Save note"
 msgstr "שמור"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:108
+#: templates/committees/committeemeeting_detail.html:108
 msgid "Cancel"
 msgstr "בטל"
 
-#: src/knesset/templates/committees/committeemeeting_detail.html:111
+#: templates/committees/committeemeeting_detail.html:111
 msgid "Your note will be published under"
 msgstr "ההארה שלך תפורסם ברשיון"
 
-#: src/knesset/templates/include/member_detail.html:5
+#: templates/include/member_detail.html:5
 msgid "party"
 msgstr "מפלגה"
 
-#: src/knesset/templates/include/member_detail.html:9
-#: src/knesset/templates/mks/member_detail.html:43
+#: templates/include/member_detail.html:9
+#: templates/mks/member_detail.html:45
 msgid "age"
 msgstr "גיל"
 
-#: src/knesset/templates/include/member_detail.html:14
-#: src/knesset/templates/mks/member_detail.html:48
+#: templates/include/member_detail.html:14
+#: templates/mks/member_detail.html:50
 msgid "year of aliyah"
 msgstr "שנת עליה"
 
-#: src/knesset/templates/include/member_detail.html:19
-#: src/knesset/templates/mks/member_detail.html:53
+#: templates/include/member_detail.html:19
+#: templates/mks/member_detail.html:55
 msgid "family status"
 msgstr "מצב משפחתי"
 
-#: src/knesset/templates/include/member_detail.html:23
-#: src/knesset/templates/mks/member_detail.html:57
+#: templates/include/member_detail.html:23
+#: templates/mks/member_detail.html:59
 msgid "place of birth"
 msgstr "מקום לידה"
 
-#: src/knesset/templates/include/member_detail.html:27
-#: src/knesset/templates/mks/member_detail.html:135
+#: templates/include/member_detail.html:27
+#: templates/mks/member_detail.html:140
 msgid "phone"
 msgstr "טלפון"
 
-#: src/knesset/templates/include/member_detail.html:31
-#: src/knesset/templates/mks/member_detail.html:140
+#: templates/include/member_detail.html:31
+#: templates/mks/member_detail.html:145
 msgid "fax"
 msgstr "פקס"
 
-#: src/knesset/templates/include/member_detail.html:35
-#: src/knesset/templates/mks/member_detail.html:145
+#: templates/include/member_detail.html:35
+#: templates/mks/member_detail.html:150
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
-#: src/knesset/templates/include/member_detail.html:39
+#: templates/include/member_detail.html:39
 msgid "web site"
 msgstr "אתר"
 
-#: src/knesset/templates/include/member_detail.html:43
-#: src/knesset/templates/include/vote_detail.html:26
-#: src/knesset/templates/include/vote_detail.html:43
-#: src/knesset/templates/laws/vote_detail.html:51
-#: src/knesset/templates/laws/vote_detail.html:72
-#: src/knesset/templates/links/_object_links.html:19
+#: templates/include/member_detail.html:43
+#: templates/include/vote_detail.html:26
+#: templates/include/vote_detail.html:43
+#: templates/laws/vote_detail.html:51
+#: templates/laws/vote_detail.html.py:72
+#: templates/links/_object_links.html:19
 msgid "none"
 msgstr "אין"
 
-#: src/knesset/templates/include/member_list.html:6
-#: src/knesset/templates/include/party_detail.html:7
-#: src/knesset/templates/include/party_list.html:6
-#: src/knesset/templates/include/vote_list.html:20
-#: src/knesset/templates/mks/member_list.html:22
-#: src/knesset/templates/mks/member_list_with_bars.html:23
-#: src/knesset/templates/mks/member_select.html:18
-#: src/knesset/templates/mks/party_detail.html:36
-#: src/knesset/templates/mks/party_list.html:18
-#: src/knesset/templates/mks/party_list.html:27
+#: templates/include/member_list.html:6
+#: templates/include/party_detail.html:7
+#: templates/include/party_list.html:6
+#: templates/include/vote_list.html:20
+#: templates/mks/member_list.html:22
+#: templates/mks/member_list_with_bars.html:27
+#: templates/mks/member_select.html:18
+#: templates/mks/party_detail.html:37
+#: templates/mks/party_list.html:22
+#: templates/mks/party_list.html.py:36
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
-#: src/knesset/templates/include/vote_detail.html:15
-#: src/knesset/templates/include/vote_detail.html:32
+#: templates/include/vote_detail.html:15
+#: templates/include/vote_detail.html:32
 #, python-format
 msgid ""
 "\n"
@@ -2876,202 +1177,215 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים"
 
-#: src/knesset/templates/include/vote_detail.html:65
-#: src/knesset/templates/laws/bill_detail.html:385
-#: src/knesset/templates/laws/vote_detail.html:114
+#: templates/include/vote_detail.html:49
+#: templates/include/vote_detail.html:53
+#: templates/include/vote_detail.html:61
+#: templates/include/vote_list.html:8
+#: templates/laws/bill_detail.html:357
+#: templates/laws/bill_detail.html:374
+#: templates/laws/vote_detail.html:86
+#: templates/laws/vote_detail.html:103
+#: templates/laws/vote_list.html:11
+#: templates/laws/vote_list.html.py:63
+msgid "Tags"
+msgstr "תגיות"
+
+#: templates/include/vote_detail.html:65
+#: templates/laws/bill_detail.html:385
+#: templates/laws/vote_detail.html:114
 msgid "Login to edit tags"
 msgstr "דרושה הרשמה קצרה כדי לערוך תגיות"
 
-#: src/knesset/templates/include/vote_detail.html:73
+#: templates/include/vote_detail.html:73
 msgid "No summary for this vote"
 msgstr "אין תקציר להצבעה זו"
 
-#: src/knesset/templates/include/vote_detail.html:77
+#: templates/include/vote_detail.html:77
 msgid "Link to compete vote text"
 msgstr "קישור למסמך המלא"
 
-#: src/knesset/templates/include/vote_detail.html:79
+#: templates/include/vote_detail.html:79
 msgid "No link to full vote text"
 msgstr "אין קישור למסמך המלא להצבעה זו"
 
-#: src/knesset/templates/include/vote_detail.html:84
-#: src/knesset/templates/laws/vote_detail.html:197
+#: templates/include/vote_detail.html:84
+#: templates/laws/vote_detail.html:197
 msgid "User comments"
 msgstr "תגובות"
 
-#: src/knesset/templates/include/vote_detail.html:91
-#: src/knesset/templates/laws/vote_detail.html:204
+#: templates/include/vote_detail.html:91
+#: templates/laws/vote_detail.html:204
 msgid "No comments yet"
 msgstr "אין עדיין תגובות"
 
-#: src/knesset/templates/include/vote_list.html:15
-#: src/knesset/templates/laws/vote_list.html:61
+#: templates/include/vote_list.html:15
+#: templates/laws/vote_list.html:70
 msgid "No tags"
 msgstr "אין תגיות"
 
-#: src/knesset/templates/laws/_paginator.html:4
+#: templates/laws/_paginator.html:4
 msgid "previous page"
 msgstr "העמוד הקודם"
 
-#: src/knesset/templates/laws/_paginator.html:8
+#: templates/laws/_paginator.html:8
 msgid "next page"
 msgstr "העמוד הבא"
 
-#: src/knesset/templates/laws/_paginator.html:13
+#: templates/laws/_paginator.html:13
 msgid "Pages"
 msgstr "עמודים"
 
-#: src/knesset/templates/laws/bill_detail.html:16
-#: src/knesset/templates/laws/bill_list.html:9
+#: templates/laws/bill_detail.html:16
+#: templates/laws/bill_list.html:9
 msgid "stage"
 msgstr "שלב"
 
-#: src/knesset/templates/laws/bill_detail.html:17
+#: templates/laws/bill_detail.html:17
 msgid "stage date"
 msgstr "תאריך עדכון אחרון"
 
-#: src/knesset/templates/laws/bill_detail.html:18
-#: src/knesset/templates/laws/bill_detail.html:159
-#: src/knesset/templates/laws/law_detail.html:13
-#: src/knesset/templates/laws/law_detail.html:39
+#: templates/laws/bill_detail.html:18
+#: templates/laws/bill_detail.html:159
+#: templates/laws/law_detail.html:13
+#: templates/laws/law_detail.html.py:39
 msgid "Proposed by"
 msgstr "הוצע על ידי"
 
-#: src/knesset/templates/laws/bill_detail.html:129
+#: templates/laws/bill_detail.html:129
 msgid "Government Stand"
 msgstr "עמדת הממשלה"
 
-#: src/knesset/templates/laws/bill_detail.html:139
+#: templates/laws/bill_detail.html:139
 msgid "Decision on government website"
 msgstr "ההחלטה באתר משרד ראש הממשלה"
 
-#: src/knesset/templates/laws/bill_detail.html:142
-#: src/knesset/templates/laws/bill_detail.html:165
-#: src/knesset/templates/laws/bill_detail.html:183
-#: src/knesset/templates/laws/bill_detail.html:210
-#: src/knesset/templates/laws/bill_detail.html:231
-#: src/knesset/templates/laws/bill_detail.html:249
-#: src/knesset/templates/laws/bill_detail.html:277
-#: src/knesset/templates/laws/bill_detail.html:298
+#: templates/laws/bill_detail.html:142
+#: templates/laws/bill_detail.html:165
+#: templates/laws/bill_detail.html:183
+#: templates/laws/bill_detail.html:210
+#: templates/laws/bill_detail.html:231
+#: templates/laws/bill_detail.html:249
+#: templates/laws/bill_detail.html:277
+#: templates/laws/bill_detail.html:298
 msgid "No Info"
 msgstr "אין נתונים"
 
-#: src/knesset/templates/laws/bill_detail.html:156
+#: templates/laws/bill_detail.html:156
 msgid "Bill initiation"
 msgstr "יזום הצעת החוק"
 
-#: src/knesset/templates/laws/bill_detail.html:158
-#: src/knesset/templates/laws/bill_detail.html:229
-#: src/knesset/templates/laws/knessetproposal_detail.html:11
-#: src/knesset/templates/laws/knessetproposal_detail.html:17
-#: src/knesset/templates/laws/law_detail.html:12
-#: src/knesset/templates/laws/law_detail.html:30
-#: src/knesset/templates/laws/law_detail.html:38
+#: templates/laws/bill_detail.html:158
+#: templates/laws/bill_detail.html:229
+#: templates/laws/knessetproposal_detail.html:11
+#: templates/laws/knessetproposal_detail.html:17
+#: templates/laws/law_detail.html:12
+#: templates/laws/law_detail.html.py:30
+#: templates/laws/law_detail.html:38
 msgid "Bill on knesset website"
 msgstr "ההצעה באתר הכנסת"
 
-#: src/knesset/templates/laws/bill_detail.html:179
+#: templates/laws/bill_detail.html:179
 msgid "Pre Vote"
 msgstr "קריאה טרומית"
 
-#: src/knesset/templates/laws/bill_detail.html:185
-#: src/knesset/templates/laws/bill_detail.html:251
-#: src/knesset/templates/laws/bill_detail.html:300
+#: templates/laws/bill_detail.html:185
+#: templates/laws/bill_detail.html:251
+#: templates/laws/bill_detail.html:300
 msgid "Suggest a matching vote"
 msgstr "הצעת הצבעה מתאימה"
 
-#: src/knesset/templates/laws/bill_detail.html:206
-#: src/knesset/templates/laws/bill_detail.html:273
-#: src/knesset/templates/laws/law_detail.html:18
-#: src/knesset/templates/laws/law_detail.html:31
-#: src/knesset/templates/laws/law_detail.html:44
+#: templates/laws/bill_detail.html:206
+#: templates/laws/bill_detail.html:273
+#: templates/laws/law_detail.html:18
+#: templates/laws/law_detail.html.py:31
+#: templates/laws/law_detail.html:44
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: src/knesset/templates/laws/bill_detail.html:227
+#: templates/laws/bill_detail.html:227
 msgid "Bill formulated by the committee"
 msgstr "נוסח הצעת החוק של הוועדה"
 
-#: src/knesset/templates/laws/bill_detail.html:294
+#: templates/laws/bill_detail.html:294
 msgid "Bill Approval"
 msgstr "אישור הצעת החוק"
 
-#: src/knesset/templates/laws/bill_detail.html:365
-#: src/knesset/templates/laws/bill_detail.html:382
-#: src/knesset/templates/laws/vote_detail.html:94
-#: src/knesset/templates/laws/vote_detail.html:111
+#: templates/laws/bill_detail.html:365
+#: templates/laws/bill_detail.html:382
+#: templates/laws/vote_detail.html:94
+#: templates/laws/vote_detail.html:111
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
-#: src/knesset/templates/laws/bill_detail.html:368
-#: src/knesset/templates/laws/vote_detail.html:97
+#: templates/laws/bill_detail.html:368
+#: templates/laws/vote_detail.html:97
 msgid "Suggest Tags"
 msgstr "הוספת תגיות"
 
-#: src/knesset/templates/laws/bill_detail.html:369
-#: src/knesset/templates/laws/vote_detail.html:98
+#: templates/laws/bill_detail.html:369
+#: templates/laws/vote_detail.html:98
 msgid "Click here"
 msgstr "יש ללחוץ כאן"
 
-#: src/knesset/templates/laws/bill_detail.html:391
+#: templates/laws/bill_detail.html:391
 msgid "suggested votes"
 msgstr "הצבעות מוצעות"
 
-#: src/knesset/templates/laws/bill_list.html:10
+#: templates/laws/bill_list.html:10
 msgid "Choose by tag"
 msgstr "חיפש לפי נושא"
 
-#: src/knesset/templates/laws/bill_list_by_tag.html:10
+#: templates/laws/bill_list_by_tag.html:10
 #, python-format
 msgid "Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a> by <a href=\"%(member_url)s\">%(member)s</a>"
 msgstr "הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a> על ידי <a href=\"%(member_url)s\">%(member)s</a>"
 
-#: src/knesset/templates/laws/bill_list_by_tag.html:12
+#: templates/laws/bill_list_by_tag.html:12
 #, python-format
 msgid "Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
 msgstr "הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
 
-#: src/knesset/templates/laws/bill_list_by_tag.html:14
+#: templates/laws/bill_list_by_tag.html:14
 msgid "Choose another tag"
 msgstr "בחירת נושא אחר"
 
-#: src/knesset/templates/laws/bill_list_by_tag.html:24
+#: templates/laws/bill_list_by_tag.html:24
 #, python-format
 msgid "MKs that proposed bill related to %(tag)s"
 msgstr "חברי כנסת שהציעו חוקים בנושא %(tag)s"
 
-#: src/knesset/templates/laws/knessetproposal_detail.html:12
-#: src/knesset/templates/laws/knessetproposal_list.html:15
-#: src/knesset/templates/laws/law_detail.html:36
+#: templates/laws/knessetproposal_detail.html:12
+#: templates/laws/knessetproposal_list.html:15
+#: templates/laws/law_detail.html:36
 msgid "Based on"
 msgstr "מבוסס על"
 
-#: src/knesset/templates/laws/knessetproposal_detail.html:17
+#: templates/laws/knessetproposal_detail.html:17
 msgid "that was proposed on"
 msgstr "שהוצע ב"
 
-#: src/knesset/templates/laws/knessetproposal_detail.html:20
+#: templates/laws/knessetproposal_detail.html:20
 msgid "This bill is mentioned in the following committe meetings"
 msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
 
-#: src/knesset/templates/laws/law_detail.html:10
+#: templates/laws/law_detail.html:10
 msgid "Private Bills"
 msgstr "הצעות חוק פרטיות"
 
-#: src/knesset/templates/laws/law_detail.html:27
+#: templates/laws/law_detail.html:27
 msgid "Knesset Bills"
 msgstr "חוקי הכנסת"
 
-#: src/knesset/templates/laws/vote_detail.html:27
+#: templates/laws/vote_detail.html:27
 msgid "Go to next vote by time"
 msgstr "מעבר להצבעה הבאה לפי זמן"
 
-#: src/knesset/templates/laws/vote_detail.html:30
+#: templates/laws/vote_detail.html:30
 msgid "Go to previous vote by time"
 msgstr "מעבר להצבעה הקודמת לפי זמן"
 
-#: src/knesset/templates/laws/vote_detail.html:36
-#: src/knesset/templates/laws/vote_detail.html:57
+#: templates/laws/vote_detail.html:36
+#: templates/laws/vote_detail.html.py:57
 #, python-format
 msgid ""
 "\n"
@@ -3088,119 +1402,119 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים"
 
-#: src/knesset/templates/laws/vote_detail.html:44
-#: src/knesset/templates/laws/vote_detail.html:65
+#: templates/laws/vote_detail.html:44
+#: templates/laws/vote_detail.html.py:65
 msgid "Voted differently than majority of own party"
 msgstr "הצביע שונה ממרבית חברי סיעתו"
 
-#: src/knesset/templates/laws/vote_detail.html:45
-#: src/knesset/templates/laws/vote_detail.html:66
+#: templates/laws/vote_detail.html:45
+#: templates/laws/vote_detail.html.py:66
 msgid "Voted differently than majority of the coalition"
 msgstr "הצביע שונה ממרבית חברי הקואליציה"
 
-#: src/knesset/templates/laws/vote_detail.html:46
-#: src/knesset/templates/laws/vote_detail.html:67
+#: templates/laws/vote_detail.html:46
+#: templates/laws/vote_detail.html.py:67
 msgid "Voted differently than majority of the opposition"
 msgstr "הצביע שונה ממרבית חברי האופוזיציה"
 
-#: src/knesset/templates/laws/vote_detail.html:81
+#: templates/laws/vote_detail.html:81
 msgid "No bill is associated with this vote"
 msgstr "אין הצעת חוק המקושרת להצבעה זו"
 
-#: src/knesset/templates/laws/vote_detail.html:119
+#: templates/laws/vote_detail.html:119
 msgid "This vote is mentioned in the following committe meetings"
 msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
 
-#: src/knesset/templates/laws/vote_detail.html:122
-#: src/knesset/templates/mks/member_detail.html:151
+#: templates/laws/vote_detail.html:122
+#: templates/mks/member_detail.html:156
 msgid "Links"
 msgstr "קישורים"
 
-#: src/knesset/templates/laws/vote_detail.html:131
+#: templates/laws/vote_detail.html:131
 msgid "Ascribed agendas"
 msgstr "אג'נדות משויכות"
 
-#: src/knesset/templates/laws/vote_detail.html:141
+#: templates/laws/vote_detail.html:141
 msgid "Ascribe your agendas"
 msgstr "שיוך אג'נדה בעריכתך"
 
-#: src/knesset/templates/laws/vote_detail.html:155
+#: templates/laws/vote_detail.html:155
 msgid "Ascribe"
 msgstr "שיוך"
 
-#: src/knesset/templates/laws/vote_detail.html:156
+#: templates/laws/vote_detail.html:156
 msgid "Remove"
 msgstr "להסיר"
 
-#: src/knesset/templates/laws/vote_detail.html:162
+#: templates/laws/vote_detail.html:162
 msgid "Complies fully"
 msgstr "התאמה מלאה"
 
-#: src/knesset/templates/laws/vote_detail.html:163
+#: templates/laws/vote_detail.html:163
 msgid "Complies partially"
 msgstr "התאמה חלקית"
 
-#: src/knesset/templates/laws/vote_detail.html:164
+#: templates/laws/vote_detail.html:164
 msgid "Agnostic"
 msgstr "לא ניתן לקבוע"
 
-#: src/knesset/templates/laws/vote_detail.html:165
+#: templates/laws/vote_detail.html:165
 msgid "Opposes partially"
 msgstr "התנגדות חלקית"
 
-#: src/knesset/templates/laws/vote_detail.html:166
+#: templates/laws/vote_detail.html:166
 msgid "Opposes fully"
 msgstr "התנגדות מלאה"
 
-#: src/knesset/templates/laws/vote_detail.html:170
+#: templates/laws/vote_detail.html:170
 msgid "Reasoning"
 msgstr "הסבר"
 
-#: src/knesset/templates/laws/vote_detail.html:184
+#: templates/laws/vote_detail.html:184
 msgid "summary"
 msgstr "תקציר"
 
-#: src/knesset/templates/laws/vote_detail.html:190
+#: templates/laws/vote_detail.html:190
 msgid "Bill Text"
 msgstr "החוק המלא"
 
-#: src/knesset/templates/laws/vote_detail.html:211
+#: templates/laws/vote_detail.html:211
 msgid "Please"
 msgstr "אנא"
 
-#: src/knesset/templates/laws/vote_detail.html:211
+#: templates/laws/vote_detail.html:211
 msgid "validate your email"
 msgstr "אמת/י את הדואר אלקטרוני שסיפקת"
 
-#: src/knesset/templates/laws/vote_detail.html:211
+#: templates/laws/vote_detail.html:211
 msgid " to comment"
 msgstr " כדי להגיב"
 
-#: src/knesset/templates/laws/vote_detail.html:214
+#: templates/laws/vote_detail.html:214
 msgid "Please login to comment"
 msgstr "יש להכנס לחשבון כדי להגיב"
 
-#: src/knesset/templates/laws/vote_list.html:10
+#: templates/laws/vote_list.html:10
 msgid "Vote types"
 msgstr "סוגי הצבעות"
 
-#: src/knesset/templates/laws/vote_list.html:12
+#: templates/laws/vote_list.html:12
 msgid "Time range"
 msgstr "טווח זמנים"
 
-#: src/knesset/templates/laws/vote_list.html:13
+#: templates/laws/vote_list.html:13
 msgid "Order by"
 msgstr "מיון לפי"
 
-#: src/knesset/templates/laws/vote_list.html:27
+#: templates/laws/vote_list.html:36
 msgid "Full text is available"
 msgstr "יש פירוט זמין עבור הצבעה זו"
 
-#: src/knesset/templates/laws/vote_list.html:28
+#: templates/laws/vote_list.html:37
 msgid "Summary is available"
 msgstr "יש תקציר זמין עבור הצבעה זו"
 
-#: src/knesset/templates/laws/vote_list.html:30
+#: templates/laws/vote_list.html:39
 #, python-format
 msgid ""
 "\n"
@@ -3217,7 +1531,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s ח\"כים הצביעו שונה ממרבית חברי מפלגותיהם"
 
-#: src/knesset/templates/laws/vote_list.html:37
+#: templates/laws/vote_list.html:46
 #, python-format
 msgid ""
 "\n"
@@ -3234,7 +1548,7 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי קואליציה הצביעו שונה משאר חברי הקואליציה"
 
-#: src/knesset/templates/laws/vote_list.html:44
+#: templates/laws/vote_list.html:53
 #, python-format
 msgid ""
 "\n"
@@ -3251,358 +1565,1070 @@ msgstr[1] ""
 "\n"
 "%(counter)s חברי אופוזיציה הצביעו שונה משאר חברי האופוזיציה"
 
-#: src/knesset/templates/laws/vote_list.html:67
+#: templates/laws/vote_list.html:76
 msgid "No watched members. click me to select members to watch"
 msgstr "אין ח\"כים במעקב. אפשר להוסיף על ידי לחיצה כאן"
 
-#: src/knesset/templates/mks/member_detail.html:20
-msgid "You have to be logged in to watch a user."
-msgstr "כדי לעקוב אחר חבר כנסת צריך להכנס לחשבון."
-
-#: src/knesset/templates/mks/member_detail.html:29
+#: templates/mks/member_detail.html:31
 msgid "All Members"
 msgstr "כל הח\"כים"
 
-#: src/knesset/templates/mks/member_detail.html:40
+#: templates/mks/member_detail.html:33
+#: templates/planet/blogs/list.html:32
+#: templates/planet/feeds/list.html:24
+msgid "feed"
+msgstr "פיד"
+
+#: templates/mks/member_detail.html:42
 msgid "Personal Information"
 msgstr "מידע אישי"
 
-#: src/knesset/templates/mks/member_detail.html:61
+#: templates/mks/member_detail.html:63
 msgid "place of residence"
 msgstr "מקום מגורים"
 
-#: src/knesset/templates/mks/member_detail.html:65
+#: templates/mks/member_detail.html:67
 msgid "residence centrality"
 msgstr "מדד מרכזיות של מקום מגורים"
 
-#: src/knesset/templates/mks/member_detail.html:69
+#: templates/mks/member_detail.html:71
 msgid "residence economy"
 msgstr "מדד סוציואקונומי של מקום מגורים"
 
-#: src/knesset/templates/mks/member_detail.html:77
-#: src/knesset/templates/mks/party_detail.html:12
+#: templates/mks/member_detail.html:79
+#: templates/mks/party_detail.html:13
 msgid "Statistics"
 msgstr "סטטיסטיקות"
 
-#: src/knesset/templates/mks/member_detail.html:82
-#: src/knesset/templates/mks/member_detail.html:87
-#: src/knesset/templates/mks/member_detail.html:92
+#: templates/mks/member_detail.html:84
+#: templates/mks/member_detail.html:89
+#: templates/mks/member_detail.html:94
 msgid "Last 30 days"
 msgstr "ב 30 הימים האחרונים"
 
-#: src/knesset/templates/mks/member_detail.html:85
-#: src/knesset/templates/mks/party_detail.html:24
+#: templates/mks/member_detail.html:87
+#: templates/mks/party_detail.html:25
 msgid "Factional discipline"
 msgstr "משמעת סיעתית"
 
-#: src/knesset/templates/mks/member_detail.html:90
-#: src/knesset/templates/mks/party_detail.html:28
+#: templates/mks/member_detail.html:92
+#: templates/mks/party_detail.html:29
 msgid "Coalition discipline"
 msgstr "משמעת קואליציה"
 
-#: src/knesset/templates/mks/member_detail.html:90
-#: src/knesset/templates/mks/party_detail.html:28
+#: templates/mks/member_detail.html:92
+#: templates/mks/party_detail.html:29
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
 
-#: src/knesset/templates/mks/member_detail.html:95
+#: templates/mks/member_detail.html:97
 msgid "Average weekly hours"
 msgstr "שעות שבועיות בממוצע"
 
-#: src/knesset/templates/mks/member_detail.html:99
+#: templates/mks/member_detail.html:101
 msgid "Average number of committee meetings per month"
 msgstr "ישיבות וועדות בחודש"
 
-#: src/knesset/templates/mks/member_detail.html:103
+#: templates/mks/member_detail.html:105
 msgid "Number of bills proposed"
 msgstr "מספר הצעות חוק שהוצעו"
 
-#: src/knesset/templates/mks/member_detail.html:107
+#: templates/mks/member_detail.html:109
 msgid "Bills passed pre-vote"
 msgstr "הצעות חוק שאושרו טרומית"
 
-#: src/knesset/templates/mks/member_detail.html:111
+#: templates/mks/member_detail.html:113
 msgid "Bills passed first vote"
 msgstr "הצעות חוק שאושרו בקריאה ראשונה"
 
-#: src/knesset/templates/mks/member_detail.html:115
+#: templates/mks/member_detail.html:117
 msgid "Bills approved"
 msgstr "הצעות חוק שאושרו סופית"
 
-#: src/knesset/templates/mks/member_detail.html:125
+#: templates/mks/member_detail.html:124
+#: templates/mks/member_detail.html:131
 msgid "Proposed bills topics"
 msgstr "נושאי הצעות חוק"
 
-#: src/knesset/templates/mks/member_detail.html:132
+#: templates/mks/member_detail.html:137
 msgid "Contact Information"
 msgstr "יצירת קשר"
 
-#: src/knesset/templates/mks/member_detail.html:160
+#: templates/mks/member_detail.html:179
 msgid "Refresh"
 msgstr "רענון"
 
-#: src/knesset/templates/mks/member_detail.html:166
-#: src/knesset/templates/user/public_profile.html:42
+#: templates/mks/member_detail.html:185
+#: templates/user/public_profile.html:42
 msgid "before"
 msgstr "לפני"
 
-#: src/knesset/templates/mks/member_detail.html:173
-#: src/knesset/templates/user/profile_list.html:16
+#: templates/mks/member_detail.html:192
+#: templates/user/profile_list.html:16
 msgid "Sorry, no data is available, try selecting more actions and refresh"
 msgstr "מצטערים, אין נתונים. אפשר לנסות לבחור יותר פעולות ולרענן."
 
-#: src/knesset/templates/mks/member_detail.html:185
-#: src/knesset/templates/mks/member_detail.html:216
-msgid "Unwatch"
-msgstr "הפסק מעקב"
-
-#: src/knesset/templates/mks/member_detail.html:188
-#: src/knesset/templates/mks/member_detail.html:199
-msgid "Watch"
-msgstr "מעקב"
-
-#: src/knesset/templates/mks/member_detail.html:230
+#: templates/mks/member_detail.html:249
 msgid "Embed in external site"
 msgstr "הטמעה באתר חיצוני"
 
-#: src/knesset/templates/mks/member_detail.html:239
+#: templates/mks/member_detail.html:258
 msgid "Add the code above to your site, to get a dynamically generated info"
 msgstr "הוסף את הקוד לאתר שלך, לקבלת מידע דינמי באתרך"
 
-#: src/knesset/templates/mks/member_list.html:16
-#: src/knesset/templates/mks/member_list_with_bars.html:16
-#: src/knesset/templates/mks/member_select.html:12
-#: src/knesset/templates/mks/party_detail.html:32
+#: templates/mks/member_list.html:16
+#: templates/mks/member_list_with_bars.html:16
+#: templates/mks/member_select.html:12
+#: templates/mks/party_detail.html:33
 msgid "Current MKs"
 msgstr "חברי כנסת נוכחיים"
 
-#: src/knesset/templates/mks/member_list.html:24
-#: src/knesset/templates/mks/member_list_with_bars.html:26
-#: src/knesset/templates/mks/member_select.html:20
-#: src/knesset/templates/mks/party_detail.html:39
+#: templates/mks/member_list.html:24
+#: templates/mks/member_list_with_bars.html:31
+#: templates/mks/member_select.html:20
+#: templates/mks/party_detail.html:40
 msgid "Past MKs"
 msgstr "חברי כנסת בעבר"
 
-#: src/knesset/templates/mks/member_select.html:3
-#: src/knesset/templates/mks/member_select.html:4
-#: src/knesset/templates/mks/member_select.html:5
+#: templates/mks/member_select.html:3
+#: templates/mks/member_select.html.py:4
+#: templates/mks/member_select.html:5
 msgid "Select Members"
 msgstr "בחירת ח\"כים"
 
-#: src/knesset/templates/mks/member_select.html:9
+#: templates/mks/member_select.html:9
 msgid "Choose MKs to show their votes in vote list"
 msgstr "חברי כנסת להציג את הצבעותיהם"
 
-#: src/knesset/templates/mks/member_select.html:10
+#: templates/mks/member_select.html:10
 msgid "Click here when you are done"
 msgstr "סיום"
 
-#: src/knesset/templates/mks/party_detail.html:20
+#: templates/mks/party_detail.html:21
 msgid "Average votes per MK"
 msgstr "ממוצע הצבעות לח\"כ"
 
-#: src/knesset/templates/mks/party_list.html:13
+#: templates/mks/party_list.html:13
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: src/knesset/templates/mks/party_list.html:22
+#: templates/mks/party_list.html:27
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: src/knesset/templates/planet/posts/full_details.html:29
+#: templates/notify/footer.html:3
+#: templates/notify/footer.txt:3
+msgid "To stop receiving updates"
+msgstr "על מנת להפסיק את קבלת העדכונים"
+
+#: templates/notify/footer.html:4
+msgid "visit the site, and change your settings"
+msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
+
+#: templates/notify/footer.txt:3
+msgid "Visit the site, and change your settings"
+msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
+
+#: templates/notify/header.html:4
+#, python-format
+msgid ""
+"Hi %(username)s,<br>\n"
+"Here's what happened lately in the knesset and on our site"
+msgstr ""
+"שלום %(username)s,<br>\n"
+"הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+
+#: templates/notify/header.txt:3
+#, python-format
+msgid ""
+"Hi %(username)s,\n"
+"Here's what happened lately in the knesset and on our site"
+msgstr ""
+"שלום %(username)s,\n"
+"הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+
+#: templates/notify/member_section.html:2
+#: templates/notify/member_section.txt:3
+msgid "followed MKs"
+msgstr "חברי כנסת במעקב"
+
+#: templates/pagination/pagination.html:5
+#: templates/pagination/pagination.html:7
+msgid "previous"
+msgstr "העמוד הקודם"
+
+#: templates/pagination/pagination.html:21
+#: templates/pagination/pagination.html:23
+msgid "next"
+msgstr "העמוד הבא"
+
+#: templates/planet/base.html:15
+msgid "Tag Cloud"
+msgstr "ענן תגיות"
+
+#: templates/planet/base.html:24
+msgid "Search in"
+msgstr "חיפוש ב"
+
+#: templates/planet/base.html:26
+msgid "ok"
+msgstr "להמשך"
+
+#: templates/planet/base.html:38
+msgid "Suscribe to RSS feed"
+msgstr "הרשמה לפיד"
+
+#: templates/planet/base.html:58
+msgid "This is a django powered site!"
+msgstr "זהו אתר מבוסס django!"
+
+#: templates/planet/blogs/list.html:4
+#: templates/planet/blogs/list.html.py:6
+#: templates/planet/blogs/list.html:7
+msgid "Blogs list"
+msgstr "רשימת בלוגים"
+
+#: templates/planet/blogs/list.html:18
+#: templates/planet/blogs/list.html:28
+msgid "See the full list of posts from this blog"
+msgstr "רשימה מלאה של מאמרים מהבלוג"
+
+#: templates/planet/blogs/list.html:25
+#: templates/planet/feeds/list.html:27
+msgid "web"
+msgstr "אתר"
+
+#: templates/planet/blogs/list.html:25
+#: templates/planet/feeds/list.html:27
+msgid "Go to the original blog"
+msgstr "ביקור בבלוג המקורי"
+
+#: templates/planet/blogs/list.html:28
+#: templates/planet/feeds/list.html:30
+msgid "browse"
+msgstr "עיון"
+
+#: templates/planet/blogs/list.html:28
+#: templates/planet/feeds/list.html:30
+msgid "latest posts"
+msgstr "מאמרים אחרונים"
+
+#: templates/planet/blogs/list.html:32
+#: templates/planet/feeds/list.html:17
+msgid "See the full list of post from this feed"
+msgstr "רשימת המאמרים המלאה מהבלוג"
+
+#: templates/planet/blogs/list.html:33
+msgid "Subscribe to "
+msgstr "הרשמה ל"
+
+#: templates/planet/blogs/list.html:34
+msgid "RSS 2.0 Feed"
+msgstr "פיד רסס"
+
+#: templates/planet/feeds/list.html:4
+#: templates/planet/feeds/list.html.py:6
+#: templates/planet/feeds/list.html:7
+msgid "Feeds list"
+msgstr "רשימת הפידים"
+
+#: templates/planet/feeds/list.html:21
+msgid "Subscribe to feed of"
+msgstr "הרשמה לפיד של "
+
+#: templates/planet/feeds/list.html:24
+msgid "Subscribe to this feed"
+msgstr "הרשמה לפיד זה"
+
+#: templates/planet/feeds/list.html:30
+msgid "See the full list of posts from this feed"
+msgstr "רשימת מאמרים מלאה מפיד זה"
+
+#: templates/planet/posts/full_details.html:25
+msgid "tags"
+msgstr "תגיות"
+
+#: templates/planet/posts/full_details.html:29
 msgid "before:"
 msgstr "לפני"
 
-#: src/knesset/templates/planet/posts/list.html:8
+#: templates/planet/posts/list.html:8
 msgid "Below is a list of MKs blog posts as recieved from the their blogs."
 msgstr "לעיונך, רשימת מאמרים שכתבו חברי הכנסת בבלוגים שלהם."
 
-#: src/knesset/templates/search/search.html:19
+#: templates/planet/tags/cloud.html:4
+#: templates/planet/tags/cloud.html.py:6
+#: templates/planet/tags/cloud.html:7
+msgid "Tags cloud"
+msgstr "ענן תגיות"
+
+#: templates/planet/tags/detail.html:6
+msgid "tag in"
+msgstr "תג ב "
+
+#: templates/planet/tags/detail.html:7
+#: templates/planet/tags/detail.html:12
+msgid "Posts in"
+msgstr "מאמרים ב "
+
+#: templates/planet/tags/detail.html:11
+msgid "tag"
+msgstr "תג:"
+
+#: templates/planet/tags/detail.html:11
+msgid "in"
+msgstr "ב"
+
+#: templates/planet/tags/detail.html:16
+msgid "Suscribe to RSS feed for tag"
+msgstr "הרשמה לפיד של התג הזה "
+
+#: templates/planet/tags/detail.html:22
+msgid "Tag"
+msgstr "תג"
+
+#: templates/planet/tags/detail.html:36
+msgid "See the list of authors talking about this tag"
+msgstr "רשימה של כותבים שכתבו על תג זה"
+
+#: templates/planet/tags/detail.html:37
+msgid "People talking about this"
+msgstr "ח\"כים המדברים על זה"
+
+#: templates/planet/tags/list.html:4
+#: templates/planet/tags/list.html.py:6
+#: templates/planet/tags/list.html:7
+msgid "Tags list"
+msgstr "רשימת תגיות"
+
+#: templates/search/search.html:19
 msgid "Did you mean"
 msgstr "האם התכוונת ל"
 
-#: src/knesset/templates/search/search.html:21
+#: templates/search/search.html:21
 msgid "Results"
 msgstr "תוצאות"
 
-#: src/knesset/templates/search/search.html:28
+#: templates/search/search.html:28
 msgid "No results found."
 msgstr "לא נמצאו תוצאות"
 
-#: src/knesset/templates/search/search.html:34
+#: templates/search/search.html:34
 msgid "previous results"
 msgstr "התוצאות הקודמות"
 
-#: src/knesset/templates/search/search.html:38
+#: templates/search/search.html:38
 msgid "next results"
 msgstr "התוצאות הבאות"
 
-#: src/knesset/templates/user/create_user.html:4
+#: templates/user/create_user.html:4
 msgid "Create new user"
 msgstr "יצירת משתמש חדש"
 
-#: src/knesset/templates/user/editprofile.html:4
-#: src/knesset/templates/user/editprofile.html:5
+#: templates/user/editprofile.html:4
+#: templates/user/editprofile.html.py:5
 msgid "User Profile"
 msgstr "פרופיל משתמש"
 
-#: src/knesset/templates/user/editprofile.html:11
-#: src/knesset/templates/user/public_profile.html:17
+#: templates/user/editprofile.html:11
+#: templates/user/public_profile.html:17
 msgid "Following Members"
 msgstr "חברי כנסת במעקב"
 
-#: src/knesset/templates/user/editprofile.html:23
+#: templates/user/editprofile.html:23
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
 
-#: src/knesset/templates/user/editprofile.html:25
+#: templates/user/editprofile.html:25
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
 
-#: src/knesset/templates/user/editprofile.html:27
+#: templates/user/editprofile.html:27
 msgid "send validation email"
 msgstr "שליחת דואר אלקטרוני לאימות"
 
-#: src/knesset/templates/user/editprofile.html:31
+#: templates/user/editprofile.html:31
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
-#: src/knesset/templates/user/login.html:9
+#: templates/user/login.html:9
 msgid "You are already logged in."
 msgstr "את/ה כבר מחובר/ת.‏"
 
-#: src/knesset/templates/user/login.html:20
+#: templates/user/login.html:20
 msgid "New user? Register"
 msgstr "משתמש חדש? הרשמה"
 
-#: src/knesset/templates/user/login.html:21
+#: templates/user/login.html:21
 msgid "Forgot password?"
 msgstr "שכחת סיסמה?‏"
 
-#: src/knesset/templates/user/password_reset_complete.html:3
-#: src/knesset/templates/user/password_reset_complete.html:5
+#: templates/user/password_reset_complete.html:3
+#: templates/user/password_reset_complete.html:5
 msgid "Password reset complete"
 msgstr "איפוס הסיסמה הושלם"
 
-#: src/knesset/templates/user/password_reset_complete.html:7
+#: templates/user/password_reset_complete.html:7
 msgid "Your password has been set.  You may go ahead and log in now."
 msgstr "ססמתך נשמרה. כעת ניתן להתחבר."
 
-#: src/knesset/templates/user/password_reset_complete.html:9
+#: templates/user/password_reset_complete.html:9
 msgid "Log in"
 msgstr "כניסה"
 
-#: src/knesset/templates/user/password_reset_confirm.html:3
-#: src/knesset/templates/user/password_reset_form.html:3
-#: src/knesset/templates/user/password_reset_form.html:7
+#: templates/user/password_reset_confirm.html:3
+#: templates/user/password_reset_form.html:3
+#: templates/user/password_reset_form.html:7
 msgid "Password reset"
 msgstr "איפוס סיסמה"
 
-#: src/knesset/templates/user/password_reset_confirm.html:8
+#: templates/user/password_reset_confirm.html:8
 msgid "Enter new password"
 msgstr "הזנת סיסמה חדשה"
 
-#: src/knesset/templates/user/password_reset_confirm.html:10
+#: templates/user/password_reset_confirm.html:10
 msgid "Please enter your new password twice so we can verify you typed it in correctly."
 msgstr "נא להזין את סיסמתך החדשה פעמיים כדי שנוכל לוודא שהקלדת אותה כראוי."
 
-#: src/knesset/templates/user/password_reset_confirm.html:14
+#: templates/user/password_reset_confirm.html:14
 msgid "New password:"
 msgstr "סיסמה חדשה:"
 
-#: src/knesset/templates/user/password_reset_confirm.html:16
+#: templates/user/password_reset_confirm.html:16
 msgid "Confirm password:"
 msgstr "אימות סיסמה:"
 
-#: src/knesset/templates/user/password_reset_confirm.html:17
+#: templates/user/password_reset_confirm.html:17
 msgid "Change my password"
 msgstr "שנה את סיסמתי"
 
-#: src/knesset/templates/user/password_reset_confirm.html:22
+#: templates/user/password_reset_confirm.html:22
 msgid "Password reset unsuccessful"
 msgstr "איפוס הסיסמה נכשל"
 
-#: src/knesset/templates/user/password_reset_confirm.html:24
+#: templates/user/password_reset_confirm.html:24
 msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
 msgstr "הקישור לאיפוס הסיסמה אינו חוקי. ייתכן והשתמשו בו כבר. אנא בקש/י שוב איפוס סיסמה. "
 
-#: src/knesset/templates/user/password_reset_done.html:3
-#: src/knesset/templates/user/password_reset_done.html:7
+#: templates/user/password_reset_done.html:3
+#: templates/user/password_reset_done.html:7
 msgid "Password reset successful"
 msgstr "הסיסמה אופסה בהצלחה"
 
-#: src/knesset/templates/user/password_reset_done.html:9
+#: templates/user/password_reset_done.html:9
 msgid "We've e-mailed you instructions for setting your password to the e-mail address you submitted. You should be receiving it shortly."
 msgstr "שלחנו הוראות לקביעת הסיסמה אל כתובת הדוא\"ל שהזנת. ההודעה אמורה להתקבל בקרוב."
 
-#: src/knesset/templates/user/password_reset_form.html:9
+#: templates/user/password_reset_form.html:9
 msgid "Forgotten your password? Enter your e-mail address below, and we'll e-mail instructions for setting a new one."
 msgstr "שכחת את סיסמתך? נא להזין את כתובת הדוא\"ל, ואנו נשלח הוראות לקביעת סיסמה חדשה."
 
-#: src/knesset/templates/user/password_reset_form.html:13
+#: templates/user/password_reset_form.html:13
 msgid "E-mail address:"
 msgstr "כתובת דוא\"ל:"
 
-#: src/knesset/templates/user/password_reset_form.html:13
+#: templates/user/password_reset_form.html:13
 msgid "Reset my password"
 msgstr "אפס את סיסמתי"
 
-#: src/knesset/templates/user/profile_list.html:7
-#: src/knesset/templates/user/profile_list.html:8
+#: templates/user/profile_list.html:7
+#: templates/user/profile_list.html.py:8
 msgid "Users"
 msgstr "משתמשים"
 
-#: src/knesset/templates/user/public_profile.html:22
+#: templates/user/public_profile.html:22
 msgid "Not following any memebers."
 msgstr "אין חברי כנסת במעקב"
 
-#: src/knesset/templates/user/public_profile.html:32
+#: templates/user/public_profile.html:32
 msgid "No badges yet."
 msgstr "אין אותות, עדיין."
 
-#: src/knesset/templates/user/public_profile.html:37
+#: templates/user/public_profile.html:37
 msgid "Activities"
 msgstr "פעילויות"
 
-#: src/knesset/templates/user/public_profile.html:49
+#: templates/user/public_profile.html:49
 msgid "Sorry, no data is available"
 msgstr "לצערנו, אין נתונים"
 
-#: src/knesset/templates/user/public_profile.html:55
+#: templates/user/public_profile.html:55
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
-#: src/knesset/user/forms.py:10
-#: src/knesset/user/forms.py:11
-#: src/knesset/user/forms.py:28
-#: src/knesset/user/forms.py:29
+#: user/forms.py:10
+#: user/forms.py:28
+msgid "Username"
+msgstr "שם משתמש"
+
+#: user/forms.py:11
+#: user/forms.py:12
+#: user/forms.py:29
+#: user/forms.py:30
 msgid "Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."
 msgstr "חובה. 30-4 תווים (אותיות, מספרים, רווחים, @/./+/-/_ בלבד).‏"
 
-#: src/knesset/user/forms.py:24
+#: user/forms.py:25
 msgid "email address"
 msgstr "כתובת דוא\"ל"
 
-#: src/knesset/user/forms.py:25
+#: user/forms.py:26
 msgid "We don't spam, and don't show your email to anyone"
 msgstr "לא נשלח דואר זבל, לא נשתף את הכתובת עם אף אחד, ולא נציג אותה באתר"
 
-#: src/knesset/user/forms.py:31
+#: user/forms.py:32
 msgid "Public profile"
 msgstr "פרופיל פומבי"
 
-#: src/knesset/user/forms.py:32
+#: user/forms.py:33
 msgid "Allow other users to view your profile on the site"
 msgstr "לאפשר למשתמשים אחרים לצפות בפרופיל שלך"
 
-#: src/knesset/user/forms.py:34
+#: user/forms.py:35
 msgid "Gender"
 msgstr "מין"
 
-#: src/knesset/user/forms.py:35
+#: user/forms.py:37
 msgid "Tell us and other users bit about yourself"
 msgstr "ספר/י לנו ולמשתמשים אחרים באתר מעט על עצמך"
 
+#: user/forms.py:40
+msgid "E-Mail Notifications"
+msgstr "התראות דוא\"ל"
+
+#: user/forms.py:41
+msgid "Should we send you e-mail notification about updates to things you follow on the site?"
+msgstr "האם לשלוח לך דוא\"ל עם עדכונים על דברים שבמעקב שלך?"
+
+#: user/models.py:18
+msgid "Daily"
+msgstr "יומי"
+
+#: user/models.py:19
+msgid "Weekly"
+msgstr "שבועי"
+
+#, fuzzy
+#~ msgid "Cache Usage"
+#~ msgstr "הערה לשינוי"
+
+#, fuzzy
+#~ msgid "Logging"
+#~ msgstr "כניסה"
+
+#, fuzzy
+#~ msgid "Log Messages"
+#~ msgstr "הודעה"
+
+#, fuzzy
+#~ msgid "Signals"
+#~ msgstr "סינאלוה"
+
+#, fuzzy
+#~ msgid "SQL Queries"
+#~ msgstr "ערוך פרופיל"
+
+#, fuzzy
+#~ msgid "Templates"
+#~ msgstr "תבנית"
+
+#, fuzzy
+#~ msgid "Resource Usage"
+#~ msgstr "הערה לשינוי"
+
+#, fuzzy
+#~ msgid "User CPU time"
+#~ msgstr "פרופיל משתמש"
+
+#, fuzzy
+#~ msgid "System CPU time"
+#~ msgstr "פרופיל משתמש"
+
+#, fuzzy
+#~ msgid "Total CPU time"
+#~ msgstr "פרופיל משתמש"
+
+#, fuzzy
+#~ msgid "Context switches"
+#~ msgstr "סוגי תוכן"
+
+#, fuzzy
+#~ msgid "Versions"
+#~ msgstr "התחברויות"
+
+#, fuzzy
+#~ msgid "Hide Toolbar"
+#~ msgstr "הצג הכל"
+
+#, fuzzy
+#~ msgid "Hide"
+#~ msgstr "הינדי"
+
+#, fuzzy
+#~ msgid "Show Toolbar"
+#~ msgstr "הצג הכל"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "צבע"
+
+#, fuzzy
+#~ msgid "Location"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "Hits"
+#~ msgstr "אתרים"
+
+#, fuzzy
+#~ msgid "Misses"
+#~ msgstr "מיי"
+
+#, fuzzy
+#~ msgid "Parameters"
+#~ msgstr "מפלגות"
+
+#, fuzzy
+#~ msgid "Function"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "Value"
+#~ msgstr "זכר"
+
+#, fuzzy
+#~ msgid "Level"
+#~ msgstr "לביצה"
+
+#, fuzzy
+#~ msgid "Message"
+#~ msgstr "הודעה"
+
+#, fuzzy
+#~ msgid "No messages logged"
+#~ msgstr "הודעה"
+
+#, fuzzy
+#~ msgid "View information"
+#~ msgstr "ניהול אתר"
+
+#, fuzzy
+#~ msgid "View Function"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "args"
+#~ msgstr "ארגאו"
+
+#, fuzzy
+#~ msgid "kwargs"
+#~ msgstr "ארגאו"
+
+#, fuzzy
+#~ msgid "COOKIES Variables"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "Variable"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "SESSION Variables"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "GET Variables"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "No GET data"
+#~ msgstr "אין מספיק נתונים"
+
+#, fuzzy
+#~ msgid "POST Variables"
+#~ msgstr "וו"
+
+#, fuzzy
+#~ msgid "Signal"
+#~ msgstr "סינאלוה"
+
+#, fuzzy
+#~ msgid "Action"
+#~ msgstr "פעולה"
+
+#, fuzzy
+#~ msgid "Query"
+#~ msgstr "משתמש"
+
+#, fuzzy
+#~ msgid "Line"
+#~ msgstr "תשעה"
+
+#, fuzzy
+#~ msgid "File"
+#~ msgstr "סינון"
+
+#, fuzzy
+#~ msgid "SQL Profiled"
+#~ msgstr "ערוך פרופיל"
+
+#, fuzzy
+#~ msgid "Template Source"
+#~ msgstr "שם תבנית"
+
+#, fuzzy
+#~ msgid "Template path"
+#~ msgstr "שם תבנית"
+
+#, fuzzy
+#~ msgid "Template"
+#~ msgstr "תבנית"
+
+#, fuzzy
+#~ msgid "Toggle Context"
+#~ msgstr "הצבעות מתויגות"
+
+#, fuzzy
+#~ msgid "Context processor"
+#~ msgstr "סוגי תוכן"
+
+#, fuzzy
+#~ msgid "Resource"
+#~ msgstr "הערה לשינוי"
+
+#, fuzzy
+#~ msgid "Package"
+#~ msgstr "פראג"
+
+#, fuzzy
+#~ msgid "Version"
+#~ msgstr "פרסית"
+#~ msgid "and"
+#~ msgstr "ו"
+
+#, fuzzy
+#~ msgid "slug"
+#~ msgstr "טלגו"
+
+#, fuzzy
+#~ msgid "description"
+#~ msgstr "תאור"
+
+#, fuzzy
+#~ msgid "Inactive"
+#~ msgstr "Iwate"
+
+#, fuzzy
+#~ msgid "Active"
+#~ msgstr "פעילויות"
+
+#, fuzzy
+#~ msgid "status"
+#~ msgstr "מצב משפחתי"
+#~ msgid "%s does not appear to be a urlpattern object"
+#~ msgstr "לא נראה ש-%s הוא אובייקט urlpattern"
+#~ msgid "Lookup"
+#~ msgstr "חפש"
+
+#, fuzzy
+#~ msgid "Search In"
+#~ msgstr "חיפוש ב"
+
+#, fuzzy
+#~ msgid "Posts in %s"
+#~ msgstr "מאמרים ב "
+
+#, fuzzy
+#~ msgid "All posts"
+#~ msgstr "כל ההצבעות"
+
+#, fuzzy
+#~ msgid "Posts by %(author_name)s - %(site_name)s"
+#~ msgstr "ההערות האחרונות על %(site_name)s"
+
+#, fuzzy
+#~ msgid "Blogs"
+#~ msgstr "רשימת בלוגים"
+
+#, fuzzy
+#~ msgid "Feeds"
+#~ msgstr "פיד"
+
+#, fuzzy
+#~ msgid "Url"
+#~ msgstr "אורי"
+
+#, fuzzy
+#~ msgid "Blog"
+#~ msgstr "כניסה לחשבון"
+#~ msgid "Name"
+#~ msgstr "שם"
+
+#, fuzzy
+#~ msgid "Generator"
+#~ msgstr "ג'נבה"
+
+#, fuzzy
+#~ msgid "Generators"
+#~ msgstr "ג'נבה"
+
+#, fuzzy
+#~ msgid "Title"
+#~ msgstr "כותרת"
+
+#, fuzzy
+#~ msgid "Subtitle"
+#~ msgstr "כותרת"
+
+#, fuzzy
+#~ msgid "Rights"
+#~ msgstr "שמונה"
+
+#, fuzzy
+#~ msgid "Infos"
+#~ msgstr "אין נתונים"
+
+#, fuzzy
+#~ msgid "Etag"
+#~ msgstr "תג:"
+
+#, fuzzy
+#~ msgid "Last checked"
+#~ msgstr "שבוע אחרון"
+
+#, fuzzy
+#~ msgid "Is active"
+#~ msgstr "שמירה"
+
+#, fuzzy
+#~ msgid "Feed"
+#~ msgstr "פיד"
+
+#, fuzzy
+#~ msgid "Comments URL"
+#~ msgstr "תגובה"
+
+#, fuzzy
+#~ msgid "Date modified"
+#~ msgstr "תאריך הצטרפות"
+
+#, fuzzy
+#~ msgid "Post"
+#~ msgstr "מאמרים"
+
+#, fuzzy
+#~ msgid "Profile URL"
+#~ msgstr "עריכת פרופיל"
+
+#, fuzzy
+#~ msgid "Author"
+#~ msgstr "שעה"
+
+#, fuzzy
+#~ msgid "Feed Link"
+#~ msgstr "רשימת הפידים"
+
+#, fuzzy
+#~ msgid "Feed Links"
+#~ msgstr "רשימת הפידים"
+
+#, fuzzy
+#~ msgid "Post Link"
+#~ msgstr "מאמרים ב "
+
+#, fuzzy
+#~ msgid "Post Links"
+#~ msgstr "מאמרים ב "
+
+#, fuzzy
+#~ msgid "Length"
+#~ msgstr "דרנתה"
+
+#, fuzzy
+#~ msgid "Post Enclosure"
+#~ msgstr "פרסום תגובה"
+
+#, fuzzy
+#~ msgid "Browse"
+#~ msgstr "עיון"
+
+#, fuzzy
+#~ msgid "blog"
+#~ msgstr "כניסה לחשבון"
+
+#, fuzzy
+#~ msgid "Suscribe to RSS feed for blog"
+#~ msgstr "הרשמה לפיד של התג הזה "
+
+#, fuzzy
+#~ msgid "See the list of blogs talking about this tag"
+#~ msgstr "רשימה של כותבים שכתבו על תג זה"
+
+#, fuzzy
+#~ msgid "Feeds talking about this"
+#~ msgstr "ח\"כים המדברים על זה"
+
+#, fuzzy
+#~ msgid "Posts under tag"
+#~ msgstr "מאמרים ב "
+
+#, fuzzy
+#~ msgid "See the complete list of posts by this author"
+#~ msgstr "רשימה מלאה של מאמרים מהבלוג"
+
+#, fuzzy
+#~ msgid "Authors list"
+#~ msgstr "רשימת בלוגים"
+
+#, fuzzy
+#~ msgid "Authors talking about"
+#~ msgstr "ח\"כים המדברים על זה"
+
+#, fuzzy
+#~ msgid "Authors for this feed"
+#~ msgstr "הרשמה לפיד זה"
+
+#, fuzzy
+#~ msgid "Other blogs talking about "
+#~ msgstr "ח\"כים המדברים על זה"
+
+#, fuzzy
+#~ msgid "Feed icon"
+#~ msgstr "רשימת הפידים"
+
+#, fuzzy
+#~ msgid "Feeds talking about"
+#~ msgstr "ח\"כים המדברים על זה"
+
+#, fuzzy
+#~ msgid "See all posts for this feed"
+#~ msgstr "רשימת מאמרים מלאה מפיד זה"
+
+#, fuzzy
+#~ msgid "Read more"
+#~ msgstr "להסיר"
+
+#, fuzzy
+#~ msgid "Read original post"
+#~ msgstr "קרא בבלוג"
+#~ msgid "read original post"
+#~ msgstr "קרא בבלוג"
+
+#, fuzzy
+#~ msgid "See all posts for this author"
+#~ msgstr "רשימה מלאה של מאמרים מהבלוג"
+
+#, fuzzy
+#~ msgid "original entry"
+#~ msgstr "רישום יומן"
+
+#, fuzzy
+#~ msgid "Posts list"
+#~ msgstr "מאמרים ב "
+
+#, fuzzy
+#~ msgid "Latest posts"
+#~ msgstr "מאמרים אחרונים"
+
+#, fuzzy
+#~ msgid "See the list of feeds talking about this tag"
+#~ msgstr "רשימה של כותבים שכתבו על תג זה"
+
+#, fuzzy
+#~ msgid "Tags cloud for author"
+#~ msgstr "ענן תגיות"
+
+#, fuzzy
+#~ msgid "Tags cloud for blog"
+#~ msgstr "ענן תגיות"
+
+#, fuzzy
+#~ msgid "Tags cloud for feed"
+#~ msgstr "ענן תגיות"
+
+#, fuzzy
+#~ msgid "Related tags"
+#~ msgstr "הצביע על תגיות"
+
+#, fuzzy
+#~ msgid "A tag may be no more than %s characters long."
+#~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+
+#, fuzzy
+#~ msgid "Each tag may be no more than %s characters long."
+#~ msgstr "נא לוודא שאין יותר מ-%s ספרות אחרי הנקודה"
+#~ msgid "name"
+#~ msgstr "שם"
+#~ msgid "object id"
+#~ msgstr "מזהה אובייקט"
+
+#, fuzzy
+#~ msgid "tagged items"
+#~ msgstr "פריט מתויג"
+#~ msgid "started following"
+#~ msgstr "התחיל/ה לעקוב אחרי"
+#~ msgid "stopped following"
+#~ msgstr "הפסיק/ה לעקוב אחרי"
+
+#, fuzzy
+#~ msgid "Activate users"
+#~ msgstr "פעילויות"
+
+#, fuzzy
+#~ msgid "Re-send activation emails"
+#~ msgstr "שליחת דואר אלקטרוני לאימות"
+#~ msgid "This value must contain only letters, numbers and underscores."
+#~ msgstr "ערך זה חייב להכיל אותיות, ספרות וקווים תחתונים בלבד."
+#~ msgid "Email address"
+#~ msgstr "כתובת דוא\"ל"
+#~ msgid "Password"
+#~ msgstr "סיסמה"
+#~ msgid "Password (again)"
+#~ msgstr "סיסמה (שוב)"
+#~ msgid "A user with that username already exists."
+#~ msgstr "משתמש עם שם משתמש זה קיים כבר"
+#~ msgid "The two password fields didn't match."
+#~ msgstr "שני שדות הסיסמה אינם זהים."
+
+#, fuzzy
+#~ msgid "registration profile"
+#~ msgstr "הרשמה נדרשת"
+
+#, fuzzy
+#~ msgid "registration profiles"
+#~ msgstr "הרשמה נדרשת"
+
+#, fuzzy
+#~ msgid "Bogus Flag"
+#~ msgstr "רשימת בלוגים"
+
+#, fuzzy
+#~ msgid "Missing Parameter"
+#~ msgstr "מפלגות"
+
+#, fuzzy
+#~ msgid "Bogus content"
+#~ msgstr "תוכן"
+
+#, fuzzy
+#~ msgid "Bogus object"
+#~ msgstr "הצג מזהה אובייקט"
+
+#, fuzzy
+#~ msgid "Invalid object"
+#~ msgstr "סוג גיאומטרי שגוי."
+
+#, fuzzy
+#~ msgid "Text changed"
+#~ msgstr "העמוד הבא"
+
+#, fuzzy
+#~ msgid "Missing parameters"
+#~ msgstr "מפלגות"
+
+#, fuzzy
+#~ msgid "Annotation"
+#~ msgstr "האירו"
 #~ msgid "Following Members:"
 #~ msgstr "חברי כנסת במעקב"
 #~ msgid "Passage mark"
@@ -3733,8 +2759,6 @@ msgstr "ספר/י לנו ולמשתמשים אחרים באתר מעט על עצ
 #~ msgstr "סרבית"
 #~ msgid "Swedish"
 #~ msgstr "שוודית"
-#~ msgid "Tamil"
-#~ msgstr "טמילית"
 #~ msgid "Thai"
 #~ msgstr "תאילנדית"
 #~ msgid "Turkish"
