@@ -94,6 +94,54 @@ def bill_auto_complete(request):
 
     return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 
+def vote_tags_cloud(request, min_posts_count=1):
+    member = None
+    if 'member' in request.GET: 
+        member = get_object_or_404(Member, pk=request.GET['member'])
+        tags_cloud = Tag.objects.usage_for_queryset(member.votes.all(),counts=True)
+        tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
+        title = _('Votes by %(member)s by tag') % {'member':member.name}
+    else:
+        title = _('Votes by tag')
+        tags_cloud = Tag.objects.cloud_for_model(Vote)
+    return render_to_response("laws/vote_tags_cloud.html",
+        {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
+
+def vote_tag(request, tag):
+    tag_instance = get_tag(tag)
+    if tag_instance is None:
+        raise Http404(_('No Tag found matching "%s".') % tag)        
+    
+    extra_context = {'tag':tag_instance}
+    extra_context['tag_url'] = reverse('vote-tag',args=[tag_instance])
+    if 'member' in request.GET: 
+        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
+        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
+        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+        qs = extra_context['member'].votes.all()
+    else: # only tag is given
+        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
+        qs = Vote
+
+    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+    vote_attendence = [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag_instance)]
+    d = {}
+    for vote in vote_attendence:
+        for v in vote:
+            d[v] = d.get(v,0)+1
+    # now d is a dict: MK -> number of votes in this tag
+    mks = d.keys()    
+    for mk in mks:
+        mk.count = d[mk]
+    average = float(sum([mk.count for mk in mks]))/len(mks)
+    mks = [mk for mk in mks if mk.count>=average]
+    mks = tagging.utils.calculate_cloud(mks)
+    extra_context['members'] = mks
+    return object_list(request, queryset,
+    #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+        template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
+
+
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
