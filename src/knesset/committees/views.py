@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging 
@@ -74,6 +74,8 @@ class MeetingsListView(ListView):
 
     def get_context(self):
         context = super(MeetingsListView, self).get_context()
+        if not self.items:
+            raise Http404
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
         return context 
 
