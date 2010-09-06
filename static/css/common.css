@@ -31,7 +31,8 @@ img {border: none;}
               font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none; 
                  margin-left: 0.1em 0; padding:0; 
-                 background: #0d204a;-moz-border-radius:0.8em 0.8em 0em 0em;
+                 background: #0d204a;
+                 -moz-border-radius:0.8em 0.8em 0em 0em;
                  -webkit-border-radius:0.8em 0.8em 0em 0em; 
                  border-radius:0.8em 0.8em 0em 0em;}
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
@@ -559,8 +560,14 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 
 .speech-container { clear:both; }
 /* .speech-container>div { height: 100%; float: right;} */
-.speech-container .text-speaker { float:right; width: 10%; padding-bottom:1em;}
-.speech-container .text-content { float:right; width: 50%; }
+.speech-container .text-speaker { 
+    width:60%;
+    border-bottom:1px dotted #000;
+    font-weight:bold;
+    font-size:12pt;
+}
+
+.speech-container .text-content { float:right; width: 60%; }
 .tool-links { float: right; }
 .aannotationtoolbox { float:left; }
 .annotationfields { margin: 0.2em 1.2em 0.8em 0 !important; }

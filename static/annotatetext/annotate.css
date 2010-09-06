@@ -14,13 +14,17 @@ body {
 .hideme{
     display:block;
     position:absolute;
-    left:-999em;
+    top:-999em;
 }
 
 blockquote {
     padding:0.25em;
     font-size: 12pt;
     line-height:16pt;
+    margin-bottom:0.5em;
+    -moz-border-radius:0em 0em 0.5em 0.5em;
+    -webkit-border-radius:0em 0em 0.5em 0.5em 
+    border-radius:0em 0em 0.5em 0.5em    
 }
 
 .selectableText {
