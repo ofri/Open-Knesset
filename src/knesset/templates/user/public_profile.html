@@ -4,25 +4,24 @@
 {% load activity_tags %}
 {% load aggregated_activity_tags %}
 {% load pagination_tags %}
-{% load gravatar_tags %}
+{% load avatar_tags %}
 {% block extratitle %}{{object.username}}{% endblock %}
 {% block header %}<h1>{{object.username}}</h1>{% endblock %}
 {% block content %}
     {% if object.get_profile.public_profile %}
-        <div>
-            <img class="user_img" src="{% get_gravatar_for_email object.email 75 'r' %}" />
-            <p>{{ object.get_profile.description }}</p>
+        <div style="float:right;">
+            {% avatar object 75 %}
         </div>
-        <div style="clear:both">
-            <h2>{% trans 'Following Members' %}:</h2>
-            <ul class='favorites-list'>
-            {% for member in object.get_profile.members %}
-                <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
-            {% empty %}
-                <li>{% trans 'Not following any memebers.' %}</li>
-            {% endfor %}
-            </ul>
-        </div>
+        <p style="float:right;padding-right:1em;">{{ object.get_profile.description|linebreaksbr }}</p>
+        <div class="clear"></div>
+        <h2>{% trans 'Following Members' %}:</h2>
+        <ul class='favorites-list'>
+        {% for member in object.get_profile.members %}
+            <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+        {% empty %}
+            <li>{% trans 'Not following any memebers.' %}</li>
+        {% endfor %}
+        </ul>
         <div>
             <h2>{% trans 'Badges' %}:</h2>
             <ul class='favorites-list'>

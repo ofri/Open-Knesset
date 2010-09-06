@@ -93,6 +93,7 @@
 				<div id="content-main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
+                    {% block social %}
                     <table class="content-footer">
 					  	<tr>
 					  	<td>
@@ -104,6 +105,7 @@
 					  	</td>
 					  	</tr>
 					</table>
+                    {% endblock %}
 				</div>
 				<!-- END #content-main -->
 			{% endblock %}

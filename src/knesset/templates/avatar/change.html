@@ -1,0 +1,23 @@
+{% extends "site_base.html" %}
+{% load i18n avatar_tags %}
+{% block header %}<h1>{% trans 'Change your avatar' %}</h1>{% endblock %}
+
+{% block content %}
+    <p>{% trans "Your current avatar: " %}</p>
+    {% avatar user %}
+    {% if not avatars %}
+        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+    {% else %}
+        <form class="avatar-form" method="POST" action="{% url avatar_change %}">
+            <ul>
+                {{ primary_avatar_form.as_ul }}
+            </ul>
+            <p>{% csrf_token %}<input type="submit" value="{% trans "Choose new Default" %}" /></p>
+        </form>
+    {% endif %}
+    <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
+        {{ upload_avatar_form.as_p }}
+        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
+    </form>
+{% endblock %}
+{% block social %} {% endblock %}

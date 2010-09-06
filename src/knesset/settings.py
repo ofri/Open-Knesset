@@ -100,7 +100,7 @@ INSTALLED_APPS = (
     'pagination',
     'django_extensions',
     'actstream',
-    'gravatar',
+    'avatar',
     'annotatetext',
     'mailer',
     'knesset',
@@ -175,6 +175,7 @@ ANNOTATETEXT_FLAGS = (gettext('Statement'),
                     gettext('Formatting/Error!'),
                     gettext('Comment'),)
 
+AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

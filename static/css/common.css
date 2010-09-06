@@ -258,7 +258,7 @@ a.disabled { color: #aaaaaa; }
 #content-main .member_votes ul { padding-left:1.5em; padding-right:0; }
 
 #content-main .bold-link { font-weight:bold; }
-#content-main label { display: block; float:right; margin-left:1em;}
+th label { display: block; float:right; margin-left:1em;}
 
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
@@ -609,6 +609,6 @@ div.color_swatch {
 }
 .jGrowl-message a { color: inherit; }
 
-.box-agenda {
-	clear:both;
-}
+.box-agenda { clear:both; }
+.avatar-form li { display: inline; list-style-type: none; }
+
