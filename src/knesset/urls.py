@@ -59,6 +59,7 @@ urlpatterns = patterns('',
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
      (r'^annotate/', include('annotatetext.urls')),
+     (r'^avatar/', include('avatar.urls')),
 
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
