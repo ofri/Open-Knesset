@@ -26,18 +26,20 @@ class AgendaVote(models.Model):
     
 
 class Agenda(models.Model):
-    name = models.CharField(max_length=300,unique=True)
+    name = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
     editors = models.ManyToManyField('auth.User')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
-
+    public_owner_name = models.CharField(max_length=100)
+    
     class Meta:
         verbose_name = _('Agenda')
         verbose_name_plural = _('Agendas')
+        unique_together = (("name", "public_owner_name"),)
 
     def __unicode__(self):
-        return "%s" % self.name
-
+        return "%s %s %s" % (self.name,_('by'),self.public_owner_name)
+    
     @models.permalink
     def get_absolute_url(self):
         return ('agenda-detail', [str(self.id)])

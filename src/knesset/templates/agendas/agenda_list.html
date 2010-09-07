@@ -11,7 +11,7 @@
         	<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a>
         {% else %}
 	        {% for o in user.agenda_set.all %}
-	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
+	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
 	            <span class="agenda owner">
 	            {% for editor in o.editors.all %}
 	                {{ editor.first_name }}&nbsp;{{ editor.last_name }}
@@ -28,7 +28,7 @@
         <h2> {% trans "All Agendas" %} </h2>
         {% for o in object_list %}
             {% if not user in o.editors.all %}
-                <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
+                <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
                 <span class="agenda owner">
                     {% for editor in o.editors.all %}
                         {{ editor.first_name }}&nbsp;{{ editor.last_name }}

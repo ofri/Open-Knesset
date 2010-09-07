@@ -61,6 +61,7 @@ class AgendaDetailEditView (DetailView):
         if form.is_valid(): # All validation rules pass
             agenda = get_object_or_404(Agenda, pk=object_id)
             agenda.name = form.cleaned_data['name']
+            agenda.public_owner_name = form.cleaned_data['public_owner_name']
             agenda.description = form.cleaned_data['description']
             agenda.save()
 #            return HttpResponseRedirect(reverse('agenda-detail',kwargs={'object_id':agenda.id}))
@@ -126,11 +127,13 @@ def agenda_add_view(request):
         if form.is_valid():
             agenda = Agenda()
             agenda.name = form.cleaned_data['name']
+            agenda.public_owner_name = form.cleaned_data['public_owner_name']
             agenda.description = form.cleaned_data['description']
             agenda.save()
             agenda.editors.add(request.user)
             return HttpResponseRedirect('/agenda/') # Redirect after POST
     else:
-        form = AddAgendaForm() # An unbound form
+        initial_data = {'public_owner_name': request.user.username}
+        form = AddAgendaForm(initial=initial_data) # An unbound form with initial data
 
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))

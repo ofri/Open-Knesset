@@ -11,6 +11,10 @@ class EditAgendaForm(forms.Form):
                            label=_(u'Agenda name'), 
                            error_messages={'required': _('Please enter an agenda name'),
                                            'max_length': _('Agenda name must be shorter than 300 characters')})                                                           
+    public_owner_name = forms.CharField(max_length=100,
+                                        label=_(u'Public owner name'),
+                                        error_messages={'required': _('Please enter a public owner name'),
+                                                        'max_length': _('Public owner name must be shorter than 100 characters')})
     description = forms.CharField(min_length=15, 
                                   label=_(u'Agenda description'), 
                                   error_messages={'required': _('Please enter a description for this agenda'),
@@ -22,6 +26,7 @@ class EditAgendaForm(forms.Form):
         self.agenda = agenda
         if self.agenda is not None:
             self.initial = {'name': self.agenda.name,
+                            'public_owner_name': self.agenda.public_owner_name,
                             'description': self.agenda.description,
                             }
    
@@ -30,7 +35,11 @@ class AddAgendaForm(ModelForm):
     name = forms.CharField(max_length=300, 
                            label=_(u'Agenda name'), 
                            error_messages={'required': _('Please enter an agenda name'),
-                                           'max_length': _('Agenda name must be shorter than 300 characters')})                                                           
+                                           'max_length': _('Agenda name must be shorter than 300 characters')})
+    public_owner_name = forms.CharField(max_length=100,
+                                        label=_(u'Public owner name'),
+                                        error_messages={'required': _('Please enter a public owner name'),
+                                                        'max_length': _('Public owner name must be shorter than 100 characters')})
     description = forms.CharField(min_length=15, 
                                   label=_(u'Agenda description'), 
                                   error_messages={'required': _('Please enter a description for this agenda'),
@@ -39,4 +48,4 @@ class AddAgendaForm(ModelForm):
 
     class Meta:
         model = Agenda
-        fields = ('name', 'description')
+        fields = ('name', 'public_owner_name', 'description')
