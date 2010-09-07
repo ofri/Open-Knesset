@@ -338,8 +338,8 @@ a.disabled { color: #aaaaaa; }
 
 }
 
-#item-list { position: relative; }
-#item-list .item { border-top: 1px solid #888; }
+.item-list { position: relative; }
+.item-list .item { border-top: 1px solid #888; }
 #content-main .item {
     list-style-type:none;
     padding:0.1em;

@@ -8,7 +8,7 @@
 {% block divcontent %}
     <h2>{{object.name}}</h2>
     <h3>{% trans 'Last Meetings' %}</h3>
-	<div id="item-list">
+	<div class="item-list">
         {% for o in meetings_list %}
             <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br>
         {% endfor %}
