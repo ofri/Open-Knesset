@@ -19,6 +19,7 @@ from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
 from knesset.agendas.models import Agenda
 from knesset.hashnav import DetailView, ListView
+from knesset.tagvotes.models import TagVote
 
 class PublicUserProfile(DetailView):
 
@@ -29,6 +30,7 @@ class PublicUserProfile(DetailView):
     def get_context(self):
         context = super(PublicUserProfile, self).get_context()
         context['annotations'] = Annotation.objects.filter(user = context['user'])
+        context['tagged_items'] = TagVote.objects.filter(user = context['user'])
         return context
 
         
