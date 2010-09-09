@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{{ url|safe }} - {{ block.super }}{% endblock %}
+{% block extrahead %}
+    <link href="http://vuzit.com/stylesheets/Vuzit-X.X.css" rel="Stylesheet" type="text/css" />
+    <script src="http://vuzit.com/javascripts/Vuzit-X.X.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content-main %}
+    <script type="text/javascript">
+      $(document).ready(function() {
+          vuzit.Base.apiKeySet("f4f240ea-ab20-c053-8adb-f8915ab8f98b");
+          var viewer = vuzit.Viewer.fromUrl("{{url}}", {});
+          viewer.display(document.getElementById("vuzit_viewer"), { zoom: 1, page: 0 });
+      });
+    </script>
+    <div id="vuzit_viewer" style="width: 800px; height: 600px;"></div>
+{% endblock %}
