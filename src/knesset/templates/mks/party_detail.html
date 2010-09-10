@@ -88,11 +88,11 @@
             var tilesMapnik     = new google.maps.TileLayer(copyOSM, 1, 17, {tileUrlTemplate: 'http://tile.openstreetmap.org/{Z}/{X}/{Y}.png'});
 	        var mapMapnik     = new google.maps.MapType([tilesMapnik],
 														G_NORMAL_MAP.getProjection(),
-														"׳�׳₪׳× ׳¨׳—׳•׳‘׳•׳×",
+														"מפת רחובות",
 														{ maxResolution: 18 });
 			var mapSatellite  = new google.maps.MapType(G_SATELLITE_MAP.getTileLayers(),
 														G_SATELLITE_MAP.getProjection(),
-														"׳×׳�׳•׳ ׳× ׳�׳•׳•׳™׳�");
+														"תמונת לווין");
 			var map           = new google.maps.Map2(map_dom, { mapTypes: [ mapMapnik,mapSatellite ] });
 			map.addControl(new google.maps.SmallMapControl());
 			map.addControl(new google.maps.MapTypeControl());
