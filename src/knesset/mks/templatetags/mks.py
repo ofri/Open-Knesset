@@ -25,6 +25,14 @@ def mk(m, icons=''):
 
     return r % c
 
+@register.filter
+def mk_card(mk):
+    t = template.loader.get_template('mks/mk_card.html')
+    c = template.Context({
+        'mk': mk,
+    })
+    return t.render(c)
+
 class GetMemberFor(template.Node):
     ''' usage: {% get_member_for post as var %}
     This templatetag return the member associated with a specific object
@@ -53,5 +61,6 @@ def do_get_member_for(parser, token):
         raise template.TemplateSyntaxError, "%r tag had invalid arguments" % tag_name
     object_var_name, return_var_name = m.groups()
     return GetMemberFor(object_var_name, return_var_name)
+
 register.tag('get_member_for', do_get_member_for)
 

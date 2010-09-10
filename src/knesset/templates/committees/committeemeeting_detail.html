@@ -4,6 +4,7 @@
 {% load comments %}
 {% load annotatetags %}
 {% load hashtag %}
+{% load mks %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -30,7 +31,7 @@
     <h2>{{ title }}</h2>
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
     <h3>{% trans 'Topics' %}</h3> {{ object.topics|safe }}<br>
-    <h3>{% trans 'MKs attended' %}</h3> {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.current_party.name }}">{{ m.name }}</a> &nbsp; {% endfor %}<br>
+    <h3>{% trans 'MKs attended' %}</h3> {% for m in object.mks_attended.all %}{{  m|mk_card }}{% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                

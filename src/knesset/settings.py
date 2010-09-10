@@ -101,6 +101,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'actstream',
     'avatar',
+    'hitcount',
     'annotatetext',
     'mailer',
     'knesset',
