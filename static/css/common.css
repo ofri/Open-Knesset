@@ -612,3 +612,12 @@ div.color_swatch {
 .box-agenda { clear:both; }
 .avatar-form li { display: inline; list-style-type: none; }
 .users-annotation {padding-right:0.5em;}
+div.mk-card {
+    display:inline-block;
+    border:1px solid #000080;
+    height:120px;
+    background:#cfd4e7;
+    padding-left:10px;
+    padding-right:10px;
+}
+
