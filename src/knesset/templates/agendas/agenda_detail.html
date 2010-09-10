@@ -5,6 +5,7 @@
 {% load links %}
 {% load comments %}
 {% load user %}
+{% load hitcount_tags %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.title }} - {% endblock %}
@@ -82,5 +83,12 @@
 
 {% endblock %} {# divcontent #}
 
+{% block footer %}
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+--></script>
+{% endblock %}
 
 
