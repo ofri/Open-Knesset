@@ -43,6 +43,12 @@ class TestFollowing(TestCase):
         #self.assertEqual(actions_list,
         #                 [('farted', [self.david]), ('hit', [self.yosef,self.moshe])])
 
+    def testProfileList(self):
+        res = self.client.get(reverse('profile-list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,'user/profile_list.html')
+        self.assertEqual(len(res.context['object_list']), 1)
+
     def tearDown(self):
         self.jacob.delete()
         self.david.delete()
