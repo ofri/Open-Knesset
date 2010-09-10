@@ -617,7 +617,12 @@ div.mk-card {
     border:1px solid #000080;
     height:120px;
     background:#cfd4e7;
+    text-align:center;
     padding-left:10px;
     padding-right:10px;
+    margin:0.25em 0.12em 0.25em 0.12em;    
+    min-width:7em;
 }
-
+#content-main div.mk-card>a {
+    padding:0px;
+}
