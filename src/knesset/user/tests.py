@@ -36,6 +36,7 @@ class TestFollowing(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'user/public_profile.html')
+        self.assertEqual(res.context['viewed_user'], self.jacob)
         #actions = res.context['aggr_actions']
         #actions_list = map(lambda x: (x.verb, x.targets.keys()), actions)
         #actions_list.sort()
