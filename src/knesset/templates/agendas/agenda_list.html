@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load common_text_handling %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
 {% block description %}{% trans "Agendas" %} - {% endblock %}
@@ -10,31 +11,55 @@
         {% if not user.is_authenticated %}
         	<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a>
         {% else %}
-	        {% for o in user.agenda_set.all %}
-	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
-	            <span class="agenda owner">
-	            {% for editor in o.editors.all %}
-	                {{ editor.first_name }}&nbsp;{{ editor.last_name }}
-	            {% endfor %}
-	            </span><br />
-	        {% endfor %}
 	        <div class="add">
 	            <a href="/agenda/add/">{% trans "Add" %}</a>
 	        </div>
+	        <div class="item-list">
+		        {% for o in user.agenda_set.all %}
+		        	<div class="item">
+			            <a class="hashnav dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
+		                <table>
+			                <tr>
+								<td>{% trans "Editors:" %}</td>
+								<td>			                
+				                    {% for editor in o.editors.all %}
+				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                    {% endfor %}
+				                </td>
+		                	</tr>
+		                	<tr>
+		                		<td>{% trans "Description:" %}</td>
+		                		<td>{{ o.description|pretty_crop:100 }} 
+		                </table>
+					</div>
+		        {% endfor %}
+		    </div>
         {% endif %}
         
 	</div>
 	<div id="list-wrap">
         <h2> {% trans "All Agendas" %} </h2>
-        {% for o in object_list %}
-            {% if not user in o.editors.all %}
-                <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o.name }}</a>
-                <span class="agenda owner">
-                    {% for editor in o.editors.all %}
-                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
-                    {% endfor %}
-                </span><br />
-	    {% endif %}
-        {% endfor %}
+        <div class="item-list">
+	        {% for o in object_list %}
+	            {% if not user in o.editors.all %}
+	            	<div class="item">
+		                <a class="hashnav dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
+		                <table>
+			                <tr>
+								<td>{% trans "Editors:" %}</td>
+								<td>			                
+				                    {% for editor in o.editors.all %}
+				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                    {% endfor %}
+				                </td>
+		                	</tr>
+		                	<tr>
+		                		<td>{% trans "Description:" %}</td>
+		                		<td>{{ o.description|pretty_crop:100 }} 
+		                </table>
+	                </div>
+		    	{% endif %}
+	        {% endfor %}
+        </div>
 	</div>
 {% endblock %}

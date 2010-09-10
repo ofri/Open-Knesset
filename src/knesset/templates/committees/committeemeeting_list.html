@@ -7,7 +7,7 @@
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
     <h2>{{ title }}</h2>
-	<div id="item-list">
+	<div class="item-list">
         {% for o in object_list %}
             <a class="item" href="{% url committee-meeting o.id %}">{{ o.date_string }} <span style="font-size:75%">{{ o.topics|safe }}</span></a><br>
         {% endfor %}

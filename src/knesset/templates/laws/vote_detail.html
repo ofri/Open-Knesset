@@ -129,9 +129,18 @@
 
 			{% if object.agendavote_set.all %}
 		        <h3>{% trans "Ascribed agendas" %}</h3>
-                <div id="ascribed-agendas" class="list-wrap indented">
-		        {% for agenda in object.agenda_set.all %}
-	                <a class="hashnav item dontwrap" id="ascribed-agenda-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}"/>{{ agenda }}</a>
+                <div id="ascribed-agendas" class="item-list">
+		        {% for agendavote in object.agendavote_set.all %}
+		        	<div class="item">
+	                	<a class="hashnav dontwrap" id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
+	                	<div class="info">
+	                		<table>
+			                	<tr><td>{% trans "Score:" %}</td><td>{{ agendavote.score }}</td></tr>
+			                	<tr><td>{% trans "Reasoning:" %}</td><td>{{ agendavote.reasoning }}</td></tr>
+			                </table>
+	                	</div>
+	                	 
+	                </div>
 		        {% endfor %}
 		        </div>
 			{% endif %}

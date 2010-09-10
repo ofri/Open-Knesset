@@ -35,7 +35,7 @@
 </span>
 {% endblock %}
 {% block divcontent %}
-    <h1>{{ object.name }}</h1>
+    <h1>{{ object }}</h1>
     <div id="agenda-info">
         <div>
             <h3>{% trans "Edited by" %}</h3>
@@ -52,7 +52,7 @@
             <h2> {% trans "Description" %}</h2>
             {{ object.description }}
         </div>
-    	<div id="item-list">
+    	<div class="item-list">
         
         <h2> {% trans "Ascribed Votes" %}</h2>
         <table id="agenda-votes">
