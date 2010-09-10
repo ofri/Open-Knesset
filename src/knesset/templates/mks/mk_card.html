@@ -1,6 +1,9 @@
 <div class="mk-card">
-<a href="{% url member-detail mk.id %}">
-<img src="{{mk.img_url}}" style="width:55px;height:75px;margin-top:3px;"/><br/>
-<span class="hashnav item" id="member-{{ mk.id }}">{{ mk.name }}</span></a><br/>
-<a href="{% url party-detail mk.current_party.id %}">{{ mk.current_party.name }}</a>
+    <div>
+        <a href="{% url member-detail mk.id %}"><img src="{{mk.img_url}}" style="width:28px;height:38px;margin-top:3px;"/></a>
+    </div>
+    <div>
+        <a href="{% url member-detail mk.id %}">{{ mk.name }}</a><br>
+        <a href="{% url party-detail mk.current_party.id %}">{{ mk.current_party.name }}</a>
+    </div>
 </div>
