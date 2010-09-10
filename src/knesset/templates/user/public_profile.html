@@ -8,7 +8,7 @@
 {% block extratitle %}{{viewed_user.username}}{% endblock %}
 {% block header %}<h1>{{viewed_user.username}}</h1>{% endblock %}
 {% block content %}
-    {% if viewed_user.get_profile.public_profile %}
+    {% if viewed_user.get_profile.public_profile or viewed_user == user%}
         <div style="float:right;">
             {% avatar viewed_user 75 %}
         </div>
