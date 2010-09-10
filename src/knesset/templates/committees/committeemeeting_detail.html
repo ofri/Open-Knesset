@@ -31,12 +31,12 @@
     <h2>{{ title }}</h2>
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
     <h3>{% trans 'Topics' %}</h3> {{ object.topics|safe }}<br>
-    <h3>{% trans 'MKs attended' %}</h3> {% for m in object.mks_attended.all %}{{  m|mk_card }}{% endfor %}<br>
+    <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{{  m|mk_card }}{% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                
     
-    <h3>{% trans 'Bills' %}</h3> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
+    <h2>{% trans 'Bills' %}</h2> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
                                  {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
     <br>
     {% if user.is_authenticated %}
@@ -51,7 +51,7 @@
 
   {% with object.parts.list as parts %}
     {% get_annotations_for parts as annotation_dict %}
-    <h3>{% trans 'Protocol' %}</h3>
+    <h2>{% trans 'Protocol' %}</h2>
     <div class="protocol">
     {% for speech_part in parts %}
       {% with speech_part.id as spid %}
