@@ -93,7 +93,7 @@
 				<div id="content-main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
-                    {% block social %}
+                    {% block social %}{% if not debug %}
                     <table class="content-footer">
 					  	<tr>
 					  	<td>
@@ -104,7 +104,7 @@
 						<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Foknesset.org{{ request.path|iriencode }}&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
 					  	</td>
 					  	</tr>
-					</table>
+					</table> {% endif %}
                     {% endblock %}
 				</div>
 				<!-- END #content-main -->

@@ -29,4 +29,7 @@ def processor(request):
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
     
     d['search_form'] = SearchFormWithSpellSuggest()
+    
+    d['debug'] = getattr(settings, 'LOCAL_DEV',False)
+    
     return d
