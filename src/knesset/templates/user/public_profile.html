@@ -5,20 +5,20 @@
 {% load aggregated_activity_tags %}
 {% load pagination_tags %}
 {% load avatar_tags %}
-{% block extratitle %}{{user.username}}{% endblock %}
-{% block header %}<h1>{{user.username}}</h1>{% endblock %}
+{% block extratitle %}{{viewed_user.username}}{% endblock %}
+{% block header %}<h1>{{viewed_user.username}}</h1>{% endblock %}
 {% block content %}
-    {% if user.get_profile.public_profile %}
+    {% if viewed_user.get_profile.public_profile %}
         <div style="float:right;">
-            {% avatar user 75 %}
+            {% avatar viewed_user 75 %}
         </div>
-        <p style="float:right;padding-right:1em;">{{ user.get_profile.description|linebreaksbr }}</p>
+        <p style="float:right;padding-right:1em;">{{ viewed_user.get_profile.description|linebreaksbr }}</p>
         <div class="clear"></div>
         <div class="details">
         <div>
             <h3>{% trans 'Following Members' %}:</h3>
             <ul class='favorites-list'>
-            {% for member in user.get_profile.members %}
+            {% for member in viewed_user.get_profile.members %}
                 <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
             {% empty %}
                 <li>{% trans 'Not following any memebers.' %}</li>
@@ -29,7 +29,7 @@
         <div>
             <h3>{% trans 'Badges' %}:</h3>
             <ul class='favorites-list'>
-            {% for badge in user.get_profile.get_badges %}
+            {% for badge in viewed_user.get_profile.get_badges %}
                 <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
             {% empty %}
                 <li>{% trans 'No badges yet.' %}</li>
