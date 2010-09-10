@@ -28,7 +28,7 @@ class TagVote(models.Model):
         # import monster. be warned!!!!
         from knesset.laws.models import Vote
         if self.tagged_item.content_type == ContentType.objects.get_for_model(Vote):
-            return reverse('tagged-votes',
+            return reverse('vote-tag',
                            kwargs={'tag':self.tagged_item.tag.name})
         else:
             return reverse('bill-tag',
