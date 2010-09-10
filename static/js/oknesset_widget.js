@@ -57,7 +57,8 @@ function generateMkFrameSet( Mks,style,targetId,iframeURI ){
     mkFrame.style.border =  "0px";
     mkFrame.style.margin =  "3px 0";
     mkFrame.style.width = width+"px";
-		mkFrame.className = "oknesset_frame";
+    mkFrame.style.height = "240px";
+	mkFrame.className = "oknesset_frame";
     mkFrame.scrolling = "no";
     mkFrame.id = "mkFrame_"+frameNum;
     frameNum++;
