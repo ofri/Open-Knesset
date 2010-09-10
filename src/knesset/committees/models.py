@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from knesset.mks.models import Member
 
@@ -42,7 +43,7 @@ class CommitteeMeeting(models.Model):
         # first, fix places where the colon is in the begining of next line 
         # (move it to the end of the correct line)
         protocol_text = []
-        for line in self.protocol_text.split('\n'):
+        for line in re.sub("[ ]+"," ", self.protocol_text).split('\n'):
             if line.startswith(':'):
                 protocol_text[-1] += ':'
                 protocol_text.append(line[1:])                    
