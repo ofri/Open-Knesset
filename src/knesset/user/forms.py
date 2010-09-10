@@ -30,7 +30,8 @@ class EditProfileForm(forms.Form):
         error_message = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."))
 
     public_profile = forms.BooleanField(label=_('Public profile'),
-                                        help_text = _('Allow other users to view your profile on the site'))
+                                        help_text = _('Allow other users to view your profile on the site'),
+                                        required=False)
     gender = forms.ChoiceField(choices = GENDER_CHOICES, 
                                label=_('Gender'))
     description = forms.CharField(required=False,
