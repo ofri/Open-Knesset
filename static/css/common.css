@@ -55,7 +55,7 @@ img {border: none;}
 
 /* ACCOUNTS */
 #accounts { margin-top:10px; float: left; }
-#accounts a { color: #fff; text-decoration: none;}
+#accounts a { color: #fff; text-decoration: none; margin-left:1em;}
 #accounts a:hover { text-decoration: underline; }
 #login { display:inline;}
 #login a {
