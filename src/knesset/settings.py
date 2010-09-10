@@ -178,6 +178,10 @@ ANNOTATETEXT_FLAGS = (gettext('Statement'),
 
 AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 
+HITCOUNT_KEEP_HIT_ACTIVE = { 'hours': 1 }
+HITCOUNT_HITS_PER_IP_LIMIT = 0
+HITCOUNT_EXCLUDE_USER_GROUP = ( )
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try: 
