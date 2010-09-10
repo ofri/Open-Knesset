@@ -4,6 +4,9 @@
 {% load comments %}
 {% load annotatetags %}
 {% load hashtag %}
+{% load mks %}
+{% load hitcount_tags %}
+
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
@@ -30,12 +33,12 @@
     <h2>{{ title }}</h2>
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
     <h3>{% trans 'Topics' %}</h3> {{ object.topics|safe }}<br>
-    <h3>{% trans 'MKs attended' %}</h3> {% for m in object.mks_attended.all %}<a class="hashnav item dontwrap" id="member-{{ m.id }}" href="{% url member-detail m.id %}" title="{{ m.current_party.name }}">{{ m.name }}</a> &nbsp; {% endfor %}<br>
+    <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{{  m|mk_card }}{% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                
     
-    <h3>{% trans 'Bills' %}</h3> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
+    <h2>{% trans 'Bills' %}</h2> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
                                  {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
     <br>
     {% if user.is_authenticated %}
@@ -50,17 +53,17 @@
 
   {% with object.parts.list as parts %}
     {% get_annotations_for parts as annotation_dict %}
-    <h3>{% trans 'Protocol' %}</h3>
+    <h2>{% trans 'Protocol' %}</h2>
     <div class="protocol">
     {% for speech_part in parts %}
       {% with speech_part.id as spid %}
       {% with annotation_dict|hash:spid as annotation_obj %}
       <div class="speech-{{ object.id }} speech-container" id="speech-{{ object.id }}-{{ speech_part.order }}">
-        <div class="text-speaker">
+        <div class="text-speaker" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
             {% firstof speech_part.header "&nbsp;" %}
         </div>
         <div class="text-content" id="annotations-{{ speech_part.id }}_content">
-            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content">{{ speech_part.body|simple_formatting }}</blockquote>
+            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content" style="background-color:{{colors|hash:speech_part.header}}">{{ speech_part.body|simple_formatting }}</blockquote>
         </div>
         <div style="display:none" class="annotationtoolbox annotating" id="annotationtoolbox-{{ speech_part.id }}">
             <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
@@ -128,4 +131,10 @@
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
     window.is_staff = {% if request.user.is_staff %}true{% else %}false{% endif %};
 </script>
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+    // current hit count = {% get_hit_count for object %}
+--></script>
 {% endblock %}

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 
 from datetime import datetime, timedelta
 
+from annotatetext.models import Annotation
 from actstream import unfollow, follow
 from actstream.models import Action
 from forms import EditProfileForm
@@ -18,15 +19,18 @@ from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
 from knesset.agendas.models import Agenda
 from knesset.hashnav import DetailView, ListView
+from knesset.tagvotes.models import TagVote
 
 class PublicUserProfile(DetailView):
 
     queryset = User.objects.all()
     template_name = 'user/public_profile.html'
+    template_resource_name = 'user'
 
     def get_context(self):
         context = super(PublicUserProfile, self).get_context()
-        context['aggr_actions'] = aggregate_stream(Action.objects.stream_for_actor(context['object']))
+        context['annotations'] = Annotation.objects.filter(user = context['user'])
+        context['tagged_items'] = TagVote.objects.filter(user = context['user'])
         return context
 
         

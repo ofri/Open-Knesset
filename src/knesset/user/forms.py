@@ -35,7 +35,7 @@ class EditProfileForm(forms.Form):
                                label=_('Gender'))
     description = forms.CharField(required=False,
                                   label=_('Tell us and other users bit about yourself'), 
-                                  widget=forms.Textarea)
+                                  widget=forms.Textarea(attrs={'rows':3}))
     email_notification = forms.ChoiceField(choices = NOTIFICATION_PERIOD_CHOICES,
                                            label = _('E-Mail Notifications'),
                                            help_text = _('Should we send you e-mail notification about updates to things you follow on the site?'))

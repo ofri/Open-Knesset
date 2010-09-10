@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+
 from tagging.models import Tag,TaggedItem
 
 class TagVote(models.Model):
@@ -20,3 +22,14 @@ class TagVote(models.Model):
 
     def __unicode__(self):
         return u'%s - %s [%d]' % (self.user, self.tagged_item, self.vote)
+
+    def get_absolute_url(self):
+        # if you try moving this line to the top you'll get bitten the cyclic
+        # import monster. be warned!!!!
+        from knesset.laws.models import Vote
+        if self.tagged_item.content_type == ContentType.objects.get_for_model(Vote):
+            return reverse('vote-tag',
+                           kwargs={'tag':self.tagged_item.tag.name})
+        else:
+            return reverse('bill-tag',
+                           kwargs={'tag':self.tagged_item.tag.name})

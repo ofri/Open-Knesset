@@ -1,19 +1,28 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load mks %}
+{% load avatar_tags %}
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
 {% block header %}<h1>{% trans 'User Profile' %}</h1>{% endblock %}
 {% block content %}
 <form action="." method="post">{% csrf_token %}
     <table>
+    <tr>
+        <th><label>{% trans "Avatar" %}</label></th>
+        <td>
+            {% avatar request.user 75 %}
+            <a href="{% url avatar_change %}">{% trans "Change your avatar" %}</a>
+        </td>
+    </tr>
     {{ edit_form }}
     <tr>
-        <th>{% trans "Following Members" %}:</th>
+        <th><label>{% trans "Following Members" %}:</label></th>
         <td>
             {% for member in request.user.get_profile.members %}
                 {% mk member 'x' %}
             {% endfor %}
         </td>
+    </tr>
     </table>
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
@@ -50,3 +59,4 @@
 </script>
 
 {% endblock %}
+{% block social %} {% endblock %}

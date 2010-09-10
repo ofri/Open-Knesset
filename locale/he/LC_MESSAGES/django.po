@@ -3,9 +3,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-05 18:50+0300\n"
-"PO-Revision-Date: 2010-09-05 18:55+0200\n"
-"Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
+"POT-Creation-Date: 2010-09-07 15:53+0300\n"
+"PO-Revision-Date: 2010-09-07 15:56+0200\n"
+"Last-Translator: benny daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -183,20 +183,20 @@ msgstr "עוקב אחר חבר כנסת"
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: committees/views.py:23
+#: committees/views.py:31
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: committees/views.py:70
+#: committees/views.py:79
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: committees/views.py:71
+#: committees/views.py:80
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:77
+#: committees/views.py:88
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
@@ -692,11 +692,11 @@ msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 
-#: notify/management/commands/notify.py:37
+#: notify/management/commands/notify.py:46
 msgid "Other Updates"
 msgstr "עדכונים שונים"
 
-#: notify/management/commands/notify.py:139
+#: notify/management/commands/notify.py:138
 #: templates/notify/header.html:3
 #: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
@@ -844,7 +844,7 @@ msgstr "ועדות"
 msgid "Posts"
 msgstr "מאמרים"
 
-#: templates/base.html:113
+#: templates/base.html:115
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
@@ -923,7 +923,7 @@ msgstr "הוספת אג'נדה"
 
 #: templates/agendas/agenda_add.html:19
 #: templates/agendas/agenda_detail_edit.html:19
-#: templates/user/editprofile.html:18
+#: templates/user/editprofile.html:27
 msgid "save"
 msgstr "שמירה"
 
@@ -1006,14 +1006,35 @@ msgstr "הוספה"
 msgid "by"
 msgstr "על ידי"
 
-#: templates/annotatetext/_annotation.html:5
+#: templates/annotatetext/_annotation.html:7
 #: templates/committees/committeemeeting_detail.html:72
 msgid "Permalink"
 msgstr "קישור קבוע"
 
+#: templates/avatar/change.html:3
+#: templates/user/editprofile.html:14
+msgid "Change your avatar"
+msgstr "שנה את תמונת הפרופיל"
+
+#: templates/avatar/change.html:6
+msgid "Your current avatar: "
+msgstr "תמונת הפרופיל הנוכחית:"
+
+#: templates/avatar/change.html:9
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "טרם  העלתם תמונת פרופיל. אנא העלו תמונה כעת."
+
+#: templates/avatar/change.html:15
+msgid "Choose new Default"
+msgstr "בחר תמונה"
+
+#: templates/avatar/change.html:20
+msgid "Upload New Image"
+msgstr "העלה תמונה חדשה"
+
 #: templates/badges/all_badge_list.html:4
 #: templates/badges/all_badge_list.html:5
-#: templates/user/public_profile.html:27
+#: templates/user/public_profile.html:30
 msgid "Badges"
 msgstr "אותות"
 
@@ -1691,7 +1712,6 @@ msgid "Refresh"
 msgstr "רענון"
 
 #: templates/mks/member_detail.html:177
-#: templates/user/public_profile.html:42
 msgid "before"
 msgstr "לפני"
 
@@ -1957,29 +1977,33 @@ msgstr "התוצאות הבאות"
 msgid "Create new user"
 msgstr "יצירת משתמש חדש"
 
-#: templates/user/editprofile.html:4
-#: templates/user/editprofile.html.py:5
+#: templates/user/editprofile.html:5
+#: templates/user/editprofile.html.py:6
 msgid "User Profile"
 msgstr "פרופיל משתמש"
 
 #: templates/user/editprofile.html:11
-#: templates/user/public_profile.html:17
+msgid "Avatar"
+msgstr "תמונת פרופיל"
+
+#: templates/user/editprofile.html:19
+#: templates/user/public_profile.html:19
 msgid "Following Members"
 msgstr "חברי כנסת במעקב"
 
-#: templates/user/editprofile.html:23
+#: templates/user/editprofile.html:32
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
 
-#: templates/user/editprofile.html:25
+#: templates/user/editprofile.html:34
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
 
-#: templates/user/editprofile.html:27
+#: templates/user/editprofile.html:36
 msgid "send validation email"
 msgstr "שליחת דואר אלקטרוני לאימות"
 
-#: templates/user/editprofile.html:31
+#: templates/user/editprofile.html:40
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
@@ -2068,23 +2092,27 @@ msgstr "אפס את סיסמתי"
 msgid "Users"
 msgstr "משתמשים"
 
-#: templates/user/public_profile.html:22
+#: templates/user/public_profile.html:24
 msgid "Not following any memebers."
 msgstr "אין חברי כנסת במעקב"
 
-#: templates/user/public_profile.html:32
+#: templates/user/public_profile.html:35
 msgid "No badges yet."
 msgstr "אין אותות, עדיין."
 
-#: templates/user/public_profile.html:37
-msgid "Activities"
-msgstr "פעילויות"
+#: templates/user/public_profile.html:40
+msgid "Annotations"
+msgstr "הארות"
 
-#: templates/user/public_profile.html:49
-msgid "Sorry, no data is available"
-msgstr "לצערנו, אין נתונים"
+#: templates/user/public_profile.html:47
+msgid "On the words of"
+msgstr "בנוגע לדברים של"
 
-#: templates/user/public_profile.html:55
+#: templates/user/public_profile.html:51
+msgid "No annotations yet..."
+msgstr "אין עדיין הארות"
+
+#: templates/user/public_profile.html:59
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
@@ -2139,6 +2167,15 @@ msgstr "יומי"
 #: user/models.py:19
 msgid "Weekly"
 msgstr "שבועי"
+
+#~ msgid "MKs active in %(tag)s"
+#~ msgstr "ח\"כים פעילים ב %(tag)s"
+#~ msgid "Bills tagged"
+#~ msgstr "הצעות חוק בנושא"
+#~ msgid "Activities"
+#~ msgstr "פעילויות"
+#~ msgid "Sorry, no data is available"
+#~ msgstr "לצערנו, אין נתונים"
 
 #, fuzzy
 #~ msgid "Cache Usage"
@@ -2657,10 +2694,6 @@ msgstr "שבועי"
 #, fuzzy
 #~ msgid "Missing parameters"
 #~ msgstr "מפלגות"
-
-#, fuzzy
-#~ msgid "Annotation"
-#~ msgstr "האירו"
 #~ msgid "Following Members:"
 #~ msgstr "חברי כנסת במעקב"
 #~ msgid "Passage mark"

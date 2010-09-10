@@ -30,14 +30,16 @@
             }
 
             return script.getAttribute('src', -1)
-        }());  
-  var mkId = getUrlVars()["id"];
+        }());
+	var mkId = getUrlVars()["id"];
+	var queryURI = ok_domain + "/api/member/"+mkId+"/";   
+  console.log(queryURI);
 
-  $.getJSON(ok_domain + "/api/member/"+mkId+"/", function(data){
+  $.getJSON(queryURI, function(data){
  function $E(s){
     return $(document.createElement(s));
   }
-
+  //debugger;
 
   var average_weekly_presence_des = ["אין מספיק נתונים","מועטה מאד","מועטה","בינונית","רבה","רבה מאד"];
 

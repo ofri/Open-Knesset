@@ -4,53 +4,75 @@
 {% load activity_tags %}
 {% load aggregated_activity_tags %}
 {% load pagination_tags %}
-{% load gravatar_tags %}
-{% block extratitle %}{{object.username}}{% endblock %}
-{% block header %}<h1>{{object.username}}</h1>{% endblock %}
+{% load avatar_tags %}
+{% block extratitle %}{{user.username}}{% endblock %}
+{% block header %}<h1>{{user.username}}</h1>{% endblock %}
 {% block content %}
-    {% if object.get_profile.public_profile %}
-        <div>
-            <img class="user_img" src="{% get_gravatar_for_email object.email 75 'r' %}" />
-            <p>{{ object.get_profile.description }}</p>
+    {% if user.get_profile.public_profile %}
+        <div style="float:right;">
+            {% avatar user 75 %}
         </div>
-        <div style="clear:both">
-            <h2>{% trans 'Following Members' %}:</h2>
+        <p style="float:right;padding-right:1em;">{{ user.get_profile.description|linebreaksbr }}</p>
+        <div class="clear"></div>
+        <div class="details">
+        <div>
+            <h3>{% trans 'Following Members' %}:</h3>
             <ul class='favorites-list'>
-            {% for member in object.get_profile.members %}
+            {% for member in user.get_profile.members %}
                 <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
             {% empty %}
                 <li>{% trans 'Not following any memebers.' %}</li>
             {% endfor %}
             </ul>
         </div>
+
         <div>
-            <h2>{% trans 'Badges' %}:</h2>
+            <h3>{% trans 'Badges' %}:</h3>
             <ul class='favorites-list'>
-            {% for badge in object.get_profile.get_badges %}
+            {% for badge in user.get_profile.get_badges %}
                 <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
             {% empty %}
                 <li>{% trans 'No badges yet.' %}</li>
             {% endfor %}
             </ul>
         </div>
-        <div class="activities" >
-            <h2>{% trans 'Activities' %}</h2>
-            <div style="clear:both;"></div>
-        {% autopaginate aggr_actions %}
-        {% for aggr_action in aggr_actions %}
-            {% with aggr_action.timestamp|timesince as since %}
-            {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
-            {% endwith %}
-            <p>
-            	{% display_aggr_action aggr_action %} 
-            </p>
-        {% empty %}
-            <p>
-            {% trans "Sorry, no data is available" %}
-            </p>
-        {% endfor %}
-        {% paginate %}
+        <div>
+            <h3>{% trans 'Annotations' %}</h3>
+            <ul>
+            {% for a in annotations %}
+                {% ifchanged %}
+                    <li><h4> {{ a.content_object.meeting }} </h4>
+                {% endifchanged %}
+                <div style="padding-right:1em">
+                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
+                     <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+                </div>
+            {% empty %}
+                <li>{% trans "No annotations yet..." %}
+            {% endfor %}
+            </ul>
         </div>
+        <div>
+            <h3>{% trans 'Tagged Items' %}</h3>
+            {% if tagged_items %}
+            <table>
+            {% for t in tagged_items %}
+                {% ifchanged %}
+                {% if not forloop.first %}</td></tr> {% endif %}
+                <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
+                        <td>
+                {% endifchanged %}
+                <a href="{{t.get_absolute_url}}" class="tag {% if t.vote > 0 %}thumbs-up{%else%}thumbs-down{%endif%}">{{ t.tagged_item.tag }}</a>
+            {% endfor %}
+            </td></tr>
+            </table>
+            {% else %}
+                {% trans "No tagged items yet..." %}
+            {% endif %}
+        </div>
+        </div>
+
+            
     {% else %}
         {% trans "Sorry, this user has selected not to share his profile" %}
     {% endif %}

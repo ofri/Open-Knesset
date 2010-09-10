@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging 
@@ -7,6 +7,8 @@ logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
 import re
+import random
+import colorsys
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
@@ -20,7 +22,14 @@ class MeetingDetailView(DetailView):
     def get_context(self, *args, **kwargs):
         context = super(MeetingDetailView, self).get_context(*args, **kwargs)  
         cm = context['object']
+        colors = {}
+        speakers = set(cm.parts.values_list('header',flat=True))
+        n = len(speakers)
+        for (i,p) in enumerate(speakers):
+            (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.32, 255)
+            colors[p] = 'rgb(%i, %i, %i)' % (r, g, b)
         context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
+        context['colors'] = colors
         return context 
 
 
@@ -74,6 +83,8 @@ class MeetingsListView(ListView):
 
     def get_context(self):
         context = super(MeetingsListView, self).get_context()
+        if not self.items:
+            raise Http404
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
         return context 
 

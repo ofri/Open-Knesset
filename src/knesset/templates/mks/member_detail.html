@@ -36,7 +36,7 @@
 {% cache 600 mks object.id request.page %}
     <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
     <h2> {{ object.get_role }} </h2>
-    <div class="member-details">
+    <div class="details">
         <div class="member-photo"><img src="{{ object.img_url }}"/></div>
         <div>
             <h3> {% trans "Personal Information" %}</h3>
