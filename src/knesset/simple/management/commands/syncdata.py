@@ -1,12 +1,6 @@
-# encoding: utf-8
-import os,sys,traceback
-import urllib2,urllib
-import cookielib
-import re
-import gzip
-import datetime
-import time
-import logging
+# -*- coding: utf-8 -*-
+import urllib2, urllib, cookielib, re, gzip, datetime, time, logging
+
 from cStringIO import StringIO
 from pyth.plugins.rtf15.reader import Rtf15Reader
 from optparse import make_option
@@ -17,15 +11,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
 from knesset.mks.models import Member,Party,Membership,WeeklyPresence
-from knesset.laws.models import Vote,VoteAction,Bill,Law,PrivateProposal,KnessetProposal,GovProposal,GovLegislationCommitteeDecision
+from knesset.laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
+     KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
 from knesset.links.models import Link
 from knesset.committees.models import Committee,CommitteeMeeting
 from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser
-import parse_presence
-import parse_laws
-import mk_roles_parser
+import parse_presence, parse_laws, mk_roles_parser
+
 from parse_gov_legislation_comm import ParseGLC
 
 ENCODING = 'utf8'
@@ -51,7 +45,7 @@ class Command(NoArgsCommand):
             help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
             help="online update of votes data."),
-        
+
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
 
@@ -91,7 +85,7 @@ class Command(NoArgsCommand):
                 if r != None:
                     try:
                         exps[count] += r.group(1).replace('\t',' ')
-                    except: 
+                    except:
                         pass
 
         return (names,exps,links)
@@ -110,12 +104,12 @@ class Command(NoArgsCommand):
         """ returns an array of laws data: laws[i][0] - name, laws[i][1] - name for search, laws[i][2] - summary, laws[i][3] - link """
         laws = []
         for x in range(0,79,26): # read 4 last laws pages
-            page = self.read_laws_page(x) 
+            page = self.read_laws_page(x)
             (names,exps,links) = self.parse_laws_page(page)
             for (name,exp,link) in zip(names,exps,links):
                 name_for_search = self.get_search_string(name)
                 laws.append((name,name_for_search,exp,link))
-        return laws 
+        return laws
 
     def update_laws_data(self):
         logger.info("update laws data")
@@ -131,7 +125,7 @@ class Command(NoArgsCommand):
                     v.save()
                     try:
                         (link, created) = Link.objects.get_or_create(title=u'מסמך הצעת החוק באתר הכנסת', url=l[3], content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
-                        if created:                         
+                        if created:
                             link.save()
                     except Exception, e:
                         logger.error(e)
@@ -142,25 +136,25 @@ class Command(NoArgsCommand):
 
 
     def update_votes(self):
-        """This function updates votes data online, without saving to files."""        
-        
-        logger.info("update votes")        
+        """This function updates votes data online, without saving to files."""
+
+        logger.info("update votes")
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
         if current_max_src_id == None: # the db contains no votes, meaning its empty
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
         vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
-        limit_src_id = vote_id + 20 # look for next 20 votes. if results are found, this value will be incremented. 
-        while vote_id < limit_src_id:        
+        limit_src_id = vote_id + 20 # look for next 20 votes. if results are found, this value will be incremented.
+        while vote_id < limit_src_id:
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
-            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id                
+            if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
                 logger.debug("no vote found at id %d" % vote_id)
             else:
                 limit_src_id = vote_id + 20 # results found, so we'll look for at least 20 more votes
                 (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
-                
-        #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t') 
+
+        #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t')
         #f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date))
                 logger.debug("downloaded data with vote id %d" % vote_id)
                 vote_time_string = date.replace('&nbsp;',' ')
@@ -169,12 +163,12 @@ class Command(NoArgsCommand):
                         month = self.heb_months.index(i)+1
                 day = re.search("""(\d\d?)""", vote_time_string).group(1)
                 year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
-                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )                
+                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 #vote_label_for_search = self.get_search_string(vote_label)
 
                 try:
-                    v = Vote.objects.get(src_id=vote_id)                
+                    v = Vote.objects.get(src_id=vote_id)
                     created = False
                 except:
                     v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
@@ -196,32 +190,32 @@ class Command(NoArgsCommand):
 
                 results = self.read_member_votes(page, return_ids=True)
                 for (voter_id,voter_party,vote) in results:
-                    #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))                    
+                    #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))
 
                     # transform party names to canonical form
                     if(voter_party in self.party_aliases):
                         voter_party = self.party_aliases[voter_party]
 
-                    # get the member voting                
+                    # get the member voting
                     try:
                         m = Member.objects.get(pk=int(voter_id))
                     except:
                         exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                         logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), str(voter_id))
                         continue
-                        
+
                     # add the current member's vote
                     va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
                     if created:
                         va.save()
 
-                
+
                 update_vote_properties(v)
                 v = Vote.objects.get(src_id=vote_id)
                 self.find_synced_protocol(v)
                 self.get_full_text(v)
 
-            vote_id += 1 
+            vote_id += 1
 
     def get_votes_data(self):
         self.update_last_downloaded_vote_id()
@@ -254,7 +248,7 @@ class Command(NoArgsCommand):
                 logger.debug("downloaded data with vote id %d" % id)
             #print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
         f.close()
-        f2.close()        
+        f2.close()
 
     def update_last_downloaded_member_id(self):
         """
@@ -266,7 +260,7 @@ class Command(NoArgsCommand):
         except:
             self.last_downloaded_member_id = 0
             logger.debug("members file does not exist. setting last_downloaded_member_id to 0")
-            return            
+            return
         content = f.read().split('\n')
         for line in content:
             if(len(line)<2):
@@ -277,7 +271,7 @@ class Command(NoArgsCommand):
                 self.last_downloaded_member_id = id
         logger.debug("last member id found in local files is %d. " % self.last_downloaded_member_id)
         f.close()
-    
+
     def get_members_data(self):
         """downloads members data to local files
         """
@@ -285,7 +279,7 @@ class Command(NoArgsCommand):
 
         f  = gzip.open(os.path.join(DATA_ROOT, 'members.tsv.gz'), "ab")
 
-        fields = ['img_link','טלפון','פקס','אתר נוסף','דואר אלקטרוני','מצב משפחתי','מספר ילדים','תאריך לידה','שנת לידה','מקום לידה','תאריך פטירה','שנת עלייה'] 
+        fields = ['img_link','טלפון','פקס','אתר נוסף','דואר אלקטרוני','מצב משפחתי','מספר ילדים','תאריך לידה','שנת לידה','מקום לידה','תאריך פטירה','שנת עלייה']
         # note that hebrew strings order is right-to-left
         # so output file order is id, name, img_link, phone, ...
 
@@ -298,15 +292,15 @@ class Command(NoArgsCommand):
             f.write("%d\t%s\t" % (  id, name ))
             for field in fields:
                 value = ''
-                if (m.has_key(field) and m[field]!=None): 
+                if (m.has_key(field) and m[field]!=None):
                     value = m[field].encode(ENCODING)
                 f.write("%s\t" % (  value ))
             f.write("\n")
-            
+
         f.close()
 
     def download_all(self):
-        self.get_members_data()        
+        self.get_members_data()
         self.get_votes_data()
         self.get_laws_data()
 
@@ -321,7 +315,7 @@ class Command(NoArgsCommand):
         except:
             self.last_downloaded_vote_id = 0
             logger.debug("votes file does not exist. setting last_downloaded_vote_id to 0")
-            return            
+            return
         content = f.read().split('\n')
         for line in content:
             if(len(line)<2):
@@ -340,8 +334,8 @@ class Command(NoArgsCommand):
         for line in content:
             if len(line) <= 1:
                 continue
-            (member_id, name, img_url, phone, fax, website, email, family_status, number_of_children, 
-             date_of_birth, year_of_birth, place_of_birth, date_of_death, year_of_aliyah, _) = line.split('\t') 
+            (member_id, name, img_url, phone, fax, website, email, family_status, number_of_children,
+             date_of_birth, year_of_birth, place_of_birth, date_of_death, year_of_aliyah, _) = line.split('\t')
             if email != '':
                 email = email.split(':')[1]
             try:
@@ -366,8 +360,8 @@ class Command(NoArgsCommand):
             try:
                 m = Member.objects.get(id=member_id)
             except: # member_id not found. create new
-                m = Member(id=member_id, name=name, img_url=img_url, phone=phone, fax=fax, website=None, email=email, family_status=family_status, 
-                            number_of_children=number_of_children, date_of_birth=date_of_birth, place_of_birth=place_of_birth, 
+                m = Member(id=member_id, name=name, img_url=img_url, phone=phone, fax=fax, website=None, email=email, family_status=family_status,
+                            number_of_children=number_of_children, date_of_birth=date_of_birth, place_of_birth=place_of_birth,
                             date_of_death=date_of_death, year_of_aliyah=year_of_aliyah)
                 m.save()
                 if len(website)>0:
@@ -419,7 +413,7 @@ class Command(NoArgsCommand):
             parties = dict() # key: party-name; value: Party
             members = dict() # key: member-name; value: Member
             votes   = dict() # key: id; value: Vote
-            memberships = dict() # key: (member.id,party.id)            
+            memberships = dict() # key: (member.id,party.id)
             current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
             if current_max_src_id == None: # the db contains no votes, meaning its empty
                 current_max_src_id = 0
@@ -430,9 +424,9 @@ class Command(NoArgsCommand):
             for line in content:
                 if len(line) <= 1:
                     continue
-                (vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, _, _, _, _) = line.split('\t') 
+                (vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, _, _, _, _) = line.split('\t')
                 #if vote_id < current_max_src_id: # skip votes already parsed.
-                #    continue  
+                #    continue
                 vote_time_string = vote_time_string.replace('&nbsp;',' ')
                 for i in self.heb_months:
                     if i in vote_time_string:
@@ -448,7 +442,7 @@ class Command(NoArgsCommand):
                     continue
 
                 try:
-                    v = Vote.objects.get(src_id=vote_id)                
+                    v = Vote.objects.get(src_id=vote_id)
                     created = False
                 except:
                     v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
@@ -482,7 +476,7 @@ class Command(NoArgsCommand):
                 if(len(line)<2):
                     continue
                 s = line.split('\t') # (id,voter,party,vote)
-                
+
                 vote_id = int(s[0])
                 voter = s[1]
                 voter_party = s[2]
@@ -496,28 +490,28 @@ class Command(NoArgsCommand):
                 try:
                     v = votes[vote_id]
                 except KeyError: #this vote was skipped in this read, also skip voteactions and members
-                    continue 
+                    continue
                 vote_date = v.time.date()
 
-                # create/get the party appearing in this vote 
+                # create/get the party appearing in this vote
                 if voter_party in parties:
                     p = parties[voter_party]
                     created = False
                 else:
                     p,created = Party.objects.get_or_create(name=voter_party)
                     parties[voter_party] = p
-                #if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name. 
+                #if created: # this is magic needed because of unicode chars. if you don't do this, the object p will have gibrish as its name.
                             #only when it comes back from the db it has valid unicode chars.
-                #    p = Party.objects.get(name=voter_party) 
-                
+                #    p = Party.objects.get(name=voter_party)
+
                 # use this vote's time to update the party's start date and end date
                 if (p.start_date is None) or (p.start_date > vote_date):
                     p.start_date = vote_date
                 if (p.end_date is None) or (p.end_date < vote_date):
                     p.end_date = vote_date
                 if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
-                    p.save() 
-                
+                    p.save()
+
                 # create/get the member voting
                 if voter in members:
                     m = members[voter]
@@ -525,7 +519,7 @@ class Command(NoArgsCommand):
                 else:
                     try:
                         m = Member.objects.get(name=voter)
-                    except:   # if there are several people with same age, 
+                    except:   # if there are several people with same age,
                         m = Member.objects.filter(name=voter).order_by('-date_of_birth')[0] # choose the younger. TODO: fix this
                     members[voter] = m
                 #m.party = p;
@@ -538,11 +532,11 @@ class Command(NoArgsCommand):
                     m.end_date = vote_date
                 #if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
                 #    m.save()
-        
-                    
+
+
                 # create/get the membership (connection between member and party)
                 if ((m.id,p.id) in memberships):
-                    ms = memberships[(m.id,p.id)]                
+                    ms = memberships[(m.id,p.id)]
                     created = False
                 else:
                     ms,created = Membership.objects.get_or_create(member=m,party=p)
@@ -555,14 +549,14 @@ class Command(NoArgsCommand):
                 if (ms.end_date is None) or (ms.end_date < vote_date):
                     ms.end_date = vote_date
                 if created: # save on first time, so it would have an id, be able to link, etc. all other updates are saved in the end
-                    ms.save()    
-                    
+                    ms.save()
+
                 # add the current member's vote
-                
+
                 va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
                 if created:
                     va.save()
-                
+
             logger.debug("done")
             logger.debug("saving data: %d parties, %d members, %d memberships " % (len(parties), len(members), len(memberships) ))
             for p in parties:
@@ -579,23 +573,23 @@ class Command(NoArgsCommand):
         except:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
-            
+
 
     def calculate_votes_importances(self):
         """
         Calculates votes importances. currently uses rule of thumb: number of voters against + number of voters for / 120.
-        """    
+        """
         for v in Vote.objects.all():
             v.importance = float(v.votes.filter(voteaction__type='for').count() + v.votes.filter(voteaction__type='against').count()) / 120
             v.save()
-        
+
     def read_votes_page(self,voteId, retry=0):
         """
         Gets a votes page from the knesset website.
         returns a string (utf encoded)
         """
         url = "http://www.knesset.gov.il/vote/heb/Vote_Res_Map.asp?vote_id_t=%d" % voteId
-        try:        
+        try:
             urlData = urllib2.urlopen(url)
             page = urlData.read().decode('windows-1255').encode('utf-8')
             time.sleep(2)
@@ -640,11 +634,11 @@ class Command(NoArgsCommand):
                 if(party == """ " """):
                     party = last_party
                 else:
-                    last_party = party 
+                    last_party = party
                 if return_ids:
-                    results.append((m_id, party, vote))  
+                    results.append((m_id, party, vote))
                 else:
-                    results.append((name, party, vote))  
+                    results.append((name, party, vote))
 
         return results
 
@@ -681,7 +675,7 @@ class Command(NoArgsCommand):
             m = re.search(' - (.*),?', v.title)
             if not m:
                 logger.debug("couldn't create search string for vote\nvote.id=%s\nvote.title=%s\n", str(v.id), v.title)
-                return    
+                return
             search_text = urllib2.quote(m.group(1).replace('(','').replace(')','').replace('`','').encode('utf8'))
 
             # I'm really sorry for the next line, but I really had no choice:
@@ -708,12 +702,12 @@ class Command(NoArgsCommand):
         for cm in CommitteeMeeting.objects.all():
             for v in Vote.objects.all():
                 self.check_vote_mentioned_in_cm(v, cm)
-            
+
     def get_protocols_page(self, page, page_num):
         FILES_BASE_URL = "http://www.knesset.gov.il/protocols/"
         res = []
         max_linked_page = max([int(r) for r in re.findall("'Page\$(\d*)",page)])
-        last_page = False        
+        last_page = False
         if max_linked_page < page_num:
             last_page = True
 
@@ -740,13 +734,13 @@ class Command(NoArgsCommand):
             else: # we are parsing a matched link - comittee protocol url
                 if link.find(r'html')>0:
                     html_url = FILES_BASE_URL + re.search(r"'\.\./([^']*)'", link).group(1)
-                    res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results        
+                    res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results
                     date_text = ''
                     comittee = ''
                     subject = ''
         return (last_page, res)
 
-    def get_protocols(self, max_page=10):        
+    def get_protocols(self, max_page=10):
         SEARCH_URL = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
         cj = cookielib.LWPCookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -755,33 +749,33 @@ class Command(NoArgsCommand):
 
         # get the search page to extract legal "viewstate" and "event validation" strings. need to pass them so the search will work
         page = urllib2.urlopen(SEARCH_URL).read().decode('windows-1255').encode('utf-8')
-        
+
         event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
-        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')
 
         # define date range
         params = "__EVENTTARGET=DtFrom&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (view_state, event_validation)
         page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
         event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
-        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')
 
         # hit the search
         params = "btnSearch=%%E7%%E9%%F4%%E5%%F9&__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (view_state, event_validation)
         page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
         event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
-        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')        
-        page_num = 1        
+        view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')
+        page_num = 1
         (last_page, page_res) = self.get_protocols_page(page, page_num)
         res = page_res[:]
 
         while (not last_page) and (page_num < max_page):
-            page_num += 1 
+            page_num += 1
             params = "__EVENTTARGET=gvProtocol&__EVENTARGUMENT=Page%%24%d&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (page_num, view_state, event_validation)
             page = urllib2.urlopen(SEARCH_URL,params).read().decode('windows-1255').encode('utf-8')
-            # update EV and VS    
+            # update EV and VS
             event_validation = urllib2.quote(re.search(r'id="__EVENTVALIDATION" value="([^"]*)"', page).group(1)).replace('/','%2F')
             view_state = urllib2.quote(re.search(r'id="__VIEWSTATE" value="([^"]*)"', page).group(1)).replace('/','%2F')
-            # parse the page            
+            # parse the page
             (last_page, page_res) = self.get_protocols_page(page, page_num)
             res.extend(page_res)
 
@@ -805,13 +799,13 @@ class Command(NoArgsCommand):
                     for s0 in s:
                         if s0.find(m.name_with_dashes())>=0:
                             #print "found %s in %s" % (m.name, str(cm.id))
-                            cm.mks_attended.add(m)                        
+                            cm.mks_attended.add(m)
             except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
 
             cm.save()
-            
+
 
 
     def get_committee_protocol_text(self, url):
@@ -831,7 +825,7 @@ class Command(NoArgsCommand):
                     attended_list = False
                     text.append('')
                 if 'מוזמנים'.decode('utf8') in sentence.content[0] and 'bold' in sentence.properties:
-                    attended_list = True                
+                    attended_list = True
                 text.append(sentence.content[0])
         all_text = '\n'.join(text)
         return re.sub(r'\n:\n',r':\n',all_text)
@@ -856,7 +850,7 @@ class Command(NoArgsCommand):
                                 content_list.append('<br/><b>')         # add new line and bold
                                 is_bold = True                          # remember that we are now in bold
                             content_list.append(part.content[0]+' ') # add this part
-                            
+
                         else:                                   # this part is not bold
                             if len(part.content[0]) <= 1:           # this is a dummy node, ignore it
                                 pass
@@ -880,11 +874,11 @@ class Command(NoArgsCommand):
             if (v.full_text_url != None):
                 link = v.full_text_url.encode('utf-8')
             else:
-                link = ''            
+                link = ''
             if (v.summary != None):
                 summary = v.summary.encode('utf-8')
             else:
-                summary = ''            
+                summary = ''
             #for_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='for').all()])
             #against_ids = ",".join([str(m.id) for m in v.votes.filter(voteaction__type='against').all()])
             #f.write("%d\t%s\t%s\t%s\t%s\t%s\t%s\n" % (v.id,v.title.encode('utf-8'),v.time_string.encode('utf-8'),summary, link, for_ids, against_ids))
@@ -909,7 +903,7 @@ class Command(NoArgsCommand):
         except IOError:
             logger.error('Can\'t find presence file')
             return
-        todays_timestamp = datetime.date.today().isocalendar()[:2]        
+        todays_timestamp = datetime.date.today().isocalendar()[:2]
         c = [b[0][0] for b in presence.values()]
         c.sort()
         min_timestamp = c[0]
@@ -919,7 +913,7 @@ class Command(NoArgsCommand):
             if m.id not in presence:
                 logger.error('member %s (id=%d) not found in presence data', m.name, m.id)
                 continue
-            member_presence = dict(zip([b[0] for b in presence[m.id]], [b[1] for b in presence[m.id]]))            
+            member_presence = dict(zip([b[0] for b in presence[m.id]], [b[1] for b in presence[m.id]]))
 
             if m.end_date:
                 end_timestamp = m.end_date.isocalendar()[:2]
@@ -937,18 +931,18 @@ class Command(NoArgsCommand):
                     else:
                         hours = 0.0                                # not present at all this week = 0 hours
                     date = iso_to_gregorian(*current_timestamp, iso_day=0) # get real date of the week's monday
-                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date, hours=hours) 
+                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date, hours=hours)
                     if created:
                         wp.save()
                 else:
-                    date = iso_to_gregorian(*current_timestamp, iso_day=0) 
+                    date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
 
     def parse_laws(self):
         mks = Member.objects.values('id','name')
         for mk in mks:
             mk['cn'] = cannonize(mk['name'])
-        
+
         # private laws
         logger.debug('parsing private laws')
         d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
@@ -965,20 +959,20 @@ class Command(NoArgsCommand):
             law_name = proposal['law_name']
             if proposal['comment']:
                 law_name += ' (%s)' % proposal['comment']
-        
+
             (law, created) = Law.objects.get_or_create(title=law_name)
             if created:
                 law.save()
             if law.merged_into:
                 law = law.merged_into
-            
+
             # create the bill proposal
             if proposal['correction']:
                 title = proposal['correction']
             else:
                 title = "חוק חדש"
 
-            (pl,created) = PrivateProposal.objects.get_or_create(proposal_id=proposal['law_id'], knesset_id=proposal['knesset_id'], 
+            (pl,created) = PrivateProposal.objects.get_or_create(proposal_id=proposal['law_id'], knesset_id=proposal['knesset_id'],
                                                                  date=proposal['proposal_date'], source_url=proposal['text_link'],
                                                                  title=title, law=law)
             if created:
@@ -1002,8 +996,8 @@ class Command(NoArgsCommand):
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))        
-            
+                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))
+
                 # try to look for similar PPs already created:
                 p = PrivateProposal.objects.filter(title=title,law=law).exclude(id=pl.id)
                 b = None
@@ -1018,7 +1012,7 @@ class Command(NoArgsCommand):
                     b.proposers.add(m)
                 pl.bill = b # assign this bill to this PP
                 pl.save()
-                    
+
         # knesset laws
         logger.debug('parsing knesset laws')
         last_booklet = KnessetProposal.objects.aggregate(Max('booklet_number')).values()[0]
@@ -1046,7 +1040,7 @@ class Command(NoArgsCommand):
                                                                  title=title, law=law, date=proposal['date'])
             if created:
                 kl.save()
-                            
+
             for orig in proposal['original_ids']: # go over all originals in the document
                 knesset_id = int(orig.split('/')[1]) # check if they are from current Knesset
                 if knesset_id != 18:
@@ -1069,16 +1063,16 @@ class Command(NoArgsCommand):
                                 kl.bill.save()
                         else: # this kl already had a bill (from another PP)
                             kl.bill.merge(pp.bill) # merge them
-                            
+
                 except PrivateProposal.DoesNotExist:
                     logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
-                
+
             if not(kl.bill): # finished all original PPs, but found no bill yet - create a new bill
                 b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
                 b.save()
                 kl.bill = b
                 kl.save()
-        
+
         # parse gov proposals
         logger.debug('parsing gov laws')
         last_booklet = GovProposal.objects.aggregate(Max('booklet_number')).values()[0]
@@ -1106,7 +1100,7 @@ class Command(NoArgsCommand):
                                                                  title=title, law=law, date=proposal['date'])
             if created:
                 gp.save()
-            
+
             b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
             b.save()
             gp.bill = b
@@ -1121,8 +1115,8 @@ class Command(NoArgsCommand):
         for gp in gps:
             gp['t1'] = gp['law__title'] + ' ' + gp['title']
             gp['c1'] = cannonize(gp['law__title'] + gp['title'])
-            gp['c2'] = cannonize(gp['title'] + gp['law__title'])               
-        
+            gp['c2'] = cannonize(gp['title'] + gp['law__title'])
+
         kps = KnessetProposal.objects.values('id','title', 'law__title')
         for kp in kps:
             kp['t1'] = kp['law__title'] + ' ' + kp['title']
@@ -1194,7 +1188,7 @@ class Command(NoArgsCommand):
                     p = GovProposal.objects.get(pk=gp['id'])
                     this_v = Vote.objects.get(pk=v['id'])
                     if this_v not in p.votes.all():
-                        p.votes.add(this_v)                        
+                        p.votes.add(this_v)
                         if p.bill:
                             p.bill.update_votes()
                         logger.debug('gov proposal %s found in vote %s' % (p.title,this_v.title))
@@ -1208,7 +1202,7 @@ class Command(NoArgsCommand):
                         #print "add KP %d to Vote %d" % (kp['id'], this_v.id)
                         if p.bill:
                             p.bill.update_votes()
-                        
+
             for pp in pps:
                 if v['c'].find(pp['c1'])>=0:
                     p = PrivateProposal.objects.get(pk=pp['id'])
@@ -1221,7 +1215,7 @@ class Command(NoArgsCommand):
 
     def merge_duplicate_laws(self):
         """Find and merge duplicate laws, and identical bills of each law"""
-        
+
         laws = Law.objects.values('id','title','merged_into')
 
         for l in laws:
@@ -1264,7 +1258,7 @@ class Command(NoArgsCommand):
                     member.save()
             except Member.DoesNotExist:
                 logger.warn('Found MK in knesset roles with no matching MK: %s' % mk)
-        
+
         intersection = set(mk_knesset_roles.keys()).intersection(set(mk_govt_roles.keys()))
         if len(intersection):
             logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
@@ -1289,12 +1283,12 @@ class Command(NoArgsCommand):
                 date = datetime.datetime.strptime(m.group(1),'%d.%m.%Y').date()
                 (decision,created) = GovLegislationCommitteeDecision.objects.get_or_create(date=date,
                                                source_url=d['url'],title=d['title'],subtitle=d['subtitle'],
-                                               text=d['decision'],number=int(d['number']))                                               
+                                               text=d['decision'],number=int(d['number']))
                 if created:
                     if re.search(r'להתנגד'.decode('utf8'), d['decision']):
                         decision.stand = -1
                     if re.search(r'לתמוך'.decode('utf8'), d['decision']):
-                        decision.stand = 1                    
+                        decision.stand = 1
                     decision.save()
                     try:
                         pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
@@ -1306,10 +1300,10 @@ class Command(NoArgsCommand):
                         print("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
                     except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
                         logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
-            
+
 
     def handle_noargs(self, **options):
-    
+
         all_options = options.get('all', False)
         download = options.get('download', False)
         load = options.get('load', False)
@@ -1328,9 +1322,9 @@ class Command(NoArgsCommand):
 
         if download:
             print "beginning download phase"
-            self.download_all()    
+            self.download_all()
             #self.get_laws_data()
-        
+
         if load:
             print "beginning load phase"
             self.update_members_from_file()
@@ -1360,21 +1354,21 @@ class Command(NoArgsCommand):
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
-            
+
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
-    party_ids = [x[0] for x in party_id_member_count_coalition]    
+    party_ids = [x[0] for x in party_id_member_count_coalition]
     party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
 
-    for_party_ids = [va.member.current_party.id for va in v.for_votes()]    
-    party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]    
+    for_party_ids = [va.member.current_party.id for va in v.for_votes()]
+    party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
 
     against_party_ids = [va.member.current_party.id for va in v.against_votes()]
     party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
 
     party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
     party_stands_against = [float(av)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
-    
+
     party_stands_for = dict(zip(party_ids, party_stands_for))
     party_stands_against = dict(zip(party_ids, party_stands_against))
 
@@ -1383,7 +1377,7 @@ def update_vote_properties(v):
     opposition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if not party_is_coalition[y]])
     opposition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if not party_is_coalition[y]])
 
-    coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes)) 
+    coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes))
     coalition_stands_against = float(coalition_against_votes)>0.66*(coalition_for_votes+coalition_against_votes)
     opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
     opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
@@ -1419,10 +1413,9 @@ def iso_year_start(iso_year):
     "The gregorian calendar date of the first day of the given ISO year"
     fourth_jan = datetime.date(iso_year, 1, 4)
     delta = datetime.timedelta(fourth_jan.isoweekday()-1)
-    return fourth_jan - delta 
+    return fourth_jan - delta
 
 def iso_to_gregorian(iso_year, iso_week, iso_day):
     "Gregorian calendar date for the given ISO year, week and day"
     year_start = iso_year_start(iso_year)
     return year_start + datetime.timedelta(iso_day-1, 0, 0, 0, 0, 0, iso_week-1)
-
