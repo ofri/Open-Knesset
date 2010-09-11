@@ -26,11 +26,9 @@
 {% endblock %}
 
 {% block subnav %}
-    <a id="watch" class="button" href="."></a>
-&bull;
-    <a class="button" href="{% url member-list %}">{% trans "All Members" %}</a>
-&bull;
-<a class="button" href="{% url member-activity-feed object.id %}">{% trans "feed" %}</a>
+    <span id="watch" class="awesome-button medium"></span>    
+    <a class="awesome-button medium" href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:1em;float:right"> {% trans "rss" %}</a>
+    <a class="button" href="{% url member-list %}">{% trans "All Members list" %}</a>
 {% endblock %}
 {% block divcontent %}
 {% cache 600 mks object.id request.page %}
