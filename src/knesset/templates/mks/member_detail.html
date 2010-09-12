@@ -25,14 +25,14 @@
 </span>
 {% endblock %}
 
-{% block subnav %}
-    <span id="watch" class="awesome-button medium"></span>    
-    <a class="awesome-button medium" href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:1em;float:right"> {% trans "rss" %}</a>
-    <a class="button" href="{% url member-list %}">{% trans "All Members list" %}</a>
-{% endblock %}
 {% block divcontent %}
 {% cache 600 mks object.id request.page %}
-    <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+    <h1 style="float:right;" > {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+    <ul class="actions">
+        <li><span id="watch" class="awesome-button medium"></span></li>
+        <li><span><a href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:2em;"></a></span></li>
+    </ul>
+    <div class="clear"></div>
     <h2> {{ object.get_role }} </h2>
     <div class="details">
         <div class="member-photo"><img src="{{ object.img_url }}"/></div>

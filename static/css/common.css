@@ -48,8 +48,9 @@ a:hover { text-decoration:underline;}
 #subnav h4 { display: inline; }
 #subnav ul { display: inline; }
 #subnav>a.current { background-color:#7777AA; color:#FFFFFF; }
-#subnav li { display:inline; list-style-type:none; 
-            font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
+#subnav li ,.actions li { display:inline; list-style-type:none; vertical-align: top;
+            font-weight: bold; padding:0 0.2em; }
+.actions {display: block; float: left;}
   
 
 /* ACCOUNTS */
