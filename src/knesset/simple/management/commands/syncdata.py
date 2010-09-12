@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import urllib2, urllib, cookielib, re, gzip, datetime, time, logging
+import urllib2, urllib, cookielib, re, gzip, datetime, time, logging, os, sys,traceback
 
 from cStringIO import StringIO
 from pyth.plugins.rtf15.reader import Rtf15Reader
@@ -18,7 +18,7 @@ from knesset.committees.models import Committee,CommitteeMeeting
 from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser
-import parse_presence, parse_laws, mk_roles_parser
+import parse_presence, parse_laws, mk_roles_parser, parse_remote
 
 from parse_gov_legislation_comm import ParseGLC
 
@@ -212,8 +212,7 @@ class Command(NoArgsCommand):
 
                 update_vote_properties(v)
                 v = Vote.objects.get(src_id=vote_id)
-                self.find_synced_protocol(v)
-                self.get_full_text(v)
+                self.find_synced_protocol(v)                
 
             vote_id += 1
 
@@ -975,6 +974,7 @@ class Command(NoArgsCommand):
             (pl,created) = PrivateProposal.objects.get_or_create(proposal_id=proposal['law_id'], knesset_id=proposal['knesset_id'],
                                                                  date=proposal['proposal_date'], source_url=proposal['text_link'],
                                                                  title=title, law=law)
+
             if created:
                 pl.save()
 
@@ -1012,6 +1012,10 @@ class Command(NoArgsCommand):
                     b.proposers.add(m)
                 pl.bill = b # assign this bill to this PP
                 pl.save()
+            
+            html = parse_remote.rtf(pl.source_url)
+            if html:
+                pl.content_html = html
 
         # knesset laws
         logger.debug('parsing knesset laws')
