@@ -1269,13 +1269,16 @@ class Command(NoArgsCommand):
         if len(intersection):
             logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
 
-    def update_gov_law_decisions(self):
-        t = datetime.date.today()
-        month = t.month-1
-        if month==0:
-            month=12
+    def update_gov_law_decisions(self, year=None, month=None):
+        logger.debug("update_gov_law_decisions")
+        if year==None or month==None:
+            t = datetime.date.today()
+            month = t.month-1
+            if month==0:
+                month=12
+            year = t.year    
         try:
-            parser = ParseGLC(t.year-2000, month)
+            parser = ParseGLC(year-2000, month)
         except urllib2.URLError,e:
             logger.error(e)
             return
@@ -1284,7 +1287,7 @@ class Command(NoArgsCommand):
             if d['subtitle']:
                 m = re.search(r'ביום (\d+\.\d+.\d{4})'.decode('utf8'),d["subtitle"])
                 if not m:
-                    print "didn't find date on %s" % d['url']
+                    logger.warn("didn't find date on %s" % d['url'])
                     continue
                 date = datetime.datetime.strptime(m.group(1),'%d.%m.%Y').date()
                 (decision,created) = GovLegislationCommitteeDecision.objects.get_or_create(date=date,
@@ -1303,7 +1306,7 @@ class Command(NoArgsCommand):
                         decision.bill = PrivateProposal.objects.get(proposal_id=pp_id).bill
                         decision.save()
                     except AttributeError: # one of the regex failed
-                        print("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
+                        logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
                     except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
                         logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
             

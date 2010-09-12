@@ -1,6 +1,7 @@
 #encoding: utf-8
 import urllib,urllib2
 from BeautifulSoup import BeautifulSoup
+from HTMLParser import HTMLParseError
 import datetime
 import re
 import parse_knesset_bill_pdf
@@ -18,9 +19,25 @@ class ParseLaws(object):
     
     def get_page_with_param(self,params):
         #print self.url
-        if params == None : 
-            html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
-            return BeautifulSoup(html_page)
+        if params == None:
+            try:
+                html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
+            except urllib2.URLError:
+                logger.error("can't open URL: %s" % self.url)
+                return None
+            try:
+                soup = BeautifulSoup(html_page)
+            except HTMLParseError, e:
+                logger.debug("parsing URL: %s - %s. will try harder." % (self.url, e))
+                html_page = re.sub("(?s)<!--.*?-->"," ", html_page) # cut anything that looks suspicious
+                html_page = re.sub("(?s)<script>.*?</script>"," ", html_page)
+                html_page = re.sub("(?s)<!.*?>"," ", html_page)
+                try:
+                    soup = BeautifulSoup(html_page)
+                except HTMLParseError, e:
+                    logger.debug("error parsing URL: %s - %s" % (self.url, e))
+                    return None
+            return soup
         else:	
             data = urllib.urlencode(params)
             try:
@@ -103,7 +120,7 @@ class ParsePrivateLaws(ParseLaws):
             x['correction'] = fix_dash(x['correction'])
             x['law_year'] = m.group(7)
             x['proposal_date'] = datetime.datetime.strptime(tds[4].string.strip(), '%d/%m/%Y').date() 
-            names_string = ''.join([str(y) for y in tds[5].findAll('font')[0].contents])
+            names_string = ''.join([unicode(y) for y in tds[5].findAll('font')[0].contents])
             names_string = names_string.replace('\n','').replace('&nbsp;',' ')
             proposers = []
             joiners = []

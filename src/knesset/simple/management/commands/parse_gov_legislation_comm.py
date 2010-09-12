@@ -1,24 +1,10 @@
 #encoding: utf-8
 import urllib2
-from BeautifulSoup import BeautifulSoup
 from BeautifulSoup import BeautifulStoneSoup
 import re
 import logging
 
 logger = logging.getLogger("open-knesset.parse_gov_legislation_comm")
-
-def soupifyPage(url):
-    html_page = None
-    retry_count = 0
-    while not(html_page):
-        try:
-            html_page = urllib2.urlopen(url, timeout=15).read()
-        except urllib2.URLError:
-            retry_count += 1
-            if retry_count >= 10:
-                raise urllib2.URLError('URL %s failed too many times' % url)
-    return BeautifulSoup(html_page)
-
 
 class ParseGLC:
     """Parse Government Legislation Committee decisions, from their webpage http://www.pmo.gov.il/PMO/vadot/hakika/"""
@@ -28,6 +14,20 @@ class ParseGLC:
         self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2010/"
         self.scraped_data = self.parse_pages_per_month(year_num, month)
         
+    def get_page(self,url):
+        html_page = None
+        retry_count = 0
+        while not(html_page):
+            try:
+                html_page = urllib2.urlopen(url, timeout=30).read()
+            except (urllib2.URLError, timeout):
+                retry_count += 1
+                if retry_count >= 10:
+                    raise urllib2.URLError('URL %s failed too many times' % url)
+        html_page = re.sub("(?s)<!--.*?-->"," ", html_page) # cut anything that looks suspicious
+        html_page = re.sub("(?s)<script>.*?</script>"," ", html_page)
+        return html_page
+
     def parse_pages_per_month(self, year_num, month):
         res = []
         num_pages = self.figure_number_of_page_per_month(year_num, month)
@@ -39,45 +39,32 @@ class ParseGLC:
     def figure_number_of_page_per_month(self, year, month):
         # Build the suffix of the URL (i.e '06-2010/deslist0610.htm?Page=1')
         pageURLSuffix = "%02d-20%02d/" % (month, year)
-        
-        # Fetch the soup
-        soup = soupifyPage(self.base_url + pageURLSuffix)
-        
-        matches = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('class') and tag['class'] == u"PathChannelLink")
+        html_page = self.get_page(self.base_url + pageURLSuffix)
+        matches = re.findall("PathChannelLink.*?>(\d+)", html_page)
         if len(matches) == 0:
             #print "no pages found for url %s " % (self.base_url + pageURLSuffix)
             return 1
 
-        return int (matches[-1].string)
+        return int (matches[-1])        
         
     def parse_page(self, year, month, page):
         # Build the suffix of the URL (i.e '06-2010/deslist0610.htm?Page=1')
         pageURLSuffix = "%02d-20%02d/deslist%02d%02d.htm?Page=%d" % (month, year, month, year, page)
 
-        # Fetch the soup
-        soup = soupifyPage(self.base_url + pageURLSuffix)
-
+        # Fetch the page
+        html_page = self.get_page(self.base_url + pageURLSuffix)
         # Parse the individual entires by following their URL
-        return self.parse_entries(soup)
+        return self.parse_entries(html_page)
 
-    def parse_entries(self, soup):
-        # Find and follow all links to single entries, return their parsed content
-        matches = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and tag.has_key('title')  and tag['title'] == u"קרא בהרחבה")
+    def parse_entries(self, html_page):
+        # Find and follow all links to single entries, return their parsed content       
+        matches = re.findall('<a href="(.*?)" title="קרא בהרחבה"', html_page)
         res = []
         for match in matches:
-            url = self.pmo_url + match['href']
+            url = self.pmo_url + match
             
             # Not using beautiful soup since it can't handle this page =(
-            html_page = None
-            retry_count = 0
-            while not(html_page):
-                try:
-                    html_page = urllib2.urlopen(url, timeout=15).read()
-                    break
-                except urllib2.URLError:
-                    retry_count += 1
-                    if retry_count >= 10:
-                        raise urllib2.URLError('URL %s failed too many times')
+            html_page = self.get_page(url)
                 
             parsed = self.parse_entry(html_page)
             parsed['url'] = url
@@ -94,18 +81,14 @@ class ParseGLC:
         subtitle = None
         decision = None
         number = None
-        soup = BeautifulSoup(html_page)
         try:
-            decision = soup.find('span',{'id':"TEXT_PH"}).contents
-            decision = '\n'.join([unicode(x) for x in decision])
+            decision = unicode(re.search('(?s)id="TEXT_PH">(.*?)</span>', html_page).group(1))
             decision = decision.replace('&nbsp;',' ').replace('<br />','')
             decision = self.decode_html_chars(decision)
-            title = soup.find('span',{'id':"SUBJECT_PH"}).contents
-            title = '\n'.join([unicode(x) for x in title])
+            title = unicode(re.search('(?s)id="SUBJECT_PH".*?>(.*?)</span>', html_page).group(1))
             title = title.replace('&nbsp;',' ').replace('<br />','')
             title = self.decode_html_chars(title)
-            subtitle = soup.find('span',{'id':"SUB_TITLE_PH"}).contents
-            subtitle = '\n'.join([unicode(x) for x in subtitle])
+            subtitle = unicode(re.search('(?s)id="SUB_TITLE_PH".*?>(.*?)</span>', html_page).group(1))
             subtitle = subtitle.replace('&nbsp;',' ').replace('<br />','')
             subtitle = self.decode_html_chars(subtitle)
             number = re.search(r'הוא (\d+)'.decode('utf8'),subtitle).group(1)
