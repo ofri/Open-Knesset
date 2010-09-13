@@ -37,7 +37,7 @@ class PublicUserProfile(DetailView):
 
 class ProfileListView(ListView):
 
-    queryset = User.objects.order_by('username')
+    queryset = User.objects.order_by('username').filter(profiles__public_profile=True)
     template_name = 'user/profile_list.html'
 
 class AggregatedAction:
