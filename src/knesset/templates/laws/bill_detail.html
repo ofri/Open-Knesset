@@ -136,7 +136,7 @@
                 <span class="gov-stand">{% trans 'Against' %}</span>
             {% endif %}
         {% endif %}
-        {{ d.date }} {{ d.title }}<br>{{ d.subtitle }}<br>{{ d.text }}<br><a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a><br> 
+        {{ d.date }} {{ d.title }}<br>{{ d.subtitle }}<br>{{ d.text|safe }}<br><a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a><br> 
         </p>
     {% empty %}
         {% trans 'No Info' %}
@@ -161,8 +161,12 @@
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
         {% endfor %}
         <div class="proposal_content">
-            <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
-            <div class="proposal_content_text">{{ pp.content_html|safe }}</div>
+            {% if pp.content_html %}
+                <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
+                <div class="proposal_content_text">{{ pp.content_html|safe }}</div>
+            {% else %}
+                {% trans 'Sorry, Proposal text not available' %}
+            {% endif %}
         </div>
     {% empty %}
         {% trans 'No Info' %}
@@ -399,9 +403,11 @@
     {% endif %}
     
     <script type="text/javascript"><!--
+    
     $(document).ready(function() {
           $(".proposal_content_text").hide();
-          $(".proposal_content_header").click(function(){$(".proposal_content_text").toggle(); return false;});
+          $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
+                                                        return false;});
     });
     
     --></script>
