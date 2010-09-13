@@ -24,9 +24,9 @@ from knesset.tagvotes.models import TagVote
 class PublicUserProfile(DetailView):
 
     queryset = User.objects.all()
-    template_name = 'user/public_profile.html'
     template_resource_name = 'viewed_user' # can't be 'user' because that name is 
                                            # overriden by request context processor!
+    slug_field='username'
 
     def get_context(self):
         context = super(PublicUserProfile, self).get_context()
@@ -37,7 +37,7 @@ class PublicUserProfile(DetailView):
 
 class ProfileListView(ListView):
 
-    queryset = User.objects.order_by('username').all()
+    queryset = User.objects.order_by('username')
     template_name = 'user/profile_list.html'
 
 class AggregatedAction:
