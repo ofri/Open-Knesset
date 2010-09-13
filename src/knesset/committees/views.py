@@ -1,3 +1,5 @@
+import json
+
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
@@ -30,6 +32,10 @@ class MeetingDetailView(DetailView):
             colors[p] = 'rgb(%i, %i, %i)' % (r, g, b)
         context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
         context['colors'] = colors
+        parts_lengths = {}
+        for part in cm.parts.all():
+            parts_lengths[part.id] = len(part.body)
+        context['parts_lengths'] = json.dumps(parts_lengths)
         return context 
 
 

@@ -44,15 +44,20 @@ a:hover { text-decoration:underline;}
 
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
+/* navigation */
 #subnav { padding-top: 0.5em; }
 #subnav h4 { display: inline; }
 #subnav ul { display: inline; }
-#subnav>a.current { background-color:#7891ab; border: 1px solid #7777AA; color:#FFFFFF; padding: 1px 5px; -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-    border-radius:5px;
-}
+#subnav>a.current { background-color:#7891ab; border: 1px solid #7777AA; color:#FFFFFF; padding: 1px 5px; 
+    -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
+
 #subnav li { display:inline; list-style-type:none;
             font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
+
+/* toolbar */
+.actions li { display:inline; list-style-type:none; vertical-align: top;
+            font-weight: bold; padding:0 0.2em; }
+.actions {display: block; float: left;}
 
 
 /* ACCOUNTS */

@@ -34,7 +34,6 @@ $(function(){
         $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
     $("input[name$='mk_name']").autocomplete(options_mk);
 
-    $(".annotation-form").hide();
     $(".annotation-content").each(function(){
         var annoid = $(this).attr("id").split("-")[1];
         annotation_objects[annoid] = new Annotations(annoid);
@@ -61,8 +60,12 @@ $(function(){
       if($("#annotations-"+annoid).css("display")=="none"){
         hide_annotation_form(annoid);
       } else{
+        if (!$("#annotationrealform-"+annoid).length) {
+            var speech_part = {id: annoid, length: window.parts_lengths[annoid] };
+            $("#annotations-"+annoid).before(tmpl("annotationform", {speech_part: speech_part}))
+            $('input[name=color]').colorPicker();
+        }
         $(this).text(gettext("Cancel"));
-        $("#annotationform-"+annoid).show();
         $("#annotations-"+annoid).hide();
         $("#editable-"+annoid).hide();
         $("#annotationtoolbox-"+annoid).hide();
@@ -116,5 +119,4 @@ $(function(){
      } else {var sel = $("#"+id+"-container");}
      sel.toggle();
   });
-  $('input[name=color]').colorPicker();
 });
