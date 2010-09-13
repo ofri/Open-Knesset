@@ -160,7 +160,10 @@
         {% for proposer in pp.proposers.all %}
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
         {% endfor %}
-        <br>
+        <div class="proposal_content">
+            <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
+            <div class="proposal_content_text">{{ pp.content_html|safe }}</div>
+        </div>
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}
@@ -394,4 +397,12 @@
         {% endfor %}
         </div>
     {% endif %}
+    
+    <script type="text/javascript"><!--
+    $(document).ready(function() {
+          $(".proposal_content_text").hide();
+          $(".proposal_content_header").click(function(){$(".proposal_content_text").toggle(); return false;});
+    });
+    
+    --></script>
 {% endblock %}

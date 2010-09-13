@@ -314,6 +314,7 @@ class BillProposal(models.Model):
     title = models.CharField(max_length=1000)
     date = models.DateField(blank=True, null=True)    
     source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    content_html = models.TextField(blank=True,default="")
     committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     votes = models.ManyToManyField('Vote', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     class Meta:

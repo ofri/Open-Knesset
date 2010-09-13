@@ -14,7 +14,7 @@
             {{ post.title|striptags|safe }}
         </a>
     {% if member %}
-		<span class="source">({{ member.name|safe }})</span>
+		<span class="source">({{ member.name|safe }}, {{ member.current_party }})</span>
     {% endif %}
     </h3>
     <p class="content">
