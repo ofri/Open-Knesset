@@ -56,7 +56,7 @@ class CommitteeMeeting(models.Model):
             
         # now create the sections    
         for line in protocol_text:
-            if line.endswith(':') and len(line)<40:
+            if line.endswith(':') and len(line)<50:
                 if section:
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
