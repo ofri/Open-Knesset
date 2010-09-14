@@ -1,3 +1,4 @@
+# encoding: utf8
 import re
 from django.db import models
 
@@ -12,6 +13,14 @@ class Committee(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('committee-detail', [str(self.id)])
+
+
+not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
+def legitimate_header(line):
+    """Retunrs true if 'line' looks like something should should be a protocol part header"""    
+    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
+        return False
+    return True
        
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
@@ -54,11 +63,11 @@ class CommitteeMeeting(models.Model):
 
         i = 1
         section = []
-        header = ''
+        header = ''               
             
         # now create the sections    
         for line in protocol_text:
-            if line.endswith(':') and len(line)<50:
+            if legitimate_header(line):            
                 if section:
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
