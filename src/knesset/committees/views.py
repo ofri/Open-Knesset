@@ -15,7 +15,7 @@ from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
-from models import CommitteeMeeting
+from models import CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 class MeetingDetailView(DetailView):
 
@@ -36,6 +36,7 @@ class MeetingDetailView(DetailView):
         for part in cm.parts.all():
             parts_lengths[part.id] = len(part.body)
         context['parts_lengths'] = json.dumps(parts_lengths)
+        context['paginate_by'] = COMMITTEE_PROTOCOL_PAGINATE_BY
         return context 
 
 

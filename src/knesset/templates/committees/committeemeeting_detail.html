@@ -56,7 +56,7 @@
     {% get_annotations_for parts as annotation_dict %}
     <h2>{% trans 'Protocol' %}</h2>
     <div class="protocol">
-    {% autopaginate parts 400 %}
+    {% autopaginate parts paginate_by %}
     {% for speech_part in parts %}
       {% with speech_part.id as spid %}
       {% with annotation_dict|hash:spid as annotation_obj %}

@@ -1,6 +1,7 @@
 import re
 from django.db import models
-from knesset.mks.models import Member
+
+COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
@@ -31,6 +32,7 @@ class CommitteeMeeting(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
+
 
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
@@ -87,9 +89,15 @@ class ProtocolPart(models.Model):
     def get_absolute_url(self): 
         if self.order == 1: 
             return self.meeting.get_absolute_url() 
-        else: 
-            return "%s#speech-%d-%d" % (self.meeting.get_absolute_url(),
-                                        self.meeting.id, self.order)
+        else:
+            page_num = 1 + (self.order-1)/COMMITTEE_PROTOCOL_PAGINATE_BY
+            if page_num==1: # this is on first page
+                return "%s#speech-%d-%d" % (self.meeting.get_absolute_url(),
+                                            self.meeting.id, self.order)
+            else:
+                return "%s?page=%d#speech-%d-%d" % (self.meeting.get_absolute_url(),
+                                                    page_num,
+                                                    self.meeting.id, self.order)
 
     def __unicode__(self):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
