@@ -60,7 +60,7 @@
       {% with annotation_dict|hash:spid as annotation_obj %}
       {% if forloop.first %}
 <script type="text/html" id="annotationform">
-    <div class="annotation-form">
+    <div class="annotation-form" id="annotationform-<%=speech_part.id%>">
         <form action="{% url annotatetext-post_annotation %}" method="post" accept-charset="utf-8" id="annotationrealform-<%=speech_part.id%>" class="annotationrealform">{% csrf_token %}
         {% with annotation_obj|hash:"form" as annotation_form %}
             <div class="annotationselection">
