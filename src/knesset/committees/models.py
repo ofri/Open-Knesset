@@ -1,6 +1,8 @@
+# encoding: utf8
 import re
 from django.db import models
-from knesset.mks.models import Member
+
+COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
@@ -11,6 +13,14 @@ class Committee(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('committee-detail', [str(self.id)])
+
+
+not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
+def legitimate_header(line):
+    """Retunrs true if 'line' looks like something should should be a protocol part header"""    
+    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
+        return False
+    return True
        
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
@@ -32,6 +42,7 @@ class CommitteeMeeting(models.Model):
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
 
+
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
         self.parts.all().delete()
@@ -52,11 +63,11 @@ class CommitteeMeeting(models.Model):
 
         i = 1
         section = []
-        header = ''
+        header = ''               
             
         # now create the sections    
         for line in protocol_text:
-            if line.endswith(':') and len(line)<40:
+            if legitimate_header(line):            
                 if section:
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
@@ -87,9 +98,15 @@ class ProtocolPart(models.Model):
     def get_absolute_url(self): 
         if self.order == 1: 
             return self.meeting.get_absolute_url() 
-        else: 
-            return "%s#speech-%d-%d" % (self.meeting.get_absolute_url(),
-                                        self.meeting.id, self.order)
+        else:
+            page_num = 1 + (self.order-1)/COMMITTEE_PROTOCOL_PAGINATE_BY
+            if page_num==1: # this is on first page
+                return "%s#speech-%d-%d" % (self.meeting.get_absolute_url(),
+                                            self.meeting.id, self.order)
+            else:
+                return "%s?page=%d#speech-%d-%d" % (self.meeting.get_absolute_url(),
+                                                    page_num,
+                                                    self.meeting.id, self.order)
 
     def __unicode__(self):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,

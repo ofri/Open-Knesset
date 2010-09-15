@@ -6,6 +6,7 @@
 {% load hashtag %}
 {% load mks %}
 {% load hitcount_tags %}
+{% load pagination_tags %}
 
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
@@ -55,6 +56,7 @@
     {% get_annotations_for parts as annotation_dict %}
     <h2>{% trans 'Protocol' %}</h2>
     <div class="protocol">
+    {% autopaginate parts paginate_by %}
     {% for speech_part in parts %}
       {% with speech_part.id as spid %}
       {% with annotation_dict|hash:spid as annotation_obj %}
@@ -126,6 +128,7 @@
         </div>
     {% endfor %}
                     <div class="clear"></div>
+                    {% paginate %}
     </div>
   {% endwith %}
 {% endblock %}
