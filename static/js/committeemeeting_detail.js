@@ -34,7 +34,6 @@ $(function(){
         $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
     $("input[name$='mk_name']").autocomplete(options_mk);
 
-    $(".annotation-form").hide();
     $(".annotation-content").each(function(){
         var annoid = $(this).attr("id").split("-")[1];
         annotation_objects[annoid] = new Annotations(annoid);
@@ -43,12 +42,6 @@ $(function(){
         annotation_objects[a].importQuotes();
         annotation_objects[a].insertQuotes();
     }
-    $(".annotationform-cancel").click(function(e) {
-        e.preventDefault();
-        var annoid = $(this).attr("id").split("-")[1];
-        annotation_objects[annoid].toggleSelectView();
-        hide_annotation_form(annoid);
-    });
     $(".annotationform-link").click(function(e){
       e.preventDefault();
       if (!window.logged_in) {
@@ -61,8 +54,20 @@ $(function(){
       if($("#annotations-"+annoid).css("display")=="none"){
         hide_annotation_form(annoid);
       } else{
+        if (!$("#annotationform-"+annoid).length) {
+            var speech_part = {id: annoid, length: window.parts_lengths[annoid] };
+            $("#annotations-"+annoid).before(tmpl("annotationform", {speech_part: speech_part}))
+            $(".annotationform-cancel").click(function(e) {
+                e.preventDefault();
+                var annoid = $(this).attr("id").split("-")[1];
+                annotation_objects[annoid].toggleSelectView();
+                hide_annotation_form(annoid);
+            });
+            $('input[name=color]').colorPicker();
+        }
+        else
+            $("#annotationform-"+annoid).show();
         $(this).text(gettext("Cancel"));
-        $("#annotationform-"+annoid).show();
         $("#annotations-"+annoid).hide();
         $("#editable-"+annoid).hide();
         $("#annotationtoolbox-"+annoid).hide();
@@ -116,5 +121,4 @@ $(function(){
      } else {var sel = $("#"+id+"-container");}
      sel.toggle();
   });
-  $('input[name=color]').colorPicker();
 });

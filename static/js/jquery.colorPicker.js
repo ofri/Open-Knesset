@@ -17,6 +17,9 @@
   var selectorShowing = false;
   
   buildPicker = function(element){
+    // do it only once
+    if ($(element).css("display")=="none")
+        return
     //build color picker
     control = $("<div class='color_picker'>&nbsp;</div>")
     control.css('background-color', $(element).val());
