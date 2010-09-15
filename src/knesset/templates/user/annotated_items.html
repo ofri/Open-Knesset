@@ -1,0 +1,30 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% block extratitle %}{{viewed_user.username}} {% trans "Annotations" %}{% endblock %}
+{% block header %}<h1>{% trans "Annotations by" %} <a href="{{viewed_user.get_absolute_url}}">{{viewed_user.username}}</a></h1>{% endblock %}
+{% block content %}
+    {% if viewed_user.get_profile.public_profile or viewed_user == user %}
+        <div>
+            {% autopaginate annotations %}
+            <ul>
+            {% for a in annotations %}
+                {% ifchanged %}
+                    <li><h4> {{ a.content_object.meeting }} </h4>
+                {% endifchanged %}
+                <div style="padding-right:1em">
+                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
+                     <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+                </div>
+            {% empty %}
+                <li>{% trans "No annotations yet..." %}
+            {% endfor %}
+            </ul>
+            {% paginate %}
+        </div>
+            
+    {% else %}
+        {% trans "Sorry, this user has selected not to share his profile" %}
+    {% endif %}
+<br/>
+{% endblock %}

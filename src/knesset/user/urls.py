@@ -1,8 +1,10 @@
 from django.conf.urls.defaults import *
 from views import PublicUserProfile, ProfileListView
 
-user_public_profile = PublicUserProfile(slug_field='username')
 profile_list = ProfileListView()
+user_public_profile = PublicUserProfile(template_name='user/public_profile.html')
+user_tagged_items = PublicUserProfile(template_name='user/tagged_items.html')
+user_annotated_items = PublicUserProfile(template_name='user/annotated_items.html')
 
 # views coded in this app
 urlpatterns = patterns('knesset.user.views',
@@ -12,7 +14,7 @@ urlpatterns = patterns('knesset.user.views',
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
     )
 
-
+# auth views
 urlpatterns += patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'user/login.html'}, name='login'),
     url(r'^logout/$', 'logout_then_login', name='logout'),
@@ -22,10 +24,11 @@ urlpatterns += patterns('django.contrib.auth.views',
     url(r'^reset/done/$', 'password_reset_complete', {'template_name': 'user/password_reset_complete.html'}),
     )
 
-# views coded elsewhere
 urlpatterns += patterns('',
     (r'^registration/', include('knesset.accounts.urls')),
     url(r'^(?P<object_id>\d+)/$', user_public_profile, name='public-profile'),
+    url(r'^(?P<slug>.+)/tagged/$', user_tagged_items, name='user-tagged-items'),
+    url(r'^(?P<slug>.+)/annotated/$', user_annotated_items, name='user-annotated-items'),
     url(r'^(?P<slug>.+)/$', user_public_profile, name='public-profile'),
     url(r'^$', profile_list, name='profile-list'),
     )

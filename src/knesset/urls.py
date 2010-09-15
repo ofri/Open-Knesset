@@ -38,7 +38,7 @@ about_view = SimpleView(template='about.html')
 from knesset.auxiliary.views import main
 
 urlpatterns = patterns('',
-    url(r'^$', cache_page(main, 60*10), name='main'),
+    url(r'^$', main, name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
     (r'^agenda/', include('knesset.agendas.urls')),

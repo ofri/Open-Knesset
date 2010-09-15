@@ -4,6 +4,40 @@ from django.contrib.auth.models import User
 from knesset.mks.models import Member
 from actstream import action
 
+class TestPublicProfile(TestCase):
+
+    def setUp(self):
+        self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
+                                              'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'adrian')
+        profile = self.adrian.get_profile()       
+        profile.public_profile = False
+        profile.save()
+        
+    def testPublicProfile(self):
+        res = self.client.get(reverse('public-profile',
+                                 kwargs={'object_id': self.jacob.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'user/public_profile.html')
+        self.assertEqual(res.context['viewed_user'], self.jacob)
+        res = self.client.get(reverse('public-profile',
+                                 kwargs={'object_id': self.adrian.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse('details' in res.content)
+
+
+    def testProfileList(self):
+        res = self.client.get(reverse('profile-list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,'user/profile_list.html')
+        self.assertEqual(len(res.context['object_list']), 1)
+
+    def tearDown(self):
+        self.jacob.delete()
+        self.adrian.delete()
+
 class TestFollowing(TestCase):
 
     def setUp(self):
@@ -29,18 +63,6 @@ class TestFollowing(TestCase):
         self.assertEquals(len(p.members), 1)
         self.assertEquals(p.members[0], self.yosef)
         self.client.logout()
-
-    def testPublicProfile(self):
-        res = self.client.get(reverse('public-profile',
-                                 kwargs={'object_id': self.jacob.id}))
-        self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res,
-                                'user/public_profile.html')
-        actions = res.context['aggr_actions']
-        actions_list = map(lambda x: (x.verb, x.targets.keys()), actions)
-        actions_list.sort()
-        self.assertEqual(actions_list,
-                         [('farted', [self.david]), ('hit', [self.yosef,self.moshe])])
 
     def tearDown(self):
         self.jacob.delete()

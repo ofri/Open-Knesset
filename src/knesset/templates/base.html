@@ -24,8 +24,6 @@
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
 	    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/pageobject.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/pages.js"></script>
 	    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
 
         {% if not debug %}
@@ -59,9 +57,9 @@
 	<div id="container">
         <div id="accounts">
             {% if user.is_authenticated %}
-                {% trans 'Logged in as ' %} <a href="{{user.get_profile.get_absolute_url}}">{{ user }}</a>&bull;
-                    <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> &bull;
-                    <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
+                <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a>
+                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> 
+                <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
             {% else %}
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
@@ -71,7 +69,6 @@
         </div>
 		<div id="header">
 			<ul id="nav-global">
-                <!-- TODO: search, stream, next votes and a lot of drying -->
 
                 <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a class="hashnav" href="{% url main%}">{% trans 'Main' %}</a> </li>
                 <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
@@ -116,18 +113,6 @@
 		</div>
 		<!-- END #footer -->
 	</div>
-	<!-- END #container -->
-	<!-- SmarterFox code  too slow for now 
-	<script type="text/javascript">
-		var finderfoxConfig = {
-		    version: "1.0.0",
-		        key: "1f7962f0c157811b00000122ee87b1a0"
-			};
-			document.write(unescape('%3Cscript type="text/javascript" src="'+
-			('https:'==document.location.protocol?'https://ssl.':'http://')+
-			'finderfox.smarterfox.com/finderfox.js"%3E%3C/script%3E'));
-		</script>
-        -->
     {% block footer %}
     {% endblock %}
 	</body>
