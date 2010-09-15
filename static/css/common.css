@@ -55,8 +55,9 @@ a:hover { text-decoration:underline;}
             font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
 
 /* toolbar */
-.actions li { display:inline; list-style-type:none; vertical-align: top;
+.actions li { display:inline; list-style-type:none;
             font-weight: bold; padding:0 0.2em; }
+.actions li span {vertical-align: top; }
 .actions {display: block; float: left;}
 
 
