@@ -37,5 +37,5 @@ def record_post_action(sender, created, instance, **kwargs):
         action.send(member, verb='posted',
                     target = instance,
                     timestamp=instance.date_modified or instance.date_created)
-#post_save.connect(record_post_action, sender=Post)
+post_save.connect(record_post_action, sender=Post)
 
