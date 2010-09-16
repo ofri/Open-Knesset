@@ -3,12 +3,14 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.core.cache import cache
-
+from django.http import HttpResponseForbidden
+from django.contrib.auth.models import Group
 import random
 
 from knesset.mks.models import Member
 from knesset.laws.models import Vote,Bill
 from tagging.models import Tag
+from annotatetext.views import post_annotation as annotatetext_post_annotation
 
 def main(request):
     context = cache.get('main_page_context')
@@ -25,3 +27,9 @@ def main(request):
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')    
     return render_to_response(template_name, context, context_instance=RequestContext(request))
 
+def post_annotation(request):
+    g = Group.objects.get(name='Valid Email')
+    if g in request.user.groups.all():
+        return annotatetext_post_annotation(request)
+    else:
+        return HttpResponseForbidden(_("Sorry, only users with validated email can annotate."))
