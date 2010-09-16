@@ -17,7 +17,7 @@
             <h3>{% trans 'Following Members' %}:</h3>
             <ul class='favorites-list'>
             {% for member in viewed_user.get_profile.members %}
-                <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+                <li><a href="{{member.get_absolute_url}}">{{ member|mk_card }}</a></li>
             {% empty %}
                 <li>{% trans 'Not following any memebers.' %}</li>
             {% endfor %}
