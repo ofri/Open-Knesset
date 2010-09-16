@@ -4,7 +4,6 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.core.cache import cache
 from django.http import HttpResponseForbidden
-from django.contrib.auth.models import Group
 import random
 
 from knesset.mks.models import Member
@@ -27,9 +26,8 @@ def main(request):
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')    
     return render_to_response(template_name, context, context_instance=RequestContext(request))
 
-def post_annotation(request):
-    g = Group.objects.get(name='Valid Email')
-    if g in request.user.groups.all():
+def post_annotation(request):    
+    if request.user.has_perm('annotatetext.add_annotation'):
         return annotatetext_post_annotation(request)
     else:
-        return HttpResponseForbidden(_("Sorry, only users with validated email can annotate."))
+        return HttpResponseForbidden(_("Sorry, you do not have the permission to annotate."))

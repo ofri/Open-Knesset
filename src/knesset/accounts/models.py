@@ -69,9 +69,9 @@ class EmailValidation(models.Model):
                 g = Group.objects.get(name='Valid Email')
             except Group.DoesNotExist:
                 logger.warn('Did not find "Valid Email" group. creating')
-                g = Group.objects.create(name='Valid Email')
-                p = Permission.objects.get(name='Can add comment')
-                g.permissions.add(p)
+                g = Group.objects.create(name='Valid Email')                
+                g.permissions.add(Permission.objects.get(name='Can add comment'))
+                g.permissions.add(Permission.objects.get(name='Can add annotation'))
                 
             ev.user.groups.add(g)
             ev.activation_key = ''

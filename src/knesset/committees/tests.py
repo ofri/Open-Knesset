@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
 from actstream.models import Action
@@ -28,6 +28,7 @@ I have a deadline''')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
         self.group = Group.objects.create(name='Valid Email')
+        self.group.permissions.add(Permission.objects.get(name='Can add annotation'))
         self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
