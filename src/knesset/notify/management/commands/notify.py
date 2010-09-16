@@ -1,5 +1,5 @@
 from django.core.management.base import NoArgsCommand
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext as _
@@ -131,15 +131,18 @@ class Command(NoArgsCommand):
             email_notification.append('W')
         
         queued = 0
+        g = Group.objects.get(name='Valid Email')
         for user in User.objects.all():
             try:
                 user_profile = user.get_profile()
             except UserProfile.DoesNotExist:
                 logger.warn('user %s has no userprofile' % user.username)
                 continue
-            
-            # TODO: send only to users with validated email.
-            if user_profile and user_profile.email_notification in email_notification: # if this user requested emails in the frequency we are handling now                        
+
+            if user_profile and user_profile.email_notification in email_notification and g in user.groups.all():
+                # if this user has a profile (should always be true)
+                # requested emails in the frequency we are handling now
+                # and has validated his email
                 email_body, email_body_html = self.get_email_for_user(user)
                 if email_body: # there are some updates. generate email
                     header = render_to_string(('notify/header.txt'),{ 'user':user })
