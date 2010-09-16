@@ -7,7 +7,7 @@ from util import flatten
 
 def show_one(pdf_filename, show_details=False):
     prop = GovProposal(pdf_filename)
-    print prop.to_str(show_details)
+    print prop.to_unicode(show_details)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
