@@ -65,6 +65,22 @@ I have a deadline''')
         self.assertEqual(activity.verb, 'annotated')
         self.assertEqual(activity.target.id, annotation.id)
 
+    def testAnnotationForbidden(self):
+        self.jacob.groups.clear() # invalidate this user's email
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        part = self.meeting_1.parts.list()[0]
+        res = self.client.post(reverse('annotatetext-post_annotation'),
+                        {'selection_start': 7,
+                         'selection_end': 14,
+                         'flags': 0,
+                         'color': '#000',
+                         'lengthcheck': len(part.body),
+                         'comment' : 'just perfect',
+                         'object_id': part.id,
+                         'content_type': ContentType.objects.get_for_model(part).id,
+                        })
+        self.assertEqual(res.status_code, 403) # 403 Forbidden. 302 means a user with unverified email has posted an annotation. 
+
     def testCommitteeList(self):
         res = self.client.get(reverse('committee-list'))
         self.assertEqual(res.status_code, 200)
