@@ -27,7 +27,9 @@ I have a deadline''')
                                                          protocol_text='m2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
-        self.group = Group.objects.create(name='Valid Email')
+        (self.group, created) = Group.objects.get_or_create(name='Valid Email')
+        if created:
+            self.group.save()
         self.group.permissions.add(Permission.objects.get(name='Can add annotation'))
         self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
