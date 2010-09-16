@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
 from actstream.models import Action
@@ -27,6 +27,8 @@ I have a deadline''')
                                                          protocol_text='m2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
+        self.group = Group.objects.create(name='Valid Email')
+        self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
 
@@ -117,6 +119,7 @@ I have a deadline''')
         self.committee_1.delete()
         self.committee_2.delete()
         self.jacob.delete()
+        self.group.delete()
         self.bill_1.delete()
         self.mk_1.delete()
-
+        
