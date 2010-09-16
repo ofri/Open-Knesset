@@ -25,6 +25,8 @@ post_save.connect(handle_cm_save, sender=CommitteeMeeting)
 @disable_for_loaddata
 def handle_annotation_save(sender, created, instance, **kwargs):
     if created:
+        action.send(instance.content_object.meeting.committe, verb='annotated',
+                    target=instance, description=unicode(instance.flag_value))
         action.send(instance.user, verb='annotated',
                     target=instance, description=unicode(instance.flag_value))
 post_save.connect(handle_annotation_save, sender=Annotation)
