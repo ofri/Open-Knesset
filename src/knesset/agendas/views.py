@@ -30,9 +30,12 @@ class AgendaDetailView (DetailView):
             watched = agenda in p.agendas
         else:
             watched = False
-
+        
         context.update({'watched_object': watched})
-
+        
+        context.update({'selected_mks': agenda.selected_mks(top=3,bottom=3) })
+        context.update({'selected_parties': agenda.selected_parties(top=3,bottom=3) })
+        
         return context
     
 class AgendaDetailEditView (DetailView):

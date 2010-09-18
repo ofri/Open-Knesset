@@ -13,7 +13,12 @@ from knesset.links.models import Link, LinkType
 def record_agenda_ascription_action(sender, created, instance, **kwargs):
     if created:
         action.send(instance.agenda, verb='agenda ascribed',
-                    description="agenda %s ascribed to vote %s" % (instance.agenda.name,instance.vote.title),
+                    description='agenda "%s" ascribed to vote "%s"' % (instance.agenda,instance.vote.title),
+                    target = instance,
+                    timestamp = datetime.datetime.now())
+    else:
+        action.send(instance.agenda, verb='agenda-vote relation updated',
+                    description='relation between agenda "%s" and vote "%s" was updated' % (instance.agenda,instance.vote.title),
                     target = instance,
                     timestamp = datetime.datetime.now())
 post_save.connect(record_agenda_ascription_action, sender=AgendaVote)

@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
+{% load common_visual_elements %}
 {% load links %}
 {% load comments %}
 {% load user %}
@@ -52,6 +53,50 @@
             <h2> {% trans "Description" %}</h2>
             {{ object.description }}
         </div>
+
+        <div>
+        	<h3>{% trans "Members" %}</h3>
+        	<div class="list-wrap">
+        		<table>
+	         	{% for selected_mk in selected_mks.top %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.mk.id }}" href="{% url member-detail selected_mk.mk.id %}">{{ selected_mk.mk }}</a></td>
+	         			<td>{{selected_mk.score}}</td>
+	         			<td class="column-bar">{% bar selected_mk.score selected_mk.class 0.01 %}</td>
+	        			</tr>
+	         	{% endfor %}
+	         	{% for selected_mk in selected_mks.bottom %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.mk.id }}" href="{% url member-detail selected_mk.mk.id %}">{{ selected_mk.mk }}</a></td>
+	         			<td>{{selected_mk.score}}</td>
+	         			<td class="column-bar">{% bar selected_mk.score selected_mk.class 0.01 %}</td>
+	        			</tr>
+	         	{% endfor %}
+	         	</table>
+        	</div>
+        </div>
+        <div>
+        	<h3>{% trans "Parties" %}</h3>
+        	<div class="list-wrap">
+        		<table>
+	         	{% for selected_party in selected_parties.top %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.party.id }}" href="{% url party-detail selected_party.party.id %}">{{ selected_party.mk }}</a></td>
+	         			<td>{{selected_party.score}}</td>
+	         			<td class="column-bar">{% bar selected_party.score selected_party.class 0.01 %}</td>
+	        			</tr>
+	         	{% endfor %}
+	         	{% for selected_party in selected_parties.bottom %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.party.id }}" href="{% url party-detail selected_party.party.id %}">{{ selected_party.mk }}</a></td>
+	         			<td>{{selected_party.score}}</td>
+	         			<td class="column-bar">{% bar selected_party.score selected_party.class 0.01 %}</td>
+	        			</tr>
+	         	{% endfor %}
+	         	</table>
+        	</div>
+        </div>
+        
     	<div class="item-list">
         
         <h2> {% trans "Ascribed Votes" %}</h2>
