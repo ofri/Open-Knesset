@@ -16,6 +16,16 @@ class AgendaListView (ListView):
     def queryset(self):
         return Agenda.objects.all()
     
+    def get_context(self, *args, **kwargs):
+        context = super(AgendaListView, self).get_context(*args, **kwargs)       
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = p.agendas
+        else:
+            watched = None
+        context['watched'] = watched
+        return context
+        
 class AgendaDetailView (DetailView):
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       

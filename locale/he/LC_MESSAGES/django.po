@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-18 21:38+0200\n"
-"PO-Revision-Date: 2010-09-18 21:38+0200\n"
+"POT-Creation-Date: 2010-09-18 23:07+0200\n"
+"PO-Revision-Date: 2010-09-18 23:10+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -177,7 +177,7 @@ msgstr "אג'נדות"
 msgid "by"
 msgstr "על ידי"
 
-#: agendas/views.py:26
+#: agendas/views.py:36
 #: user/models.py:17
 msgid "None"
 msgstr "ללא"
@@ -1019,7 +1019,7 @@ msgid "Unwatch"
 msgstr "הפסק מעקב"
 
 #: templates/agendas/agenda_detail.html:28
-#: templates/agendas/agenda_list.html:41
+#: templates/agendas/agenda_list.html:48
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
@@ -1073,19 +1073,32 @@ msgstr "האג'נדות שלך"
 msgid "Please login to see agendas you can edit"
 msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
 
-#: templates/agendas/agenda_list.html:15
-msgid "Add"
-msgstr "הוספה"
-
-#: templates/agendas/agenda_list.html:23
-#: templates/agendas/agenda_list.html:49
+#: templates/agendas/agenda_list.html:20
+#: templates/agendas/agenda_list.html:60
 msgid "Editors:"
 msgstr "עורכים"
 
-#: templates/agendas/agenda_list.html:31
-#: templates/agendas/agenda_list.html:57
+#: templates/agendas/agenda_list.html:28
+#: templates/agendas/agenda_list.html:68
 msgid "Description:"
 msgstr "תאור"
+
+#: templates/agendas/agenda_list.html:32
+#: templates/agendas/agenda_list.html:72
+msgid "Number of followers"
+msgstr "מספר עוקבים"
+
+#: templates/agendas/agenda_list.html:38
+msgid "You are not editing any agenda"
+msgstr "אין אג'נדות בעריכתך"
+
+#: templates/agendas/agenda_list.html:42
+msgid "Add"
+msgstr "הוספה"
+
+#: templates/agendas/agenda_list.html:55
+msgid "You are following"
+msgstr "ברשימת המעקב שלך"
 
 #: templates/annotatetext/_annotation.html:7
 #: templates/committees/committeemeeting_detail.html:116
@@ -1133,11 +1146,11 @@ msgstr "רשימת הישיבות המלאה"
 
 #: templates/committees/committeemeeting_detail.html:29
 msgid "Sorry, only editor can delete annotations."
-msgstr "מצטער, רק עורכים יכולים למחוק הערות"
+msgstr "מצטערים, רק עורכים יכולים למחוק הערות"
 
 #: templates/committees/committeemeeting_detail.html:30
 msgid "Please email editors if an annotation should be deleted"
-msgstr "אנא שלח דואל לעורכי האתר את צריך למחוק את ההארה"
+msgstr "נא לשלוח דואל לעורכי האתר אם צריך למחוק את ההארה"
 
 #: templates/committees/committeemeeting_detail.html:35
 msgid "Back to committee"
