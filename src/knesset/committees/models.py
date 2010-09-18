@@ -1,6 +1,7 @@
 # encoding: utf-8
 import re
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
@@ -34,6 +35,8 @@ class CommitteeMeeting(models.Model):
 
     class Meta:
         ordering = ('-date',)
+        verbose_name = _('Committee Meeting')
+        verbose_name_plural = _('Committee Meetings')
 
     def __unicode__(self):
         return "%s %s" % (self.committee.name, self.date_string)

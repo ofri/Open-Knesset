@@ -92,6 +92,8 @@ class MeetingsListView(ListView):
         if not self.items:
             raise Http404
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
+        context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+        context['committee_id'] = self.committee_id
         return context 
 
     def get_queryset (self):
@@ -111,7 +113,8 @@ def meeting_list_by_date(request, *args, **kwargs):
     object = get_object_or_404(Committee, pk=committee_id)
     object_list = object.meetings.filter(date=date)
     
-    context = {'object_list':object_list}
-    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date} 
+    context = {'object_list':object_list, 'committee_id':committee_id}
+    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date}
+    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural } 
     return render_to_response("committees/committeemeeting_list.html",
         context, context_instance=RequestContext(request))    

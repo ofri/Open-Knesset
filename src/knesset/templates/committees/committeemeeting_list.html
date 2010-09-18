@@ -10,21 +10,24 @@
 	<div class="item-list">
         {% for o in object_list %}
             <a class="item" href="{% url committee-meeting o.id %}">{{ o.date_string }} <span style="font-size:75%">{{ o.topics|safe }}</span></a><br>
+        {% empty %}
+            {{ none }}
         {% endfor %}
 	</div> 
     {% if page_obj %}
         {% pagination page_obj paginator request %}
-        <div class="datelookup">{% trans 'Lookup by date' %}
-        <input type="text" id="datelookup_input" value="{{ object_list.0.date }}"/>
-        <input type="submit" id="datelookup_submit" value="{% trans 'Submit' %}"/>
-        <script>
-            $('#datelookup_submit').click(function(){
-                                                     var d = $('#datelookup_input').val();                                                     
-                                                     if (d){
-                                                            window.location = 'date/'+d;
-                                                     }
-                                                 });
-        </script>
-        </div>
-    {% endif %}  
+    {% endif %}
+    <div class="datelookup">{% trans 'Lookup by date' %}
+    <input type="text" id="datelookup_input" value="{{ object_list.0.date }}"/>
+    <input type="submit" id="datelookup_submit" value="{% trans 'Submit' %}"/>
+    <script>
+        $('#datelookup_submit').click(function(){
+                                                 var d = $('#datelookup_input').val();                                                     
+                                                 if (d){
+                                                        window.location = '{% url committee-meetings-by-date committee_id %}' +d + '/';
+                                                 }
+                                             });
+    </script>
+    </div>
+      
 {% endblock %}
