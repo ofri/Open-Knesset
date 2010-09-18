@@ -1,21 +1,20 @@
-import json
-
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 import logging 
 logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
 import re
-import random
+import json
 import colorsys
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
-from models import CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 class MeetingDetailView(DetailView):
 
@@ -102,3 +101,17 @@ class MeetingsListView(ListView):
         else:
             return CommitteeMeeting.objects.all()
         
+def meeting_list_by_date(request, *args, **kwargs):
+    committee_id = kwargs.get('committee_id',None)
+    date_string = kwargs.get('date',None)
+    try:
+        date = datetime.datetime.strptime(date_string,'%Y-%m-%d').date()
+    except:
+        raise Http404()
+    object = get_object_or_404(Committee, pk=committee_id)
+    object_list = object.meetings.filter(date=date)
+    
+    context = {'object_list':object_list}
+    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date} 
+    return render_to_response("committees/committeemeeting_list.html",
+        context, context_instance=RequestContext(request))    

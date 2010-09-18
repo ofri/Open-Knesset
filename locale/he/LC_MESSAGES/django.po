@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-16 12:26+0200\n"
-"PO-Revision-Date: 2010-09-16 12:27+0200\n"
+"POT-Creation-Date: 2010-09-18 20:30+0200\n"
+"PO-Revision-Date: 2010-09-18 20:32+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,7 @@ msgstr ""
 #: mks/views.py:144
 #: mks/views.py:147
 #: templates/base.html:83
+#: templates/agendas/agenda_detail.html:58
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
 #: templates/mks/member_graph.html:5
@@ -43,6 +44,7 @@ msgstr "ח\"כים"
 #: mks/views.py:253
 #: mks/views.py:268
 #: templates/base.html:84
+#: templates/agendas/agenda_detail.html:79
 msgid "Parties"
 msgstr "מפלגות"
 
@@ -153,11 +155,11 @@ msgstr "נא להזין תאור עבור אג'נדה זו"
 msgid "Agenda description must be at least 15 characters long"
 msgstr "תאור אג'נדה צריך להיות באורך 15 תווים לפחות"
 
-#: agendas/models.py:36
+#: agendas/models.py:44
 msgid "Agenda"
 msgstr "אג'נדה"
 
-#: agendas/models.py:37
+#: agendas/models.py:45
 #: agendas/urls.py:7
 #: templates/base.html:86
 #: templates/agendas/agenda_list.html:4
@@ -168,7 +170,7 @@ msgstr "אג'נדה"
 msgid "Agendas"
 msgstr "אג'נדות"
 
-#: agendas/models.py:41
+#: agendas/models.py:49
 #: templates/annotatetext/_annotation.html:5
 #: templates/laws/knessetproposal_detail.html:14
 #: templates/laws/knessetproposal_list.html:17
@@ -209,23 +211,28 @@ msgstr "עוקב אחר חבר כנסת"
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: committees/views.py:33
+#: committees/views.py:32
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: committees/views.py:86
+#: committees/views.py:85
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: committees/views.py:87
+#: committees/views.py:86
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:95
+#: committees/views.py:94
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
+
+#: committees/views.py:115
+#, python-format
+msgid "Meetings by %(committee)s on date %(date)s"
+msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
 #: laws/models.py:17
 #: templates/include/member_detail.html:50
@@ -806,7 +813,7 @@ msgid "Choose a tab to start browsing"
 msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
 
 #: templates/_main.html:3
-#: templates/agendas/agenda_detail.html:33
+#: templates/agendas/agenda_detail.html:34
 #: templates/committees/committeemeeting_detail.html:25
 #: templates/mks/member_detail.html:23
 msgid "or"
@@ -848,7 +855,7 @@ msgid "Logout"
 msgstr "יציאה מהחשבון"
 
 #: templates/base.html:71
-#: templates/agendas/agenda_detail.html:32
+#: templates/agendas/agenda_detail.html:33
 #: templates/committees/committeemeeting_detail.html:24
 #: templates/mks/member_detail.html:22
 #: templates/user/login.html:4
@@ -978,54 +985,54 @@ msgstr "הוספת אג'נדה"
 msgid "save"
 msgstr "שמירה"
 
-#: templates/agendas/agenda_detail.html:19
 #: templates/agendas/agenda_detail.html:20
+#: templates/agendas/agenda_detail.html:21
 #: templates/mks/member_detail.html:197
 #: templates/mks/member_detail.html:208
 msgid "Watch"
 msgstr "מעקב"
 
-#: templates/agendas/agenda_detail.html:19
 #: templates/agendas/agenda_detail.html:20
+#: templates/agendas/agenda_detail.html:21
 #: templates/mks/member_detail.html:194
 #: templates/mks/member_detail.html:225
 msgid "Unwatch"
 msgstr "הפסק מעקב"
 
-#: templates/agendas/agenda_detail.html:27
+#: templates/agendas/agenda_detail.html:28
 #: templates/agendas/agenda_list.html:41
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
-#: templates/agendas/agenda_detail.html:31
+#: templates/agendas/agenda_detail.html:32
 #: templates/mks/member_detail.html:21
 msgid "You have to be logged in to enable the watch feature."
 msgstr "כדי להשתמש ביכולת המעקב צריך להכנס לחשבון."
 
-#: templates/agendas/agenda_detail.html:34
+#: templates/agendas/agenda_detail.html:35
 #: templates/committees/committeemeeting_detail.html:26
 #: templates/mks/member_detail.html:24
 #: templates/user/create_user.html:8
 msgid "register"
 msgstr "הרשמה"
 
-#: templates/agendas/agenda_detail.html:41
+#: templates/agendas/agenda_detail.html:42
 msgid "Edited by"
 msgstr "בעריכת"
 
-#: templates/agendas/agenda_detail.html:47
+#: templates/agendas/agenda_detail.html:48
 msgid "Edit"
 msgstr "עריכה"
 
-#: templates/agendas/agenda_detail.html:52
+#: templates/agendas/agenda_detail.html:53
 msgid "Description"
 msgstr "תאור"
 
-#: templates/agendas/agenda_detail.html:57
+#: templates/agendas/agenda_detail.html:102
 msgid "Ascribed Votes"
 msgstr "הצבעות משויכות"
 
-#: templates/agendas/agenda_detail.html:76
+#: templates/agendas/agenda_detail.html:121
 #: templates/laws/bill_list.html:19
 #: templates/laws/bill_list_by_tag.html:21
 #: templates/laws/knessetproposal_list.html:26
@@ -1185,6 +1192,10 @@ msgstr "הצגת כל ההערות"
 #: templates/committees/committeemeeting_detail.html:114
 msgid "Annotate"
 msgstr "האירו"
+
+#: templates/committees/committeemeeting_list.html:17
+msgid "Lookup by date"
+msgstr "חיפוש לפי תאריך"
 
 #: templates/include/member_detail.html:5
 msgid "party"
@@ -2478,8 +2489,6 @@ msgstr "שבועי"
 #~ msgstr "מצב משפחתי"
 #~ msgid "%s does not appear to be a urlpattern object"
 #~ msgstr "לא נראה ש-%s הוא אובייקט urlpattern"
-#~ msgid "Lookup"
-#~ msgstr "חפש"
 
 #, fuzzy
 #~ msgid "Search In"
