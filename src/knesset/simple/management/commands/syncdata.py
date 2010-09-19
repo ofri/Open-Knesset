@@ -790,6 +790,7 @@ class Command(NoArgsCommand):
                 continue
             cm.protocol_text = self.get_committee_protocol_text(link)
             cm.save()
+            cm.create_protocol_parts()
             try:
                 r = re.search("חברי הוועדה(.*?)\n\n".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
                 s = r.split('\n')
@@ -802,9 +803,6 @@ class Command(NoArgsCommand):
             except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
-
-            cm.save()
-
 
 
     def get_committee_protocol_text(self, url):

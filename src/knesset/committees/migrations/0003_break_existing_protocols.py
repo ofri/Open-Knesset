@@ -9,8 +9,9 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for m in CommitteeMeeting.objects.all():
-            m.save()
+        if hasattr(CommitteeMeeting,'create_protocol_parts'):
+            for m in CommitteeMeeting.objects.all():
+                m.create_protocol_parts()
 
     def backwards(self, orm):
         "Write your backwards methods here."

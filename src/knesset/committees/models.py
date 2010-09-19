@@ -1,9 +1,15 @@
 # encoding: utf-8
 import re
+import logging
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from annotatetext.models import Annotation
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
+
+logger = logging.getLogger("open-knesset.committees.models")
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
@@ -48,8 +54,24 @@ class CommitteeMeeting(models.Model):
 
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
-        self.parts.all().delete()
 
+    def create_protocol_parts(self, delete_existing=False):
+        """ Create protocol parts from this instance's protocol_text
+            Optionally, delete existing parts.
+            If the meeting already has parts, and you don't ask to 
+            delete them, a ValidationError will be thrown, because
+            it doesn't make sense to create the parts again.
+        """    
+        if delete_existing:
+            ppct = ContentType.objects.get_for_model(ProtocolPart)
+            annotations = Annotation.objects.filter(content_type=ppct, object_id__in=self.parts.all)
+            logger.debug('deleting %d annotations, because I was asked to delete the relevant protocol parts on cm.id=%d' % (annotations.count(), self.id))
+            annotations.delete()
+            self.parts.all().delete()
+        else:
+            if self.parts.count():
+                raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
+                
         if not self.protocol_text: # sometimes there are empty protocols
             return # then we don't need to do anything here.
             
@@ -82,7 +104,7 @@ class CommitteeMeeting(models.Model):
                 
         # don't forget the last section
         ProtocolPart(meeting=self, order=i,
-            header=header, body='\n'.join(section)).save()
+            header=header, body='\n'.join(section)).save()        
 
 class ProtocolPartManager(models.Manager):
     def list(self):
