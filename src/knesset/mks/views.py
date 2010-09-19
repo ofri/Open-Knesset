@@ -178,14 +178,14 @@ class MemberDetailView(DetailView):
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
         bills_tags = tagging.utils.calculate_cloud(bills_tags)
-        agendas = []
-        for agenda in Agenda.objects.all():
-            agendas.append( {'name':agenda.name,'id':agenda.id,'score':agenda.mk_score(member)} )
-            if agendas[-1]['score'] < 0:
-                agendas[-1]['class'] = 'against'
-            else: 
-                agendas[-1]['class'] = 'for' 
-        agendas.sort(key=itemgetter('score'), reverse=True)
+        agendas = Agenda.objects.get_selected_for_instance(member, top=3, bottom=3)
+#        for agenda in Agenda.objects.all():
+#            agendas.append( {'name':agenda.name,'id':agenda.id,'score':agenda.mk_score(member)} )
+#            if agendas[-1]['score'] < 0:
+#                agendas[-1]['class'] = 'against'
+#            else: 
+#                agendas[-1]['class'] = 'for' 
+#        agendas.sort(key=itemgetter('score'), reverse=True)
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
