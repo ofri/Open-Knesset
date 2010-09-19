@@ -32,13 +32,52 @@ class AgendaVote(models.Model):
         except KeyError:
             return None
     
+def get_top_bottom(lst, top, bottom):
+    if len(lst) < top+bottom:
+        delta = top+bottom - len(lst)
+        bottom = bottom - delta/2
+        if delta%2:
+            top = top - delta/2 +1
+        else:
+            top = top - delta/2
+    if top and bottom:
+        top_lst = lst[-top:]
+        bottom_lst = lst[:bottom]
+    elif top:
+        top_lst = lst[-top:]
+        bottom_lst = []
+    elif bottom:
+        top_lst = []
+        bottom_lst = lst[:bottom]
+    else:
+        top_lst = []
+        bottom_lst = []
+        
+    return {'top':top_lst,
+            'bottom':bottom_lst}
+    
 
+class AgendaManager(models.Manager):
+    def get_selected_for_instance(self, instance, top=3, bottom=3):
+        agendas = list(self.all())
+        for agenda in agendas:
+            agenda.score = agenda.__getattribute__('%s_score' % instance.__class__.__name__.lower())(instance)
+            agenda.significance = agenda.score * agenda.number_of_followers()
+        agendas.sort(key=itemgetter('significance'))
+        agendas = get_top_bottom(agendas, top, bottom)
+        agendas['top'].sort(key=itemgetter('score'), reverse=True)
+        agendas['bottom'].sort(key=itemgetter('score'), reverse=True)
+        return agendas
+
+           
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
     editors = models.ManyToManyField('auth.User')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
+    
+    objects = AgendaManager()
     
     class Meta:
         verbose_name = _('Agenda')
@@ -56,22 +95,24 @@ class Agenda(models.Model):
     def get_edit_absolute_url(self):
         return ('agenda-detail-edit', [str(self.id)])
     
-    def mk_score(self, member):
+    def member_score(self, member):
         # Find all votes that
         #   1) This agenda is ascribed to
         #   2) the member participated in and either voted for or against
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct().aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct().aggregate(Sum('score'))['score__sum'] or 0
-        return (for_score - against_score)
+        max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)])
+        return (for_score - against_score) / max_score
     
     def party_score(self, party):
         # party_members_ids = party.members.all().values_list('id',flat=True)
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="against").aggregate(Sum('score'))['score__sum'] or 0
-        return (for_score - against_score)
+        max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)]) * party.members.count()
+        return (for_score - against_score) / max_score
 
     def number_of_followers(self):
-        return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count() 
+        return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
     
     def selected_mks(self, top=3, bottom=3):
         mks_and_significance = []
@@ -142,6 +183,6 @@ class Agenda(models.Model):
                 
         return {'top': top_parties,
                 'bottom': bottom_parties}
-             
+
 
 from listeners import *
