@@ -16,6 +16,16 @@ class AgendaListView (ListView):
     def queryset(self):
         return Agenda.objects.all()
     
+    def get_context(self, *args, **kwargs):
+        context = super(AgendaListView, self).get_context(*args, **kwargs)       
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = p.agendas
+        else:
+            watched = None
+        context['watched'] = watched
+        return context
+        
 class AgendaDetailView (DetailView):
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
@@ -30,9 +40,12 @@ class AgendaDetailView (DetailView):
             watched = agenda in p.agendas
         else:
             watched = False
-
+        
         context.update({'watched_object': watched})
-
+        
+        context.update({'selected_mks': agenda.selected_mks(top=3,bottom=3) })
+        context.update({'selected_parties': agenda.selected_parties(top=3,bottom=3) })
+        
         return context
     
 class AgendaDetailEditView (DetailView):
