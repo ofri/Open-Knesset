@@ -30,8 +30,11 @@ class PublicUserProfile(DetailView):
 
     def get_context(self):
         context = super(PublicUserProfile, self).get_context()
-        context['annotations'] = Annotation.objects.filter(user = context['viewed_user'])
-        context['tagged_items'] = TagVote.objects.filter(user = context['viewed_user'])
+        user = context['viewed_user']
+        context.update ({
+            'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
+            'tagged_items': TagVote.objects.filter(user=user),
+        })
         return context
 
 

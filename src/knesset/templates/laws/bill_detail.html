@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load laws_extra %}
 {% load tagging_tags %}
+{% load mks %}
 {% block extrahead %} 
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
@@ -15,9 +16,8 @@
 <h1>{{ object.law.title }} {{ object.title }}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
-    {% trans 'Proposed by' %}:
     {% for proposer in object.proposers.all %}
-        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer|mk_card }}</a> 
     {% endfor %}<br>
     <div id="bill-canvas">
     </div>
@@ -156,10 +156,6 @@
     <h2>{% trans 'Bill initiation' %}</h2>
     {% for pp in object.proposals.all %}
         p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a> 
-        {% trans 'Proposed by' %}:
-        {% for proposer in pp.proposers.all %}
-            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
-        {% endfor %}
         <div class="proposal_content">
             {% if pp.content_html %}
                 <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>

@@ -1,19 +1,23 @@
 from django.core.management.base import NoArgsCommand
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext as _
+from django.utils import translation
 from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.conf import settings
 import datetime
 from optparse import make_option
+import logging
+logger = logging.getLogger("open-knesset.notify") 
 
 from actstream.models import Follow, Action
 from mailer import send_html_mail
 from knesset.mks.models import Member
 from knesset.agendas.models import Agenda
 from knesset.notify.models import LastSent
+from knesset.user.models import UserProfile
 
 class Command(NoArgsCommand):
     help = "Send e-mail notification to users that requested it."
@@ -23,6 +27,7 @@ class Command(NoArgsCommand):
     update_models = [Member,Agenda,None]
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
     days_back = getattr(settings, 'DEFAULT_NOTIFICATION_DAYS_BACK', 10)
+    lang = getattr(settings, 'LANGUAGE_CODE', 'he')
     domain = Site.objects.get_current().domain
 
     option_list = NoArgsCommand.option_list + (
@@ -117,6 +122,8 @@ class Command(NoArgsCommand):
             print "use --daily or --weekly"
             return
         
+        translation.activate(self.lang)
+        
         email_notification = []
         if daily:
             email_notification.append('D')
@@ -124,11 +131,18 @@ class Command(NoArgsCommand):
             email_notification.append('W')
         
         queued = 0
+        g = Group.objects.get(name='Valid Email')
         for user in User.objects.all():
-            user_profile = user.get_profile()
-            
-            # TODO: send only to users with validated email.
-            if user_profile and user_profile.email_notification in email_notification: # if this user requested emails in the frequency we are handling now                        
+            try:
+                user_profile = user.get_profile()
+            except UserProfile.DoesNotExist:
+                logger.warn('user %s has no userprofile' % user.username)
+                continue
+
+            if user_profile and user_profile.email_notification in email_notification and g in user.groups.all():
+                # if this user has a profile (should always be true)
+                # requested emails in the frequency we are handling now
+                # and has validated his email
                 email_body, email_body_html = self.get_email_for_user(user)
                 if email_body: # there are some updates. generate email
                     header = render_to_string(('notify/header.txt'),{ 'user':user })
@@ -143,3 +157,5 @@ class Command(NoArgsCommand):
                     queued += 1
                 
         print "%d email notifications queued for sending" % queued
+        
+        translation.deactivate()

@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load mks %}
 {% block extrahead %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
             type="text/javascript"></script>
@@ -32,14 +33,14 @@
 	    </table>
 	    <h3>{% trans 'Current MKs' %}</h3>
 	    {% for o in object.current_members.all %}
-	        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
+	        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o|mk_card }}</a>&nbsp;
 	    {% empty %}
 	        {% trans "Data base empty, no objects" %}
 	    {% endfor %}
 	    {% if object.past_members %}
 	        <h3>{% trans 'Past MKs' %}</h3>
 	        {% for o in object.past_members %}
-	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o.name }}</a>&nbsp;
+	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o|mk_card }}</a>&nbsp;
 	        {% endfor %}
 	    {% endif %}
 

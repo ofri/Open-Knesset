@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from knesset.mks.models import GENDER_CHOICES
@@ -57,9 +57,8 @@ class EditProfileForm(forms.Form):
                         'email_notification': self.userprofile.email_notification,
                         }
         self.has_email = True if user.email else False
-
-        p = Permission.objects.get(name='Can add comment')
-        self.has_perms = self.user.user_permissions.filter(id=p.id).count()
+        g = Group.objects.get(name='Valid Email')
+        self.valid_email = g in self.user.groups.all()
 
     def clean_username(self):
         data = self.cleaned_data['username']
@@ -79,8 +78,8 @@ class EditProfileForm(forms.Form):
         user = self.user
         if self.cleaned_data['email'] != None:
             if user.email != self.cleaned_data['email']: #email changed - user loses comment permissions, until he validates email again.
-                p = Permission.objects.get(name='Can add comment')
-                user.user_permissions.remove(p)
+                g = Group.objects.get(name='Valid Email')
+                user.groups.remove(g)
 
             user.email = self.cleaned_data['email']
         user.username = self.cleaned_data['username']

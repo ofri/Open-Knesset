@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude %}
+{% load i18n i18ninclude mks %}
 
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
@@ -19,9 +19,23 @@
     <div class="display_note">לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</div>
     <div class="display_note">לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</div>
     <div class="display_note">לראות איך כל חבר כנסת הצביע בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>. לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></div>
-    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של <a href="{% url member-detail member.id %}">{{ member.name }}<img height="50em" src="{{ member.img_url }}"/></a></div>
+    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של <a href="{% url member-detail member.id %}">{{ member|mk_card }}</a></div>
     <div class="display_note">לקרוא את הפרוטוקולים של כל <a href="{% url committee-list %}">וועדות הכנסת</a> (למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</div>
     <div class="display_note">ואנחנו כל הזמן עובדים על עוד...</div>    
 
+    <div>
+        <h2>הארות אחרונות</h2>
+            {% for a in annotations|slice:":10" %}
+                <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'annotated' %} <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+                <div style="padding-right:1em">
+                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
+                     <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+                </div>
+            {% empty %}
+                <li>{% trans "No annotations yet..." %}
+            {% endfor %}
+        </div>
+
+    </div>
 {% endblock %}
 

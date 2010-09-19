@@ -27,7 +27,7 @@
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
 <br/>
-{% if not edit_form.has_perms %}
+{% if not edit_form.valid_email %}
     {% if not edit_form.has_email %}
         {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address.' %}
     {% else %}

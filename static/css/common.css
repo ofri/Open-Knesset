@@ -55,8 +55,9 @@ a:hover { text-decoration:underline;}
             font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
 
 /* toolbar */
-.actions li { display:inline; list-style-type:none; vertical-align: top;
+.actions li { display:inline; list-style-type:none;
             font-weight: bold; padding:0 0.2em; }
+.actions li span {vertical-align: top; }
 .actions {display: block; float: left;}
 
 
@@ -625,3 +626,4 @@ div.mk-card > div { float:right }
 }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
 #content-main .proposal_content_text { margin:1em; padding:0em 1em; border:1px dashed gray; width:60%; line-height:1.6;}
+#debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}

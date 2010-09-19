@@ -7,6 +7,9 @@ from knesset.laws.models import VoteAction
 from knesset.links.models import Link, LinkType
 from knesset.mks.models import Member
 
+import logging
+logger = logging.getLogger("open-knesset.mks.listeners")
+
 @disable_for_loaddata
 def connect_feed(sender, created, instance, **kwargs):
     if created:
@@ -32,10 +35,14 @@ post_save.connect(record_vote_action, sender=VoteAction)
 @disable_for_loaddata
 def record_post_action(sender, created, instance, **kwargs):
     if created:
-        link, _ = Link.objects.get_or_create(url=instance.feed.url)
+        try:
+            link, _ = Link.objects.get_or_create(url=instance.feed.url)
+        except Link.MultipleObjectsReturned,e:
+            logger.warn('Multiple feeds: %s' % e)
+            link = Link.objects.filter(url=instance.feed.url)[0]
         member  = link.content_object
         action.send(member, verb='posted',
                     target = instance,
                     timestamp=instance.date_modified or instance.date_created)
-#post_save.connect(record_post_action, sender=Post)
+post_save.connect(record_post_action, sender=Post)
 

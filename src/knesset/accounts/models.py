@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 import datetime
@@ -65,9 +65,15 @@ class EmailValidation(models.Model):
             if ev.date_requested+datetime.timedelta(days=3) < datetime.date.today():
                 return (False, _("This activation key has expired."))
             # email validation successful
-            p = Permission.objects.get(name='Can add comment')
-            ev.user.user_permissions.add(p)
-            ev.user.save()
+            try:
+                g = Group.objects.get(name='Valid Email')
+            except Group.DoesNotExist:
+                logger.warn('Did not find "Valid Email" group. creating')
+                g = Group.objects.create(name='Valid Email')                
+                g.permissions.add(Permission.objects.get(name='Can add comment'))
+                g.permissions.add(Permission.objects.get(name='Can add annotation'))
+                
+            ev.user.groups.add(g)
             ev.activation_key = ''
             ev.save()
             return (True, "")

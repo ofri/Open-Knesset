@@ -35,7 +35,7 @@ about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
 #main_view = SimpleView(template='main.html')
-from knesset.auxiliary.views import main
+from knesset.auxiliary.views import main, post_annotation
 
 urlpatterns = patterns('',
     url(r'^$', main, name='main'),
@@ -59,7 +59,8 @@ urlpatterns = patterns('',
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
-     url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'), 
+     url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),
+     (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
      (r'^annotate/', include('annotatetext.urls')),
      (r'^avatar/', include('avatar.urls')),
 

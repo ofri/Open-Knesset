@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
 from actstream.models import Action
@@ -27,6 +27,11 @@ I have a deadline''')
                                                          protocol_text='m2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
+        (self.group, created) = Group.objects.get_or_create(name='Valid Email')
+        if created:
+            self.group.save()
+        self.group.permissions.add(Permission.objects.get(name='Can add annotation'))
+        self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
 
@@ -62,6 +67,22 @@ I have a deadline''')
         activity = stream[0]
         self.assertEqual(activity.verb, 'annotated')
         self.assertEqual(activity.target.id, annotation.id)
+
+    def testAnnotationForbidden(self):
+        self.jacob.groups.clear() # invalidate this user's email
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        part = self.meeting_1.parts.list()[0]
+        res = self.client.post(reverse('annotatetext-post_annotation'),
+                        {'selection_start': 7,
+                         'selection_end': 14,
+                         'flags': 0,
+                         'color': '#000',
+                         'lengthcheck': len(part.body),
+                         'comment' : 'just perfect',
+                         'object_id': part.id,
+                         'content_type': ContentType.objects.get_for_model(part).id,
+                        })
+        self.assertEqual(res.status_code, 403) # 403 Forbidden. 302 means a user with unverified email has posted an annotation. 
 
     def testCommitteeList(self):
         res = self.client.get(reverse('committee-list'))
@@ -117,6 +138,7 @@ I have a deadline''')
         self.committee_1.delete()
         self.committee_2.delete()
         self.jacob.delete()
+        self.group.delete()
         self.bill_1.delete()
         self.mk_1.delete()
-
+        

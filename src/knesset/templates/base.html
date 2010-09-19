@@ -8,7 +8,11 @@
 
 		<title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
 
-		<meta name="ROBOTS" content="ALL">
+		{% if debug %}
+    		<meta NAME="ROBOTS" content="NOINDEX, NOFOLLOW">
+		{% else %}
+    		<meta name="ROBOTS" content="ALL">
+		{% endif %}
 		<meta http-equiv="imagetoolbar" content="no"/>
 		<meta name="MSSmartTagsPreventParsing" content="true" >
 		<meta name="Authors" content="PyWeb-IL">
@@ -54,6 +58,9 @@
 	</head>
 
 	<body>
+	{% if debug %}
+	<div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>
+	{% endif %}
 	<div id="container">
         <div id="accounts">
             {% if user.is_authenticated %}

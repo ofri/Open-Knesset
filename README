@@ -1,6 +1,5 @@
-
 Installation:
--------------
+=============
 
 $ python bootstrap.py
 $ bin/buildout
@@ -9,3 +8,8 @@ $ bin/django syncdb --migrate # do not create a superuser account
 $ bin/django loaddata dev
 $ bin/django createsuperuser # to create your superuser account
 $ bin/django runserver
+
+NOTES
+=====
+
+- currently MySQL is not supported
