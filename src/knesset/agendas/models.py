@@ -123,7 +123,7 @@ class Agenda(models.Model):
     def selected_mks(self, top=3, bottom=3):
         mks_and_significance = []
         for mk in Member.objects.all():
-            score = self.mk_score(mk)
+            score = self.member_score(mk)
             if score >= 0:
                 for_against = 'for'
             else:
