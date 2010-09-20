@@ -12,7 +12,7 @@ class PersonListView(ListView):
         return context 
 
     def get_queryset (self):
-        return Person.objects.all()
+        return Person.objects.filter(protocol_parts__isnull=False).distinct()
         
 class PersonDetailView(DetailView):
     def get_context(self, *args, **kwargs):

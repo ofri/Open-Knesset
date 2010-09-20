@@ -24,11 +24,14 @@
     
     <div><h2>{% trans "Meetings this persons spoken at" %}</h2><ul>
     {% for meeting in meetings %}
-        <li><a href="{{ meeting.get_absolute_url }}">{{ meeting.committee.name }} {{ meeting.date_string }}</a></li>
+        <li><a href="{{ pp.meeting.get_absolute_url }}">{{ meeting.committee.name }} {{ meeting.date_string }}</a></li>
     {% endfor %}</ul>
 
     <div><h2>{% trans "Things this person said" %}</h2><ul>
     {% for pp in object.protocol_parts.all %}
+        {% ifchanged %}
+        </ul><a href="{{ pp.meeting.get_absolute_url }}">{{ pp.meeting.committee.name }} {{ pp.meeting.date_string }}</a><ul>
+        {% endifchanged %}
         <li><a href="{{ pp.get_absolute_url }}">{{ pp.body|pretty_crop:100 }}</a></li>
     {% endfor %}</ul>
     </div>

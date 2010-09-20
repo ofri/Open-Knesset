@@ -635,6 +635,9 @@ div.mk-card > div { float:right }
     padding-right: 3em;
     padding-bottom:1em;
 }
+#content-main .person-link { font-weight:normal }
+#content-main .person-name { font-weight:bold; font-size:110% }
+
 /*** p-links ***/
 a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; visibility: hidden; }
 .text-speaker:hover > a.permalink, .semannotation:hover a.permalink { visibility: visible; }

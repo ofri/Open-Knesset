@@ -4,7 +4,7 @@ from knesset.hashnav import ListView, DetailView
 from models import Person
 from views import PersonListView,PersonDetailView
 
-person_list = ListView(queryset = Person.objects.all(),paginate_by=50)
+person_list = ListView(queryset = Person.objects.filter(protocol_parts__isnull=False).distinct(),paginate_by=50)
 person_detail = PersonDetailView(queryset = Person.objects.all())
 
 urlpatterns = patterns ('',
