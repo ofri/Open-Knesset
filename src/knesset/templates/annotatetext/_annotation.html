@@ -4,6 +4,6 @@
     <q class="start_{{ annotation.selection_range.0 }} end_{{ annotation.selection_range.1 }}">{{ annotation.selection }}</q>
     <p class="annotation_meta" id="annotation-{{ annotation.id }}">{{ annotation.flag_value }} {% trans "by" %} 
         <a href="{% url public-profile annotation.user.id %}">{{ annotation.user }}</a>
-         - <a href="#annotation-{{ annotation.id }}">{% trans "Permalink"%}</a></p>
+        <a href="#annotation-{{ annotation.id }}" class="permalink">¶</a></p>
     <div class="content">{{ annotation.comment|urlizetrunc:25 }}</div>
 </div>

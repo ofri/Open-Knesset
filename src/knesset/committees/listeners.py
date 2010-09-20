@@ -29,5 +29,6 @@ def handle_annotation_save(sender, created, instance, **kwargs):
                     target=instance, description=unicode(instance.flag_value))
         action.send(instance.user, verb='annotated',
                     target=instance, description=unicode(instance.flag_value))
+        follow(instance.user, instance.content_object.meeting)
 post_save.connect(handle_annotation_save, sender=Annotation)
 
