@@ -1,20 +1,21 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from knesset.committees.models import CommitteeMeeting
 
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        if hasattr(CommitteeMeeting,'create_protocol_parts'):
-            for m in CommitteeMeeting.objects.all():
-                m.create_protocol_parts()
+        
+        # Adding field 'ProtocolPart.speaker'
+        db.add_column('committees_protocolpart', 'speaker', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='protocol_parts', null=True, to=orm['persons.Person']), keep_default=False)
+
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        
+        # Deleting field 'ProtocolPart.speaker'
+        db.delete_column('committees_protocolpart', 'speaker_id')
 
 
     models = {
@@ -69,8 +70,9 @@ class Migration(DataMigration):
             'body': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'header': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['committees.CommitteeMeeting']"}),
-            'order': ('django.db.models.fields.IntegerField', [], {})
+            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'parts'", 'to': "orm['committees.CommitteeMeeting']"}),
+            'order': ('django.db.models.fields.IntegerField', [], {}),
+            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'protocol_parts'", 'null': 'True', 'to': "orm['persons.Person']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -156,6 +158,18 @@ class Migration(DataMigration):
             'number_of_members': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'persons.person': {
+            'Meta': {'object_name': 'Person'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mk': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'person'", 'null': 'True', 'to': "orm['mks.Member']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['persons.Title']"})
+        },
+        'persons.title': {
+            'Meta': {'object_name': 'Title'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'})
         },
         'planet.blog': {
             'Meta': {'object_name': 'Blog'},

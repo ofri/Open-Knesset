@@ -17,7 +17,7 @@ def handle_cm_save(sender, created, instance, **kwargs):
                                  actor_content_type=mct, 
                                  verb='attended', 
                                  target_object_id=instance.id,
-                target_content_type=cmct).count()==0:    
+                                 target_content_type=cmct).count()==0:    
             action.send(m, verb='attended', target=instance, description='committee meeting', timestamp=instance.date)
     
 post_save.connect(handle_cm_save, sender=CommitteeMeeting)
@@ -29,5 +29,6 @@ def handle_annotation_save(sender, created, instance, **kwargs):
                     target=instance, description=unicode(instance.flag_value))
         action.send(instance.user, verb='annotated',
                     target=instance, description=unicode(instance.flag_value))
+        follow(instance.user, instance.content_object.meeting)
 post_save.connect(handle_annotation_save, sender=Annotation)
 

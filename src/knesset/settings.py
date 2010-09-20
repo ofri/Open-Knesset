@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'knesset.agendas',
     'knesset.badges',
     'knesset.notify',
+    'knesset.persons',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",

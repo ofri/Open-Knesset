@@ -1,0 +1,20 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load mks %}
+{% load laws_extra %}
+{% block extratitle %}{% trans 'Persons' %}{% endblock %}
+{% block header %}<h1>{% trans 'Persons' %}</h1>{% endblock %}
+{% block content %}    
+    <ul class="user-list">
+    {% for person in object_list %}
+        <li><a class="person-link" href="{{person.get_absolute_url}}">{{ person.titles.all.0 }} <span class="person-name">{{ person }}</span> {{ person.roles.all.0 }}</a></li>
+    {% empty %}
+        <p>
+        {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
+        </p>
+    {% endfor %}
+    </ul>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}
