@@ -22,10 +22,7 @@ class Person(models.Model):
         
     @models.permalink
     def get_absolute_url(self):
-        if self.mk:
-            return ('member-detail', [str(self.mk.id)])
-        else:
-            return ('person-detail', [str(self.id)])
+        return ('person-detail', [str(self.id)])
         
 class Role(models.Model):
     text = models.CharField(blank=True,null=True, max_length=1024)
