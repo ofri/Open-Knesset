@@ -374,14 +374,22 @@ class PartyDetailView(DetailView):
     def get_context (self):
         context = super(PartyDetailView, self).get_context()
         party = context['object']
-        agendas = []
-        for agenda in Agenda.objects.all():
-            agendas.append( {'name':agenda.name,'id':agenda.id,'score':agenda.party_score(party)} )
-            if agendas[-1]['score'] < 0:
-                agendas[-1]['class'] = 'against'
-            else: 
-                agendas[-1]['class'] = 'for' 
-        agendas.sort(key=itemgetter('score'), reverse=True)
+
+        agendas = Agenda.objects.get_selected_for_instance(party, top=3, bottom=3)
+        agendas = agendas['top'] + agendas['bottom']
+        for agenda in agendas:
+            agenda.watched=False
+        if self.request.user.is_authenticated():
+            watched_agendas = self.request.user.get_profile().agendas
+            for watched_agenda in watched_agendas:
+                if watched_agenda in agendas:
+                    agendas[agendas.index(watched_agenda)].watched = True
+                else:
+                    watched_agenda.score = watched_agenda.party_score(party)
+                    watched_agenda.watched = True
+                    agendas.append(wathced_agenda)
+        agendas.sort(key=attrgetter('score'), reverse=True)
+        
         context.update({'agendas':agendas})
         return context
 
