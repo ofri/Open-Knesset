@@ -1,4 +1,4 @@
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 from datetime import date
 from django.conf import settings
 from django.template import Context
@@ -178,14 +178,22 @@ class MemberDetailView(DetailView):
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
         bills_tags = tagging.utils.calculate_cloud(bills_tags)
+
         agendas = Agenda.objects.get_selected_for_instance(member, top=3, bottom=3)
-#        for agenda in Agenda.objects.all():
-#            agendas.append( {'name':agenda.name,'id':agenda.id,'score':agenda.mk_score(member)} )
-#            if agendas[-1]['score'] < 0:
-#                agendas[-1]['class'] = 'against'
-#            else: 
-#                agendas[-1]['class'] = 'for' 
-#        agendas.sort(key=itemgetter('score'), reverse=True)
+        agendas = agendas['top'] + agendas['bottom']
+        for agenda in agendas:
+            agenda.watched=False
+        if self.request.user.is_authenticated():
+            watched_agendas = self.request.user.get_profile().agendas
+            for watched_agenda in watched_agendas:
+                if watched_agenda in agendas:
+                    agendas[agendas.index(watched_agenda)].watched = True
+                else:
+                    watched_agenda.score = watched_agenda.member_score(member)
+                    watched_agenda.watched = True
+                    agendas.append(wathced_agenda)
+        agendas.sort(key=attrgetter('score'), reverse=True)
+        
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
