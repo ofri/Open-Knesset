@@ -115,7 +115,7 @@ class ProtocolPart(models.Model):
     order = models.IntegerField()
     header = models.TextField(blank=True)
     body = models.TextField(blank=True)
-
+    speaker = models.ForeignKey('persons.Person', blank=True, null=True, related_name='protocol_parts')
     objects = ProtocolPartManager()
 
     annotatable = True

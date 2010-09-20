@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import urllib2, urllib, cookielib, re, gzip, datetime, time, logging, os, sys,traceback
+import urllib2, urllib, cookielib, re, gzip, datetime, time, logging, os, sys,traceback, difflib
 
 from cStringIO import StringIO
 from pyth.plugins.rtf15.reader import Rtf15Reader
@@ -778,7 +778,6 @@ class Command(NoArgsCommand):
             (last_page, page_res) = self.get_protocols_page(page, page_num)
             res.extend(page_res)
 
-
         for (date_string, com, topic, link) in res:
             (c, created) = Committee.objects.get_or_create(name=com)
             if created:
@@ -787,9 +786,11 @@ class Command(NoArgsCommand):
             d = datetime.date(int(r.group(3)), int(r.group(2)), int(r.group(1)))
             (cm, created) = CommitteeMeeting.objects.get_or_create(committee=c, date_string=date_string, date=d, topics=topic)
             if not created:
+                logger.debug('cm %d already exists' % cm.id)
                 continue
             cm.protocol_text = self.get_committee_protocol_text(link)
             cm.save()
+            logger.debug('cm %d created' % cm.id)
             cm.create_protocol_parts()
             try:
                 r = re.search("חברי הוועדה(.*?)\n\n".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
@@ -803,13 +804,22 @@ class Command(NoArgsCommand):
             except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
-
+            logger.debug('added %d members' % cm.mks_attended.count())
 
     def get_committee_protocol_text(self, url):
         if url.find('html'):
             url = url.replace('html','rtf')
         file_str = StringIO()
-        file_str.write(urllib2.urlopen(url).read())
+        count = 0
+        flag = True
+        while count<10 and flag:
+            try:
+                file_str.write(urllib2.urlopen(url).read())
+                flag = False
+            except Exception:
+                count += 1
+        if flag:
+            logger.error("can't open url %s. tried %d times" % (url, count))
         try:
             doc = Rtf15Reader.read(file_str)
         except Exception:
