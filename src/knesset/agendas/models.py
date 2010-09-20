@@ -102,14 +102,20 @@ class Agenda(models.Model):
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct().aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct().aggregate(Sum('score'))['score__sum'] or 0
         max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)])
-        return (for_score - against_score) / max_score * 100
+        if max_score > 0:
+            return (for_score - against_score) / max_score * 100
+        else:
+            return 0.0
     
     def party_score(self, party):
         # party_members_ids = party.members.all().values_list('id',flat=True)
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="against").aggregate(Sum('score'))['score__sum'] or 0
         max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)]) * party.members.count()
-        return (for_score - against_score) / max_score * 100
+        if max_score > 0:
+            return (for_score - against_score) / max_score * 100
+        else:
+            return 0.0
 
     def number_of_followers(self):
         return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
