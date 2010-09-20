@@ -43,8 +43,12 @@ class AgendaDetailView (DetailView):
         
         context.update({'watched_object': watched})
         
-        context.update({'selected_mks': agenda.selected_mks(top=3,bottom=3) })
-        context.update({'selected_parties': agenda.selected_parties(top=3,bottom=3) })
+        selected_mks = agenda.selected_mks(top=3,bottom=3)
+        selected_mks = selected_mks['top']+selected_mks['bottom']
+        selected_parties = agenda.selected_parties(top=3,bottom=3)
+        selected_parties = selected_parties['top']+selected_parties['bottom']
+        context.update({'selected_mks': selected_mks })
+        context.update({'selected_parties': selected_parties })
         
         return context
     
