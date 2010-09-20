@@ -33,6 +33,11 @@ class AgendaVote(models.Model):
             return None
     
 def get_top_bottom(lst, top, bottom):
+    """
+    Returns a cropped list, keeping some of the list's top and bottom.
+    Edge conditions are handled gracefuly.
+    Input list should be ascending so that top is at the end. 
+    """
     if len(lst) < top+bottom:
         delta = top+bottom - len(lst)
         bottom = bottom - delta/2
@@ -120,75 +125,14 @@ class Agenda(models.Model):
     def number_of_followers(self):
         return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
     
-    def selected_mks(self, top=3, bottom=3):
-        mks_and_significance = []
-        for mk in Member.objects.all():
-            score = self.member_score(mk)
-            if score >= 0:
-                for_against = 'for'
-            else:
-                for_against = 'against'
-            significance = score * self.number_of_followers()
-            mks_and_significance.append({'mk':mk,
-                                         'score':score,
-                                         'class':for_against,
-                                         'significance':significance})
-        mks_and_significance.sort(key=itemgetter('significance'))
-        if len(mks_and_significance) < top+bottom:
-            delta = top+bottom - len(mks_and_significance)
-            bottom = bottom - delta/2
-            if delta%2:
-                top = top - delta/2 +1
-            else:
-                top = top - delta/2
+    def selected_instances(self, cls, top=3, bottom=3):
+        instances = list(cls.objects.all())
+        for instance in instances:
+            instance.score = self.__getattribute__('%s_score' % instance.__class__.__name__.lower())(instance)
+        instances.sort(key=attrgetter('score'))
+        instances = get_top_bottom(instances, top, bottom)
+        instances['top'].sort(key=attrgetter('score'), reverse=True)
+        instances['bottom'].sort(key=attrgetter('score'), reverse=True)
+        return instances
         
-        if top and bottom:
-            top_mks = mks_and_significance[-top:]
-            bottom_mks = mks_and_significance[:bottom]
-        elif top:
-            top_mks = mks_and_significance[-top:]
-            bottom_mks = []
-        else:
-            top_mks = []
-            bottom_mks = []
-
-        top_mks.sort(key=itemgetter('score'), reverse=True)        
-        bottom_mks.sort(key=itemgetter('score'), reverse=True)
-                
-        return {'top': top_mks,
-                'bottom': bottom_mks}
-             
-
-    def selected_parties(self, top=3, bottom=3):
-        parties_and_significance = []
-        for party in Party.objects.all():
-            score = self.party_score(party)
-            if score >= 0:
-                for_against = 'for'
-            else:
-                for_against = 'against'
-            significance = score * self.number_of_followers()
-            parties_and_significance.append({'party':party,
-                                             'score':score,
-                                             'class':for_against,
-                                             'significance':significance})
-        parties_and_significance.sort(key=itemgetter('significance'))
-        
-        if top and bottom:
-            top_parties = parties_and_significance[-top:]
-            bottom_parties = parties_and_significance[:bottom]
-        elif top:
-            top_parties = parties_and_significance[-top:]
-            bottom_parties = []
-        else:
-            top_parties = []
-            bottom_parties = []
-
-        top_parties.sort(key=itemgetter('score'), reverse=True)        
-        bottom_parties.sort(key=itemgetter('score'), reverse=True)
-                
-        return {'top': top_parties,
-                'bottom': bottom_parties}
-
-
 from listeners import *

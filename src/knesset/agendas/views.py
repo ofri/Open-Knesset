@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
+from knesset.mks.models import Member, Party
 
 from forms import EditAgendaForm, AddAgendaForm
 from models import Agenda, AgendaVote, score_text_to_score
@@ -43,9 +44,9 @@ class AgendaDetailView (DetailView):
         
         context.update({'watched_object': watched})
         
-        selected_mks = agenda.selected_mks(top=3,bottom=3)
+        selected_mks = agenda.selected_instances(Member, top=3,bottom=3)
         selected_mks = selected_mks['top']+selected_mks['bottom']
-        selected_parties = agenda.selected_parties(top=3,bottom=3)
+        selected_parties = agenda.selected_instances(Party, top=3,bottom=3)
         selected_parties = selected_parties['top']+selected_parties['bottom']
         context.update({'selected_mks': selected_mks })
         context.update({'selected_parties': selected_parties })

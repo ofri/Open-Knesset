@@ -60,9 +60,9 @@
         		<table>
 	         	{% for selected_mk in selected_mks %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.mk.id }}" href="{% url member-detail selected_mk.mk.id %}">{{ selected_mk.mk }}</a></td>
-	         			<td>{{selected_mk.score}}</td>
-	         			<td class="column-bar">{% bar selected_mk.score selected_mk.class 1.0 %}</td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td>%{{selected_mk.score|floatformat:"0"}}</td>
+	         			<td class="column-bar">{% if selected_mk.score < 0 %}{% bar selected_mk.score 'against' 1 %}{% else %}{% bar selected_mk.score 'for' 1.0 %}{% endif %}</td>
 	        			</tr>
 	         	{% endfor %}
 	         	</table>
@@ -74,9 +74,9 @@
         		<table>
 	         	{% for selected_party in selected_parties %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.party.id }}" href="{% url party-detail selected_party.party.id %}">{{ selected_party.party }}</a></td>
-	         			<td>{{selected_party.score}}</td>
-	         			<td class="column-bar">{% bar selected_party.score selected_party.class 1.0 %}</td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
+	         			<td>%{{selected_party.score|floatformat:"0"}}</td>
+	         			<td class="column-bar">{% if selected_party.score < 0 %}{% bar selected_party.score 'against' 1 %}{% else %}{% bar selected_party.score 'for' 1.0 %}{% endif %}</td>
 	        			</tr>
 	         	{% endfor %}
 	         	</table>
