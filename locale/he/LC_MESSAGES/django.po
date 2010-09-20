@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-18 23:07+0200\n"
-"PO-Revision-Date: 2010-09-18 23:10+0200\n"
+"POT-Creation-Date: 2010-09-20 15:49+0200\n"
+"PO-Revision-Date: 2010-09-20 15:50+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -53,39 +53,39 @@ msgstr "מפלגות"
 msgid "Past Votes"
 msgstr "הצבעות"
 
-#: settings.py:169
+#: settings.py:170
 msgid "Statement"
 msgstr "הצהרה"
 
-#: settings.py:170
+#: settings.py:171
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: settings.py:171
+#: settings.py:172
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: settings.py:172
+#: settings.py:173
 msgid "Source?"
 msgstr "מקור?"
 
-#: settings.py:173
+#: settings.py:174
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: settings.py:174
+#: settings.py:175
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: settings.py:175
+#: settings.py:176
 msgid "Important"
 msgstr "חשוב!"
 
-#: settings.py:176
+#: settings.py:177
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: settings.py:177
+#: settings.py:178
 msgid "Comment"
 msgstr "תגובה"
 
@@ -155,11 +155,11 @@ msgstr "נא להזין תאור עבור אג'נדה זו"
 msgid "Agenda description must be at least 15 characters long"
 msgstr "תאור אג'נדה צריך להיות באורך 15 תווים לפחות"
 
-#: agendas/models.py:44
+#: agendas/models.py:83
 msgid "Agenda"
 msgstr "אג'נדה"
 
-#: agendas/models.py:45
+#: agendas/models.py:84
 #: agendas/urls.py:7
 #: templates/base.html:86
 #: templates/agendas/agenda_list.html:4
@@ -170,7 +170,7 @@ msgstr "אג'נדה"
 msgid "Agendas"
 msgstr "אג'נדות"
 
-#: agendas/models.py:49
+#: agendas/models.py:88
 #: templates/annotatetext/_annotation.html:5
 #: templates/laws/knessetproposal_detail.html:14
 #: templates/laws/knessetproposal_list.html:17
@@ -211,11 +211,11 @@ msgstr "עוקב אחר חבר כנסת"
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: committees/models.py:38
+#: committees/models.py:44
 msgid "Committee Meeting"
 msgstr "ישיבת וועדה"
 
-#: committees/models.py:39
+#: committees/models.py:45
 #: templates/laws/bill_detail.html:209
 #: templates/laws/bill_detail.html:276
 #: templates/laws/law_detail.html:18
@@ -754,6 +754,25 @@ msgstr "עדכונים שונים"
 msgid "Open Knesset Updates"
 msgstr "עדכוני כנסת פתוחה"
 
+#: persons/models.py:20
+msgid "Person"
+msgstr "אדם"
+
+#: persons/models.py:21
+#: templates/persons/person_list.html:5
+#: templates/persons/person_list.html:6
+msgid "Persons"
+msgstr "אנשים"
+
+#: persons/views.py:12
+msgid "Persons in committee meetings"
+msgstr "משתתפים בישיבות וועדות הכנסת"
+
+#: persons/views.py:22
+#, python-format
+msgid "%(name)s in committee meetings"
+msgstr "%(name)s בישיבות ועדות הכנסת"
+
 #: tagvotes/models.py:13
 msgid "tagged item"
 msgstr "פריט מתויג"
@@ -1006,15 +1025,15 @@ msgstr "שמירה"
 
 #: templates/agendas/agenda_detail.html:20
 #: templates/agendas/agenda_detail.html:21
-#: templates/mks/member_detail.html:197
-#: templates/mks/member_detail.html:208
+#: templates/mks/member_detail.html:204
+#: templates/mks/member_detail.html:215
 msgid "Watch"
 msgstr "מעקב"
 
 #: templates/agendas/agenda_detail.html:20
 #: templates/agendas/agenda_detail.html:21
-#: templates/mks/member_detail.html:194
-#: templates/mks/member_detail.html:225
+#: templates/mks/member_detail.html:201
+#: templates/mks/member_detail.html:232
 msgid "Unwatch"
 msgstr "הפסק מעקב"
 
@@ -1099,11 +1118,6 @@ msgstr "הוספה"
 #: templates/agendas/agenda_list.html:55
 msgid "You are following"
 msgstr "ברשימת המעקב שלך"
-
-#: templates/annotatetext/_annotation.html:7
-#: templates/committees/committeemeeting_detail.html:116
-msgid "Permalink"
-msgstr "קישור קבוע"
 
 #: templates/avatar/change.html:3
 #: templates/user/editprofile.html:14
@@ -1218,11 +1232,11 @@ msgstr "בטל"
 msgid "Your note will be published under"
 msgstr "ההארה שלך תפורסם ברשיון"
 
-#: templates/committees/committeemeeting_detail.html:110
+#: templates/committees/committeemeeting_detail.html:113
 msgid "View all"
 msgstr "הצגת כל ההערות"
 
-#: templates/committees/committeemeeting_detail.html:114
+#: templates/committees/committeemeeting_detail.html:117
 msgid "Annotate"
 msgstr "האירו"
 
@@ -1802,24 +1816,25 @@ msgstr "נושאי הצעות חוק"
 msgid "Contact Information"
 msgstr "יצירת קשר"
 
-#: templates/mks/member_detail.html:169
+#: templates/mks/member_detail.html:176
 msgid "Refresh"
 msgstr "רענון"
 
-#: templates/mks/member_detail.html:175
+#: templates/mks/member_detail.html:182
 msgid "before"
 msgstr "לפני"
 
-#: templates/mks/member_detail.html:182
+#: templates/mks/member_detail.html:189
+#: templates/persons/person_list.html:13
 #: templates/user/profile_list.html:15
 msgid "Sorry, no data is available, try selecting more actions and refresh"
 msgstr "מצטערים, אין נתונים. אפשר לנסות לבחור יותר פעולות ולרענן."
 
-#: templates/mks/member_detail.html:239
+#: templates/mks/member_detail.html:246
 msgid "Embed in external site"
 msgstr "הטמעה באתר חיצוני"
 
-#: templates/mks/member_detail.html:248
+#: templates/mks/member_detail.html:255
 msgid "Add the code above to your site, to get a dynamically generated info"
 msgstr "הוסף את הקוד לאתר שלך, לקבלת מידע דינמי באתרך"
 
@@ -1908,6 +1923,26 @@ msgstr "העמוד הקודם"
 #: templates/pagination/pagination.html:23
 msgid "next"
 msgstr "העמוד הבא"
+
+#: templates/persons/person_detail.html:14
+msgid "To MK page"
+msgstr "לדף חה\"כ"
+
+#: templates/persons/person_detail.html:17
+msgid "Titles"
+msgstr "תארים"
+
+#: templates/persons/person_detail.html:23
+msgid "Roles"
+msgstr "תפקידים"
+
+#: templates/persons/person_detail.html:29
+msgid "Meetings this persons spoken at"
+msgstr "ישיבות בהשתתפותו/ה"
+
+#: templates/persons/person_detail.html:34
+msgid "Things this person said"
+msgstr "דברים שנאמרו על ידיו/ה"
 
 #: templates/planet/base.html:15
 msgid "Tag Cloud"
@@ -2286,6 +2321,8 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
+#~ msgid "Permalink"
+#~ msgstr "קישור קבוע"
 #~ msgid "MKs active in %(tag)s"
 #~ msgstr "ח\"כים פעילים ב %(tag)s"
 #~ msgid "Bills tagged"
@@ -2338,10 +2375,6 @@ msgstr "שבועי"
 #, fuzzy
 #~ msgid "Context switches"
 #~ msgstr "סוגי תוכן"
-
-#, fuzzy
-#~ msgid "Versions"
-#~ msgstr "התחברויות"
 
 #, fuzzy
 #~ msgid "Hide Toolbar"
@@ -2486,10 +2519,6 @@ msgstr "שבועי"
 #, fuzzy
 #~ msgid "Package"
 #~ msgstr "פראג"
-
-#, fuzzy
-#~ msgid "Version"
-#~ msgstr "פרסית"
 #~ msgid "and"
 #~ msgstr "ו"
 
@@ -2556,10 +2585,6 @@ msgstr "שבועי"
 #, fuzzy
 #~ msgid "Generators"
 #~ msgstr "ג'נבה"
-
-#, fuzzy
-#~ msgid "Title"
-#~ msgstr "כותרת"
 
 #, fuzzy
 #~ msgid "Subtitle"
@@ -2814,8 +2839,6 @@ msgstr "שבועי"
 #~ msgstr "לא נבחר טקסט"
 #~ msgid "Laws"
 #~ msgstr "חוקים"
-#~ msgid "All committee meetings"
-#~ msgstr "כל ישיבות הוועדה"
 #~ msgid "Relevant votes"
 #~ msgstr "הצבעות קשורות במליאה"
 #~ msgid "Bold: passed, red: failed"

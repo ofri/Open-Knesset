@@ -29,8 +29,8 @@ def get_name_and_role(line):
         print "Didn't find any delimiters in:"
         print line[::-1]
         print line
-        x = raw_input('Please enter the name+title to use (blank to use whole line as name, 0 - ignore this line) ')
-        if x=='0':
+        x = raw_input('Please enter the name+title to use (blank to use whole line as name, "-" to ignore this line) ')
+        if x=='-':
             return None
         if not x:
             name = line
@@ -48,7 +48,7 @@ def get_name_and_role(line):
         last_pos = -1
         try:
             while True:
-                last_pos = re.search('(\-|–|,)'.decode('utf-8'),line[last_pos+1:], re.UNICODE).start()+last_pos+1
+                last_pos = re.search('(\-|–|, )'.decode('utf-8'),line[last_pos+1:], re.UNICODE).start()+last_pos+1
                 pos.append(last_pos)
         except:
             pass
@@ -57,7 +57,14 @@ def get_name_and_role(line):
         for (n,p) in enumerate(pos):
             line2 = '%s%d%s' % (line2[:p],n,line2[p+1:])
         print line2[::-1]
-        x = input('which delimiter should I use? ')
+        x = None
+        while not x:
+            x = raw_input('which delimiter should I use? ')
+            if x == '-': return None
+            try:
+                x = int(x)
+            except:
+                x = None
         i = pos[x]
 
     name = line[:i].strip()
@@ -151,12 +158,8 @@ class Command(NoArgsCommand):
         names = list(Person.objects.values_list('name',flat=True))
         names.sort(key=lambda x:len(x), reverse=True)
         for p in ProtocolPart.objects.filter(speaker__isnull=True):
-            found = False
             for name in names:
                 if p.header.find(name)>=0: 
                     p.speaker = Person.objects.get(name=name)
                     p.save()
-                    found = True
-            if not found:
-                #print "Not found: %s" % p.header
-                pass
+                    break
