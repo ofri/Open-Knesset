@@ -569,7 +569,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
     font-weight:bold;
     font-size:12pt;
 }
-
+.speech-container .mk { font-size:15pt; border-top:1px dotted black;}
 .speech-container .text-content { float:right; width: 60%; }
 .tool-links { float: right; }
 .aannotationtoolbox { float:left; }

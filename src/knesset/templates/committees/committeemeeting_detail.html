@@ -20,6 +20,9 @@
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block messages %}
+<span id="message_permission">
+    <a href="{% url edit-profile %}">{% trans "Please validate your email to annotate" %}</a>
+</span>
 <span id="message_login">
     <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
     {% trans "or" %}
@@ -100,8 +103,8 @@
 </script>
       {% endif %}
       <div class="speech-{{ object.id }} speech-container" id="speech-{{ object.id }}-{{ speech_part.order }}">
-        <div class="text-speaker" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
-            {% firstof speech_part.header "&nbsp;" %}
+        <div class="text-speaker{% if speech_part.speaker.mk %} mk{% endif %}" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
+            {% if speech_part.speaker %}<a href="{{ speech_part.speaker.get_absolute_url }}">{{ speech_part.header }}{% else %}{% firstof speech_part.header "&nbsp;" %}{% endif %}
             {% ifnotequal speech_part.order 1 %}
                 <a href="#speech-{{ object.id }}-{{ speech_part.order }}" class="permalink">¶</a>
             {% endifnotequal %}
@@ -137,6 +140,7 @@
 <script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script> 
 <script>
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
+    window.permission = {% if perms.annotatetext.can_add_annotation %}true{% else %}false{% endif %};
     window.is_staff = {% if request.user.is_staff %}true{% else %}false{% endif %};
     window.parts_lengths = {{ parts_lengths|safe }};
 </script>

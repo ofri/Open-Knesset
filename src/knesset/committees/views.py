@@ -24,10 +24,10 @@ class MeetingDetailView(DetailView):
         context = super(MeetingDetailView, self).get_context(*args, **kwargs)  
         cm = context['object']
         colors = {}
-        speakers = set(cm.parts.values_list('header',flat=True))
-        n = len(speakers)
-        for (i,p) in enumerate(speakers):
-            (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.32, 255)
+        speakers = cm.parts.order_by('speaker__mk').values_list('header','speaker__mk').distinct()
+        n = speakers.count()
+        for (i,(p,mk)) in enumerate(speakers):
+            (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.5 if mk else 0.3, 255)
             colors[p] = 'rgb(%i, %i, %i)' % (r, g, b)
         context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
         context['colors'] = colors

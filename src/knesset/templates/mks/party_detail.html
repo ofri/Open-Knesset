@@ -44,20 +44,21 @@
 	        {% endfor %}
 	    {% endif %}
 
-        <div>
-	    	<h3>{% trans "Agendas" %}</h3>
-	    	<div class="list-wrap">
+		<div>
+			<h3>{% trans "Agendas" %}</h3>
+			<div class="list-wrap">
 				<table>
-		     	{% for agenda in agendas %}
-		     		<tr>
-		     			<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a></td>
-		     			<td>{{agenda.score}}</td>
-		     			<td class="column-bar">{% bar agenda.score agenda.class 0.1 %}</td>
-		    			</tr>
-		     	{% endfor %}
-		     	</table>
-	    	</div>
-	    </div>
+				{% for agenda in agendas %}
+					<tr>
+						<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
+						<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
+						<td>%{{agenda.score|floatformat:"0"}}</td>
+						<td class="column-bar">{% if agenda.score < 0 %}{% bar agenda.score 'against' 1 %}{% else %}{% bar agenda.score 'for' 1 %}{% endif %}</td>
+					</tr>
+				{% endfor %}
+				</table>
+			</div>
+		</div>
 
     </div>
     <script>

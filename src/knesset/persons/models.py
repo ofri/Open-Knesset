@@ -23,6 +23,13 @@ class Person(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('person-detail', [str(self.id)])
+    
+    def number_of_meetings(self):
+        return self.protocol_parts.values('meeting').distinct().count()
+
+    def number_of_committees(self):
+        return self.protocol_parts.values('meeting__committee').distinct().count()
+
         
 class Role(models.Model):
     text = models.CharField(blank=True,null=True, max_length=1024)
