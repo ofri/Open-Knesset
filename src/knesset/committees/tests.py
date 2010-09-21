@@ -23,8 +23,10 @@ class ListViewTest(TestCase):
 I am a perfectionist
 adrian:
 I have a deadline''')
+        self.meeting_1.create_protocol_parts()
         self.meeting_2 = self.committee_1.meetings.create(date=datetime.now(),
                                                          protocol_text='m2')
+        self.meeting_2.create_protocol_parts()
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
         (self.group, created) = Group.objects.get_or_create(name='Valid Email')
@@ -63,10 +65,12 @@ I have a deadline''')
         self.assertEqual(annotation.selection, 'perfect')
         # ensure the activity has been recorded
         stream = Action.objects.stream_for_actor(self.jacob)
-        self.assertEqual(stream.count(), 1)
-        activity = stream[0]
-        self.assertEqual(activity.verb, 'annotated')
-        self.assertEqual(activity.target.id, annotation.id)
+        self.assertEqual(stream.count(), 3)
+        self.assertEqual(stream[0].verb, 'got badge')
+        self.assertEqual(stream[1].verb, 'started following')
+        self.assertEqual(stream[1].target.id, self.meeting_1.id)
+        self.assertEqual(stream[2].verb, 'annotated')
+        self.assertEqual(stream[2].target.id, annotation.id)
 
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email
