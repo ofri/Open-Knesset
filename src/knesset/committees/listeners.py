@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.contrib.contenttypes.models import ContentType
 from planet.models import Feed, Post
-from actstream import action
+from actstream import action, follow
 from actstream.models import Action
 from annotatetext.models import Annotation
 from knesset.utils import disable_for_loaddata
