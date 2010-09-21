@@ -20,6 +20,9 @@
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block messages %}
+<span id="message_permission">
+    <a href="{% url edit-profile %}">{% trans "Please validate your email to annotate" %}</a>
+</span>
 <span id="message_login">
     <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
     {% trans "or" %}
@@ -137,6 +140,7 @@
 <script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script> 
 <script>
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
+    window.permission = {% if perms.annotatetext.can_add_annotation %}true{% else %}false{% endif %};
     window.is_staff = {% if request.user.is_staff %}true{% else %}false{% endif %};
     window.parts_lengths = {{ parts_lengths|safe }};
 </script>

@@ -49,6 +49,12 @@ $(function(){
           $.jGrowl(msg, {sticky: true});
           return false
       }
+      if (!window.permission) {
+          var msg = $("#message_permission").html()
+          $.jGrowl(msg, {sticky: true});
+          return false
+      }
+
       var annoid = $(this).attr("id").split("-")[1];
       annotation_objects[annoid].toggleSelectView();
       if($("#annotations-"+annoid).css("display")=="none"){
