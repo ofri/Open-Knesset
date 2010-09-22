@@ -63,7 +63,7 @@
                 <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
                         <td>
                 {% endifchanged %}
-                <a href="{{t.get_absolute_url}}" class="tag">{{ t.tagged_item.tag }}<span class="{% if t.vote > 0 %}vote-up{%else%}vote-down{%endif%}"> </span></a>
+                <a href="{{t.get_absolute_url}}" class="tag">{{ t.tagged_item.tag }}<span class="{% if t.vote > 0 %}vote-up{%else%}vote-down{%endif%}">&nbsp;</span></a>
                 {% if foorloop.last %}</td>{% endif %}
             {% endfor %}
             </td></tr>
