@@ -24,16 +24,6 @@
             </ul>
         </div>
 
-        <div>
-            <h3>{% trans 'Badges' %}:</h3>
-            <ul class='favorites-list'>
-            {% for badge in viewed_user.get_profile.get_badges %}
-                <li><a href="{{badge.get_absolute_url}}">{{ badge }}</a></li>
-            {% empty %}
-                <li>{% trans 'No badges yet.' %}</li>
-            {% endfor %}
-            </ul>
-        </div>
         <div class="clear"></div>
         <div>
             <h3>{% trans 'Annotations' %}</h3>
