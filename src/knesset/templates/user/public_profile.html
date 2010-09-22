@@ -23,6 +23,17 @@
             {% endfor %}
             </ul>
         </div>
+        
+        <div>
+            <h3>{% trans 'Following Agendas' %}:</h3>
+            <ul class='favorites-list'>
+            {% for agenda in viewed_user.get_profile.agendas %}
+                <li><a href="{{ agenda.get_absolute_url }}">{{ agenda }}</a></li>
+            {% empty %}
+                <li>{% trans 'Not following any agendas.' %}</li>
+            {% endfor %}
+            </ul>
+        </div>
 
         <div class="clear"></div>
         <div>
