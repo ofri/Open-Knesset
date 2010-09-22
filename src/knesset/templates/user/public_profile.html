@@ -59,12 +59,12 @@
             {% if tagged_items %}
             <table>
             {% for t in tagged_items|slice:":10" %}
-                {% ifchanged %}
-                {% if not forloop.first %}</td></tr> {% endif %}
+                {% ifchanged %}                
                 <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
                         <td>
                 {% endifchanged %}
                 <a href="{{t.get_absolute_url}}" class="tag {% if t.vote > 0 %}thumbs-up{%else%}thumbs-down{%endif%}">{{ t.tagged_item.tag }}</a>
+                {% if foorloop.last %}</td>{% endif %}
             {% endfor %}
             </td></tr>
             </table>
