@@ -641,3 +641,12 @@ div.mk-card > div { float:right }
 /*** p-links ***/
 a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; visibility: hidden; }
 .text-speaker:hover > a.permalink, .semannotation:hover a.permalink { visibility: visible; }
+
+/*** percentile ***/
+.percentile {
+	border:1px solid #ccccff;
+	text-align:center;
+	width:100px;
+	height:16px;
+	background:url(/static/img/marker.png) no-repeat;
+}
