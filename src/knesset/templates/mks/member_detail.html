@@ -53,10 +53,10 @@
 				                    <td>{{ object.date_of_birth|timesince }}</td>
 				                </tr>
 				                {% if object.year_of_aliyah %}
-				                <tr>
-				                    <td>{% trans "year of aliyah" %}</td>
-				                    <td>{{ object.year_of_aliyah }}</td>
-				                </tr>
+					                <tr>
+					                    <td>{% trans "year of aliyah" %}</td>
+					                    <td>{{ object.year_of_aliyah }}</td>
+					                </tr>
 				                {% endif %}
 				                <tr>
 				                    <td>{% trans "family status" %}</td>
@@ -70,11 +70,11 @@
 				                    <td>{% trans "place of residence" %}</td>
 				                    <td>{{ object.place_of_residence }}</td>
 				                </tr>
-				                <tr>
+				                <tr> 
 				                    <td>{% trans "residence centrality" %}</td>
 				                    <td>{{ object.residence_centrality }}</td>
 				                </tr>
-				                <tr>
+				                <tr> 
 				                    <td>{% trans "residence economy" %}</td>
 				                    <td>{{ object.residence_economy }}</td>
 				                </tr>
@@ -111,19 +111,19 @@
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Number of bills proposed" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a>, {% trans 'Percentile' %}: {{ bills_statistics.proposed_percentile }}</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills passed pre-vote" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</a></td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</a>, {% trans 'Percentile' %}: {{ bills_statistics.pre_percentile }}</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills passed first vote" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a>, {% trans 'Percentile' %}: {{ bills_statistics.first_percentile }}</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills approved" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a>, {% trans 'Percentile' %}: {{ bills_statistics.approved_percentile }}</td>
 				                </tr>       
 				
 				            </table>

@@ -109,12 +109,23 @@ class Member(models.Model):
     user = models.ForeignKey(User,blank=True,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
-    
-    
+
+    bills_stats_proposed = models.IntegerField(default=0)    
+    bills_stats_pre      = models.IntegerField(default=0)
+    bills_stats_first    = models.IntegerField(default=0)
+    bills_stats_approved = models.IntegerField(default=0)
+      
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
+
+    def recalc_bill_statistics(self):
+        self.bills_stats_proposed = self.bills.count()
+        self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
+        self.bills_stats_first    = self.bills.filter(stage__in=['4','5','6']).count()
+        self.bills_stats_approved = self.bills.filter(stage='6').count()
+        self.save()
 
     def is_female(self):
         return self.gender=='F'

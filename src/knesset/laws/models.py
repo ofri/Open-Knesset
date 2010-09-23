@@ -383,6 +383,11 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
 
+    def save(self,**kwargs):
+        super(Bill,self).save(**kwargs)
+        for mk in self.proposers:
+            mk.recalc_bill_statistics()
+
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)
         for t in tags:

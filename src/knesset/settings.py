@@ -119,6 +119,7 @@ INSTALLED_APPS = (
     'knesset.notify',
     'knesset.persons',
 )
+
 TEMPLATE_CONTEXT_PROCESSORS = (
 "django.core.context_processors.auth",
 "django.core.context_processors.debug",

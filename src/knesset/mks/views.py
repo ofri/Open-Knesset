@@ -16,6 +16,7 @@ import tagging
 from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party, find_possible_members, find_possible_parties
 from knesset.mks.forms import VerbsForm
+from knesset.mks.utils import percentile
 from knesset.laws.models import MemberVotingStatistics, Bill
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.agendas.models import Agenda
@@ -151,6 +152,22 @@ class MemberListView(ListView):
 
 class MemberDetailView(DetailView):
 
+    def calc_bill_stats(self,member,bills_statistics,stattype):
+        all_members = Member.objects.filter(is_current=True)
+        member_count = float(all_members.count())
+        
+        prop = 'bills_stats_%s' % stattype
+        member_val = getattr(member,prop)
+        
+        avg = sum([getattr(m,prop) for m in all_members])
+        avg = avg / member_count
+        var = sum([(getattr(m,prop)-avg)*(getattr(m,prop)-avg) for m in all_members])
+        var = var / member_count
+        
+        bills_statistics[stattype] = member_val 
+        bills_statistics["%s_percentile" % stattype] = percentile(avg,var,member_val) 
+        
+    
     def get_context (self):
         context = super(MemberDetailView, self).get_context()
         member = context['object']
@@ -170,10 +187,14 @@ class MemberDetailView(DetailView):
             verbs_form = VerbsForm({'verbs': verbs})
 
         bills_statistics = {}
-        bills_statistics['proposed'] = member.bills.count()
-        bills_statistics['pre'] = member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-        bills_statistics['first'] = member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-        bills_statistics['approved'] = member.bills.filter(stage='6').count()
+        self.calc_bill_stats(member,bills_statistics,'proposed')
+        self.calc_bill_stats(member,bills_statistics,'pre')
+        self.calc_bill_stats(member,bills_statistics,'first')
+        self.calc_bill_stats(member,bills_statistics,'approved')
+#        bills_statistics['proposed'] = member.bills.count()
+#        bills_statistics['pre'] = member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+#        bills_statistics['first'] = member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+#        bills_statistics['approved'] = member.bills.filter(stage='6').count()
 
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
@@ -191,7 +212,7 @@ class MemberDetailView(DetailView):
                 else:
                     watched_agenda.score = watched_agenda.member_score(member)
                     watched_agenda.watched = True
-                    agendas.append(wathced_agenda)
+                    agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
         
         context.update({'watched_member': watched,
