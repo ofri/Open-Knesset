@@ -11,6 +11,7 @@ from actstream.models import Follow
 
 from knesset.mks.models import Party, Member, GENDER_CHOICES
 from knesset.agendas.models import Agenda
+from knesset.committees.models import CommitteeMeeting
 
 
 NOTIFICATION_PERIOD_CHOICES = (
@@ -63,6 +64,12 @@ class UserProfile(models.Model):
         return map(lambda x: x.actor, 
             Follow.objects.filter(user=self.user, 
                 content_type=ContentType.objects.get_for_model(Agenda)).select_related('actor'))
+
+    @property
+    def meetings(self):
+        return map(lambda x: x.actor,
+            Follow.objects.filter(user=self.user,
+                content_type=ContentType.objects.get_for_model(CommitteeMeeting)).select_related('actor'))
 
     def get_badges(self):
         return self.badges.all()

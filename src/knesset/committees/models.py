@@ -45,7 +45,7 @@ class CommitteeMeeting(models.Model):
         verbose_name_plural = _('Committee Meetings')
 
     def __unicode__(self):
-        return "%s %s" % (self.committee.name, self.date_string)
+        return "%s - %s" % (self.committee.name, self.topics)
     
     @models.permalink
     def get_absolute_url(self):

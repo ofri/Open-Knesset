@@ -19,10 +19,27 @@
         <th><label>{% trans "Following Members" %}:</label></th>
         <td>
             {% for member in request.user.get_profile.members %}
-                {% mk member 'x' %}
+                <a class="item" id="following-member-{{member.id}}" href="{{member.get_absolute_url}}">
+                <img class="unfollow" id="unfollow-member-{{member.id}}" src="{{ MEDIA_URL }}img/X.png" />
+                {{member}}
+                </a>
             {% endfor %}
         </td>
     </tr>
+    {% for meeting in request.user.get_profile.meetings %}
+    <tr>
+        {% if forloop.first %}
+            <th><label>{% trans "Following Meetings" %}:</label></th>
+        {% else %}
+            <th></th>
+        {% endif %}
+        <td>
+           <a class="item" id="following-meeting-{{meeting.id}}" href="{{ meeting.get_absolute_url }}">
+            <img class="unfollow" id="unfollow-meeting-{{ meeting.id }}" src="{{ MEDIA_URL }}img/X.png" />
+            {{ meeting }}</a>
+        </td>
+    </tr>
+    {% endfor %}
     </table>
     <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
@@ -41,14 +58,16 @@
 {% endif %}
 <script>
     $(document).ready( function() {
-        $('.can-delete-member').click(function(){
-            var id_re = /.*-(\d+)/;
-            var member_id = id_re.exec(this.id)[1];
+        $('.unfollow').click(function(evt){
+            evt.stopPropagation()
+            var id_parts = /unfollow-(.*)-(\d+)/.exec(this.id);
+            var object_id = id_parts[2]
+            var what = id_parts[1]
             jQuery.ajax({
                 type: 'POST',
-                url: '{% url follow-members %}',
-                data: {unwatch: member_id},
-                context: $('#detail-'+member_id),
+                url: '{% url user-unfollows %}',
+                data: {what: what, unwatch: object_id},
+                context: $('#following-' + what + '-' + object_id),
                 success: function () {
                     this.remove();
                 },

@@ -3,9 +3,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-22 19:19+0200\n"
-"PO-Revision-Date: 2010-09-22 19:20+0200\n"
-"Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
+"POT-Creation-Date: 2010-09-24 15:15+0200\n"
+"PO-Revision-Date: 2010-09-24 15:16+0200\n"
+"Last-Translator: benny daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -178,7 +178,7 @@ msgid "by"
 msgstr "על ידי"
 
 #: agendas/views.py:37
-#: user/models.py:17
+#: user/models.py:18
 msgid "None"
 msgstr "ללא"
 
@@ -1019,7 +1019,7 @@ msgstr "הוספת אג'נדה"
 
 #: templates/agendas/agenda_add.html:18
 #: templates/agendas/agenda_detail_edit.html:19
-#: templates/user/editprofile.html:27
+#: templates/user/editprofile.html:44
 msgid "save"
 msgstr "שמירה"
 
@@ -2161,18 +2161,22 @@ msgid "Following Members"
 msgstr "חברי כנסת במעקב"
 
 #: templates/user/editprofile.html:32
+msgid "Following Meetings"
+msgstr "ישיבות במעקב"
+
+#: templates/user/editprofile.html:49
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address."
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לספק כתובת דואר אלקטרוני חוקית."
 
-#: templates/user/editprofile.html:34
+#: templates/user/editprofile.html:51
 msgid "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it"
 msgstr "אין לך הרשאות עריכה. כדי לקבל הרשאת עריכה עליך לאמת את הדואר האלקטרוני שלך."
 
-#: templates/user/editprofile.html:36
+#: templates/user/editprofile.html:53
 msgid "send validation email"
 msgstr "שליחת דואר אלקטרוני לאימות"
 
-#: templates/user/editprofile.html:40
+#: templates/user/editprofile.html:57
 msgid "Your email has been validated, so you can edit stuff!"
 msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות עריכה."
 
@@ -2336,11 +2340,11 @@ msgstr "התראות דוא\"ל"
 msgid "Should we send you e-mail notification about updates to things you follow on the site?"
 msgstr "האם לשלוח לך דוא\"ל עם עדכונים על דברים שבמעקב שלך?"
 
-#: user/models.py:18
+#: user/models.py:19
 msgid "Daily"
 msgstr "יומי"
 
-#: user/models.py:19
+#: user/models.py:20
 msgid "Weekly"
 msgstr "שבועי"
 
