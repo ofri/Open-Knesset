@@ -90,7 +90,7 @@
 						<br/>
 				        
 				        <div>
-				            <h3>{% trans "Statistics" %}</h3>
+				            <h3>{% trans "Votes" %}</h3>
 				            <table>
 				                <tr>
 				                    <td>{% trans "Number of votes" %}</td>
@@ -106,7 +106,11 @@
 				                    <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
 				                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
-				                </tr>   
+				                </tr>
+				            </table>
+				            <br/>
+				            <h3>{% trans "Attendance" %}</h3>
+				            <table>   
 				                <tr>
 				                    <td>{% trans "Average weekly hours" %}</td>
 				                    <td>{% if object.average_weekly_presence %}{{ object.average_weekly_presence }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
@@ -115,7 +119,11 @@
 				                    <td>{% trans "Average number of committee meetings per month" %}</td>
 				                    <td>{{ object.committee_meetings_per_month }}</td>
 				                </tr>
-				                <tr>
+							</table>
+							<br/>
+				            <h3>{% trans "Bills" %}</h3>
+				            <table>
+				            	<tr>
 				                    <td>{% trans "Number of bills proposed" %}</td>
 				                    <td>
 					                    <div id="proposed_percentile" class="percentile">
