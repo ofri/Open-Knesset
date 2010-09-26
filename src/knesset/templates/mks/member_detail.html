@@ -55,7 +55,7 @@
 				            <h3> {% trans "Personal Information" %}</h3>
 				            <table id="member-info">
 				                <tr>
-				                    <td>{% trans "age" %}</td>
+				                    <td style="width:200px;">{% trans "age" %}</td>
 				                    <td>{{ object.date_of_birth|timesince }}</td>
 				                </tr>
 				                {% if object.year_of_aliyah %}
@@ -93,8 +93,8 @@
 				            <h3>{% trans "Votes" %}</h3>
 				            <table>
 				                <tr>
-				                    <td>{% trans "Number of votes" %}</td>
-				                    <td>{{ object.voting_statistics.votes_count }}</td>
+				                    <td style="width:200px;">{% trans "Number of votes" %}</td>
+				                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
 				                </tr>
 				                <tr>
@@ -112,19 +112,36 @@
 				            <h3>{% trans "Attendance" %}</h3>
 				            <table>   
 				                <tr>
-				                    <td>{% trans "Average weekly hours" %}</td>
-				                    <td>{% if object.average_weekly_presence %}{{ object.average_weekly_presence }}{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+				                    <td style="width:200px;">{% trans "Knesset presence" %}</td>
+				                    <td>{% if presence.average_weekly_presence_hours %}
+						                    <div id="weekly_percentile" class="percentile">
+												{% trans 'Percentile' %} {{ presence.average_weekly_presence_hours_percentile }}
+												<script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
+						                    </div>
+				                    	{% else %}
+				                    		{% trans 'Not enough data' %}
+				                    	{% endif %}
+				                    </td>
+				                    <td>
+										({{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %})
+				                    </td>
 				                </tr>
 				                <tr>
-				                    <td>{% trans "Average number of committee meetings per month" %}</td>
-				                    <td>{{ object.committee_meetings_per_month }}</td>
+				                    <td>{% trans "Committee presence" %}</td>
+				                    <td>
+					                    <div id="monthly_percentile" class="percentile">
+											{% trans 'Percentile' %} {{ presence.average_monthly_committee_presence_percentile }}
+											<script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
+					                    </div>
+				                    </td>
+				                    <td>({{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %})</td>
 				                </tr>
 							</table>
 							<br/>
 				            <h3>{% trans "Bills" %}</h3>
 				            <table>
 				            	<tr>
-				                    <td>{% trans "Number of bills proposed" %}</td>
+				                    <td style="width:200px;">{% trans "Number of bills proposed" %}</td>
 				                    <td>
 					                    <div id="proposed_percentile" class="percentile">
 											{% trans 'Percentile' %} {{ bills_statistics.proposed_percentile }}
@@ -137,7 +154,7 @@
 				                    <td>{% trans "Bills passed pre-vote" %}</td>
 				                    <td>
 					                    <div id="pre_percentile" class="percentile">
-											{% trans 'Percentile' %}: {{ bills_statistics.pre_percentile }}
+											{% trans 'Percentile' %} {{ bills_statistics.pre_percentile }}
 											<script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
 					                    </div>
 				                    </td>
@@ -147,7 +164,7 @@
 				                    <td>{% trans "Bills passed first vote" %}</td>
 				                    <td>
 					                    <div id="first_percentile" class="percentile">
-											{% trans 'Percentile' %}: {{ bills_statistics.first_percentile }}
+											{% trans 'Percentile' %} {{ bills_statistics.first_percentile }}
 											<script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
 					                    </div>
 				                    </td>
@@ -157,7 +174,7 @@
 				                    <td>{% trans "Bills approved" %}</td>
 				                    <td>
 					                    <div id="approved_percentile" class="percentile">
-											{% trans 'Percentile' %}: {{ bills_statistics.approved_percentile }}
+											{% trans 'Percentile' %} {{ bills_statistics.approved_percentile }}
 											<script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
 					                    </div>
 				                    </td>
@@ -168,6 +185,11 @@
 				        </div>
 						<br/>
 			
+				        
+					</td>
+
+					<td style="width:35%;vertical-align:top;">
+
 				        <div>
 				            <h3> {% trans "Contact Information" %}</h3>
 				            <table>
@@ -186,17 +208,12 @@
 				                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
 				                </tr>
 				            </table>
-				        </div>
-						<br/>
-				        
+				        </div> <br/>
+
 				        <div>
 				            <h3>{% trans "Links" %}</h3>
 				                {% object_links object %}
-				        </div>
-
-					</td>
-
-					<td style="width:35%;vertical-align:top;">
+				        </div> <br/>
 
 				        <div>
 				            <h3>{% trans "Proposed bills topics" %}</h3>

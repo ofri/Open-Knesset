@@ -152,20 +152,26 @@ class MemberListView(ListView):
 
 class MemberDetailView(DetailView):
 
-    def calc_bill_stats(self,member,bills_statistics,stattype):
+    def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         all_members = Member.objects.filter(is_current=True)
         member_count = float(all_members.count())
-        
-        prop = 'bills_stats_%s' % stattype
-        member_val = getattr(member,prop)
-        
-        avg = sum([getattr(m,prop) for m in all_members])
+
+        member_val = getattr(member,inprop)
+               
+        avg = sum([getattr(m,inprop) for m in all_members])
         avg = avg / member_count
-        var = sum([(getattr(m,prop)-avg)*(getattr(m,prop)-avg) for m in all_members])
+        var = sum([(getattr(m,inprop)-avg)*(getattr(m,inprop)-avg) for m in all_members])
         var = var / member_count
         
-        bills_statistics[stattype] = member_val 
-        bills_statistics["%s_percentile" % stattype] = percentile(avg,var,member_val) 
+        outdict[outvalprop] = member_val 
+        outdict[outpercentileprop] = percentile(avg,var,member_val) 
+
+    def calc_bill_stats(self,member,bills_statistics,stattype):
+        self.calc_percentile( member,
+                              bills_statistics,
+                              'bills_stats_%s' % stattype,
+                              stattype,
+                              '%s_percentile' % stattype)
         
     
     def get_context (self):
@@ -186,15 +192,21 @@ class MemberDetailView(DetailView):
             verbs = ('proposed', 'posted')
             verbs_form = VerbsForm({'verbs': verbs})
 
+        presence = {}
+        self.calc_percentile(member, presence, 
+                             'average_weekly_presence_hours', 
+                             'average_weekly_presence_hours',
+                             'average_weekly_presence_hours_percentile' )
+        self.calc_percentile(member, presence, 
+                             'average_monthly_committee_presence', 
+                             'average_monthly_committee_presence',
+                             'average_monthly_committee_presence_percentile' )
+
         bills_statistics = {}
         self.calc_bill_stats(member,bills_statistics,'proposed')
         self.calc_bill_stats(member,bills_statistics,'pre')
         self.calc_bill_stats(member,bills_statistics,'first')
         self.calc_bill_stats(member,bills_statistics,'approved')
-#        bills_statistics['proposed'] = member.bills.count()
-#        bills_statistics['pre'] = member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-#        bills_statistics['first'] = member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-#        bills_statistics['approved'] = member.bills.filter(stage='6').count()
 
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
@@ -220,7 +232,8 @@ class MemberDetailView(DetailView):
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
                 'bills_tags':bills_tags,
-                'agendas':agendas
+                'agendas':agendas,
+                'presence':presence,
                })
         return context
 

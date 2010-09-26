@@ -114,24 +114,24 @@ class Member(models.Model):
     bills_stats_pre      = models.IntegerField(default=0)
     bills_stats_first    = models.IntegerField(default=0)
     bills_stats_approved = models.IntegerField(default=0)
+    
+    average_weekly_presence_hours = models.FloatField(null=True)
+    average_monthly_committee_presence = models.FloatField(null=True)
       
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
 
-    def recalc_bill_statistics(self):
-        self.bills_stats_proposed = self.bills.count()
-        self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
-        self.bills_stats_first    = self.bills.filter(stage__in=['4','5','6']).count()
-        self.bills_stats_approved = self.bills.filter(stage='6').count()
-        self.save()
+    def __unicode__(self):
+        return self.name
+
+    def save(self,**kwargs):
+        self.recalc_average_monthly_committee_presence()
+        super(Member,self).save(**kwargs)
 
     def is_female(self):
         return self.gender=='F'
-
-    def __unicode__(self):
-        return self.name
 
     def title(self):
         return self.name
@@ -211,7 +211,7 @@ class Member(models.Model):
         service_time = self.service_time()
         if not service_time:
             return 0
-        return round(self.committee_meetings.count() * 30.0 / self.service_time(),1)
+        return round(self.committee_meetings.count() * 30.0 / self.service_time(),2)
 
     @models.permalink
     def get_absolute_url(self):
@@ -241,7 +241,21 @@ class Member(models.Model):
             return ugettext('Past Member (female)')
         else:
             return ugettext('Past Member (male)')
-    
+
+    def recalc_bill_statistics(self):
+        self.bills_stats_proposed = self.bills.count()
+        self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
+        self.bills_stats_first    = self.bills.filter(stage__in=['4','5','6']).count()
+        self.bills_stats_approved = self.bills.filter(stage='6').count()
+        self.save()
+
+    def recalc_average_weekly_presence_hours(self):
+        self.average_weekly_presence_hours = self.average_weekly_presence()
+        self.save()
+
+    def recalc_average_monthly_committee_presence(self):
+        self.average_monthly_committee_presence = self.committee_meetings_per_month()
+        
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
@@ -249,6 +263,10 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+    
+    def save(self,**kwargs):
+        super(WeeklyPresence,self).save(**kwargs)
+        self.member.recalc_average_weekly_presence_hours()
 
 def find_possible_members(name):
     mks = Member.objects.values_list('name','id')

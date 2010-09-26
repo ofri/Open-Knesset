@@ -8,32 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'Member.bills_stats_proposed'
-        db.add_column('mks_member', 'bills_stats_proposed', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
-
-        # Adding field 'Member.bills_stats_pre'
-        db.add_column('mks_member', 'bills_stats_pre', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
-
-        # Adding field 'Member.bills_stats_first'
-        db.add_column('mks_member', 'bills_stats_first', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
-
-        # Adding field 'Member.bills_stats_approved'
-        db.add_column('mks_member', 'bills_stats_approved', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
+        # Adding field 'Member.average_weekly_presence_hours'
+        db.add_column('mks_member', 'average_weekly_presence_hours', self.gf('django.db.models.fields.FloatField')(null=True), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting field 'Member.bills_stats_proposed'
-        db.delete_column('mks_member', 'bills_stats_proposed')
-
-        # Deleting field 'Member.bills_stats_pre'
-        db.delete_column('mks_member', 'bills_stats_pre')
-
-        # Deleting field 'Member.bills_stats_first'
-        db.delete_column('mks_member', 'bills_stats_first')
-
-        # Deleting field 'Member.bills_stats_approved'
-        db.delete_column('mks_member', 'bills_stats_approved')
+        # Deleting field 'Member.average_weekly_presence_hours'
+        db.delete_column('mks_member', 'average_weekly_presence_hours')
 
 
     models = {
@@ -85,6 +67,7 @@ class Migration(SchemaMigration):
         'mks.member': {
             'Meta': {'object_name': 'Member'},
             'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'average_weekly_presence_hours': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
             'bills_stats_approved': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'bills_stats_first': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'bills_stats_pre': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
