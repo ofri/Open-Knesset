@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _
-from knesset.hashnav import ListView, DetailView, method_decorator
+from django.http import Http404
+from knesset.hashnav import ListView, DetailView
 from knesset.persons.models import Person
 from knesset.committees.models import CommitteeMeeting
 

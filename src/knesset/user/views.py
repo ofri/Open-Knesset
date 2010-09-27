@@ -33,7 +33,7 @@ class PublicUserProfile(DetailView):
         user = context['viewed_user']
         context.update ({
             'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
-            'tagged_items': TagVote.objects.filter(user=user),
+            'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
         })
         return context
 

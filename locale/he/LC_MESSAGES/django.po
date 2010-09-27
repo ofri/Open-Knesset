@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-26 23:30+0200\n"
-"PO-Revision-Date: 2010-09-21 02:40+0200\n"
+"POT-Creation-Date: 2010-09-27 14:47+0200\n"
+"PO-Revision-Date: 2010-09-22 19:20+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -687,11 +687,11 @@ msgstr "אדם"
 msgid "Persons"
 msgstr "אנשים"
 
-#: persons/views.py:12
+#: persons/views.py:13
 msgid "Persons in committee meetings"
 msgstr "משתתפים בישיבות וועדות הכנסת"
 
-#: persons/views.py:22
+#: persons/views.py:23
 #, python-format
 msgid "%(name)s in committee meetings"
 msgstr "%(name)s בישיבות ועדות הכנסת"
@@ -849,12 +849,12 @@ msgid "annotated"
 msgstr "האיר/ה על"
 
 #: templates/main.he.html:31 templates/user/annotated_items.html:16
-#: templates/user/public_profile.html:46
+#: templates/user/public_profile.html:47
 msgid "On the words of"
 msgstr "בנוגע לדברים של"
 
 #: templates/main.he.html:35 templates/user/annotated_items.html:20
-#: templates/user/public_profile.html:50
+#: templates/user/public_profile.html:51
 msgid "No annotations yet..."
 msgstr "אין עדיין הארות"
 
@@ -1050,7 +1050,6 @@ msgstr "העלה תמונה חדשה"
 
 #: templates/badges/all_badge_list.html:4
 #: templates/badges/all_badge_list.html:5
-#: templates/user/public_profile.html:28
 msgid "Badges"
 msgstr "אותות"
 
@@ -1176,17 +1175,17 @@ msgid "place of birth"
 msgstr "מקום לידה"
 
 #: templates/include/member_detail.html:27
-#: templates/mks/member_detail.html:192
+#: templates/mks/member_detail.html:197
 msgid "phone"
 msgstr "טלפון"
 
 #: templates/include/member_detail.html:31
-#: templates/mks/member_detail.html:197
+#: templates/mks/member_detail.html:202
 msgid "fax"
 msgstr "פקס"
 
 #: templates/include/member_detail.html:35
-#: templates/mks/member_detail.html:202
+#: templates/mks/member_detail.html:207
 msgid "e-mail address"
 msgstr "כתובת דוא\"ל"
 
@@ -1454,7 +1453,7 @@ msgstr "אין הצעת חוק המקושרת להצבעה זו"
 msgid "This vote is mentioned in the following committe meetings"
 msgstr "הצבעה זו מוזכרת בישיבות הוועדות הבאות"
 
-#: templates/laws/vote_detail.html:123 templates/mks/member_detail.html:210
+#: templates/laws/vote_detail.html:123 templates/mks/member_detail.html:214
 msgid "Links"
 msgstr "קישורים"
 
@@ -1705,7 +1704,7 @@ msgstr "הצעות חוק שאושרו בקריאה ראשונה"
 msgid "Bills approved"
 msgstr "הצעות חוק שאושרו סופית"
 
-#: templates/mks/member_detail.html:189
+#: templates/mks/member_detail.html:194
 msgid "Contact Information"
 msgstr "יצירת קשר"
 
@@ -2006,7 +2005,7 @@ msgstr "התוצאות הקודמות"
 msgid "next results"
 msgstr "התוצאות הבאות"
 
-#: templates/user/annotated_items.html:4 templates/user/public_profile.html:39
+#: templates/user/annotated_items.html:4 templates/user/public_profile.html:40
 msgid "Annotations"
 msgstr "הארות"
 
@@ -2015,7 +2014,7 @@ msgid "Annotations by"
 msgstr "הארות על ידי "
 
 #: templates/user/annotated_items.html:27
-#: templates/user/public_profile.html:82 templates/user/tagged_items.html:28
+#: templates/user/public_profile.html:83 templates/user/tagged_items.html:28
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
@@ -2159,19 +2158,23 @@ msgstr "משתמשים"
 msgid "Not following any memebers."
 msgstr "אין חברי כנסת במעקב"
 
-#: templates/user/public_profile.html:33
-msgid "No badges yet."
-msgstr "אין אותות, עדיין."
+#: templates/user/public_profile.html:28
+msgid "Following Agendas"
+msgstr "אג'נדות במעקב"
 
-#: templates/user/public_profile.html:54 templates/user/public_profile.html:72
+#: templates/user/public_profile.html:33
+msgid "Not following any agendas."
+msgstr "אין אג'נדות במעקב"
+
+#: templates/user/public_profile.html:55 templates/user/public_profile.html:73
 msgid "more..."
 msgstr "עוד..."
 
-#: templates/user/public_profile.html:58
+#: templates/user/public_profile.html:59
 msgid "Tagged Items"
 msgstr "ענינים מתויגים"
 
-#: templates/user/public_profile.html:75 templates/user/tagged_items.html:24
+#: templates/user/public_profile.html:76 templates/user/tagged_items.html:24
 msgid "No tagged items yet..."
 msgstr " עדיין אין ענינים מתויגים"
 
@@ -2230,6 +2233,9 @@ msgstr "יומי"
 #: user/models.py:19
 msgid "Weekly"
 msgstr "שבועי"
+
+#~ msgid "No badges yet."
+#~ msgstr "אין אותות, עדיין."
 
 #~ msgid "Permalink"
 #~ msgstr "קישור קבוע"
