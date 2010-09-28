@@ -76,7 +76,9 @@
 <script type="text/javascript">
    var OK = {};
    OK.OnSearchStarting = function(sc, searcher, query) {
-      $('#cse').nextAll().hide(); };
+       $('#content-main').hide();
+       $('#cse').show();
+   };
   google.load('search', '1', {language: 'he'});
   google.setOnLoadCallback(function() {
     var customSearchControl = new google.search.CustomSearchControl('011858809565220576533:pyrgq6kc_cy');
@@ -87,7 +89,9 @@
     customSearchControl.setSearchStartingCallback(this, OK.OnSearchStarting);
     customSearchControl.draw('cse', options);
     $('.gsc-clear-button').click (function () {
-      $('#cse').nextAll().show(); });
+      $('#content-main').show();
+      $('#cse').hide();
+    });
     }, true);
 </script>
 </div>
@@ -110,8 +114,8 @@
 		<div id="billboard"></div>
 		<div id="columnwrap">
 			{% block columnwrap %}                
-				<div id="content-main">
-                    <div id="cse" style="width:100%;"></div>
+                <div id="cse" class="main" style="display:none;"></div>
+				<div id="content-main" class="main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
                     {% block social %}{% if not debug %}
