@@ -3,15 +3,16 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from knesset.mks.models import Member 
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for mk in Member.objects.all():
-            mk.recalc_average_weekly_presence_hours()
-
+        for mk in orm.Member.objects.all():
+            hours = orm.WeeklyPresence.objects.filter(member=mk).values_list('hours',flat=True)
+            if len(hours):
+                mk.average_weekly_presence_hours = round(sum(hours)/len(hours),1)
+                mk.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
