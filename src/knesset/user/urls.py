@@ -12,6 +12,7 @@ urlpatterns = patterns('knesset.user.views',
     url(r'^members/$', 'follow_members', name ='follow-members'),
     url(r'^agendas/$', 'follow_agendas', name ='follow-agendas'),
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
+    url(r'^unfollow/$', 'user_unfollows', name='user-unfollows'),
     )
 
 # auth views

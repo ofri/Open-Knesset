@@ -16,8 +16,7 @@
 		<meta http-equiv="imagetoolbar" content="no"/>
 		<meta name="MSSmartTagsPreventParsing" content="true" >
 		<meta name="Authors" content="PyWeb-IL">
-		<meta name="License" content="Follow your inclanations with due regards to the 
-            devil within and the policeman around the corner." > 
+		<meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
 		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
 		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
@@ -71,9 +70,27 @@
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
-        <div id="search"><form  method="get" action="{% url haystack_search %}">
-            {{ search_form.q }}<input type="submit" value="{% trans 'Search' %}"></form>
-        </div>
+        <div id="search">
+<div id="cse-search-form" style="width: 100%;">{% trans "loading search..." %}</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+   var OK = {};
+   OK.OnSearchStarting = function(sc, searcher, query) {
+      $('#cse').nextAll().hide(); };
+  google.load('search', '1', {language: 'he'});
+  google.setOnLoadCallback(function() {
+    var customSearchControl = new google.search.CustomSearchControl('011858809565220576533:pyrgq6kc_cy');
+    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+    var options = new google.search.DrawOptions();
+    options.setSearchFormRoot('cse-search-form');
+    options.setAutoComplete(true);
+    customSearchControl.setSearchStartingCallback(this, OK.OnSearchStarting);
+    customSearchControl.draw('cse', options);
+    $('.gsc-clear-button').click (function () {
+      $('#cse').nextAll().show(); });
+    }, true);
+</script>
+</div>
 		<div id="header">
 			<ul id="nav-global">
 
@@ -90,11 +107,11 @@
             
 		</div>
 		<!-- END Header -->
-        <!-- END Reviewed code. Follows is legacy from django-website -->
 		<div id="billboard"></div>
 		<div id="columnwrap">
 			{% block columnwrap %}                
 				<div id="content-main">
+                    <div id="cse" style="width:100%;"></div>
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
                     {% block social %}{% if not debug %}

@@ -20,13 +20,9 @@ a { padding: 0 0.5em; text-decoration: none; font-weight: bold; color:#3E6C86; }
 a:hover { text-decoration:underline;}
 #content-secondary a:hover { color:#ffe761; background:none; }
 
-/* HEADER */
-
-#header { clear:both; padding-right:2em}
-
 /* NAV */
 
-#nav-global { margin:0; padding:0;
+#nav-global { margin:0; padding-right:2em;
               font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
 #nav-global li { display:block; float:left; list-style-type:none;
                  margin-left: 0.1em 0; padding:0;
@@ -243,7 +239,7 @@ h3 .small { font-size:80%; }
 
 /* Hides from IE-mac \*/
 * html #columnwrap { height: 1%; }
-#columnwrap { clear:both; display: block; }
+#columnwrap { clear:right; display: block; }
 /* End hide from IE-mac */
 
 #subwrap:after {
@@ -453,12 +449,12 @@ input.bill_input {
     width:400px;
 }
 
-div #search {
-    float:left;
-    margin-top:6px;
-    margin-left:20px;
-    height:32px;
-}
+/* Search */
+div #search { clear:left; float:left; margin-top:6px; margin-left:20px;
+    width: 300px; height:32px; }
+.gsc-adBlockVertical { width: 0 !important; }
+.gsc-wrapper {width: 100% !important; }
+
 #tooltip {
     color: #000;
 }
