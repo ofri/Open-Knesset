@@ -3,12 +3,11 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from knesset.mks.models import Member 
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for mk in Member.objects.all():
+        for mk in orm.Member.objects.all():
             mk.bills_stats_proposed = mk.bills.count()
             mk.bills_stats_pre      = mk.bills.filter(stage__in=['2','3','4','5','6']).count()
             mk.bills_stats_first    = mk.bills.filter(stage__in=['4','5','6']).count()
