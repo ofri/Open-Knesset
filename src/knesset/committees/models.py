@@ -3,6 +3,8 @@ import re
 import logging
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import truncate_words
+
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
@@ -45,7 +47,8 @@ class CommitteeMeeting(models.Model):
         verbose_name_plural = _('Committee Meetings')
 
     def __unicode__(self):
-        return "%s - %s" % (self.committee.name, self.topics)
+        return truncate_words(u"%s - %s" % (self.committee.name,
+                                self.topics), 16).replace("&nbsp;", u"\u00A0")
     
     @models.permalink
     def get_absolute_url(self):
