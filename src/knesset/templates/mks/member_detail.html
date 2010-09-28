@@ -93,7 +93,7 @@
 				            <h3>{% trans "Votes" %}</h3>
 				            <table>
 				                <tr>
-				                    <td style="width:200px;">{% trans "Number of votes" %}</td>
+				                    <td style="width:140px;">{% trans "Number of votes" %}</td>
 				                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
 				                </tr>
@@ -112,7 +112,7 @@
 				            <h3>{% trans "Attendance" %}</h3>
 				            <table>   
 				                <tr>
-				                    <td style="width:200px;">{% trans "Knesset presence" %}</td>
+				                    <td style="width:140px;">{% trans "Knesset presence" %}</td>
 				                    <td>{% if presence.average_weekly_presence_hours %}
 						                    <div id="weekly_percentile" class="percentile">
 												{% trans 'Percentile' %} {{ presence.average_weekly_presence_hours_percentile }}
@@ -141,7 +141,7 @@
 				            <h3>{% trans "Bills" %}</h3>
 				            <table>
 				            	<tr>
-				                    <td style="width:200px;">{% trans "Number of bills proposed" %}</td>
+				                    <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
 				                    <td>
 					                    <div id="proposed_percentile" class="percentile">
 											{% trans 'Percentile' %} {{ bills_statistics.proposed_percentile }}
