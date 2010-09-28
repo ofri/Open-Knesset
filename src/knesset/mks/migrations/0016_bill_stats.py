@@ -8,9 +8,11 @@ from knesset.mks.models import Member
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
         for mk in Member.objects.all():
-            mk.recalc_bill_statistics()
+            mk.bills_stats_proposed = mk.bills.count()
+            mk.bills_stats_pre      = mk.bills.filter(stage__in=['2','3','4','5','6']).count()
+            mk.bills_stats_first    = mk.bills.filter(stage__in=['4','5','6']).count()
+            mk.bills_stats_approved = mk.bills.filter(stage='6').count()
 
     def backwards(self, orm):
         "Write your backwards methods here."
