@@ -73,17 +73,17 @@ a:hover { text-decoration:underline;}
 
 #columnwrap { padding-bottom:10px; }
 #subwrap { background:#326342; width:73%; float:left; padding-bottom:10px; }
-#content-main, #footer { width:100%; }
-#content-main {
+.main, #footer { width:100%; }
+.main {
     min-height:414px;
     background:#dfe4e7;
     color:#311F1D;
-    padding:1em 0;
+    padding: 0 1em 1em; 
+    position:relative;
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
     border-radius:1em;
 }
-#content-main { width:100%; padding: 0 1em 1em; position:relative;}
 #content-main>div { clear:both; padding-top:0.5em;}
 .sidebar { font-size:92%; }
 .sidebar * { margin-left:14px; margin-right:14px; }
