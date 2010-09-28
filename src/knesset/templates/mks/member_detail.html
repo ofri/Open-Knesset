@@ -218,23 +218,7 @@
 				        <div>
 				            <h3>{% trans "Proposed bills topics" %}</h3>
 			                <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
-				        </div>  <br/>
-				
-						<div class="box-agenda">
-							<h3>{% trans "Agendas" %}</h3>
-							<div class="list-wrap">
-								<table>
-								{% for agenda in agendas %}
-									<tr>
-										<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-										<td>%{{agenda.score|floatformat:"0"}}</td>
-										<td class="column-bar">{% if agenda.score < 0 %}{% bar agenda.score 'against' 1 %}{% else %}{% bar agenda.score 'for' 1 %}{% endif %}</td>
-									</tr>
-								{% endfor %}
-								</table>
-							</div>
-						</div>
+				        </div>  <br/>									
 
 					</td>
 				</tr>

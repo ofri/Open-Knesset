@@ -124,68 +124,7 @@
         {% object_links object %} 
         <br><br>
             
-
-
-		<div id="agendas">
-
-			{% if object.agendavote_set.all %}
-		        <h3>{% trans "Ascribed agendas" %}</h3>
-                <div id="ascribed-agendas" class="item-list">
-		        {% for agendavote in object.agendavote_set.all %}
-		        	<div class="item">
-	                	<a class="hashnav dontwrap" id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
-	                	<div class="info">
-	                		<table>
-			                	<tr><td>{% trans "Score:" %}</td><td>{{ agendavote.score }}</td></tr>
-			                	<tr><td>{% trans "Reasoning:" %}</td><td>{{ agendavote.reasoning }}</td></tr>
-			                </table>
-	                	</div>
-	                	 
-	                </div>
-		        {% endfor %}
-		        </div>
-			{% endif %}
-			<br>    
-
-			{% if user.agenda_set.all %}
-		        <h3>{% trans "Ascribe your agendas" %}</h3>
-                <div id="ascribe-your-agendas" class="list-wrap indented" id="agendas-choose">
-		        {% for agenda in user.agenda_set.all %}
-	                <a class="hashnav item dontwrap agendavote {% if agenda in object.agenda_set.all %}selected{% endif %}" id="your-agenda-{{ agenda.id }}" agenda_name="{{ agenda.name }}" agenda_id="{{ agenda.id }}" vote_id="{{ object.id }}" href="#">{{ agenda }}</a>
-		        {% endfor %}
-		        </div>
-			{% endif %}
-			
-			<div class="popup">
-				<div id="popupContact">
-					<h1></h1>
-					<p id="contactArea">
-  						<form style="margin-top: 1em;"> 
-							<div id="ascribe-agenda-radioset" class="jquery"> 
-								<input type="radio" id="radio1" name="radio" /><label id="ascribe" for="radio1">{% trans "Ascribe" %}</label> 
-								<input type="radio" id="radio2" name="radio" /><label id="remove" for="radio2">{% trans "Remove" %}</label>
-							</div>
-						</form>
-						<br>
-  						<form style="margin-top: 1em;"> 
-							<div id="agenda-vote-compliance-radioset" class="jquery"> 
-								<input type="radio" id="aradio1" name="radio" /><label id="complies-fully" for="aradio1">{% trans "Complies fully" %}</label> 
-								<input type="radio" id="aradio2" name="radio" /><label id="complies-partially" for="aradio2">{% trans "Complies partially" %}</label>
-								<input type="radio" id="aradio3" name="radio" /><label id="agnostic" for="aradio3">{% trans "Agnostic" %}</label>
-								<input type="radio" id="aradio4" name="radio" /><label id="opposes-partially" for="aradio4">{% trans "Opposes partially" %}</label>
-								<input type="radio" id="aradio5" name="radio" /><label id="opposes-fully" for="aradio5">{% trans "Opposes fully" %}</label>
-							</div>
-						</form>
-						<br>
-						<h3>{% trans "Reasoning" %}</h3><textarea id="reasoning"></textarea>
-						<br>
-						<input id="popupContactClose" type="submit" value="{% trans 'Submit' %}">
-					</p>
-				</div>
-				<div id="backgroundPopup"></div>
-		    </div> 
-		    
-		</div> 
+ 
         <br>
 
 
