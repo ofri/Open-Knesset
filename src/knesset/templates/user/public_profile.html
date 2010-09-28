@@ -43,9 +43,9 @@
                 {% ifchanged %}
                     <li><h4> {{ a.content_object.meeting }} </h4>
                 {% endifchanged %}
-                <div style="padding-right:1em">
-                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
-                     <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+                <div style="padding: 0 1em 0.5em;">
+                    {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."<br/>
+                     <a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
                 </div>
             {% empty %}
                 <li>{% trans "No annotations yet..." %}
