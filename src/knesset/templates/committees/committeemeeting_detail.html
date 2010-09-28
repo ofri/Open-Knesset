@@ -142,6 +142,7 @@
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
     window.permission = {% if perms.annotatetext.add_annotation %}true{% else %}false{% endif %};
     window.is_staff = {% if request.user.is_staff %}true{% else %}false{% endif %};
+    window.username = "{{ request.user.username }}";
     window.parts_lengths = {{ parts_lengths|safe }};
 </script>
 <script type="text/javascript"><!--

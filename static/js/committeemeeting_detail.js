@@ -97,7 +97,10 @@ $(function(){
     }
   });
   $(".reallydelete").live("submit", function(e){
-    if (!window.is_staff){
+    var anno_id = $(this).children('[name=annotation_id]').val();
+    var username = $('#annotation-'+anno_id+' a.user-link').html();
+
+    if (!window.is_staff && username != window.username){
         var msg = $("#message_staff").html()
         $.jGrowl(msg, {sticky: true});
         return false
