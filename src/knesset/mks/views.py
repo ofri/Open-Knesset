@@ -156,15 +156,16 @@ class MemberDetailView(DetailView):
         all_members = Member.objects.filter(is_current=True)
         member_count = float(all_members.count())
 
-        member_val = getattr(member,inprop)
+        member_val = getattr(member,inprop) or 0
                
-        avg = sum([getattr(m,inprop) for m in all_members])
+        get_inprop = lambda x: getattr(x,inprop) or 0
+        avg = sum(map(get_inprop, all_members))
         avg = avg / member_count
-        var = sum([(getattr(m,inprop)-avg)*(getattr(m,inprop)-avg) for m in all_members])
+        var = sum(map(lambda x: (get_inprop(x)-avg)**2, all_members))
         var = var / member_count
         
         outdict[outvalprop] = member_val 
-        outdict[outpercentileprop] = percentile(avg,var,member_val) 
+        outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
 
     def calc_bill_stats(self,member,bills_statistics,stattype):
         self.calc_percentile( member,

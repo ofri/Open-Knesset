@@ -209,7 +209,7 @@ class Member(models.Model):
 
     def committee_meetings_per_month(self):
         service_time = self.service_time()
-        if not service_time:
+        if not service_time or not self.id:
             return 0
         return round(self.committee_meetings.count() * 30.0 / self.service_time(),2)
 
