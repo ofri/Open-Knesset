@@ -192,6 +192,8 @@ class Member(models.Model):
 
     def service_time(self):
         """returns the number of days this MK has been serving in the current knesset"""
+        if not self.start_date:
+            return 0
         if self.is_current:
             return (date.today() -  self.start_date).days
         else:
