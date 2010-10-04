@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from knesset.mks.models import Member
 from actstream import action, follow
-from knesset.committees.models import CommitteeMeeting, Committee
+from knesset.committees.models import Committee
 from knesset.agendas.models import Agenda
 
 class TestPublicProfile(TestCase):
