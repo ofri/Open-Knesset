@@ -52,15 +52,13 @@
   
   var oknesset_law_flow = $E("div")
                           .attr({class:"oknesset_law_flow"});
-  var oknesset_proposals = $E("div")
-                          .attr({class:"oknesset_proposals"});
-  oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_number"}).html(data.bills_proposed));
-  oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_desc"})
-                            .append($E("a")
-                            .attr({
+  var oknesset_proposals = $E("a")
+                            .attr({class:"oknesset_proposals",
 	              href:okURI + "/bill/?member="+data.id+"&stage=proposed", target: "_blank"
-	            })
-	            .html("הצעות חוק")));
+	            });
+  oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_number"}).html(data.bills_proposed));
+  oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_desc"}).html("הצעות חוק"));
+      
   oknesset_law_flow.append(oknesset_proposals);
   oknesset_law_flow.append($E("img")
                            .attr({src:"../img/arrow_left.gif"}));
@@ -68,12 +66,12 @@
                            .attr({src:"../img/mini_knesset.gif"}));
   oknesset_law_flow.append($E("img")
                            .attr({src:"../img/arrow_left.gif"}));
-  var oknesset_laws = $E("div")
-                          .attr({class:"oknesset_laws"});
+  var oknesset_laws = $E("a")
+                          .attr({class:"oknesset_laws", href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"});
   oknesset_laws.append($E("div")
                            .attr({class:"oknesset_laws_number"}).html(data.bills_approved));
   oknesset_laws.append($E("div").attr({class:"oknesset_laws_desc"})
-                       .append($E("a").attr({href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"}).html("חוקים התקבלו")));
+                       .html("חוקים התקבלו"));
   oknesset_law_flow.append(oknesset_laws);
   oknesset_content_top.append(oknesset_law_flow);
   oknesset_content_top.append($E("div").attr({class:"oknesset_attendance"}).html("נוכחות במשכן הכנסת: ").append($E("span").attr({class:"oknesset_attendance_value"}).html(average_weekly_presence_des[data.average_weekly_presence_rank])));
