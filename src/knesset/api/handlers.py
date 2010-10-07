@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
-from knesset.mks.models import Member, Party, Membership
+from knesset.mks.models import Member, Party, Membership, find_possible_members
 from knesset.laws.models import Vote, VoteAction
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
@@ -114,6 +114,20 @@ class MemberHandler(BaseHandler):
                      since=o.start_date,
                      until=o.end_date,
                      ), qs)
+
+    def read(self, request, **kwargs):
+        if id not in kwargs and 'q' in request.GET:
+            q = request.GET['q']
+            qs = self.qs
+            try:
+                q = int(q)
+                return qs.filter(pk=q)
+            except ValueError:
+                print find_possible_members(q)
+                matches = map(lambda x: x['id'], find_possible_members(q))
+                return qs.filter(id__in=matches)
+
+        return super(MemberHandler,self).read(request, **kwargs)
 
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 
