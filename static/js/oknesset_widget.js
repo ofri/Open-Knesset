@@ -1,10 +1,11 @@
-function generateMkFrameSet( Mks,style,targetId,iframeURI ){
-  style = typeof(style) != 'undefined' ? style : {width:414};
-  targetId = typeof(targetId) != 'undefined' ? targetId : '';
-  iframeURI = typeof(iframeURI) != 'undefined' ? iframeURI : guessScriptURI();
+
+function generateMkFrameSet( Mks,style,targetId,okURI ){
+  var style = typeof(style) != 'undefined' ? style : {width:414};
+  var targetId = typeof(targetId) != 'undefined' ? targetId : '';
+  var okURI = typeof(okURI) != 'undefined' ? okURI : guessScriptURI();
 	
-	if ( iframeURI.charAt( iframeURI.length-1 ) != '/' )
-	  iframeURI += '/';
+	if ( okURI.charAt( okURI.length-1 ) != '/' )
+	  okURI += '/';
 	
   var frameNum = 0;
   var MkIds = {};
@@ -14,7 +15,10 @@ function generateMkFrameSet( Mks,style,targetId,iframeURI ){
       getMkIdsFromClassHook( Mks.classHook );
   
   for ( var key in MkIds ) {
+
     MkIds[key] = createMkFrame(key, style.width );
+    // jQuery(targetId).append(MkIds[key])
+    // TODO: add support for footnotes 
     document.getElementById(targetId).appendChild(MkIds[key])        
   }
 
@@ -52,7 +56,7 @@ function generateMkFrameSet( Mks,style,targetId,iframeURI ){
 
   function createMkFrame( mkId, width ){
     var mkFrame = document.createElement("iframe");
-    mkFrame.src = iframeURI + "oknesset-iframe.html?id="+mkId; //"http://oknesset.org/static/html/oknesset-iframe.html?id="+mkId;
+    mkFrame.src = okURI + "static/html/oknesset-iframe.html?id="+mkId;
     mkFrame.style.display = "block";
     mkFrame.style.border =  "0px";
     mkFrame.style.margin =  "3px 0";
@@ -114,3 +118,36 @@ function generateMkFrameSet( Mks,style,targetId,iframeURI ){
 
   }
 }
+// Simple JavaScript Templating
+// John Resig - http://ejohn.org/ - MIT Licensed
+(function() {
+    var cache = {};
+
+    this.tmpl = function tmpl(str, data) {
+        // Figure out if we're getting a template, or if we need to
+        // load the template - and be sure to cache the result.
+        var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+
+        // Generate a reusable function that will serve as a template
+        // generator (and which will be cached).
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+        // Introduce the data as local variables using with(){}
+        "with(obj){p.push('" +
+
+        // Convert the template into pure JavaScript
+str.replace(/[\r\t\n]/g, " ")
+   .replace(/'(?=[^%]*%>)/g,"\t")
+   .split("'").join("\\'")
+   .split("\t").join("'")
+   .replace(/<%=(.+?)%>/g, "',$1,'")
+   .split("<%").join("');")
+   .split("%>").join("p.push('")
+   + "');}return p.join('');");
+        // Provide some basic currying to the user
+        return data ? fn(data) : fn;
+    };
+})();
