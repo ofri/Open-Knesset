@@ -1,7 +1,7 @@
 from operator import itemgetter, attrgetter
 
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
@@ -63,8 +63,9 @@ def get_top_bottom(lst, top, bottom):
     
 
 class AgendaManager(models.Manager):
-    def get_selected_for_instance(self, instance, top=3, bottom=3):
-        agendas = list(self.all())
+    def get_selected_for_instance(self, instance, user=None, top=3, bottom=3):
+        # Returns interesting agendas for model instances such as: member, party
+        agendas = list(self.get_relevant_for_user(user))
         for agenda in agendas:
             agenda.score = agenda.__getattribute__('%s_score' % instance.__class__.__name__.lower())(instance)
             agenda.significance = agenda.score * agenda.number_of_followers()
@@ -72,6 +73,15 @@ class AgendaManager(models.Manager):
         agendas = get_top_bottom(agendas, top, bottom)
         agendas['top'].sort(key=attrgetter('score'), reverse=True)
         agendas['bottom'].sort(key=attrgetter('score'), reverse=True)
+        return agendas
+    
+    def get_relevant_for_user(self, user):
+        if user == None:
+            agendas = self.filter(is_public=True)
+        elif user.is_superuser:
+            agendas = self.all()
+        else:
+            agendas = self.filter(Q(is_public=True) | Q(editors=user))
         return agendas
 
            
@@ -81,6 +91,7 @@ class Agenda(models.Model):
     editors = models.ManyToManyField('auth.User')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
+    is_public = models.BooleanField(default=False)
     
     objects = AgendaManager()
     

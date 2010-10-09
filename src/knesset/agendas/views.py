@@ -14,8 +14,11 @@ from models import Agenda, AgendaVote, score_text_to_score
 
 
 class AgendaListView (ListView):
-    def queryset(self):
-        return Agenda.objects.all()
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return Agenda.objects.get_relevant_for_user(user=None)
+        else:
+            return Agenda.objects.get_relevant_for_user(user=self.request.user)
     
     def get_context(self, *args, **kwargs):
         context = super(AgendaListView, self).get_context(*args, **kwargs)       
@@ -28,6 +31,12 @@ class AgendaListView (ListView):
         return context
         
 class AgendaDetailView (DetailView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return Agenda.objects.get_relevant_for_user(user=None)
+        else:
+            return Agenda.objects.get_relevant_for_user(user=self.request.user)
+    
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
