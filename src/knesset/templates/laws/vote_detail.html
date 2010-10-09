@@ -128,10 +128,10 @@
         <br>
         <div id="agendas">
 
-            {% if object.agendavote_set.all %}
+            {% if agendavotes %}
                 <h3>{% trans "Ascribed agendas" %}</h3>
                 <div id="ascribed-agendas" class="item-list">
-                {% for agendavote in object.agendavote_set.all %}
+                {% for agendavote in agendavotes %}
                     <div class="item">
                         <a class="hashnav dontwrap" id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
                         <div class="info">
