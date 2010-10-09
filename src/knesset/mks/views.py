@@ -212,7 +212,10 @@ class MemberDetailView(DetailView):
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
         bills_tags = tagging.utils.calculate_cloud(bills_tags)
 
-        agendas = Agenda.objects.get_selected_for_instance(member, top=3, bottom=3)
+        if self.request.user.is_authenticated():
+            agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+        else:
+            agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
@@ -409,7 +412,10 @@ class PartyDetailView(DetailView):
         context = super(PartyDetailView, self).get_context()
         party = context['object']
 
-        agendas = Agenda.objects.get_selected_for_instance(party, top=3, bottom=3)
+        if self.request.user.is_authenticated():
+            agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+        else:
+            agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
