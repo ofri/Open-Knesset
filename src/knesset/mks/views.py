@@ -421,7 +421,7 @@ class PartyDetailView(DetailView):
                 else:
                     watched_agenda.score = watched_agenda.party_score(party)
                     watched_agenda.watched = True
-                    agendas.append(wathced_agenda)
+                    agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
         
         context.update({'agendas':agendas})
