@@ -149,6 +149,9 @@ def agenda_add_view(request):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_add.html'
     
+    if not request.user.is_superuser:
+        return HttpResponseRedirect('/agenda/')
+    
     if request.method == 'POST':
         form = AddAgendaForm(request.POST)
         if form.is_valid():
