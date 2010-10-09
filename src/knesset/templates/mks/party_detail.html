@@ -38,7 +38,8 @@
 	        {% trans "Data base empty, no objects" %}
 	    {% endfor %}
 	    {% if object.past_members %}
-	        <h3>{% trans 'Past MKs' %}</h3>
+	    <br/>
+	    <h3>{% trans 'Past MKs' %}</h3>
 	        {% for o in object.past_members %}
 	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o|mk_card }}</a>&nbsp;
 	        {% endfor %}

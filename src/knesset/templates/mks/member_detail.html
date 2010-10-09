@@ -45,46 +45,53 @@
 		<table style="width:100%;border:none;border-spacing:30px 0;">
 			<tbody>
 				<tr style="vertical-align:top;">
-					<td width="5%">
-				    	<div style="display:block-inline;">
-					        <div class="member-photo"><img src="{{ object.img_url }}"/></div>
-						</div> 
-					</td>
 					<td width="60%">
 				        <div>
-				            <h3> {% trans "Personal Information" %}</h3>
-				            <table id="member-info">
-				                <tr>
-				                    <td style="width:200px;">{% trans "age" %}</td>
-				                    <td>{{ object.date_of_birth|timesince }}</td>
-				                </tr>
-				                {% if object.year_of_aliyah %}
-					                <tr>
-					                    <td>{% trans "year of aliyah" %}</td>
-					                    <td>{{ object.year_of_aliyah }}</td>
-					                </tr>
-				                {% endif %}
-				                <tr>
-				                    <td>{% trans "family status" %}</td>
-				                    <td>{{ object.family_status }}</td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "place of birth" %}</td>
-				                    <td>{{ object.place_of_birth }}</td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "place of residence" %}</td>
-				                    <td>{{ object.place_of_residence }}</td>
-				                </tr>
-				                <tr> 
-				                    <td>{% trans "residence centrality" %}</td>
-				                    <td>{{ object.residence_centrality }}</td>
-				                </tr>
-				                <tr> 
-				                    <td>{% trans "residence economy" %}</td>
-				                    <td>{{ object.residence_economy }}</td>
-				                </tr>
-				
+				            <table>
+				            	<tr>
+									<td width="100px">
+								    	<div style="display:block-inline;">
+									        <div class="member-photo"><img src="{{ object.img_url }}"/></div>
+										</div> 
+									</td>
+									
+									<td>
+							            <h3> {% trans "Personal Information" %}</h3>
+							            <table id="member-info">
+							                <tr>
+							                    <td style="width:200px;">{% trans "age" %}</td>
+							                    <td>{{ object.date_of_birth|timesince }}</td>
+							                </tr>
+							                {% if object.year_of_aliyah %}
+								                <tr>
+								                    <td>{% trans "year of aliyah" %}</td>
+								                    <td>{{ object.year_of_aliyah }}</td>
+								                </tr>
+							                {% endif %}
+							                <tr>
+							                    <td>{% trans "family status" %}</td>
+							                    <td>{{ object.family_status }}</td>
+							                </tr>
+							                <tr>
+							                    <td>{% trans "place of birth" %}</td>
+							                    <td>{{ object.place_of_birth }}</td>
+							                </tr>
+							                <tr>
+							                    <td>{% trans "place of residence" %}</td>
+							                    <td>{{ object.place_of_residence }}</td>
+							                </tr>
+							                <tr> 
+							                    <td>{% trans "residence centrality" %}</td>
+							                    <td>{{ object.residence_centrality }}</td>
+							                </tr>
+							                <tr> 
+							                    <td>{% trans "residence economy" %}</td>
+							                    <td>{{ object.residence_economy }}</td>
+							                </tr>
+							
+							            </table>
+									</td>
+				            	</tr>
 				            </table>
 				        </div>
 						<br/>
