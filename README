@@ -13,3 +13,4 @@ NOTES
 =====
 
 - currently MySQL is not supported
+- on bin/buildout, problems with getting distribution for 'PIL' should be fixed by installing python-dev package
