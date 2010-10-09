@@ -414,9 +414,9 @@ class PartyDetailView(DetailView):
         party = context['object']
 
         if self.request.user.is_authenticated():
-            agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+            agendas = Agenda.objects.get_selected_for_instance(party, user=self.request.user, top=3, bottom=3)
         else:
-            agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
+            agendas = Agenda.objects.get_selected_for_instance(party, user=None, top=3, bottom=3)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
