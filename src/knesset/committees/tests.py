@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
@@ -66,9 +65,9 @@ I have a deadline''')
         # ensure the activity has been recorded
         stream = Action.objects.stream_for_actor(self.jacob)
         self.assertEqual(stream.count(), 3)
-        self.assertEqual(stream[0].verb, 'got badge')
-        self.assertEqual(stream[1].verb, 'started following')
-        self.assertEqual(stream[1].target.id, self.meeting_1.id)
+        self.assertEqual(stream[0].verb, 'started following')
+        self.assertEqual(stream[0].target.id, self.meeting_1.id)
+        self.assertEqual(stream[1].verb, 'got badge')
         self.assertEqual(stream[2].verb, 'annotated')
         self.assertEqual(stream[2].target.id, annotation.id)
 
