@@ -20,8 +20,10 @@ class MemberViewsTest(TestCase):
         self.party_1 = Party.objects.create(name='party 1')
         self.party_2 = Party.objects.create(name='party 2')
         self.mk_1 = Member.objects.create(name='mk_1',
-                                           current_party=self.party_1)
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
         self.mk_2 = Member.objects.create(name='mk_2',
+                                          start_date=datetime.date(2010,1,1),
                                            current_party=self.party_1)
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
@@ -61,6 +63,27 @@ class MemberViewsTest(TestCase):
                                 'mks/member_detail.html')
         self.assertEqual(res.context['object'].id, self.mk_1.id)
 
+    def testMemberSearch(self):
+        import json
+
+        to_set = lambda x: set(map(lambda y: hash(tuple(sorted(y.items()))), x))
+
+        res = self.client.get(reverse('member-by-name'),
+                                      {'q': 'mk_'},
+                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        p = json.loads(res.content)['possible']
+        self.assertEqual(to_set(p),
+                         to_set(\
+                            [{u'id': 1, u'name': u'mk_1', u'url': u'/member/1/'},
+                             {u'id': 2, u'name': u'mk_2', u'url': u'/member/2/'},
+                        ]))
+
+        res = self.client.get(reverse('member-by-name'),
+                                      {'q': 'mk_1'},
+                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        p = json.loads(res.content)['possible']
+        self.assertEqual(p,
+                         [{u'id': 1, u'name': u'mk_1', u'url': u'/member/1/'},])
     def testPartyList(self):
         res = self.client.get(reverse('party-list'))
         self.assertEqual(res.status_code, 200)

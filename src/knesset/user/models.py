@@ -26,6 +26,7 @@ class UserProfile(models.Model):
     The extension includes a list of followed objects,
     such as parties, members and agendas.
 
+    >>> import datetime
     >>> daonb = User.objects.create(username='daonb')
     >>> profile = daonb.get_profile()
     >>> legalize = Party.objects.create(name='legalize')
@@ -33,7 +34,7 @@ class UserProfile(models.Model):
     <Follow: daonb -> legalize>
     >>> legalize == daonb.get_profile().parties[0]
     True
-    >>> dbg = Member.objects.create(name='david ben gurion')
+    >>> dbg = Member.objects.create(name='david ben gurion', start_date=datetime.date(2010,1,1))
     >>> follow(daonb, dbg)
     <Follow: daonb -> david ben gurion>
     >>> dbg == daonb.get_profile().members[0]

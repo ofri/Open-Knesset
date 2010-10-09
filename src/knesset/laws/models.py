@@ -385,7 +385,7 @@ class Bill(models.Model):
 
     def save(self,**kwargs):
         super(Bill,self).save(**kwargs)
-        for mk in self.proposers:
+        for mk in self.proposers.all():
             mk.recalc_bill_statistics()
 
     def _get_tags(self):

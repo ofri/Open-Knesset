@@ -1,10 +1,10 @@
-from datetime import datetime 
+import datetime 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from knesset.mks.models import Member
 from actstream import action, follow
-from knesset.committees.models import CommitteeMeeting, Committee
+from knesset.committees.models import Committee
 from knesset.agendas.models import Agenda
 
 class TestPublicProfile(TestCase):
@@ -46,12 +46,13 @@ class TestFollowing(TestCase):
     def setUp(self):
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
-        self.david = Member.objects.create(name='david')
-        self.yosef = Member.objects.create(name='yosef')
-        self.moshe = Member.objects.create(name='moshe')
+        self.david = Member.objects.create(name='david', start_date=datetime.date(2010,1,1))
+
+        self.yosef = Member.objects.create(name='yosef', start_date=datetime.date(2010,1,1))
+        self.moshe = Member.objects.create(name='moshe', start_date=datetime.date(2010,1,1))
         self.agenda_1 = Agenda.objects.create(name='agenda_1')
         self.committee_1 = Committee.objects.create(name='c1')
-        self.meeting_1 = self.committee_1.meetings.create(date=datetime.now(),
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
                                                          protocol_text='m1')
         self.meeting_1.create_protocol_parts()
         action.send(self.jacob, verb='farted', target=self.david)
