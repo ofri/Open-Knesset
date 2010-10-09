@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load user %}
 {% load common_text_handling %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
@@ -20,7 +21,7 @@
 								<td>{% trans "Editors:" %}</td>
 								<td>			                
 				                    {% for editor in o.editors.all %}
-				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                        {% user editor %}
 				                    {% endfor %}
 				                </td>
 		                	</tr>
