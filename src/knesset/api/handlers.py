@@ -123,7 +123,6 @@ class MemberHandler(BaseHandler):
                 q = int(q)
                 return qs.filter(pk=q)
             except ValueError:
-                print find_possible_members(q)
                 matches = map(lambda x: x['id'], find_possible_members(q))
                 return qs.filter(id__in=matches)
 
