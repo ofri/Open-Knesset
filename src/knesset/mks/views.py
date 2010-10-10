@@ -40,11 +40,14 @@ class MemberListView(ListView):
 
     def get_context(self):
         info = self.request.GET.get('info','bills_pre')
-        context = cache.get('member_list_by_%s' % info)
+        original_context = super(MemberListView, self).get_context()
+        qs = original_context['object_list']
+        context = cache.get('member_list_by_%s' % info) or {}
         if context:
-            return context
-        context = super(MemberListView, self).get_context()
-        qs = context['object_list']
+            original_context.update(context)
+            return original_context
+        context['past_mks'] = original_context['past_mks']
+        
         context['friend_pages'] = [['.?info=abc',_('By ABC'), False],
                               ['.?info=bills_proposed',_('By number of bills proposed'), False],
                               ['.?info=bills_pre',_('By number of bills pre-approved'), False],
@@ -146,9 +149,10 @@ class MemberListView(ListView):
         elif info=='graph':
             context['friend_pages'][8][2] = True
             context['title'] = "%s %s" % (_('Members'), _('Graphical view'))
-        context['object_list']=qs
+        context['object_list']=qs        
         cache.set('member_list_by_%s' % info, context, 900)
-        return context
+        original_context.update(context)
+        return original_context
 
 class MemberDetailView(DetailView):
 
