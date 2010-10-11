@@ -20,6 +20,7 @@
         return vars;
     }
     
+    $(function () {
     var okURI = ''
     var mkId = getUrlVars()["id"];
 	var queryURI = okURI + "/api/member/";   
@@ -106,7 +107,7 @@
 
 
   $("#oknesset_container").append(oknesset_main);
-}});
+    }})});
         </script>
     </body>
 </html>

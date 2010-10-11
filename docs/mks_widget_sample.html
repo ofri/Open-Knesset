@@ -7,12 +7,14 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://127.0.0.1:8000/static/js/oknesset_widget.js"></script>
     </head>
-<body>
-    <span class='mk_name'>דב חנין</span>
-    <span class='mk_name'>771</span>
-    <div id="oknesset_container"></div>
+<body style="direction:rtl;margin:3em 20%; ">
+    <span class='mk'>דב חנין</span>
+    <span class='mk'>771</span>
+    <div id="foot"></div>
     <script type="text/javascript">
-        generateMkFrameSet({classHook:'mk_name'},{width:480},'oknesset_container', 'http://127.0.0.1:8000');
+        generateMkFrameSet({classHook:'mk', okURL: 'http://127.0.0.1:8000', targetId:'foot'});
+        // For popups:
+        // generateMkFrameSet({classHook:'mk', okURL: 'http://127.0.0.1:8000'});
     </script>
 </body>
 

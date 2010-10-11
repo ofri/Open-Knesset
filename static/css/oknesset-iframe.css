@@ -2,6 +2,7 @@ body{
     margin:0px;
 }
 
+#oknesset_container { height: 100%; }
 .oknesset_frame {
     background-color:#EEFFFF;
     border:2px solid #111199;
@@ -16,6 +17,7 @@ body{
     width:400px;
 }
 
+/* .oknesset_content_bottom { height: 100%; } */
 .oknesset_content_top {
     padding-right: 0px;
     min-height: 110px;
@@ -41,6 +43,7 @@ body{
     margin-top: 0;
     margin-bottom:10px;
     padding: 0;
+    height: 100%;
 }
 .oknesset_committees ul li {
 	background-color:#FFFFFF;
@@ -92,3 +95,4 @@ body{
   text-decoration: underline;
   color:blue;
 }
+.clear {height:0; overflow:hidden; clear:both;}

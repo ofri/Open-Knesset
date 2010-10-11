@@ -2,28 +2,13 @@ OKnesset Widget
 ===============
 
 The widget allows any website to embed content from OKnesset. Currently, information about MKs can be displayed.
-Usage:
+Checkout the file docs/mks_widget_sample.html for a usage example.
 
-The following lines of code should be placed in the head of the HTML:
-<script type="text/javascript" src="http://oknesset.org/static/js/oknesset_widget.js"></script>
+The main inteface is through a call to generateMkFrameSet with the following params:
 
-At the bottom of the page (or, if a JS framework is available, then after dom:loaded):
-<script type="text/javascript">
-  generateMkFrameSet({MkIds:[780,123],classHook:'oknesset_lookup'},{width:480},'oknesset_container');
-</script>
+* classHook: required - the css class of the elments that contain the members' names or ids
+* style: optional - a dictionary of style keys and values, currently only width is supported
+* okURL: optional - for development, specifies the URL of the oknesset server
+* TODO: targetId: unspecified, MKs information frmaes will be displayed in a pop up
+ if specified the frames will be displayed inside the elment with targetId
 
-The parameters are:
-* List of MKs
-* style properties (currently, width only)
-* target output
-
-The script accepts two ways of intaking a list of MKs, both are existant in the above example:
-
-1. Static list of MKs: A given list of IDs is provided via MkIds. e.g.
-   generateMKFrameSet({MkIds:[1,2,3]},{},'oknesset_container') will create a three panes for MK's 1, 2 and 3
-2. Dynamically search the page for MKIds: Within the page, place IDs of MKs within a special class, e.g.
-   <div class="oknesset_lookup">1</div><div class="oknesset_lookup">2</div>
-   then call the generateMKFrameSet, specifying the special classname:
-   generateMKFrameSet({classHook:'oknesset_lookup'},{},'oknesset_container');
-
-The two methods can be mixed together.
