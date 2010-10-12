@@ -104,6 +104,7 @@
 				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
 				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
                 <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>                
+                <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>                
                 <li id="nav-planet" {% block nav-planet %} {% endblock %} > <a class="hashnav" href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
 				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
 			</ul>

@@ -23,6 +23,7 @@ from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import DetailView, ListView, method_decorator
+from knesset.agendas.models import Agenda
 
 import urllib
 import urllib2
@@ -325,6 +326,12 @@ class VoteDetailView(DetailView):
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
         context['bills'] = related_bills
+        
+        if self.request.user.is_authenticated():
+            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
+        else:
+            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
+        
         return context
 
 

@@ -1,11 +1,14 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
+{% load user %}
 {% load common_text_handling %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
 {% block description %}{% trans "Agendas" %} - {% endblock %}
 {% block nav-agendas %}class="selected"{% endblock %}
 {% block divcontent %}
+	{% i18ninclude "agendas/agenda_list.html" LANGUAGE_CODE %}
 	<div id="list-wrap">
         <h2> {% trans "Your Agendas" %} </h2>
         {% if not user.is_authenticated %}
@@ -20,7 +23,7 @@
 								<td>{% trans "Editors:" %}</td>
 								<td>			                
 				                    {% for editor in o.editors.all %}
-				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                        {% user editor %}
 				                    {% endfor %}
 				                </td>
 		                	</tr>
@@ -38,9 +41,11 @@
 					{% trans "You are not editing any agenda" %}
 		        {% endfor %}		        
 		    </div>
-	        <div class="add">
-	            <a class="awesome-button medium" href="/agenda/add/">{% trans "Add" %}</a>
-	        </div>		    
+		    {% if user.is_superuser %}
+		        <div class="add">
+		            <a class="awesome-button medium" href="/agenda/add/">{% trans "Add" %}</a>
+		        </div>		    
+	        {% endif %}
         {% endif %}
         
 	</div>

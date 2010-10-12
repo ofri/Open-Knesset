@@ -213,7 +213,10 @@ class MemberDetailView(DetailView):
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
         bills_tags = tagging.utils.calculate_cloud(bills_tags)
 
-        agendas = Agenda.objects.get_selected_for_instance(member, top=3, bottom=3)
+        if self.request.user.is_authenticated():
+            agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+        else:
+            agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
@@ -410,7 +413,10 @@ class PartyDetailView(DetailView):
         context = super(PartyDetailView, self).get_context()
         party = context['object']
 
-        agendas = Agenda.objects.get_selected_for_instance(party, top=3, bottom=3)
+        if self.request.user.is_authenticated():
+            agendas = Agenda.objects.get_selected_for_instance(party, user=self.request.user, top=3, bottom=3)
+        else:
+            agendas = Agenda.objects.get_selected_for_instance(party, user=None, top=3, bottom=3)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
@@ -422,7 +428,7 @@ class PartyDetailView(DetailView):
                 else:
                     watched_agenda.score = watched_agenda.party_score(party)
                     watched_agenda.watched = True
-                    agendas.append(wathced_agenda)
+                    agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
         
         context.update({'agendas':agendas})

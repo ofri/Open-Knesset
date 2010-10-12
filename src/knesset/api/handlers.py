@@ -123,7 +123,6 @@ class MemberHandler(BaseHandler):
                 q = int(q)
                 return qs.filter(pk=q)
             except ValueError:
-                print find_possible_members(q)
                 matches = map(lambda x: x['id'], find_possible_members(q))
                 return qs.filter(id__in=matches)
 
@@ -235,18 +234,24 @@ class TagHandler(BaseHandler):
         return tag.items.count()
 
 class AgendaHandler(BaseHandler):
+    # TODO: Once we have user authentication over the API,
+    #       need to expose not only public agendas.
+    #       See AgendaManager.get_relevant_for_user(user)
+    #       The is true for both read() and number_of_items() methods
+      
     fields = ('id', 'name', 'number_of_items')
     allowed_methods = ('GET',)
     model = Agenda
 
     def read(self, request, **kwargs):
+        agendas = Agenda.objects.get_relevant_for_user(user=None)
         
         # Handle API calls of type /agenda/[agenda_id]
         id = None
         if 'id' in kwargs:
             id = kwargs['id']        
             if id is not None:
-                return Agenda.objects.filter(pk=id)
+                return agendas.filter(pk=id)
         
         # Handle API calls of type /agenda/vote/[vote_id]
         # Used to return the agendas ascribed to a specific vote
@@ -259,9 +264,9 @@ class AgendaHandler(BaseHandler):
             except ContentType.DoesNotExist:
                 pass
             if object_id and (ctype == 'vote'):
-                return Agenda.objects.filter(votes__id=object_id)
+                return agendas.filter(votes__id=object_id)
         else:        
-            return Agenda.objects.all()
+            return agendas
 
     @classmethod
     def number_of_items(self, agenda):

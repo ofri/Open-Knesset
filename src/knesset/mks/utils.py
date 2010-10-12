@@ -27,6 +27,8 @@ def erf(z):
             
             
 def percentile(avg,var,val):
+    if not var:
+        return 50
     z = (val-avg)/math.sqrt(var)
     p = erf(z)/2.0*100.0+50.0
     p = int(round(p))

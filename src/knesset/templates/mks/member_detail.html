@@ -59,50 +59,77 @@
 		<table style="width:100%;border:none;border-spacing:30px 0;">
 			<tbody>
 				<tr style="vertical-align:top;">
-					<td width="5%">
-				    	<div style="display:block-inline;">
-					        <div class="member-photo"><img src="{{ object.img_url }}"/></div>
-						</div> 
-					</td>
 					<td width="60%">
 				        <div>
-				            <h3> {% trans "Personal Information" %}</h3>
-				            <table id="member-info">
-				                <tr>
-				                    <td style="width:200px;">{% trans "age" %}</td>
-				                    <td>{{ object.date_of_birth|timesince }}</td>
-				                </tr>
-				                {% if object.year_of_aliyah %}
-					                <tr>
-					                    <td>{% trans "year of aliyah" %}</td>
-					                    <td>{{ object.year_of_aliyah }}</td>
-					                </tr>
-				                {% endif %}
-				                <tr>
-				                    <td>{% trans "family status" %}</td>
-				                    <td>{{ object.family_status }}</td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "place of birth" %}</td>
-				                    <td>{{ object.place_of_birth }}</td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "place of residence" %}</td>
-				                    <td>{{ object.place_of_residence }}</td>
-				                </tr>
-				                <tr> 
-				                    <td>{% trans "residence centrality" %}</td>
-				                    <td>{{ object.residence_centrality }}</td>
-				                </tr>
-				                <tr> 
-				                    <td>{% trans "residence economy" %}</td>
-				                    <td>{{ object.residence_economy }}</td>
-				                </tr>
-				
+				            <table>
+				            	<tr>
+									<td width="100px">
+								    	<div style="display:block-inline;">
+									        <div class="member-photo"><img src="{{ object.img_url }}"/></div>
+										</div> 
+									</td>
+									
+									<td>
+							            <h3> {% trans "Personal Information" %}</h3>
+							            <table id="member-info">
+							                <tr>
+							                    <td style="width:200px;">{% trans "age" %}</td>
+							                    <td>{{ object.date_of_birth|timesince }}</td>
+							                </tr>
+							                {% if object.year_of_aliyah %}
+								                <tr>
+								                    <td>{% trans "year of aliyah" %}</td>
+								                    <td>{{ object.year_of_aliyah }}</td>
+								                </tr>
+							                {% endif %}
+							                <tr>
+							                    <td>{% trans "family status" %}</td>
+							                    <td>{{ object.family_status }}</td>
+							                </tr>
+							                <tr>
+							                    <td>{% trans "place of birth" %}</td>
+							                    <td>{{ object.place_of_birth }}</td>
+							                </tr>
+							                <tr>
+							                    <td>{% trans "place of residence" %}</td>
+							                    <td>{{ object.place_of_residence }}</td>
+							                </tr>
+							                <tr> 
+							                    <td>{% trans "residence centrality" %}</td>
+							                    <td>{{ object.residence_centrality }}</td>
+							                </tr>
+							                <tr> 
+							                    <td>{% trans "residence economy" %}</td>
+							                    <td>{{ object.residence_economy }}</td>
+							                </tr>
+							
+							            </table>
+									</td>
+				            	</tr>
 				            </table>
 				        </div>
 						<br/>
 				        
+				        <div>
+				            <h3> {% trans "Contact Information" %}</h3>
+				            <table>
+				                <tr>
+				                    <td>{% trans "phone" %}</td>
+				                    <td>{{ object.phone }}</td>
+				                </tr>
+				                {% if object.fax %}
+				                    <tr>
+				                        <td>{% trans "fax" %}</td>
+				                        <td>{{ object.fax }}</td>
+				                    </tr>
+				                {% endif %}
+				                <tr>
+				                    <td>{% trans "e-mail address" %}</td>
+				                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
+				                </tr>
+				            </table>
+				        </div> <br/>
+
 				        <div>
 				            <h3>{% trans "Votes" %}</h3>
 				            <table>
@@ -205,26 +232,6 @@
 					<td style="width:35%;vertical-align:top;">
 
 				        <div>
-				            <h3> {% trans "Contact Information" %}</h3>
-				            <table>
-				                <tr>
-				                    <td>{% trans "phone" %}</td>
-				                    <td>{{ object.phone }}</td>
-				                </tr>
-				                {% if object.fax %}
-				                    <tr>
-				                        <td>{% trans "fax" %}</td>
-				                        <td>{{ object.fax }}</td>
-				                    </tr>
-				                {% endif %}
-				                <tr>
-				                    <td>{% trans "e-mail address" %}</td>
-				                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
-				                </tr>
-				            </table>
-				        </div> <br/>
-
-				        <div>
 				            <h3>{% trans "Links" %}</h3>
 				                {% object_links object %}
 				        </div> <br/>
@@ -234,6 +241,22 @@
 			                <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
 				        </div>  <br/>									
 
+						<div>
+							<h3>{% trans "Agendas" %}</h3>
+							<div class="list-wrap">
+								<table>
+								{% for agenda in agendas %}
+									<tr>
+										<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
+										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
+										<td>%{{agenda.score|floatformat:"0"}}</td>
+										<td class="column-bar">{% if agenda.score < 0 %}{% bar agenda.score 'against' 1 %}{% else %}{% bar agenda.score 'for' 1 %}{% endif %}</td>
+									</tr>
+								{% endfor %}
+								</table>
+							</div>
+						</div>					
+					
 					</td>
 				</tr>
 			</tbody>
