@@ -14,3 +14,25 @@ NOTES
 
 - currently MySQL is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' should be fixed by installing python-dev package
+
+
+Windows Users:
+--------------
+
+Prerequisites:
+Download and install Python 2.6 or 2.7 from http://www.python.org/download/windows/
+Make sure python and svn are in the default path (control panel->system->advanced->environment variables)
+Download and install svn client from http://www.sliksvn.com/en/download
+Download and install git by following http://help.github.com/win-git-installation/
+Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
+
+Fork code repository:
+Browse to http://github.com/ofri/Open-Knesset
+and click Fork
+Browse to your Open-Knesset fork and click the SSH button. 
+Copy the SSH address and run the following command in git bash:
+git clone paste_the_ssh_address_here.git
+
+Running the installation instructions:
+open command line change dir to the Open-Knesset folder
+run the installation instructions above (Without the $ ofcourse and with backslashes)
