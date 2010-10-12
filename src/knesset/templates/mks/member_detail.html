@@ -35,22 +35,9 @@
 {% cache 600 mks object.id request.page %}
     <ul class="actions">
         <li>
-        <a href="#" onclick="$('#embed_code_box').toggle();return false;">{% trans "Embed in external site" %}</a></li>
         <li><span id="watch" class="awesome-button medium"></span></li>
         <li><a href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:2em;"></a></li>
     </ul>
-        <div id="embed_code_box" style="display:none;float:left;">
-            <form><textarea id="embed_code_value" cols="120" rows="5" style="direction:ltr;text-align:left;">
-    <span class="mk">{{ object.name}}</span>
-    <div id="mk_info"></div>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://oknesset.org/static/js/oknesset_widget.js"></script>
-    <script type="text/javascript">
-        generateMkFrameSet({classHook: 'mk', targetId: 'mk_data'});
-    </script>
-            </textarea></form>
-            <p>{% trans "Add the code above to your site, to get a dynamically generated info" %}</p>
-        </div>
     <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
     <div class="clear"></div>
     <h2> {{ object.get_role }} </h2>
