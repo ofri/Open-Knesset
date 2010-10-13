@@ -3,7 +3,6 @@
     <ul class="links">
     {% for link in links %}
     <li><a href="{{ link.url|safe }}">
-        {{ link.title }}
         {% if link.link_type %}
             &nbsp;
             {% if link.link_type.image %}
@@ -12,6 +11,7 @@
                 ({% trans link.link_type.title %})
             {% endif %}
         {% endif %}
+        {{ link.title }}
     </a></li>
     {% endfor %}
     </ul>
