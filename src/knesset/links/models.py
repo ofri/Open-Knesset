@@ -5,6 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from managers import LinksManager
 
+_default_linktype = False
+def get_default_linktype():
+    global _default_linktype
+    if not _default_linktype:
+        _default_linktype = LinkType.objects.get(title='default')
+    return _default_linktype
 
 class LinkType(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -25,7 +31,7 @@ class Link(models.Model):
             related_name="content_type_set_for_%(class)s")
     object_pk      = models.TextField(_('object ID'))
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
-    link_type = models.ForeignKey(LinkType, null=True, blank=True)
+    link_type = models.ForeignKey(LinkType, default=get_default_linktype, null=True, blank=True)
 
     objects = LinksManager()
 
