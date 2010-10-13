@@ -15,8 +15,22 @@
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
     <script>
     function set_percentile(id,value) {
-        $("#"+id+"_percentile").css('background-position',(value-8)+"px 4px");
-        $("#"+id+"_percentile").css('background-color',"rgb("+(155+(100-value))+","+(155+value)+",155)");
+        $("#"+id+"_percentile").css('background-position',((100-value)-8)+"px 4px");
+        $("#"+id+"_percentile").css('background-color',"#FFE5BA"); /* rgb("+(155+(100-value))+","+(155+value)+",155)"); */
+        var message;
+        if ( value < 20 ) {
+            message = "{% trans 'Extremely below average' %}";                
+        } else if ( value < 40 ) {
+            message = "{% trans 'Below average' %}";                
+        } else if ( value < 60 ) {
+            message = "{% trans 'Average' %}";                
+        } else if ( value < 80 ) {
+            message = "{% trans 'Above average' %}";                
+        } else {
+            message = "{% trans 'Extremely above average' %}";                
+        }
+        
+        $("#"+id+"_percentile").html("<span title='"+"{% trans 'Percentile' %}"+" "+value+"'>"+message+"</span>");                
     }
     </script>
 {% endblock %}
@@ -140,28 +154,24 @@
 				            <table>   
 				                <tr>
 				                    <td style="width:140px;">{% trans "Knesset presence" %}</td>
+				                    <td style="width:200px;">
+										{{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %}
+				                    </td>
 				                    <td>{% if presence.average_weekly_presence_hours %}
-						                    <div id="weekly_percentile" class="percentile">
-												{% trans 'Percentile' %} {{ presence.average_weekly_presence_hours_percentile }}
-												<script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
-						                    </div>
+						                    <div id="weekly_percentile" class="percentile"></div>
+											<script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
 				                    	{% else %}
 				                    		{% trans 'Not enough data' %}
 				                    	{% endif %}
 				                    </td>
-				                    <td>
-										({{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %})
-				                    </td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Committee presence" %}</td>
+				                    <td>{{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %}</td>
 				                    <td>
-					                    <div id="monthly_percentile" class="percentile">
-											{% trans 'Percentile' %} {{ presence.average_monthly_committee_presence_percentile }}
-											<script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
-					                    </div>
+					                    <div id="monthly_percentile" class="percentile"></div>
+										<script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
 				                    </td>
-				                    <td>({{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %})</td>
 				                </tr>
 							</table>
 							<br/>
@@ -169,43 +179,35 @@
 				            <table>
 				            	<tr>
 				                    <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
+				                    <td style="width:200px;"><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
 				                    <td>
-					                    <div id="proposed_percentile" class="percentile">
-											{% trans 'Percentile' %} {{ bills_statistics.proposed_percentile }}
-											<script>set_percentile('proposed',{{ bills_statistics.proposed_percentile }});</script>
-					                    </div>
+					                    <div id="proposed_percentile" class="percentile"></div>
+					                    <script>set_percentile('proposed',{{ bills_statistics.proposed_percentile }});</script>
 				                    </td>
-				                    <td>(<a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }} {% trans 'Bills' %}</a>)</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills passed pre-vote" %}</td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</td>
 				                    <td>
-					                    <div id="pre_percentile" class="percentile">
-											{% trans 'Percentile' %} {{ bills_statistics.pre_percentile }}
-											<script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
-					                    </div>
+					                    <div id="pre_percentile" class="percentile"></div>
+										<script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
 				                    </td>
-				                    <td>(<a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }} {% trans 'Bills' %}</a>)</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills passed first vote" %}</td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
 				                    <td>
-					                    <div id="first_percentile" class="percentile">
-											{% trans 'Percentile' %} {{ bills_statistics.first_percentile }}
-											<script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
-					                    </div>
+					                    <div id="first_percentile" class="percentile"></div>
+										<script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
 				                    </td>
-				                    <td>(<a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }} {% trans 'Bills' %}</a>)</td>
 				                </tr>
 				                <tr>
 				                    <td>{% trans "Bills approved" %}</td>
+				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
 				                    <td>
-					                    <div id="approved_percentile" class="percentile">
-											{% trans 'Percentile' %} {{ bills_statistics.approved_percentile }}
-											<script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
-					                    </div>
+					                    <div id="approved_percentile" class="percentile"></div>
+										<script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
 				                    </td>
-				                    <td>(<a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }} {% trans 'Bills' %}</a>)</td>
 				                </tr>       
 				
 				            </table>

@@ -7,10 +7,15 @@
 {% block subnav %}        {% endblock %}
 {% block divcontent %}
     <h2>{{object.name}}</h2>
+    <h3>{% trans 'Committee Members' %}</h3>
+    {% for m in members %}
+    	m.id<br/>
+    {% endfor %}
+    <br/>
     <h3>{% trans 'Last Meetings' %}</h3>
 	<div class="item-list">
         {% for o in meetings_list %}
-            <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br>
+            <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br/>
         {% endfor %}
 	</div>
     <a href="all_meetings/">{% trans 'Full meetings list'%}</a>
