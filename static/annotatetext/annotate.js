@@ -226,23 +226,17 @@ Annotations.prototype = {
     },
     
     repositionAnnotation : function(){
-      var relOffset = 0;
-      var leftOffset = 0;
+      var rightOffset = 0;
       var offsetMap = {};
       for (var aid in this.annotations){
         var annotop = $(".annotation_"+aid).offset().top;
         var selftop = $("#a_"+aid).offset().top;
-        if(Math.abs(annotop - selftop) > 200){
-          relOffset = Math.abs(annotop - selftop);
+        if(Math.abs(annotop - selftop) > 20){
           if (typeof offsetMap[annotop] === "undefined"){
-            offsetMap[annotop] = 0;
-          } else {offsetMap[annotop] = offsetMap[annotop]+1;}
+            offsetMap[annotop] = Math.abs(annotop - selftop);
+          }
         }
-        if(annotop - selftop < -300){
-          leftOffset = 100;
-        }
-        $("#a_"+aid).css({"top": relOffset+offsetMap[annotop]*20, "left": leftOffset+offsetMap[annotop]*20});
-        leftOffset = 0;
+        $("#a_"+aid).css({"top": offsetMap[annotop]});
       }
     },
 
