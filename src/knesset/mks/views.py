@@ -455,8 +455,7 @@ def member_auto_complete(request):
 
 
 def object_by_name(request, objects):
-    name = request.GET.get('q','')
-    name = urllib.unquote(name)
+    name = urllib.unquote(request.GET.get('q',''))
     results = objects.find(name)
     if results:
         return HttpResponseRedirect(results[0].get_absolute_url())
