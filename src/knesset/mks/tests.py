@@ -66,24 +66,18 @@ class MemberViewsTest(TestCase):
     def testMemberSearch(self):
         import json
 
-        to_set = lambda x: set(map(lambda y: hash(tuple(sorted(y.items()))), x))
-
-        res = self.client.get(reverse('member-by-name'),
+        res = self.client.get(reverse('member-handler'),
                                       {'q': 'mk_'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)['possible']
-        self.assertEqual(to_set(p),
-                         to_set(\
-                            [{u'id': 1, u'name': u'mk_1', u'url': u'/member/1/'},
-                             {u'id': 2, u'name': u'mk_2', u'url': u'/member/2/'},
-                        ]))
+        p = json.loads(res.content)
+        self.assertEqual(set(map(lambda x: x['id'], p)), set((self.mk_1.id, self.mk_2.id)))
 
-        res = self.client.get(reverse('member-by-name'),
+        res = self.client.get(reverse('member-handler'),
                                       {'q': 'mk_1'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)['possible']
-        self.assertEqual(p,
-                         [{u'id': 1, u'name': u'mk_1', u'url': u'/member/1/'},])
+        p = json.loads(res.content)
+        self.assertEqual(map(lambda x:x['id'], p), [self.mk_1.id])
+
     def testPartyList(self):
         res = self.client.get(reverse('party-list'))
         self.assertEqual(res.status_code, 200)
@@ -97,6 +91,21 @@ class MemberViewsTest(TestCase):
                               kwargs={'object_id': self.party_1.id}))
         self.assertTemplateUsed(res, 'mks/party_detail.html')
         self.assertEqual(res.context['object'].id, self.party_1.id)
+
+    def testPartySearch(self):
+        import json
+
+        res = self.client.get(reverse('party-handler'),
+                                      {'q': 'party'},
+                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        p = json.loads(res.content)
+        self.assertEqual(set(map(lambda x: x['id'], p)), set((self.party_1.id,self.party_2.id)))
+
+        res = self.client.get(reverse('party-handler'),
+                                      {'q': 'party%201'},
+                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        p = json.loads(res.content)
+        self.assertEqual(map(lambda x:x['id'], p), [self.party_1.id])
 
     def testMemberDetailsContext(self):
 

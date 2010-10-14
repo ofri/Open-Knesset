@@ -199,11 +199,12 @@ class PartyHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Party
     
-    def read(self, request, id=None):
-        if id:
-            return Party.objects.filter(pk=id)
-        else:
-            return Party.objects.all()
+    def read(self, request, **kwargs):
+        if id not in kwargs and 'q' in request.GET:
+            q = request.GET['q']
+            q = urllib.unquote(q)
+            return Party.objects.find(q)
+        return super(MemberHandler,self).read(request, **kwargs)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
