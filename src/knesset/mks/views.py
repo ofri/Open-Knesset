@@ -1,3 +1,4 @@
+import urllib
 from operator import itemgetter, attrgetter
 from datetime import date
 from django.conf import settings
@@ -14,7 +15,7 @@ from django.core.cache import cache
 from tagging.models import Tag
 import tagging
 from knesset.utils import limit_by_request
-from knesset.mks.models import Member, Party, find_possible_members, find_possible_parties
+from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
 from knesset.laws.models import MemberVotingStatistics, Bill
@@ -453,25 +454,17 @@ def member_auto_complete(request):
     return HttpResponse(json.dumps(result), mimetype='application/json')
 
 
-object_finders = {'member':find_possible_members, 'party':find_possible_parties}        
-def object_by_name(request, object_type):
+def object_by_name(request, objects):
     name = request.GET.get('q','')
-    name = name.replace('%20',' ')    
-    results = object_finders[object_type](name)
-    if (request.is_ajax())or(request.GET.has_key('xhr')):
-        try:
-            for r in results:
-                r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
-            return HttpResponse(json.dumps({'possible':results},ensure_ascii=False))
-        except Exception,e:
-            print e
+    name = urllib.unquote(name)
+    results = objects.find(name)
     if results:
-        return HttpResponseRedirect(reverse('%s-detail' % object_type,args=[results[0]['id']]))
-    raise Http404(_('No %(object_type)s found matching "%(name)s".' % {'object_type':object_type,'name':name}))
+        return HttpResponseRedirect(results[0].get_absolute_url())
+    raise Http404(_('No %(object_type)s found matching "%(name)s".' % {'object_type':objects.model.__name__,'name':name}))
 
 def party_by_name(request):
-    return object_by_name(request, 'party')
+    return object_by_name(request, Party.objects)
     
 def member_by_name(request):
-    return object_by_name(request, 'member')
+    return object_by_name(request, Member.objects)
 

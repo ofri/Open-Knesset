@@ -80,6 +80,26 @@ class Membership(models.Model):
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
 
+class MemberManager(models.Manager):
+    _mk_names = []
+    def slice_and_order(self, possible_names):
+        qs=self.filter(name__in=possible_names)
+        # used to establish size, overwritten later
+        ret = range(qs.count()) 
+        for m in qs:
+            ret[possible_names.index(m.name)] = m
+        return ret
+
+    def find(self, name):
+        ''' looks for a member with a name that resembles 'name'
+            the returned array is ordered by similiarity
+        '''
+        if not self._mk_names:
+            self._mk_names = self.values_list('name', flat=True)
+        possible = difflib.get_close_matches(name, self._mk_names, cutoff=0.5, n=5)
+        print possible
+        return self.slice_and_order(possible)
+
 
 class Member(models.Model):
     name    = models.CharField(max_length=64)
@@ -118,6 +138,8 @@ class Member(models.Model):
     average_weekly_presence_hours = models.FloatField(null=True)
     average_monthly_committee_presence = models.FloatField(null=True)
       
+    objects = MemberManager()
+
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
@@ -270,14 +292,6 @@ class WeeklyPresence(models.Model):
         super(WeeklyPresence,self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
 
-def find_possible_members(name):
-    mks = Member.objects.values_list('name','id')
-    mk_names = [mk[0] for mk in mks]
-    possible = difflib.get_close_matches(name, mk_names, cutoff=0.5, n=5)
-    results = []
-    for p in possible:
-        results.append({'id':mks[mk_names.index(p)][1], 'name':p})
-    return results
 
 def find_possible_parties(name):
     parties = Party.objects.values_list('name','id')

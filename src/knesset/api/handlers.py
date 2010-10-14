@@ -1,4 +1,5 @@
 from datetime import datetime
+import urllib
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -6,7 +7,7 @@ from django.core.cache import cache
 from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
-from knesset.mks.models import Member, Party, Membership, find_possible_members
+from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
@@ -118,13 +119,13 @@ class MemberHandler(BaseHandler):
     def read(self, request, **kwargs):
         if id not in kwargs and 'q' in request.GET:
             q = request.GET['q']
+            q = urllib.unquote(q)
             qs = self.qs
             try:
                 q = int(q)
                 return qs.filter(pk=q)
             except ValueError:
-                matches = map(lambda x: x['id'], find_possible_members(q))
-                return qs.filter(id__in=matches)
+                return Member.objects.find(q)
 
         return super(MemberHandler,self).read(request, **kwargs)
 
