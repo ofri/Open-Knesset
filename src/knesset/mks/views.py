@@ -462,6 +462,8 @@ def object_by_name(request, object_type):
         try:
             for r in results:
                 r['url'] = reverse('%s-detail' % object_type,args=[r['id']])
+                if (r['name'] == name):
+                    return HttpResponse(json.dumps({'possible':[r]},ensure_ascii=False))
             return HttpResponse(json.dumps({'possible':results},ensure_ascii=False))
         except Exception,e:
             print e
