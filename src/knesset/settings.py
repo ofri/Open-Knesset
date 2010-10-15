@@ -130,7 +130,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 INTERNAL_IPS = ('127.0.0.1',)
 # Add the following line to your local_settings.py files to disable django-debug-toolar:
-#INTERNAL_IPS = ()
+INTERNAL_IPS = ()
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }

@@ -16,7 +16,8 @@ logger = logging.getLogger("open-knesset.committees.models")
 class Committee(models.Model):
     name = models.CharField(max_length=256)
     members = models.ManyToManyField('mks.Member', related_name='committees')
-    chairperson = models.ForeignKey('mks.Member', related_name='chaired_committees',null=True)
+    chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees')
+    replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     
     def __unicode__(self):
         return "%s" % self.name

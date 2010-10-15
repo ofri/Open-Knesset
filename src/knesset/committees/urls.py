@@ -14,7 +14,7 @@ meeting_details = MeetingDetailView(queryset = CommitteeMeeting.objects.all())
 committeesurlpatterns = patterns ('',
     url(r'^committee/$', committees_list, name='committee-list'),
     url(r'^committee/(?P<object_id>\d+)/$', committee_detail, name='committee-detail'),
-    url(r'^committee/(?P<committee_id>\d+)/all_meetings/$', meetings_list, name='committee-detail'),
+    url(r'^committee/(?P<committee_id>\d+)/all_meetings/$', meetings_list, name='committee-all-meetings'),
     url(r'^committee/(?P<committee_id>\d+)/date/(?P<date>[\d\-]+)/$', meeting_list_by_date, name='committee-meetings-by-date'),
     url(r'^committee/(?P<committee_id>\d+)/date/$', meeting_list_by_date, name='committee-meetings-by-date'),
     url(r'^committee/meeting/(?P<object_id>\d+)/$', meeting_details, name='committee-meeting'),

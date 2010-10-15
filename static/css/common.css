@@ -649,4 +649,21 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	width:100px;
 	height:16px;
 	background:url(/static/img/marker.png) no-repeat;
+	background-color: #FFE5BA;
+}
+
+.percent {
+	display:inline-block;
+	border:1px solid #ccccff;
+	text-align:center;
+	width:100px;
+	height:16px;
+	background:url(/static/img/marker.png) no-repeat;
+	background-color: #FFE5BA;
+}
+
+.comittee_member_detail {
+	display:inline-block;
+	text-align:center;
+	margin-left:30px;
 }

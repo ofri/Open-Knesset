@@ -16,7 +16,6 @@
     <script>
     function set_percentile(id,value) {
         $("#"+id+"_percentile").css('background-position',((100-value)-8)+"px 4px");
-        $("#"+id+"_percentile").css('background-color',"#FFE5BA"); /* rgb("+(155+(100-value))+","+(155+value)+",155)"); */
         var message;
         if ( value < 20 ) {
             message = "{% trans 'Extremely below average' %}";                
