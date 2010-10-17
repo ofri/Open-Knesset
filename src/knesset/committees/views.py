@@ -16,6 +16,28 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
 
+class CommitteeDetailView(DetailView):
+
+    allowed_methods = ('GET', )
+
+    def get_context(self, *args, **kwargs):       
+        context = super(CommitteeDetailView, self).get_context(*args, **kwargs)
+        cm = context['object']  
+        
+        def annotate_members(qs):
+            members = []
+            for m in qs:
+                m.meetings_count = (100 * m.committee_meetings.filter(committee=cm).count()) / cm.meetings.count()
+                members.append(m)
+            members.sort(key=lambda x:x.meetings_count, reverse=True)
+            return members
+
+        context['members'] = annotate_members(cm.members.all())
+        context['chairpersons'] = annotate_members(cm.chairpersons.all())
+        context['replacements'] = annotate_members(cm.replacements.all())
+        context['meetings_list'] = cm.meetings.all()[:10]
+        return context 
+
 class MeetingDetailView(DetailView):
 
     allowed_methods = ('GET', 'POST')
