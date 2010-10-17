@@ -1,8 +1,9 @@
 #### encoding: cp1255 ####
 
-import sys
 import urllib2
 import re
+import logging
+logger = logging.getLogger("open-knesset.parse_committee_members")
 
 from knesset.mks.models import Member
 from knesset.committees.models import Committee 
@@ -59,7 +60,7 @@ class Command(BaseCommand):
             try:
                 ll2.append( Member.objects.get(id=x) )
             except Member.DoesNotExist:
-                print "ERROR: couldn't find member for id: %s" % x
+                logger.warn("ERROR: couldn't find member for id: %s" % x)
                 #raise                 
         return ll
             
@@ -82,10 +83,10 @@ class Command(BaseCommand):
                 cm.replacements.add(*replacements)
                     
             except Committee.DoesNotExist:
-                print "ERROR: couldn't find committee for name: %s" % name 
+                logger.warn("ERROR: couldn't find committee for name: %s" % name) 
             
     def handle(self, *args, **options):
         r = self.parse_committee_members()
-        print r
+        logger.debug(r)
         self.update_committee_members_db(r)
     
