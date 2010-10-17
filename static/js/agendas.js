@@ -27,12 +27,16 @@ jQuery(document).ready(function() {
 	});
 
 	$(".popup label").click(function () {
-		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")});
 		if ($(this).attr("id") == 'ascribe') {
-			popup_agenda_marked = true
-			getVoteInfo()
-			$("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked")
-			$("#agenda-vote-compliance-radioset").button("refresh")
+    		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")}, function(data){
+			    popup_agenda_marked = true
+			    getVoteInfo()
+			    $("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked")
+			    $("#agenda-vote-compliance-radioset").button("refresh")
+    		});
+		} else {
+    		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")});
+		
 		}
 		if ($(this).attr("id") == 'remove') {
 			popup_agenda_marked = false
