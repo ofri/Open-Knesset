@@ -669,10 +669,11 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 }
 /* member summary */
 ul.summaries { text-align:center; } 
-ul.summaries>li { float:right; text-align:right; list-style: none;} 
+ul.summaries>li { float:right; text-align:right; list-style-type: none;} 
 ul.member-summary ul { vertical-align: top; }
 .member-summary li { display: block; float: none; text-align:center; 
-                     list-style: none; }
+                     list-style-type: none; }
+.member-summary h4 {margin-top: 0.2em;}
 /* item-list */
 .item-list h3 { display:block; }
 .item-list h4 { margin-bottom:0.1em; }
@@ -680,3 +681,6 @@ ul.member-summary ul { vertical-align: top; }
 .item-list li {list-style:none; }
 .item-list li:hover { text-decoration: underline; }
 .item-list a { padding: 0; }
+/* two columns */
+.main-column { float: right; width:60%; padding: 0.5em;}
+.secondary-column { float: left; width:35%; padding: 0.5em; }

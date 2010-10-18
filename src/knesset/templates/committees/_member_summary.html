@@ -7,8 +7,16 @@
         <div id="percent_{{mk.id}}" class="percent"></div>
         <script>set_percent({{mk.id}},{{ mk.meetings_count }});</script>
     </li>
+    <li><h4>
     {% if mk in chairpersons %}
-        <li> <h4>{% trans 'Chairperson' %}</h4></li>
+        {% trans 'Chairperson' %}
+    {% else %}
+        {% if mk in replacements %}
+            {% trans 'Replacement' %}
+        {% else  %}
+            &nbsp;
+        {% endif %}
     {% endif %}
+    </h4></li>
 </ul>
 

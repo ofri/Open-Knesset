@@ -32,9 +32,10 @@ class CommitteeDetailView(DetailView):
             members.sort(key=lambda x:x.meetings_count, reverse=True)
             return members
 
-        context['members'] = annotate_members(cm.members.all())
-        context['chairpersons'] = annotate_members(cm.chairpersons.all())
-        context['replacements'] = annotate_members(cm.replacements.all())
+        context['chairpersons'] = cm.chairpersons.all()
+        context['replacements'] = cm.replacements.all()
+        context['members'] = annotate_members(\
+            (cm.members.all()|context['chairpersons']|context['replacements']).distinct())
         context['meetings_list'] = cm.meetings.all()[:10]
         return context 
 

@@ -15,37 +15,27 @@
     </script>
 {% endblock %}
 {% block divcontent %}
-    <h2>{{object.name}}</h2>
+  <h2>{{object.name}}</h2>
+  <div class="main-column">
     {% if members %}
 	    <h3>{% trans 'Committee Members' %}</h3>
         <div class="clear"></div>
         <ul class="summaries">
-	    {% for mk in chairpersons %}
-	        <li> {% include "committees/_member_summary.html" %} </li>
-	    {% endfor %}
 	    {% for mk in members %}
 	        <li> {% include "committees/_member_summary.html" %} </li>
 	    {% endfor %}
         </ul>
     {% endif %}
     <div class="clear"></div>
-    {% if replacements %}
-	    <h3>{% trans 'Committee Replacements' %}</h3>
-	    <br/><br/>
-	    {% for m in replacements %}
-	        <div class="comittee_member_detail">
-		    	{{ m|mk_card }}<br/>
-				{% trans 'Presence:' %} <div id="percent_{{m.id}}" class="percent"></div>
-				<script>set_percent({{m.id}},{{ m.meetings_count }});</script>
-	        </div>
-	    {% endfor %}
-	    <br/><br/>
-    {% endif %}
     <h3>{% trans 'Last Meetings' %}</h3>
 	<ul class="item-list">
         {% for o in meetings_list %}
             {% include "committees/_meeting_li.html" %}
         {% endfor %}
 	</ul>
-    <a href="all_meetings/">{% trans 'Full meetings list'%}...</a>
+    <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
+  </div>
+  <div class="secondary-column">
+    <h3>{% trans "Annotations" %}</h3>
+  </div>
 {% endblock %}
