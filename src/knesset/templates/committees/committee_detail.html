@@ -42,13 +42,10 @@
 	    <br/><br/>
     {% endif %}
     <h3>{% trans 'Last Meetings' %}</h3>
-	<br/>
-	<br/>
-	<div class="item-list">
+	<ul class="item-list">
         {% for o in meetings_list %}
-            <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br/>
+            {% include "committees/_meeting_li.html" %}
         {% endfor %}
-	</div>
-	<br/>
+	</ul>
     <a href="all_meetings/">{% trans 'Full meetings list'%}...</a>
 {% endblock %}

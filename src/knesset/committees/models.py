@@ -49,9 +49,12 @@ class CommitteeMeeting(models.Model):
         verbose_name = _('Committee Meeting')
         verbose_name_plural = _('Committee Meetings')
 
+    def title (self):
+        return truncate_words (self.topics, 12)
+
     def __unicode__(self):
-        return truncate_words(u"%s - %s" % (self.committee.name,
-                                self.topics), 16).replace("&nbsp;", u"\u00A0")
+        return (u"%s - %s" % (self.committee.name,
+                                self.title())).replace("&nbsp;", u"\u00A0")
     
     @models.permalink
     def get_absolute_url(self):
