@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load mks %}
+<ul class="member-summary">
+    <li>{{ mk|mk_card }}</li>
+    <li>
+        {% trans 'Presence:' %} 
+        <div id="percent_{{mk.id}}" class="percent"></div>
+        <script>set_percent({{mk.id}},{{ mk.meetings_count }});</script>
+    </li>
+    {% if mk in chairpersons %}
+        <li> <h4>{% trans 'Chairperson' %}</h4></li>
+    {% endif %}
+</ul>
+
