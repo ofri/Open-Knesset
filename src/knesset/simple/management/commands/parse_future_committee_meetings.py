@@ -3,20 +3,24 @@
 import urllib2
 import re
 import logging
-logger = logging.getLogger("open-knesset.parse_future_committee_meetings")
+import csv
+import datetime
+from django.core.management.base import BaseCommand
+from django.contrib.contenttypes.models import ContentType
 
 from knesset.mks.models import Member
 from knesset.committees.models import Committee 
-from django.core.management.base import BaseCommand
+from knesset.events.models import Event
 
-import csv
+logger = logging.getLogger("open-knesset.parse_future_committee_meetings")
 spamWriter = csv.writer(open('eggs.csv', 'wb'))
 
 class Command(BaseCommand):
 
     args = ''
     help = 'Parses commitee members from the Knesset website'
-        
+    committee_ct = ContentType.objects.get_for_model(Committee)
+
     def parse_future_committee_meetings(self):
         retval = []
         
@@ -56,14 +60,25 @@ class Command(BaseCommand):
 
     def update_future_committee_meetings_db(self,r):
         for row in r:
-            ev, created = Event.objects.get_or_create( when = datetime.datetime( year=row[1], month=row[2], day=row[3] ),
-                                                       what = u"%s: %s" % (row[0], row[3]) )
+            try:
+                committee = Committee.objects.get(name=row[0])
+                ev, created = Event.objects.get_or_create( when = datetime.datetime( year=row[1], month=row[2], day=row[3] ),
+                                                           what = row[4],
+                                                           which_pk = committee.id,
+                                                           which_type = self.committee_ct,
+                                                           )
+            except Committee.DoesNotExist:
+                logger.debug("couldn't find committee  %s" % row[0])
+                try:
+                    ev, created = Event.objects.get_or_create(when = datetime.datetime( year=row[1], month=row[2], day=row[3] ),
+                                                               what = row[4],
+                                                           )
+                except Event.MultipleObjectsReturned:
+                    created = False
             if created:
-                ev.save()
                 logger.debug("created %s" % ev)
         
     def handle(self, *args, **options):
         r = self.parse_future_committee_meetings()
         logger.debug(r)
         self.update_future_committee_meetings_db(r)
-    
