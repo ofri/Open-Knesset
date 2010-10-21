@@ -41,14 +41,8 @@ class CommitteeDetailView(DetailView):
         recent_meetings = cm.meetings.all().order_by('-date')[:10]
         context['meetings_list'] = recent_meetings
         ref_date = recent_meetings[0].date if recent_meetings.count() > 0 else datetime.datetime.now()
+        context['future_meetings_list'] = cm.events.filter(when__gt = ref_date)
 
-        future_events = Event.objects.filter( which_type = ContentType.objects.get_for_model(Committee),
-                                              which_pk = cm.id,
-                                              when__gt = ref_date )
-        print ref_date
-        print future_events 
-        context['future_meetings_list'] = future_events
-        
         return context 
 
 class MeetingDetailView(DetailView):
