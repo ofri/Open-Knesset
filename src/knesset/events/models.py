@@ -7,7 +7,7 @@ from knesset.persons.models import Person
 
 class Event(models.Model):
 
-    when = models.DateField()
+    when = models.DateTimeField()
     who = models.ManyToManyField(Person)
     what = models.TextField()
     where = models.TextField()

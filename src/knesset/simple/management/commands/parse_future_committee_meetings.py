@@ -31,9 +31,11 @@ class Command(BaseCommand):
         committee_re = re.compile('<td class="Day" bgcolor="#990000" >\s+\xf1\xe3\xf8 \xe4\xe9\xe5\xed \xec.+, <span style=color:#c0c0c0>')
         committee_name = re.compile('<td class="Day" bgcolor="#990000" >\s+\xf1\xe3\xf8 \xe4\xe9\xe5\xed \xec(.+), <span style=color:#c0c0c0>')
         date_re = re.compile("<nobr>\((\d+)/(\d+)/(\d+)\)</nobr>")
+        time_re = re.compile('\xe1\xf9\xf2\xe4&nbsp;(\d\d):(\d\d)')
         meeting_title_re = re.compile('TitleCommittee')
         meeting_agenda_re = re.compile('class="Agenda"')
         meeting_agenda_text_re = re.compile('<[Tt]d class=AgendaText>([^<]+)</[Tt]d>')
+        
         
         datas = committee_re.split( data )[1:]
 
@@ -48,13 +50,15 @@ class Command(BaseCommand):
             meeting_datas = meeting_title_re.split(data)[1:]
             
             for meeting_data in meeting_datas:
+                meeting_time = time_re.findall(meeting_data)[0]
+                hour, minute = int(meeting_time[0]),int(meeting_time[1]) 
                 meeting_agenda_data = meeting_agenda_re.split(meeting_data)[1] 
                 titles = meeting_agenda_text_re.findall( meeting_agenda_data )
                 titles = [ title.decode('cp1255').strip() for title in titles ]
                 title = " ".join( titles )
     
-                retval.append( [ name, year, month, day, title ] )
-                spamWriter.writerow( [ name.encode('utf8'), year, month, day, title.encode('utf8') ] )
+                retval.append( [ name, year, month, day, hour, minute, title ] )
+                spamWriter.writerow( [ name.encode('utf8'), year, month, day, hour, minute, title.encode('utf8') ] )
  
         return retval
 
@@ -62,16 +66,17 @@ class Command(BaseCommand):
         for row in r:
             try:
                 committee = Committee.objects.get(name=row[0])
-                ev, created = Event.objects.get_or_create( when = datetime.datetime( year=row[1], month=row[2], day=row[3] ),
-                                                           what = row[4],
+                ev, created = Event.objects.get_or_create( when = datetime.datetime( year=row[1], month=row[2], day=row[3], hour=row[4], minute=row[5], second=0 ),
+                                                           what = row[6],
                                                            which_pk = committee.id,
                                                            which_type = self.committee_ct,
                                                            )
+                print "new event at %s: %s" % (ev.when, ev.what)
             except Committee.DoesNotExist:
                 logger.debug("couldn't find committee  %s" % row[0])
                 try:
-                    ev, created = Event.objects.get_or_create(when = datetime.datetime( year=row[1], month=row[2], day=row[3] ),
-                                                               what = row[4],
+                    ev, created = Event.objects.get_or_create(when = datetime.datetime( year=row[1], month=row[2], day=row[3], hour=row[4], minute=row[5], second=0 ),
+                                                               what = row[6],
                                                            )
                 except Event.MultipleObjectsReturned:
                     created = False

@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 import logging 
+from django.contrib.contenttypes.models import ContentType
 logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
@@ -14,6 +15,7 @@ from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
+from knesset.events.models import Event 
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 class CommitteeDetailView(DetailView):
@@ -36,7 +38,17 @@ class CommitteeDetailView(DetailView):
         context['replacements'] = cm.replacements.all()
         context['members'] = annotate_members(\
             (cm.members.all()|context['chairpersons']|context['replacements']).distinct())
-        context['meetings_list'] = cm.meetings.all()[:10]
+        recent_meetings = cm.meetings.all().order_by('-date')[:10]
+        context['meetings_list'] = recent_meetings
+        ref_date = recent_meetings[0].date if recent_meetings.count() > 0 else datetime.datetime.now()
+
+        future_events = Event.objects.filter( which_type = ContentType.objects.get_for_model(Committee),
+                                              which_pk = cm.id,
+                                              when__gt = ref_date )
+        print ref_date
+        print future_events 
+        context['future_meetings_list'] = future_events
+        
         return context 
 
 class MeetingDetailView(DetailView):

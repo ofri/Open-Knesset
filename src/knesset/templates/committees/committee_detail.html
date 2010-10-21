@@ -27,6 +27,12 @@
         </ul>
     {% endif %}
     <div class="clear"></div>
+    <h3>{% trans 'Future Meetings' %}</h3>
+	<ul class="item-list">
+        {% for o in future_meetings_list %}
+            {% include "events/_event_li.html" %}
+        {% endfor %}
+	</ul>
     <h3>{% trans 'Last Meetings' %}</h3>
 	<ul class="item-list">
         {% for o in meetings_list %}
