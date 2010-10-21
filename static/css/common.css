@@ -681,6 +681,8 @@ ul.member-summary ul { vertical-align: top; }
 .item-list li {list-style:none; }
 .item-list li:hover { text-decoration: underline; }
 .item-list a { padding: 0; }
+.item-list .date { font-size: 120%; }
+.item-list p { padding-right: 2em; }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
 .secondary-column { float: left; width:35%; padding: 0.5em; }

@@ -1,4 +1,11 @@
+{% load i18n %}
 <li>
-     <h4><span class="date">{{o.when|date:"d/m/Y"}},&nbsp;{{o.when|date:"H:i"}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;{{o.what}}</h4>
+    {% ifchanged %}
+        <div class="date">{% trans "day" %} {{o.when|date:"l, d/m/Y"}}&nbsp;</div>
+    {% endifchanged %}
+    <p>
+     <span class="time">{{o.when|date:"H:i"}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;
+     <span class="title">{{o.what}}</span>
+     </p>
 </li>
 

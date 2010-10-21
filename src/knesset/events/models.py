@@ -6,7 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 from knesset.persons.models import Person
 
 class Event(models.Model):
-
+    ''' hold the when, who, what, where and which fields of events
+        and allows the users to contribute resources (through links)
+        and discuss upcoming events.
+    '''
     when = models.DateTimeField()
     who = models.ManyToManyField(Person)
     what = models.TextField()
