@@ -648,8 +648,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	text-align:center;
 	width:100px;
 	height:16px;
-	background:url(/static/img/marker.png) no-repeat;
-	background-color: #FFE5BA;
+	background:url(/static/img/bar.png) no-repeat;
 }
 
 .percent {
@@ -658,8 +657,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	text-align:center;
 	width:100px;
 	height:16px;
-	background:url(/static/img/marker.png) no-repeat;
-	background-color: #FFE5BA;
+	background:url(/static/img/bar.png) no-repeat;
 }
 
 .comittee_member_detail {
