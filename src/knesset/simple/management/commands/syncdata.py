@@ -11,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
 from knesset.mks.models import Member,Party,Membership,WeeklyPresence
+from knesset.persons.models import Person,PersonAlias
 from knesset.laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
      KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
 from knesset.links.models import Link
@@ -767,6 +768,14 @@ class Command(NoArgsCommand):
         (last_page, page_res) = self.get_protocols_page(page, page_num)
         res = page_res[:]
 
+        mk_names = []
+        mks = []
+        mk_persons = Person.objects.filter(mk__isnull=False)
+        mks.extend(mk_persons)
+        mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
+        mk_names.extend(mk_persons.values_list('name',flat=True))
+        mk_names.extend(mk_aliases.values_list('name',flat=True))
+        mks.extend([alias.person.mk for alias in mk_aliases])
         while (not last_page) and (page_num < max_page):
             page_num += 1
             params = "__EVENTTARGET=gvProtocol&__EVENTARGUMENT=Page%%24%d&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (page_num, view_state, event_validation)
@@ -793,14 +802,15 @@ class Command(NoArgsCommand):
             logger.debug('cm %d created' % cm.id)
             cm.create_protocol_parts()
             try:
-                r = re.search("חברי הוועדה(.*?)\n\n".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                
                 s = r.split('\n')
-                s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
-                for m in Member.objects.all():
+                #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
+                for (i,name) in enumerate(mk_names):
                     for s0 in s:
-                        if s0.find(m.name_with_dashes())>=0:
+                        if s0.find(name)>=0:
                             #print "found %s in %s" % (m.name, str(cm.id))
-                            cm.mks_attended.add(m)
+                            cm.mks_attended.add(mks[i])
             except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
