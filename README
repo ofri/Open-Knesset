@@ -15,6 +15,7 @@ NOTES
 - currently MySQL is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' should be fixed by installing python-dev package
 
+
 Update
 ======
 
@@ -25,6 +26,7 @@ $ bin/django runserver
 
 # if you get the add_persons_aliases alert try this:
 $ bin/django migrate --fake persons 0001
+
 
 
 Windows Users:
