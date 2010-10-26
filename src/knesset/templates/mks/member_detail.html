@@ -31,6 +31,20 @@
         
         $("#"+id+"_percentile").html("<span title='"+"{% trans 'Percentile' %}"+" "+value+"'>"+message+"</span>");                
     }
+
+    function toggle_factional_discipline() {
+        $(".factional_discipline_row").toggleClass("discipline_row");
+        $(".factional_discipline_control").toggleClass("discipline_hide_control");
+    }
+    function toggle_general_discipline() {
+        $(".general_discipline_row").toggleClass("discipline_row");
+        $(".general_discipline_control").toggleClass("discipline_hide_control");
+    }
+    $( function () {
+		    $(".factional_discipline_control").click( function () { toggle_factional_discipline(); } );
+		    $(".general_discipline_control").click( function () { toggle_general_discipline(); } );
+       }
+	);
     </script>
 {% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
@@ -139,14 +153,84 @@
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
 				                </tr>
 				                <tr>
-				                    <td>{% trans "Factional discipline" %}</td>
-				                    <td>{% if object.voting_statistics.discipline %}{{ object.voting_statistics.discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+				                    <td>{% trans "Factional discipline" %} 
+					                    {% if factional_discipline %}
+					                    	<div class="factional_discipline_control expand_button"></div>
+					                    	<div class="factional_discipline_control collapse_button discipline_hide_control"></div>
+					                    {% endif %}
+				                    </td>
+				                    <td>{% if object.voting_statistics.discipline %}
+				                    		{{ object.voting_statistics.discipline }}%
+				                    	{% else %}
+				                    		{% trans 'Not enough data' %}
+				                    	{% endif %}</td>
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
 				                </tr>
 				                <tr>
-				                    <td>{% if object.current_party.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-				                    <td>{% if object.voting_statistics.coalition_discipline %}{{ object.voting_statistics.coalition_discipline }}%{% else %}{% trans 'Not enough data' %}{% endif %}</td>
+					                <td colspan="3">
+					                	<table>
+			                                {% for voteaction in factional_discipline %}
+							                	<tr class="factional_discipline_row discipline_row">
+							                		<td style="width:200px;">
+								                		{% if forloop.first %}
+								                			{% trans 'factional discipline explained' %}
+								                		{% endif %}
+													</td>
+							                		<td colspan="2">
+							                		    {% if object.is_female %}
+			    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+			    										{% else %}
+			    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+			    										{% endif %}
+									                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+							                		</td>
+							                	</tr>
+					                		{% endfor %}		                
+					                	</table>
+					                </td>
+				                </tr>
+				                <tr>
+				                    <td>{% if object.current_party.is_coalition %}
+				                    		{% trans "Coalition discipline" %}
+				                    	{% else %}
+				                    		{% trans 'Opposition discipline' %}
+				                    	{% endif %}
+					                    {% if general_discipline %}
+					                    	<div class="general_discipline_control expand_button"></div>
+					                    	<div class="general_discipline_control collapse_button discipline_hide_control"></div>
+					                    {% endif %}
+				                    </td>
+				                    <td>{% if object.voting_statistics.coalition_discipline %}
+				                    		{{ object.voting_statistics.coalition_discipline }}%				                    		
+				                    	{% else %}{% trans 'Not enough data' %}{% endif %}</td>
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
+				                </tr>
+				                <tr>
+					                <td colspan="3">
+					                	<table>
+			                                {% for voteaction in general_discipline %}
+							                	<tr class="general_discipline_row discipline_row">
+							                		<td style="width:200px;">
+								                		{% if forloop.first %}
+															{% if object.current_party.is_coalition %}
+									                    		{% trans "general discipline explained coalition" %}
+									                    	{% else %}
+									                    		{% trans 'general discipline explained opposition' %}
+									                    	{% endif %}
+									                    {% endif %}													
+				                    				</td>
+							                		<td colspan="2">
+							                		    {% if object.is_female %}
+			    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+			    										{% else %}
+			    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+			    										{% endif %}
+									                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+							                		</td>
+							                	</tr>
+					                		{% endfor %}		                
+					                	</table>
+					                </td>
 				                </tr>
 				            </table>
 				            <br/>

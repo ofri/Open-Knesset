@@ -649,6 +649,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
+	background-color:#E6F1F7;
 }
 
 .percent {
@@ -658,6 +659,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
+	background-color:#E6F1F7;
 }
 
 .comittee_member_detail {
@@ -684,3 +686,40 @@ ul.member-summary ul { vertical-align: top; }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
 .secondary-column { float: left; width:35%; padding: 0.5em; }
+
+/* mk detail - discipline stuff */
+.factional_discipline_row td, 
+.general_discipline_row td
+{
+	vertical-align:top;
+} 
+
+.factional_discipline_row.discipline_row, 
+.general_discipline_row.discipline_row 
+{
+	display:none;
+}
+
+.factional_discipline_control.discipline_hide_control,
+.general_discipline_control.discipline_hide_control
+ {
+	display:none;
+}
+
+div.factional_discipline_control, 
+div.general_discipline_control {
+	height:16px;
+	width:16px;
+	display:inline-block;
+}
+
+.factional_discipline_control.expand_button, 
+.general_discipline_control.expand_button{
+	background:url(/static/img/bullet_toggle_plus.png) no-repeat 4px 4px;
+}
+
+.factional_discipline_control.collapse_button, 
+.general_discipline_control.collapse_button{
+	background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
+}
+

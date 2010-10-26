@@ -21,6 +21,7 @@ VOTE_ACTION_TYPE_CHOICES = (
 )
 
 
+
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
 

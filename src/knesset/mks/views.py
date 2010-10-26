@@ -18,7 +18,7 @@ from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
-from knesset.laws.models import MemberVotingStatistics, Bill
+from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.agendas.models import Agenda
 
@@ -236,6 +236,16 @@ class MemberDetailView(DetailView):
                     agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
         
+        factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+
+        general_discipline_params = { 'member' : member }
+        is_coalition = member.current_party.is_coalition
+        if is_coalition:
+            general_discipline_params['against_coalition'] = True
+        else:
+            general_discipline_params['against_opposition'] = True
+        general_discipline = VoteAction.objects.filter(**general_discipline_params)
+        
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
@@ -243,6 +253,8 @@ class MemberDetailView(DetailView):
                 'bills_tags':bills_tags,
                 'agendas':agendas,
                 'presence':presence,
+                'factional_discipline':factional_discipline,
+                'general_discipline':general_discipline,
                })
         return context
 
