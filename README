@@ -23,6 +23,8 @@ $ git pull git://github.com/ofri/Open-Knesset.git master
 $ bin/django syncdb --migrate # do not create a superuser account
 $ bin/django runserver
 
+# if you get the add_persons_aliases alert try this:
+$ bin/django migrate --fake persons 0001
 
 
 Windows Users:
