@@ -1,11 +1,19 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 class Title(models.Model):
     name = models.CharField(max_length=64)
 
     def __unicode__(self):
         return self.name
+
+class PersonAlias(models.Model):
+    name = models.CharField(max_length=64)
+    person = models.ForeignKey('Person')
+    
+    def __unicode__(self):
+        return "%s -> %s" % (self.name, self.person.name)
 
 class Person(models.Model):
     name = models.CharField(max_length=64)
@@ -30,6 +38,22 @@ class Person(models.Model):
     def number_of_committees(self):
         return self.protocol_parts.values('meeting__committee').distinct().count()
 
+    def merge(self, other):
+        """make other into an alias of self"""
+        if other.mk:
+            if self.mk and self.mk != other.mk:
+                # something is wrong, we are trying to merge two persons with non matching MKs
+                raise ValidationError('Trying to merge persons with non matching MKs')
+            self.mk = other.mk
+        for title in other.titles.all():
+            self.titles.add(title)
+        for role in other.roles.all():
+            role.person = self
+            role.save()
+        (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
+        if created:
+            pa.save()
+        self.save()
         
 class Role(models.Model):
     text = models.CharField(blank=True,null=True, max_length=1024)
