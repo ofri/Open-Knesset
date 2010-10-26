@@ -16,6 +16,19 @@ NOTES
 - on bin/buildout, problems with getting distribution for 'PIL' should be fixed by installing python-dev package
 
 
+Update
+======
+
+$ cd Open-Knesset 
+$ git pull git://github.com/ofri/Open-Knesset.git master
+$ bin/django syncdb --migrate # do not create a superuser account
+$ bin/django runserver
+
+# if you get the add_persons_aliases alert try this:
+$ bin/django migrate --fake persons 0001
+
+
+
 Windows Users:
 --------------
 
