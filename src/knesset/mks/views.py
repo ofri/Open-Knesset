@@ -275,6 +275,8 @@ class PartyListView(ListView):
                               ['.?info=bills-pre', _('By bills passed pre vote'), False],
                               ['.?info=bills-first', _('By bills passed first vote'), False],
                               ['.?info=bills-approved', _('By bills approved'), False],
+                              ['.?info=presence', _('By average weekly hours of presence'), False],
+                              ['.?info=committees', _('By average monthly committee meetings'), False],
                               ]
 
         if info:
@@ -423,6 +425,53 @@ class PartyListView(ListView):
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
                 context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
+			
+            if info=='presence':
+                m = 9999
+                for p in context['coalition']:
+                    awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
+                    if awp:
+                        p.extra = float(sum(awp))/len(awp)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
+                    if awp:
+                        p.extra = float(sum(awp))/len(awp)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][10][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by average weekly hours of presence'))                    
+
+            if info=='committees':
+                m = 9999
+                for p in context['coalition']:
+                    cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
+                    if cmpm:
+                        p.extra = float(sum(cmpm))/len(cmpm)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
+                    if cmpm:
+                        p.extra = float(sum(cmpm))/len(cmpm)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][11][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by monthly committee meetings'))  
+			
         return context
 
 class PartyDetailView(DetailView):
