@@ -70,6 +70,11 @@ I have a deadline''')
         self.assertEqual(stream[1].verb, 'got badge')
         self.assertEqual(stream[2].verb, 'annotated')
         self.assertEqual(stream[2].target.id, annotation.id)
+        # ensure we will see it on the committee page
+        annotations = self.committee_1.annotations
+        self.assertEqual(annotations.count(), 1)
+        self.assertEqual(annotations[0].comment, 'just perfect')
+
 
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email
@@ -97,11 +102,11 @@ I have a deadline''')
 
     def testCommitteeMeetings(self):
         res = self.client.get(reverse('committee-detail',
-                                 kwargs={'committee_id': self.committee_1.id}))
+                                 kwargs={'object_id': self.committee_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
-                                'committees/committeemeeting_list.html')
-        object_list = res.context['object_list']
+                                'committees/committee_detail.html')
+        object_list = res.context['meetings_list']
         self.assertEqual(map(just_id, object_list), 
                          [self.meeting_1.id, self.meeting_2.id, ], 
                          'object_list has wrong objects: %s' % object_list)
