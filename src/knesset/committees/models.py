@@ -30,6 +30,21 @@ class Committee(models.Model):
     def get_absolute_url(self):
         return ('committee-detail', [str(self.id)])
 
+    @property
+    def annotations(self):
+        protocol_part_tn = ProtocolPart._meta.db_table
+        meeting_tn = CommitteeMeeting._meta.db_table
+        committee_tn = Committee._meta.db_table
+        annotation_tn = Annotation._meta.db_table
+        protocol_part_ct = ContentType.objects.get_for_model(ProtocolPart)
+        ret = Annotation.objects.filter(content_type=protocol_part_ct)
+        return ret.extra(tables = [protocol_part_tn,
+                    meeting_tn, committee_tn],
+                    where = [ "%s.object_id=%s.id" % (annotation_tn, protocol_part_tn),
+                              "%s.meeting_id=%s.id" % (protocol_part_tn, meeting_tn),
+                              "%s.committee_id=%%s" % meeting_tn],
+                    params = [ self.id ]).distinct()
+
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):

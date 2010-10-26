@@ -615,15 +615,14 @@ div.color_swatch {
 .box-agenda { clear:both; }
 .avatar-form li { display: inline; list-style-type: none; }
 .users-annotation {padding-right:0.5em;}
-div.mk-card {
+div.mk-card , .tip {
     display:inline-block;
     border:1px solid #000080;
     background:#cfd4e7;
 }
 div.mk-card > div { float:right }
-#content-main div.mk-card>a {
-    padding:0px;
-}
+div.mk-card>a { padding:0px; }
+.tip { width: 20em; padding: 0.5em; display: none; }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
 #content-main .proposal_content_text { margin:1em; padding:0em 1em; border:1px dashed gray; width:60%; line-height:1.6;}
 #debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}
@@ -683,6 +682,12 @@ ul.member-summary ul { vertical-align: top; }
 .item-list a { padding: 0; }
 .item-list .date { font-size: 120%; }
 .item-list p { padding-right: 2em; }
+/* annotations */
+ul.annotations { list-style-type: disc; padding: 1em; }
+.annotations li { display: block; line-height: 200%; padding-bottom: 0.5em; position:relative;}
+.annotations li:after { content: "   ";}
+.annotations li.last:after { content: "";}
+.user_id { margin-right: 0.5em; width:60px; float: right; text-align:center; }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
 .secondary-column { float: left; width:35%; padding: 0.5em; }

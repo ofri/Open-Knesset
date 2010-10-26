@@ -42,7 +42,7 @@ class CommitteeDetailView(DetailView):
         context['meetings_list'] = recent_meetings
         ref_date = recent_meetings[0].date if recent_meetings.count() > 0 else datetime.datetime.now()
         context['future_meetings_list'] = cm.events.filter(when__gt = ref_date)
-
+        context['annotations'] = cm.annotations.order_by('-timestamp')
         return context 
 
 class MeetingDetailView(DetailView):
