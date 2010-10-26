@@ -4,10 +4,12 @@ import logging
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
+from django.contrib.contenttypes import generic
 
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
+from knesset.events.models import Event
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
@@ -18,7 +20,9 @@ class Committee(models.Model):
     members = models.ManyToManyField('mks.Member', related_name='committees')
     chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees')
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
-    
+    events = generic.GenericRelation(Event, content_type_field="which_type",
+       object_id_field="which_pk")
+
     def __unicode__(self):
         return "%s" % self.name
 
@@ -49,9 +53,12 @@ class CommitteeMeeting(models.Model):
         verbose_name = _('Committee Meeting')
         verbose_name_plural = _('Committee Meetings')
 
+    def title (self):
+        return truncate_words (self.topics, 12)
+
     def __unicode__(self):
-        return truncate_words(u"%s - %s" % (self.committee.name,
-                                self.topics), 16).replace("&nbsp;", u"\u00A0")
+        return (u"%s - %s" % (self.committee.name,
+                                self.title())).replace("&nbsp;", u"\u00A0")
     
     @models.permalink
     def get_absolute_url(self):
