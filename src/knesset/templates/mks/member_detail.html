@@ -15,7 +15,7 @@
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
     <script>
     function set_percentile(id,value) {
-        $("#"+id+"_percentile").css('background-position',((100-value)-8)+"px 4px");
+        $("#"+id+"_percentile").css('background-position',((100-value))+"px 0px");
         var message;
         if ( value < 20 ) {
             message = "{% trans 'Extremely below average' %}";                
