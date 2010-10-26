@@ -50,6 +50,10 @@ class Command(NoArgsCommand):
             logger.debug("user entered values: name=%s role=%s" % (name,role))
             return {'name':name, 'role':role}
         if i2<i: # non spaced delimiter is before the spaced delimiter, ask user what to do
+            if line in self.problematic_lines: # we already asked the user about this exact line. 
+                return None # no need to ask again
+            self.problematic_lines.append(line) # make sure we don't ask again in the future
+
             print "Found non spaced delimiter in"
             print line[::-1]
             pos = []
@@ -168,12 +172,3 @@ class Command(NoArgsCommand):
                 last_cm = part.meeting
             self.create_names_from_attendees_part(part)
             
-        # Find persons in all protocol parts:
-        names = list(Person.objects.values_list('name',flat=True))
-        names.sort(key=lambda x:len(x), reverse=True)
-        for p in ProtocolPart.objects.filter(speaker__isnull=True):
-            for name in names:
-                if p.header.find(name)>=0: 
-                    p.speaker = Person.objects.get(name=name)
-                    p.save()
-                    break

@@ -53,6 +53,10 @@ class Person(models.Model):
         (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
         if created:
             pa.save()
+        for part in other.protocol_parts.all():
+            part.speaker = self
+            part.save()
+        other.delete()
         self.save()
         
 class Role(models.Model):
