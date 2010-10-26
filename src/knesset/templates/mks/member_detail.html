@@ -41,8 +41,8 @@
         $(".general_discipline_control").toggleClass("discipline_hide_control");
     }
     $( function () {
-		    $(".factional_discipline_control").click( function () { toggle_factional_discipline(); } );
-		    $(".general_discipline_control").click( function () { toggle_general_discipline(); } );
+		    $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
+		    $(".general_discipline").click( function () { toggle_general_discipline(); } );
        }
 	);
     </script>
@@ -153,10 +153,14 @@
 				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
 				                </tr>
 				                <tr>
-				                    <td>{% trans "Factional discipline" %} 
+				                    <td>{% if factional_discipline %}
+					                    	<a class="factional_discipline">
+				                    	{% endif %}
+				                    	{% trans "Factional discipline" %} 
 					                    {% if factional_discipline %}
-					                    	<div class="factional_discipline_control expand_button"></div>
-					                    	<div class="factional_discipline_control collapse_button discipline_hide_control"></div>
+					                    	</a>
+					                    	<div class="factional_discipline factional_discipline_control expand_button"></div>
+					                    	<div class="factional_discipline factional_discipline_control collapse_button discipline_hide_control"></div>
 					                    {% endif %}
 				                    </td>
 				                    <td>{% if object.voting_statistics.discipline %}
@@ -190,14 +194,19 @@
 					                </td>
 				                </tr>
 				                <tr>
-				                    <td>{% if object.current_party.is_coalition %}
+				                    <td>
+					                    {% if general_discipline %}
+					                    	<a class="general_discipline">
+				                    	{% endif %}
+				                    	{% if object.current_party.is_coalition %}
 				                    		{% trans "Coalition discipline" %}
 				                    	{% else %}
 				                    		{% trans 'Opposition discipline' %}
 				                    	{% endif %}
 					                    {% if general_discipline %}
-					                    	<div class="general_discipline_control expand_button"></div>
-					                    	<div class="general_discipline_control collapse_button discipline_hide_control"></div>
+					                    	</a>
+					                    	<div class="general_discipline general_discipline_control expand_button"></div>
+					                    	<div class="general_discipline general_discipline_control collapse_button discipline_hide_control"></div>
 					                    {% endif %}
 				                    </td>
 				                    <td>{% if object.voting_statistics.coalition_discipline %}
