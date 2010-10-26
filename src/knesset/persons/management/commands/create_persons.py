@@ -172,12 +172,3 @@ class Command(NoArgsCommand):
                 last_cm = part.meeting
             self.create_names_from_attendees_part(part)
             
-        # Find persons in all protocol parts:
-        names = list(Person.objects.values_list('name',flat=True))
-        names.sort(key=lambda x:len(x), reverse=True)
-        for p in ProtocolPart.objects.filter(speaker__isnull=True):
-            for name in names:
-                if p.header.find(name)>=0: 
-                    p.speaker = Person.objects.get(name=name)
-                    p.save()
-                    break
