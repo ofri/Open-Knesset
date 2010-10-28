@@ -431,7 +431,7 @@ class PartyListView(ListView):
                 for p in context['coalition']:
                     awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
                     if awp:
-                        p.extra = float(sum(awp))/len(awp)
+                        p.extra = round(float(sum(awp))/len(awp),1)
                     else:
                         p.extra = 0
                     if p.extra < m:
@@ -439,7 +439,7 @@ class PartyListView(ListView):
                 for p in context['opposition']:
                     awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
                     if awp:
-                        p.extra = float(sum(awp))/len(awp)
+                        p.extra = round(float(sum(awp))/len(awp),1)
                     else:
                         p.extra = 0
                     if p.extra < m:
@@ -454,7 +454,7 @@ class PartyListView(ListView):
                 for p in context['coalition']:
                     cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
                     if cmpm:
-                        p.extra = float(sum(cmpm))/len(cmpm)
+                        p.extra = round(float(sum(cmpm))/len(cmpm),1)
                     else:
                         p.extra = 0
                     if p.extra < m:
@@ -462,7 +462,7 @@ class PartyListView(ListView):
                 for p in context['opposition']:
                     cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
                     if cmpm:
-                        p.extra = float(sum(cmpm))/len(cmpm)
+                        p.extra = round(float(sum(cmpm))/len(cmpm),1)
                     else:
                         p.extra = 0
                     if p.extra < m:
