@@ -2,7 +2,7 @@
 import logging, re
 from django.core.management.base import NoArgsCommand
 from django.db.models import Q
-from knesset.committees.models import ProtocolPart
+from knesset.committees.models import CommitteeMeeting,ProtocolPart
 from knesset.mks.models import Member
 from knesset.persons.models import Person,PersonAlias
 
@@ -24,8 +24,9 @@ class Command(NoArgsCommand):
                     parts_updated = ProtocolPart.objects.filter(header=pp_header).update(speaker=person)                    
                     print "updated speaker for %d parts to %s" % (parts_updated,person.name)
                     if person.mk:
-                        for pp in ProtocolPart.objects.filter(header=pp_header):
-                            pp.meeting.mks_attended.add(person.mk)
+                        cm_ids = set(ProtocolPart.objects.filter(header=pp_header).values_list('meeting__id',flat=True))
+                        for cm in CommitteeMeeting.objects.filter(id__in=cm_ids):
+                            cm.mks_attended.add(person.mk)
                     break
         
         # find mks in the presence protocol part. this is needed for MKs that don't talk.
@@ -42,5 +43,5 @@ class Command(NoArgsCommand):
         for part in ProtocolPart.objects.filter(header=title):
             for (i,name) in enumerate(mk_names):
                 for line in part.body.split('\n'):
-                    if line.find(name)>=0:                        
+                    if line.find(name)>=0:
                         part.meeting.mks_attended.add(mks[i])
