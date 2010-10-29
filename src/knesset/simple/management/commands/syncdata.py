@@ -1000,7 +1000,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['proposers']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.proposers.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
@@ -1009,7 +1009,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.joiners.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
