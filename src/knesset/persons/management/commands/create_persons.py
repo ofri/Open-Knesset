@@ -1,20 +1,23 @@
 # encoding: utf-8
 import logging, re
+from optparse import make_option
 from django.core.management.base import NoArgsCommand
-from django.db.models import Q
+from django.db.models import Q,Max
 from knesset.committees.models import ProtocolPart
 from knesset.mks.models import Member
-from knesset.persons.models import Title,Person,Role
+from knesset.persons.models import Person,PersonAlias,Title,Role,ProcessedProtocolPart
 
 logger = logging.getLogger("open-knesset.persons.create_persons")
 
-
-
-    
-
 class Command(NoArgsCommand):
+    option_list = NoArgsCommand.option_list + (
+        make_option('--dont_ask', action='store_true', dest='dont_ask',
+            help="always answer 'ignore' instead of asking the user. used for debugging"),
+    )
     
     problematic_lines = None
+    dont_ask = False
+    
     def get_name_and_role(self,line):    
         delim = False
         try:
@@ -30,6 +33,8 @@ class Command(NoArgsCommand):
         
         if not delim:
             # didn't find any delimiters, ask user
+            if self.dont_ask:
+                return None
             if line in self.problematic_lines: # we already asked the user about this exact line. 
                 return None # no need to ask again
             self.problematic_lines.append(line) # make sure we don't ask again in the future
@@ -50,6 +55,8 @@ class Command(NoArgsCommand):
             logger.debug("user entered values: name=%s role=%s" % (name,role))
             return {'name':name, 'role':role}
         if i2<i: # non spaced delimiter is before the spaced delimiter, ask user what to do
+            if self.dont_ask:
+                return None
             if line in self.problematic_lines: # we already asked the user about this exact line. 
                 return None # no need to ask again
             self.problematic_lines.append(line) # make sure we don't ask again in the future
@@ -102,28 +109,33 @@ class Command(NoArgsCommand):
                     name = (name[:i]+name[i+len(t.name):]).strip()
                     found_titles.add(t)
             if len(name)>=64:
-                logger.warn('name too long:' % name)
+                logger.warn('name too long: %s in part %d' % (name,part.id))
                 continue
-            (p,created) = Person.objects.get_or_create(name=name)
-            if created: 
-                p.save()
-                logger.debug("person created: %s" % p.name)
+            if PersonAlias.objects.filter(name=name).count():
+                p = PersonAlias.objects.filter(name=name)[0].person
+            elif Person.objects.filter(name=name).count():
+                p = Person.objects.filter(name=name)[0]
             else:
-                logger.debug("person already exists: %s" % p.name)
-            
+                p = Person.objects.create(name=name)
+                                
             for t in found_titles:
                 p.titles.add(t)
                 logger.debug("adding title: %s" % t)
                 
             if role:
-                (r,created) = Role.objects.get_or_create(text=role,person=p)
-                if created:
-                    r.save()
-                    logger.debug("created role %s" % r.text)
-                else:
-                    logger.debug("role already exists: %s" % r.text)
+                try:
+                    (r,created) = Role.objects.get_or_create(text=role,person=p)
+                    if created:
+                        r.save()
+                        logger.debug("created role %s" % r.text)
+                    else:
+                        logger.debug("role already exists: %s" % r.text)
+                except Role.MultipleObjectsReturned,e:
+                    logger.warn(e)
     
     def handle_noargs(self, **options):
+        
+        self.dont_ask = options.get('dont_ask', False)
         
         self.problematic_lines = []
         
@@ -169,9 +181,16 @@ class Command(NoArgsCommand):
         title2 = 'חברי הוועדה'.decode('utf-8')
         
         last_cm = None
-        for part in ProtocolPart.objects.filter(Q(header=title1)|Q(header=title2)):
+        if ProcessedProtocolPart.objects.count():
+            last_protocol_part = ProcessedProtocolPart.objects.all()[0]
+        else: # we didn't create a ProcessedProtocolPart yet. probably the first time we're running this
+            last_protocol_part = ProcessedProtocolPart.objects.create(protocol_part_id=0)
+        qs = ProtocolPart.objects.filter(Q(header=title1)|Q(header=title2), id__gt=last_protocol_part.protocol_part_id)
+        for part in qs:
             if part.meeting != last_cm:
                 print "\nCommitteeMeeting: %d" % part.meeting.id
                 last_cm = part.meeting
             self.create_names_from_attendees_part(part)
-            
+        if qs:
+            last_protocol_part.protocol_part_id = qs.aggregate(m=Max('id'))['m']
+            last_protocol_part.save()
