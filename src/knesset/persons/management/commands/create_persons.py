@@ -101,6 +101,9 @@ class Command(NoArgsCommand):
                 if i >= 0:
                     name = (name[:i]+name[i+len(t.name):]).strip()
                     found_titles.add(t)
+            if len(name)>=64:
+                logger.warn('name too long:' % name)
+                continue
             (p,created) = Person.objects.get_or_create(name=name)
             if created: 
                 p.save()
