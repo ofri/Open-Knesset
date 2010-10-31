@@ -96,12 +96,11 @@ I have a deadline''')
                          [ self.committee_1.id, self.committee_2.id, ])
 
     def testCommitteeMeetings(self):
-        res = self.client.get(reverse('committee-detail',
-                                 kwargs={'committee_id': self.committee_1.id}))
+        res = self.client.get(self.committee_1.get_absolute_url())
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
-                                'committees/committeemeeting_list.html')
-        object_list = res.context['object_list']
+                                'committees/committee_detail.html')
+        object_list = res.context['meetings_list']
         self.assertEqual(map(just_id, object_list), 
                          [self.meeting_1.id, self.meeting_2.id, ], 
                          'object_list has wrong objects: %s' % object_list)
