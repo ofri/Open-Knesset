@@ -42,7 +42,7 @@ class MemberListView(ListView):
     def get_context(self):
         info = self.request.GET.get('info','bills_pre')
         original_context = super(MemberListView, self).get_context()
-        qs = original_context['object_list']
+        qs = original_context['object_list'].filter(is_current=True)
         context = cache.get('member_list_by_%s' % info) or {}
         if context:
             original_context.update(context)
