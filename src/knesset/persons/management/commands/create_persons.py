@@ -139,37 +139,13 @@ class Command(NoArgsCommand):
         
         self.problematic_lines = []
         
-        if not Title.objects.count():
-            logger.debug("no titles found. creating.")
-            Title.objects.create(name='חה"כ')
-            Title.objects.create(name='ח"כ')
-            Title.objects.create(name='ד"ר')
-            Title.objects.create(name="דר'")
-            Title.objects.create(name='פרופסור')
-            Title.objects.create(name='פרופ\'')
-            Title.objects.create(name='עו"ד')
-            Title.objects.create(name='רו"ח')
-            # army ranks
-            Title.objects.create(name='סג"מ')
-            Title.objects.create(name='סגן')
-            Title.objects.create(name='סרן')
-            Title.objects.create(name='רס"ן')
-            Title.objects.create(name='סא"ל')
-            Title.objects.create(name='אל"מ')
-            Title.objects.create(name='תא"ל')
-            Title.objects.create(name='אלוף')
-            Title.objects.create(name='רא"ל')
-            # police ranks
-            Title.objects.create(name='פקד')
-            Title.objects.create(name='רפ"ק')
-            Title.objects.create(name='סנ"צ')
-            Title.objects.create(name='תנ"צ')
-            Title.objects.create(name='נצ"מ')
-            Title.objects.create(name='ניצב')
-            #
-            Title.objects.create(name='סג"ד')
-            Title.objects.create(name='גנ"מ')
-            
+        titles = ['חה"כ','ח"כ','חכ"ל','ד"ר',"דר'",'פרופסור','פרופ\'','עו"ד','רו"ח','הרב',
+'סג"מ','סגן','סרן','רס"ן','סא"ל','אל"מ','תא"ל','אלוף','רא"ל',
+'פקד','רפ"ק','סנ"צ','תנ"צ','נצ"מ','ניצב','סג"ד','גנ"מ']
+        for title in titles:
+            (t,created) = Title.objects.get_or_create(name=title)
+            if created:
+                t.save()
             
         t = Title.objects.get(name='חה"כ')
         for member in Member.objects.all():
@@ -177,6 +153,7 @@ class Command(NoArgsCommand):
             person.titles.add(t)
             person.mk = member
             person.save()
+        
         title1 = 'מוזמנים'.decode('utf-8')
         title2 = 'חברי הוועדה'.decode('utf-8')
         
@@ -186,11 +163,16 @@ class Command(NoArgsCommand):
         else: # we didn't create a ProcessedProtocolPart yet. probably the first time we're running this
             last_protocol_part = ProcessedProtocolPart.objects.create(protocol_part_id=0)
         qs = ProtocolPart.objects.filter(Q(header=title1)|Q(header=title2), id__gt=last_protocol_part.protocol_part_id)
+        max_updated = 0
         for part in qs:
             if part.meeting != last_cm:
+                x = raw_input("Quit? ")
+                if x=='y' or x=='Y':
+                    break
                 print "\nCommitteeMeeting: %d" % part.meeting.id
                 last_cm = part.meeting
             self.create_names_from_attendees_part(part)
-        if qs:
-            last_protocol_part.protocol_part_id = qs.aggregate(m=Max('id'))['m']
+            max_updated = max(max_updated,part.id)
+        if max_updated:
+            last_protocol_part.protocol_part_id = max_updated
             last_protocol_part.save()
