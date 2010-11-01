@@ -11,7 +11,7 @@ function generateMkFrameSet(params) {
   if (classHook) {
       var elements = jQuery('.'+classHook);
       for (var i=0; i<elements.length; i++){
-          if (elements[i].getAttribute('mk_id') != null)
+          if (elements[i].getAttribute('mk_id'))
               var frame = createMkFrame(elements[i].getAttribute('mk_id'));
           else
               var frame = createMkFrame(elements[i].innerHTML);
