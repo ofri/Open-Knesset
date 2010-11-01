@@ -18,10 +18,10 @@ function generateMkFrameSet(params) {
           if (targetId)
               jQuery('#'+targetId).append(frame);
           else {
-              jQuery(elements[i]).after(frame);
+              jQuery(this).after(frame);
               frame.style.display = "none";
           }
-      }
+      });
       if (!targetId)
           elements.tooltip({position: "bottom center"} );
   }

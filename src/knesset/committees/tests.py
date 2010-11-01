@@ -101,8 +101,7 @@ I have a deadline''')
                          [ self.committee_1.id, self.committee_2.id, ])
 
     def testCommitteeMeetings(self):
-        res = self.client.get(reverse('committee-detail',
-                                 kwargs={'object_id': self.committee_1.id}))
+        res = self.client.get(self.committee_1.get_absolute_url())
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'committees/committee_detail.html')
