@@ -6,6 +6,9 @@
 		<meta http-equiv="Content-Language" content="he">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://127.0.0.1:8000/static/js/oknesset_widget.js"></script>
+        <STYLE type="text/css">
+            span.mk { font-size: 120%; text-decoration: underline; cursor: pointer;}
+        </style>
     </head>
 <body style="direction:rtl;margin:3em 20%; ">
     <div id="content">
@@ -20,7 +23,7 @@
         for (var i=0; i<names.length; i++){
             var index = content.indexOf(names[i]);
             if (index>=0) {
-                content = content.substr(0,index) + "<span class='mk'>"+content.substr(index,names[i].length)+"</span>"+content.substr(index+names[i].length);
+                content = content.substr(0,index) + "<span class='mk' mk_id='"+ids[i]+"'>"+content.substr(index,names[i].length)+"</span>"+content.substr(index+names[i].length);
             }
         }
         $("#content").html(content);
