@@ -70,6 +70,11 @@ I have a deadline''')
         self.assertEqual(stream[1].verb, 'got badge')
         self.assertEqual(stream[2].verb, 'annotated')
         self.assertEqual(stream[2].target.id, annotation.id)
+        # ensure we will see it on the committee page
+        annotations = self.committee_1.annotations
+        self.assertEqual(annotations.count(), 1)
+        self.assertEqual(annotations[0].comment, 'just perfect')
+
 
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email

@@ -20,7 +20,7 @@ class ParseGLC:
         while not(html_page):
             try:
                 html_page = urllib2.urlopen(url, timeout=30).read()
-            except (urllib2.URLError, timeout):
+            except urllib2.URLError:
                 retry_count += 1
                 if retry_count >= 10:
                     raise urllib2.URLError('URL %s failed too many times' % url)

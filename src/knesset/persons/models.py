@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.forms.fields import IntegerField
 
 class Title(models.Model):
     name = models.CharField(max_length=64)
@@ -53,6 +54,10 @@ class Person(models.Model):
         (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
         if created:
             pa.save()
+        for part in other.protocol_parts.all():
+            part.speaker = self
+            part.save()
+        other.delete()
         self.save()
         
 class Role(models.Model):
@@ -61,4 +66,8 @@ class Role(models.Model):
 
     def __unicode__(self):
         return self.text
-    
+ 
+class ProcessedProtocolPart(models.Model):
+    """This model is used to keep track of protocol parts already searched for creating persons.
+       There should be only 1 record in it, with the max id of a protocol part searched"""
+    protocol_part_id = models.IntegerField()     

@@ -18,7 +18,7 @@ from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
-from knesset.laws.models import MemberVotingStatistics, Bill
+from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.agendas.models import Agenda
 
@@ -42,7 +42,7 @@ class MemberListView(ListView):
     def get_context(self):
         info = self.request.GET.get('info','bills_pre')
         original_context = super(MemberListView, self).get_context()
-        qs = original_context['object_list']
+        qs = original_context['object_list'].filter(is_current=True)
         context = cache.get('member_list_by_%s' % info) or {}
         if context:
             original_context.update(context)
@@ -236,6 +236,16 @@ class MemberDetailView(DetailView):
                     agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
         
+        factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+
+        general_discipline_params = { 'member' : member }
+        is_coalition = member.current_party.is_coalition
+        if is_coalition:
+            general_discipline_params['against_coalition'] = True
+        else:
+            general_discipline_params['against_opposition'] = True
+        general_discipline = VoteAction.objects.filter(**general_discipline_params)
+        
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
@@ -243,6 +253,8 @@ class MemberDetailView(DetailView):
                 'bills_tags':bills_tags,
                 'agendas':agendas,
                 'presence':presence,
+                'factional_discipline':factional_discipline,
+                'general_discipline':general_discipline,
                })
         return context
 
@@ -263,6 +275,8 @@ class PartyListView(ListView):
                               ['.?info=bills-pre', _('By bills passed pre vote'), False],
                               ['.?info=bills-first', _('By bills passed first vote'), False],
                               ['.?info=bills-approved', _('By bills approved'), False],
+                              ['.?info=presence', _('By average weekly hours of presence'), False],
+                              ['.?info=committees', _('By average monthly committee meetings'), False],
                               ]
 
         if info:
@@ -411,6 +425,53 @@ class PartyListView(ListView):
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
                 context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
+			
+            if info=='presence':
+                m = 9999
+                for p in context['coalition']:
+                    awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
+                    if awp:
+                        p.extra = round(float(sum(awp))/len(awp),1)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
+                    if awp:
+                        p.extra = round(float(sum(awp))/len(awp),1)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][10][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by average weekly hours of presence'))                    
+
+            if info=='committees':
+                m = 9999
+                for p in context['coalition']:
+                    cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
+                    if cmpm:
+                        p.extra = round(float(sum(cmpm))/len(cmpm),1)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                for p in context['opposition']:
+                    cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
+                    if cmpm:
+                        p.extra = round(float(sum(cmpm))/len(cmpm),1)
+                    else:
+                        p.extra = 0
+                    if p.extra < m:
+                        m = p.extra
+                context['friend_pages'][11][2] = True
+                context['norm_factor'] = m/2
+                context['baseline'] = 0
+                context['title'] = "%s" % (_('Parties by monthly committee meetings'))  
+			
         return context
 
 class PartyDetailView(DetailView):

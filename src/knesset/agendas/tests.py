@@ -5,6 +5,8 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.utils import translation
+from django.conf import settings
 
 from models import Agenda, AgendaVote
 from knesset.laws.models import Vote
@@ -52,6 +54,7 @@ class SimpleTest(TestCase):
         self.domain = 'http://' + Site.objects.get_current().domain
     
     def testAgendaList(self):
+        translation.activate(settings.LANGUAGE_CODE)
         # test anonymous user
         res = self.client.get(reverse('agenda-list'))
         self.assertEqual(res.status_code, 200)
@@ -86,6 +89,8 @@ class SimpleTest(TestCase):
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
                          [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
+        
+        translation.deactivate()
         
     def testAgendaDetail(self):
         

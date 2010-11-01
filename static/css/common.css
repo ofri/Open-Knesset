@@ -615,15 +615,14 @@ div.color_swatch {
 .box-agenda { clear:both; }
 .avatar-form li { display: inline; list-style-type: none; }
 .users-annotation {padding-right:0.5em;}
-div.mk-card {
+div.mk-card , .tip {
     display:inline-block;
     border:1px solid #000080;
     background:#cfd4e7;
 }
 div.mk-card > div { float:right }
-#content-main div.mk-card>a {
-    padding:0px;
-}
+div.mk-card>a { padding:0px; }
+.tip { width: 20em; padding: 0.5em; display: none; }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
 #content-main .proposal_content_text { margin:1em; padding:0em 1em; border:1px dashed gray; width:60%; line-height:1.6;}
 #debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}
@@ -649,6 +648,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
+	background-color:#E6F1F7;
 }
 
 .percent {
@@ -658,6 +658,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
+	background-color:#E6F1F7;
 }
 
 .comittee_member_detail {
@@ -681,6 +682,49 @@ ul.member-summary ul { vertical-align: top; }
 .item-list a { padding: 0; }
 .item-list .date { font-size: 120%; }
 .item-list p { padding-right: 2em; }
+/* annotations */
+ul.annotations { list-style-type: disc; padding: 1em; }
+.annotations li { display: block; line-height: 200%; padding-bottom: 0.5em; position:relative;}
+.annotations li:after { content: "   ";}
+.annotations li.last:after { content: "";}
+.user_id { margin-right: 0.5em; width:60px; float: right; text-align:center; }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
 .secondary-column { float: left; width:35%; padding: 0.5em; }
+
+/* mk detail - discipline stuff */
+.factional_discipline_row td, 
+.general_discipline_row td
+{
+	vertical-align:top;
+} 
+
+.factional_discipline_row.discipline_row, 
+.general_discipline_row.discipline_row 
+{
+	display:none;
+}
+
+.factional_discipline_control.discipline_hide_control,
+.general_discipline_control.discipline_hide_control
+ {
+	display:none;
+}
+
+div.factional_discipline_control, 
+div.general_discipline_control {
+	height:16px;
+	width:16px;
+	display:inline-block;
+}
+
+.factional_discipline_control.expand_button, 
+.general_discipline_control.expand_button{
+	background:url(/static/img/bullet_toggle_plus.png) no-repeat 4px 4px;
+}
+
+.factional_discipline_control.collapse_button, 
+.general_discipline_control.collapse_button{
+	background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
+}
+
