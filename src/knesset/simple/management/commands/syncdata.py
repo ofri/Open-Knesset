@@ -1005,7 +1005,7 @@ class Command(NoArgsCommand):
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find proposer: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find proposer: %s" % m0)
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
@@ -1014,7 +1014,7 @@ class Command(NoArgsCommand):
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find joiner: %s" % m0)
 
                 # try to look for similar PPs already created:
                 p = PrivateProposal.objects.filter(title=title,law=law).exclude(id=pl.id)
