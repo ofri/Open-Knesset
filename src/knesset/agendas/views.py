@@ -2,17 +2,20 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 #from django.core.urlresolvers import reverse
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
 from knesset.mks.models import Member, Party
+from knesset.api.urls import vote_handler
 
 from forms import EditAgendaForm, AddAgendaForm
 from models import Agenda, AgendaVote, score_text_to_score
 
-
+from django.test import Client
+from django.core.handlers.wsgi import WSGIRequest
+    
 class AgendaListView (ListView):
     def get_queryset(self):
         if not self.request.user.is_authenticated():
@@ -97,6 +100,28 @@ class AgendaDetailEditView (DetailView):
             self.form = form
             return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
 
+
+class MockApiCaller(Client):
+    def get_vote_api(self,vote):
+        return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else? 
+    
+    def request(self, **request):
+        environ = {
+            'HTTP_COOKIE': self.cookies,
+            'PATH_INFO': '/',
+            'QUERY_STRING': '',
+            'REQUEST_METHOD': 'GET',
+            'SCRIPT_NAME': '',
+            'SERVER_NAME': 'testserver',
+            'SERVER_PORT': 80,
+            'SERVER_PROTOCOL': 'HTTP/1.1',
+        }
+        environ.update(self.defaults)
+        environ.update(request)
+        return WSGIRequest(environ)
+
+mock_api = MockApiCaller()
+
 @login_required
 def update_agendavote(request, agenda_id, vote_id):
     """
@@ -121,17 +146,17 @@ def update_agendavote(request, agenda_id, vote_id):
 
         if action=='remove':
             agendavote.delete()
-            return HttpResponse("Agenda removed from vote")
+            return mock_api.get_vote_api(vote)
         
         if action=='reasoning':
             agendavote.reasoning = request.POST['reasoning']
             agendavote.save()
-            return HttpResponse("Agenda-vote updated with reasoning")
+            return mock_api.get_vote_api(vote)
         
         if action in score_text_to_score.keys():
             agendavote.set_score_by_text(action)
             agendavote.save()
-            return HttpResponse("Agenda-vote updated with '%s' score" % action)
+            return mock_api.get_vote_api(vote)
 
         return HttpResponse("Action '%s' wasn't accepted" % action)
     
@@ -139,7 +164,7 @@ def update_agendavote(request, agenda_id, vote_id):
         if request.POST['action']=='ascribe':
             agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
             agenda_vote.save()
-            return HttpResponse("Agenda ascribed to vote")
+            return mock_api.get_vote_api(vote)
 
         return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
 

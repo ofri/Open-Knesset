@@ -29,23 +29,22 @@ jQuery(document).ready(function() {
 	$(".popup label").click(function () {
 		if ($(this).attr("id") == 'ascribe') {
     		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")}, function(data){
-			    popup_agenda_marked = true
-			    getVoteInfo()
-			    $("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked")
-			    $("#agenda-vote-compliance-radioset").button("refresh")
+			    popup_agenda_marked = true;
+			    vote_info = data;
+			    $("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked");
+			    $("#agenda-vote-compliance-radioset").button("refresh");
     		});
 		} else {
     		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")});
 		
 		}
 		if ($(this).attr("id") == 'remove') {
-			popup_agenda_marked = false
+			popup_agenda_marked = false;
 		}
 	});
 	
-	// partialy  
-	
-	getVoteInfo()
+	// partialy
+	getVoteInfo();
 });
 
 function getVoteInfo() {
@@ -61,19 +60,19 @@ function loadPopup(agenda_name, agenda_id, vote_id, is_agenda_marked){
 		popup_agenda_id = agenda_id;
 		popup_vote_id = vote_id;
 		popup_agenda_marked = is_agenda_marked;
-		var agenda = vote_info.agendas[agenda_id]
+		var agenda = vote_info.agendas[agenda_id];
 		if (popup_agenda_marked) {
-			$("#ascribe-agenda-radioset #radio1").attr("checked","checked")
-			$(".popup #reasoning").html(agenda.reasoning)
-			$("#agenda-vote-compliance-radioset #"+$(".popup #"+agenda.text_score).attr("for")).attr("checked","checked")
+			$("#ascribe-agenda-radioset #radio1").attr("checked","checked");
+			$(".popup #reasoning").html(agenda.reasoning);
+			$("#agenda-vote-compliance-radioset #"+$(".popup #"+agenda.text_score).attr("for")).attr("checked","checked");
 		} else {
-			$("#ascribe-agenda-radioset #radio2").attr("checked","checked")
+			$("#ascribe-agenda-radioset #radio2").attr("checked","checked");
 		}
 		
 		$("#ascribe-agenda-radioset").buttonset();
 		$("#agenda-vote-compliance-radioset").buttonset();
 
-		$(".popup h1").html(agenda_name)
+		$(".popup h1").html(agenda_name);
 		$("#backgroundPopup").css({  
 			"opacity": "0.7"  
 		});  
@@ -83,20 +82,19 @@ function loadPopup(agenda_name, agenda_id, vote_id, is_agenda_marked){
 	}  
 }  
 
-
 //disabling popup with jQuery magic!
 function disablePopup(){  
 //	disables popup only if it is enabled
 	if(popupStatus==1){  
 		if (popup_agenda_marked) {
-			updated_reasoning = $(".popup #reasoning").attr("value")
+			updated_reasoning = $(".popup #reasoning").attr("value");
 			if (updated_reasoning != vote_info.agendas[popup_agenda_id].reasoning) {
 				$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: 'reasoning', reasoning: updated_reasoning});
 			}
 		}
-		$("#backgroundPopup").fadeOut("slow");  
-		$("#popupContact").fadeOut("slow");  
-		popupStatus = 0;  
+		$("#backgroundPopup").fadeOut("slow");
+		$("#popupContact").fadeOut("slow");
+		popupStatus = 0;
 	}  
 }  
 
@@ -110,7 +108,7 @@ function centerPopup(){
 //	centering
 	$(".popup #popupContact").css({  
 		"position": "absolute",  
-		"top": windowHeight/2-popupHeight/2,  
+		"top": windowHeight/2-popupHeight/2,
 		"left": windowWidth/2-popupWidth/2  
 	});  
 //	only need force for IE6
@@ -120,5 +118,3 @@ function centerPopup(){
 	});  
 
 }  
-
-
