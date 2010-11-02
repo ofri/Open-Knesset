@@ -57,6 +57,9 @@ class Command(NoArgsCommand):
         # sometime a user follows something several times. we want to filter that out:
         follows = set([f.actor for f in follows])
         for f in follows:
+            if not f:
+                logger.warning('Follow object with None actor. ignoring')
+                continue
             model_class = f.__class__
             model_template = f.__class__.__name__.lower()
             try: 
