@@ -9,16 +9,18 @@ function generateMkFrameSet(params) {
 	
   var frameNum = 0;
   if (classHook) {
-      var elements = jQuery('.'+classHook);
-      for (var i=0; i<elements.length; i++){
-          var frame = createMkFrame(elements[i].innerHTML);
+      var elements = jQuery('.'+classHook).each(function () {
+          var mkDesc = jQuery(this).attr('title')
+          if (mkDesc == "")
+            mkDesc = jQuery(this).html();
+          var frame = createMkFrame(mkDesc);
           if (targetId)
               jQuery('#'+targetId).append(frame);
           else {
-              jQuery(elements[i]).after(frame);
+              jQuery(this).after(frame);
               frame.style.display = "none";
           }
-      }
+      });
       if (!targetId)
           elements.tooltip({position: "bottom center"} );
   }

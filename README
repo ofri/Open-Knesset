@@ -14,6 +14,20 @@ NOTES
 
 - currently MySQL is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' should be fixed by installing python-dev package
+- we have some tests failing. we know its bad, and we're working on it, but if you run bin/test and get some errors, try to keep going.
+
+Update
+======
+
+$ cd Open-Knesset 
+$ git pull git://github.com/ofri/Open-Knesset.git master
+$ bin/buildout # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+$ bin/django syncdb --migrate # do not create a superuser account
+$ bin/django runserver
+
+# if you get the add_persons_aliases alert try this:
+$ bin/django migrate --fake persons 0001
+
 
 
 Windows Users:

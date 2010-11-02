@@ -145,7 +145,7 @@ class Command(NoArgsCommand):
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
         vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
-        limit_src_id = vote_id + 20 # look for next 20 votes. if results are found, this value will be incremented.
+        limit_src_id = vote_id + 60 # look for next 60 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
@@ -771,7 +771,7 @@ class Command(NoArgsCommand):
         mk_names = []
         mks = []
         mk_persons = Person.objects.filter(mk__isnull=False)
-        mks.extend(mk_persons)
+        mks.extend([person.mk for person in mk_persons])
         mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
         mk_names.extend(mk_persons.values_list('name',flat=True))
         mk_names.extend(mk_aliases.values_list('name',flat=True))
@@ -1000,7 +1000,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['proposers']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.proposers.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
@@ -1009,7 +1009,7 @@ class Command(NoArgsCommand):
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.joiners.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
