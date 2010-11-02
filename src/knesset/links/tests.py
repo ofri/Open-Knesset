@@ -24,7 +24,7 @@ class TestViews(unittest.TestCase):
         t = Template('{% load links %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
         self.assertEquals(r, 
-  '<ulclass="links"><li><ahref="http://www.example.com/l1">l1&nbsp;(a)</a></li></ul>')
+  '<ulclass="links"><li><ahref="http://www.example.com/l1">&nbsp;(a)l1</a></li></ul>')
 
     def testImageType(self):
         # test a link with  a type image
@@ -35,7 +35,7 @@ class TestViews(unittest.TestCase):
         t = Template('{% load links %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
         self.assertEquals(r, 
-  '<ulclass="links"><li><ahref="http://www.example.com/l1">l1&nbsp;<imgsrc="/static/icons/testimage.png"alt="a"></a></li></ul>')
+  '<ulclass="links"><li><ahref="http://www.example.com/l1">&nbsp;<imgsrc="/static/icons/testimage.png"alt="a">l1</a></li></ul>')
 
     def tearDown(self):
         self.l1.delete()
