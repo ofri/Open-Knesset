@@ -59,7 +59,7 @@
 {% endblock %}
 
 {% block divcontent %}
-{% cache 600 mks object.id request.page %}
+{% cache 600 mks_detail object.id request.page request.get_full_path %}
     <ul class="actions">
         <li>
         <li><span id="watch" class="awesome-button medium"></span></li>
@@ -373,7 +373,8 @@
 	<br/>
 	
     <div style="clear:both;"></div>
-    {% endcache %}
+{% endcache %}
+
     <script>
         $(document).ready(function() {
             var member_id = {{object.id}};
