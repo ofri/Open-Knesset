@@ -52,7 +52,11 @@ def bill_tag(request, tag):
     
     extra_context = {'tag':tag_instance}
     extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
-    if 'member' in request.GET: 
+    if 'member' in request.GET:
+        try:
+            member_id = int(request.GET['member'])
+        except ValueError:
+            raise Http404(_('No Member found matching "%s".') % request.GET['member']) 
         extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
         extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
         extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
