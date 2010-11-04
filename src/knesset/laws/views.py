@@ -55,10 +55,10 @@ def bill_tag(request, tag):
     if 'member' in request.GET: 
         extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
         extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
-        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+        extra_context['title'] = _('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
         qs = extra_context['member'].bills.all()
     else: # only tag is given
-        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+        extra_context['title'] = _('Bills tagged %(tag)s') % {'tag': tag}
         qs = Bill
 
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
@@ -208,6 +208,11 @@ class BillListView (ListView):
                     'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
                     'approved':Q(stage='6'),
                   }
+    bill_stages_names = { 'proposed':'Bills proposed',
+                    'pre':'Bills passed pre-vote',
+                    'first':'Bills passed first vote',
+                    'approved':'Bills approved',
+                  }
 
     def get_queryset(self):
         stage = self.request.GET.get('stage', False)
@@ -215,7 +220,7 @@ class BillListView (ListView):
         member = self.request.GET.get('member', False)
         if member:
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()
+            qs = member.bills.all()			
         else:
             qs = self.queryset._clone()
         if stage and stage!='all':
@@ -233,15 +238,27 @@ class BillListView (ListView):
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         stage = self.request.GET.get('stage', False)
         booklet = self.request.GET.get('booklet', False)
+        member = self.request.GET.get('member', False)
         if stage and stage!='all':
             for x in r:
                 if x[3]==stage:
                     x[2] = True
                     break
+            if stage in self.bill_stages_names:
+                context['stage'] = self.bill_stages_names.get(stage)
+                context['title'] = _('%(stage)s') % {'stage': self.bill_stages_names[stage]}
         elif booklet:
-            context['title']=_('Bills published in knesset booklet number %s') % booklet 
+            context['title']=_('Bills published in knesset booklet number %s') % booklet
         else:
-            r[0][2] = True
+            r[0][2] = True                
+        if member:
+            context['member'] = get_object_or_404(Member, pk=member)
+            context['member_url'] = reverse('member-detail',args=[context['member'].id])            
+            if stage in self.bill_stages_names:
+                context['title'] = _('%(stage)s by %(member)s') % {'stage': self.bill_stages_names[stage], 'member':context['member'].name}
+            else:
+                context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
+            
         context['friend_pages'] = r
         return context
         
