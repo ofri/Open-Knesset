@@ -150,13 +150,13 @@ class VoteHandler(BaseHandler):
         type = request.GET.get('type', None)
         order = request.GET.get('order', None)
         days_back = request.GET.get('days_back', None)
-        page_len = request.GET.get('page_len', DEFAULT_PAGE_LEN)
-        page_num=request.GET.get('page_num', 0)
+        page_len = int(request.GET.get('page_len', DEFAULT_PAGE_LEN))
+        page_num= int(request.GET.get('page_num', 0))
 
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=days_back)
+            qs = qs.since(days=int(days_back))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
