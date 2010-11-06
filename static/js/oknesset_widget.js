@@ -21,7 +21,7 @@ function generateMkFrameSet(params) {
               jQuery(this).after(frame);
               frame.style.display = "none";
           }
-      });
+      };
       if (!targetId)
           elements.tooltip({position: "bottom center"} );
   }
