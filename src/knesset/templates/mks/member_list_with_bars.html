@@ -20,8 +20,15 @@
 	    	<tr>
                 <td>{{ forloop.counter }}.</td>
 	    		<td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></td>
-	            <td>{{ o.extra|floatformat }}</td>
+	            <td>
+				{% if o.bill_stage %}
+					<a href="{% url bill-list %}?member={{o.id}}&stage={{ o.bill_stage }}">{{ o.extra|floatformat }}</a>
+				{% else %}
+					{{ o.extra|floatformat }}
+				{% endif %}
+				</td>
 	            <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
+				
 	        </tr>
         {% endif %}
     {% empty %}
@@ -35,7 +42,13 @@
     	<tr>
             <td>{{ forloop.counter }}.</td>
 	        <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></td>
-	        <td>{{ o.extra|floatformat }}</td>
+	        <td>
+			{% if o.bill_stage %}
+				<a href="{% url bill-list %}?member={{o.id}}&stage={{ o.bill_stage }}">{{ o.extra|floatformat }}</a>
+			{% else %}
+				{{ o.extra|floatformat }}
+			{% endif %}
+			</td>
 	        <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
         </tr>
     {% endfor %}

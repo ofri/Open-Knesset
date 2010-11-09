@@ -60,7 +60,6 @@ urlpatterns = patterns('',
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
      (r'^annotate/', include('annotatetext.urls')),
      (r'^avatar/', include('avatar.urls')),
-     (r'^person/', include('knesset.persons.urls')),   
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

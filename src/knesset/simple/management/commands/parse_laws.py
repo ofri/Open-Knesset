@@ -18,7 +18,7 @@ class ParseLaws(object):
     url = None
     
     def get_page_with_param(self,params):
-        #print self.url
+        logger.debug('get_page_with_param: self.url='+self.url)
         if params == None:
             try:
                 html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
@@ -46,7 +46,12 @@ class ParseLaws(object):
                 logger.error("can't open URL: %s" % self.url)
                 return None
             html_page = url_data.read().decode('windows-1255').encode('utf-8')
-            return BeautifulSoup(html_page)
+            try:
+                soup = BeautifulSoup(html_page)
+            except HTMLParseError, e:
+                logger.debug("error parsing URL: %s - %s" % (self.url, e))
+                return None
+            return soup
 
 def fix_dash(s):
     """returns s with normalized spaces before and after the dash"""
