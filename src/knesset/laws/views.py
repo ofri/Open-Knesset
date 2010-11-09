@@ -212,11 +212,11 @@ class BillListView (ListView):
                     'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
                     'approved':Q(stage='6'),
                   }
-    bill_stages_names = { 'proposed':'Bills proposed',
-                    'pre':'Bills passed pre-vote',
-                    'first':'Bills passed first vote',
-                    'approved':'Bills approved',
-                  }
+    bill_stages_names = { 'proposed':_('(Bills) proposed'),
+                          'pre':_('(Bills) passed pre-vote'),
+                          'first':_('(Bills) passed first vote'),
+                          'approved':_('(Bills) approved'),
+                        }
 
     def get_queryset(self):
         stage = self.request.GET.get('stage', False)
@@ -250,7 +250,7 @@ class BillListView (ListView):
                     break
             if stage in self.bill_stages_names:
                 context['stage'] = self.bill_stages_names.get(stage)
-                context['title'] = _('%(stage)s') % {'stage': self.bill_stages_names[stage]}
+                context['title'] = _('Bills %(stage)s') % {'stage':context['stage']}
         elif booklet:
             context['title']=_('Bills published in knesset booklet number %s') % booklet
         else:
@@ -259,7 +259,7 @@ class BillListView (ListView):
             context['member'] = get_object_or_404(Member, pk=member)
             context['member_url'] = reverse('member-detail',args=[context['member'].id])            
             if stage in self.bill_stages_names:
-                context['title'] = _('%(stage)s by %(member)s') % {'stage': self.bill_stages_names[stage], 'member':context['member'].name}
+                context['title'] = _('Bills %(stage)s by %(member)s') % {'stage': self.bill_stages_names[stage], 'member':context['member'].name}
             else:
                 context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
             
