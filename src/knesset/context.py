@@ -8,8 +8,6 @@ import re
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from search_sites import SearchFormWithSpellSuggest
-
 DEFAULT_STATE = 'vote'
 STATE_NAMES = {
     'member': _('Members'),
@@ -27,8 +25,6 @@ def processor(request):
         d['PAGE_BASE_NAME'] = STATE_NAMES[state]
     except KeyError:
         d['PAGE_BASE_NAME'] = STATE_NAMES[DEFAULT_STATE]
-    
-    d['search_form'] = SearchFormWithSpellSuggest()
     
     d['debug'] = getattr(settings, 'LOCAL_DEV',False)
     

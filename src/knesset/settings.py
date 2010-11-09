@@ -94,7 +94,6 @@ INSTALLED_APPS = (
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
-    'haystack',
     'south',
     'planet',
     'pagination',
@@ -141,11 +140,6 @@ LOCAL_DEV = True
 LOGIN_URL = '/users/login/'
 
 SITE_NAME = 'Open-Knesset'
-HAYSTACK_SITECONF = 'knesset.search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'whoosh_index')
-HAYSTACK_INCLUDE_SPELLING = True
-
 
 MAX_TAG_LENGTH = 128
 
@@ -164,6 +158,8 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s
 h.setFormatter(formatter)
 logger.addHandler(h)
 
+GOOGLE_APIS_KEY = "AIzaSyDrdwj4rjsRR2gYi_m4WaToDW31AaUDnrA"
+GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load search %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -71,29 +72,7 @@
             {% endif %}
         </div>
         <div id="search">
-<div id="cse-search-form" style="width: 100%;">{% trans "loading search..." %}</div>
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-   var OK = {};
-   OK.OnSearchStarting = function(sc, searcher, query) {
-       $('#content-main').hide();
-       $('#cse').show();
-   };
-  google.load('search', '1', {language: 'he'});
-  google.setOnLoadCallback(function() {
-    var customSearchControl = new google.search.CustomSearchControl('011858809565220576533:pyrgq6kc_cy');
-    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-    var options = new google.search.DrawOptions();
-    options.setSearchFormRoot('cse-search-form');
-    options.setAutoComplete(true);
-    customSearchControl.setSearchStartingCallback(this, OK.OnSearchStarting);
-    customSearchControl.draw('cse', options);
-    $('.gsc-clear-button').click (function () {
-      $('#content-main').show();
-      $('#cse').hide();
-    });
-    }, true);
-</script>
+    {% search_form "search_page" %}
 </div>
 		<div id="header">
 			<ul id="nav-global">
