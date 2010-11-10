@@ -14,4 +14,5 @@ def search_form(context, search_form_id='search'):
         'search_form_id': search_form_id,
         'action': urlresolvers.reverse('site-search'),
         'lang': 'he',
+        'cx' : settings.GOOGLE_CUSTOM_SEARCH
     }
