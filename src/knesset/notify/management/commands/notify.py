@@ -57,9 +57,16 @@ class Command(NoArgsCommand):
         # sometime a user follows something several times. we want to filter that out:
         follows = set([f.actor for f in follows])
         for f in follows:
+            if not f:
+                logger.warning('Follow object with None actor. ignoring')
+                continue
             model_class = f.__class__
             model_template = f.__class__.__name__.lower()
-            model_name = f.__class__._meta.verbose_name
+            try: 
+                model_name = f.__class__._meta.verbose_name
+            except AttributeError:
+                logger.warning('follows %d has no __class__?' % f.id)
+                model_name = ""
             content_type = ContentType.objects.get_for_model(f)
             if model_class in updates:
                 key = model_class

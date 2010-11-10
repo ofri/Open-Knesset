@@ -11,9 +11,6 @@ from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.hashnav.views import SimpleView
-from search_sites import SearchFormWithSpellSuggest
-from haystack.views import SearchView
-from haystack.forms import SearchForm
 from hitcount.views import update_hit_count_ajax
 
 admin.autodiscover()
@@ -55,7 +52,7 @@ urlpatterns = patterns('',
      (r'^comments/', include('django.contrib.comments.urls')),
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      #(r'^search/', include('haystack.urls')),
-     url(r'^search/', SearchView(form_class=SearchFormWithSpellSuggest), name='haystack_search'),
+     url(r'^search/', 'knesset.auxiliary.views.search', name='site-search'),
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
@@ -63,7 +60,6 @@ urlpatterns = patterns('',
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
      (r'^annotate/', include('annotatetext.urls')),
      (r'^avatar/', include('avatar.urls')),
-     (r'^person/', include('knesset.persons.urls')),   
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

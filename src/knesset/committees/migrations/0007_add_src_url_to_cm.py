@@ -1,73 +1,21 @@
 # encoding: utf-8
-import datetime,re
+import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from django.core.exceptions import ValidationError
-from django.contrib.contenttypes.models import ContentType
-from knesset.committees.models import CommitteeMeeting,ProtocolPart
 
-not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
-def legitimate_header(line):
-    """Retunrs true if 'line' looks like something should should be a protocol part header"""    
-    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
-        return False
-    return True
-    
-def create_protocol_parts(m):
-    """ Create protocol parts from this instance's protocol_text
-        Optionally, delete existing parts.
-        If the meeting already has parts, and you don't ask to 
-        delete them, a ValidationError will be thrown, because
-        it doesn't make sense to create the parts again.
-    """    
-
-    if m.parts.count():
-        raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
-            
-    if not m.protocol_text: # sometimes there are empty protocols
-        return # then we don't need to do anything here.
-        
-    # break the protocol to its parts
-    # first, fix places where the colon is in the begining of next line 
-    # (move it to the end of the correct line)
-    protocol_text = []
-    for line in re.sub("[ ]+"," ", m.protocol_text).split('\n'):
-        if line.startswith(':'):
-            protocol_text[-1] += ':'
-            protocol_text.append(line[1:])                    
-        else:
-            protocol_text.append(line)
-
-    i = 1
-    section = []
-    header = ''               
-        
-    # now create the sections    
-    for line in protocol_text:
-        if legitimate_header(line):            
-            if section:
-                ProtocolPart(meeting=self, order=i,
-                    header=header, body='\n'.join(section)).save()
-            i += 1
-            header = line[:-1]
-            section = []
-        else:
-            section.append (line)
-            
-    # don't forget the last section
-    ProtocolPart(meeting=self, order=i,
-        header=header, body='\n'.join(section)).save()        
-
-
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        for m in orm['Committees.CommitteeMeeting'].objects.all():
-            create_protocol_parts(m)
+        
+        # Adding field 'CommitteeMeeting.src_url'
+        db.add_column('committees_committeemeeting', 'src_url', self.gf('django.db.models.fields.URLField')(max_length=1024, null=True, blank=True), keep_default=False)
+
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        
+        # Deleting field 'CommitteeMeeting.src_url'
+        db.delete_column('committees_committeemeeting', 'src_url')
 
 
     models = {
@@ -102,9 +50,11 @@ class Migration(DataMigration):
         },
         'committees.committee': {
             'Meta': {'object_name': 'Committee'},
+            'chairpersons': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'chaired_committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'replacements': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'replacing_in_committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"})
         },
         'committees.committeemeeting': {
             'Meta': {'object_name': 'CommitteeMeeting'},
@@ -114,6 +64,7 @@ class Migration(DataMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mks_attended': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committee_meetings'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
             'protocol_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'src_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
             'topics': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'votes_mentioned': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'committee_meetings'", 'blank': 'True', 'to': "orm['laws.Vote']"})
         },
@@ -122,8 +73,9 @@ class Migration(DataMigration):
             'body': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'header': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['committees.CommitteeMeeting']"}),
-            'order': ('django.db.models.fields.IntegerField', [], {})
+            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'parts'", 'to': "orm['committees.CommitteeMeeting']"}),
+            'order': ('django.db.models.fields.IntegerField', [], {}),
+            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'protocol_parts'", 'null': 'True', 'to': "orm['persons.Person']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -131,6 +83,16 @@ class Migration(DataMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'events.event': {
+            'Meta': {'object_name': 'Event'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'what': ('django.db.models.fields.TextField', [], {}),
+            'when': ('django.db.models.fields.DateTimeField', [], {}),
+            'where': ('django.db.models.fields.TextField', [], {}),
+            'which_pk': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'which_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_for_event'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
+            'who': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['persons.Person']", 'symmetrical': 'False'})
         },
         'laws.vote': {
             'Meta': {'object_name': 'Vote'},
@@ -164,6 +126,12 @@ class Migration(DataMigration):
         'mks.member': {
             'Meta': {'object_name': 'Member'},
             'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'average_monthly_committee_presence': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
+            'average_weekly_presence_hours': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
+            'bills_stats_approved': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'bills_stats_first': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'bills_stats_pre': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'bills_stats_proposed': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'blog': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['planet.Blog']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'current_party': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'members'", 'null': 'True', 'to': "orm['mks.Party']"}),
             'current_role_descriptions': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
@@ -209,6 +177,18 @@ class Migration(DataMigration):
             'number_of_members': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'persons.person': {
+            'Meta': {'object_name': 'Person'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mk': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'person'", 'null': 'True', 'to': "orm['mks.Member']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['persons.Title']"})
+        },
+        'persons.title': {
+            'Meta': {'object_name': 'Title'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'})
         },
         'planet.blog': {
             'Meta': {'object_name': 'Blog'},

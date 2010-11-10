@@ -793,14 +793,36 @@ class Command(NoArgsCommand):
                 c.save()
             r = re.search("(\d\d)/(\d\d)/(\d\d\d\d)", date_string)
             d = datetime.date(int(r.group(3)), int(r.group(2)), int(r.group(1)))
-            (cm, created) = CommitteeMeeting.objects.get_or_create(committee=c, date_string=date_string, date=d, topics=topic)
-            if not created:
+            if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
+                cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
                 logger.debug('cm %d already exists' % cm.id)
-                continue
-            cm.protocol_text = self.get_committee_protocol_text(link)
+                continue                
+            elif CommitteeMeeting.objects.filter(src_url=link).count():
+                cm = CommitteeMeeting.objects.get(src_url=link)
+                logger.debug('cm %d is being updated' % cm.id)
+                if date_string != cm.date_string:
+                    cm.date_string = date_string
+                    logger.debug('updated date_string')
+                if d != cm.date:
+                    cm.date = d
+                    logger.debug('updated date')
+                if topic != cm.topics:
+                    cm.topics=topic
+                    logger.debug('updated topics')
+                if link != cm.src_url:
+                    cm.src_url = link
+                    logger.debug('updated src_url')
+            else:
+                cm = CommitteeMeeting.objects.create(committee=c, date=d, topics=topic, date_string=date_string, src_url=link)
+                logger.debug('cm %d created' % cm.id)
+            updated_protocol = False
+            if not cm.protocol_text:
+                cm.protocol_text = self.get_committee_protocol_text(link)
+                updated_protocol = True
             cm.save()
-            logger.debug('cm %d created' % cm.id)
-            cm.create_protocol_parts()
+            
+            if updated_protocol:
+                cm.create_protocol_parts()
             try:
                 r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
                 
@@ -1005,7 +1027,7 @@ class Command(NoArgsCommand):
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find proposer: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find proposer: %s" % m0)
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
@@ -1014,7 +1036,7 @@ class Command(NoArgsCommand):
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find joiner: %s" % m0)
 
                 # try to look for similar PPs already created:
                 p = PrivateProposal.objects.filter(title=title,law=law).exclude(id=pl.id)
@@ -1379,6 +1401,7 @@ class Command(NoArgsCommand):
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
+            logger.debug('finished update')
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')

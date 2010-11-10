@@ -81,7 +81,7 @@ class AgendaManager(models.Manager):
         elif user.is_superuser:
             agendas = self.all()
         else:
-            agendas = self.filter(Q(is_public=True) | Q(editors=user))
+            agendas = self.filter(Q(is_public=True) | Q(editors=user)).distinct()
         return agendas
 
            

@@ -62,7 +62,8 @@ class CommitteeMeeting(models.Model):
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
-
+    src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    
     class Meta:
         ordering = ('-date',)
         verbose_name = _('Committee Meeting')

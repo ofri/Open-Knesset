@@ -65,10 +65,12 @@ class MemberListView(ListView):
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.count()
+                x.bill_stage = 'proposed'
             qs.sort(key=lambda x:x.extra, reverse=True)
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.bills.count()
+                x.bill_stage = 'proposed'
             context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             context['friend_pages'][1][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
@@ -77,10 +79,12 @@ class MemberListView(ListView):
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+                x.bill_stage = 'pre'
             qs.sort(key=lambda x:x.extra, reverse=True)
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+                x.bill_stage = 'pre'
             context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             context['friend_pages'][2][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
@@ -89,10 +93,12 @@ class MemberListView(ListView):
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+                x.bill_stage = 'first'
             qs.sort(key=lambda x:x.extra, reverse=True)
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+                x.bill_stage = 'first'
             context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             context['friend_pages'][3][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
@@ -101,10 +107,12 @@ class MemberListView(ListView):
             qs = list(qs)
             for x in qs:
                 x.extra = x.bills.filter(stage='6').count()
+                x.bill_stage = 'approved'
             qs.sort(key=lambda x:x.extra, reverse=True)
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.bills.filter(stage='6').count()
+                x.bill_stage = 'approved'
             context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
             context['friend_pages'][4][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
