@@ -46,4 +46,5 @@ def search(request, lang='he'):
         'query': request.GET.get('q'),
         'query_string': mutable_get.urlencode(),
         'lang' : lang,
+        'cx': request.GET.get('cx')
     }))
