@@ -204,7 +204,7 @@ class PartyHandler(BaseHandler):
             q = request.GET['q']
             q = urllib.unquote(q)
             return Party.objects.find(q)
-        return super(MemberHandler,self).read(request, **kwargs)
+        return super(PartyHandler,self).read(request, **kwargs)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
