@@ -4,7 +4,7 @@ var popupStatus = 0;
 var popup_agenda_id = -1;
 var popup_vote_id = -1;
 var popup_agenda_marked = -1;
-var vote_info
+document.vote_info = {};
 
 
 jQuery(document).ready(function() {
@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
 		if ($(this).attr("id") == 'ascribe') {
     		$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: $(this).attr("id")}, function(data){
 			    popup_agenda_marked = true;
-			    vote_info = data;
+			    $.extend(true, document.vote_info, data);
 			    $("#agenda-vote-compliance-radioset #aradio3").attr("checked","checked");
 			    $("#agenda-vote-compliance-radioset").button("refresh");
     		});
@@ -49,8 +49,8 @@ jQuery(document).ready(function() {
 
 function getVoteInfo() {
 	$.get("/api/vote/"+window.location.pathname.split('/')[2]+"/", function(data) {
-		vote_info = data;
-	})
+		$.extend(true, document.vote_info, data);
+	});
 }
 
 //loading popup with jQuery magic!
@@ -60,7 +60,7 @@ function loadPopup(agenda_name, agenda_id, vote_id, is_agenda_marked){
 		popup_agenda_id = agenda_id;
 		popup_vote_id = vote_id;
 		popup_agenda_marked = is_agenda_marked;
-		var agenda = vote_info.agendas[agenda_id];
+		var agenda = document.vote_info.agendas[agenda_id];
 		if (popup_agenda_marked) {
 			$("#ascribe-agenda-radioset #radio1").attr("checked","checked");
 			$(".popup #reasoning").html(agenda.reasoning);
@@ -88,7 +88,7 @@ function disablePopup(){
 	if(popupStatus==1){  
 		if (popup_agenda_marked) {
 			updated_reasoning = $(".popup #reasoning").attr("value");
-			if (updated_reasoning != vote_info.agendas[popup_agenda_id].reasoning) {
+			if (updated_reasoning != document.vote_info.agendas[popup_agenda_id].reasoning) {
 				$.post("/agenda/"+popup_agenda_id+"/vote/"+popup_vote_id+"/", {action: 'reasoning', reasoning: updated_reasoning});
 			}
 		}
