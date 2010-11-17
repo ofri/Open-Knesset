@@ -4,7 +4,7 @@ from django.forms import ModelForm
 #from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 
-from models import Agenda
+from models import Agenda, AgendaVote
 
 class EditAgendaForm(forms.Form):
     name = forms.CharField(max_length=300, 
@@ -49,3 +49,16 @@ class AddAgendaForm(ModelForm):
     class Meta:
         model = Agenda
         fields = ('name', 'public_owner_name', 'description')
+
+RELATION_CHOICES = (
+    (-1,'-1'),
+    (0, '0'),
+    (1,'1'),
+)
+class VoteLinkingForm(forms.Form):
+    # a form to help agendas' editors tie votes to agendas
+    rel = forms.ChoiceField(choices=RELATION_CHOICES, required=True, widget=forms.RadioSelect)
+    reasoning = forms.CharField(required=False, max_length=300, 
+                           label=_(u'Reasoning'), 
+                           widget = forms.Textarea,
+                           )

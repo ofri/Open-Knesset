@@ -1,0 +1,12 @@
+{% load i18n %}
+        <div class="editors_agendas">
+        {% for a in agendas %}
+            {% if forloop.first %}<h3>{% trans "Agendas" %}</h3>{% endif %}
+            <h4>{{a}}</h4>
+            <form href="." id="agenda_linking_form_{{a.id}}">
+                {{a.form.as_p}}
+            </form>
+        {% endfor %}
+        </div>
+
+

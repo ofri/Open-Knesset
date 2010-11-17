@@ -19,7 +19,7 @@ score_text_to_score = {'complies-fully':         1.0,
 score_to_score_text = dict(zip(score_text_to_score.values(), score_text_to_score.keys()))
 
 class AgendaVote(models.Model):
-    agenda = models.ForeignKey('Agenda')
+    agenda = models.ForeignKey('Agenda', related_name='related_votes')
     vote = models.ForeignKey('laws.Vote')
     score = models.FloatField(default=0.0)
     reasoning = models.TextField(null=True,blank=True)
@@ -88,7 +88,7 @@ class AgendaManager(models.Manager):
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
-    editors = models.ManyToManyField('auth.User')
+    editors = models.ManyToManyField('auth.User', related_name='agendas')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)

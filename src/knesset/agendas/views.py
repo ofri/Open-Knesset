@@ -142,7 +142,7 @@ def update_agendavote(request, agenda_id, vote_id):
         return HttpResponseForbidden("POST must have an 'action' attribute")
     
     if vote in agenda.votes.all():
-        agendavote = agenda.agendavote_set.get(vote=vote) 
+        agendavote = agenda.votes.get(vote=vote) 
 
         if action=='remove':
             agendavote.delete()
