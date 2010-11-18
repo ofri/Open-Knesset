@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseBadRequest
 import random
 
 from knesset.mks.models import Member
@@ -33,3 +33,18 @@ def post_annotation(request):
         return annotatetext_post_annotation(request)
     else:
         return HttpResponseForbidden(_("Sorry, you do not have the permission to annotate."))
+
+def search(request, lang='he'):
+
+    # remove the 'cof' get variable from the query string so that the page
+    # linked to by the javascript fallback doesn't think its inside an iframe.
+    mutable_get = request.GET.copy()
+    if 'cof' in mutable_get:
+        del mutable_get['cof']
+
+    return render_to_response('search/search.html', RequestContext(request, {
+        'query': request.GET.get('q'),
+        'query_string': mutable_get.urlencode(),
+        'lang' : lang,
+        'cx': request.GET.get('cx')
+    }))

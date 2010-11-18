@@ -10,6 +10,15 @@
         <a href="{% url bill-tags-cloud %}">{% trans 'Choose by tag' %}</a>
 {% endblock %}
 {% block divcontent %}
+    {% if member and not stage %}
+        <h1>{% blocktrans %}Bills by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+	{% endif %}
+	{% if member and stage %}
+		<h1>{% blocktrans %}Bills {{ stage }} by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+	{% endif %}
+    {% if stage and not member %}
+		<h1>{{ title }}</h1>
+	{% endif %}    
 	<div class="item-list">
         {% for o in object_list %}
             <div class="item">
