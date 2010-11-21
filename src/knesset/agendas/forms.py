@@ -1,10 +1,17 @@
 from django import forms
 from django.forms import ModelForm
-#from django.contrib.auth.models import User, Permission
-#from django.contrib.auth.forms import UserCreationForm
+from django.forms.formsets import formset_factory
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from models import Agenda, AgendaVote
+
+class H4(forms.Widget):
+    """ used to display header fields """
+    input_type = None # Subclasses must define this.
+
+    def render(self, name, value, attrs=None):
+        return mark_safe(u'<h4>%s</h4>' % value)
 
 class EditAgendaForm(forms.Form):
     name = forms.CharField(max_length=300, 
@@ -51,14 +58,20 @@ class AddAgendaForm(ModelForm):
         fields = ('name', 'public_owner_name', 'description')
 
 RELATION_CHOICES = (
-    (-1,'-1'),
-    (0, '0'),
-    (1,'1'),
+    (-1.0,'-1'),
+    (0.0, '0'),
+    (1.0,'1'),
 )
 class VoteLinkingForm(forms.Form):
     # a form to help agendas' editors tie votes to agendas
-    rel = forms.ChoiceField(choices=RELATION_CHOICES, required=True, widget=forms.RadioSelect)
+    agenda_name = forms.CharField(widget=H4, required=False, label='')
+    vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
+    agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
+    weight = forms.TypedChoiceField(label=_('Weight'), choices=RELATION_CHOICES, 
+            coerce=float, required=True, widget=forms.RadioSelect)
     reasoning = forms.CharField(required=False, max_length=300, 
                            label=_(u'Reasoning'), 
-                           widget = forms.Textarea,
+                           widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )
+VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0)
+

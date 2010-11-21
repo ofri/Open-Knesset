@@ -23,6 +23,9 @@ class AgendaVote(models.Model):
     vote = models.ForeignKey('laws.Vote')
     score = models.FloatField(default=0.0)
     reasoning = models.TextField(null=True,blank=True)
+
+    class Meta:
+        unique_together= ('agenda', 'vote')
     
     def set_score_by_text(self,score_text):
         self.score = score_text_to_score[score_text]

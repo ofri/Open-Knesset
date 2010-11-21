@@ -6,9 +6,9 @@
 {% load mks %}
 {% load comments %}
 {% load agendas %}
-{% block extratitle %}{{ object.title }}{% endblock %}
-{% block keywords %}{{ object.name }}{% endblock %}
-{% block description %}{{ object.title }} - {% endblock %}
+{% block extratitle %}{{ vote.title }}{% endblock %}
+{% block keywords %}{{ vote.name }}{% endblock %}
+{% block description %}{{ vote.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
 {% block extrahead %}
@@ -19,18 +19,18 @@
     <link href="{{MEDIA_URL}}css/agendas.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
-{% block title %} {{ object.title }} {% endblock %}
+{% block title %} {{ vote.title }} {% endblock %}
 {% block secondary %}
         <h3>{% trans "Links" %}</h3>
-        {% object_links object %} 
+        {% object_links vote %}
             
         <div id="tagging-container">
         {% if user.is_authenticated %}
             <h3>{% trans "Tags" %}</h3>
-            {% if object.tags %}
+            {% if vote.tags %}
                 <div id="vote-tags">
-                {% for t in object.tags %}
-                    {% user_votes user object t %} <br />        
+                {% for t in vote.tags %}
+                    {% user_votes user vote t %} <br/>
                 {% endfor %}
                 </div>
             {% else %}
@@ -44,9 +44,9 @@
 
         {% else %}
             <h3>{% trans "Tags" %}</h3>
-            {% if object.tags %}
+            {% if vote.tags %}
                 <div id="tags">
-                {% for t in object.tags %}
+                {% for t in vote.tags %}
                    <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
                 {% endfor %}
                 </div>
@@ -57,30 +57,30 @@
             (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
         {% endif %}
         </div>
-        
-        {% editor_agendas user %}
+        {% agendas_for user vote %}
 {% endblock %}
+
 {% block primary %}
         <div>
             <h3>{% trans "Time" %}</h3>
-            {{ object.time_string }} 
-            {% if object.get_next_by_time %}
-            &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_next_by_time.id %}">{% trans 'Go to next vote by time' %}</a>
+            {{ vote.time_string }}
+            {% if vote.get_next_by_time %}
+            &nbsp; <a class="bold-link" href="{{ vote.get_next_by_time.get_absolute_url }}">{% trans 'Go to next vote by time' %}</a>
             {% endif %}
-            {% if object.get_previous_by_time %}
-            &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_previous_by_time.id %}">{% trans 'Go to previous vote by time' %}</a>
+            {% if vote.get_previous_by_time %}
+            &nbsp; <a class="bold-link" href="{{ vote.get_previous_by_time.get_absolute_url }}">{% trans 'Go to previous vote by time' %}</a>
             {% endif %}
         </div>
         <div>
             <h3>{% trans "For" %}</h3>
-            {% if object.for_votes_count %}
-                {% blocktrans count object.for_votes|length as counter %}
+            {% if vote.for_votes_count %}
+                {% blocktrans count vote.for_votes|length as counter %}
                 {{ counter }} MK
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
                 <div class="list-wrap indented">
-                {% for m in object.for_votes %}
+                {% for m in vote.for_votes %}
                 <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{{ m.member|mk_card }}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
@@ -94,14 +94,14 @@
         </div>
         <div>
             <h3>{% trans "Against" %}</h3>
-            {% if object.against_votes_count %}        
-                {% blocktrans count object.against_votes|length as counter %}
+            {% if vote.against_votes_count %}
+                {% blocktrans count vote.against_votes|length as counter %}
                 {{ counter }} MK
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
                 <div class="list-wrap indented">
-                {% for m in object.against_votes %}
+                {% for m in vote.against_votes %}
                 <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{{ m.member|mk_card }}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
@@ -123,29 +123,29 @@
         {% endfor %}
         </ul>
         
-        {% if object.committee_meetings.count %}
+        {% if vote.committee_meetings.count %}
             <div>
                 <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  
-                {% for cm in object.committee_meetings.all %}
+                {% for cm in vote.committee_meetings.all %}
                     <a class="hashnav item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
                     {% if not forloop.last %} &bull; {% endif %}
                 {% endfor %}
             </div>
         {% endif %}
 
-        {% if object.summary %}        
+        {% if vote.summary %}        
             <h3>{% trans 'summary' %}</h3>
-            {{ object.summary|safe }}
+            {{ vote.summary|safe }}
             <br><br>
         {% endif %}
 
-        {% if object.full_text %}
+        {% if vote.full_text %}
             <h3>{% trans 'Bill Text' %}</h3>
-            {{ object.full_text|safe }}
+            {{ vote.full_text|safe }}
             <br><br>
         {% endif %}
 
-    {% get_comment_list for object as comment_list %}
+    {% get_comment_list for vote as comment_list %}
     {% if comment_list %}
         <h3>{% trans 'User comments' %}</h3>
         {% for comment in comment_list %}
@@ -159,7 +159,7 @@
 
     {% if user.is_authenticated %}
         {% if perms.comments.add_comment %}
-            {% render_comment_form for object %}
+            {% render_comment_form for vote %}
         {% else %}
             {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
         {% endif %}

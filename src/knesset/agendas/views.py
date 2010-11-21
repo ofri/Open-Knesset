@@ -3,14 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
-#from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
 from knesset.mks.models import Member, Party
 from knesset.api.urls import vote_handler
 
-from forms import EditAgendaForm, AddAgendaForm
+from forms import EditAgendaForm, AddAgendaForm, VoteLinkingFormSet
 from models import Agenda, AgendaVote, score_text_to_score
 
 from django.test import Client
@@ -192,3 +192,32 @@ def agenda_add_view(request):
         form = AddAgendaForm(initial=initial_data) # An unbound form with initial data
 
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))
+
+@login_required
+def update_editors_agendas(request):
+    if request.method == 'POST':
+        vl_formset = VoteLinkingFormSet(request.POST)
+        if vl_formset.is_valid():
+            # TODO: check the user's permission
+            for a in vl_formset.cleaned_data:
+                try:
+                    av = AgendaVote.objects.get(
+                           agenda__id=a['agenda_id'],
+                           vote__id = a['vote_id'])
+                    av.score = a['weight']
+                    av.reasoning = a['reasoning']
+                    av.save()
+                except AgendaVote.DoesNotExist:
+                    av = AgendaVote(
+                           agenda_id=int(a['agenda_id']),
+                           vote_id=int(a['vote_id']),
+                           score = a['weight'],
+                           reasoning = a['reasoning'])
+                    av.save()
+            return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':a['vote_id']}))
+        else:
+            # TODO: Error handling: what to do with illeal forms?
+            pass
+
+    else:
+        return HttpResponseNotAllowed(['POST'])

@@ -1,12 +1,25 @@
 {% load i18n %}
-        <div class="editors_agendas">
-        {% for a in agendas %}
-            {% if forloop.first %}<h3>{% trans "Agendas" %}</h3>{% endif %}
-            <h4>{{a}}</h4>
-            <form href="." id="agenda_linking_form_{{a.id}}">
-                {{a.form.as_p}}
-            </form>
+{% if agendas %}
+    <h3>{% trans "Agendas" %}</h3>
+    <form class="editors_agendas" action="{% url update-editors-agendas %}" method="post">
+    <table>
+        {{ agendas.management_form }}
+        {% csrf_token %}
+        {% for form in agendas.forms %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <tr><td colspan="2"> {{form.agenda_name}}</td></tr>
+            <tr>
+                <td>{{ form.weight.label_tag }}</td>
+                <td>{{ form.weight }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.reasoning.label_tag }}</td>
+                <td>{{ form.reasoning }}</td>
+            </tr>
         {% endfor %}
-        </div>
-
-
+        </table>
+        <input type="submit" value="{% trans "Update" %}">
+    </form>
+{%endif %}
