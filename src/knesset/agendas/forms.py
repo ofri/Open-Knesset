@@ -59,7 +59,9 @@ class AddAgendaForm(ModelForm):
 
 RELATION_CHOICES = (
     (-1.0,'-1'),
+    (-0.5,'-.5'),
     (0.0, '0'),
+    (0.5, '.5'),
     (1.0,'1'),
 )
 class VoteLinkingForm(forms.Form):
