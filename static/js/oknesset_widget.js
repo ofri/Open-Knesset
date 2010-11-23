@@ -10,20 +10,21 @@ function generateMkFrameSet(params) {
   var frameNum = 0;
   if (classHook) {
       var elements = jQuery('.'+classHook);
-      for (var i=0; i<elements.length; i++){
-          if (elements[i].getAttribute('mk_id'))
-              var frame = createMkFrame(elements[i].getAttribute('mk_id'));
+      elements.each(function(){
+          var element = this;
+          if (element.getAttribute('mk_id'))
+              var frame = createMkFrame(element.getAttribute('mk_id'));
           else
-              var frame = createMkFrame(elements[i].innerHTML);
+              var frame = createMkFrame(element.innerHTML);
           if (targetId)
               jQuery('#'+targetId).append(frame);
           else {
-              jQuery(this).after(frame);
+              jQuery(element).after(frame);
               frame.style.display = "none";
           }
-      };
+      });
       if (!targetId)
-          elements.tooltip({position: "bottom center"} );
+          elements.tooltip({position: "bottom center", delay: 1000} );
   }
   
 
