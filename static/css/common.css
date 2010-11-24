@@ -734,4 +734,4 @@ div.general_discipline_control {
 .two_cols>div.primary {width:60%; }
 .two_cols>div.secondary {float: left; width:35%; }
 .two_cols>h2 {margin-bottom: 1.5em; }
-.editors_agendas li {display: inline; list-style-type:none;}
+.editors_agendas li {list-style-type:none;}

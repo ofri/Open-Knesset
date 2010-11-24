@@ -11,7 +11,7 @@ from knesset.mks.models import Member, Party
 from knesset.api.urls import vote_handler
 
 from forms import EditAgendaForm, AddAgendaForm, VoteLinkingFormSet
-from models import Agenda, AgendaVote, score_text_to_score
+from models import Agenda, AgendaVote
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -122,53 +122,6 @@ class MockApiCaller(Client):
 
 mock_api = MockApiCaller()
 
-@login_required
-def update_agendavote(request, agenda_id, vote_id):
-    """
-    Update agendavote relation for specific agenda-vote pair 
-    """
-    agenda = get_object_or_404(Agenda, pk=agenda_id)
-    vote   = get_object_or_404(Vote, pk=vote_id)
-    
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    if request.user not in agenda.editors.all():
-        return HttpResponseForbidden("User %s does not have privileges to change agenda %s" % (request.user,agenda))
-
-    try:
-        action = request.POST['action']
-    except KeyError:
-        return HttpResponseForbidden("POST must have an 'action' attribute")
-    
-    if vote in agenda.votes.all():
-        agendavote = agenda.votes.get(vote=vote) 
-
-        if action=='remove':
-            agendavote.delete()
-            return mock_api.get_vote_api(vote)
-        
-        if action=='reasoning':
-            agendavote.reasoning = request.POST['reasoning']
-            agendavote.save()
-            return mock_api.get_vote_api(vote)
-        
-        if action in score_text_to_score.keys():
-            agendavote.set_score_by_text(action)
-            agendavote.save()
-            return mock_api.get_vote_api(vote)
-
-        return HttpResponse("Action '%s' wasn't accepted" % action)
-    
-    else: # agenda is not ascribed to this vote
-        if request.POST['action']=='ascribe':
-            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
-            agenda_vote.save()
-            return mock_api.get_vote_api(vote)
-
-        return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
-
-        
 @login_required
 def agenda_add_view(request):
     allowed_methods = ['GET', 'POST']

@@ -4,7 +4,7 @@ from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import Agenda, AgendaVote
+from models import Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES
 
 class H4(forms.Widget):
     """ used to display header fields """
@@ -57,19 +57,12 @@ class AddAgendaForm(ModelForm):
         model = Agenda
         fields = ('name', 'public_owner_name', 'description')
 
-RELATION_CHOICES = (
-    (-1.0, _("Opposes fully")),
-    (-0.5, _("Opposes partially")),
-    (0.0, _("Agnostic")),
-    (0.5, _("Complies partially")),
-    (1.0, _("Complies fully")),
-)
 class VoteLinkingForm(forms.Form):
     # a form to help agendas' editors tie votes to agendas
     agenda_name = forms.CharField(widget=H4, required=False, label='')
     vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
-    weight = forms.TypedChoiceField(label=_('Weight'), choices=RELATION_CHOICES, 
+    weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
             coerce=float, required=True, widget=forms.RadioSelect)
     reasoning = forms.CharField(required=False, max_length=300, 
                            label=_(u'Reasoning'), 

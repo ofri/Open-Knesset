@@ -6,24 +6,24 @@ from knesset.agendas.forms import VoteLinkingForm, VoteLinkingFormSet
 
 register = template.Library()
 
-@register.inclusion_tag('agendas/editor_agendas.html')
+@register.inclusion_tag('agendas/agendasfor.html')
 def agendas_for(user, vote):
-    ''' renders current user's agendas:
-
-    output:
-
-      html form for the user to update his agendas
+    ''' renders the relevent agenda for the vote and a form for the 
+        agendas the given user can edit
     '''
-    agendas = []
-    for a in Agenda.objects.get_relevant_for_user(user):
-        r = {'agenda_name': a.name, 'agenda_id': a.id, 'vote_id': vote.id }
-        try:
-            av = a.related_votes.get(vote=vote)
-            r['weight'] = av.score
-            r['reasoning'] = av.reasoning
-        except AgendaVote.DoesNotExist:
-            r['weight'] = 0.0
-            r['reasoning'] = u''
-        agendas.append(r)
+    editable = []
+    if user.is_authenticated():
+        for a in user.agendas.all():
+            r = {'agenda_name': a.name, 'agenda_id': a.id, 'vote_id': vote.id}
+            try:
+                av = a.agenda_votes.get(vote=vote)
+                r['weight'] = av.score
+                r['reasoning'] = av.reasoning
+            except AgendaVote.DoesNotExist:
+                r['weight'] = 0.0
+                r['reasoning'] = u''
+            editable.append(r)
                   
-    return { 'agendas': VoteLinkingFormSet(initial = agendas) }
+    return { 'formset': editable and VoteLinkingFormSet(initial = editable),
+             'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user)).distinct(),
+           }

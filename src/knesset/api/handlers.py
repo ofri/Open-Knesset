@@ -189,7 +189,7 @@ class VoteHandler(BaseHandler):
         agendavotes = vote.agendavote_set.all()
         agendas     = [model_to_dict(av.agenda) for av in agendavotes]
         reasonings  = [av.reasoning for av in agendavotes]
-        text_scores = [av.get_text_score() for av in agendavotes]
+        text_scores = [av.get_score_display() for av in agendavotes]
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
