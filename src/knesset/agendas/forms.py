@@ -58,11 +58,11 @@ class AddAgendaForm(ModelForm):
         fields = ('name', 'public_owner_name', 'description')
 
 RELATION_CHOICES = (
-    (-1.0,'-1'),
-    (-0.5,'-.5'),
-    (0.0, '0'),
-    (0.5, '.5'),
-    (1.0,'1'),
+    (-1.0, _("Opposes fully")),
+    (-0.5, _("Opposes partially")),
+    (0.0, _("Agnostic")),
+    (0.5, _("Complies partially")),
+    (1.0, _("Complies fully")),
 )
 class VoteLinkingForm(forms.Form):
     # a form to help agendas' editors tie votes to agendas
