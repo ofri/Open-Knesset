@@ -5,6 +5,11 @@ from django.contrib.comments.views.comments import post_comment
 from django.http import HttpResponse
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+from django.contrib.auth.decorators import login_required
+from django.contrib.comments.models import Comment
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+import django.contrib.comments.views.moderation as moderation
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -29,6 +34,15 @@ def comment_post_wrapper(request):
             return HttpResponse("Access denied")
         return post_comment(request)
     return HttpResponse("Access denied")
+
+@login_required
+def delete(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user == comment.user or request.user.is_staff:
+        return moderation.delete(request, comment_id)
+    else:
+        raise Http404
+    
 
 def cannonize(s):
        if isinstance(s,unicode):
