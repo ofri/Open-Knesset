@@ -235,7 +235,7 @@ class BillListView (ListView):
         elif booklet:
             kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
             qs = qs.filter(knesset_proposal__in=kps)        
-        return qs
+        return qs.order_by('-stage_date')
 
     def get_context(self):
         context = super(BillListView, self).get_context()       
