@@ -16,7 +16,7 @@
     <script>
     function set_percentile(id,value) {
         $("#"+id+"_percentile").css('background-position',((100-value))+"px 0px");
-        var message;
+		var message;
         if ( value < 20 ) {
             message = "{% trans 'Extremely below average' %}";                
         } else if ( value < 40 ) {
@@ -28,10 +28,8 @@
         } else {
             message = "{% trans 'Extremely above average' %}";                
         }
-        
-        $("#"+id+"_percentile").html("<span title='"+"{% trans 'Percentile' %}"+" "+value+"'>"+message+"</span>");                
-    }
-
+		$("#"+id+"_percentile").html("<span title='"+"{% trans 'Percentile' %}"+" "+value+"'>"+message+"</span>"); 
+	}
     function toggle_factional_discipline() {
         $(".factional_discipline_row").toggleClass("discipline_row");
         $(".factional_discipline_control").toggleClass("discipline_hide_control");
@@ -331,8 +329,15 @@
 									<tr>
 										<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
 										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-										<td>%{{agenda.score|floatformat:"0"}}</td>
-										<td class="column-bar">{% if agenda.score < 0 %}{% bar agenda.score 'against' 1 %}{% else %}{% bar agenda.score 'for' 1 %}{% endif %}</td>
+										<td>%{{agenda.score|floatformat:"0"}}</td> 
+										<td>
+											<div id="agenda_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
+											<script>set_percentile('agenda',{{ agenda.score }});</script>
+											
+										</td>
+										<td>
+										<a href="{% url agenda-list %}{{agenda.id}}/member/{{object.id}}">#</a>
+										</td>
 									</tr>
 								{% endfor %}
 								</table>

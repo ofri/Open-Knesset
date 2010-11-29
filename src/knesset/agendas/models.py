@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
 from actstream.models import Follow 
-
+from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
 
 score_text_to_score = {'complies-fully':         1.0,
@@ -75,6 +75,13 @@ class AgendaManager(models.Manager):
         agendas['bottom'].sort(key=attrgetter('score'), reverse=True)
         return agendas
     
+    def get_relevant_for_mk(self, mk, agendaId):
+        agendas = AgendaVote.objects.filter(agenda__id=agendaId,vote__votes__id=mk).distinct()
+        return agendas
+    
+    def get_specific(self, agendaId):
+        return Agenda.objects.filter(pk=agendaId)
+    
     def get_relevant_for_user(self, user):
         if user == None:
             agendas = self.filter(is_public=True)
@@ -135,6 +142,25 @@ class Agenda(models.Model):
 
     def number_of_followers(self):
         return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
+    
+    def related_mk_votes(self,member):
+        # Find all votes that
+        #   1) This agenda is ascribed to
+        #   2) the member participated in and either voted for or against
+        # for_votes      = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct()
+        #against_votes   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct()
+        vote_actions = VoteAction.objects.filter(member=member,vote__agendavote__agenda=self)
+        all_votes = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member).distinct()
+        # TODO: improve ugly code below
+        member_votes = list()
+        for member_vote in all_votes:
+            for vote_action in vote_actions:
+                if (vote_action.vote == member_vote.vote):
+                    member_votes.insert(0,member_vote)
+                    member_votes[0].voteaction = vote_action
+         
+        return member_votes
+        #return AgendaVote.objects.filter(agenda=self,vote__voteaction__member=mk).distinct()
     
     def selected_instances(self, cls, top=3, bottom=3):
         instances = list(cls.objects.all())

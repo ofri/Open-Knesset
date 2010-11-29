@@ -275,6 +275,7 @@ msgstr "מזהה אובייקט"
 #: templates/laws/vote_detail.html:35
 #: templates/laws/vote_list.html:26
 msgid "For"
+msgid "for"
 msgstr "בעד"
 
 #: laws/models.py:18

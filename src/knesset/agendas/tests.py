@@ -103,6 +103,13 @@ class SimpleTest(TestCase):
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
+        
+    def testAgendaMkDetail(self):
+        translation.activate(settings.LANGUAGE_CODE)
+        # test anonymous user
+        res = self.client.get(reverse('agenda-mk-details'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
 
 
         # TODO: Complete test below
