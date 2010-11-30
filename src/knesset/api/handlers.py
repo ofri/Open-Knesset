@@ -204,7 +204,7 @@ class PartyHandler(BaseHandler):
             q = request.GET['q']
             q = urllib.unquote(q)
             return Party.objects.find(q)
-        return super(MemberHandler,self).read(request, **kwargs)
+        return super(PartyHandler,self).read(request, **kwargs)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
@@ -216,7 +216,10 @@ class TagHandler(BaseHandler):
         if 'id' in kwargs:
             id = kwargs['id']        
         if id:
-            return Tag.objects.filter(pk=id)
+            try:
+                return Tag.objects.get(pk=id)
+            except Tag.DoesNotExist:
+                return rc.NOT_FOUND
         object_id = None
         ctype = None
         if 'object_id' in kwargs and 'object_type' in kwargs:
@@ -253,7 +256,10 @@ class AgendaHandler(BaseHandler):
         if 'id' in kwargs:
             id = kwargs['id']        
             if id is not None:
-                return agendas.filter(pk=id)
+                try:
+                    return agendas.get(pk=id)
+                except Agenda.DoesNotExist:
+                    return rc.NOT_FOUND
         
         # Handle API calls of type /agenda/vote/[vote_id]
         # Used to return the agendas ascribed to a specific vote

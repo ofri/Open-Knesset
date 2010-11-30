@@ -6,8 +6,6 @@ install_requires = [
     'oauth',
     'django-tagging',
     'simplejson',
-    'whoosh',
-    'django-haystack',
     'South',
     'pyth',
     'django-debug-toolbar',

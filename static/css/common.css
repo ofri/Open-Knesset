@@ -59,7 +59,7 @@ a:hover { text-decoration:underline;}
 
 /* ACCOUNTS */
 #accounts { margin-top:10px; float: left; }
-#accounts a { color: #fff; text-decoration: none; margin-left:1em;}
+#accounts a { color: #fff; text-decoration: none; }
 #accounts a:hover { text-decoration: underline; }
 #login { display:inline;}
 #login a {
@@ -450,8 +450,8 @@ input.bill_input {
 }
 
 /* Search */
-div #search { clear:left; float:left; margin-top:6px; margin-left:20px;
-    width: 300px; height:32px; }
+div #search { clear:left; float:left; margin-top:6px; 
+    height:32px; }
 .gsc-adBlockVertical { width: 0 !important; }
 .gsc-wrapper {width: 100% !important; }
 
@@ -732,3 +732,4 @@ div.general_discipline_control {
 	background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
 }
 
+#cse-search-results iframe { padding-right: 4em; width:90%; direction:rtl; }
