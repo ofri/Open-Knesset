@@ -5,6 +5,7 @@ from piston.emitters import Emitter
 from knesset.api.handlers import *
 
 vote_handler = Resource(VoteHandler)
+bill_handler = Resource(BillHandler)
 member_handler = Resource(MemberHandler)
 party_handler = Resource(PartyHandler)
 tag_handler = Resource(TagHandler)
@@ -13,6 +14,8 @@ agenda_handler = Resource(AgendaHandler)
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler, name='vote-handler'),
       url(r'^vote/(?P<id>[0-9]+)/$', vote_handler, name='vote-handler'),
+      url(r'^bill/$', bill_handler, name='bill-handler'),
+      url(r'^bill/(?P<id>[0-9]+)/$', bill_handler, name='bill-handler'),
       url(r'^member/$', member_handler, name='member-handler'),
       url(r'^member/(?P<id>[0-9]+)/$', member_handler, name='member-handler'),
       url(r'^party/$', party_handler, name='party-handler'),
