@@ -1,5 +1,5 @@
 <li><a href="{{ o.get_absolute_url }}">
-            <h4>{{o.title}}</h4>
+            <h4>{{ o.topics|truncatewords:20|safe }}</h4>
             <div class="date">{{ o.date_string }}</div>
 </a></li>
 
