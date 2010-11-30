@@ -12,6 +12,15 @@ from knesset.committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
 just_id = lambda x: x.id
 
 class MemberViewsTest(TestCase):
@@ -64,8 +73,6 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.context['object'].id, self.mk_1.id)
 
     def testMemberSearch(self):
-        import json
-
         res = self.client.get(reverse('member-handler'),
                                       {'q': 'mk_'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -93,8 +100,6 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.context['object'].id, self.party_1.id)
 
     def testPartySearch(self):
-        import json
-
         res = self.client.get(reverse('party-handler'),
                                       {'q': 'party'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')

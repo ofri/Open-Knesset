@@ -5,11 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 import logging 
 from django.contrib.contenttypes.models import ContentType
-logger = logging.getLogger("open-knesset.committees.views")
 import difflib
 import datetime
 import re
-import json
 import colorsys
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
@@ -17,6 +15,17 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event 
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
+logger = logging.getLogger("open-knesset.committees.views")
+
 
 class CommitteeDetailView(DetailView):
 
