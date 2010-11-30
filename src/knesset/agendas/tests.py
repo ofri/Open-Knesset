@@ -10,11 +10,16 @@ from django.conf import settings
 
 from models import Agenda, AgendaVote
 from knesset.laws.models import Vote
+from knesset.mks.models import Party, Member
 
 just_id = lambda x: x.id
 
 class SimpleTest(TestCase):
     def setUp(self):
+        self.party_1 = Party.objects.create(name='party 1')
+        self.mk_1 = Member.objects.create(name='mk_1',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
@@ -107,7 +112,8 @@ class SimpleTest(TestCase):
     def testAgendaMkDetail(self):
         translation.activate(settings.LANGUAGE_CODE)
         # test anonymous user
-        res = self.client.get(reverse('agenda-mk-details'))
+        res = self.client.get(reverse('mk-agenda-detail',
+                                      kwargs={'object_id': self.agenda_1.id, 'member_id': self.mk_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
 
