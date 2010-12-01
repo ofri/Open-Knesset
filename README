@@ -8,7 +8,7 @@ $ bin/django syncdb --migrate # do not create a superuser account
 $ bin/django loaddata dev
 $ bin/django createsuperuser # to create your superuser account
 $ bin/django runserver
-*Some of the mirror are flaky so you might need to run the buildout several times until all download succeed*
+*Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
 
 NOTES
 =====
