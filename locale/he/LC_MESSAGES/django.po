@@ -275,6 +275,8 @@ msgstr "מזהה אובייקט"
 #: templates/laws/vote_detail.html:35
 #: templates/laws/vote_list.html:26
 msgid "For"
+msgstr "בעד"
+#: templates/agendas/mk_agenda_detail.html:59
 msgid "for"
 msgstr "בעד"
 
@@ -5060,9 +5062,7 @@ msgstr "שבועי"
 #~ msgid "Sign in"
 #~ msgstr "סנינה"
 #~ msgid "Main Page"
-#~ msgstr "rtah"
-#~ msgid "for"
-#~ msgstr "בעד"
+#~ msgstr "ראשי"
 #~ msgid "against"
 #~ msgstr "נגד"
 #~ msgid "abstain"
