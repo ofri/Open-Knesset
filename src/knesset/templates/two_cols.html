@@ -1,0 +1,16 @@
+{% extends "site_base.html" %}
+{% block divcontent %}
+    <div class="two_cols">
+        <h2>{% block title %} {% endblock %}</h2>
+        <div class="secondary">
+            {% block secondary %}
+            {% endblock %}
+        </div>
+        <div class="primary">
+            {% block primary %}
+            {% endblock %}
+        </div>
+
+    </div>
+{% endblock %}
+

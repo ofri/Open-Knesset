@@ -336,9 +336,10 @@ class VoteListView(ListView):
         return context
 
 class VoteDetailView(DetailView):
+    template_resource_name = 'vote'
     def get_context(self):
         context = super(VoteDetailView, self).get_context()       
-        vote = context['object']
+        vote = context['vote']
         context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())

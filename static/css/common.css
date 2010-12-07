@@ -733,3 +733,9 @@ div.general_discipline_control {
 }
 
 #cse-search-results iframe { padding-right: 4em; width:90%; direction:rtl; }
+
+/* 2cols */
+.two_cols>div.primary {width:60%; }
+.two_cols>div.secondary {float: left; width:35%; }
+.two_cols>h2 {margin-bottom: 1.5em; }
+.editors_agendas li {list-style-type:none;}

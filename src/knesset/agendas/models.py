@@ -9,28 +9,22 @@ from actstream.models import Follow
 from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
 
-score_text_to_score = {'complies-fully':         1.0,
-                       'complies-partially':     0.5,
-                       'agnostic':               0.0,
-                       'opposes-partially':     -0.5,
-                       'opposes-fully':         -1.0,
-                       }
-
-score_to_score_text = dict(zip(score_text_to_score.values(), score_text_to_score.keys()))
+AGENDAVOTE_SCORE_CHOICES = (
+    (-1.0, _("Opposes fully")),
+    (-0.5, _("Opposes partially")),
+    (0.0, _("Agnostic")),
+    (0.5, _("Complies partially")),
+    (1.0, _("Complies fully")),
+)
 
 class AgendaVote(models.Model):
-    agenda = models.ForeignKey('Agenda')
+    agenda = models.ForeignKey('Agenda', related_name='agenda_votes')
     vote = models.ForeignKey('laws.Vote')
-    score = models.FloatField(default=0.0)
+    score = models.FloatField(default=0.0, choices = AGENDAVOTE_SCORE_CHOICES )
     reasoning = models.TextField(null=True,blank=True)
-    
-    def set_score_by_text(self,score_text):
-        self.score = score_text_to_score[score_text]
-    def get_text_score(self):
-        try:
-            return score_to_score_text[self.score]
-        except KeyError:
-            return None
+
+    class Meta:
+        unique_together= ('agenda', 'vote')
     
 def get_top_bottom(lst, top, bottom):
     """
@@ -83,7 +77,7 @@ class AgendaManager(models.Manager):
         return Agenda.objects.filter(pk=agendaId)
     
     def get_relevant_for_user(self, user):
-        if user == None:
+        if user == None or not user.is_authenticated():
             agendas = self.filter(is_public=True)
         elif user.is_superuser:
             agendas = self.all()
@@ -91,11 +85,10 @@ class AgendaManager(models.Manager):
             agendas = self.filter(Q(is_public=True) | Q(editors=user)).distinct()
         return agendas
 
-           
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
-    editors = models.ManyToManyField('auth.User')
+    editors = models.ManyToManyField('auth.User', related_name='agendas')
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
