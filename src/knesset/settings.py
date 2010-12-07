@@ -103,7 +103,6 @@ INSTALLED_APPS = (
     'hitcount',
     'annotatetext',
     'mailer',
-    'backlinks',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
