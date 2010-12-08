@@ -642,13 +642,17 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 .text-speaker:hover > a.permalink, .semannotation:hover a.permalink { visibility: visible; }
 
 /*** percentile ***/
-.percentile {
+.percentile  {
 	border:1px solid #ccccff;
 	text-align:center;
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
 	background-color:#E6F1F7;
+}
+
+.percentile_against {
+	background:url(/static/img/bar-against.png) no-repeat;
 }
 
 .percent {

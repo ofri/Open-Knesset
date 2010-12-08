@@ -65,6 +65,35 @@ class AgendaDetailView (DetailView):
         
         return context
     
+class AgendaMkDetailView (DetailView):
+    template_name = 'agendas/mk_agenda_detail.html'
+    
+    def get_queryset(self):
+        return Agenda.objects.get_specific(agendaId=self.object_id)
+
+    def get_context(self, *args, **kwargs):
+        context = super(AgendaMkDetailView, self).get_context(*args, **kwargs)       
+        agenda = context['object']
+        try:
+            context['title'] = "%s" % agenda.name
+        except AttributeError:
+            context['title'] = _('None')
+
+        viewed_mk =  Member.objects.get(pk=self.member_id)
+        context['member'] = viewed_mk
+        related_mk_votes = agenda.related_mk_votes(viewed_mk)
+        
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = agenda in p.agendas
+        else:
+            watched = False
+        
+        context.update({'watched_object': watched})
+        context.update({'related_votes': related_mk_votes})
+        
+        return context
+
 class AgendaDetailEditView (DetailView):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_detail_edit.html'
