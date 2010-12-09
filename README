@@ -8,6 +8,11 @@ $ bin/django syncdb --migrate # do not create a superuser account
 $ bin/django loaddata dev
 $ bin/django createsuperuser # to create your superuser account
 $ bin/django runserver
+# create your local setting file to store a bunch of things that you do NOT want to push to everyone
+# NOTE: NEVER push settings.py with local changes!
+$ vi src/knesset/local_settings.py 
+$ DATABASE_NAME = '<your-local-oath>dev.db'  # Or path to database file if using sqlite3.
+
 
 NOTES
 =====
@@ -48,3 +53,35 @@ git clone paste_the_ssh_address_here.git
 Running the installation instructions:
 open command line change dir to the Open-Knesset folder
 run the installation instructions above (Without the $ ofcourse and with backslashes)
+
+Checking in
+==============
+see http://linux.yyz.us/git-howto.html for a short list of options with git
+
+First time
+----------
+
+Every other time
+-----------------
+
+$ git diff # to know what changed since your last commit
+$ git add -filename # if you added new files (commit doesn't add new files)
+$ git commit -a # commit all changes to your local repository
+# commit note should include fix#: [number] of the redline bug number youre fixing (if any)
+$ git push # push changes to git repo
+# go to git, do a "pull request" from [release manager] so code will get to production
+
+Updating Text 
+==============
+
+Adding a field to existing model
+================================
+
+# add the field you want to model sample_model
+# see our naming conventions for migrations: under the directory "migrations" under the model's folder - notice the number is added automatically
+# so 0003_add_members_blog is actually add_members_blog
+$ bin/django schemamigration knesset.sample_model --auto naming_convention_change_name
+$ bin/django syncdb --migrate
+
+
+ 

@@ -16,6 +16,7 @@ install_requires = [
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
+    'django-backlinks'
     ]
 setup(
         name = "Open-Knesset",

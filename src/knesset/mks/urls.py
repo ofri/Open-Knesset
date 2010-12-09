@@ -4,7 +4,7 @@ from knesset.mks.models import Member, Party
 from knesset.hashnav import DetailView
 from views import *
 from feeds import MemberActivityFeed
-                       
+
 member_list_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
 member_detail_view = MemberDetailView(queryset = Member.objects.all())
 party_list_view = PartyListView(queryset = Party.objects.all()) 
@@ -21,5 +21,5 @@ mksurlpatterns = patterns('knesset.mks.views',
     url(r'^party/$', party_list_view, name='party-list'),
     url(r'^party/(?P<object_id>\d+)/$', party_detail_view, name='party-detail'),
     url(r'^party/(?P<object_id>\d+)/(?P<slug>[\w\-\"]+)/$', party_detail_view, name='party-detail-with-slug'),
-    url(r'^party/search/?$', party_by_name, name='party-by-name'), 
+    url(r'^party/search/?$', party_by_name, name='party-by-name'),
 )

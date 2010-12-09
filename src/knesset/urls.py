@@ -12,6 +12,8 @@ from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.hashnav.views import SimpleView
 from hitcount.views import update_hit_count_ajax
+from backlinks.trackback.server import TrackBackServer
+from knesset.mks.backlinks_config import get_mk_entry, mk_is_backlinkable
 
 admin.autodiscover()
 
@@ -35,6 +37,7 @@ about_view = SimpleView(template='about.html')
 from knesset.auxiliary.views import main, post_annotation
 
 urlpatterns = patterns('',
+    
     url(r'^$', main, name='main'),
     url(r'^about/$', about_view, name='about'),
     (r'^api/', include('knesset.api.urls')),
@@ -60,6 +63,10 @@ urlpatterns = patterns('',
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
      (r'^annotate/', include('annotatetext.urls')),
      (r'^avatar/', include('avatar.urls')),
+     (r'^pingback/$', 'default_server'),
+     url(r'^member/(?P<slug>[\w-]+)/$', 'knesset.mks.backlinks_config.mk_detail', name='mk-detail'),
+     url(r'^pingback/$', 'backlinks.pingback.server.default_server', name='pingback-server'), 
+     url(r'^trackback/member/(?P<slug>[\w-]+)/$', TrackBackServer(get_mk_entry, mk_is_backlinkable),name='member-trackback'),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

@@ -5,10 +5,17 @@
 {% load common_visual_elements %}
 {% load activity_tags %}
 {% load pagination_tags %}
+{% load pingback_tags %}
+{% load trackback_tags %}
 {% load cache %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
+{% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
+{% if object.backlinks_enabled %}
+    {% url member-trackback slug=object.slug as trackback_url %}
+    {% trackback_rdf object.get_absolute_url object.title trackback_url True %}
+{% endif %}
     <style>
         .action-actor { display: none; }
     </style>

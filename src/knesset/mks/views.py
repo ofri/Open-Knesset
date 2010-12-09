@@ -22,6 +22,8 @@ from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.agendas.models import Agenda
 
+from backlinks.pingback.server import default_server
+
 from actstream import actor_stream
 from django.contrib.auth.decorators import login_required
 import logging
@@ -163,8 +165,29 @@ class MemberListView(ListView):
         original_context.update(context)
         return original_context
 
-class MemberDetailView(DetailView):
+def get_mk_entry(slug=None):
+    return Member.objects.get(pk=slug)
 
+def mk_is_backlinkable(url, entry):
+    if entry:
+        return entry.backlinks_enabled
+    return False
+
+def mk_detail(request, slug=None):
+    return object_detail(request,
+                         queryset= Member.objects.all(),                        
+                         object_id=slug)
+    
+class MemberDetailView(DetailView):
+    
+    
+    def __init__(self, **kwargs):
+        self._load_config_values(kwargs, 
+            slug = None,
+            object_id = None,
+            request = None
+        )
+        super(MemberDetailView, self).__init__(**kwargs)
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         all_members = Member.objects.filter(is_current=True)
         member_count = float(all_members.count())

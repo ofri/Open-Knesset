@@ -12,6 +12,7 @@ from knesset.committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
+from backlinks.client  import BacklinksClient
 just_id = lambda x: x.id
 
 class MemberViewsTest(TestCase):
@@ -176,6 +177,9 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
+        
+    def testPingbacks(self):
+        
 
         
     def tearDown(self):
