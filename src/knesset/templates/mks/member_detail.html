@@ -386,7 +386,27 @@
     </div>
 
 	<br/>
-	
+	{% if object.backlinks_enabled %}
+	<div style="clear:both;">
+	{% with entry_pings.count as num_pings %}
+    {% if num_pings %}
+    
+      <p>{% trans 'This entry has been pinged' noop %}{{ num_pings }} {% trans 'time%(num_pings|pluralize:"s")' noop%}</p>
+      <p>
+        <ul>
+        {% for ping in entry_pings %}
+        <li>{% trans 'From' noop %}<a href="{{ ping.source_url }}">&ldquo;{{ ping.title }}&ldquo;</a> {% trans "on the" noop %}{{ received|date:"jS F, Y" }}: {{ ping.excerpt }}</li>
+        {% endfor %}
+    </ul>
+    </p>    
+    {% else %}
+    <p>{% trans "This entry has not been pinged." noop%}</p>
+    {% endif %}
+    {% endwith %}
+    <p>{% trans "TrackBack:" noop %}{% url member-trackback slug=object.slug as trackback_url %}</p>
+	</div>
+	{% endif %} 
+	<br />
     <div style="clear:both;"></div>
 {% endcache %}
 
