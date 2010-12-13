@@ -13,3 +13,4 @@ develop-eggs/
 *.pyc
 *.db
 *~
+nosetests.xml

@@ -16,7 +16,8 @@ install_requires = [
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
-    'unittest-xml-reporting',
+    'nose',
+    'django-nose',
     ]
 setup(
         name = "Open-Knesset",
