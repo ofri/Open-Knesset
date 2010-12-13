@@ -1,7 +1,6 @@
 import datetime
 
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -10,6 +9,7 @@ from django.conf import settings
 
 from models import Agenda, AgendaVote
 from knesset.laws.models import Vote
+from knesset.mks.models import Party, Member
 
 just_id = lambda x: x.id
 
@@ -103,34 +103,3 @@ class SimpleTest(TestCase):
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
-        
-    def testAgendaMkDetail(self):
-        translation.activate(settings.LANGUAGE_CODE)
-        # test anonymous user
-        res = self.client.get(reverse('agenda-mk-details'))
-        self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
-
-
-        # TODO: Complete test below
-#    def testAgendaEdit(self):
-#
-#        # test anonymous user
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertTrue(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-#        
-#        # test unauthorized user
-#        self.assertTrue(self.client.login(username='john', password='LSD'))
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertTrue(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-#        
-#        # test authorized user
-#        self.assertTrue(self.client.login(username='jacob', password='JKM'))
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertFalse(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-
-
-
