@@ -4,10 +4,11 @@ Installation:
 $ python bootstrap.py
 $ bin/buildout
 $ bin/test
-$ bin/django syncdb --migrate # do not create a superuser account
+$ bin/django syncdb --migrate     # do not create a superuser account
 $ bin/django loaddata dev
-$ bin/django createsuperuser # to create your superuser account
+$ bin/django createsuperuser      # to create your superuser account
 $ bin/django runserver
+*Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
 
 NOTES
 =====
@@ -20,9 +21,9 @@ Update
 ======
 
 $ cd Open-Knesset 
-$ git pull git://github.com/ofri/Open-Knesset.git master
-$ bin/buildout # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
-$ bin/django syncdb --migrate # do not create a superuser account
+$ git pull git://github.com/hasadna/Open-Knesset.git master
+$ bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+$ bin/django syncdb --migrate      # do not create a superuser account
 $ bin/django runserver
 
 # if you get the add_persons_aliases alert try this:
@@ -39,7 +40,7 @@ Download and install git by following http://help.github.com/win-git-installatio
 Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
 
 Fork code repository:
-Browse to http://github.com/ofri/Open-Knesset
+Browse to http://github.com/hasadna/Open-Knesset
 and click Fork
 Browse to your Open-Knesset fork and click the SSH button. 
 Copy the SSH address and run the following command in git bash:
