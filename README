@@ -23,6 +23,7 @@ Update
 $ cd Open-Knesset 
 $ git pull git://github.com/hasadna/Open-Knesset.git master
 $ bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+$ bin/test
 $ bin/django syncdb --migrate      # do not create a superuser account
 $ bin/django runserver
 
@@ -33,7 +34,7 @@ Windows Users:
 --------------
 
 Prerequisites:
-Download and install Python 2.6 or 2.7 from http://www.python.org/download/windows/
+Download and install Python 2.5, 2.6 or 2.7 from http://www.python.org/download/windows/
 Make sure python and svn are in the default path (control panel->system->advanced->environment variables)
 Download and install svn client from http://www.sliksvn.com/en/download
 Download and install git by following http://help.github.com/win-git-installation/
