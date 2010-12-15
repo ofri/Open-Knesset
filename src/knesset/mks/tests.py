@@ -200,7 +200,6 @@ class MemberViewsTest(TestCase):
         self.jacob.delete()
         
 class MemberBacklinksViewsTest(TestCase):
-    fixtures = ['mks_test_data.json']
     urls = 'knesset.mks.server_urls'
 
     def setUp(self):
