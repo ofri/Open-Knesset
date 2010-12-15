@@ -5,6 +5,8 @@ from knesset.hashnav import DetailView
 from views import *
 from feeds import MemberActivityFeed
 
+from knesset.mks.views import mk_detail
+
 member_list_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
 member_detail_view = MemberDetailView(queryset = Member.objects.all())
 party_list_view = PartyListView(queryset = Party.objects.all()) 
@@ -12,8 +14,10 @@ party_detail_view = PartyDetailView(queryset = Party.objects.all(),extra_context
 
 mksurlpatterns = patterns('knesset.mks.views',
     url(r'^member/$', member_list_view, name='member-list'),
+    url(r'^member/(?P<object_id>\d+)/$', 'mk_detail', name='mk-detail'),
     url(r'^member/(?P<object_id>\d+)/$', member_detail_view, name='member-detail'),
     url(r'^member/(?P<object_id>\d+)/rss/$', MemberActivityFeed(), name='member-activity-feed'),
+    url(r'^member/(?P<object_id>\d+)/(?P<slug>[\w\-\"]+)/$', 'mk_detail', name='member-detail-with-slug'),
     url(r'^member/(?P<object_id>\d+)/(?P<slug>[\w\-\"]+)/$', member_detail_view, name='member-detail-with-slug'),
     # TODO:the next url is hardcoded in a js file
     url(r'^member/auto_complete/$', member_auto_complete, name='member-auto-complete'),

@@ -18,9 +18,11 @@ from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
+
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.agendas.models import Agenda
+
 
 from backlinks.pingback.server import default_server
 
@@ -164,19 +166,6 @@ class MemberListView(ListView):
         cache.set('member_list_by_%s' % info, context, 900)
         original_context.update(context)
         return original_context
-
-def get_mk_entry(slug=None):
-    return Member.objects.get(pk=slug)
-
-def mk_is_backlinkable(url, entry):
-    if entry:
-        return entry.backlinks_enabled
-    return False
-
-def mk_detail(request, slug=None):
-    return object_detail(request,
-                         queryset= Member.objects.all(),                        
-                         object_id=slug)
     
 class MemberDetailView(DetailView):
     
@@ -188,6 +177,7 @@ class MemberDetailView(DetailView):
             request = None
         )
         super(MemberDetailView, self).__init__(**kwargs)
+        
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         all_members = Member.objects.filter(is_current=True)
         member_count = float(all_members.count())
@@ -559,3 +549,25 @@ def party_by_name(request):
 def member_by_name(request):
     return object_by_name(request, Member.objects)
 
+
+def get_mk_entry(object_id=None, slug=None):
+    return Member.objects.get(pk=object_id)
+
+def mk_is_backlinkable(url, entry):
+    if entry:
+        return entry.backlinks_enabled
+    return False
+    
+def mk_detail(request, object_id=None, **kwargs):    
+    entry = MemberDetailView(
+                             object_id=object_id,
+                             request=request,
+                             queryset = Member.objects.all(),
+                             **kwargs)
+    args = ()
+    return entry.GET( *args, **kwargs)
+
+
+mk_detail = default_server.register_view(mk_detail, get_mk_entry, mk_is_backlinkable)
+
+#default_server.add_view_to_registry(MemberDetailView, get_mk_entry, mk_is_backlinkable)

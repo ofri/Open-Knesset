@@ -82,7 +82,7 @@ HTML_TEMPLATE = '<html><head><title>%(title)s</title></head><body><h1>%(title)s<
 
 
 LINKING_SOURCE = HTML_TEMPLATE % {'title': 'Test Pingback Good Source Document',
-                                  'content': 'This is a test document which <a href="http://example.com/member/'+PINGABLE_MEMBER_ID+'/">links to</a> a known pingable resource.'}
+                                  'content': 'This is a test document which <a href="http://example.com/member/'+PINGABLE_MEMBER_ID+'/mk_'+PINGABLE_MEMBER_ID+'/">links to</a> a known pingable resource. And <a href="http://example.com/member/'+PINGABLE_MEMBER_ID+'/">another</a>'}
 
 NON_LINKING_SOURCE = HTML_TEMPLATE % {'title': 'Test Pingback Bad Source Document',
                                       'content': 'This is a test document which does not link to a known pingable resource.'}
