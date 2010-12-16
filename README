@@ -25,7 +25,7 @@ Update
 ======
 
 $ cd Open-Knesset 
-$ git pull git://github.com/ofri/Open-Knesset.git master
+$ git pull https://github.com/hasadna/Open-Knesset.git master
 $ bin/buildout # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
 $ bin/django syncdb --migrate # do not create a superuser account
 $ bin/django runserver
