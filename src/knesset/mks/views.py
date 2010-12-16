@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-import json
+
 from django.core.cache import cache
 from tagging.models import Tag
 import tagging
@@ -30,6 +30,17 @@ from actstream import actor_stream
 from django.contrib.auth.decorators import login_required
 import logging
 import sys,traceback
+
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
+
 logger = logging.getLogger("open-knesset.mks")
 
 class MemberListView(ListView):

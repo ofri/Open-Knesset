@@ -106,6 +106,7 @@ INSTALLED_APPS = (
     'backlinks',
     'backlinks.pingback',
     'backlinks.trackback',
+    'django_nose',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -182,6 +183,9 @@ AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 HITCOUNT_KEEP_HIT_ACTIVE = { 'hours': 1 }
 HITCOUNT_HITS_PER_IP_LIMIT = 0
 HITCOUNT_EXCLUDE_USER_GROUP = ( )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-xunit']
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

@@ -26,6 +26,14 @@ from knesset.mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
 
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
 just_id = lambda x: x.id
 
 class MemberViewsTest(TestCase):
@@ -80,8 +88,6 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.context['object'].id, self.mk_1.id)
     
     def testMemberSearch(self):
-        import json
-
         res = self.client.get(reverse('member-handler'),
                                       {'q': 'mk_'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -109,8 +115,6 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.context['object'].id, self.party_1.id)
 
     def testPartySearch(self):
-        import json
-
         res = self.client.get(reverse('party-handler'),
                                       {'q': 'party'},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')

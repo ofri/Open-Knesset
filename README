@@ -4,15 +4,17 @@ Installation:
 $ python bootstrap.py
 $ bin/buildout
 $ bin/test
-$ bin/django syncdb --migrate # do not create a superuser account
+$ bin/django syncdb --migrate     # do not create a superuser account
 $ bin/django loaddata dev
-$ bin/django createsuperuser # to create your superuser account
+$ bin/django createsuperuser      # to create your superuser account
 $ bin/django runserver
 # create your local setting file to store a bunch of things that you do NOT want to push to everyone
 # NOTE: NEVER push settings.py with local changes!
 $ vi src/knesset/local_settings.py 
 $ DATABASE_NAME = '<your-local-oath>dev.db'  # Or path to database file if using sqlite3.
 
+=======
+*Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
 
 NOTES
 =====
@@ -25,9 +27,10 @@ Update
 ======
 
 $ cd Open-Knesset 
-$ git pull https://github.com/hasadna/Open-Knesset.git master
-$ bin/buildout # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
-$ bin/django syncdb --migrate # do not create a superuser account
+$ git pull git://github.com/hasadna/Open-Knesset.git master
+$ bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+$ bin/django syncdb --migrate      # do not create a superuser account
+$ bin/test
 $ bin/django runserver
 
 # if you get the add_persons_aliases alert try this:
@@ -37,14 +40,14 @@ Windows Users:
 --------------
 
 Prerequisites:
-Download and install Python 2.6 or 2.7 from http://www.python.org/download/windows/
+Download and install Python 2.5, 2.6 or 2.7 from http://www.python.org/download/windows/
 Make sure python and svn are in the default path (control panel->system->advanced->environment variables)
 Download and install svn client from http://www.sliksvn.com/en/download
 Download and install git by following http://help.github.com/win-git-installation/
 Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
 
 Fork code repository:
-Browse to http://github.com/ofri/Open-Knesset
+Browse to http://github.com/hasadna/Open-Knesset
 and click Fork
 Browse to your Open-Knesset fork and click the SSH button. 
 Copy the SSH address and run the following command in git bash:

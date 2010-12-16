@@ -1,4 +1,3 @@
-import json
 import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -7,6 +6,15 @@ from tagging.models import Tag,TaggedItem
 from knesset.laws.models import Vote, VoteAction
 from knesset.mks.models import Member,Party
 from knesset.agendas.models import Agenda
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
 
 class ApiViewsTest(TestCase):
 
