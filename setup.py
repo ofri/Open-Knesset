@@ -16,7 +16,7 @@ install_requires = [
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
-    'django-backlinks'
+    'django-backlinks',
     'nose',
     'django-nose',
     ]
