@@ -20,7 +20,8 @@ from knesset.sitemap import sitemaps
 
 feeds = {
     'comments': Comments,
-    'votes': Votes
+    'votes': Votes,
+    'bills': Bills,
 }
 
 
