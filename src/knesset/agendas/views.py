@@ -15,7 +15,7 @@ from models import Agenda, AgendaVote
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
-    
+
 class AgendaListView (ListView):
     def get_queryset(self):
         if not self.request.user.is_authenticated():
@@ -34,12 +34,25 @@ class AgendaListView (ListView):
         return context
         
 class AgendaDetailView (DetailView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated():
-            return Agenda.objects.get_relevant_for_user(user=None)
-        else:
-            return Agenda.objects.get_relevant_for_user(user=self.request.user)
+    class ForbiddenAgenda(Exception):
+        pass
     
+    queryset = Agenda.objects.all()
+    
+    def GET(self, *arg, **kwargs):
+        try:
+            response = super(AgendaDetailView, self).GET(*arg, **kwargs)
+        except self.ForbiddenAgenda:
+            return HttpResponseForbidden()
+        return response
+        
+    def get_object(self):
+        obj = super(AgendaDetailView, self).get_object()
+        if obj in Agenda.objects.get_relevant_for_user(user=self.request.user):
+            return obj
+        else:
+            raise self.ForbiddenAgenda
+        
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
