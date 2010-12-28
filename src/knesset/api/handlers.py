@@ -186,7 +186,7 @@ class VoteHandler(BaseHandler):
         # Augment agenda with reasonings from agendavote and
         # arrange it so that it will be accessible using the
         # agenda's id in JavaScript
-        agendavotes = vote.agendavote_set.all()
+        agendavotes = vote.agenda_vote_set.all()
         agendas     = [model_to_dict(av.agenda) for av in agendavotes]
         reasonings  = [av.reasoning for av in agendavotes]
         text_scores = [av.get_score_display() for av in agendavotes]
@@ -272,4 +272,4 @@ class AgendaHandler(BaseHandler):
 
     @classmethod
     def number_of_items(self, agenda):
-        return agenda.agendavote_set.count()
+        return agenda.agendavotes.count()

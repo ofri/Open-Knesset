@@ -16,7 +16,7 @@ def agendas_for(user, vote):
         for a in user.agendas.all():
             r = {'agenda_name': a.name, 'agenda_id': a.id, 'vote_id': vote.id}
             try:
-                av = a.agenda_votes.get(vote=vote)
+                av = a.agendavotes.get(vote=vote)
                 r['weight'] = av.score
                 r['reasoning'] = av.reasoning
             except AgendaVote.DoesNotExist:
