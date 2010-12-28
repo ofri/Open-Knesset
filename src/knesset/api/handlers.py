@@ -8,7 +8,7 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction
+from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 import math
@@ -23,7 +23,7 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', )
+    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -193,6 +193,76 @@ class VoteHandler(BaseHandler):
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
+
+class BillHandler(BaseHandler):
+    fields = ('url', 'title', 
+              'stage_text', 'stage_date',
+              'votes', 
+              'committee_meetings',
+              'proposing_mks', 
+              'tags'
+             )
+    
+    exclude = ('member')
+    allowed_methods = ('GET',)
+    model = Bill
+    qs = Bill.objects.all()
+
+    def read(self, request, **kwargs):
+        ''' returns a vote or a list of votes '''
+        qs = self.qs
+
+        if 'id' in kwargs:
+            return super(BillHandler, self).read(request, **kwargs)
+
+        type = request.GET.get('type', None)
+        order = request.GET.get('order', None)
+        days_back = request.GET.get('days_back', None)
+        page_len = int(request.GET.get('page_len', DEFAULT_PAGE_LEN))
+        page_num= int(request.GET.get('page_num', 0))
+
+        if type:
+            qs = qs.filter(title__contains=type)
+        if days_back:
+            qs = qs.since(days=int(days_back))
+        if order:
+            qs = qs.sort(by=order)
+        return qs[page_len*page_num:page_len*(page_num +1)]
+
+    @classmethod
+    def url(self, bill):
+        return bill.get_absolute_url()
+
+    @classmethod
+    def stage_text(self, bill):
+        return bill.get_stage_display()
+
+    @classmethod
+    def votes(self, bill):
+        pre_votes =   [ x.id for x in bill.pre_votes.all() ]
+        first_vote = None
+        if bill.first_vote != None:
+            first_vote = bill.first_vote.id
+        approval_vote = None
+        if bill.approval_vote != None:
+            approval_vote = bill.approval_vote.id
+        all = set(pre_votes+[first_vote, approval_vote])
+        return { 'pre' : pre_votes, 'first' : first_vote, 'approval' : approval_vote, 'all':list(all)}
+
+    @classmethod
+    def committee_meetings(self, bill):
+        first_committee =   [ x.id for x in bill.first_committee_meetings.all() ]
+        second_committee = [ x.id for x in bill.second_committee_meetings.all() ]
+        all=set(first_committee+second_committee)
+        return { 'first' : first_committee, 'second' : second_committee, 'all':list(all) }
+
+    @classmethod
+    def proposing_mks(self, bill):
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name } for x in bill.proposers.all() ]
+
+    @classmethod
+    def tags(self,bill):
+        return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')

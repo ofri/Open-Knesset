@@ -15,7 +15,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'django.db.backends.sqlite3'         # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = '/Users/liorsion/Documents/workspace/Open-Knesset/dev.db'  # Or path to database file if using sqlite3.
+DATABASE_NAME = 'dev.db'  # Or path to database file if using sqlite3.
 DATABASE_USER = ''      # Not used with sqlite3.
 DATABASE_PASSWORD = ''      # Not used with sqlite3.
 DATABASE_HOST = ''                  # Set to empty string for localhost. Not used with sqlite3.
@@ -103,6 +103,10 @@ INSTALLED_APPS = (
     'hitcount',
     'annotatetext',
     'mailer',
+    'backlinks',
+    'backlinks.pingback',
+    'backlinks.trackback',
+    'django_nose',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -179,6 +183,9 @@ AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 HITCOUNT_KEEP_HIT_ACTIVE = { 'hours': 1 }
 HITCOUNT_HITS_PER_IP_LIMIT = 0
 HITCOUNT_EXCLUDE_USER_GROUP = ( )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-xunit']
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

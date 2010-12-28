@@ -73,9 +73,6 @@ class AgendaManager(models.Manager):
         agendas = AgendaVote.objects.filter(agenda__id=agendaId,vote__votes__id=mk).distinct()
         return agendas
     
-    def get_specific(self, agendaId):
-        return Agenda.objects.filter(pk=agendaId)
-    
     def get_relevant_for_user(self, user):
         if user == None or not user.is_authenticated():
             agendas = self.filter(is_public=True)

@@ -1,7 +1,6 @@
 import datetime
 
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -137,6 +136,3 @@ class SimpleTest(TestCase):
 #        res = self.client.get(reverse('agenda-detail-edit', 
 #                                      kwargs={'object_id': self.agenda_1.id}))
 #        self.assertFalse(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-
-
-

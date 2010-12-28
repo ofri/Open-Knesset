@@ -5,10 +5,17 @@
 {% load common_visual_elements %}
 {% load activity_tags %}
 {% load pagination_tags %}
+{% load pingback_tags %}
+{% load trackback_tags %}
 {% load cache %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
+{% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
+{% if object.backlinks_enabled %}
+    {% url member-trackback slug=object.slug as trackback_url %}
+    {% trackback_rdf object.get_absolute_url object.title trackback_url True %}
+{% endif %}
     <style>
         .action-actor { display: none; }
     </style>
@@ -379,7 +386,27 @@
     </div>
 
 	<br/>
-	
+	{% if object.backlinks_enabled %}
+	<div style="clear:both;">
+	{% with entry_pings.count as num_pings %}
+    {% if num_pings %}
+    
+      <p>{% trans 'This entry has been pinged' noop %}{{ num_pings }} {% trans 'time%(num_pings|pluralize:"s")' noop%}</p>
+      <p>
+        <ul>
+        {% for ping in entry_pings %}
+        <li>{% trans 'From' noop %}<a href="{{ ping.source_url }}">&ldquo;{{ ping.title }}&ldquo;</a> {% trans "on the" noop %}{{ received|date:"jS F, Y" }}: {{ ping.excerpt }}</li>
+        {% endfor %}
+    </ul>
+    </p>    
+    {% else %}
+    <p>{% trans "This entry has not been pinged." noop%}</p>
+    {% endif %}
+    {% endwith %}
+    <p>{% trans "TrackBack:" noop %}{% url member-trackback slug=object.slug as trackback_url %}</p>
+	</div>
+	{% endif %} 
+	<br />
     <div style="clear:both;"></div>
 {% endcache %}
 
