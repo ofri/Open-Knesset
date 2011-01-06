@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-09 19:21+0200\n"
-"PO-Revision-Date: 2010-11-09 19:22+0200\n"
+"POT-Creation-Date: 2010-11-12 23:06+0200\n"
+"PO-Revision-Date: 2010-11-12 23:06+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: -1,988,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: context.py:15
+#: context.py:13
 #: mks/models.py:151
 #: mks/views.py:63
 #: mks/views.py:77
@@ -24,7 +24,7 @@ msgstr ""
 #: mks/views.py:145
 #: mks/views.py:157
 #: mks/views.py:160
-#: templates/base.html:104
+#: templates/base.html:83
 #: templates/agendas/agenda_detail.html:58
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
@@ -37,55 +37,55 @@ msgstr ""
 msgid "Members"
 msgstr "ח\"כים"
 
-#: context.py:16
+#: context.py:14
 #: mks/models.py:62
 #: mks/views.py:297
 #: mks/views.py:311
 #: mks/views.py:326
 #: mks/views.py:341
-#: templates/base.html:105
+#: templates/base.html:84
 #: templates/agendas/agenda_detail.html:72
 msgid "Parties"
 msgstr "מפלגות"
 
-#: context.py:17
-#: templates/base.html:103
+#: context.py:15
+#: templates/base.html:82
 msgid "Past Votes"
 msgstr "הצבעות"
 
-#: settings.py:172
+#: settings.py:167
 msgid "Statement"
 msgstr "הצהרה"
 
-#: settings.py:173
+#: settings.py:168
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: settings.py:174
+#: settings.py:169
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: settings.py:175
+#: settings.py:170
 msgid "Source?"
 msgstr "מקור?"
 
-#: settings.py:176
+#: settings.py:171
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: settings.py:177
+#: settings.py:172
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: settings.py:178
+#: settings.py:173
 msgid "Important"
 msgstr "חשוב!"
 
-#: settings.py:179
+#: settings.py:174
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: settings.py:180
+#: settings.py:175
 msgid "Comment"
 msgstr "תגובה"
 
@@ -161,7 +161,7 @@ msgstr "אג'נדה"
 
 #: agendas/models.py:100
 #: agendas/urls.py:7
-#: templates/base.html:107
+#: templates/base.html:86
 #: templates/agendas/agenda_list.html:6
 #: templates/agendas/agenda_list.html:7
 #: templates/agendas/agenda_list.html:8
@@ -365,7 +365,7 @@ msgstr "הצעת חוק"
 #: laws/models.py:378
 #: laws/urls.py:11
 #: laws/urls.py:12
-#: templates/base.html:102
+#: templates/base.html:81
 #: templates/committees/committeemeeting_detail.html:45
 #: templates/mks/member_detail.html:271
 msgid "Bills"
@@ -845,8 +845,8 @@ msgid "Page not found"
 msgstr "דף לא קיים"
 
 #: templates/500.html:8
-#: templates/base.html:9
-#: templates/base.html.py:20
+#: templates/base.html:10
+#: templates/base.html.py:21
 #: templates/main.he.html:6
 msgid "Open Knesset"
 msgstr "כנסת פתוחה"
@@ -896,52 +896,34 @@ msgstr "כאן"
 msgid "The project's mailing list is"
 msgstr "קבוצת הדיון נמצאת "
 
-#: templates/_main.html:2
-msgid "Choose a tab to start browsing"
-msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
-
-#: templates/_main.html:3
-#: templates/agendas/agenda_detail.html:34
-#: templates/committees/committeemeeting_detail.html:28
-#: templates/mks/member_detail.html:56
-msgid "or"
-msgstr "או"
-
-#: templates/_main.html:10
-#: templates/search/search.html:3
-#: templates/search/search.html.py:5
-#: templates/search/search.html:13
-msgid "Search"
-msgstr "חיפוש"
-
 #: templates/about.html:4
 #: templates/about.html.py:6
-#: templates/base.html:109
+#: templates/base.html:88
 msgid "About"
 msgstr "אודות"
 
-#: templates/base.html:21
+#: templates/base.html:22
 msgid "I'm just sitting here watching the wheels go round and round."
 msgstr "אתר הכנסת הפתוחה"
 
-#: templates/base.html:61
+#: templates/base.html:62
 msgid "This is a development server, all data in it should be considered fictional. users are kindly requested to go to "
 msgstr "זהו שרת פיתוח. יש להתייחס לכל הכתוב כאן כאל מידע דמיוני. משתמשים מתבקשים לעבור ל"
 
-#: templates/base.html:66
+#: templates/base.html:67
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: templates/base.html:67
+#: templates/base.html:68
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
 
-#: templates/base.html:68
+#: templates/base.html:69
 #: templates/user/login.html:9
 msgid "Logout"
 msgstr "יציאה מהחשבון"
 
-#: templates/base.html:70
+#: templates/base.html:71
 #: templates/agendas/agenda_detail.html:33
 #: templates/committees/committeemeeting_detail.html:27
 #: templates/mks/member_detail.html:55
@@ -950,29 +932,25 @@ msgstr "יציאה מהחשבון"
 msgid "login"
 msgstr "כניסה לחשבון"
 
-#: templates/base.html:74
-msgid "loading search..."
-msgstr "טוען סרגל חיפוש..."
-
-#: templates/base.html:101
+#: templates/base.html:80
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:106
+#: templates/base.html:85
 #: templates/committees/committee_list.html:3
 #: templates/committees/committee_list.html:4
 #: templates/committees/committee_list.html:5
 msgid "Committees"
 msgstr "ועדות"
 
-#: templates/base.html:108
+#: templates/base.html:87
 #: templates/planet/base.html:12
 #: templates/planet/posts/list.html:4
 #: templates/planet/tags/detail.html:4
 msgid "Posts"
 msgstr "מאמרים"
 
-#: templates/base.html:140
+#: templates/base.html:119
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
@@ -1123,6 +1101,12 @@ msgstr "כל האג'נדות"
 #: templates/mks/member_detail.html:54
 msgid "You have to be logged in to enable the watch feature."
 msgstr "כדי להשתמש ביכולת המעקב צריך להכנס לחשבון."
+
+#: templates/agendas/agenda_detail.html:34
+#: templates/committees/committeemeeting_detail.html:28
+#: templates/mks/member_detail.html:56
+msgid "or"
+msgstr "או"
 
 #: templates/agendas/agenda_detail.html:35
 #: templates/committees/committeemeeting_detail.html:29
@@ -2265,25 +2249,15 @@ msgstr "ח\"כים המדברים על זה"
 msgid "Tags list"
 msgstr "רשימת תגיות"
 
-#: templates/search/search.html:19
-msgid "Did you mean"
-msgstr "האם התכוונת ל"
+#: templates/search/search.html:4
+#: templates/search/search.html.py:29
+#: templates/search/search_form.html:9
+msgid "Search"
+msgstr "חיפוש"
 
-#: templates/search/search.html:21
-msgid "Results"
-msgstr "תוצאות"
-
-#: templates/search/search.html:28
-msgid "No results found."
-msgstr "לא נמצאו תוצאות"
-
-#: templates/search/search.html:34
-msgid "previous results"
-msgstr "התוצאות הקודמות"
-
-#: templates/search/search.html:38
-msgid "next results"
-msgstr "התוצאות הבאות"
+#: templates/search/search.html:8
+msgid "Search results"
+msgstr "תוצאות החיפוש"
 
 #: templates/user/annotated_items.html:4
 #: templates/user/public_profile.html:40
@@ -2501,6 +2475,18 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
+#~ msgid "Choose a tab to start browsing"
+#~ msgstr "שלום! אנא בחר באחד מהקישורים למעלה"
+#~ msgid "loading search..."
+#~ msgstr "טוען סרגל חיפוש..."
+#~ msgid "Did you mean"
+#~ msgstr "האם התכוונת ל"
+#~ msgid "Results"
+#~ msgstr "תוצאות"
+#~ msgid "No results found."
+#~ msgstr "לא נמצאו תוצאות"
+#~ msgid "previous results"
+#~ msgstr "התוצאות הקודמות"
 #~ msgid "Full meetings list"
 #~ msgstr "רשימת הישיבות המלאה"
 #~ msgid "Embed in external site"

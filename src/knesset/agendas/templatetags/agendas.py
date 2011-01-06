@@ -23,7 +23,9 @@ def agendas_for(user, vote):
                 r['weight'] = 0.0
                 r['reasoning'] = u''
             editable.append(r)
-                  
+    
+#    import pdb
+#    pdb.set_trace()
     return { 'formset': editable and VoteLinkingFormSet(initial = editable),
              'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user)).distinct(),
            }

@@ -5,7 +5,7 @@
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block divcontent %}
   {% if query %}
-    <h1>Search results</h1>
+    <h1>{% trans "Search results" %}</h1>
     <div id="cse-search-results">
       <div id="cse-search-results-js-required">
         The Django documentation search uses a Google Custom Search, which
@@ -24,6 +24,11 @@
     <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
     <script type="text/javascript">
       try{document.getElementsByName('googleSearchFrame')[0].height=850;}catch(e){};
+      
+      {% if not cx %}
+        $('#id_search_page_q').value="{{ query }}";
+        $('#search_page').submit();
+      {% endif %}
     </script>
   {% else %}
     <h1>{% trans "Search" %}</h1>
