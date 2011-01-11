@@ -111,6 +111,12 @@ class BillViewsTest(TestCase):
         self.client.logout()
         self.client.logout()
 
+    def testFeeds(self):
+        res = self.client.get(reverse('bills-feed'))
+        self.assertEqual(res.status_code, 200)
+        import pdb; pdb.set_trace()
+        self.assertEqual(len(res.context['items']), 2)
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
@@ -118,6 +124,9 @@ class BillViewsTest(TestCase):
         self.bill_2.delete()
         self.jacob.delete()
         self.mk_1.delete()
+
+
+
 
 class VoteViewsTest(TestCase):
 
