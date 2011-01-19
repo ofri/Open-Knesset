@@ -107,32 +107,3 @@ class SimpleTest(TestCase):
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
-        
-    def testAgendaMkDetail(self):
-        translation.activate(settings.LANGUAGE_CODE)
-        # test anonymous user
-        res = self.client.get(reverse('mk-agenda-detail',
-                                      kwargs={'object_id': self.agenda_1.id, 'member_id': self.mk_1.id}))
-        self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
-
-
-        # TODO: Complete test below
-#    def testAgendaEdit(self):
-#
-#        # test anonymous user
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertTrue(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-#        
-#        # test unauthorized user
-#        self.assertTrue(self.client.login(username='john', password='LSD'))
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertTrue(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
-#        
-#        # test authorized user
-#        self.assertTrue(self.client.login(username='jacob', password='JKM'))
-#        res = self.client.get(reverse('agenda-detail-edit', 
-#                                      kwargs={'object_id': self.agenda_1.id}))
-#        self.assertFalse(res['Location'].endswith(reverse('agenda-detail',kwargs={'object_id': self.agenda_1.id})))
