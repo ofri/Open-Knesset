@@ -36,6 +36,13 @@ $ bin/django runserver
 # if you get the add_persons_aliases alert try this:
 $ bin/django migrate --fake persons 0001
 
+Updating the translation strings:
+================================
+$ cd src/knesset
+$ ../../bin/django makemessages -a -e txt,html
+<edit src/knesset/locale/he/LC_MESSAGES/django.po, find your strings and change it to the correct translation>
+$ ../../bin/django compilemessages
+
 Windows Users:
 --------------
 
