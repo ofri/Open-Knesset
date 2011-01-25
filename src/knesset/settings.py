@@ -103,6 +103,9 @@ INSTALLED_APPS = (
     'hitcount',
     'annotatetext',
     'mailer',
+    'backlinks',
+    'backlinks.pingback',
+    'backlinks.trackback',
     'django_nose',
     'knesset',
     'knesset.auxiliary',                  # knesset apps

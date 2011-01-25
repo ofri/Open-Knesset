@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.functional import update_wrapper
 class View(object):
     """
     Parent class for all views.
@@ -31,7 +31,8 @@ class View(object):
         )
         if kwargs:
             raise TypeError("__init__() got an unexpected keyword argument '%s'" % iter(kwargs).next())
-    
+        
+
     def __call__(self, request, *args, **kwargs):
         view = copy.copy(self)
         view.request = request

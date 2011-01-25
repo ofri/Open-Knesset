@@ -143,6 +143,8 @@ class Member(models.Model):
     average_weekly_presence_hours = models.FloatField(null=True)
     average_monthly_committee_presence = models.FloatField(null=True)
       
+    backlinks_enabled = models.BooleanField(default=True)
+
     objects = BetterManager()
 
     class Meta:
