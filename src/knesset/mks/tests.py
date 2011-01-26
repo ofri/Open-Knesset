@@ -196,6 +196,13 @@ class MemberViewsTest(TestCase):
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
     
+    def testPartyAPI(self):
+        res = self.client.get(reverse('party-handler')) #, kwargs={'object_id': self.mk_1.id}),{'verbs':'posted'})
+        self.assertEqual(res.status_code,200)
+        parties = json.loads(res.content)
+        self.assertEqual(map(lambda x:x['id'], parties), [self.party_1.id, self.party_2.id])
+    
+
     def tearDown(self):
         self.party_1.delete()
         self.party_2.delete()
