@@ -122,7 +122,6 @@ class BillViewsTest(TestCase):
     def testFeeds(self):
         res = self.client.get(reverse('bills-feed'))
         self.assertEqual(res.status_code, 200)
-        import pdb; pdb.set_trace()
         self.assertEqual(len(res.context['items']), 2)
 
     def tearDown(self):
