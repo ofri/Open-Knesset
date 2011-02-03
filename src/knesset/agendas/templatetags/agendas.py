@@ -16,14 +16,16 @@ def agendas_for(user, vote):
         for a in user.agendas.all():
             r = {'agenda_name': a.name, 'agenda_id': a.id, 'vote_id': vote.id}
             try:
-                av = a.agenda_votes.get(vote=vote)
+                av = a.agendavotes.get(vote=vote)
                 r['weight'] = av.score
                 r['reasoning'] = av.reasoning
             except AgendaVote.DoesNotExist:
                 r['weight'] = 0.0
                 r['reasoning'] = u''
             editable.append(r)
-                  
+    
+#    import pdb
+#    pdb.set_trace()
     return { 'formset': editable and VoteLinkingFormSet(initial = editable),
              'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user)).distinct(),
            }

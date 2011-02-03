@@ -18,8 +18,8 @@ AGENDAVOTE_SCORE_CHOICES = (
 )
 
 class AgendaVote(models.Model):
-    agenda = models.ForeignKey('Agenda', related_name='agenda_votes')
-    vote = models.ForeignKey('laws.Vote')
+    agenda = models.ForeignKey('Agenda', related_name='agendavotes')
+    vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
     score = models.FloatField(default=0.0, choices = AGENDAVOTE_SCORE_CHOICES )
     reasoning = models.TextField(null=True,blank=True)
 
@@ -114,7 +114,7 @@ class Agenda(models.Model):
         #   2) the member participated in and either voted for or against
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct().aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct().aggregate(Sum('score'))['score__sum'] or 0
-        max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)])
+        max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)])
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
@@ -124,7 +124,7 @@ class Agenda(models.Model):
         # party_members_ids = party.members.all().values_list('id',flat=True)
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum'] or 0
         against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="against").aggregate(Sum('score'))['score__sum'] or 0
-        max_score = sum([abs(x) for x in self.agendavote_set.values_list('score', flat=True)]) * party.members.count()
+        max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:

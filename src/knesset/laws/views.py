@@ -350,9 +350,9 @@ class VoteDetailView(DetailView):
         context['bills'] = related_bills
         
         if self.request.user.is_authenticated():
-            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
         else:
-            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
         
         return context
 
