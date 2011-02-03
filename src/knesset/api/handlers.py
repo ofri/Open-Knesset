@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import urllib
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
@@ -160,7 +160,7 @@ class VoteHandler(BaseHandler):
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=int(days_back))
+            qs = qs.filter(time__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
