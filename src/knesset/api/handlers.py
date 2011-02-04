@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import urllib
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
@@ -160,7 +160,7 @@ class VoteHandler(BaseHandler):
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=int(days_back))
+            qs = qs.filter(time__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
@@ -190,10 +190,10 @@ class VoteHandler(BaseHandler):
         # Augment agenda with reasonings from agendavote and
         # arrange it so that it will be accessible using the
         # agenda's id in JavaScript
-        agendavotes = vote.agendavote_set.all()
+        agendavotes = vote.agendavotes.all()
         agendas     = [model_to_dict(av.agenda) for av in agendavotes]
         reasonings  = [av.reasoning for av in agendavotes]
-        text_scores = [av.get_text_score() for av in agendavotes]
+        text_scores = [av.get_score_display() for av in agendavotes]
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
@@ -352,4 +352,4 @@ class AgendaHandler(BaseHandler):
 
     @classmethod
     def number_of_items(self, agenda):
-        return agenda.agendavote_set.count()
+        return agenda.agendavotes.count()

@@ -1,94 +1,34 @@
-{% extends "site_base.html" %}
+{% extends "two_cols.html" %}
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
 {% load links %}
 {% load mks %}
 {% load comments %}
-{% block extratitle %}{{ object.title }}{% endblock %}
-{% block keywords %}{{ object.name }}{% endblock %}
-{% block description %}{{ object.title }} - {% endblock %}
+{% load agendas %}
+{% block extratitle %}{{ vote.title }}{% endblock %}
+{% block keywords %}{{ vote.name }}{% endblock %}
+{% block description %}{{ vote.title }} - {% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/agendas.js"></script>
-    <link href="{{MEDIA_URL}}css/agendas.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
-{% block divcontent %}
-    <h2><a href=".">{{ object.title }}</a></h2>
-    <div id="vote-info">
-        <div>
-            <h3>{% trans "Time" %}</h3>
-            {{ object.time_string }} 
-            {% if object.get_next_by_time %}
-            &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_next_by_time.id %}">{% trans 'Go to next vote by time' %}</a>
-            {% endif %}
-            {% if object.get_previous_by_time %}
-            &nbsp; <a class="bold-link" href="{% url vote-detail object_id=object.get_previous_by_time.id %}">{% trans 'Go to previous vote by time' %}</a>
-            {% endif %}
-        </div>
-        <div>
-            <h3>{% trans "For" %}</h3>
-            {% if object.for_votes_count %}
-                {% blocktrans count object.for_votes|length as counter %}
-                {{ counter }} MK
-                {% plural %}
-                {{ counter }} MKs
-                {% endblocktrans %}
-                <div class="list-wrap indented">
-                {% for m in object.for_votes %}
-                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{{ m.member|mk_card }}</a>
-                    {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
-                    {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
-                    {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
-                &nbsp;
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans 'none' %}
-            {% endif %}
-        </div>
-        <div>
-            <h3>{% trans "Against" %}</h3>
-            {% if object.against_votes_count %}        
-                {% blocktrans count object.against_votes|length as counter %}
-                {{ counter }} MK
-                {% plural %}
-                {{ counter }} MKs
-                {% endblocktrans %}
-                <div class="list-wrap indented">
-                {% for m in object.against_votes %}
-                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{{ m.member|mk_card }}</a>
-                    {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
-                    {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
-                    {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
-                &nbsp;
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans 'none' %}
-            {% endif %}
-        </div>
-
-        <br>    
-        <h3>{% trans 'Bill' %}</h3>
-        {% for bill in bills %}
-            <a href={% url bill-detail bill.id %}>{{ bill }}</a><br>
-        {% empty %}    
-            {% trans 'No bill is associated with this vote' %}
-        {% endfor %}<br>    
-        
+{% block title %} {{ vote.title }} {% endblock %}
+{% block secondary %}
+        <h3>{% trans "Links" %}</h3>
+        {% object_links vote %}
+            
         <div id="tagging-container">
         {% if user.is_authenticated %}
             <h3>{% trans "Tags" %}</h3>
-            {% if object.tags %}
+            {% if vote.tags %}
                 <div id="vote-tags">
-                {% for t in object.tags %}
-                    {% user_votes user object t %} <br />        
+                {% for t in vote.tags %}
+                    {% user_votes user vote t %} <br/>
                 {% endfor %}
                 </div>
             {% else %}
@@ -102,9 +42,9 @@
 
         {% else %}
             <h3>{% trans "Tags" %}</h3>
-            {% if object.tags %}
+            {% if vote.tags %}
                 <div id="tags">
-                {% for t in object.tags %}
+                {% for t in vote.tags %}
                    <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
                 {% endfor %}
                 </div>
@@ -115,92 +55,95 @@
             (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
         {% endif %}
         </div>
+        {% agendas_for user vote %}
+{% endblock %}
 
-        {% if object.committee_meetings.count %}
-            <div><span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  {% for cm in object.committee_meetings.all %}<a class="hashnav item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}</div>                
+{% block primary %}
+        <div>
+            <h3>{% trans "Time" %}</h3>
+            {{ vote.time_string }}
+            {% if vote.get_next_by_time %}
+            &nbsp; <a class="bold-link" href="{{ vote.get_next_by_time.get_absolute_url }}">{% trans 'Go to next vote by time' %}</a>
+            {% endif %}
+            {% if vote.get_previous_by_time %}
+            &nbsp; <a class="bold-link" href="{{ vote.get_previous_by_time.get_absolute_url }}">{% trans 'Go to previous vote by time' %}</a>
+            {% endif %}
+        </div>
+        <div>
+            <h3>{% trans "For" %}</h3>
+            {% if vote.for_votes_count %}
+                {% blocktrans count vote.for_votes|length as counter %}
+                {{ counter }} MK
+                {% plural %}
+                {{ counter }} MKs
+                {% endblocktrans %}
+                <div class="list-wrap indented">
+                {% for m in vote.for_votes %}
+                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{{ m.member|mk_card }}</a>
+                    {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
+                    {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
+                    {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
+                &nbsp;
+                {% endfor %}
+                </div>
+        {% else %}
+                {% trans 'none' %}
+            {% endif %}
+        </div>
+        <div>
+            <h3>{% trans "Against" %}</h3>
+            {% if vote.against_votes_count %}
+                {% blocktrans count vote.against_votes|length as counter %}
+                {{ counter }} MK
+                {% plural %}
+                {{ counter }} MKs
+                {% endblocktrans %}
+                <div class="list-wrap indented">
+                {% for m in vote.against_votes %}
+                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{{ m.member|mk_card }}</a>
+                    {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
+                    {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
+                    {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
+                &nbsp;
+                {% endfor %}
+                </div>
+            {% else %}
+                {% trans 'none' %}
+            {% endif %}
+        </div>
+
+        <h3>{% trans 'Bill' %}</h3>
+        <ul class="items">
+        {% for bill in bills %}
+            <li><a href={% url bill-detail bill.id %}>{{ bill }}</a></li>
+        {% empty %}    
+            {% trans 'No bill is associated with this vote' %}
+        {% endfor %}
+        </ul>
+        
+        {% if vote.committee_meetings.count %}
+            <div>
+                <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  
+                {% for cm in vote.committee_meetings.all %}
+                    <a class="hashnav item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
+                    {% if not forloop.last %} &bull; {% endif %}
+                {% endfor %}
+            </div>
         {% endif %}
 
-        <h3>{% trans "Links" %}</h3>
-        {% object_links object %} 
-        <br><br>
-            
- 
-        <br>
-        <div id="agendas">
-
-            {% if agendavotes %}
-                <h3>{% trans "Ascribed agendas" %}</h3>
-                <div id="ascribed-agendas" class="item-list">
-                {% for agendavote in agendavotes %}
-                    <div class="item">
-                        <a class="hashnav dontwrap" id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
-                        <div class="info">
-                            <table>
-                                <tr><td>{% trans "Score:" %}</td><td>{{ agendavote.score }}</td></tr>
-                                <tr><td>{% trans "Reasoning:" %}</td><td>{{ agendavote.reasoning }}</td></tr>
-                            </table>
-                        </div>
-
-                    </div>
-                {% endfor %}
-                </div>
-            {% endif %}
-            <br>    
-
-            {% if user.agenda_set.all %}
-                <h3>{% trans "Ascribe your agendas" %}</h3>
-                <div id="ascribe-your-agendas" class="list-wrap indented" id="agendas-choose">
-                {% for agenda in user.agenda_set.all %}
-                    <a class="hashnav item dontwrap agendavote {% if agenda in object.agenda_set.all %}selected{% endif %}" id="your-agenda-{{ agenda.id }}" agenda_name="{{ agenda.name }}" agenda_id="{{ agenda.id }}" vote_id="{{ object.id }}" href="#">{{ agenda }}</a>
-                {% endfor %}
-                </div>
-            {% endif %}
-
-            <div class="popup">
-                <div id="popupContact">
-                    <h1></h1>
-                    <p id="contactArea">
-                        <form style="margin-top: 1em;"> 
-                            <div id="ascribe-agenda-radioset" class="jquery"> 
-                                <input type="radio" id="radio1" name="radio" /><label id="ascribe" for="radio1">{% trans "Ascribe" %}</label> 
-                                <input type="radio" id="radio2" name="radio" /><label id="remove" for="radio2">{% trans "Remove" %}</label>
-                            </div>
-                        </form>
-                        <br>
-                        <form style="margin-top: 1em;"> 
-                            <div id="agenda-vote-compliance-radioset" class="jquery"> 
-                                <input type="radio" id="aradio1" name="radio" /><label id="complies-fully" for="aradio1">{% trans "Complies fully" %}</label> 
-                                <input type="radio" id="aradio2" name="radio" /><label id="complies-partially" for="aradio2">{% trans "Complies partially" %}</label>
-                                <input type="radio" id="aradio3" name="radio" /><label id="agnostic" for="aradio3">{% trans "Agnostic" %}</label>
-                                <input type="radio" id="aradio4" name="radio" /><label id="opposes-partially" for="aradio4">{% trans "Opposes partially" %}</label>
-                                <input type="radio" id="aradio5" name="radio" /><label id="opposes-fully" for="aradio5">{% trans "Opposes fully" %}</label>
-                            </div>
-                        </form>
-                        <br>
-                        <h3>{% trans "Reasoning" %}</h3><textarea id="reasoning"></textarea>
-                        <br>
-                        <input id="popupContactClose" type="submit" value="{% trans 'Submit' %}">
-                    </p>
-                </div>
-                <div id="backgroundPopup"></div>
-            </div> 
-
-        </div> 
-
-                    
-        {% if object.summary %}        
+        {% if vote.summary %}        
             <h3>{% trans 'summary' %}</h3>
-            {{ object.summary|safe }}
+            {{ vote.summary|safe }}
             <br><br>
         {% endif %}
 
-        {% if object.full_text %}
+        {% if vote.full_text %}
             <h3>{% trans 'Bill Text' %}</h3>
-            {{ object.full_text|safe }}
+            {{ vote.full_text|safe }}
             <br><br>
         {% endif %}
 
-    {% get_comment_list for object as comment_list %}
+    {% get_comment_list for vote as comment_list %}
     {% if comment_list %}
         <h3>{% trans 'User comments' %}</h3>
         {% for comment in comment_list %}
@@ -214,7 +157,7 @@
 
     {% if user.is_authenticated %}
         {% if perms.comments.add_comment %}
-            {% render_comment_form for object %}
+            {% render_comment_form for vote %}
         {% else %}
             {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
         {% endif %}
@@ -223,5 +166,4 @@
     {% endif %}
 
 {% endblock %}
-
 

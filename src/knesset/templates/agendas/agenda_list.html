@@ -15,7 +15,7 @@
         	<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a>
         {% else %}
 	        <div class="item-list">
-		        {% for o in user.agenda_set.all %}
+		        {% for o in user.agendas.all %}
 		        	<div class="item">
 			            <a class="hashnav dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
 		                <table>

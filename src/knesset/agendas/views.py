@@ -3,19 +3,19 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
-#from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
 from knesset.mks.models import Member, Party
 from knesset.api.urls import vote_handler
 
-from forms import EditAgendaForm, AddAgendaForm
-from models import Agenda, AgendaVote, score_text_to_score
+from forms import EditAgendaForm, AddAgendaForm, VoteLinkingFormSet
+from models import Agenda, AgendaVote
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
-    
+
 class AgendaListView (ListView):
     def get_queryset(self):
         if not self.request.user.is_authenticated():
@@ -34,12 +34,25 @@ class AgendaListView (ListView):
         return context
         
 class AgendaDetailView (DetailView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated():
-            return Agenda.objects.get_relevant_for_user(user=None)
-        else:
-            return Agenda.objects.get_relevant_for_user(user=self.request.user)
+    class ForbiddenAgenda(Exception):
+        pass
     
+    queryset = Agenda.objects.all()
+    
+    def GET(self, *arg, **kwargs):
+        try:
+            response = super(AgendaDetailView, self).GET(*arg, **kwargs)
+        except self.ForbiddenAgenda:
+            return HttpResponseForbidden()
+        return response
+        
+    def get_object(self):
+        obj = super(AgendaDetailView, self).get_object()
+        if obj in Agenda.objects.get_relevant_for_user(user=self.request.user):
+            return obj
+        else:
+            raise self.ForbiddenAgenda
+        
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
@@ -152,53 +165,6 @@ class MockApiCaller(Client):
 mock_api = MockApiCaller()
 
 @login_required
-def update_agendavote(request, agenda_id, vote_id):
-    """
-    Update agendavote relation for specific agenda-vote pair 
-    """
-    agenda = get_object_or_404(Agenda, pk=agenda_id)
-    vote   = get_object_or_404(Vote, pk=vote_id)
-    
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    if request.user not in agenda.editors.all():
-        return HttpResponseForbidden("User %s does not have privileges to change agenda %s" % (request.user,agenda))
-
-    try:
-        action = request.POST['action']
-    except KeyError:
-        return HttpResponseForbidden("POST must have an 'action' attribute")
-    
-    if vote in agenda.votes.all():
-        agendavote = agenda.agendavote_set.get(vote=vote) 
-
-        if action=='remove':
-            agendavote.delete()
-            return mock_api.get_vote_api(vote)
-        
-        if action=='reasoning':
-            agendavote.reasoning = request.POST['reasoning']
-            agendavote.save()
-            return mock_api.get_vote_api(vote)
-        
-        if action in score_text_to_score.keys():
-            agendavote.set_score_by_text(action)
-            agendavote.save()
-            return mock_api.get_vote_api(vote)
-
-        return HttpResponse("Action '%s' wasn't accepted" % action)
-    
-    else: # agenda is not ascribed to this vote
-        if request.POST['action']=='ascribe':
-            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
-            agenda_vote.save()
-            return mock_api.get_vote_api(vote)
-
-        return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
-
-        
-@login_required
 def agenda_add_view(request):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_add.html'
@@ -221,3 +187,32 @@ def agenda_add_view(request):
         form = AddAgendaForm(initial=initial_data) # An unbound form with initial data
 
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))
+
+@login_required
+def update_editors_agendas(request):
+    if request.method == 'POST':
+        vl_formset = VoteLinkingFormSet(request.POST)
+        if vl_formset.is_valid():
+            # TODO: check the user's permission
+            for a in vl_formset.cleaned_data:
+                try:
+                    av = AgendaVote.objects.get(
+                           agenda__id=a['agenda_id'],
+                           vote__id = a['vote_id'])
+                    av.score = a['weight']
+                    av.reasoning = a['reasoning']
+                    av.save()
+                except AgendaVote.DoesNotExist:
+                    av = AgendaVote(
+                           agenda_id=int(a['agenda_id']),
+                           vote_id=int(a['vote_id']),
+                           score = a['weight'],
+                           reasoning = a['reasoning'])
+                    av.save()
+            return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':a['vote_id']}))
+        else:
+            # TODO: Error handling: what to do with illeal forms?
+            pass
+
+    else:
+        return HttpResponseNotAllowed(['POST'])
