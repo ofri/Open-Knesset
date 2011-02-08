@@ -18,15 +18,8 @@ from knesset.mks.views import get_mk_entry, mk_is_backlinkable
 
 admin.autodiscover()
 
-from knesset.feeds import *
+from knesset import feeds 
 from knesset.sitemap import sitemaps
-
-feeds = {
-    'comments': Comments,
-    'votes': Votes,
-    'bills': Bills,
-}
-
 
 js_info_dict = {
     'packages': ('knesset',),
@@ -58,6 +51,9 @@ urlpatterns = patterns('',
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      #(r'^search/', include('haystack.urls')),
      url(r'^search/', 'knesset.auxiliary.views.search', name='site-search'),
+     (r'^feeds/comments/$', feeds.Comments()),
+     (r'^feeds/votes/$', feeds.Votes()),
+     (r'^feeds/bills/$', feeds.Bills()),
      (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
