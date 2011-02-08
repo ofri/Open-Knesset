@@ -27,5 +27,5 @@ def agendas_for(user, vote):
 #    import pdb
 #    pdb.set_trace()
     return { 'formset': editable and VoteLinkingFormSet(initial = editable),
-             'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user)).distinct(),
+             'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),vote=vote).distinct(),
            }
