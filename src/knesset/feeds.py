@@ -27,10 +27,11 @@ class Bills(Feed):
     link = "/bills/"
     description = "Bills on Open Knesset website"
 
-    def get_object (self, request, object_id):
+    def get_object (self, request, *args, **kwargs):
         stages = request.GET.get('stages', False)
+        #TODO: there's probably a re-entrancy issue with self.stages
         self.stages = stages.split(',') if stages else False
-        return get_object_or_404(Bill, pk=object_id)
+        return super(Bills,self).get_object(request, *args, **kwargs)
 
     def items(self):
         bills = Bill.objects.order_by('-id')
