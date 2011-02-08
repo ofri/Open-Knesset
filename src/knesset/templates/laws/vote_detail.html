@@ -4,7 +4,6 @@
 {% load laws_extra %}
 {% load links %}
 {% load mks %}
-{% load comments %}
 {% load agendas %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
@@ -143,27 +142,7 @@
             <br><br>
         {% endif %}
 
-    {% get_comment_list for vote as comment_list %}
-    {% if comment_list %}
-        <h3>{% trans 'User comments' %}</h3>
-        {% for comment in comment_list %}
-            <a name="c{{ comment.id }}"></a>
-            {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
-            <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
-        {% endfor %}
-    {% else %}
-        <h3>{% trans 'No comments yet' %}</h3>
-    {% endif %}
-
-    {% if user.is_authenticated %}
-        {% if perms.comments.add_comment %}
-            {% render_comment_form for vote %}
-        {% else %}
-            {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
-        {% endif %}
-    {% else %}
-        <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a>
-    {% endif %}
+        {% include 'comments/object_comment_list.html' %}
 
 {% endblock %}
 

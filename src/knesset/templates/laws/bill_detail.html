@@ -3,7 +3,6 @@
 {% load laws_extra %}
 {% load tagging_tags %}
 {% load mks %}
-{% load comments %}
 {% block extrahead %} 
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
@@ -390,28 +389,8 @@
     {% endif %}
     </div>
 	
-    {% get_comment_list for object as comment_list %}
-    {% if comment_list %}
-        <h3>{% trans 'User comments' %}</h3>
-        {% for comment in comment_list %}
-            <a name="c{{ comment.id }}"></a>
-            {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
-            <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
-        {% endfor %}
-    {% else %}
-        <h3>{% trans 'No comments yet' %}</h3>
-    {% endif %}
-
-    {% if user.is_authenticated %}
-        {% if perms.comments.add_comment %}
-            {% render_comment_form for object %}
-        {% else %}
-            {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
-        {% endif %}
-    {% else %}
-        <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a>
-    {% endif %}
-        
+    {% include 'comments/object_comment_list.html' %}
+            
     {% if close_votes %}
         <div id="suggested-votes">
         <h2>{% trans 'suggested votes' %}</h2>
