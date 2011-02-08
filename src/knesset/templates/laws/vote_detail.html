@@ -76,7 +76,7 @@
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
-                <div class="list-wrap indented">
+                <div>
                 {% for m in vote.for_votes %}
                 <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{{ m.member|mk_card }}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
@@ -97,7 +97,7 @@
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
-                <div class="list-wrap indented">
+                <div>
                 {% for m in vote.against_votes %}
                 <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{{ m.member|mk_card }}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}

@@ -619,6 +619,8 @@ div.mk-card , .tip {
     display:inline-block;
     border:1px solid #000080;
     background:#cfd4e7;
+    margin:0.2em;
+    line-height: 100%;
 }
 div.mk-card > div { float:right }
 div.mk-card>a { padding:0px; }
