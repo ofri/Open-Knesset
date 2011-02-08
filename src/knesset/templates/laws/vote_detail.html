@@ -142,7 +142,9 @@
             <br><br>
         {% endif %}
 
-        {% include 'comments/object_comment_list.html' %}
+        {% with vote as object %}
+            {% include 'comments/object_comment_list.html' %}
+        {% endwith %}
 
 {% endblock %}
 
