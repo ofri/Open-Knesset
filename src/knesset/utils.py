@@ -45,14 +45,14 @@ def delete(request, comment_id):
     
 
 def cannonize(s):
-       if isinstance(s,unicode):
-           s = s.replace(u'\u201d','').replace(u'\u2013','')
-       else:
-           s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
-       s.replace('&nbsp',' ')
-       s.replace('\n','')
-       s = re.sub("""\d{4,4}""",'',s)
-       return re.sub("""["'`\(\) /.,\-\xa0]""", '', s)
+    if isinstance(s,unicode):
+        s = s.replace(u'\u201d','').replace(u'\u2013','')
+    else:
+        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+    s.replace('&nbsp',' ')
+    s.replace('\n','')
+    s = re.sub("""\d{4,4}""",'',s)
+    return re.sub("""["'`\(\) /.,\-\xa0]""", '', s) #@IndentOk
 
 try:
     from functools import wraps
