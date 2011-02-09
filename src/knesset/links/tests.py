@@ -1,6 +1,7 @@
 import unittest
 import re
 import os
+from django.conf import settings
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core.files import File
@@ -15,6 +16,11 @@ class TestViews(unittest.TestCase):
         self.obj = Site.objects.create(domain="example.com", name="example")
         self.l1 = Link.objects.create(url='http://www.example.com/l1', title='l1',
                                  content_object=self.obj, link_type=self.type_a)
+        # make sure
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, 'icons' , 'testimage.png'))
+        except OSError:
+            pass
 
     def testTextType(self):
         # test a link with no image type
