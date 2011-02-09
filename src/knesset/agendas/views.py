@@ -191,28 +191,49 @@ def agenda_add_view(request):
 @login_required
 def update_editors_agendas(request):
     if request.method == 'POST':
+        vote_id = None
         vl_formset = VoteLinkingFormSet(request.POST)
         if vl_formset.is_valid():
             # TODO: check the user's permission
             for a in vl_formset.cleaned_data:
-                try:
-                    av = AgendaVote.objects.get(
-                           agenda__id=a['agenda_id'],
-                           vote__id = a['vote_id'])
-                    av.score = a['weight']
-                    av.reasoning = a['reasoning']
-                    av.save()
-                except AgendaVote.DoesNotExist:
-                    av = AgendaVote(
-                           agenda_id=int(a['agenda_id']),
-                           vote_id=int(a['vote_id']),
-                           score = a['weight'],
-                           reasoning = a['reasoning'])
-                    av.save()
-            return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':a['vote_id']}))
+                if a:
+                    if a['DELETE']:
+                        try:
+                            vote_id = a['vote_id']
+                            av = AgendaVote.objects.get(
+                                   agenda__id=a['agenda_id'],
+                                   vote__id = a['vote_id'])
+                            av.delete()
+                        except AgendaVote.DoesNotExist:
+                            pass
+                    else: # not delete, so try to create
+                        try:
+                            vote_id = a['vote_id']
+                            print "vote id = %s" % vote_id
+                            av = AgendaVote.objects.get(
+                                   agenda__id=a['agenda_id'],
+                                   vote__id = a['vote_id'])
+                            av.score = a['weight']
+                            av.reasoning = a['reasoning']
+                            av.save()
+                        except AgendaVote.DoesNotExist:
+                            av = AgendaVote(
+                                   agenda_id=int(a['agenda_id']),
+                                   vote_id=int(a['vote_id']),
+                                   score = a['weight'],
+                                   reasoning = a['reasoning'])
+                            av.save()
+                else:
+                    print "invalid form"
+            if vote_id:
+                return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':vote_id}))
+            else:
+                return HttpResponseRedirect(reverse('vote-list'))
+            
         else:
             # TODO: Error handling: what to do with illeal forms?
-            pass
+            print "invalid formset"
+            return HttpResponseRedirect(reverse('vote-list'))             
 
     else:
         return HttpResponseNotAllowed(['POST'])

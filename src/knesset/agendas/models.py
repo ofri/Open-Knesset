@@ -20,7 +20,7 @@ AGENDAVOTE_SCORE_CHOICES = (
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
     vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
-    score = models.FloatField(default=0.0, choices = AGENDAVOTE_SCORE_CHOICES )
+    score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
 
     class Meta:

@@ -63,10 +63,25 @@ class VoteLinkingForm(forms.Form):
     vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
-            coerce=float, required=True, widget=forms.RadioSelect)
+             required=False, widget=forms.RadioSelect)
     reasoning = forms.CharField(required=False, max_length=300, 
                            label=_(u'Reasoning'), 
                            widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )
-VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0)
+    
+    def clean_weight(self):
+        print "clean weight"
+        data = self.cleaned_data['weight']
+        print data
+        if data=="":
+            return 99
+        return data
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data.get('weight') == 99:
+            cleaned_data["DELETE"] = 'on'
+        return cleaned_data
+        
+VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0, can_delete=True)
 

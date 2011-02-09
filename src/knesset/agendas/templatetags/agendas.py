@@ -20,7 +20,7 @@ def agendas_for(user, vote):
                 r['weight'] = av.score
                 r['reasoning'] = av.reasoning
             except AgendaVote.DoesNotExist:
-                r['weight'] = 0.0
+                r['weight'] = None
                 r['reasoning'] = u''
             editable.append(r)
     
