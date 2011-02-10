@@ -199,7 +199,7 @@ class VoteHandler(BaseHandler):
         return dict(zip([a['id'] for a in agendas],agendas)) 
 
 class BillHandler(BaseHandler):
-    fields = ('url', 'title', 
+    fields = ('url', 'bill_title', 
               'stage_text', 'stage_date',
               'votes', 
               'committee_meetings',
@@ -267,6 +267,10 @@ class BillHandler(BaseHandler):
     @classmethod
     def tags(self,bill):
         return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+    
+    @classmethod
+    def bill_title(self,bill):
+        return u"%s, %s" % (bill.law.title, bill.title)
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
