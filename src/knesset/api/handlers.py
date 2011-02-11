@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import urllib
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
@@ -23,10 +23,14 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
+    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
+
+    @classmethod
+    def gender (self, member):
+        return member.get_gender_display()
 
     @classmethod
     def url (self, member):
@@ -156,7 +160,7 @@ class VoteHandler(BaseHandler):
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=int(days_back))
+            qs = qs.filter(time__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
@@ -186,16 +190,16 @@ class VoteHandler(BaseHandler):
         # Augment agenda with reasonings from agendavote and
         # arrange it so that it will be accessible using the
         # agenda's id in JavaScript
-        agendavotes = vote.agendavote_set.all()
+        agendavotes = vote.agendavotes.all()
         agendas     = [model_to_dict(av.agenda) for av in agendavotes]
         reasonings  = [av.reasoning for av in agendavotes]
-        text_scores = [av.get_text_score() for av in agendavotes]
+        text_scores = [av.get_score_display() for av in agendavotes]
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
 
 class BillHandler(BaseHandler):
-    fields = ('url', 'title', 
+    fields = ('url', 'bill_title', 
               'stage_text', 'stage_date',
               'votes', 
               'committee_meetings',
@@ -263,6 +267,10 @@ class BillHandler(BaseHandler):
     @classmethod
     def tags(self,bill):
         return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+    
+    @classmethod
+    def bill_title(self,bill):
+        return u"%s, %s" % (bill.law.title, bill.title)
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
@@ -348,4 +356,4 @@ class AgendaHandler(BaseHandler):
 
     @classmethod
     def number_of_items(self, agenda):
-        return agenda.agendavote_set.count()
+        return agenda.agendavotes.count()

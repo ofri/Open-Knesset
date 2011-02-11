@@ -223,7 +223,7 @@ class Vote(models.Model):
         return self.votes.filter(voteaction__against_coalition=True)
 
     def against_coalition_votes_count(self):
-        return self.against_coalition_votes.count()
+        return self.against_coalition_votes().count()
 
     # TODO: this should die
     def against_opposition_votes_count(self):

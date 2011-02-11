@@ -15,6 +15,10 @@ just_id = lambda x: x.id
 
 class SimpleTest(TestCase):
     def setUp(self):
+        self.party_1 = Party.objects.create(name='party 1')
+        self.mk_1 = Member.objects.create(name='mk_1',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')

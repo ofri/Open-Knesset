@@ -1,15 +1,15 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
-from piston.emitters import Emitter
+from django.views.decorators.cache import cache_page
 
 from knesset.api.handlers import *
 
-vote_handler = Resource(VoteHandler)
-bill_handler = Resource(BillHandler)
-member_handler = Resource(MemberHandler)
-party_handler = Resource(PartyHandler)
-tag_handler = Resource(TagHandler)
-agenda_handler = Resource(AgendaHandler)
+vote_handler = cache_page(Resource(VoteHandler), 60*15)
+bill_handler = cache_page(Resource(BillHandler), 60*15)
+member_handler = cache_page(Resource(MemberHandler), 60*15)
+party_handler = cache_page(Resource(PartyHandler), 60*15)
+tag_handler = cache_page(Resource(TagHandler), 60*15)
+agenda_handler = cache_page(Resource(AgendaHandler), 60*15)
 
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler, name='vote-handler'),

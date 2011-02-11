@@ -1,3 +1,4 @@
+
 from setuptools import setup, find_packages
 
 install_requires = [
@@ -16,7 +17,6 @@ install_requires = [
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
-    'django-backlinks',
     'nose',
     'django-nose',
     ]

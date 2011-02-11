@@ -18,15 +18,8 @@ from knesset.mks.views import get_mk_entry, mk_is_backlinkable
 
 admin.autodiscover()
 
-from knesset.feeds import *
+from knesset import feeds 
 from knesset.sitemap import sitemaps
-
-feeds = {
-    'comments': Comments,
-    'votes': Votes,
-    'bills': Bills,
-}
-
 
 js_info_dict = {
     'packages': ('knesset',),
@@ -51,14 +44,17 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-     (r'^admin/(.*)', admin.site.root),
+     (r'^admin/(.*)', include(admin.site.urls)),
      (r'^comments/$', 'django.views.generic.list_detail.object_list', {'queryset': Comment.objects.all(),'paginate_by':20}), 
+     url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
      url(r'^comments/post/','knesset.utils.comment_post_wrapper',name='comments-post-comment'),
      (r'^comments/', include('django.contrib.comments.urls')),
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      #(r'^search/', include('haystack.urls')),
      url(r'^search/', 'knesset.auxiliary.views.search', name='site-search'),
-     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',{'feed_dict': feeds}),
+     (r'^feeds/comments/$', feeds.Comments()),
+     (r'^feeds/votes/$', feeds.Votes()),
+     (r'^feeds/bills/$', feeds.Bills()),
      (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
      (r'^planet/', include('planet.urls')),
      url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),

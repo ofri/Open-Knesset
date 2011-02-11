@@ -235,7 +235,7 @@ class BillListView (ListView):
         elif booklet:
             kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
             qs = qs.filter(knesset_proposal__in=kps)        
-        return qs
+        return qs.order_by('-stage_date')
 
     def get_context(self):
         context = super(BillListView, self).get_context()       
@@ -336,9 +336,10 @@ class VoteListView(ListView):
         return context
 
 class VoteDetailView(DetailView):
+    template_resource_name = 'vote'
     def get_context(self):
         context = super(VoteDetailView, self).get_context()       
-        vote = context['object']
+        vote = context['vote']
         context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
@@ -349,9 +350,9 @@ class VoteDetailView(DetailView):
         context['bills'] = related_bills
         
         if self.request.user.is_authenticated():
-            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
         else:
-            context['agendavotes'] = vote.agendavote_set.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
         
         return context
 
