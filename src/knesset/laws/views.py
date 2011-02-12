@@ -337,6 +337,7 @@ class VoteListView(ListView):
 
 class VoteDetailView(DetailView):
     template_resource_name = 'vote'
+    
     def get_context(self):
         context = super(VoteDetailView, self).get_context()       
         vote = context['vote']

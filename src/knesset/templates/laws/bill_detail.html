@@ -7,6 +7,7 @@
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+<link rel="canonical" href="{{ SITE_URL }}{% url bill-detail-with-slug slug=object.slug %}" /> 
 {% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}

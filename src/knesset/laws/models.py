@@ -1,16 +1,20 @@
 #encoding: utf-8
 from datetime import date, timedelta
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
+from django.template.defaultfilters import slugify
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
 from knesset.utils import disable_for_loaddata
 
 from tagging.forms import TagField
-from django import forms
-from django.utils.translation import ugettext_lazy as _
+
 import logging
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -287,6 +291,7 @@ class TagForm(forms.Form):
 class Law(models.Model):
     title = models.CharField(max_length=1000)
     merged_into = models.ForeignKey('Law', related_name='duplicates', blank=True, null=True)
+    
     def __unicode__(self):
         return self.title
 
@@ -361,8 +366,15 @@ BILL_STAGE_CHOICES = (
         (u'-6',_(u'Failed Approval')),
 )
 
+def slugify_name(name):
+    return str(name).replace("'",'"').replace(' ','-')
+    
+    
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
+    slug = models.CharField(max_length=1000)
+    popular_name = models.CharField(max_length=1000, blank=True)
+    popular_name_slug = models.CharField(max_length=1000, blank=True)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
     stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
     stage_date = models.DateField(blank=True, null=True)
@@ -383,8 +395,10 @@ class Bill(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
-
+    
     def save(self,**kwargs):
+        self.slug = name_with_dashes(self.title)
+        self.popular_name_slug = name_with_dashes(self.popular_name)
         super(Bill,self).save(**kwargs)
         for mk in self.proposers.all():
             mk.recalc_bill_statistics()
