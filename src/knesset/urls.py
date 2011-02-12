@@ -44,7 +44,7 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-     (r'^admin/(.*)', include(admin.site.urls)),
+     (r'^admin/', include(admin.site.urls)),
      (r'^comments/$', 'django.views.generic.list_detail.object_list', {'queryset': Comment.objects.all(),'paginate_by':20}), 
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
      url(r'^comments/post/','knesset.utils.comment_post_wrapper',name='comments-post-comment'),
