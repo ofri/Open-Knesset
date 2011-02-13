@@ -4,6 +4,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.utils.encoding import smart_str, smart_unicode
+
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
 from models import *
@@ -27,7 +29,7 @@ class BillViewsTest(TestCase):
                                           title='vote 2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
-        self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill_1)
         self.mk_1 = Member.objects.create(name='mk 1')
@@ -63,7 +65,36 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-
+        
+    def test_bill_detail_by_slug(self):
+        res = self.client.get(reverse('bill-detail-with-slug',
+                                 kwargs={'slug': self.bill_1.slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+        
+    def test_bill_popular_name(self):
+        res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
+        self.assertEqual(res.status_code, 404)
+        
+    def test_bill_popular_name_by_slug(self):
+        res = self.client.get(reverse('bill-detail-with-slug',
+                                 kwargs={'slug': self.bill_1.popular_name_slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+        
+    '''
+    def test_bill_detail_hebrew_name_by_slug(self):
+        res = self.client.get(reverse('bill-detail',
+                                 kwargs={'slug': self.bill_hebrew_name.slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+    '''
     def testLoginRequired(self):
         res = self.client.post(reverse('bill-detail',
                            kwargs={'object_id': self.bill_1.id}))

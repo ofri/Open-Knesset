@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
-from knesset.utils import disable_for_loaddata
+from knesset.utils import disable_for_loaddata, slugify_name
 
 from tagging.forms import TagField
 
@@ -366,10 +366,6 @@ BILL_STAGE_CHOICES = (
         (u'-6',_(u'Failed Approval')),
 )
 
-def slugify_name(name):
-    return str(name).replace("'",'"').replace(' ','-')
-    
-    
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
     slug = models.CharField(max_length=1000)
@@ -397,8 +393,8 @@ class Bill(models.Model):
         return ('bill-detail', [str(self.id)])
     
     def save(self,**kwargs):
-        self.slug = name_with_dashes(self.title)
-        self.popular_name_slug = name_with_dashes(self.popular_name)
+        self.slug = slugify_name(self.title)
+        self.popular_name_slug = slugify_name(self.popular_name)
         super(Bill,self).save(**kwargs)
         for mk in self.proposers.all():
             mk.recalc_bill_statistics()

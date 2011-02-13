@@ -10,6 +10,8 @@ from django.contrib.comments.models import Comment
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 import django.contrib.comments.views.moderation as moderation
+from django.utils.encoding import smart_str, smart_unicode
+
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -24,6 +26,8 @@ def yearstart(year):
 def yearend(year):
     return datetime(year,12,31)
 
+def slugify_name(name):
+    return smart_str(name).replace("'",'"').replace(' ','-')
 
 
 def comment_post_wrapper(request):

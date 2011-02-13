@@ -150,13 +150,24 @@ def vote_tag(request, tag):
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
+    
+    def get_object(self):
+        try:
+            return super(BillDetailView, self).get_object()
+        except Http404:
+            self.slug_field = "popular_name_slug"
+            return super(BillDetailView, self).get_object()
+            
     def get_context(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context(*args, **kwargs)       
         bill = context['object']
         try:
-            context['title'] = "%s %s" % (bill.law.title, bill.title)
+            context['title'] = "%s,%s" % (bill.law.title, bill.title)
         except AttributeError:
             context['title'] = bill.title
+        if bill.popular_name is not None and bill.popular_name != "":
+            context["keywords"] = bill.popular_name
+            context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
