@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-08 16:17+0200\n"
-"PO-Revision-Date: 2011-02-08 18:00+0200\n"
+"POT-Creation-Date: 2011-02-15 22:09+0200\n"
+"PO-Revision-Date: 2011-02-15 22:10+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -78,39 +78,39 @@ msgstr "הזנה של הצבעות"
 msgid "Bills feed"
 msgstr "הזנה של הצעות חוק"
 
-#: settings.py:171
+#: settings.py:173
 msgid "Statement"
 msgstr "הצהרה"
 
-#: settings.py:172
+#: settings.py:174
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: settings.py:173
+#: settings.py:175
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: settings.py:174
+#: settings.py:176
 msgid "Source?"
 msgstr "מקור?"
 
-#: settings.py:175
+#: settings.py:177
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: settings.py:176
+#: settings.py:178
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: settings.py:177
+#: settings.py:179
 msgid "Important"
 msgstr "חשוב!"
 
-#: settings.py:178
+#: settings.py:180
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: settings.py:179
+#: settings.py:181
 msgid "Comment"
 msgstr "תגובה"
 
@@ -1160,7 +1160,7 @@ msgid "Unwatch"
 msgstr "הפסק מעקב"
 
 #: templates/agendas/agenda_detail.html:28
-#: templates/agendas/agenda_list.html:53
+#: templates/agendas/agenda_list.html:57
 #: templates/agendas/mk_agenda_detail.html:28
 msgid "All Agendas"
 msgstr "כל האג'נדות"
@@ -1232,29 +1232,33 @@ msgid "Please login to see agendas you can edit"
 msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
 
 #: templates/agendas/agenda_list.html:23
-#: templates/agendas/agenda_list.html:65
+#: templates/agendas/agenda_list.html:69
 msgid "Editors:"
 msgstr "עורכים"
 
 #: templates/agendas/agenda_list.html:31
-#: templates/agendas/agenda_list.html:73
+#: templates/agendas/agenda_list.html:77
 msgid "Description:"
 msgstr "תאור"
 
 #: templates/agendas/agenda_list.html:35
-#: templates/agendas/agenda_list.html:77
+#: templates/agendas/agenda_list.html:81
 msgid "Number of followers"
 msgstr "מספר עוקבים"
 
-#: templates/agendas/agenda_list.html:41
+#: templates/agendas/agenda_list.html:39
+msgid "Number of ascibed votes"
+msgstr "מספר הצבעות משויכות"
+
+#: templates/agendas/agenda_list.html:45
 msgid "You are not editing any agenda"
 msgstr "אין אג'נדות בעריכתך"
 
-#: templates/agendas/agenda_list.html:46
+#: templates/agendas/agenda_list.html:50
 msgid "Add"
 msgstr "הוספה"
 
-#: templates/agendas/agenda_list.html:60
+#: templates/agendas/agenda_list.html:64
 msgid "You are following"
 msgstr "ברשימת המעקב שלך"
 
@@ -1266,7 +1270,7 @@ msgstr "אג'נדות משויכות"
 msgid "Ascribe your agendas"
 msgstr "שיוך אג'נדה בעריכתך"
 
-#: templates/agendas/agendasfor.html:36
+#: templates/agendas/agendasfor.html:41
 msgid "Update"
 msgstr "עדכון"
 
@@ -1592,14 +1596,6 @@ msgstr "אין קישור למסמך המלא להצבעה זו"
 #: templates/laws/vote_list.html:71
 msgid "No tags"
 msgstr "אין תגיות"
-
-#: templates/laws/_paginator.html:4
-msgid "previous page"
-msgstr "העמוד הקודם"
-
-#: templates/laws/_paginator.html:8
-msgid "next page"
-msgstr "העמוד הבא"
 
 #: templates/laws/_paginator.html:13
 msgid "Pages"
@@ -2559,6 +2555,10 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
+#~ msgid "previous page"
+#~ msgstr "העמוד הקודם"
+#~ msgid "next page"
+#~ msgstr "העמוד הבא"
 #~ msgid "Score:"
 #~ msgstr "ציון"
 #~ msgid "Reasoning:"
