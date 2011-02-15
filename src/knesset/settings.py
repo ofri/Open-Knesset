@@ -21,6 +21,7 @@ DATABASES_ = {
     },
 }
 DATABASE_ENGINE = 'django.db.backends.sqlite3' # Leaving this here for now for South compatibility.
+DATABASE_NAME = 'dev.db'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
