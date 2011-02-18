@@ -154,22 +154,26 @@
         
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
-    {% for pp in object.proposals.all %}
-        p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a> 
-        <div class="proposal_content">
-            {% if pp.content_html %}
-                <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
-                <div class="proposal_content_text">{{ pp.content_html|safe }}</div>
-            {% else %}
-                {% trans 'Sorry, Proposal text not available' %}
-            {% endif %}
-        </div>
-    {% empty %}
-        {% trans 'No Info' %}
-    {% endfor %}
+    {% if object.gov_proposal %}
+        {% trans 'Government Proposal' %} - {{ object.gov_proposal.title }} ({{ object.gov_proposal.date }}) {% trans 'booklet' %} {{ object.gov_proposal.booklet_number }} <a href="{{ object.gov_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a>
+    {% else %}
+        {% for pp in object.proposals.all %}
+            p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a> 
+            <div class="proposal_content">
+                {% if pp.content_html %}
+                    <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
+                    <div class="proposal_content_text">{{ pp.content_html|safe }}</div>
+                {% else %}
+                    {% trans 'Sorry, Proposal text not available' %}
+                {% endif %}
+            </div>
+        {% empty %}
+            {% trans 'No Info' %}
+        {% endfor %}
+    {% endif %}
     <script type="text/javascript">
 		var rect1 = paper.my_arrow(10,10,"bill-initiation", 
-    {% if object.proposals.all %}
+    {% if object.proposals.all or object.gov_proposal %}
 		true
     {% else %}
 	    false
