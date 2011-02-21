@@ -373,13 +373,13 @@ class Bill(models.Model):
     popular_name_slug = models.CharField(max_length=1000, blank=True)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
     stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
-    stage_date = models.DateField(blank=True, null=True)
-    pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True)
-    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True)     
-    first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True)
-    second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True)
-    approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
-    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+    stage_date = models.DateField(blank=True, null=True) # date of entry to current stage
+    pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True) # link to pre-votes related to this bill
+    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True) # CM related to this bill, *before* first vote     
+    first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True) # first vote of this bill
+    second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True) # CM related to this bill, *after* first vote
+    approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True) # approval vote of this bill
+    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
 
     class Meta:
         verbose_name = _('Bill')

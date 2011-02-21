@@ -11,7 +11,7 @@ class ParseGLC:
     
     def __init__(self, year_num, month):
         self.pmo_url = r"http://www.pmo.gov.il"
-        self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2010/"
+        self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2011/"
         self.scraped_data = self.parse_pages_per_month(year_num, month)
         
     def get_page(self,url):

@@ -51,7 +51,7 @@
         </div>
         <div>
             <h2> {% trans "Description" %}</h2>
-            {{ object.description }}
+            {{ object.description|urlize|linebreaks }}
         </div>
 
         <div>

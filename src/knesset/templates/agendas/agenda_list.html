@@ -29,12 +29,16 @@
 		                	</tr>
 		                	<tr>
 		                		<td>{% trans "Description:" %}</td>
-		                		<td>{{ o.description|pretty_crop:100 }}
+		                		<td>{{ o.description|pretty_crop:100|urlize }}
                 			</tr>
 		                	<tr>
 		                		<td>{% trans "Number of followers" %}</td>		                		
 		                		<td>{{ o.number_of_followers }}</td>
-                			</tr>	  
+                			</tr>
+                			<tr>
+		                		<td>{% trans "Number of ascibed votes" %}</td>		                		
+		                		<td>{{ o.votes.count }}</td>
+                			</tr>		  
 		                </table>
 					</div>
 				{% empty %}
