@@ -15,7 +15,11 @@
 	<div id="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a><br/>
+                {% if member %}
+                    {% member_stand o member %}
+                {% endif %}
+                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a>                
+                <br/>
             </div>
         {% empty %}
             {% trans "No results found" %}
