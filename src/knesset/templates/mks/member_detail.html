@@ -20,23 +20,8 @@
         .action-actor { display: none; }
     </style>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
-    <script>
-    function set_percentile(id,value) {
-        $("#"+id+"_percentile").css('background-position',((100-value))+"px 0px");
-		var message;
-        if ( value < 20 ) {
-            message = "{% trans 'Extremely below average' %}";                
-        } else if ( value < 40 ) {
-            message = "{% trans 'Below average' %}";                
-        } else if ( value < 60 ) {
-            message = "{% trans 'Average' %}";                
-        } else if ( value < 80 ) {
-            message = "{% trans 'Above average' %}";                
-        } else {
-            message = "{% trans 'Extremely above average' %}";                
-        }
-		$("#"+id+"_percentile").html("<span title='"+"{% trans 'Percentile' %}"+" "+value+"'>"+message+"</span>"); 
-	}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+    <script>    
     function toggle_factional_discipline() {
         $(".factional_discipline_row").toggleClass("discipline_row");
         $(".factional_discipline_control").toggleClass("discipline_hide_control");
@@ -338,8 +323,8 @@
 										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
 										<td>%{{agenda.score|floatformat:"0"}}</td> 
 										<td>
-											<div id="agenda_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
-											<script>set_percentile('agenda',{{ agenda.score }});</script>
+											<div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
+											<script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
 											
 										</td>
 										<td>
