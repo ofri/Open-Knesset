@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'python-openid',
+#    'python-yadis',
     'oauth',
     'django-tagging',
     'simplejson',
