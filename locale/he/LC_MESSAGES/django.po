@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-18 15:01+0200\n"
-"PO-Revision-Date: 2011-02-18 15:02+0200\n"
+"POT-Creation-Date: 2011-02-21 14:23+0200\n"
+"PO-Revision-Date: 2011-02-21 14:25+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1211,11 +1211,11 @@ msgstr "הצבעות משויכות"
 #: templates/agendas/agenda_detail.html:107
 #: templates/agendas/mk_agenda_detail.html:85
 #: templates/laws/bill_list.html:28
-#: templates/laws/bill_list_by_tag.html:21
+#: templates/laws/bill_list_by_tag.html:23
 #: templates/laws/knessetproposal_list.html:26
 #: templates/laws/law_list.html:15
 #: templates/laws/vote_list.html:84
-#: templates/laws/vote_list_by_tag.html:21
+#: templates/laws/vote_list_by_tag.html:27
 msgid "No results found"
 msgstr "לא נמצאו תוצאות"
 
@@ -1716,22 +1716,22 @@ msgstr "הצעות חוק ביוזמת <a href=\"%(member_url)s\">%(member)s</a>
 msgid "Bills %(stage)s by <a href=\"%(member_url)s\">%(member)s</a>"
 msgstr "הצעות חוק  ביוזמת <a href=\"%(member_url)s\">%(member)s</a> ש%(stage)s"
 
-#: templates/laws/bill_list_by_tag.html:10
+#: templates/laws/bill_list_by_tag.html:11
 #, python-format
-msgid "Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a> by <a href=\"%(member_url)s\">%(member)s</a>"
-msgstr "הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a> על ידי <a href=\"%(member_url)s\">%(member)s</a>"
+msgid "%(count)s Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a> by <a href=\"%(member_url)s\">%(member)s</a>"
+msgstr "%(count)s הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a> על ידי <a href=\"%(member_url)s\">%(member)s</a>"
 
-#: templates/laws/bill_list_by_tag.html:12
+#: templates/laws/bill_list_by_tag.html:13
 #, python-format
-msgid "Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
-msgstr "הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
+msgid "%(count)s Bills tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
+msgstr "%(count)s הצעות חוק בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
 
-#: templates/laws/bill_list_by_tag.html:14
-#: templates/laws/vote_list_by_tag.html:14
+#: templates/laws/bill_list_by_tag.html:16
+#: templates/laws/vote_list_by_tag.html:16
 msgid "Choose another tag"
 msgstr "בחירת נושא אחר"
 
-#: templates/laws/bill_list_by_tag.html:24
+#: templates/laws/bill_list_by_tag.html:26
 #, python-format
 msgid "MKs that proposed bill related to %(tag)s"
 msgstr "חברי כנסת שהציעו חוקים בנושא %(tag)s"
@@ -1900,17 +1900,17 @@ msgstr[1] ""
 msgid "No watched members. click me to select members to watch"
 msgstr "אין ח\"כים במעקב. אפשר להוסיף על ידי לחיצה כאן"
 
-#: templates/laws/vote_list_by_tag.html:10
+#: templates/laws/vote_list_by_tag.html:11
 #, python-format
-msgid "Votes tagged <a href=\"%(tag_url)s\">%(tag)s</a> by <a href=\"%(member_url)s\">%(member)s</a>"
-msgstr "הצבעות בנושא <a href=\"%(tag_url)s\">%(tag)s</a> בהשתתפות <a href=\"%(member_url)s\">%(member)s</a>"
+msgid "%(count)s Votes tagged <a href=\"%(tag_url)s\">%(tag)s</a> by <a href=\"%(member_url)s\">%(member)s</a>"
+msgstr "%(count)s הצבעות בנושא <a href=\"%(tag_url)s\">%(tag)s</a> בהשתתפות <a href=\"%(member_url)s\">%(member)s</a>"
 
-#: templates/laws/vote_list_by_tag.html:12
+#: templates/laws/vote_list_by_tag.html:13
 #, python-format
-msgid "Votes tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
-msgstr "הצבעות בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
+msgid "%(count)s Votes tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
+msgstr "%(count)s הצבעות בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
 
-#: templates/laws/vote_list_by_tag.html:24
+#: templates/laws/vote_list_by_tag.html:30
 #, python-format
 msgid "MKs attendance in votes related to %(tag)s"
 msgstr "נוכחות חברי הכנסת בהצבעות המליאה בנושא %(tag)s"
@@ -2359,7 +2359,7 @@ msgstr "הארות על ידי "
 
 #: templates/user/annotated_items.html:27
 #: templates/user/public_profile.html:83
-#: templates/user/tagged_items.html:28
+#: templates/user/tagged_items.html:35
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
@@ -2503,14 +2503,18 @@ msgid "Tagged Items"
 msgstr "ענינים מתויגים"
 
 #: templates/user/public_profile.html:76
-#: templates/user/tagged_items.html:24
+#: templates/user/tagged_items.html:31
 msgid "No tagged items yet..."
 msgstr " עדיין אין ענינים מתויגים"
 
 #: templates/user/tagged_items.html:4
-#: templates/user/tagged_items.html.py:5
 msgid "Items tagged by"
 msgstr "ענינים שתויגו על ידי "
+
+#: templates/user/tagged_items.html:8
+#, python-format
+msgid "%(count)s Items tagged by "
+msgstr "%(count)s ענינים שתויגו על ידי "
 
 #: user/forms.py:10
 #: user/forms.py:28

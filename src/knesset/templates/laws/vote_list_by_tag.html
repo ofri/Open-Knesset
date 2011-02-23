@@ -6,16 +6,22 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
 {% block divcontent %}
-    {% if member %}
-        <h1>{% blocktrans %}Votes tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
-    {% else %}
-        <h1>{% blocktrans %}Votes tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
-    {% endif %}
+    {% with object_list|length as count %}
+        {% if member %}
+            <h1>{% blocktrans %}{{ count }} Votes tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+        {% else %}
+            <h1>{% blocktrans %}{{ count }} Votes tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
+        {% endif %}
+    {% endwith %}
     <a href="{% url vote-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div id="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a><br/>
+                {% if member %}
+                    {% member_stand o member %}
+                {% endif %}
+                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a>                
+                <br/>
             </div>
         {% empty %}
             {% trans "No results found" %}
