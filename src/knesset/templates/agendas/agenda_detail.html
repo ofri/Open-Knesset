@@ -15,6 +15,7 @@
 {% block extrahead %}
 	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			/*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
@@ -62,7 +63,10 @@
 	         		<tr>
 	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td>%{{selected_mk.score|floatformat:"0"}}</td>
-	         			<td class="column-bar">{% if selected_mk.score < 0 %}{% bar selected_mk.score 'against' 1 %}{% else %}{% bar selected_mk.score 'for' 1.0 %}{% endif %}</td>
+	         			<td>
+                            <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
+                        </td>
 	        			</tr>
 	         	{% endfor %}
 	         	</table>
@@ -75,8 +79,11 @@
 	         	{% for selected_party in selected_parties %}
 	         		<tr>
 	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
-	         			<td>%{{selected_party.score|floatformat:"0"}}</td>
-	         			<td class="column-bar">{% if selected_party.score < 0 %}{% bar selected_party.score 'against' 1 %}{% else %}{% bar selected_party.score 'for' 1.0 %}{% endif %}</td>
+	         			<td>%{{selected_party.score|floatformat:"0"}}</td>	         			
+	         			<td>
+                            <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);</script>                            
+                        </td>
 	        			</tr>
 	         	{% endfor %}
 	         	</table>

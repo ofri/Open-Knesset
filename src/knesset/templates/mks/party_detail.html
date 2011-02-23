@@ -4,6 +4,7 @@
 {% block extrahead %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
             type="text/javascript"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
 {% endblock %}
 {% load common_visual_elements %}
 {% block extratitle %}{{ object.name }}{% endblock %}
@@ -53,8 +54,11 @@
 					<tr>
 						<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
 						<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-						<td>%{{agenda.score|floatformat:"0"}}</td>
-						<td class="column-bar">{% if agenda.score < 0 %}{% bar agenda.score 'against' 1 %}{% else %}{% bar agenda.score 'for' 1 %}{% endif %}</td>
+						<td>%{{agenda.score|floatformat:"0"}}</td>						
+                        <td>
+                            <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>                            
+                        </td>
 					</tr>
 					{% endfor %}
 				</table>

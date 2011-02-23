@@ -648,6 +648,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 .percentile  {
 	border:1px solid #ccccff;
 	text-align:center;
+	white-space: nowrap;
 	width:100px;
 	height:16px;
 	background:url(/static/img/bar.png) no-repeat;
