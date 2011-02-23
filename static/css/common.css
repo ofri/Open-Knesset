@@ -97,6 +97,7 @@ a:hover { text-decoration:underline;}
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
+h1 { line-height: 140% }
 h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; margin-left:1.5em; color:#251c1f; display:inline}
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
 h5 { font-size:1em; font-weight:bold; margin-top:1.5em; margin-bottom:3px; }
