@@ -16,7 +16,7 @@
 
 
 <h2>מה אפשר לעשות באתר?</h2>
-    <div class="display_note">לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail-with-slug slug=bill.slug %}">{{ bill }}</a>.</div>
+    <div class="display_note">לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</div>
     <div class="display_note">לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</div>
     <div class="display_note">לראות איך כל חבר כנסת הצביע בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>. לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></div>
     <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של {{ member|mk_card }}</div>

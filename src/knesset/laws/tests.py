@@ -66,25 +66,26 @@ class BillViewsTest(TestCase):
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
         
-    def test_bill_detail_by_slug(self):
+    '''def test_bill_detail_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.slug}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-        
+    '''    
     def test_bill_popular_name(self):
         res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
         self.assertEqual(res.status_code, 404)
         
-    def test_bill_popular_name_by_slug(self):
+    '''def test_bill_popular_name_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.popular_name_slug}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
+    '''
         
     '''
     def test_bill_detail_hebrew_name_by_slug(self):
