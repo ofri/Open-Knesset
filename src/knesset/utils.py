@@ -50,7 +50,9 @@ def delete(request, comment_id):
 
 def cannonize(s):
     if isinstance(s,unicode):
-        s = s.replace(u'\u201d','').replace(u'\u2013','')
+        shitty_chars = [u'\u200e', u'\u200f', u'\u202a',u'\u202c',u'\u202d',u'\u202e', u'\u201d', u'\u2013']
+        trans = dict([(ord(chr), None) for chr in shitty_chars])
+        s = s.translate(trans)
     else:
         s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
     s.replace('&nbsp',' ')
