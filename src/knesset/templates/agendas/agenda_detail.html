@@ -27,6 +27,10 @@
 	<a id="watch" class="button" href="."></a>
 	&bull;
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+	&bull;
+    {% if user in object.editors.all %}
+        <a class="button" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+    {% endif %}
 {% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -44,11 +48,6 @@
             {% for editor in object.editors.all %}
                 {% user editor %}
             {% endfor %}
-            {% if user in object.editors.all %}
-                <div class="edit">
-                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-                </div>
-            {% endif %}            
         </div>
         <div>
             <h2> {% trans "Description" %}</h2>
