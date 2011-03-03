@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /users/*
+
+Sitemap: http://oknesset.org/sitemap.xml

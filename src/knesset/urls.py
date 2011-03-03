@@ -39,6 +39,7 @@ urlpatterns = patterns('',
     
     url(r'^$', main, name='main'),
     url(r'^about/$', about_view, name='about'),
+    (r'^robots\.txt$', direct_to_template,{'template': 'robots.txt', 'mimetype': 'text/plain'}),
     (r'^api/', include('knesset.api.urls')),
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),    
