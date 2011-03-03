@@ -657,6 +657,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 
 .percentile_against {
 	background:url(/static/img/bar-against.png) no-repeat;
+	background-color:#E6F1F7;
 }
 
 .percent {
@@ -668,6 +669,8 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	background:url(/static/img/bar.png) no-repeat;
 	background-color:#E6F1F7;
 }
+
+.numeric { direction: ltr }
 
 .comittee_member_detail {
 	display:inline-block;
