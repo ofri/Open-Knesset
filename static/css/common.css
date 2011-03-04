@@ -521,7 +521,8 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .details h4 { font-weight:bold; margin: 0.2em 0; }
 .details ul { padding-right: 0.5em; }
 .details li { list-style-type:none; }
-.member-photo { padding-top:0.7em; }
+.member-photo { padding-top:0.7em; display:inline-block; }
+.member-header { padding-right:1em; display:inline-block; }
 .pagination {padding:1em 0; margin-top: 1em; text-align:center; }
 
 /* bill colors */
@@ -614,6 +615,7 @@ div.color_swatch {
 .jGrowl-message a { color: inherit; }
 
 .box-agenda { clear:both; }
+.edited-by { color:#555555; }
 .avatar-form li { display: inline; list-style-type: none; }
 .users-annotation {padding-right:0.5em;}
 div.mk-card , .tip {
@@ -704,9 +706,16 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 .secondary-column { float: left; width:35%; padding: 0.5em; }
 
 /* mk detail - discipline stuff */
+#content-main p.general_discipline_row,
+#content-main p.factional_discipline_row
+ {
+	margin-top:0.6em;
+}
+
 .factional_discipline_row td, 
 .general_discipline_row td
 {
+	margin-top:0.4em;
 	vertical-align:top;
 } 
 
