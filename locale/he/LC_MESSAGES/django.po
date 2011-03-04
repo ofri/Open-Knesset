@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-04 12:08+0200\n"
-"PO-Revision-Date: 2011-03-04 12:09+0200\n"
+"POT-Creation-Date: 2011-03-04 12:46+0200\n"
+"PO-Revision-Date: 2011-03-04 12:47+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +45,7 @@ msgstr "ח\"כים"
 #: mks/views.py:350
 #: mks/views.py:365
 #: templates/base.html:84
-#: templates/agendas/agenda_detail.html:75
+#: templates/agendas/agenda_detail.html:91
 msgid "Parties"
 msgstr "מפלגות"
 
@@ -233,7 +233,7 @@ msgid "by"
 msgstr "על ידי"
 
 #: agendas/views.py:62
-#: agendas/views.py:93
+#: agendas/views.py:91
 #: user/models.py:18
 msgid "None"
 msgstr "ללא"
@@ -1203,12 +1203,20 @@ msgstr "בעריכת"
 msgid "Description"
 msgstr "תאור"
 
-#: templates/agendas/agenda_detail.html:94
+#: templates/agendas/agenda_detail.html:62
+msgid "Agenda Top MKs"
+msgstr "ח\"כים תומכים באג'נדה"
+
+#: templates/agendas/agenda_detail.html:75
+msgid "Agenda Bottom MKs"
+msgstr "ח\"כים מתנגדים לאג'נדה"
+
+#: templates/agendas/agenda_detail.html:110
 #: templates/agendas/mk_agenda_detail.html:59
 msgid "Ascribed Votes"
 msgstr "הצבעות משויכות"
 
-#: templates/agendas/agenda_detail.html:113
+#: templates/agendas/agenda_detail.html:129
 #: templates/agendas/mk_agenda_detail.html:85
 #: templates/laws/bill_list.html:28
 #: templates/laws/bill_list_by_tag.html:23

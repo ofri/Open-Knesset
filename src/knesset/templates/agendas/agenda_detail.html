@@ -49,16 +49,32 @@
                 {% user editor %}
             {% endfor %}
         </div>
-        <div>
+        <div style="margin-bottom:4em;">
             <h2> {% trans "Description" %}</h2>
             {{ object.description|urlize|linebreaks }}
         </div>
 
-        <div>
+        <div style="display:inline-block">
         	<h3>{% trans "Members" %}</h3>
         	<div class="list-wrap">
         		<table>
-	         	{% for selected_mk in selected_mks %}
+        		<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_top %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+	         			<td>
+                            <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
+                        </td>
+	        			</tr>
+	         	{% endfor %}
+	         	<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_bottom %}
 	         		<tr>
 	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
@@ -71,7 +87,7 @@
 	         	</table>
         	</div>
         </div>
-        <div>
+        <div style="display:inline-block; margin-right:4em;">
         	<h3>{% trans "Parties" %}</h3>
         	<div class="list-wrap">
         		<table>
