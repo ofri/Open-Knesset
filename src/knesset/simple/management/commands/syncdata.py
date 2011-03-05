@@ -1346,18 +1346,20 @@ class Command(NoArgsCommand):
                     if re.search(r'לתמוך'.decode('utf8'), d['decision']):
                         decision.stand = 1
                     decision.save()
-                    try:
-                        pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
-                        re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years                        
-                        pp = PrivateProposal.objects.get(proposal_id=pp_id)
-                        decision.bill = pp.bill
-                        decision.save()
-                    except AttributeError: # one of the regex failed
-                        logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
-                    except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
-                        logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
-                    except PrivateProposal.MultipleObjectsReturned:
-                        logger.warn('More than 1 PrivateProposal with proposal_id=%d' % pp_id)
+
+                # try to find a private proposal this decision is referencing
+                try:
+                    pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                    re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years                        
+                    pp = PrivateProposal.objects.get(proposal_id=pp_id)
+                    decision.bill = pp.bill
+                    decision.save()
+                except AttributeError: # one of the regex failed
+                    logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
+                except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
+                    logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
+                except PrivateProposal.MultipleObjectsReturned:
+                    logger.warn('More than 1 PrivateProposal with proposal_id=%d' % pp_id)
 
     def handle_noargs(self, **options):
 
