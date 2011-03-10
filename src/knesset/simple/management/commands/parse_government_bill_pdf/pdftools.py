@@ -35,7 +35,7 @@ def local_or_system(toolname):
 PDFTOTEXT=local_or_system('pdftotext')
 PDFINFO=local_or_system('pdfinfo')
 
-if Debug:
+if DEBUG:
     print "pdftotext from %s" % PDFTOTEXT
     print "pdfinfo from %s" % PDFINFO
 
