@@ -1,0 +1,43 @@
+{% load i18n %}
+    {% if agendavotes %}
+    <h3>{% trans "Ascribed agendas" %}</h3>
+    <table>
+    {% for agendavote in agendavotes %}
+        <tr><td colspan="2">
+         <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
+        </td></tr>
+        <tr><th>{% trans "Position" %}:</th><td>{{ agendavote.get_score_display }}</td></tr>
+        <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    
+    {% if formset %}
+    <h3>{% trans "Ascribe your agendas" %}</h3>
+    <form class="editors_agendas" action="{% url update-editors-agendas %}" method="post">
+    <table>
+        {{ formset.management_form }}
+        {% csrf_token %}
+        {% for form in formset.forms %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <tr><td colspan="2"> {{form.agenda_name}}</td></tr>
+            <tr>
+                <td>{{ form.weight.label_tag }}</td>
+                <td>{{ form.weight }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.reasoning.label_tag }}</td>
+                <td>{{ form.reasoning }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.DELETE.label_tag }}</td>
+                <td>{{ form.DELETE }}</td>
+            </tr>
+            
+        {% endfor %}
+        </table>
+        <input type="submit" value="{% trans "Update" %}">
+    </form>
+{%endif %}

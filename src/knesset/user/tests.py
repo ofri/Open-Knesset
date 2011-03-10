@@ -1,8 +1,11 @@
+import datetime 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from knesset.mks.models import Member
-from actstream import action
+from actstream import action, follow
+from knesset.committees.models import Committee
+from knesset.agendas.models import Agenda
 
 class TestPublicProfile(TestCase):
 
@@ -43,15 +46,31 @@ class TestFollowing(TestCase):
     def setUp(self):
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
-        self.david = Member.objects.create(name='david')
-        self.yosef = Member.objects.create(name='yosef')
-        self.moshe = Member.objects.create(name='moshe')
+        self.david = Member.objects.create(name='david', start_date=datetime.date(2010,1,1))
+
+        self.yosef = Member.objects.create(name='yosef', start_date=datetime.date(2010,1,1))
+        self.moshe = Member.objects.create(name='moshe', start_date=datetime.date(2010,1,1))
+        self.agenda_1 = Agenda.objects.create(name='agenda_1')
+        self.committee_1 = Committee.objects.create(name='c1')
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
+                                                         protocol_text='m1')
+        self.meeting_1.create_protocol_parts()
         action.send(self.jacob, verb='farted', target=self.david)
         action.send(self.jacob, verb='hit', target=self.yosef)
         action.send(self.jacob, verb='hit', target=self.moshe)
         
 
-    def testFollowing(self):
+    def testUnfollowMeeting(self):
+        follow(self.jacob, self.meeting_1)
+        p = self.jacob.get_profile()
+        self.assertEquals(len(p.meetings), 1)
+        loggedin = self.client.login(username='jacob', password='JKM')
+        self.assertTrue(loggedin)
+        response = self.client.post(reverse('user-unfollows'), 
+            {'what': 'meeting', 'unwatch': self.meeting_1.id})
+        self.assertEquals(len(p.members), 0)
+
+    def testFollowingMembers(self):
         p = self.jacob.get_profile()
         loggedin = self.client.login(username='jacob', password='JKM')
         self.assertTrue(loggedin)
@@ -62,6 +81,10 @@ class TestFollowing(TestCase):
         response = self.client.post(reverse('follow-members'), {'unwatch': self.david.id})
         self.assertEquals(len(p.members), 1)
         self.assertEquals(p.members[0], self.yosef)
+        response = self.client.post(reverse('user-unfollows'), 
+            {'what': 'member', 'unwatch': self.yosef.id})
+        self.assertEquals(len(p.members), 0)
+
         self.client.logout()
 
     def tearDown(self):

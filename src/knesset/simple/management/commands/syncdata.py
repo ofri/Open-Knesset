@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import urllib2, urllib, cookielib, re, gzip, datetime, time, logging, os, sys,traceback
+import urllib2, urllib, cookielib, re, gzip, datetime, time, logging, os, sys,traceback, difflib
 
 from cStringIO import StringIO
 from pyth.plugins.rtf15.reader import Rtf15Reader
@@ -11,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
 from knesset.mks.models import Member,Party,Membership,WeeklyPresence
+from knesset.persons.models import Person,PersonAlias
 from knesset.laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
      KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
 from knesset.links.models import Link
@@ -144,7 +145,7 @@ class Command(NoArgsCommand):
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
         vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
-        limit_src_id = vote_id + 20 # look for next 20 votes. if results are found, this value will be incremented.
+        limit_src_id = vote_id + 60 # look for next 60 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
@@ -767,6 +768,14 @@ class Command(NoArgsCommand):
         (last_page, page_res) = self.get_protocols_page(page, page_num)
         res = page_res[:]
 
+        mk_names = []
+        mks = []
+        mk_persons = Person.objects.filter(mk__isnull=False)
+        mks.extend([person.mk for person in mk_persons])
+        mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
+        mk_names.extend(mk_persons.values_list('name',flat=True))
+        mk_names.extend(mk_aliases.values_list('name',flat=True))
+        mks.extend([alias.person.mk for alias in mk_aliases])
         while (not last_page) and (page_num < max_page):
             page_num += 1
             params = "__EVENTTARGET=gvProtocol&__EVENTARGUMENT=Page%%24%d&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (page_num, view_state, event_validation)
@@ -778,40 +787,71 @@ class Command(NoArgsCommand):
             (last_page, page_res) = self.get_protocols_page(page, page_num)
             res.extend(page_res)
 
-
         for (date_string, com, topic, link) in res:
             (c, created) = Committee.objects.get_or_create(name=com)
             if created:
                 c.save()
             r = re.search("(\d\d)/(\d\d)/(\d\d\d\d)", date_string)
             d = datetime.date(int(r.group(3)), int(r.group(2)), int(r.group(1)))
-            (cm, created) = CommitteeMeeting.objects.get_or_create(committee=c, date_string=date_string, date=d, topics=topic)
-            if not created:
-                continue
-            cm.protocol_text = self.get_committee_protocol_text(link)
+            if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
+                cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
+                logger.debug('cm %d already exists' % cm.id)
+                continue                
+            elif CommitteeMeeting.objects.filter(src_url=link).count():
+                cm = CommitteeMeeting.objects.get(src_url=link)
+                logger.debug('cm %d is being updated' % cm.id)
+                if date_string != cm.date_string:
+                    cm.date_string = date_string
+                    logger.debug('updated date_string')
+                if d != cm.date:
+                    cm.date = d
+                    logger.debug('updated date')
+                if topic != cm.topics:
+                    cm.topics=topic
+                    logger.debug('updated topics')
+                if link != cm.src_url:
+                    cm.src_url = link
+                    logger.debug('updated src_url')
+            else:
+                cm = CommitteeMeeting.objects.create(committee=c, date=d, topics=topic, date_string=date_string, src_url=link)
+                logger.debug('cm %d created' % cm.id)
+            updated_protocol = False
+            if not cm.protocol_text:
+                cm.protocol_text = self.get_committee_protocol_text(link)
+                updated_protocol = True
             cm.save()
+            
+            if updated_protocol:
+                cm.create_protocol_parts()
             try:
-                r = re.search("חברי הוועדה(.*?)\n\n".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                
                 s = r.split('\n')
-                s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
-                for m in Member.objects.all():
+                #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
+                for (i,name) in enumerate(mk_names):
                     for s0 in s:
-                        if s0.find(m.name_with_dashes())>=0:
+                        if s0.find(name)>=0:
                             #print "found %s in %s" % (m.name, str(cm.id))
-                            cm.mks_attended.add(m)
+                            cm.mks_attended.add(mks[i])
             except Exception:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
                 logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
-
-            cm.save()
-
-
+            logger.debug('added %d members' % cm.mks_attended.count())
 
     def get_committee_protocol_text(self, url):
         if url.find('html'):
             url = url.replace('html','rtf')
         file_str = StringIO()
-        file_str.write(urllib2.urlopen(url).read())
+        count = 0
+        flag = True
+        while count<10 and flag:
+            try:
+                file_str.write(urllib2.urlopen(url).read())
+                flag = False
+            except Exception:
+                count += 1
+        if flag:
+            logger.error("can't open url %s. tried %d times" % (url, count))
         try:
             doc = Rtf15Reader.read(file_str)
         except Exception:
@@ -937,17 +977,24 @@ class Command(NoArgsCommand):
                     date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
 
-    def parse_laws(self):
+    def parse_laws(self, private_proposals_days=None):
+        """parse private proposal, knesset proposals and gov proposals
+           private_proposals_days - override default "days-back" to look for in private proposals. 
+                                    should be the number of days back to look
+        """
         mks = Member.objects.values('id','name')
         for mk in mks:
             mk['cn'] = cannonize(mk['name'])
 
         # private laws
         logger.debug('parsing private laws')
-        d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
-        if not d:
-            d = datetime.date(2009,2,24)
-        days = (datetime.date.today() - d).days
+        if private_proposals_days:
+            days = private_proposals_days
+        else:
+            d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
+            if not d:
+                d = datetime.date(2009,2,24)
+            days = (datetime.date.today() - d).days
         proposals = parse_laws.ParsePrivateLaws(days)
         for proposal in proposals.laws_data:
 
@@ -959,7 +1006,7 @@ class Command(NoArgsCommand):
             if proposal['comment']:
                 law_name += ' (%s)' % proposal['comment']
 
-            (law, created) = Law.objects.get_or_create(title=law_name)
+            (law, created) = Law.objects.get_or_create(title=law_name, merged_into=None)
             if created:
                 law.save()
             if law.merged_into:
@@ -982,21 +1029,21 @@ class Command(NoArgsCommand):
                 for m0 in proposal['proposers']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.proposers.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find proposer: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find proposer: %s" % m0)
                 for m0 in proposal['joiners']:
                     found = False
                     for mk in mks:
-                        if cannonize(m0.decode('utf8'))==mk['cn']:
+                        if cannonize(m0)==mk['cn']:
                             pl.joiners.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find joiner: %s" % m0.decode('utf8'))
+                        logger.warn(u"can't find joiner: %s" % m0)
 
                 # try to look for similar PPs already created:
                 p = PrivateProposal.objects.filter(title=title,law=law).exclude(id=pl.id)
@@ -1013,9 +1060,11 @@ class Command(NoArgsCommand):
                 pl.bill = b # assign this bill to this PP
                 pl.save()
             
-            html = parse_remote.rtf(pl.source_url)
-            if html:
-                pl.content_html = html
+            if not pl.content_html:
+                html = parse_remote.rtf(pl.source_url)
+                if html:
+                    pl.content_html = html
+                    pl.save()
 
         # knesset laws
         logger.debug('parsing knesset laws')
@@ -1297,17 +1346,20 @@ class Command(NoArgsCommand):
                     if re.search(r'לתמוך'.decode('utf8'), d['decision']):
                         decision.stand = 1
                     decision.save()
-                    try:
-                        pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
-                        re.search(r'[2009|2010]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
-                                                                                        # TODO: fix in 2011
-                        decision.bill = PrivateProposal.objects.get(proposal_id=pp_id).bill
-                        decision.save()
-                    except AttributeError: # one of the regex failed
-                        logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
-                    except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
-                        logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
 
+                # try to find a private proposal this decision is referencing
+                try:
+                    pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                    re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years                        
+                    pp = PrivateProposal.objects.get(proposal_id=pp_id)
+                    decision.bill = pp.bill
+                    decision.save()
+                except AttributeError: # one of the regex failed
+                    logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
+                except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
+                    logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
+                except PrivateProposal.MultipleObjectsReturned:
+                    logger.warn('More than 1 PrivateProposal with proposal_id=%d' % pp_id)
 
     def handle_noargs(self, **options):
 
@@ -1361,6 +1413,7 @@ class Command(NoArgsCommand):
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
+            logger.debug('finished update')
 
 def update_vote_properties(v):
     party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')

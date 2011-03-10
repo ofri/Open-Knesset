@@ -1,16 +1,70 @@
 # encoding: utf-8
-import datetime
+import datetime,re
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from knesset.committees.models import CommitteeMeeting
+from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from knesset.committees.models import CommitteeMeeting,ProtocolPart
+
+not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
+def legitimate_header(line):
+    """Retunrs true if 'line' looks like something should should be a protocol part header"""    
+    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
+        return False
+    return True
+    
+def create_protocol_parts(m):
+    """ Create protocol parts from this instance's protocol_text
+        Optionally, delete existing parts.
+        If the meeting already has parts, and you don't ask to 
+        delete them, a ValidationError will be thrown, because
+        it doesn't make sense to create the parts again.
+    """    
+
+    if m.parts.count():
+        raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
+            
+    if not m.protocol_text: # sometimes there are empty protocols
+        return # then we don't need to do anything here.
+        
+    # break the protocol to its parts
+    # first, fix places where the colon is in the begining of next line 
+    # (move it to the end of the correct line)
+    protocol_text = []
+    for line in re.sub("[ ]+"," ", m.protocol_text).split('\n'):
+        if line.startswith(':'):
+            protocol_text[-1] += ':'
+            protocol_text.append(line[1:])                    
+        else:
+            protocol_text.append(line)
+
+    i = 1
+    section = []
+    header = ''               
+        
+    # now create the sections    
+    for line in protocol_text:
+        if legitimate_header(line):            
+            if section:
+                ProtocolPart(meeting=self, order=i,
+                    header=header, body='\n'.join(section)).save()
+            i += 1
+            header = line[:-1]
+            section = []
+        else:
+            section.append (line)
+            
+    # don't forget the last section
+    ProtocolPart(meeting=self, order=i,
+        header=header, body='\n'.join(section)).save()        
+
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        for m in CommitteeMeeting.objects.all():
-            m.save()
+        for m in orm['Committees.CommitteeMeeting'].objects.all():
+            create_protocol_parts(m)
 
     def backwards(self, orm):
         "Write your backwards methods here."

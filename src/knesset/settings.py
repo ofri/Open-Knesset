@@ -14,12 +14,12 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'django.db.backends.sqlite3'         # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'dev.db'  # Or path to database file if using sqlite3.
-DATABASE_USER = ''      # Not used with sqlite3.
-DATABASE_PASSWORD = ''      # Not used with sqlite3.
-DATABASE_HOST = ''                  # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''                  # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    'default': {
+        'NAME': 'dev.db',
+        'ENGINE': 'django.db.backends.sqlite3',
+    },
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -59,8 +59,8 @@ SECRET_KEY = '1_ovxxkf(c*z_dwv!(-=dezf#%l(po5%#zzi*su-$d*_j*1sr+'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",    
 #     'django.template.loaders.eggs.load_template_source',
 )
 
@@ -94,7 +94,6 @@ INSTALLED_APPS = (
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
-    'haystack',
     'south',
     'planet',
     'pagination',
@@ -104,6 +103,10 @@ INSTALLED_APPS = (
     'hitcount',
     'annotatetext',
     'mailer',
+    'backlinks',
+    'backlinks.pingback',
+    'backlinks.trackback',
+    'django_nose',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -117,9 +120,12 @@ INSTALLED_APPS = (
     'knesset.agendas',
     'knesset.badges',
     'knesset.notify',
+    'knesset.persons',
+    'knesset.events',
 )
+
 TEMPLATE_CONTEXT_PROCESSORS = (
-"django.core.context_processors.auth",
+"django.contrib.auth.context_processors.auth",
 "django.core.context_processors.debug",
 "django.core.context_processors.i18n",
 "django.core.context_processors.media",
@@ -128,7 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 INTERNAL_IPS = ('127.0.0.1',)
 # Add the following line to your local_settings.py files to disable django-debug-toolar:
-#INTERNAL_IPS = ()
+INTERNAL_IPS = ()
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
@@ -138,11 +144,6 @@ LOCAL_DEV = True
 LOGIN_URL = '/users/login/'
 
 SITE_NAME = 'Open-Knesset'
-HAYSTACK_SITECONF = 'knesset.search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'whoosh_index')
-HAYSTACK_INCLUDE_SPELLING = True
-
 
 MAX_TAG_LENGTH = 128
 
@@ -161,6 +162,7 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s
 h.setFormatter(formatter)
 logger.addHandler(h)
 
+GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
@@ -181,6 +183,9 @@ AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 HITCOUNT_KEEP_HIT_ACTIVE = { 'hours': 1 }
 HITCOUNT_HITS_PER_IP_LIMIT = 0
 HITCOUNT_EXCLUDE_USER_GROUP = ( )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-xunit']
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

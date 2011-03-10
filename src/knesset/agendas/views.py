@@ -2,21 +2,57 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render_to_response
-#from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404, render_to_response, redirect
+from django.core.urlresolvers import reverse
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
+from knesset.mks.models import Member, Party
+from knesset.api.urls import vote_handler
 
-from forms import EditAgendaForm, AddAgendaForm
-from models import Agenda, AgendaVote, score_text_to_score
+from forms import EditAgendaForm, AddAgendaForm, VoteLinkingFormSet
+from models import Agenda, AgendaVote
 
+from django.test import Client
+from django.core.handlers.wsgi import WSGIRequest
 
 class AgendaListView (ListView):
-    def queryset(self):
-        return Agenda.objects.all()
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return Agenda.objects.get_relevant_for_user(user=None)
+        else:
+            return Agenda.objects.get_relevant_for_user(user=self.request.user)
     
+    def get_context(self, *args, **kwargs):
+        context = super(AgendaListView, self).get_context(*args, **kwargs)       
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = p.agendas
+        else:
+            watched = None
+        context['watched'] = watched
+        return context
+        
 class AgendaDetailView (DetailView):
+    class ForbiddenAgenda(Exception):
+        pass
+    
+    queryset = Agenda.objects.all()
+    
+    def GET(self, *arg, **kwargs):
+        try:
+            response = super(AgendaDetailView, self).GET(*arg, **kwargs)
+        except self.ForbiddenAgenda:
+            return HttpResponseForbidden()
+        return response
+        
+    def get_object(self):
+        obj = super(AgendaDetailView, self).get_object()
+        if obj in Agenda.objects.get_relevant_for_user(user=self.request.user):
+            return obj
+        else:
+            raise self.ForbiddenAgenda
+        
     def get_context(self, *args, **kwargs):
         context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
@@ -30,11 +66,45 @@ class AgendaDetailView (DetailView):
             watched = agenda in p.agendas
         else:
             watched = False
-
+        
         context.update({'watched_object': watched})
-
+        
+        mks = agenda.selected_instances(Member, top=5,bottom=5)
+        selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
+        context.update({'selected_mks_top': mks['top'], 'selected_mks_bottom': mks['bottom']})
+        context.update({'selected_parties': selected_parties })
+        
         return context
     
+class AgendaMkDetailView (DetailView):
+    template_name = 'agendas/mk_agenda_detail.html'
+    
+    def get_queryset(self):
+        return Agenda.objects.get_specific(agendaId=self.object_id)
+
+    def get_context(self, *args, **kwargs):
+        context = super(AgendaMkDetailView, self).get_context(*args, **kwargs)       
+        agenda = context['object']
+        try:
+            context['title'] = "%s" % agenda.name
+        except AttributeError:
+            context['title'] = _('None')
+
+        viewed_mk =  Member.objects.get(pk=self.member_id)
+        context['member'] = viewed_mk
+        related_mk_votes = agenda.related_mk_votes(viewed_mk)
+        
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = agenda in p.agendas
+        else:
+            watched = False
+        
+        context.update({'watched_object': watched})
+        context.update({'related_votes': related_mk_votes})
+        
+        return context
+
 class AgendaDetailEditView (DetailView):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_detail_edit.html'
@@ -70,57 +140,35 @@ class AgendaDetailEditView (DetailView):
             self.form = form
             return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
 
-@login_required
-def update_agendavote(request, agenda_id, vote_id):
-    """
-    Update agendavote relation for specific agenda-vote pair 
-    """
-    agenda = get_object_or_404(Agenda, pk=agenda_id)
-    vote   = get_object_or_404(Vote, pk=vote_id)
+
+class MockApiCaller(Client):
+    def get_vote_api(self,vote):
+        return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else? 
     
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    if request.user not in agenda.editors.all():
-        return HttpResponseForbidden("User %s does not have privileges to change agenda %s" % (request.user,agenda))
+    def request(self, **request):
+        environ = {
+            'HTTP_COOKIE': self.cookies,
+            'PATH_INFO': '/',
+            'QUERY_STRING': '',
+            'REQUEST_METHOD': 'GET',
+            'SCRIPT_NAME': '',
+            'SERVER_NAME': 'testserver',
+            'SERVER_PORT': 80,
+            'SERVER_PROTOCOL': 'HTTP/1.1',
+        }
+        environ.update(self.defaults)
+        environ.update(request)
+        return WSGIRequest(environ)
 
-    try:
-        action = request.POST['action']
-    except KeyError:
-        return HttpResponseForbidden("POST must have an 'action' attribute")
-    
-    if vote in agenda.votes.all():
-        agendavote = agenda.agendavote_set.get(vote=vote) 
+mock_api = MockApiCaller()
 
-        if action=='remove':
-            agendavote.delete()
-            return HttpResponse("Agenda removed from vote")
-        
-        if action=='reasoning':
-            agendavote.reasoning = request.POST['reasoning']
-            agendavote.save()
-            return HttpResponse("Agenda-vote updated with reasoning")
-        
-        if action in score_text_to_score.keys():
-            agendavote.set_score_by_text(action)
-            agendavote.save()
-            return HttpResponse("Agenda-vote updated with '%s' score" % action)
-
-        return HttpResponse("Action '%s' wasn't accepted" % action)
-    
-    else: # agenda is not ascribed to this vote
-        if request.POST['action']=='ascribe':
-            agenda_vote = AgendaVote(agenda=agenda,vote=vote,reasoning="")
-            agenda_vote.save()
-            return HttpResponse("Agenda ascribed to vote")
-
-        return HttpResponse("Action '%s' wasn't accepted. You must ascribe the agenda before anything else." % action)
-
-        
 @login_required
 def agenda_add_view(request):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_add.html'
+    
+    if not request.user.is_superuser:
+        return HttpResponseRedirect('/agenda/')
     
     if request.method == 'POST':
         form = AddAgendaForm(request.POST)
@@ -137,3 +185,53 @@ def agenda_add_view(request):
         form = AddAgendaForm(initial=initial_data) # An unbound form with initial data
 
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))
+
+@login_required
+def update_editors_agendas(request):
+    if request.method == 'POST':
+        vote_id = None
+        vl_formset = VoteLinkingFormSet(request.POST)
+        if vl_formset.is_valid():
+            # TODO: check the user's permission
+            for a in vl_formset.cleaned_data:
+                if a:
+                    if a['DELETE']:
+                        try:
+                            vote_id = a['vote_id']
+                            av = AgendaVote.objects.get(
+                                   agenda__id=a['agenda_id'],
+                                   vote__id = a['vote_id'])
+                            av.delete()
+                        except AgendaVote.DoesNotExist:
+                            pass
+                    else: # not delete, so try to create
+                        try:
+                            vote_id = a['vote_id']
+                            print "vote id = %s" % vote_id
+                            av = AgendaVote.objects.get(
+                                   agenda__id=a['agenda_id'],
+                                   vote__id = a['vote_id'])
+                            av.score = a['weight']
+                            av.reasoning = a['reasoning']
+                            av.save()
+                        except AgendaVote.DoesNotExist:
+                            av = AgendaVote(
+                                   agenda_id=int(a['agenda_id']),
+                                   vote_id=int(a['vote_id']),
+                                   score = a['weight'],
+                                   reasoning = a['reasoning'])
+                            av.save()
+                else:
+                    print "invalid form"
+            if vote_id:
+                return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':vote_id}))
+            else:
+                return HttpResponseRedirect(reverse('vote-list'))
+            
+        else:
+            # TODO: Error handling: what to do with illeal forms?
+            print "invalid formset"
+            return HttpResponseRedirect(reverse('vote-list'))             
+
+    else:
+        return HttpResponseNotAllowed(['POST'])

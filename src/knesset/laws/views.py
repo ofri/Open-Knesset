@@ -23,6 +23,7 @@ from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import DetailView, ListView, method_decorator
+from knesset.agendas.models import Agenda
 
 import urllib
 import urllib2
@@ -51,13 +52,17 @@ def bill_tag(request, tag):
     
     extra_context = {'tag':tag_instance}
     extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
-    if 'member' in request.GET: 
+    if 'member' in request.GET:
+        try:
+            member_id = int(request.GET['member'])
+        except ValueError:
+            raise Http404(_('No Member found matching "%s".') % request.GET['member']) 
         extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
         extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
-        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+        extra_context['title'] = _('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
         qs = extra_context['member'].bills.all()
     else: # only tag is given
-        extra_context['title'] = ugettext_lazy('Bills tagged %(tag)s') % {'tag': tag}
+        extra_context['title'] = _('Bills tagged %(tag)s') % {'tag': tag}
         qs = Bill
 
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
@@ -130,13 +135,14 @@ def vote_tag(request, tag):
         for v in vote:
             d[v] = d.get(v,0)+1
     # now d is a dict: MK -> number of votes in this tag
-    mks = d.keys()    
-    for mk in mks:
-        mk.count = d[mk]
-    average = float(sum([mk.count for mk in mks]))/len(mks)
-    mks = [mk for mk in mks if mk.count>=average]
-    mks = tagging.utils.calculate_cloud(mks)
-    extra_context['members'] = mks
+    mks = d.keys()
+    if mks:
+        for mk in mks:
+            mk.count = d[mk]
+        average = float(sum([mk.count for mk in mks]))/len(mks)
+        mks = [mk for mk in mks if mk.count>=average]
+        mks = tagging.utils.calculate_cloud(mks)
+        extra_context['members'] = mks    
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
@@ -145,13 +151,24 @@ def vote_tag(request, tag):
 
 class BillDetailView (DetailView):
     allowed_methods = ['GET', 'POST']
+    
+    def get_object(self):
+        try:
+            return super(BillDetailView, self).get_object()
+        except Http404:
+            self.slug_field = "popular_name_slug"
+            return super(BillDetailView, self).get_object()
+            
     def get_context(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context(*args, **kwargs)       
         bill = context['object']
         try:
-            context['title'] = "%s %s" % (bill.law.title, bill.title)
+            context['title'] = "%s,%s" % (bill.law.title, bill.title)
         except AttributeError:
             context['title'] = bill.title
+        if bill.popular_name is not None and bill.popular_name != "":
+            context["keywords"] = bill.popular_name
+            context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
@@ -207,6 +224,11 @@ class BillListView (ListView):
                     'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
                     'approved':Q(stage='6'),
                   }
+    bill_stages_names = { 'proposed':_('(Bills) proposed'),
+                          'pre':_('(Bills) passed pre-vote'),
+                          'first':_('(Bills) passed first vote'),
+                          'approved':_('(Bills) approved'),
+                        }
 
     def get_queryset(self):
         stage = self.request.GET.get('stage', False)
@@ -214,7 +236,7 @@ class BillListView (ListView):
         member = self.request.GET.get('member', False)
         if member:
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()
+            qs = member.bills.all()			
         else:
             qs = self.queryset._clone()
         if stage and stage!='all':
@@ -225,22 +247,34 @@ class BillListView (ListView):
         elif booklet:
             kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
             qs = qs.filter(knesset_proposal__in=kps)        
-        return qs
+        return qs.order_by('-stage_date')
 
     def get_context(self):
         context = super(BillListView, self).get_context()       
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         stage = self.request.GET.get('stage', False)
         booklet = self.request.GET.get('booklet', False)
+        member = self.request.GET.get('member', False)
         if stage and stage!='all':
             for x in r:
                 if x[3]==stage:
                     x[2] = True
                     break
+            if stage in self.bill_stages_names:
+                context['stage'] = self.bill_stages_names.get(stage)
+                context['title'] = _('Bills %(stage)s') % {'stage':context['stage']}
         elif booklet:
-            context['title']=_('Bills published in knesset booklet number %s') % booklet 
+            context['title']=_('Bills published in knesset booklet number %s') % booklet
         else:
-            r[0][2] = True
+            r[0][2] = True                
+        if member:
+            context['member'] = get_object_or_404(Member, pk=member)
+            context['member_url'] = reverse('member-detail',args=[context['member'].id])            
+            if stage in self.bill_stages_names:
+                context['title'] = _('Bills %(stage)s by %(member)s') % {'stage': self.bill_stages_names[stage], 'member':context['member'].name}
+            else:
+                context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
+            
         context['friend_pages'] = r
         return context
         
@@ -314,9 +348,11 @@ class VoteListView(ListView):
         return context
 
 class VoteDetailView(DetailView):
+    template_resource_name = 'vote'
+    
     def get_context(self):
         context = super(VoteDetailView, self).get_context()       
-        vote = context['object']
+        vote = context['vote']
         context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
@@ -325,6 +361,12 @@ class VoteDetailView(DetailView):
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
         context['bills'] = related_bills
+        
+        if self.request.user.is_authenticated():
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
+        else:
+            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
+        
         return context
 
 

@@ -5,7 +5,7 @@
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
 {% block divcontent %}
-<img src="/static/img/ok_circle.jpg" width="190px" style="float:left"/>
+<img src="/static/img/oknesset-logo.png" width="190px" style="float:left"/>
 <!-- add this to sidebar: <iframe src="http://www.facebook.com/plugins/likebox.php?id=114171195283394&amp;width=200&amp;connections=10&amp;stream=false&amp;header=true&amp;height=287" scrolling="no" frameborder="0" style="border:none; overflow:auto; width:200px; height:210px; position:absolute; left:10px;" allowTransparency="true"></iframe>
 -->
 האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
@@ -19,23 +19,21 @@
     <div class="display_note">לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</div>
     <div class="display_note">לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</div>
     <div class="display_note">לראות איך כל חבר כנסת הצביע בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>. לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></div>
-    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של <a href="{% url member-detail member.id %}">{{ member|mk_card }}</a></div>
+    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של {{ member|mk_card }}</div>
     <div class="display_note">לקרוא את הפרוטוקולים של כל <a href="{% url committee-list %}">וועדות הכנסת</a> (למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</div>
     <div class="display_note">ואנחנו כל הזמן עובדים על עוד...</div>    
 
     <div>
-        <h2>הארות אחרונות</h2>
-            {% for a in annotations|slice:":10" %}
-                <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'annotated' %} <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
-                <div style="padding-right:1em">
-                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
-                     <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
-                </div>
-            {% empty %}
-                <li>{% trans "No annotations yet..." %}
-            {% endfor %}
-        </div>
-
+        <h2>{% trans "Latest Annotations" %}</h2>
+        {% for a in annotations|slice:":10" %}
+            <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'annotated' %} <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+            <div style="padding-right:1em">
+                 {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
+                 <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+            </div>
+        {% empty %}
+            <li>{% trans "No annotations yet..." %}
+        {% endfor %}
     </div>
 {% endblock %}
 

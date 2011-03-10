@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
+{% load common_visual_elements %}
 {% load links %}
 {% load comments %}
 {% load user %}
@@ -14,6 +15,7 @@
 {% block extrahead %}
 	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			/*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
@@ -25,6 +27,10 @@
 	<a id="watch" class="button" href="."></a>
 	&bull;
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+	&bull;
+    {% if user in object.editors.all %}
+        <a class="button" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+    {% endif %}
 {% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -42,21 +48,68 @@
             {% for editor in object.editors.all %}
                 {% user editor %}
             {% endfor %}
-            {% if user in object.editors.all %}
-                <div class="edit">
-                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-                </div>
-            {% endif %}            
         </div>
-        <div>
+        <div style="margin-bottom:4em;">
             <h2> {% trans "Description" %}</h2>
-            {{ object.description }}
+            {{ object.description|urlize|linebreaks }}
         </div>
+
+        <div style="display:inline-block">
+        	<h3>{% trans "Members" %}</h3>
+        	<div class="list-wrap">
+        		<table>
+        		<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_top %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+	         			<td>
+                            <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
+                        </td>
+	        			</tr>
+	         	{% endfor %}
+	         	<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_bottom %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+	         			<td>
+                            <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
+                        </td>
+	        			</tr>
+	         	{% endfor %}
+	         	</table>
+        	</div>
+        </div>
+        <div style="display:inline-block; margin-right:4em;">
+        	<h3>{% trans "Parties" %}</h3>
+        	<div class="list-wrap">
+        		<table>
+	         	{% for selected_party in selected_parties %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
+	         			<td class="numeric">{{selected_party.score|floatformat:"0"}}%</td>	         			
+	         			<td>
+                            <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);</script>                            
+                        </td>
+	        			</tr>
+	         	{% endfor %}
+	         	</table>
+        	</div>
+        </div>
+        
     	<div class="item-list">
         
         <h2> {% trans "Ascribed Votes" %}</h2>
         <table id="agenda-votes">
-            {% for agendavote in object.agendavote_set.all %}
+            {% for agendavote in object.agendavotes.all %}
                 <tr>
                     <td>
                         <div class="agenda-score">

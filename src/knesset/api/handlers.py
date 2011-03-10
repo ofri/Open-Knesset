@@ -1,4 +1,5 @@
-from datetime import datetime
+import datetime
+import urllib
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -7,7 +8,7 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction
+from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 import math
@@ -22,10 +23,14 @@ def limit_by_request(qs, request):
     return qs
 
 class MemberHandler(BaseHandler):
-    fields = ('id', 'url', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', )
+    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
+
+    @classmethod
+    def gender (self, member):
+        return member.get_gender_display()
 
     @classmethod
     def url (self, member):
@@ -115,6 +120,19 @@ class MemberHandler(BaseHandler):
                      until=o.end_date,
                      ), qs)
 
+    def read(self, request, **kwargs):
+        if id not in kwargs and 'q' in request.GET:
+            q = request.GET['q']
+            q = urllib.unquote(q)
+            qs = self.qs
+            try:
+                q = int(q)
+                return qs.filter(pk=q)
+            except ValueError:
+                return Member.objects.find(q)
+
+        return super(MemberHandler,self).read(request, **kwargs)
+
 class VoteHandler(BaseHandler):
     fields = ('url', 'title', 'time', 
               'summary','full_text',
@@ -136,13 +154,13 @@ class VoteHandler(BaseHandler):
         type = request.GET.get('type', None)
         order = request.GET.get('order', None)
         days_back = request.GET.get('days_back', None)
-        page_len = request.GET.get('page_len', DEFAULT_PAGE_LEN)
-        page_num=request.GET.get('page_num', 0)
+        page_len = int(request.GET.get('page_len', DEFAULT_PAGE_LEN))
+        page_num= int(request.GET.get('page_num', 0))
 
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=days_back)
+            qs = qs.filter(time__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
@@ -172,24 +190,99 @@ class VoteHandler(BaseHandler):
         # Augment agenda with reasonings from agendavote and
         # arrange it so that it will be accessible using the
         # agenda's id in JavaScript
-        agendavotes = vote.agendavote_set.all()
+        agendavotes = vote.agendavotes.all()
         agendas     = [model_to_dict(av.agenda) for av in agendavotes]
         reasonings  = [av.reasoning for av in agendavotes]
-        text_scores = [av.get_text_score() for av in agendavotes]
+        text_scores = [av.get_score_display() for av in agendavotes]
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
+
+class BillHandler(BaseHandler):
+    fields = ('url', 'bill_title', 
+              'stage_text', 'stage_date',
+              'votes', 
+              'committee_meetings',
+              'proposing_mks', 
+              'tags'
+             )
+    
+    exclude = ('member')
+    allowed_methods = ('GET',)
+    model = Bill
+    qs = Bill.objects.all()
+
+    def read(self, request, **kwargs):
+        ''' returns a vote or a list of votes '''
+        qs = self.qs
+
+        if 'id' in kwargs:
+            return super(BillHandler, self).read(request, **kwargs)
+
+        type = request.GET.get('type', None)
+        order = request.GET.get('order', None)
+        days_back = request.GET.get('days_back', None)
+        page_len = int(request.GET.get('page_len', DEFAULT_PAGE_LEN))
+        page_num= int(request.GET.get('page_num', 0))
+
+        if type:
+            qs = qs.filter(title__contains=type)
+        if days_back:
+            qs = qs.since(days=int(days_back))
+        if order:
+            qs = qs.sort(by=order)
+        return qs[page_len*page_num:page_len*(page_num +1)]
+
+    @classmethod
+    def url(self, bill):
+        return bill.get_absolute_url()
+
+    @classmethod
+    def stage_text(self, bill):
+        return bill.get_stage_display()
+
+    @classmethod
+    def votes(self, bill):
+        pre_votes =   [ x.id for x in bill.pre_votes.all() ]
+        first_vote = None
+        if bill.first_vote != None:
+            first_vote = bill.first_vote.id
+        approval_vote = None
+        if bill.approval_vote != None:
+            approval_vote = bill.approval_vote.id
+        all = set(pre_votes+[first_vote, approval_vote])
+        return { 'pre' : pre_votes, 'first' : first_vote, 'approval' : approval_vote, 'all':list(all)}
+
+    @classmethod
+    def committee_meetings(self, bill):
+        first_committee =   [ x.id for x in bill.first_committee_meetings.all() ]
+        second_committee = [ x.id for x in bill.second_committee_meetings.all() ]
+        all=set(first_committee+second_committee)
+        return { 'first' : first_committee, 'second' : second_committee, 'all':list(all) }
+
+    @classmethod
+    def proposing_mks(self, bill):
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name } for x in bill.proposers.all() ]
+
+    @classmethod
+    def tags(self,bill):
+        return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+    
+    @classmethod
+    def bill_title(self,bill):
+        return u"%s, %s" % (bill.law.title, bill.title)
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
     allowed_methods = ('GET',)
     model = Party
     
-    def read(self, request, id=None):
-        if id:
-            return Party.objects.filter(pk=id)
-        else:
-            return Party.objects.all()
+    def read(self, request, **kwargs):
+        if id not in kwargs and 'q' in request.GET:
+            q = request.GET['q']
+            q = urllib.unquote(q)
+            return Party.objects.find(q)
+        return super(PartyHandler,self).read(request, **kwargs)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
@@ -201,7 +294,10 @@ class TagHandler(BaseHandler):
         if 'id' in kwargs:
             id = kwargs['id']        
         if id:
-            return Tag.objects.filter(pk=id)
+            try:
+                return Tag.objects.get(pk=id)
+            except Tag.DoesNotExist:
+                return rc.NOT_FOUND
         object_id = None
         ctype = None
         if 'object_id' in kwargs and 'object_type' in kwargs:
@@ -221,18 +317,27 @@ class TagHandler(BaseHandler):
         return tag.items.count()
 
 class AgendaHandler(BaseHandler):
+    # TODO: Once we have user authentication over the API,
+    #       need to expose not only public agendas.
+    #       See AgendaManager.get_relevant_for_user(user)
+    #       The is true for both read() and number_of_items() methods
+      
     fields = ('id', 'name', 'number_of_items')
     allowed_methods = ('GET',)
     model = Agenda
 
     def read(self, request, **kwargs):
+        agendas = Agenda.objects.get_relevant_for_user(user=None)
         
         # Handle API calls of type /agenda/[agenda_id]
         id = None
         if 'id' in kwargs:
             id = kwargs['id']        
             if id is not None:
-                return Agenda.objects.filter(pk=id)
+                try:
+                    return agendas.get(pk=id)
+                except Agenda.DoesNotExist:
+                    return rc.NOT_FOUND
         
         # Handle API calls of type /agenda/vote/[vote_id]
         # Used to return the agendas ascribed to a specific vote
@@ -245,10 +350,10 @@ class AgendaHandler(BaseHandler):
             except ContentType.DoesNotExist:
                 pass
             if object_id and (ctype == 'vote'):
-                return Agenda.objects.filter(votes__id=object_id)
+                return agendas.filter(votes__id=object_id)
         else:        
-            return Agenda.objects.all()
+            return agendas
 
     @classmethod
     def number_of_items(self, agenda):
-        return agenda.agendavote_set.count()
+        return agenda.agendavotes.count()

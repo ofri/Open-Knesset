@@ -7,7 +7,7 @@
 {% block nav-members %}class="selected"{% endblock %}
 {% block subnav %}
         {% for link in friend_pages %}
-            <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; 
+            <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull;
         {% endfor %}
 {% endblock %}
 {% block divcontent %}
@@ -18,9 +18,17 @@
     {% for o in object_list %}
         {% if o.is_current %}
 	    	<tr>
+                <td>{{ forloop.counter }}.</td>
 	    		<td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></td>
-	            <td>{{ o.extra|floatformat }}</td>
+	            <td>
+				{% if o.bill_stage %}
+					<a href="{% url bill-list %}?member={{o.id}}&stage={{ o.bill_stage }}">{{ o.extra|floatformat }}</a>
+				{% else %}
+					{{ o.extra|floatformat }}
+				{% endif %}
+				</td>
 	            <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
+				
 	        </tr>
         {% endif %}
     {% empty %}
@@ -32,8 +40,15 @@
     <table>
     {% for o in past_mks %}
     	<tr>
+            <td>{{ forloop.counter }}.</td>
 	        <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></td>
-	        <td>{{ o.extra|floatformat }}</td>
+	        <td>
+			{% if o.bill_stage %}
+				<a href="{% url bill-list %}?member={{o.id}}&stage={{ o.bill_stage }}">{{ o.extra|floatformat }}</a>
+			{% else %}
+				{{ o.extra|floatformat }}
+			{% endif %}
+			</td>
 	        <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
         </tr>
     {% endfor %}

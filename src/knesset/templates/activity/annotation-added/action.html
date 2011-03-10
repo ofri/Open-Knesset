@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target.comment as comment and action.target.user as user %}
+{{ user }} annotated {{ comment }}<br>
+{% endblocktrans %}

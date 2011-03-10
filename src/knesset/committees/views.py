@@ -1,21 +1,58 @@
-import json
-
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 import logging 
-logger = logging.getLogger("open-knesset.committees.views")
+from django.contrib.contenttypes.models import ContentType
 import difflib
 import datetime
 import re
-import random
 import colorsys
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
-from models import CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+from knesset.events.models import Event 
+from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
+
+logger = logging.getLogger("open-knesset.committees.views")
+
+
+class CommitteeDetailView(DetailView):
+
+    allowed_methods = ('GET', )
+
+    def get_context(self, *args, **kwargs):       
+        context = super(CommitteeDetailView, self).get_context(*args, **kwargs)
+        cm = context['object']  
+        
+        def annotate_members(qs):
+            members = []
+            for m in qs:
+                m.meetings_count = (100 * m.committee_meetings.filter(committee=cm).count()) / cm.meetings.count()
+                members.append(m)
+            members.sort(key=lambda x:x.meetings_count, reverse=True)
+            return members
+
+        context['chairpersons'] = cm.chairpersons.all()
+        context['replacements'] = cm.replacements.all()
+        context['members'] = annotate_members(\
+            (cm.members.all()|context['chairpersons']|context['replacements']).distinct())
+        recent_meetings = cm.meetings.all().order_by('-date')[:10]
+        context['meetings_list'] = recent_meetings
+        ref_date = recent_meetings[0].date if recent_meetings.count() > 0 else datetime.datetime.now()
+        context['future_meetings_list'] = cm.events.filter(when__gt = ref_date)
+        context['annotations'] = cm.annotations.order_by('-timestamp')
+        return context 
 
 class MeetingDetailView(DetailView):
 
@@ -25,10 +62,10 @@ class MeetingDetailView(DetailView):
         context = super(MeetingDetailView, self).get_context(*args, **kwargs)  
         cm = context['object']
         colors = {}
-        speakers = set(cm.parts.values_list('header',flat=True))
-        n = len(speakers)
-        for (i,p) in enumerate(speakers):
-            (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.32, 255)
+        speakers = cm.parts.order_by('speaker__mk').values_list('header','speaker__mk').distinct()
+        n = speakers.count()
+        for (i,(p,mk)) in enumerate(speakers):
+            (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.5 if mk else 0.3, 255)
             colors[p] = 'rgb(%i, %i, %i)' % (r, g, b)
         context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
         context['colors'] = colors
@@ -93,6 +130,8 @@ class MeetingsListView(ListView):
         if not self.items:
             raise Http404
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
+        context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+        context['committee_id'] = self.committee_id
         return context 
 
     def get_queryset (self):
@@ -102,3 +141,18 @@ class MeetingsListView(ListView):
         else:
             return CommitteeMeeting.objects.all()
         
+def meeting_list_by_date(request, *args, **kwargs):
+    committee_id = kwargs.get('committee_id',None)
+    date_string = kwargs.get('date',None)
+    try:
+        date = datetime.datetime.strptime(date_string,'%Y-%m-%d').date()
+    except:
+        raise Http404()
+    object = get_object_or_404(Committee, pk=committee_id)
+    object_list = object.meetings.filter(date=date)
+    
+    context = {'object_list':object_list, 'committee_id':committee_id}
+    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date}
+    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural } 
+    return render_to_response("committees/committeemeeting_list.html",
+        context, context_instance=RequestContext(request))    

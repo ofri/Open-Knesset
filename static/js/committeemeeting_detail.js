@@ -49,6 +49,12 @@ $(function(){
           $.jGrowl(msg, {sticky: true});
           return false
       }
+      if (!window.permission) {
+          var msg = $("#message_permission").html()
+          $.jGrowl(msg, {sticky: true});
+          return false
+      }
+
       var annoid = $(this).attr("id").split("-")[1];
       annotation_objects[annoid].toggleSelectView();
       if($("#annotations-"+annoid).css("display")=="none"){
@@ -63,6 +69,15 @@ $(function(){
                 annotation_objects[annoid].toggleSelectView();
                 hide_annotation_form(annoid);
             });
+          $("#annotationrealform-"+annoid).submit(function(e){
+            var id = $(this).attr("id").split("-")[1];
+            if($("#selection_start-"+id).val()=="" || $("#selection_end-"+id).val()==""){
+              alert(gettext("Please make a selection."));
+              e.preventDefault();
+              return false;
+            }
+            return true;
+          });
             $('input[name=color]').colorPicker();
         }
         else
@@ -81,17 +96,11 @@ $(function(){
       annotation_objects[aid].updateDefaultAnnotationColor("inherit");
     }
   });
-  $(".annotationrealform").submit(function(e){
-    var id = $(this).attr("id").split("-")[1];
-    if($("#selection_start-"+id).val()=="" || $("#selection_end-"+id).val()==""){
-      alert(gettext("Please make a selection."));
-      e.preventDefault();
-      return false;
-    }
-    return true;
-  });
   $(".reallydelete").live("submit", function(e){
-    if (!window.is_staff){
+    var anno_id = $(this).children('[name=annotation_id]').val();
+    var username = $('#annotation-'+anno_id+' a.user-link').html();
+
+    if (!window.is_staff && username != window.username){
         var msg = $("#message_staff").html()
         $.jGrowl(msg, {sticky: true});
         return false

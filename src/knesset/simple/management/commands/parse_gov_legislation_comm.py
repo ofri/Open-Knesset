@@ -11,7 +11,7 @@ class ParseGLC:
     
     def __init__(self, year_num, month):
         self.pmo_url = r"http://www.pmo.gov.il"
-        self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2010/"
+        self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2011/"
         self.scraped_data = self.parse_pages_per_month(year_num, month)
         
     def get_page(self,url):
@@ -20,7 +20,7 @@ class ParseGLC:
         while not(html_page):
             try:
                 html_page = urllib2.urlopen(url, timeout=30).read()
-            except (urllib2.URLError, timeout):
+            except urllib2.URLError:
                 retry_count += 1
                 if retry_count >= 10:
                     raise urllib2.URLError('URL %s failed too many times' % url)

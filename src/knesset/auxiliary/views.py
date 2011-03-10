@@ -1,10 +1,12 @@
+import random
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponseForbidden
-import random
+from django.http import HttpResponseForbidden, HttpResponseBadRequest,\
+                        HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
 
 from knesset.mks.models import Member
 from knesset.laws.models import Vote,Bill
@@ -33,3 +35,34 @@ def post_annotation(request):
         return annotatetext_post_annotation(request)
     else:
         return HttpResponseForbidden(_("Sorry, you do not have the permission to annotate."))
+
+def search(request, lang='he'):
+
+    # remove the 'cof' get variable from the query string so that the page
+    # linked to by the javascript fallback doesn't think its inside an iframe.
+    mutable_get = request.GET.copy()
+    if 'cof' in mutable_get:
+        del mutable_get['cof']
+
+    return render_to_response('search/search.html', RequestContext(request, {
+        'query': request.GET.get('q'),
+        'query_string': mutable_get.urlencode(),
+        'lang' : lang,
+        'cx': request.GET.get('cx')
+    }))
+
+def post_details(request, post_id):
+    ''' patching django-planet's post_detail view so it would update the 
+        hitcount and redirect to the post's url
+    '''
+    from hitcount.views import _update_hit_count
+    from hitcount.models import HitCount
+    from planet.models import Post
+
+    # update the it count
+    ctype = ContentType.objects.get(app_label="planet", model="post")
+    hitcount, created = HitCount.objects.get_or_create(content_type=ctype,
+                                                  object_pk=post_id)
+    result = _update_hit_count(request, hitcount)
+    post = get_object_or_404(Post, pk=post_id)
+    return HttpResponseRedirect(post.url)

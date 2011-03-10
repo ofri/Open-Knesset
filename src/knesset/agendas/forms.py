@@ -1,10 +1,17 @@
 from django import forms
 from django.forms import ModelForm
-#from django.contrib.auth.models import User, Permission
-#from django.contrib.auth.forms import UserCreationForm
+from django.forms.formsets import formset_factory
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import Agenda
+from models import Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES
+
+class H4(forms.Widget):
+    """ used to display header fields """
+    input_type = None # Subclasses must define this.
+
+    def render(self, name, value, attrs=None):
+        return mark_safe(u'<h4>%s</h4>' % value)
 
 class EditAgendaForm(forms.Form):
     name = forms.CharField(max_length=300, 
@@ -49,3 +56,32 @@ class AddAgendaForm(ModelForm):
     class Meta:
         model = Agenda
         fields = ('name', 'public_owner_name', 'description')
+
+class VoteLinkingForm(forms.Form):
+    # a form to help agendas' editors tie votes to agendas
+    agenda_name = forms.CharField(widget=H4, required=False, label='')
+    vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
+    agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
+    weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
+             required=False, widget=forms.RadioSelect)
+    reasoning = forms.CharField(required=False, max_length=300, 
+                           label=_(u'Reasoning'), 
+                           widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
+                           )
+    
+    def clean_weight(self):
+        print "clean weight"
+        data = self.cleaned_data['weight']
+        print data
+        if data=="":
+            return 99
+        return data
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data.get('weight') == 99:
+            cleaned_data["DELETE"] = 'on'
+        return cleaned_data
+        
+VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0, can_delete=True)
+

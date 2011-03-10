@@ -1,6 +1,7 @@
 #encoding: utf-8
 from datetime import date
 from django.db import models
+from django.core.cache import cache
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
@@ -23,6 +24,29 @@ class Correlation(models.Model):
     def __unicode__(self):
         return "%s - %s - %.0f" % (self.m1.name,self.m2.name,self.normalized_score)
 
+class BetterManager(models.Manager):
+    def __init__(self):
+        super(BetterManager, self).__init__()
+        self._names = []
+
+    def find(self, name):
+        ''' looks for a member with a name that resembles 'name'
+            the returned array is ordered by similiarity
+        '''
+        names = cache.get('%s_names' % self.model.__name__)
+        if not names:
+            names = self.values_list('name', flat=True)
+            cache.set('%s_names' % self.model.__name__, names)
+        possible_names = difflib.get_close_matches(name, names, cutoff=0.5, n=5)
+        qs = self.filter(name__in=possible_names)
+        # used to establish size, overwritten later
+        ret = range(qs.count()) 
+        for m in qs:
+            if m.name == name:
+                return [m]
+            ret[possible_names.index(m.name)] = m
+        return ret
+
 class Party(models.Model):
     name        = models.CharField(max_length=64)
     start_date  = models.DateField(blank=True, null=True)
@@ -30,11 +54,13 @@ class Party(models.Model):
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
     number_of_seats = models.IntegerField(blank=True, null=True)
+
+    objects = BetterManager()
+
     class Meta:
         verbose_name = _('Party')
         verbose_name_plural = _('Parties')
         ordering = ('-number_of_seats',)
-
     @property
     def uri_template (self):
         # TODO: use the Site's url from django.contrib.site
@@ -80,7 +106,6 @@ class Membership(models.Model):
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
 
-
 class Member(models.Model):
     name    = models.CharField(max_length=64)
     parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
@@ -109,18 +134,33 @@ class Member(models.Model):
     user = models.ForeignKey(User,blank=True,null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
+
+    bills_stats_proposed = models.IntegerField(default=0)    
+    bills_stats_pre      = models.IntegerField(default=0)
+    bills_stats_first    = models.IntegerField(default=0)
+    bills_stats_approved = models.IntegerField(default=0)
     
-    
+    average_weekly_presence_hours = models.FloatField(null=True)
+    average_monthly_committee_presence = models.FloatField(null=True)
+      
+    backlinks_enabled = models.BooleanField(default=True)
+
+    objects = BetterManager()
+
     class Meta:
         ordering = ['name']
         verbose_name = _('Member')
         verbose_name_plural = _('Members')
 
-    def is_female(self):
-        return self.gender=='F'
-
     def __unicode__(self):
         return self.name
+
+    def save(self,**kwargs):
+        self.recalc_average_monthly_committee_presence()
+        super(Member,self).save(**kwargs)
+
+    def is_female(self):
+        return self.gender=='F'
 
     def title(self):
         return self.name
@@ -181,6 +221,8 @@ class Member(models.Model):
 
     def service_time(self):
         """returns the number of days this MK has been serving in the current knesset"""
+        if not self.start_date:
+            return 0
         if self.is_current:
             return (date.today() -  self.start_date).days
         else:
@@ -198,9 +240,9 @@ class Member(models.Model):
 
     def committee_meetings_per_month(self):
         service_time = self.service_time()
-        if not service_time:
+        if not service_time or not self.id:
             return 0
-        return round(self.committee_meetings.count() * 30.0 / self.service_time(),1)
+        return round(self.committee_meetings.count() * 30.0 / self.service_time(),2)
 
     @models.permalink
     def get_absolute_url(self):
@@ -230,7 +272,21 @@ class Member(models.Model):
             return ugettext('Past Member (female)')
         else:
             return ugettext('Past Member (male)')
-    
+
+    def recalc_bill_statistics(self):
+        self.bills_stats_proposed = self.bills.count()
+        self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
+        self.bills_stats_first    = self.bills.filter(stage__in=['4','5','6']).count()
+        self.bills_stats_approved = self.bills.filter(stage='6').count()
+        self.save()
+
+    def recalc_average_weekly_presence_hours(self):
+        self.average_weekly_presence_hours = self.average_weekly_presence()
+        self.save()
+
+    def recalc_average_monthly_committee_presence(self):
+        self.average_monthly_committee_presence = self.committee_meetings_per_month()
+        
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
@@ -238,25 +294,10 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
-
-def find_possible_members(name):
-    mks = Member.objects.values_list('name','id')
-    mk_names = [mk[0] for mk in mks]
-    possible = difflib.get_close_matches(name, mk_names, cutoff=0.5, n=5)
-    results = []
-    for p in possible:
-        results.append({'id':mks[mk_names.index(p)][1], 'name':p})
-    return results
-
-def find_possible_parties(name):
-    parties = Party.objects.values_list('name','id')
-    party_names = [party[0] for party in parties]
-    possible = difflib.get_close_matches(name, party_names, cutoff=0.6, n=5)
-    results = []
-    for p in possible:
-        results.append({'id':parties[party_names.index(p)][1], 'name':p})
-    return results
-
+    
+    def save(self,**kwargs):
+        super(WeeklyPresence,self).save(**kwargs)
+        self.member.recalc_average_weekly_presence_hours()
 
 from listeners import *
 

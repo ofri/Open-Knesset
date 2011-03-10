@@ -1,25 +1,29 @@
+from datetime import datetime, timedelta
+
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, \
                         HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed
-from django.contrib.auth import login, authenticate
-from forms import RegistrationForm
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 
-from datetime import datetime, timedelta
+
 
 from annotatetext.models import Annotation
 from actstream import unfollow, follow
-from actstream.models import Action
-from forms import EditProfileForm
+from actstream.models import Action, Follow
 
 from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
 from knesset.agendas.models import Agenda
 from knesset.hashnav import DetailView, ListView
 from knesset.tagvotes.models import TagVote
+from knesset.committees.models import CommitteeMeeting
+
+from forms import RegistrationForm, EditProfileForm
 
 class PublicUserProfile(DetailView):
 
@@ -33,7 +37,7 @@ class PublicUserProfile(DetailView):
         user = context['viewed_user']
         context.update ({
             'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
-            'tagged_items': TagVote.objects.filter(user=user),
+            'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
         })
         return context
 
@@ -119,6 +123,27 @@ def edit_profile(request):
         context_instance=RequestContext(request,
             {'edit_form': edit_form,
             }))
+
+def user_unfollows(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    unwatch_id = request.POST.get('unwatch', None)
+    if not unwatch_id:
+        return HttpResponseBadRequest('need an unwatch parameter')
+    what = request.POST.get('what', None)
+    what_types = {
+        'member': ContentType.objects.get_for_model(Member),
+        'meeting': ContentType.objects.get_for_model(CommitteeMeeting),
+        'agenda': ContentType.objects.get_for_model(Agenda),
+    }
+    if what not in what_types:
+        return HttpResponseBadRequest('what parameter has to be one of: member, meeting,agenda')
+
+    Follow.objects.get(user=request.user, 
+        content_type=what_types[what], object_id=unwatch_id).delete()
+    return HttpResponse('OK')
 
 def follow_members(request):
     if not request.user.is_authenticated():

@@ -1,16 +1,20 @@
 #encoding: utf-8
 from datetime import date, timedelta
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
+from django.template.defaultfilters import slugify
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+
 from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
 from knesset.tagvotes.models import TagVote
-from knesset.utils import disable_for_loaddata
+from knesset.utils import disable_for_loaddata, slugify_name
 
 from tagging.forms import TagField
-from django import forms
-from django.utils.translation import ugettext_lazy as _
+
 import logging
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -19,6 +23,7 @@ VOTE_ACTION_TYPE_CHOICES = (
         (u'abstain', _('Abstain')),
         (u'no-vote', _('No Vote')),
 )
+
 
 
 class PartyVotingStatistics(models.Model):
@@ -222,7 +227,7 @@ class Vote(models.Model):
         return self.votes.filter(voteaction__against_coalition=True)
 
     def against_coalition_votes_count(self):
-        return self.against_coalition_votes.count()
+        return self.against_coalition_votes().count()
 
     # TODO: this should die
     def against_opposition_votes_count(self):
@@ -286,6 +291,7 @@ class TagForm(forms.Form):
 class Law(models.Model):
     title = models.CharField(max_length=1000)
     merged_into = models.ForeignKey('Law', related_name='duplicates', blank=True, null=True)
+    
     def __unicode__(self):
         return self.title
 
@@ -362,15 +368,18 @@ BILL_STAGE_CHOICES = (
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
+    slug = models.CharField(max_length=1000)
+    popular_name = models.CharField(max_length=1000, blank=True)
+    popular_name_slug = models.CharField(max_length=1000, blank=True)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
     stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
-    stage_date = models.DateField(blank=True, null=True)
-    pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True)
-    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True)     
-    first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True)
-    second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True)
-    approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True)
-    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True)
+    stage_date = models.DateField(blank=True, null=True) # date of entry to current stage
+    pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True) # link to pre-votes related to this bill
+    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True) # CM related to this bill, *before* first vote     
+    first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True) # first vote of this bill
+    second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True) # CM related to this bill, *after* first vote
+    approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True) # approval vote of this bill
+    proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
 
     class Meta:
         verbose_name = _('Bill')
@@ -382,6 +391,13 @@ class Bill(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
+    
+    def save(self,**kwargs):
+        self.slug = slugify_name(self.title)
+        self.popular_name_slug = slugify_name(self.popular_name)
+        super(Bill,self).save(**kwargs)
+        for mk in self.proposers.all():
+            mk.recalc_bill_statistics()
 
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)

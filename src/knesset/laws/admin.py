@@ -1,4 +1,4 @@
-from knesset.laws.models import Vote,Law,PrivateProposal,KnessetProposal,Bill,GovLegislationCommitteeDecision
+from knesset.laws.models import Vote,Law,PrivateProposal,KnessetProposal,GovProposal,Bill,GovLegislationCommitteeDecision
 
 from django.contrib import admin
 
@@ -18,6 +18,10 @@ admin.site.register(PrivateProposal, PrivateProposalAdmin)
 class KnessetProposalAdmin(admin.ModelAdmin):
     pass
 admin.site.register(KnessetProposal, KnessetProposalAdmin)
+
+class GovProposalAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(GovProposal, GovProposalAdmin)
 
 class BillAdmin(admin.ModelAdmin):
     pass

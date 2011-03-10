@@ -1,13 +1,12 @@
+
 from setuptools import setup, find_packages
 
 install_requires = [
     'python-openid',
-    'python-yadis',
+#    'python-yadis',
     'oauth',
     'django-tagging',
     'simplejson',
-    'whoosh',
-    'django-haystack',
     'South',
     'pyth',
     'django-debug-toolbar',
@@ -18,6 +17,8 @@ install_requires = [
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
+    'nose',
+    'django-nose',
     ]
 setup(
         name = "Open-Knesset",

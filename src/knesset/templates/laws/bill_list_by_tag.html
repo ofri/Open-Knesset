@@ -6,11 +6,13 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block divcontent %}
-    {% if member %}
-        <h1>{% blocktrans %}Bills tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
-    {% else %}
-        <h1>{% blocktrans %}Bills tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
-    {% endif %}
+    {% with object_list|length as count %}
+        {% if member %}
+            <h1>{% blocktrans %}{{ count }} Bills tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+        {% else %}
+            <h1>{% blocktrans %}{{ count }} Bills tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
+        {% endif %}
+    {% endwith %}
     <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div class="item-list">
         {% for o in object_list %}

@@ -4,9 +4,19 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.utils.encoding import smart_str, smart_unicode
+
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
 from models import *
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("Need a json decoder")
 
 just_id = lambda x: x.id
 
@@ -19,7 +29,7 @@ class BillViewsTest(TestCase):
                                           title='vote 2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
-        self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill_1)
         self.mk_1 = Member.objects.create(name='mk 1')
@@ -55,7 +65,37 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-
+        
+    '''def test_bill_detail_by_slug(self):
+        res = self.client.get(reverse('bill-detail-with-slug',
+                                 kwargs={'slug': self.bill_1.slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+    '''    
+    def test_bill_popular_name(self):
+        res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
+        self.assertEqual(res.status_code, 404)
+        
+    '''def test_bill_popular_name_by_slug(self):
+        res = self.client.get(reverse('bill-detail-with-slug',
+                                 kwargs={'slug': self.bill_1.popular_name_slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+    '''
+        
+    '''
+    def test_bill_detail_hebrew_name_by_slug(self):
+        res = self.client.get(reverse('bill-detail',
+                                 kwargs={'slug': self.bill_hebrew_name.slug}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res,
+                                'laws/bill_detail.html')
+        self.assertEqual(res.context['object'].id, self.bill_1.id)
+    '''
     def testLoginRequired(self):
         res = self.client.post(reverse('bill-detail',
                            kwargs={'object_id': self.bill_1.id}))
@@ -111,6 +151,13 @@ class BillViewsTest(TestCase):
         self.client.logout()
         self.client.logout()
 
+    ''' TODO: test the feed
+    def testFeeds(self):
+        res = self.client.get(reverse('bills-feed'))
+        self.assertEqual(res.status_code, 200)
+        ...use feedparser to analyze res
+    '''
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
@@ -118,6 +165,9 @@ class BillViewsTest(TestCase):
         self.bill_2.delete()
         self.jacob.delete()
         self.mk_1.delete()
+
+
+
 
 class VoteViewsTest(TestCase):
 
@@ -141,8 +191,29 @@ class VoteViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/vote_detail.html')
-        self.assertEqual(res.context['object'].id, self.vote_1.id)
+        self.assertEqual(res.context['vote'].id, self.vote_1.id)
 
+    def tearDown(self):
+        self.vote_1.delete()
+        self.vote_2.delete()
+
+class testVoteAPI(TestCase):
+    def setUp(self):
+        self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
+                                          title='vote 1')
+        self.vote_2 = Vote.objects.create(time=datetime.now(), 
+                                          title='vote 2')
+
+    def testDaysBackAPI(self):
+        res = self.client.get(reverse('vote-handler'), {'days_back': '300'}) 
+        self.assertEqual(res.status_code,200)
+        votes = json.loads(res.content)
+        self.assertEqual(map(lambda x: x['title'], votes), [self.vote_2.title])
+        res = self.client.get(reverse('vote-handler'), {'days_back': '30000'}) 
+        self.assertEqual(res.status_code,200)
+        votes = json.loads(res.content)
+        self.assertEqual(set(map(lambda x: x['title'], votes)), set([self.vote_1.title, self.vote_2.title]))
+    
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()

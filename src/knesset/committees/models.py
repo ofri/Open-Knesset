@@ -1,18 +1,49 @@
 # encoding: utf-8
 import re
+import logging
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.utils.text import truncate_words
+from django.contrib.contenttypes import generic
+
+from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from annotatetext.models import Annotation
+from knesset.events.models import Event
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
+
+logger = logging.getLogger("open-knesset.committees.models")
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
     members = models.ManyToManyField('mks.Member', related_name='committees')
+    chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees')
+    replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
+    events = generic.GenericRelation(Event, content_type_field="which_type",
+       object_id_field="which_pk")
+
     def __unicode__(self):
         return "%s" % self.name
 
     @models.permalink
     def get_absolute_url(self):
         return ('committee-detail', [str(self.id)])
+
+    @property
+    def annotations(self):
+        protocol_part_tn = ProtocolPart._meta.db_table
+        meeting_tn = CommitteeMeeting._meta.db_table
+        committee_tn = Committee._meta.db_table
+        annotation_tn = Annotation._meta.db_table
+        protocol_part_ct = ContentType.objects.get_for_model(ProtocolPart)
+        ret = Annotation.objects.filter(content_type=protocol_part_ct)
+        return ret.extra(tables = [protocol_part_tn,
+                    meeting_tn, committee_tn],
+                    where = [ "%s.object_id=%s.id" % (annotation_tn, protocol_part_tn),
+                              "%s.meeting_id=%s.id" % (protocol_part_tn, meeting_tn),
+                              "%s.committee_id=%%s" % meeting_tn],
+                    params = [ self.id ]).distinct()
 
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
@@ -31,12 +62,19 @@ class CommitteeMeeting(models.Model):
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
-
+    src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    
     class Meta:
         ordering = ('-date',)
+        verbose_name = _('Committee Meeting')
+        verbose_name_plural = _('Committee Meetings')
+
+    def title (self):
+        return truncate_words (self.topics, 12)
 
     def __unicode__(self):
-        return "%s %s" % (self.committee.name, self.date_string)
+        return (u"%s - %s" % (self.committee.name,
+                                self.title())).replace("&nbsp;", u"\u00A0")
     
     @models.permalink
     def get_absolute_url(self):
@@ -45,8 +83,24 @@ class CommitteeMeeting(models.Model):
 
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
-        self.parts.all().delete()
 
+    def create_protocol_parts(self, delete_existing=False):
+        """ Create protocol parts from this instance's protocol_text
+            Optionally, delete existing parts.
+            If the meeting already has parts, and you don't ask to 
+            delete them, a ValidationError will be thrown, because
+            it doesn't make sense to create the parts again.
+        """    
+        if delete_existing:
+            ppct = ContentType.objects.get_for_model(ProtocolPart)
+            annotations = Annotation.objects.filter(content_type=ppct, object_id__in=self.parts.all)
+            logger.debug('deleting %d annotations, because I was asked to delete the relevant protocol parts on cm.id=%d' % (annotations.count(), self.id))
+            annotations.delete()
+            self.parts.all().delete()
+        else:
+            if self.parts.count():
+                raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
+                
         if not self.protocol_text: # sometimes there are empty protocols
             return # then we don't need to do anything here.
             
@@ -79,7 +133,7 @@ class CommitteeMeeting(models.Model):
                 
         # don't forget the last section
         ProtocolPart(meeting=self, order=i,
-            header=header, body='\n'.join(section)).save()
+            header=header, body='\n'.join(section)).save()        
 
 class ProtocolPartManager(models.Manager):
     def list(self):
@@ -90,7 +144,7 @@ class ProtocolPart(models.Model):
     order = models.IntegerField()
     header = models.TextField(blank=True)
     body = models.TextField(blank=True)
-
+    speaker = models.ForeignKey('persons.Person', blank=True, null=True, related_name='protocol_parts')
     objects = ProtocolPartManager()
 
     annotatable = True

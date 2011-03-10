@@ -1,21 +1,21 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
+{% load user %}
 {% load common_text_handling %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
 {% block description %}{% trans "Agendas" %} - {% endblock %}
 {% block nav-agendas %}class="selected"{% endblock %}
 {% block divcontent %}
+	{% i18ninclude "agendas/agenda_list_header.html" LANGUAGE_CODE %}
 	<div id="list-wrap">
         <h2> {% trans "Your Agendas" %} </h2>
         {% if not user.is_authenticated %}
         	<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a>
         {% else %}
-	        <div class="add">
-	            <a href="/agenda/add/">{% trans "Add" %}</a>
-	        </div>
 	        <div class="item-list">
-		        {% for o in user.agenda_set.all %}
+		        {% for o in user.agendas.all %}
 		        	<div class="item">
 			            <a class="hashnav dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
 		                <table>
@@ -23,17 +23,33 @@
 								<td>{% trans "Editors:" %}</td>
 								<td>			                
 				                    {% for editor in o.editors.all %}
-				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                        {% user editor %}
 				                    {% endfor %}
 				                </td>
 		                	</tr>
 		                	<tr>
 		                		<td>{% trans "Description:" %}</td>
-		                		<td>{{ o.description|pretty_crop:100 }} 
+		                		<td>{{ o.description|pretty_crop:100|urlize }}
+                			</tr>
+		                	<tr>
+		                		<td>{% trans "Number of followers" %}</td>		                		
+		                		<td>{{ o.number_of_followers }}</td>
+                			</tr>
+                			<tr>
+		                		<td>{% trans "Number of ascribed votes" %}</td>		                		
+		                		<td>{{ o.votes.count }}</td>
+                			</tr>		  
 		                </table>
 					</div>
-		        {% endfor %}
+				{% empty %}
+					{% trans "You are not editing any agenda" %}
+		        {% endfor %}		        
 		    </div>
+		    {% if user.is_superuser %}
+		        <div class="add">
+		            <a class="awesome-button medium" href="/agenda/add/">{% trans "Add" %}</a>
+		        </div>		    
+	        {% endif %}
         {% endif %}
         
 	</div>
@@ -44,6 +60,10 @@
 	            {% if not user in o.editors.all %}
 	            	<div class="item">
 		                <a class="hashnav dontwrap" id="detail-{{ o.id }}" href="{% url agenda-detail o.id %}" >{{ o }}</a>
+	            		{% if o in watched %}
+	            			<div class="watched" >{% trans 'You are following' %}</div>
+	            		{% endif %}
+		                
 		                <table>
 			                <tr>
 								<td>{% trans "Editors:" %}</td>
@@ -55,7 +75,12 @@
 		                	</tr>
 		                	<tr>
 		                		<td>{% trans "Description:" %}</td>
-		                		<td>{{ o.description|pretty_crop:100 }} 
+		                		<td>{{ o.description|pretty_crop:100 }}
+		                	</tr>
+		                	<tr>
+		                		<td>{% trans "Number of followers" %}</td>		                		
+		                		<td>{{ o.number_of_followers }}</td>
+                			</tr>	 
 		                </table>
 	                </div>
 		    	{% endif %}

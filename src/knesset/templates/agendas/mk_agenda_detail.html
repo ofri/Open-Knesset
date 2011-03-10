@@ -1,0 +1,103 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load tagging_tags %}
+{% load laws_extra %}
+{% load common_visual_elements %}
+{% load links %}
+{% load comments %}
+{% load user %}
+{% load hitcount_tags %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.title }} - {% endblock %}
+{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block extrahead %}
+	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
+			register_watch({{object.id}}, "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url follow-agendas %}");
+		});
+	</script>
+{% endblock %}
+{% block subnav %}
+	<a id="watch" class="button" href="."></a>
+	&bull;
+    <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+{% endblock %}
+{% block messages %}
+<span id="message_login">
+    {% trans "You have to be logged in to enable the watch feature." %}<br>
+    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
+    {% trans "or" %}
+    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
+</span>
+{% endblock %}
+{% block divcontent %}
+    <h1>{{ object }}</h1>
+    <div id="agenda-info">
+        <div>
+            <h3>{% trans "Edited by" %}</h3>
+            {% for editor in object.editors.all %}
+                {% user editor %}
+            {% endfor %}
+            {% if user in object.editors.all %}
+                <div class="edit">
+                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+                </div>
+            {% endif %}            
+        </div>
+        <div>
+            <h2> {% trans "Description" %}</h2>
+            {{ object.description }}
+        </div>
+
+    	<div class="item-list">
+        
+        <h2> {% trans "Ascribed Votes" %}</h2>
+        <table id="agenda-votes">
+            {% for agendavote in related_votes %}
+                <tr>
+                    <td>
+                        <div class="agenda-score">
+                            {{ agendavote.score }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item">
+                            <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
+                                {{ agendavote.vote.title }}<br/>
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                	<td></td>
+                	<td>
+                	{{ member.name }} {% trans "Voted" %} {% trans agendavote.voteaction.type %}
+                	</td>
+                	
+                </tr>
+            {% empty %}
+                {% trans "No results found" %}
+            {% endfor %}
+        </table>
+    </div> {# id="agenda-info" #}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
+
+{% block footer %}
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+--></script>
+{% endblock %}
+
+

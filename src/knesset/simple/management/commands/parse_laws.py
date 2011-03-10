@@ -18,7 +18,7 @@ class ParseLaws(object):
     url = None
     
     def get_page_with_param(self,params):
-        #print self.url
+        logger.debug('get_page_with_param: self.url='+self.url)
         if params == None:
             try:
                 html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
@@ -46,7 +46,12 @@ class ParseLaws(object):
                 logger.error("can't open URL: %s" % self.url)
                 return None
             html_page = url_data.read().decode('windows-1255').encode('utf-8')
-            return BeautifulSoup(html_page)
+            try:
+                soup = BeautifulSoup(html_page)
+            except HTMLParseError, e:
+                logger.debug("error parsing URL: %s - %s" % (self.url, e))
+                return None
+            return soup
 
 def fix_dash(s):
     """returns s with normalized spaces before and after the dash"""
@@ -229,6 +234,44 @@ class ParseGovLaws(ParseKnessetLaws):
         
         # TODO: check if parsing handles more than 1 prop in a booklet                
         return [{'title':prop.get_title(),'date':prop.get_date(), 'bill':prop}]
+
+    def parse_laws_page(self,soup):
+        name_tag = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and tag['href'].find(".pdf")>=0)
+        for tag in name_tag:
+            pdf_link = self.pdf_url + tag['href']
+            booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
+            if int(booklet) <= self.min_booklet:
+                return False
+            pdf_data = self.parse_pdf(pdf_link)
+            for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
+                #title = pdf_data[j]['title']
+                title = tag.findNext(attrs={"class":"LawText1"}).findNext(attrs={"class":"LawText1"}).text
+                m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
+                try:
+                    comment = m[-1].strip().replace('\n','').replace('&nbsp;',' ')
+                    law = title[:title.find(comment)-1]
+                except:
+                    comment = None
+                    law = title.replace(',','')
+                try:
+                    correction = m[-2].strip().replace('\n','').replace('&nbsp;',' ')
+                    law = title[:title.find(correction)-1]
+                except:
+                    correction = None
+                correction = fix_dash(correction)
+                law = law.strip().replace('\n','').replace('&nbsp;',' ')
+                if law.find("הצעת ".decode("utf8"))==0:
+                    law = law[5:]
+                
+                law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
+                                       'comment':comment, 'date':pdf_data[j]['date']}
+                if 'original_ids' in pdf_data[j]:
+                    law_data['original_ids'] = pdf_data[j]['original_ids']
+                if 'bill' in pdf_data[j]:
+                    law_data['bill'] = pdf_data[j]['bill']
+                self.laws_data.append(law_data)
+        return True               
+
         
 #############
 #   Main    #

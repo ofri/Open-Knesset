@@ -5,6 +5,13 @@ from django.contrib.comments.views.comments import post_comment
 from django.http import HttpResponse
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+from django.contrib.auth.decorators import login_required
+from django.contrib.comments.models import Comment
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+import django.contrib.comments.views.moderation as moderation
+from django.utils.encoding import smart_str, smart_unicode
+
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -19,6 +26,8 @@ def yearstart(year):
 def yearend(year):
     return datetime(year,12,31)
 
+def slugify_name(name):
+    return smart_str(name).replace("'",'"').replace(' ','-')
 
 
 def comment_post_wrapper(request):
@@ -30,15 +39,26 @@ def comment_post_wrapper(request):
         return post_comment(request)
     return HttpResponse("Access denied")
 
+@login_required
+def delete(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user == comment.user or request.user.is_staff:
+        return moderation.delete(request, comment_id)
+    else:
+        raise Http404
+    
+
 def cannonize(s):
-       if isinstance(s,unicode):
-           s = s.replace(u'\u201d','').replace(u'\u2013','')
-       else:
-           s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
-       s.replace('&nbsp',' ')
-       s.replace('\n','')
-       s = re.sub("""\d{4,4}""",'',s)
-       return re.sub("""["'`\(\) /.,\-\xa0]""", '', s)
+    if isinstance(s,unicode):
+        shitty_chars = [u'\u200e', u'\u200f', u'\u202a',u'\u202c',u'\u202d',u'\u202e', u'\u201d', u'\u2013']
+        trans = dict([(ord(chr), None) for chr in shitty_chars])
+        s = s.translate(trans)
+    else:
+        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+    s.replace('&nbsp',' ')
+    s.replace('\n','')
+    s = re.sub("""\d{4,4}""",'',s)
+    return re.sub("""["'`\(\) /.,\-\xa0]""", '', s) #@IndentOk
 
 try:
     from functools import wraps

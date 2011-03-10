@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
@@ -23,8 +22,10 @@ class ListViewTest(TestCase):
 I am a perfectionist
 adrian:
 I have a deadline''')
+        self.meeting_1.create_protocol_parts()
         self.meeting_2 = self.committee_1.meetings.create(date=datetime.now(),
                                                          protocol_text='m2')
+        self.meeting_2.create_protocol_parts()
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
         (self.group, created) = Group.objects.get_or_create(name='Valid Email')
@@ -63,10 +64,17 @@ I have a deadline''')
         self.assertEqual(annotation.selection, 'perfect')
         # ensure the activity has been recorded
         stream = Action.objects.stream_for_actor(self.jacob)
-        self.assertEqual(stream.count(), 1)
-        activity = stream[0]
-        self.assertEqual(activity.verb, 'annotated')
-        self.assertEqual(activity.target.id, annotation.id)
+        self.assertEqual(stream.count(), 3)
+        self.assertEqual(stream[0].verb, 'started following')
+        self.assertEqual(stream[0].target.id, self.meeting_1.id)
+        self.assertEqual(stream[1].verb, 'got badge')
+        self.assertEqual(stream[2].verb, 'annotated')
+        self.assertEqual(stream[2].target.id, annotation.id)
+        # ensure we will see it on the committee page
+        annotations = self.committee_1.annotations
+        self.assertEqual(annotations.count(), 1)
+        self.assertEqual(annotations[0].comment, 'just perfect')
+
 
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email
@@ -93,12 +101,11 @@ I have a deadline''')
                          [ self.committee_1.id, self.committee_2.id, ])
 
     def testCommitteeMeetings(self):
-        res = self.client.get(reverse('committee-detail',
-                                 kwargs={'committee_id': self.committee_1.id}))
+        res = self.client.get(self.committee_1.get_absolute_url())
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
-                                'committees/committeemeeting_list.html')
-        object_list = res.context['object_list']
+                                'committees/committee_detail.html')
+        object_list = res.context['meetings_list']
         self.assertEqual(map(just_id, object_list), 
                          [self.meeting_1.id, self.meeting_2.id, ], 
                          'object_list has wrong objects: %s' % object_list)

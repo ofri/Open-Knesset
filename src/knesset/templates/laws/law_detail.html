@@ -2,11 +2,11 @@
 {% load i18n %}
 {% load laws_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }},{{ keywords }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block divcontent %}
-<h2>{{ object.title }}</h2>    
+<h2>{{ object.title }}</h2>  
     <h3>{% trans 'Private Bills' %}</h3>
     {% for pp in pps %}
         p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 

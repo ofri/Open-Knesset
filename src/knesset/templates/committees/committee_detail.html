@@ -1,17 +1,73 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load mks %}
+{% load avatar_tags %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block subnav %}        {% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/tooltip.js"></script>
+    <script>
+    function set_percent(id,value) {
+        $("#percent_"+id).css('background-position',((100-value))+"px 0px");
+        $("#percent_"+id).html(value+"%");               
+    }
+    </script>
+{% endblock %}
 {% block divcontent %}
-    <h2>{{object.name}}</h2>
-    <h3>{% trans 'Last Meetings' %}</h3>
-	<div class="item-list">
-        {% for o in meetings_list %}
-            <a href="{% url committee-meeting o.id %}">{{ o.date_string }}</a><br>
+  <h2>{{object.name}}</h2>
+  <div class="main-column">
+    {% if members %}
+	    <h3>{% trans 'Committee Members' %}</h3>
+        <div class="clear"></div>
+        <ul class="summaries">
+	    {% for mk in members %}
+	        <li> {% include "committees/_member_summary.html" %} </li>
+	    {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="clear"></div>
+    <h3>{% trans 'Future Meetings' %}</h3>
+	<ul class="item-list">
+        {% for o in future_meetings_list %}
+            {% include "events/_event_li.html" %}
         {% endfor %}
-	</div>
-    <a href="all_meetings/">{% trans 'Full meetings list'%}</a>
+	</ul>
+    <h3>{% trans 'Last Meetings' %}</h3>
+	<ul class="item-list">
+        {% for o in meetings_list %}
+            {% include "committees/_meeting_li.html" %}
+        {% endfor %}
+	</ul>
+    <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
+  </div>
+  <div class="secondary-column">
+    <h3>{% trans "Latest Annotations" %}</h3>
+    <ul class="annotations">
+    {% for a in annotations|slice:":10" %}
+        <li {% if forloop.last %}class="last"{% endif %}>
+            <a href="{{a.get_absolute_url }}" title="{{a.flag_value}} - {{a.comment|escape}}">
+            "...{{a.selection}}..." ({{a.content_object.header}})</a></li>
+        <div class="tip">
+            <div class="user_id">
+                <a href="{% url public-profile a.user.username %}">{% avatar a.user 45 %}
+                {{ a.user }}</a>
+            </div>
+            <a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaks}}</a>
+        </div>
+    {% empty %}
+        <li>{% trans "No annotations yet..." %}
+    {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+{% block footer %}
+    <script>
+    $(document).ready(function () {
+        $(".annotations li").tooltip({ position: "center right",
+                delay: 100, opacity: 0.8, offset: [-100, -80]});
+    })
+    </script>
 {% endblock %}

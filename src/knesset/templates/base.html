@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load search %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -15,9 +16,8 @@
 		{% endif %}
 		<meta http-equiv="imagetoolbar" content="no"/>
 		<meta name="MSSmartTagsPreventParsing" content="true" >
-		<meta name="Authors" content="PyWeb-IL">
-		<meta name="License" content="Follow your inclanations with due regards to the 
-            devil within and the policeman around the corner." > 
+		<meta name="Authors" content="OpenKnesset">
+		<meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
 		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
 		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
@@ -71,9 +71,9 @@
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
-        <div id="search"><form  method="get" action="{% url haystack_search %}">
-            {{ search_form.q }}<input type="submit" value="{% trans 'Search' %}"></form>
-        </div>
+        <div id="search">
+    {% search_form "search_page" %}
+</div>
 		<div id="header">
 			<ul id="nav-global">
 
@@ -82,19 +82,19 @@
 				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
 				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
 				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-                <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-                <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
+                <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>                
+                <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>                
                 <li id="nav-planet" {% block nav-planet %} {% endblock %} > <a class="hashnav" href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
 				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
 			</ul>
             
 		</div>
 		<!-- END Header -->
-        <!-- END Reviewed code. Follows is legacy from django-website -->
 		<div id="billboard"></div>
 		<div id="columnwrap">
 			{% block columnwrap %}                
-				<div id="content-main">
+                <div id="cse" class="main" style="display:none;"></div>
+				<div id="content-main" class="main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
                     {% block social %}{% if not debug %}
