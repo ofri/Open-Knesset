@@ -98,7 +98,7 @@ class Agenda(models.Model):
         unique_together = (("name", "public_owner_name"),)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.name,_('by'),self.public_owner_name)
+        return "%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
     
     @models.permalink
     def get_absolute_url(self):

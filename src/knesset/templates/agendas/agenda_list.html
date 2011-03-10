@@ -69,7 +69,7 @@
 								<td>{% trans "Editors:" %}</td>
 								<td>			                
 				                    {% for editor in o.editors.all %}
-				                        {{ editor.first_name }}&nbsp;{{ editor.last_name }}
+				                        {% user editor %}
 				                    {% endfor %}
 				                </td>
 		                	</tr>
