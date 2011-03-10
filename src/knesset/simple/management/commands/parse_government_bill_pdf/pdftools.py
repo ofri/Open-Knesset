@@ -6,6 +6,8 @@ import sys
 
 from textutil import asblocks, sanitize
 
+DEBUG=False
+
 def which(x):
     for p in os.environ['PATH'].split(':'):
         path = os.path.join(p, x)
@@ -33,8 +35,9 @@ def local_or_system(toolname):
 PDFTOTEXT=local_or_system('pdftotext')
 PDFINFO=local_or_system('pdfinfo')
 
-print "pdftotext from %s" % PDFTOTEXT
-print "pdfinfo from %s" % PDFINFO
+if Debug:
+    print "pdftotext from %s" % PDFTOTEXT
+    print "pdfinfo from %s" % PDFINFO
 
 def capture_output(args):
     return subprocess.Popen(args, stdout=subprocess.PIPE).stdout.readlines()
