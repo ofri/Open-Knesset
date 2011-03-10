@@ -14,22 +14,20 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.cache import cache
 from tagging.models import Tag
 import tagging
-from knesset.utils import limit_by_request
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
 
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
-from knesset.hashnav import ListView, DetailView, method_decorator
+from django.views.generic import ListView
+from knesset.hashnav import DetailView, method_decorator
 from knesset.agendas.models import Agenda
 
 
 from backlinks.pingback.server import default_server
 
 from actstream import actor_stream
-from django.contrib.auth.decorators import login_required
 import logging
-import sys,traceback
 
 
 try:
@@ -45,6 +43,8 @@ logger = logging.getLogger("open-knesset.mks")
 
 class MemberListView(ListView):
 
+    model = Member
+
     def get_template_names(self):
         info = self.request.GET.get('info','bills_pre')
         if info=='abc':
@@ -54,16 +54,17 @@ class MemberListView(ListView):
         else:
             return ['mks/member_list_with_bars.html']
 
-    def get_context(self):
+    def get_context_data(self, **kwargs):
         info = self.request.GET.get('info','bills_pre')
-        original_context = super(MemberListView, self).get_context()
+        original_context = super(MemberListView, self).get_context_data(**kwargs)
         qs = original_context['object_list'].filter(is_current=True)
-        context = cache.get('member_list_by_%s' % info) or {}
+
+        context = cache.get('object_list_by_%s' % info) or {}
         if context:
             original_context.update(context)
             return original_context
-        context['past_mks'] = original_context['past_mks']
-        
+        context['past_mks'] = Member.objects.filter(is_current=False)
+
         context['friend_pages'] = [['.?info=abc',_('By ABC'), False],
                               ['.?info=bills_proposed',_('By number of bills proposed'), False],
                               ['.?info=bills_pre',_('By number of bills pre-approved'), False],
@@ -174,10 +175,10 @@ class MemberListView(ListView):
             context['friend_pages'][8][2] = True
             context['title'] = "%s %s" % (_('Members'), _('Graphical view'))
         context['object_list']=qs        
-        cache.set('member_list_by_%s' % info, context, 900)
+        cache.set('object_list_by_%s' % info, context, 900)
         original_context.update(context)
         return original_context
-    
+
 class MemberDetailView(DetailView):
     
     
@@ -212,8 +213,8 @@ class MemberDetailView(DetailView):
                               '%s_percentile' % stattype)
         
     
-    def get_context (self):
-        context = super(MemberDetailView, self).get_context()
+    def get_context_data (self, **kwargs):
+        context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
@@ -291,8 +292,8 @@ class MemberDetailView(DetailView):
         return context
 
 class PartyListView(ListView):
-    def get_context(self):
-        context = super(PartyListView, self).get_context()
+    def get_context_data(self, **kwargs):
+        context = super(PartyListView, self).get_context_data(**kwargs)
         qs = context['object_list']
         info = self.request.GET.get('info','seats')
         context['coalition'] = qs.filter(is_coalition=True)
@@ -507,8 +508,8 @@ class PartyListView(ListView):
         return context
 
 class PartyDetailView(DetailView):
-    def get_context (self):
-        context = super(PartyDetailView, self).get_context()
+    def get_context_data (self, **kwargs):
+        context = super(PartyDetailView, self).get_context_data(**kwargs)
         party = context['object']
 
         if self.request.user.is_authenticated():
