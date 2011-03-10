@@ -7,19 +7,20 @@ from django.views.decorators.cache import cache_page
 from django.contrib.comments.models import Comment
 from django.contrib import admin
 
+from planet import views as planet_views
+from hitcount.views import update_hit_count_ajax
+from backlinks.trackback.server import TrackBackServer
+from backlinks.pingback.server import default_server
+
+from knesset import feeds
+from knesset.sitemap import sitemaps
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.hashnav.views import SimpleView
-from hitcount.views import update_hit_count_ajax
-from backlinks.trackback.server import TrackBackServer
-from backlinks.pingback.server import default_server
 from knesset.mks.views import get_mk_entry, mk_is_backlinkable
 
 admin.autodiscover()
-
-from knesset import feeds 
-from knesset.sitemap import sitemaps
 
 js_info_dict = {
     'packages': ('knesset',),
@@ -29,12 +30,16 @@ about_view = SimpleView(template='about.html')
 #comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
 
 #main_view = SimpleView(template='main.html')
-from knesset.auxiliary.views import main, post_annotation
+from knesset.auxiliary.views import main, post_annotation, post_details
+
+# monkey patching the planet app
+planet_views.post_detail = post_details
 
 urlpatterns = patterns('',
     
     url(r'^$', main, name='main'),
     url(r'^about/$', about_view, name='about'),
+    (r'^robots\.txt$', direct_to_template,{'template': 'robots.txt', 'mimetype': 'text/plain'}),
     (r'^api/', include('knesset.api.urls')),
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),    

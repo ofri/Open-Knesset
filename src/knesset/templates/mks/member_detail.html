@@ -55,23 +55,23 @@
         <li><span id="watch" class="awesome-button medium"></span></li>
         <li><a href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:2em;"></a></li>
     </ul>
-    <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
-    <div class="clear"></div>
-    <h2> {{ object.get_role }} </h2>
+    <div class="member-photo">
+        <img src="{{ object.img_url }}"/>
+    </div>
+    <div class="member-header">
+        <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+        <h2> {{ object.get_role }} </h2>
+    </div>
+    <div class="clear"></div>    
     <div class="details">
     
-		<table style="width:100%;border:none;border-spacing:30px 0;">
+		<table style="width:100%;border:none;">
 			<tbody>
 				<tr style="vertical-align:top;">
-					<td width="60%">
+					<td width="50%">
 				        <div>
 				            <table>
-				            	<tr>
-									<td width="100px">
-								    	<div style="display:block-inline;">
-									        <div class="member-photo"><img src="{{ object.img_url }}"/></div>
-										</div> 
-									</td>
+				            	<tr>									
 									
 									<td>
 							            <h3> {% trans "Personal Information" %}</h3>
@@ -139,10 +139,13 @@
 				            <table>
 				                <tr>
 				                    <td style="width:140px;">{% trans "Number of votes" %}</td>
-				                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>
-				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_votes_count }})</td>
+				                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>				                    
 				                </tr>
-				                <tr>
+                                <tr>
+                                    <td style="width:140px;">{% trans "Last 30 days" %}</td>
+                                    <td style="width:102px;">{{ object|recent_votes_count }}</td>                                    
+                                </tr>
+                                <tr>
 				                    <td>{% if factional_discipline %}
 					                    	<a class="factional_discipline">
 				                    	{% endif %}
@@ -157,32 +160,27 @@
 				                    		{{ object.voting_statistics.discipline }}%
 				                    	{% else %}
 				                    		{% trans 'Not enough data' %}
-				                    	{% endif %}</td>
-				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_discipline }})</td>
-				                </tr>
+				                    	{% endif %}
+                                    </td>				                    
+				                </tr>                                                                
 				                <tr>
-					                <td colspan="3">
-					                	<table>
-			                                {% for voteaction in factional_discipline %}
-							                	<tr class="factional_discipline_row discipline_row">
-							                		<td style="width:200px;">
-								                		{% if forloop.first %}
-								                			{% trans 'factional discipline explained' %}
-								                		{% endif %}
-													</td>
-							                		<td colspan="2">
-							                		    {% if object.is_female %}
-			    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-			    										{% else %}
-			    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-			    										{% endif %}
-									                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
-							                		</td>
-							                	</tr>
-					                		{% endfor %}		                
-					                	</table>
+					                <td colspan="3" class="factional_discipline_row discipline_row">
+                                        <h4>{% trans 'factional discipline explained' %}</h4>
+		                                {% for voteaction in factional_discipline %}
+                                            <p class="factional_discipline_row discipline_row">    
+    				                		    {% if object.is_female %}
+        											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+        										{% else %}
+        											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+        										{% endif %}
+    						                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+                                            </p>
+				                		{% endfor %}		                
 					                </td>
 				                </tr>
+                                <tr>
+                                    <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_discipline }}%</td>
+                                </tr>
 				                <tr>
 				                    <td>
 					                    {% if general_discipline %}
@@ -201,36 +199,32 @@
 				                    </td>
 				                    <td>{% if object.voting_statistics.coalition_discipline %}
 				                    		{{ object.voting_statistics.coalition_discipline }}%				                    		
-				                    	{% else %}{% trans 'Not enough data' %}{% endif %}</td>
-				                    <td>({% trans 'Last 30 days' %}: {{ object|recent_coalition_discipline }})</td>
+				                    	{% else %}{% trans 'Not enough data' %}{% endif %}
+                                    </td>				                    
 				                </tr>
 				                <tr>
-					                <td colspan="3">
-					                	<table>
-			                                {% for voteaction in general_discipline %}
-							                	<tr class="general_discipline_row discipline_row">
-							                		<td style="width:200px;">
-								                		{% if forloop.first %}
-															{% if object.current_party.is_coalition %}
-									                    		{% trans "general discipline explained coalition" %}
-									                    	{% else %}
-									                    		{% trans 'general discipline explained opposition' %}
-									                    	{% endif %}
-									                    {% endif %}													
-				                    				</td>
-							                		<td colspan="2">
-							                		    {% if object.is_female %}
-			    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-			    										{% else %}
-			    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-			    										{% endif %}
-									                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
-							                		</td>
-							                	</tr>
-					                		{% endfor %}		                
-					                	</table>
+					                <td colspan="3" class="general_discipline_row discipline_row">
+                                        {% if object.current_party.is_coalition %}
+                                            <h4>{% trans "general discipline explained coalition" %}</h4>
+                                        {% else %}
+                                            <h4>{% trans 'general discipline explained opposition' %}</h4>
+                                        {% endif %}
+					                	
+		                                {% for voteaction in general_discipline %}
+						                	<p class="general_discipline_row discipline_row">							                		
+					                		    {% if object.is_female %}
+	    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+	    										{% else %}
+	    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+	    										{% endif %}
+							                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+						                	</p>
+				                		{% endfor %}					                	
 					                </td>
 				                </tr>
+                                <tr>
+                                    <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_coalition_discipline }}%</td>
+                                </tr>
 				            </table>
 				            <br/>
 				            <h3>{% trans "Attendance" %}</h3>
@@ -300,7 +294,7 @@
 				        
 					</td>
 
-					<td style="width:35%;vertical-align:top;">
+					<td style="width:45%;vertical-align:top;">
 
 				        <div>
 				            <h3>{% trans "Links" %}</h3>
@@ -318,18 +312,18 @@
 							<div class="list-wrap">
 								<table>
 								{% for agenda in agendas %}
-									<tr>
+									<tr style="height:4em;">
 										<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-										<td>%{{agenda.score|floatformat:"0"}}</td> 
+										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
+										<td class="numeric">{{agenda.score|floatformat:"0"}}%</td> 
 										<td>
 											<div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
 											<script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
 											
 										</td>
-										<td>
+										<!-- <td>
 										<a href="{% url agenda-list %}{{agenda.id}}/member/{{object.id}}">#</a>
-										</td>
+										</td> -->
 									</tr>
 								{% endfor %}
 								</table>

@@ -977,17 +977,24 @@ class Command(NoArgsCommand):
                     date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
 
-    def parse_laws(self):
+    def parse_laws(self, private_proposals_days=None):
+        """parse private proposal, knesset proposals and gov proposals
+           private_proposals_days - override default "days-back" to look for in private proposals. 
+                                    should be the number of days back to look
+        """
         mks = Member.objects.values('id','name')
         for mk in mks:
             mk['cn'] = cannonize(mk['name'])
 
         # private laws
         logger.debug('parsing private laws')
-        d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
-        if not d:
-            d = datetime.date(2009,2,24)
-        days = (datetime.date.today() - d).days
+        if private_proposals_days:
+            days = private_proposals_days
+        else:
+            d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
+            if not d:
+                d = datetime.date(2009,2,24)
+            days = (datetime.date.today() - d).days
         proposals = parse_laws.ParsePrivateLaws(days)
         for proposal in proposals.laws_data:
 
@@ -999,7 +1006,7 @@ class Command(NoArgsCommand):
             if proposal['comment']:
                 law_name += ' (%s)' % proposal['comment']
 
-            (law, created) = Law.objects.get_or_create(title=law_name)
+            (law, created) = Law.objects.get_or_create(title=law_name, merged_into=None)
             if created:
                 law.save()
             if law.merged_into:
@@ -1053,9 +1060,11 @@ class Command(NoArgsCommand):
                 pl.bill = b # assign this bill to this PP
                 pl.save()
             
-            html = parse_remote.rtf(pl.source_url)
-            if html:
-                pl.content_html = html
+            if not pl.content_html:
+                html = parse_remote.rtf(pl.source_url)
+                if html:
+                    pl.content_html = html
+                    pl.save()
 
         # knesset laws
         logger.debug('parsing knesset laws')
@@ -1337,17 +1346,20 @@ class Command(NoArgsCommand):
                     if re.search(r'לתמוך'.decode('utf8'), d['decision']):
                         decision.stand = 1
                     decision.save()
-                    try:
-                        pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
-                        re.search(r'[2009|2010]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
-                                                                                        # TODO: fix in 2011
-                        decision.bill = PrivateProposal.objects.get(proposal_id=pp_id).bill
-                        decision.save()
-                    except AttributeError: # one of the regex failed
-                        logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
-                    except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
-                        logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
 
+                # try to find a private proposal this decision is referencing
+                try:
+                    pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                    re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years                        
+                    pp = PrivateProposal.objects.get(proposal_id=pp_id)
+                    decision.bill = pp.bill
+                    decision.save()
+                except AttributeError: # one of the regex failed
+                    logger.warn("GovL.id = %d doesn't contain PP or its about the wrong years" % decision.id)
+                except PrivateProposal.DoesNotExist: # the PrivateProposal was not found
+                    logger.warn('PrivateProposal %d not found but referenced in GovLegDecision %d' % (pp_id,decision.id))
+                except PrivateProposal.MultipleObjectsReturned:
+                    logger.warn('More than 1 PrivateProposal with proposal_id=%d' % pp_id)
 
     def handle_noargs(self, **options):
 

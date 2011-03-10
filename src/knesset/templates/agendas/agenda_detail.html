@@ -27,6 +27,10 @@
 	<a id="watch" class="button" href="."></a>
 	&bull;
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+	&bull;
+    {% if user in object.editors.all %}
+        <a class="button" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
+    {% endif %}
 {% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -44,25 +48,36 @@
             {% for editor in object.editors.all %}
                 {% user editor %}
             {% endfor %}
-            {% if user in object.editors.all %}
-                <div class="edit">
-                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-                </div>
-            {% endif %}            
         </div>
-        <div>
+        <div style="margin-bottom:4em;">
             <h2> {% trans "Description" %}</h2>
             {{ object.description|urlize|linebreaks }}
         </div>
 
-        <div>
+        <div style="display:inline-block">
         	<h3>{% trans "Members" %}</h3>
         	<div class="list-wrap">
         		<table>
-	         	{% for selected_mk in selected_mks %}
+        		<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_top %}
 	         		<tr>
 	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
-	         			<td>%{{selected_mk.score|floatformat:"0"}}</td>
+	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+	         			<td>
+                            <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
+                            <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
+                        </td>
+	        			</tr>
+	         	{% endfor %}
+	         	<tr>
+        			<td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
+        		</tr>
+	         	{% for selected_mk in selected_mks_bottom %}
+	         		<tr>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
 	         			<td>
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
                             <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
@@ -72,14 +87,14 @@
 	         	</table>
         	</div>
         </div>
-        <div>
+        <div style="display:inline-block; margin-right:4em;">
         	<h3>{% trans "Parties" %}</h3>
         	<div class="list-wrap">
         		<table>
 	         	{% for selected_party in selected_parties %}
 	         		<tr>
 	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
-	         			<td>%{{selected_party.score|floatformat:"0"}}</td>	         			
+	         			<td class="numeric">{{selected_party.score|floatformat:"0"}}%</td>	         			
 	         			<td>
                             <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party.score < 0 %}percentile_against{% endif %}"></div>
                             <script>set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);</script>                            

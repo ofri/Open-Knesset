@@ -135,13 +135,14 @@ def vote_tag(request, tag):
         for v in vote:
             d[v] = d.get(v,0)+1
     # now d is a dict: MK -> number of votes in this tag
-    mks = d.keys()    
-    for mk in mks:
-        mk.count = d[mk]
-    average = float(sum([mk.count for mk in mks]))/len(mks)
-    mks = [mk for mk in mks if mk.count>=average]
-    mks = tagging.utils.calculate_cloud(mks)
-    extra_context['members'] = mks
+    mks = d.keys()
+    if mks:
+        for mk in mks:
+            mk.count = d[mk]
+        average = float(sum([mk.count for mk in mks]))/len(mks)
+        mks = [mk for mk in mks if mk.count>=average]
+        mks = tagging.utils.calculate_cloud(mks)
+        extra_context['members'] = mks    
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
