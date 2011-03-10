@@ -6,8 +6,8 @@ function get_tags_list() {
 
 function get_tags_list_callback(data) {
     $.each(data, function(i,item){
-            var href = "javascript:suggest_tag("+item.id+");";
-            $('<a class="item dontwrap">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#possible_tags");            
+            var href = "javascript:suggest_tag("+item.id+");";            
+            $('<a class="awesome-button small dontwrap">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#possible_tags");
             $("#possible_tags").append(document.createTextNode(" "));
           });
     $.getJSON('/api/tag/'+window.location.pathname.split('/')[1]+
