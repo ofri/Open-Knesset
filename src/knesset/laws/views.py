@@ -30,6 +30,9 @@ import urllib2
 import difflib
 import logging 
 import datetime
+import json
+from time import mktime
+
 logger = logging.getLogger("open-knesset.laws.views")
 
 def bill_tags_cloud(request, min_posts_count=1):
@@ -439,3 +442,19 @@ def vote_auto_complete(request):
 
     return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 
+def embed_bill_details(request, object_id):
+    bill = get_object_or_404(Bill, pk=object_id)
+    out_stream = []
+    in_stream = Action.objects.stream_for_actor(bill)
+    if not in_stream:
+        bill.generate_activity_stream()
+        in_stream = Action.objects.stream_for_actor(bill)
+
+    for s in in_stream:
+        out_stream.append({'verb': s.verb, 'target': s.target.get_absolute_url(),
+                         'note': unicode(s.description),
+                         'time': mktime(s.timestamp.timetuple())+1e-6*s.timestamp.microsecond})
+
+    context = RequestContext (request,
+        {'bill': bill, 'stream': json.dumps(out_stream)})
+    return render_to_response("laws/embed_bill_detail.html", context)
