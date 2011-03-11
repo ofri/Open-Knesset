@@ -1,34 +1,25 @@
 import urllib
-from operator import itemgetter, attrgetter
-from datetime import date
-from django.conf import settings
-from django.template import Context
-from django.views.generic.list_detail import object_list, object_detail
-from django.db.models import Count, Sum, Q
-from django.utils.translation import ugettext as _
-from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from operator import attrgetter
 
+from django.conf import settings
+from django.db.models import Sum, Q
+from django.utils.translation import ugettext as _
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.views.generic import ListView, DetailView
 from django.core.cache import cache
+
 from tagging.models import Tag
-import tagging
+from tagging.utils import calculate_cloud
+from backlinks.pingback.server import default_server
+from actstream import actor_stream
+
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
-
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
-from django.views.generic import ListView
-from knesset.hashnav import DetailView, method_decorator
 from knesset.agendas.models import Agenda
 
-
-from backlinks.pingback.server import default_server
-
-from actstream import actor_stream
 import logging
-
 
 try:
     import json
@@ -180,16 +171,9 @@ class MemberListView(ListView):
         return original_context
 
 class MemberDetailView(DetailView):
-    
-    
-    def __init__(self, **kwargs):
-        self._load_config_values(kwargs, 
-            slug = None,
-            object_id = None,
-            request = None
-        )
-        super(MemberDetailView, self).__init__(**kwargs)
-        
+
+    model = Member
+
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         all_members = Member.objects.filter(is_current=True)
         member_count = float(all_members.count())
@@ -249,7 +233,7 @@ class MemberDetailView(DetailView):
 
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         #bills_tags.sort(key=lambda x:x.count,reverse=True)
-        bills_tags = tagging.utils.calculate_cloud(bills_tags)
+        bills_tags = calculate_cloud(bills_tags)
 
         if self.request.user.is_authenticated():
             agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
@@ -292,6 +276,9 @@ class MemberDetailView(DetailView):
         return context
 
 class PartyListView(ListView):
+
+    model = Party
+
     def get_context_data(self, **kwargs):
         context = super(PartyListView, self).get_context_data(**kwargs)
         qs = context['object_list']
@@ -508,9 +495,12 @@ class PartyListView(ListView):
         return context
 
 class PartyDetailView(DetailView):
+    model = Party
+
     def get_context_data (self, **kwargs):
         context = super(PartyDetailView, self).get_context_data(**kwargs)
         party = context['object']
+        context['maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
 
         if self.request.user.is_authenticated():
             agendas = Agenda.objects.get_selected_for_instance(party, user=self.request.user, top=3, bottom=3)
@@ -557,29 +547,20 @@ def object_by_name(request, objects):
 
 def party_by_name(request):
     return object_by_name(request, Party.objects)
-    
+
 def member_by_name(request):
     return object_by_name(request, Member.objects)
 
-
-def get_mk_entry(object_id=None, slug=None):
-    return Member.objects.get(pk=object_id)
+def get_mk_entry(**kwargs):
+    ''' in Django 1.3 the pony decided generic views get `pk` rather then
+        an `object_id`, so we must be crafty and support either
+    '''
+    i = kwargs.get('pk', kwargs.get('object_id', False))
+    return Member.objects.get(pk=i) if i else None
 
 def mk_is_backlinkable(url, entry):
     if entry:
         return entry.backlinks_enabled
     return False
-    
-def mk_detail(request, object_id=None, **kwargs):    
-    entry = MemberDetailView(
-                             object_id=object_id,
-                             request=request,
-                             queryset = Member.objects.all(),
-                             **kwargs)
-    args = ()
-    return entry.GET( *args, **kwargs)
 
-
-mk_detail = default_server.register_view(mk_detail, get_mk_entry, mk_is_backlinkable)
-
-#default_server.add_view_to_registry(MemberDetailView, get_mk_entry, mk_is_backlinkable)
+mk_detail = default_server.register_view(MemberDetailView.as_view(), get_mk_entry, mk_is_backlinkable)
