@@ -8,6 +8,7 @@ import urllib2
 import subprocess
 import logging
 from datetime import date
+from knesset.utils import clean_string
 
 logger = logging.getLogger("open-knesset.parse_knesset_bill_pdf")
 
@@ -19,7 +20,7 @@ def parse(url):
     """
     download_pdf(url)
     pdftotext()
-    return parse_pdftxt(url=url)
+    return parse_pdf_text(url=url)
 
 
 def pdftotext():
@@ -35,6 +36,46 @@ def download_pdf(url,filename=None):
     d = urllib2.urlopen(url)
     f.write(d.read())
     f.close()    
+
+
+def parse_pdf_text(filename=None, url=None):
+    if not filename:
+        filename = 'tmp.txt'
+    f = open(filename,'rt')
+    content = f.read()
+    d = None
+    result = []
+    m = re.search('עמוד(.*?)מתפרסמת בזה',content, re.UNICODE | re.DOTALL)
+    m = clean_string(m.group(1).decode('utf8'))
+    m2 = re.findall('^(הצעת חוק.*?) . '.decode('utf8'), m, re.UNICODE | re.DOTALL | re.MULTILINE)
+    m3 = re.findall('^(חוק.*?) . '.decode('utf8'),m, re.UNICODE | re.DOTALL | re.MULTILINE)
+    m2.extend(m3)
+    for title in m2:
+        law = {}
+        title = title.replace('\n',' ')
+        s = re.search(r'[^\d]\d{2,3}[^\d]',title+' ',re.UNICODE) # find numbers of 2-3 digits
+        if s:
+            (a,b) = s.span()
+            title = title[:a+1] + title[b-2:a:-1] + title[b-1:] # reverse them
+        law['title'] = title
+        result.append(law)
+
+    count = 0 # count how many bills we found the original_ids for so far
+    lines = content.split('\n')
+    for line in lines:
+        m = re.search('(\d{4,4})[\.|\s](\d+)[\.|\s](\d+)', line)
+        if m:
+            d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
+        
+        m = re.search('הצעת חוק מס.*?\w+/\d+/\d+.*?[הועברה|הועברו]'.decode('utf8'), line.decode('utf8'), re.UNICODE)
+        if m:
+            result[count]['references'] = line
+            m2 = re.findall('\w+/\d+/\d+',line.decode('utf8'), re.UNICODE) # find IDs of original proposals
+            result[count]['original_ids'] = [a[-1:0:-1]+a[0] for a in m2] # reverse                
+            count += 1
+    for l in result:
+        l['date'] = d
+    return result            
 
 def parse_pdftxt(filename=None, url=None):
     if not filename:

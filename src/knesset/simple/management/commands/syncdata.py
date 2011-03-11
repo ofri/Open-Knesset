@@ -1087,38 +1087,46 @@ class Command(NoArgsCommand):
             if proposal['comment']:
                 title += ' ' + proposal['comment']
             if len(title)<=1:
-                title = u'חוק חדש'
+                title = 'חוק חדש'.decode('utf8')
             (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
                                                                  source_url=proposal['link'],
                                                                  title=title, law=law, date=proposal['date'])
             if created:
                 kl.save()
 
-            for orig in proposal['original_ids']: # go over all originals in the document
-                knesset_id = int(orig.split('/')[1]) # check if they are from current Knesset
-                if knesset_id != 18:
-                    continue
-                orig_id = int(orig.split('/')[0]) # find the PP id
-                try:
-                    pp = PrivateProposal.objects.get(proposal_id=orig_id) # find our PP object
-                    kl.originals.add(pp) # and add a link to it
-                    if pp.bill:
-                        if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
-                            if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
-                                logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
-                            else:
-                                kl.bill = pp.bill
-                                kl.save()
-                                kl.bill.title = kl.title # update the title
-                                if kl.bill.stage_date < kl.date:
-                                    kl.bill.stage_date = kl.date
-                                    kl.bill.stage = '3'
-                                kl.bill.save()
-                        else: # this kl already had a bill (from another PP)
-                            kl.bill.merge(pp.bill) # merge them
-
-                except PrivateProposal.DoesNotExist:
-                    logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
+            if not(proposal.has_key('original_ids')):
+                logger.warn('Knesset proposal %d doesn\'t have original ids' % kl.id)
+            else:
+                for orig in proposal['original_ids']: # go over all originals in the document
+                    try:
+                        knesset_id = int(orig.split('/')[1]) # check if they are from current Knesset
+                    except:
+                        logger.warn('knesset proposal %d doesn\'t have knesset id' % kl.id)
+                        continue
+                    if knesset_id != 18:
+                        logger.warn('knesset proposal %d has wrong knesset id (%d)' % (kl.id, knesset_id))
+                        continue
+                    orig_id = int(orig.split('/')[0]) # find the PP id
+                    try:
+                        pp = PrivateProposal.objects.get(proposal_id=orig_id) # find our PP object
+                        kl.originals.add(pp) # and add a link to it
+                        if pp.bill:
+                            if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
+                                if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
+                                    logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
+                                else:
+                                    kl.bill = pp.bill
+                                    kl.save()
+                                    kl.bill.title = kl.title # update the title
+                                    if kl.bill.stage_date < kl.date:
+                                        kl.bill.stage_date = kl.date
+                                        kl.bill.stage = '3'
+                                    kl.bill.save()
+                            else: # this kl already had a bill (from another PP)
+                                kl.bill.merge(pp.bill) # merge them
+    
+                    except PrivateProposal.DoesNotExist:
+                        logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
 
             if not(kl.bill): # finished all original PPs, but found no bill yet - create a new bill
                 b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
@@ -1294,12 +1302,14 @@ class Command(NoArgsCommand):
 
     def update_mk_role_descriptions(self):
         mk_govt_roles = mk_roles_parser.parse_mk_govt_roles()
+        for member in Member.objects.all():
+            member.current_role_descriptions = None
+            member.save()
         for (mk,roles) in mk_govt_roles.items():
             try:
-                member = Member.objects.get(pk=mk)
-                if not member.current_role_descriptions:
-                    member.current_role_descriptions = unicode(roles)
-                    member.save()
+                member = Member.objects.get(pk=mk)                
+                member.current_role_descriptions = unicode(roles)
+                member.save()
             except Member.DoesNotExist:
                 logger.warn('Found MK in govt roles with no matching MK: %s' % mk)
         mk_knesset_roles = mk_roles_parser.parse_mk_knesset_roles()
