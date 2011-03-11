@@ -31,6 +31,7 @@ class BillViewsTest(TestCase):
                                               'JKM')
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
+        self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill_1)
         self.mk_1 = Member.objects.create(name='mk 1')
 
@@ -40,18 +41,18 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res, 'laws/bill_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
-                         [ self.bill_1.id, self.bill_2.id, ])
+                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id ])
     def testBillListByStage(self):
         res = self.client.get(reverse('bill-list'), {'stage': 'all'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
-                         [ self.bill_1.id, self.bill_2.id, ])
+                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id])
         res = self.client.get(reverse('bill-list'), {'stage': '1'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
         res = self.client.get(reverse('bill-list'), {'stage': '2'})
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), [self.bill_2.id])
+        self.assertEqual(map(just_id, object_list), [self.bill_2.id, self.bill_3.id])
 
     def testBillListByBooklet(self):
         res = self.client.get(reverse('bill-list'), {'booklet': '2'})
@@ -66,27 +67,27 @@ class BillViewsTest(TestCase):
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
         
-    '''def test_bill_detail_by_slug(self):
+    def test_bill_detail_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
-                                 kwargs={'slug': self.bill_1.slug}))
+                                 kwargs={'slug': self.bill_1.slug,
+                                         'object_id': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-    '''    
+        
     def test_bill_popular_name(self):
         res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
         self.assertEqual(res.status_code, 404)
         
-    '''def test_bill_popular_name_by_slug(self):
+    def test_bill_popular_name_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
-                                 kwargs={'slug': self.bill_1.popular_name_slug}))
+                                 kwargs={'slug': self.bill_1.popular_name_slug,
+                                         'object_id': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-    '''
-        
     '''
     def test_bill_detail_hebrew_name_by_slug(self):
         res = self.client.get(reverse('bill-detail',
@@ -163,6 +164,7 @@ class BillViewsTest(TestCase):
         self.vote_2.delete()
         self.bill_1.delete()
         self.bill_2.delete()
+        self.bill_3.delete()
         self.jacob.delete()
         self.mk_1.delete()
 

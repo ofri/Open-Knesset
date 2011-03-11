@@ -368,7 +368,7 @@ BILL_STAGE_CHOICES = (
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
-    slug = models.CharField(max_length=1000)
+    slug = models.SlugField(max_length=1000)
     popular_name = models.CharField(max_length=1000, blank=True)
     popular_name_slug = models.CharField(max_length=1000, blank=True)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
