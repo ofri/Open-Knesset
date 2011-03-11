@@ -112,7 +112,7 @@
             {% for agendavote in object.agendavotes.all %}
                 <tr>
                     <td>
-                        <div class="agenda-score">
+                        <div class="agenda-score numeric">
                             {{ agendavote.score }}
                         </div>
                     </td>
@@ -121,7 +121,9 @@
                             <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
                                 {{ agendavote.vote.title }}<br/>
                             </a>
-
+							<span class="reasoning">
+								{{ agendavote.reasoning }}
+							</span>
                         </div>
                     </td>
                 </tr>

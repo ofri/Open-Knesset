@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-04 12:46+0200\n"
-"PO-Revision-Date: 2011-03-04 12:47+0200\n"
+"PO-Revision-Date: 2011-03-11 20:14+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1205,11 +1205,11 @@ msgstr "תאור"
 
 #: templates/agendas/agenda_detail.html:62
 msgid "Agenda Top MKs"
-msgstr "ח\"כים תומכים באג'נדה"
+msgstr "הח\"כים התומכים ביותר באג'נדה"
 
 #: templates/agendas/agenda_detail.html:75
 msgid "Agenda Bottom MKs"
-msgstr "ח\"כים מתנגדים לאג'נדה"
+msgstr "הח\"כים המתנגדים ביותר לאג'נדה"
 
 #: templates/agendas/agenda_detail.html:110
 #: templates/agendas/mk_agenda_detail.html:59

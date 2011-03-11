@@ -38,7 +38,7 @@
                 			<tr>
 		                		<td>{% trans "Number of ascribed votes" %}</td>		                		
 		                		<td>{{ o.votes.count }}</td>
-                			</tr>		  
+                			</tr>
 		                </table>
 					</div>
 				{% empty %}
@@ -80,6 +80,10 @@
 		                	<tr>
 		                		<td>{% trans "Number of followers" %}</td>		                		
 		                		<td>{{ o.number_of_followers }}</td>
+                			</tr>
+                			<tr>
+		                		<td>{% trans "Number of ascribed votes" %}</td>		                		
+		                		<td>{{ o.votes.count }}</td>
                 			</tr>	 
 		                </table>
 	                </div>
