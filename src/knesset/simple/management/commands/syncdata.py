@@ -1300,6 +1300,34 @@ class Command(NoArgsCommand):
                     if cannonize(b.title)==cannonize(bills[i2].title):
                         b.merge(bills[i2])
 
+    def correct_votes_matching(self):
+        """tries to find votes that are matched to bills in incorrect places 
+            (e.g approval votes attached as pre votes) and correct them
+            
+            """
+        logger.debug("correct_votes_matching")
+        for v in Vote.objects.filter(title__contains="אישור החוק"):
+            if v.bills_pre_votes.count() == 1:
+                logger.info("vote %d is approval but linked as pre. trying to fix" % v.id)
+                bill_pre_voted = v.bills_pre_votes.all()[0]
+                bills_approved = Bill.objects.filter(approval_vote=v) 
+                if bills_approved.count() == 1:
+                    bill_approved = Bill.objects.filter(approval_vote=v)[0]
+                    if bill_approved == bill_pre_voted: # its the same bill, just matched at wrong place
+                        v.bills_pre_votes.remove(bill_pre_voted)
+                    else:                                    
+                        logger.warn('vote %d is connected as both an approval (for bill %d) and pre (for bill %d)' % (v.id, bill_approved.id, bill_pre_voted.id))
+                        continue
+                if bills_approved.count() > 1:
+                    logger.warn('vote %d is connected as an approval for more than 1 bill' % (v.id))
+                    continue
+                bill_pre_voted.approval_vote = v
+                v.bills_pre_votes.remove(bill_pre_voted)
+                bill_pre_voted.save()
+                bill_pre_voted.update_stage()
+                
+                
+
     def update_mk_role_descriptions(self):
         mk_govt_roles = mk_roles_parser.parse_mk_govt_roles()
         for member in Member.objects.all():
@@ -1408,6 +1436,7 @@ class Command(NoArgsCommand):
             self.parse_laws()
             self.find_proposals_in_other_data()
             self.merge_duplicate_laws()
+            self.correct_votes_matching()
 
         if dump_to_file:
             print "writing votes to tsv file"
@@ -1423,6 +1452,7 @@ class Command(NoArgsCommand):
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
+            self.correct_votes_matching()
             logger.debug('finished update')
 
 def update_vote_properties(v):
