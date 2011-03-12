@@ -148,7 +148,7 @@ def parse_proposal_page(top_text, bottom_text):
 
 GovPage = namedtuple('GovPage', "n_proposal n_details proposal details bottom superscripts".split())
 
-class GovProposal(object):
+class GovProposalParser(object):
     """ Extract text for presentaiton and search from government law proposals.
     
     HOW:
