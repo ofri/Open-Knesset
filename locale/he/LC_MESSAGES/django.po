@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-04 12:46+0200\n"
-"PO-Revision-Date: 2011-03-11 20:14+0200\n"
+"POT-Creation-Date: 2011-03-12 11:20+0200\n"
+"PO-Revision-Date: 2011-03-12 11:21+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -226,17 +226,17 @@ msgid "Agendas"
 msgstr "אג'נדות"
 
 #: agendas/models.py:101
-#: templates/annotatetext/_annotation.html:5
-#: templates/laws/knessetproposal_detail.html:14
-#: templates/laws/knessetproposal_list.html:17
-msgid "by"
-msgstr "על ידי"
+#: templates/mks/member_detail.html:317
+msgid "edited by"
+msgstr "בעריכת"
 
 #: agendas/views.py:62
 #: agendas/views.py:91
-#: user/models.py:18
+#: templates/committees/committee_detail.html:37
+#: templates/committees/committee_detail.html:45
+#: templates/committees/committee_detail.html:53
 msgid "None"
-msgstr "ללא"
+msgstr "אין"
 
 #: auxiliary/views.py:21
 #: templates/main.he.html:4
@@ -280,31 +280,31 @@ msgstr "ישיבת וועדה"
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: committees/views.py:70
+#: committees/views.py:72
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: committees/views.py:123
+#: committees/views.py:125
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: committees/views.py:124
+#: committees/views.py:126
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:132
+#: committees/views.py:134
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: committees/views.py:133
-#: committees/views.py:156
+#: committees/views.py:135
+#: committees/views.py:158
 #, python-format
 msgid "No %(object_type)s found"
 msgstr "לא נמצאו %(object_type)s"
 
-#: committees/views.py:155
+#: committees/views.py:157
 #, python-format
 msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
@@ -1018,7 +1018,7 @@ msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
 #: templates/main.he.html:27
-#: templates/committees/committee_detail.html:47
+#: templates/committees/committee_detail.html:59
 msgid "Latest Annotations"
 msgstr "הארות אחרונות"
 
@@ -1033,7 +1033,7 @@ msgid "On the words of"
 msgstr "בנוגע לדברים של"
 
 #: templates/main.he.html:35
-#: templates/committees/committee_detail.html:61
+#: templates/committees/committee_detail.html:73
 #: templates/user/annotated_items.html:20
 #: templates/user/public_profile.html:51
 msgid "No annotations yet..."
@@ -1216,7 +1216,7 @@ msgstr "הח\"כים המתנגדים ביותר לאג'נדה"
 msgid "Ascribed Votes"
 msgstr "הצבעות משויכות"
 
-#: templates/agendas/agenda_detail.html:129
+#: templates/agendas/agenda_detail.html:131
 #: templates/agendas/mk_agenda_detail.html:85
 #: templates/laws/bill_list.html:28
 #: templates/laws/bill_list_by_tag.html:23
@@ -1255,6 +1255,7 @@ msgid "Number of followers"
 msgstr "מספר עוקבים"
 
 #: templates/agendas/agenda_list.html:39
+#: templates/agendas/agenda_list.html:85
 msgid "Number of ascribed votes"
 msgstr "מספר הצבעות משויכות"
 
@@ -1281,6 +1282,12 @@ msgstr "שיוך אג'נדה בעריכתך"
 #: templates/agendas/agendasfor.html:41
 msgid "Update"
 msgstr "עדכון"
+
+#: templates/annotatetext/_annotation.html:5
+#: templates/laws/knessetproposal_detail.html:14
+#: templates/laws/knessetproposal_list.html:17
+msgid "by"
+msgstr "על ידי"
 
 #: templates/avatar/change.html:3
 #: templates/user/editprofile.html:14
@@ -1387,11 +1394,15 @@ msgstr "חברי הוועדה"
 msgid "Future Meetings"
 msgstr "ישיבות קרובות"
 
-#: templates/committees/committee_detail.html:38
+#: templates/committees/committee_detail.html:40
+msgid "Meetings for which a protocol was not yet published"
+msgstr "ישיבות מהן טרם פורסם פרוטוקול"
+
+#: templates/committees/committee_detail.html:48
 msgid "Last Meetings"
 msgstr "ישיבות אחרונות"
 
-#: templates/committees/committee_detail.html:44
+#: templates/committees/committee_detail.html:56
 #: templates/user/public_profile.html:55
 #: templates/user/public_profile.html:73
 msgid "more..."
@@ -2012,10 +2023,6 @@ msgstr "הצעות חוק שאושרו סופית"
 msgid "Proposed bills topics"
 msgstr "נושאי הצעות חוק"
 
-#: templates/mks/member_detail.html:317
-msgid "edited by"
-msgstr "בעריכת"
-
 #: templates/mks/member_detail.html:344
 msgid "Refresh"
 msgstr "רענון"
@@ -2543,6 +2550,10 @@ msgstr "התראות דוא\"ל"
 #: user/forms.py:42
 msgid "Should we send you e-mail notification about updates to things you follow on the site?"
 msgstr "האם לשלוח לך דוא\"ל עם עדכונים על דברים שבמעקב שלך?"
+
+#: user/models.py:18
+msgid "No Email"
+msgstr "ללא דוא\"ל"
 
 #: user/models.py:19
 msgid "Daily"
@@ -3794,8 +3805,6 @@ msgstr "שבועי"
 #, fuzzy
 #~ msgid "No comments to moderate"
 #~ msgstr "אין עדיין תגובות"
-#~ msgid "Email"
-#~ msgstr "כתובת דוא\"ל"
 #~ msgid "IP Address"
 #~ msgstr "כתובת IP"
 #~ msgid "yes"

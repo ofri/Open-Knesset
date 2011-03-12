@@ -33,12 +33,24 @@
 	<ul class="item-list">
         {% for o in future_meetings_list %}
             {% include "events/_event_li.html" %}
+        {% empty %}
+            {% trans "None" %}
         {% endfor %}
 	</ul>
+    <h3>{% trans 'Meetings for which a protocol was not yet published' %}</h3>
+    <ul class="item-list">
+        {% for o in protocol_not_yet_published_list %}
+            {% include "events/_event_li.html" %}
+        {% empty %}
+            {% trans "None" %}
+        {% endfor %}
+    </ul>
     <h3>{% trans 'Last Meetings' %}</h3>
 	<ul class="item-list">
         {% for o in meetings_list %}
             {% include "committees/_meeting_li.html" %}
+        {% empty %}
+            {% trans "None" %}
         {% endfor %}
 	</ul>
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
