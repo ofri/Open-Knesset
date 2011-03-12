@@ -1,12 +1,12 @@
 import glob
 import os
 import sys
-from parse_government_bill_pdf import GovProposal
+from parse_government_bill_pdf import GovProposalParser
 from parse_government_bill_pdf import readable as d
 from util import flatten
 
 def show_one(pdf_filename, show_details=False):
-    prop = GovProposal(pdf_filename)
+    prop = GovProposalParser(pdf_filename)
     print prop.to_unicode(show_details).encode('utf-8')
 
 if __name__ == '__main__':

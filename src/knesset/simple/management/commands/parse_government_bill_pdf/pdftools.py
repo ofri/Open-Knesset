@@ -48,8 +48,9 @@ if DEBUG:
     print "pdfinfo from %s" % PDFINFO
 
 def pdftotext_version_pass():
-    V = PDFTOTEXT_VERSION
-    return V.major > 1 or (V.major == 1 and V.minor >= 4)
+    major,minor,patch_level = PDFTOTEXT_VERSION
+    major,minor = int(major),int(minor)
+    return (major >= 1) or ((major == 0) and (minor >= 14))
 
 def capture_output(args):
     return subprocess.Popen(args, stdout=subprocess.PIPE).stdout.readlines()

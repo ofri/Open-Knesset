@@ -24,15 +24,6 @@ def connect_feed(sender, created, instance, **kwargs):
 post_save.connect(connect_feed, sender=Feed)
 
 @disable_for_loaddata
-def record_vote_action(sender, created, instance, **kwargs):
-    if created:
-        action.send(instance.member, verb='voted',
-                    description=instance.get_type_display(),
-                    target = instance.vote,
-                    timestamp=instance.vote.time)
-post_save.connect(record_vote_action, sender=VoteAction)
-
-@disable_for_loaddata
 def record_post_action(sender, created, instance, **kwargs):
     if created:
         try:

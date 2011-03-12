@@ -135,6 +135,15 @@ class VoteAction(models.Model):
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
 
+@disable_for_loaddata
+def record_vote_action(sender, created, instance, **kwargs):
+    if created:
+        action.send(instance.member, verb='voted',
+                    description=instance.get_type_display(),
+                    target = instance.vote,
+                    timestamp=instance.vote.time)
+post_save.connect(record_vote_action, sender=VoteAction)
+
 class VoteManager(models.Manager):
     # TODO: add i18n to the types so we'd have
     #   {'law-approve': _('approve law'), ...
