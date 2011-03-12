@@ -325,6 +325,11 @@ th label { display: block; float:right; margin-left:1em;}
     background-color: #AA0000;
 }
 
+#content-main div.mk-card-against {
+    background-color: #FFC4C7;
+}
+
+
 #content-main .tag {
     background-color:#C0C0C0;
     border-bottom:1px solid #251C1F;

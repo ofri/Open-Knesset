@@ -26,8 +26,8 @@ def mk(m, icons=''):
     return r % c
 
 @register.inclusion_tag('mks/mk_card.html')
-def mk_card(mk):    
-    return {'mk': mk}
+def mk_card(mk, cls=None):
+    return {'mk': mk, 'cls':cls }
 
 
 class GetMemberFor(template.Node):

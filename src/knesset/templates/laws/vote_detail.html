@@ -99,7 +99,7 @@
                 {% endblocktrans %}
                 <div>
                 {% for m in vote.against_votes %}
-                <a class="hashnav item dontwrap " id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{% mk_card m.member %}</a>
+                <a class="hashnav item dontwrap " id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{% mk_card m.member 'mk-card-against' %}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
