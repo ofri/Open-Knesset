@@ -213,11 +213,10 @@ class testVoteAPI(TestCase):
         self.assertEqual(res.status_code,200)
         votes = json.loads(res.content)
         self.assertEqual(set(map(lambda x: x['title'], votes)), set([self.vote_1.title, self.vote_2.title]))
-    
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
-# TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views
 
 class BillStreamTest(TestCase):
     def setUp(self):
@@ -225,17 +224,22 @@ class BillStreamTest(TestCase):
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime(2011, 4, 4),
                                           title='vote 2')
-        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
-                                              'JKM')
         self.bill = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill.pre_votes.add(self.vote_1)
-        self.bill.first_votes.add(self.vote_2)
+        self.bill.first_vote = self.vote_2
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill, date=datetime(2005, 1, 22))
-        self.mk_1 = Member.objects.create(name='mk 1')
 
     def testGenerate(self):
         self.bill.generate_activity_stream()
         s = Action.objects.stream_for_actor(self.bill)
         self.assertEqual(s.count(),3)
+
+    def tearDown(self):
+        self.bill.pre_votes.all().delete()
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.kp_1.delete()
+        self.bill.delete()
+
 
 # TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views
