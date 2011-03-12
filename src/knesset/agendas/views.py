@@ -1,3 +1,5 @@
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -15,6 +17,8 @@ from models import Agenda, AgendaVote
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+
+logger = logging.getLogger("open-knesset.agendas.views")
 
 class AgendaListView (ListView):
     def get_queryset(self):
@@ -80,19 +84,25 @@ class AgendaMkDetailView (DetailView):
     template_name = 'agendas/mk_agenda_detail.html'
     
     def get_queryset(self):
-        return Agenda.objects.get_specific(agendaId=self.object_id)
+        return Agenda.objects.all()
 
     def get_context(self, *args, **kwargs):
         context = super(AgendaMkDetailView, self).get_context(*args, **kwargs)       
         agenda = context['object']
+        context['agenda_url'] = agenda.get_absolute_url()
+        context['agenda_name'] = agenda.name        
+        member =  Member.objects.get(pk=self.member_id)
+        context['member'] = member
+        context['member_url'] = member.get_absolute_url()
+        context['score'] = agenda.member_score(member)
+        
         try:
-            context['title'] = "%s" % agenda.name
+            context['title'] = _("Analysis of %(member)s votes by agenda %(agenda)s") % {'member':member.name, 'agenda':agenda.name}
         except AttributeError:
             context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d member %d' % (self.object_id,self.member_id))
 
-        viewed_mk =  Member.objects.get(pk=self.member_id)
-        context['member'] = viewed_mk
-        related_mk_votes = agenda.related_mk_votes(viewed_mk)
+        related_mk_votes = agenda.related_mk_votes(member)
         
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()

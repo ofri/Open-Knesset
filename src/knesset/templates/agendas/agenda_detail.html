@@ -10,8 +10,7 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.title }} - {% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %}
 	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
@@ -69,7 +68,7 @@
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
                             <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
                         </td>
-	        			</tr>
+        			</tr>
 	         	{% endfor %}
 	         	<tr>
         			<td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
