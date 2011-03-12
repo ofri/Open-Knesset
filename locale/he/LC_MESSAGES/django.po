@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-12 13:11+0200\n"
-"PO-Revision-Date: 2011-03-12 13:13+0200\n"
+"POT-Creation-Date: 2011-03-12 19:21+0200\n"
+"PO-Revision-Date: 2011-03-12 19:22+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -489,7 +489,7 @@ msgid "Votes tagged %(tag)s by %(member)s"
 msgstr "הצבעות של %(member)s בנושא %(tag)s"
 
 #: laws/views.py:128
-#: laws/views.py:417
+#: laws/views.py:404
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
@@ -1587,7 +1587,7 @@ msgstr[1] ""
 #: templates/include/vote_list.html:8
 #: templates/laws/bill_detail.html:364
 #: templates/laws/bill_detail.html:381
-#: templates/laws/vote_detail.html:26
+#: templates/laws/vote_detail.html:25
 #: templates/laws/vote_detail.html.py:43
 #: templates/laws/vote_list.html:11
 #: templates/laws/vote_list.html.py:64
@@ -1700,17 +1700,17 @@ msgstr "נוסח הצעת החוק של הוועדה"
 msgid "Bill Approval"
 msgstr "אישור הצעת החוק"
 
-#: templates/laws/bill_detail.html:372
+#: templates/laws/bill_detail.html:371
 #: templates/laws/bill_detail.html:389
-#: templates/laws/vote_detail.html:34
+#: templates/laws/vote_detail.html:33
 #: templates/laws/vote_detail.html.py:51
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
 #: templates/laws/bill_detail.html:375
 #: templates/laws/vote_detail.html:37
-msgid "Suggest Tags"
-msgstr "הוספת תגיות"
+msgid "Edit Tags"
+msgstr "עריכת תגיות"
 
 #: templates/laws/bill_detail.html:376
 #: templates/laws/vote_detail.html:38
@@ -1783,7 +1783,7 @@ msgstr "הוצע על ידי"
 msgid "Knesset Bills"
 msgstr "חוקי הכנסת"
 
-#: templates/laws/vote_detail.html:21
+#: templates/laws/vote_detail.html:20
 #: templates/mks/member_detail.html:300
 msgid "Links"
 msgstr "קישורים"
@@ -2568,6 +2568,8 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
+#~ msgid "Suggest Tags"
+#~ msgstr "הוספת תגיות"
 #~ msgid "Topics"
 #~ msgstr "נושאים"
 #~ msgid "Extremely below average"

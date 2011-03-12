@@ -371,47 +371,34 @@ class VoteDetailView(DetailView):
 
 
 @login_required
-def suggest_tag(request, object_type, object_id):
-    """add a POSTed tag_id to object_type object_id, and also vote this tagging up by the current user"""
+def add_tag_to_object(request, object_type, object_id):
+    """add a POSTed tag_id to object_type object_id by the current user"""
     ctype = get_object_or_404(ContentType,model=object_type)
-    model_class = ctype.model_class()
-    
+    model_class = ctype.model_class()    
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
         #o = model_class.objects.get(pk=object_id)
         tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
-        (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
-        (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
-        tv.vote = +1
-        tv.save()
-        
-        action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
-    return HttpResponse("OK")
+        (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)                
+        action.send(request.user,verb='tagged', target=ti, description='%s' % (tag.name))
+    return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
 
 @login_required
-def vote_on_tag(request, object_type, object_id, tag_id, vote):
-    """request.user is voting vote (-1/0/+1) for tag on object_type with object_id
-       Can be used to vote on a tagged vote, or a tagged bill"""       
-    try:
-        ctype = ContentType.objects.get(model=object_type)
-        model_class = ctype.model_class()        
-        o = model_class.objects.get(pk=object_id)
-        ti = TaggedItem.objects.filter(tag__id=tag_id).filter(object_id=o.id)[0]
-        (tv, created) = TagVote.objects.get_or_create(tagged_item=ti, user=request.user, defaults={'vote': 0})
-                
-        vote = int(vote) # vote is u'-1',u'0',u'+1' (not a Vote model)                
-        if vote > 0: 
-            tv.vote = 1
-            action.send(request.user,verb='tag-voted', target=ti, description='Vote Up')
-        elif vote < 0:
-            tv.vote = -1
-            action.send(request.user,verb='voted down on a tag', target=ti, description='Vote Down')
-        else:       
-            tv.vote = 0
-        tv.save()      
-      
-    except:
-        pass
-    return HttpResponseRedirect("/%s/%s" % (object_type,object_id))
+def remove_tag_from_object(request, object_type, object_id):
+    """remove a POSTed tag_id from object_type object_id"""
+    ctype = get_object_or_404(ContentType,model=object_type)
+    model_class = ctype.model_class()    
+    if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
+        #o = model_class.objects.get(pk=object_id)
+        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
+        ti = TaggedItem._default_manager.filter(tag=tag, content_type=ctype, object_id=object_id)
+        if len(ti)==1:
+            logger.debug('user %s is deleting tagged item %d' % (request.user.username, ti[0].id))
+            ti[0].delete()
+            action.send(request.user,verb='removed-tag', target=ti[0], description='%s' % (tag.name))
+        else:
+            logger.debug('user %s tried removing tag %d from object, but failed, because len(tagged_items)!=1' % (request.user.username, tag.id))        
+    return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
+
 
 def tagged(request,tag):
     title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}

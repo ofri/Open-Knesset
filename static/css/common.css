@@ -335,6 +335,7 @@ th label { display: block; float:right; margin-left:1em;}
     margin-right:0.1em;
     white-space:nowrap;
     line-height:2em;
+    text-decoration:none;
 }
 #content-main .tag:hover {
     background-color:#E0EAF1;

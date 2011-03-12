@@ -362,17 +362,17 @@
     <div id="tagging-container">
     {% if user.is_authenticated %}
         <h3>{% trans "Tags" %}</h3>
-        {% if object.tags %}
-            <div id="vote-tags">
-            {% for t in object.tags %}
-                {% user_votes user object t %} <br />        
-            {% endfor %}
-            </div>
-        {% else %}
-            {% trans "No tags yet" %}<br />        
-        {% endif %}
+        <div id="tags">
+            {% if object.tags %}            
+                {% for t in object.tags %}
+                    <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a> 
+                {% endfor %}            
+            {% else %}
+                <span id="no-tags-yet">{% trans "No tags yet" %}</span>        
+            {% endif %}
+        </div>
         <div id="add_tags">
-            <span>{% trans "Suggest Tags" %}</span> 
+            <span>{% trans "Edit Tags" %}</span> 
             <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
             </span>
         </div>
