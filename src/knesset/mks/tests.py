@@ -82,7 +82,7 @@ class MemberViewsTest(TestCase):
     
     def testMemberDetail(self):
         res = self.client.get(reverse('member-detail', 
-                                      kwargs={'object_id': self.mk_1.id}))
+                                      args=[self.mk_1.id]))
         self.assertTemplateUsed(res,
                                 'mks/member_detail.html')
         self.assertEqual(res.context['object'].id, self.mk_1.id)
@@ -110,7 +110,7 @@ class MemberViewsTest(TestCase):
 
     def testPartyDetail(self):
         res = self.client.get(reverse('party-detail', 
-                              kwargs={'object_id': self.party_1.id}))
+                              args=[self.party_1.id]))
         self.assertTemplateUsed(res, 'mks/party_detail.html')
         self.assertEqual(res.context['object'].id, self.party_1.id)
 
@@ -144,7 +144,7 @@ class MemberViewsTest(TestCase):
 
     def testMemberActivityFeed(self):
         res = self.client.get(reverse('member-activity-feed', 
-                                      kwargs={'object_id': self.mk_1.id}))
+                                      args=[self.mk_1.id]))
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),4)
@@ -190,7 +190,7 @@ class MemberViewsTest(TestCase):
     
 
     def testMemberActivityFeedWithVerbPosted(self):
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_1.id}),{'verbs':'posted'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)

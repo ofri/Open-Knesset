@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+	<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.bt.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
+	<script type="text/javascript">
+		var stream = {{ stream|safe }};
+			/*{ "note": "True/False/..." 
+				"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
+				"target": "/vote/xxxx/",
+				"time": 1279717260 }
+		*/
+		
+		function renderItemDetail(item) {
+			var itemDate = new Date(item.time * 1000), itemEl = $("<div></div>").addClass("item_detail");
+			$("<div></div>").appendTo(itemEl).text(item.note);
+			$("<div></div>").appendTo(itemEl).text(item.verb);
+			$("<a>link</a>").appendTo(itemEl).attr("href", "http://localhost:8000" + item.target);
+			$("<div></div>").appendTo(itemEl).text(itemDate.getDay() + "/" + itemDate.getMonth() + "/" + itemDate.getFullYear()).addClass("item_time");
+			return itemEl;
+		}
+		
+		function renderItem(item) {
+	        var tooltipOptions = {
+	        	cssStyles: {
+	        		'background-color':'black',
+	        		'color':'white',
+	        	},
+	        	width: '200px',
+	        	positions: ['bottom'],
+	        	preShow: function(box) {
+	        		$("<div></div>").appendTo($(box)).text(item.note);
+					$("<div></div>").appendTo($(box)).text(item.verb);
+					$("<a>link</a>").appendTo($(box)).attr("href", "http://localhost:8000" + item.target);
+	        	}
+		    };
+		
+		
+		
+			var itemDate = new Date(item.time * 1000), itemEl = $("<li></li>").addClass("item");
+			/*$("<div></div>").appendTo(itemEl).text(item.note);
+			$("<div></div>").appendTo(itemEl).text(item.verb);
+			$("<a>link</a>").appendTo(itemEl).attr("href", "http://localhost:8000" + item.target);*/
+			$("<div></div>").appendTo(itemEl)
+				.addClass("item_expand")
+				/*.click(function() {
+					$(".item_detail").remove();
+					renderItemDetail(item).appendTo(".item_expanded");
+					itemEl.effect("scale", {}, "slow", null);
+					$(".item_expanded").show("scale", {}, "slow", null);}) */
+				.bt("verb:" + item.verb + " description:" + item.note + " target:" + item.target, tooltipOptions);
+			$("<div></div>").appendTo(itemEl).text(itemDate.getDay() + "/" + itemDate.getMonth() + "/" + itemDate.getFullYear()).addClass("item_time");
+			return itemEl;
+		}
+		
+		$(function() {
+			$(".log").text(JSON.stringify(stream));
+			$(".content_container").css("width", (stream.length * 100) + "px");
+			$(".item_expanded_close").click(function() {
+					$(".item_expanded").hide("scale", {}, "slow", null);
+				});
+			for (var item in stream) {
+				renderItem(stream[item]).appendTo($(".items"));
+			}
+		});
+	</script>
+	
+	<style>
+		body { margin: 0; padding: 0; direction: rtl;}
+		
+		.content_container { 
+			width: 100%;
+			/*height: 450px;*/
+			overflow: auto;
+		}
+		
+		.items {
+			list-style-type: none;
+			padding: 0;
+			position: relative;
+		}
+		
+		.item_expand {
+			position: absolute;
+			width: 25px;
+			height: 25px;
+			background-color: white;
+			top: 150px;
+			right: 45px;
+		}
+		
+		.item_expanded {
+			width: 300px;
+			height: 300px;
+			background-color:#cab;
+			font-size: 24px;
+			display:none;
+		}
+		
+		.item_expanded_close {
+			background-color:black;
+			color:white;
+			position: absolute;
+			left:0;
+			top:0;
+			width:25px;
+			height:25px;
+			z-index:1;
+			display:none;
+		}
+		
+		.item {
+			position: relative;
+			float: right;
+			width: 100px;
+			height: 300px;
+			
+			font-family: narkisim;
+			font-size: 14px;
+			
+		}
+		
+		li.item:nth-child(even) {
+			background-color: #abc;
+		}
+		
+		li.item:nth-child(odd) {
+			background-color: #bac;
+		}
+		
+		.item_time {
+			position: absolute;
+			bottom: 0;
+		}
+		
+		.item_detail {
+			position: relative;
+			font-size: 24px;
+			height:100%;
+		}
+		
+		.log_container {
+			width: 100%;
+			height: 30%;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			/*border: 2px solid black;*/
+			overflow: auto;
+			margin: 10px;
+		}
+	
+		.log {
+			width: 100%;
+		}
+		
+		.log_header {
+			position: relative;
+			width: 100%;
+			height: 25px;
+			color: white;
+			background-color: orange;
+		}
+	</style>	
+</head>
+
+<body>
+	<div class="content_container">
+		Hover on the white squares...
+		<ul class="items"></ul>
+		<div class="item_expanded">asdfasdf</div>
+	</div>
+	
+	<!--<div class="log_container"><div class="log_header">Raw Stream:</div><div class="log"></div></div>-->
+
+</body>
+</html>
+
+

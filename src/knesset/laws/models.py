@@ -1,4 +1,5 @@
 #encoding: utf-8
+import itertools
 from datetime import date, timedelta
 
 from django.db import models
@@ -210,6 +211,10 @@ class Vote(models.Model):
 
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.time_string)
+
+    @property
+    def passed(self):
+        return self.for_votes_count() > self.against_votes_count()
 
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
@@ -531,6 +536,49 @@ class Bill(models.Model):
                 self.stage = '1'
                 self.stage_date = pp.date
         self.save()
+
+    def generate_activity_stream(self):
+        ''' create an activity stream based on the data stored in self '''
+
+        Action.objects.stream_for_actor(self).delete()
+        ps = list(self.proposals.all())
+        try:
+            ps.append(self.knesset_proposal)
+        except KnessetProposal.DoesNotExist:
+            pass
+
+        try:
+            ps.append(self.gov_proposal)
+        except GovProposal.DoesNotExist:
+            pass
+
+        for p in ps:
+            action.send(self, verb='was-proposed', target=p,
+                        timestamp=p.date, description=p.title)
+
+        for v in self.pre_votes.all():
+            action.send(self, verb='pre-voted', target=v,
+                        timestamp=v.time, description=v.passed)
+
+        if self.first_vote:
+            action.send(self, verb='first-voted', target=self.first_vote,
+                        timestamp=self.first_vote.time, description=self.first_vote.passed)
+
+        if self.approval_vote:
+            action.send(self, verb='approval-voted', target=self.approval_vote,
+                        timestamp=self.approval_vote.time, description=self.approval_vote.passed)
+
+        cms = itertools.chain(self.second_committee_meetings.all(),
+                              self.first_committee_meetings.all())
+        for cm in cms:
+            action.send(self, verb='was-discussed', target=cm,
+                        timestamp=cm.date, description=cm.committee.name)
+
+        for g in self.gov_decisions.all():
+            action.send(self, verb='was-voted-on-gov', target=g,
+                        timestamp=g.date, description=str(g.stand))
+
+
 
 class GovLegislationCommitteeDecision(models.Model):
     title = models.CharField(max_length=1000)
