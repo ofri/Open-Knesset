@@ -7,6 +7,9 @@ from feeds import MemberActivityFeed
 
 from knesset.mks.views import mk_detail
 
+# force signal connections
+from listeners import *
+
 member_list_view = MemberListView(queryset = Member.objects.all(),extra_context = {'past_mks':Member.objects.filter(is_current=False)}) 
 member_detail_view = MemberDetailView(queryset = Member.objects.all())
 party_list_view = PartyListView(queryset = Party.objects.all()) 

@@ -299,5 +299,3 @@ class WeeklyPresence(models.Model):
         super(WeeklyPresence,self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
 
-from listeners import *
-
