@@ -25,13 +25,10 @@ def mk(m, icons=''):
 
     return r % c
 
-@register.filter
-def mk_card(mk):
-    t = template.loader.get_template('mks/mk_card.html')
-    c = template.Context({
-        'mk': mk,
-    })
-    return t.render(c)
+@register.inclusion_tag('mks/mk_card.html')
+def mk_card(mk):    
+    return {'mk': mk}
+
 
 class GetMemberFor(template.Node):
     ''' usage: {% get_member_for post as var %}

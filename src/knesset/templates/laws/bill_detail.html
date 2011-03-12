@@ -17,7 +17,7 @@
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
-        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer|mk_card }}</a> 
+        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a> 
     {% endfor %}<br>
     <div id="bill-canvas">
     </div>

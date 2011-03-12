@@ -19,7 +19,7 @@
     <div class="display_note">לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a>, וההתקדמות שלהן בתהליך החקיקה. לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</div>
     <div class="display_note">לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</div>
     <div class="display_note">לראות איך כל חבר כנסת הצביע בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>. לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></div>
-    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של {{ member|mk_card }}</div>
+    <div class="display_note">לקבל את מרב הנתונים על <a href="{% url member-list %}">חברי הכנסת</a>, כולל סטטיסטיקות על הפעילות הפרלמנטרית שלהם. לדוגמה, הדף של {% mk_card member %}</div>
     <div class="display_note">לקרוא את הפרוטוקולים של כל <a href="{% url committee-list %}">וועדות הכנסת</a> (למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</div>
     <div class="display_note">ואנחנו כל הזמן עובדים על עוד...</div>    
 
