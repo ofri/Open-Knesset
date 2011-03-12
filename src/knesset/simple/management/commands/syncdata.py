@@ -1140,32 +1140,7 @@ class Command(NoArgsCommand):
         if not last_booklet: # there were no KPs in the DB
             last_booklet = 500
         proposals = parse_laws.ParseGovLaws(last_booklet)
-        for proposal in proposals.laws_data:
-            if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
-                continue
-            law_name = proposal['law']
-            (law, created) = Law.objects.get_or_create(title=law_name)
-            if created:
-                law.save()
-            if law.merged_into:
-                law = law.merged_into
-            title = u''
-            if proposal['correction']:
-                title += proposal['correction']
-            if proposal['comment']:
-                title += ' ' + proposal['comment']
-            if len(title)<=1:
-                title = u'חוק חדש'
-            (gp,created) = GovProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
-                                                                 source_url=proposal['link'],
-                                                                 title=title, law=law, date=proposal['date'])
-            if created:
-                gp.save()
-
-            b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
-            b.save()
-            gp.bill = b
-            gp.save()
+        proposals.parse_gov_laws()
 
     def find_proposals_in_other_data(self):
         """

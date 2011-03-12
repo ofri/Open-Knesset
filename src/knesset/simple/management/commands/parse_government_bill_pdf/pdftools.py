@@ -35,9 +35,21 @@ def local_or_system(toolname):
 PDFTOTEXT=local_or_system('pdftotext')
 PDFINFO=local_or_system('pdfinfo')
 
+def pdftotext_version():
+    p = subprocess.Popen(executable=PDFTOTEXT, args=[PDFTOTEXT, '-v'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    major, minor, patchlevel = p.stderr.readlines()[0].split()[-1].split('.')
+    p.kill()
+    return major, minor, patchlevel
+
+PDFTOTEXT_VERSION = pdftotext_version()
+
 if DEBUG:
-    print "pdftotext from %s" % PDFTOTEXT
+    print "pdftotext from %s, version %s" % (PDFTOTEXT, str(PDFTOTEXT_VERSION))
     print "pdfinfo from %s" % PDFINFO
+
+def pdftotext_version_pass():
+    V = PDFTOTEXT_VERSION
+    return V.major > 1 or (V.major == 1 and V.minor >= 4)
 
 def capture_output(args):
     return subprocess.Popen(args, stdout=subprocess.PIPE).stdout.readlines()

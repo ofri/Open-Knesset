@@ -1,6 +1,6 @@
 from itertools import chain
 import re
-import md5
+from hashlib import md5
 
 superscript = u'\u200F'
 digits = set([str(i) for i in xrange(10)])
@@ -63,7 +63,7 @@ def text_block_iter(lines):
         yield block
 
 def checksum(lines):
-    return md5.md5(''.join(lines)).digest()
+    return md5(''.join(lines)).digest()
 
 def asblocks(lines):
     return list(text_block_iter(lines))

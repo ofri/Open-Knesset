@@ -1,10 +1,16 @@
 #encoding: utf-8
-import re, os, datetime
+import re, os, datetime, cPickle
 
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
 from knesset.simple.management.commands import parse_knesset_bill_pdf
+from knesset.simple.management.commands.parse_government_bill_pdf import pdftools
+from knesset.simple.management.commands.parse_laws import GovProposal
+
+TESTDATA = 'testdata'
+GOV_BILL_TEST_FILE = os.path.join(TESTDATA, '566.pdf')
+GOV_BILL_CORRECT_OUTPUT = os.path.join(TESTDATA, '566.correct.pickle')
 
 class SyncdataTest(TestCase):
 
@@ -23,6 +29,30 @@ class SyncdataTest(TestCase):
         expected_title = "הצעת חוק הביטוח הלאומי (תיקון מס' 126) (הארכת התכנית הניסיונית), התשע\"א1102".decode('utf8')
         self.assertEqual(results[3]['title'], expected_title)
         
+    def test_parse_government_bill_pdf(self):
+        # make sure we have poppler - if not, just pass the test with an ignore
+        if pdftools.PDFTOTEXT is None:
+            # TODO?
+            #logging.warning("no pdftotext on the system, skipping parse_government_bill_pdf tests")
+            return
+        self.assertTrue(os.path.exists(GOV_BILL_TEST_FILE), 'missing %s (cwd = %s)' % (GOV_BILL_TEST_FILE, os.getcwd()))
+        self.assertTrue(os.path.exists(GOV_BILL_CORRECT_OUTPUT))
+        prop = GovProposal(GOV_BILL_TEST_FILE)
+        expected_result = cPickle.load(open(GOV_BILL_CORRECT_OUTPUT, 'r'))
+        self.assertEqual(prop.to_unicode(True).encode('utf-8'), expected_result)
 
     def tearDown(self):
         pass
+
+if __name__ == '__main__':
+    # hack the sys.path to include knesset and the level above it
+    import sys
+    import os
+    this_dir = os.path.dirname(os.path.realpath(sys.modules[__name__].__file__))
+    sys.path.append(os.path.join(this_dir, '../'))
+    sys.path.append(os.path.join(this_dir, '../../'))
+    # test tester
+    class Tester(SyncdataTest):
+        def runTest(self, *args, **kw):
+            pass
+    Tester().test_parse_government_bill_pdf()

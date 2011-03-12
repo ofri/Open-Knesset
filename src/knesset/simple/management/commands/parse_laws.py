@@ -1,14 +1,25 @@
 #encoding: utf-8
 import urllib,urllib2
-from BeautifulSoup import BeautifulSoup
-from HTMLParser import HTMLParseError
+from urlparse import urlparse
 import datetime
 import re
-import parse_knesset_bill_pdf
 import logging
-from parse_government_bill_pdf import GovProposal
+import os
+
+from BeautifulSoup import BeautifulSoup
+from HTMLParser import HTMLParseError
+
+from django.core.files.base import ContentFile
+
+from knesset.links.models import Link, LinkedFile
+import parse_knesset_bill_pdf
+from parse_government_bill_pdf import GovProposalParser
+from knesset.laws.models import (Bill, Law, GovProposal)
 
 logger = logging.getLogger("open-knesset.parse_laws")
+
+# don't parse laws from an older knesset
+CUTOFF_DATE = datetime.date(2009,02,24)
 
 class ParseLaws(object):
     """partially abstract class for parsing laws. contains one function used in few
@@ -16,9 +27,9 @@ class ParseLaws(object):
     """
 
     url = None
-    
+
     def get_page_with_param(self,params):
-        logger.debug('get_page_with_param: self.url='+self.url)
+        logger.debug('get_page_with_param: self.url=%s, params=%s' % (self.url, params))
         if params == None:
             try:
                 html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
@@ -222,18 +233,103 @@ class ParseGovLaws(ParseKnessetLaws):
         self.pdf_url=r"http://www.knesset.gov.il"
         self.laws_data=[]
         self.min_booklet = min_booklet
+
+    def parse_gov_laws(self):
+        """ entry point to start parsing """
         self.parse_pages_booklet()
 
     def parse_pdf(self,pdf_url):
-        filename = 'tmp.pdf'
-        f = open(filename,'wb')
-        d = urllib2.urlopen(pdf_url)
-        f.write(d.read())
-        f.close()
-        prop = GovProposal(filename)
+        """ Grab a single pdf url, using cache via LinkedFile
+        """
+        existing_count = Link.objects.filter(url=pdf_url).count()
+        if existing_count < 1:
+            link = Link(url=pdf_url)
+            link.save()
+        else:
+            if existing_count > 1:
+                print "WARNING: you have two objects with the url %s. Taking the first" % pdf_url
+            link = Link.objects.filter(url=pdf_url).iterator().next()
+        filename = None
+        if link.linkedfile_set.count() > 0:
+            files = [f for f in link.linkedfile_set.order_by('last_updated') if f.link_file.name != '']
+            if len(files) > 0:
+                filename = files[0].link_file.path
+                logger.debug('reusing %s from %s' % (pdf_url, filename))
+        if not filename:
+            logger.debug('getting %s' % pdf_url)
+            contents = urllib2.urlopen(pdf_url).read()
+            link_file = LinkedFile(link=link)
+            saved_filename = os.path.basename(urlparse(pdf_url).path)
+            link_file.link_file.save(saved_filename, ContentFile(contents))
+            filename = link_file.link_file.path
+        prop = GovProposalParser(filename)
         
         # TODO: check if parsing handles more than 1 prop in a booklet                
         return [{'title':prop.get_title(),'date':prop.get_date(), 'bill':prop}]
+
+    def update_single_bill(self, pdf_link, booklet=None, alt_title=None):
+        if booklet is None:
+            # get booklet from existing bill
+            if GovProposal.objects.filter(source_url=pdf_link).count() < 1:
+                logger.error('no existing object with given pdf link and no booklet given. pdf_link = %s' % pdf_link)
+                return
+            bookelet = GovProposal.objects.filter(source_url=pdf_link)[0].booklet_number
+        pdf_data = self.parse_pdf(pdf_link)
+        for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
+            if not alt_title:
+                title = pdf_data[j]['title']
+            m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
+            try:
+                comment = m[-1].strip().replace('\n','').replace('&nbsp;',' ')
+                law = title[:title.find(comment)-1]
+            except:
+                comment = None
+                law = title.replace(',','')
+            try:
+                correction = m[-2].strip().replace('\n','').replace('&nbsp;',' ')
+                law = title[:title.find(correction)-1]
+            except:
+                correction = None
+            correction = fix_dash(correction)
+            law = law.strip().replace('\n','').replace('&nbsp;',' ')
+            if law.find("הצעת ".decode("utf8"))==0:
+                law = law[5:]
+
+            law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
+                                   'comment':comment, 'date':pdf_data[j]['date']}
+            if 'original_ids' in pdf_data[j]:
+                law_data['original_ids'] = pdf_data[j]['original_ids']
+            if 'bill' in pdf_data[j]:
+                law_data['bill'] = pdf_data[j]['bill']
+            self.laws_data.append(law_data)
+            self.create_or_update_single_bill(proposal=law_data)
+
+    def create_or_update_single_bill(self, proposal):
+        if not(proposal['date']) or CUTOFF_DATE and proposal['date'] < CUTOFF_DATE:
+            return
+        law_name = proposal['law']
+        (law, created) = Law.objects.get_or_create(title=law_name)
+        if created:
+            law.save()
+        if law.merged_into:
+            law = law.merged_into
+        title = u''
+        if proposal['correction']:
+            title += proposal['correction']
+        if proposal['comment']:
+            title += ' ' + proposal['comment']
+        if len(title)<=1:
+            title = u'חוק חדש'
+        (gp,created) = GovProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
+                                                             source_url=proposal['link'],
+                                                             title=title, law=law, date=proposal['date'])
+        if created:
+            gp.save()
+
+        b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
+        b.save()
+        gp.bill = b
+        gp.save()
 
     def parse_laws_page(self,soup):
         name_tag = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and tag['href'].find(".pdf")>=0)
@@ -242,37 +338,11 @@ class ParseGovLaws(ParseKnessetLaws):
             booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
             if int(booklet) <= self.min_booklet:
                 return False
-            pdf_data = self.parse_pdf(pdf_link)
-            for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
-                #title = pdf_data[j]['title']
-                title = tag.findNext(attrs={"class":"LawText1"}).findNext(attrs={"class":"LawText1"}).text
-                m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
-                try:
-                    comment = m[-1].strip().replace('\n','').replace('&nbsp;',' ')
-                    law = title[:title.find(comment)-1]
-                except:
-                    comment = None
-                    law = title.replace(',','')
-                try:
-                    correction = m[-2].strip().replace('\n','').replace('&nbsp;',' ')
-                    law = title[:title.find(correction)-1]
-                except:
-                    correction = None
-                correction = fix_dash(correction)
-                law = law.strip().replace('\n','').replace('&nbsp;',' ')
-                if law.find("הצעת ".decode("utf8"))==0:
-                    law = law[5:]
-                
-                law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
-                                       'comment':comment, 'date':pdf_data[j]['date']}
-                if 'original_ids' in pdf_data[j]:
-                    law_data['original_ids'] = pdf_data[j]['original_ids']
-                if 'bill' in pdf_data[j]:
-                    law_data['bill'] = pdf_data[j]['bill']
-                self.laws_data.append(law_data)
-        return True               
+            #title = tag.findNext(attrs={"class":"LawText1"}).findNext(attrs={"class":"LawText1"}).text
+            self.update_single_bill(pdf_link, booklet=booklet)
+        return True
 
-        
+
 #############
 #   Main    #
 #############	
