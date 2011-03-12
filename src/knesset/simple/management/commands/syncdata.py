@@ -1140,6 +1140,7 @@ class Command(NoArgsCommand):
         if not last_booklet: # there were no KPs in the DB
             last_booklet = 500
         proposals = parse_laws.ParseGovLaws(last_booklet)
+        proposals.parse_gov_laws()
         for proposal in proposals.laws_data:
             if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
                 continue

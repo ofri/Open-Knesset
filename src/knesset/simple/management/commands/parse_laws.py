@@ -229,6 +229,9 @@ class ParseGovLaws(ParseKnessetLaws):
         self.pdf_url=r"http://www.knesset.gov.il"
         self.laws_data=[]
         self.min_booklet = min_booklet
+
+    def parse_gov_laws(self):
+        """ entry point to start parsing """
         self.parse_pages_booklet()
 
     def parse_pdf(self,pdf_url):
