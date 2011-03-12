@@ -548,19 +548,16 @@ class Bill(models.Model):
                         timestamp=p.date, description=p.title)
 
         for v in self.pre_votes.all():
-            stage = _(u'Pre-Approved') if v.passed else _( u'Failed Pre-Approval')
-            action.send(self, verb='was-voted-on', target=v,
-                        timestamp=v.time, description=unicode(stage))
+            action.send(self, verb='pre-voted', target=v,
+                        timestamp=v.time, description=v.passed)
 
         if self.first_vote:
-            stage = _(u'First Vote') if self.first_vote.passed else _( u'Failed First Vote')
-            action.send(self, verb='was-voted-on', target=self.first_vote,
-                        timestamp=self.first_vote.time, description=unicode(stage))
+            action.send(self, verb='first-voted', target=self.first_vote,
+                        timestamp=self.first_vote.time, description=self.first_vote.passed)
 
         if self.approval_vote:
-            stage = _(u'Approved') if self.approval_vote.passed else _(u'Failed Approval')
-            action.send(self, verb='was-voted-on', target=self.approval_vote,
-                        timestamp=self.approval_vote.time, description=unicode(stage))
+            action.send(self, verb='approval-voted', target=self.approval_vote,
+                        timestamp=self.approval_vote.time, description=self.approval_vote.passed)
 
         cms = itertools.chain(self.second_committee_meetings.all(),
                               self.first_committee_meetings.all())

@@ -450,7 +450,7 @@ def embed_bill_details(request, object_id):
         bill.generate_activity_stream()
         in_stream = Action.objects.stream_for_actor(bill)
 
-    for s in in_stream:
+    for s in in_stream.order_by('timestamp'):
         out_stream.append({'verb': s.verb, 'target': s.target.get_absolute_url(),
                          'note': unicode(s.description),
                          'time': mktime(s.timestamp.timetuple())+1e-6*s.timestamp.microsecond})
