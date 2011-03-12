@@ -8,9 +8,10 @@ import os
 
 from BeautifulSoup import BeautifulSoup
 from HTMLParser import HTMLParseError
+
 from django.core.files.base import ContentFile
 
-from links.models import Link, LinkedFile
+from knesset.links.models import Link, LinkedFile
 import parse_knesset_bill_pdf
 from parse_government_bill_pdf import GovProposal
 
