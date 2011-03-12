@@ -321,9 +321,9 @@
 											<script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
 											
 										</td>
-										<!-- <td>
-										<a href="{% url agenda-list %}{{agenda.id}}/member/{{object.id}}">#</a>
-										</td> -->
+										<td>
+										<a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
+										</td>
 									</tr>
 								{% endfor %}
 								</table>

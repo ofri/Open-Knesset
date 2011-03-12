@@ -62,7 +62,7 @@
         		</tr>
 	         	{% for selected_mk in selected_mks_top %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
 	         			<td>
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
@@ -75,7 +75,7 @@
         		</tr>
 	         	{% for selected_mk in selected_mks_bottom %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
 	         			<td>
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
