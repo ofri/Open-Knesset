@@ -29,9 +29,13 @@
 	        	cssStyles: {
 	        		'background-color':'black',
 	        		'color':'white',
-	        		'position': 'absolute',
-	        		'left':'100px',
-	        		'width':'100px'
+	        	},
+	        	width: '200px',
+	        	positions: ['bottom'],
+	        	preShow: function(box) {
+	        		$("<div></div>").appendTo($(box)).text(item.note);
+					$("<div></div>").appendTo($(box)).text(item.verb);
+					$("<a>link</a>").appendTo($(box)).attr("href", "http://localhost:8000" + item.target);
 	        	}
 		    };
 		
@@ -48,7 +52,7 @@
 					renderItemDetail(item).appendTo(".item_expanded");
 					itemEl.effect("scale", {}, "slow", null);
 					$(".item_expanded").show("scale", {}, "slow", null);}) */
-				.bt("asdfasdf", tooltipOptions);
+				.bt("verb:" + item.verb + " description:" + item.note + " target:" + item.target, tooltipOptions);
 			$("<div></div>").appendTo(itemEl).text(itemDate.getDay() + "/" + itemDate.getMonth() + "/" + itemDate.getFullYear()).addClass("item_time");
 			return itemEl;
 		}
@@ -166,6 +170,7 @@
 
 <body>
 	<div class="content_container">
+		Hover on the white squares...
 		<ul class="items"></ul>
 		<div class="item_expanded">asdfasdf</div>
 	</div>
