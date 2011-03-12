@@ -10,6 +10,8 @@ from util import flatten
 from textutil import reverse_numbers, asblocks, fix_superscripts
 from pdftools import pdftotext, pdfinfo
 
+DEBUG = False
+
 def readable(txt):
     if isinstance(txt, list):
         txt = '\n'.join(txt)
@@ -95,7 +97,7 @@ def parse_proposal_page(top_text, bottom_text):
     """
     #top_blocks = asblocks(reverse_numbers(''.join(top_text)).split('\n'))
     top_text, superscripts = fix_superscripts(top_text)
-    if len(superscripts) > 0:
+    if len(superscripts) > 0 and DEBUG:
         print "superscripts = %r" % superscripts
     top_blocks = asreversed_number_blocks(top_text)
     # Here is how a proposal second page looks: (actually the rest are pretty much
