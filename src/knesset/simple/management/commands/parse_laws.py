@@ -1,11 +1,17 @@
 #encoding: utf-8
 import urllib,urllib2
-from BeautifulSoup import BeautifulSoup
-from HTMLParser import HTMLParseError
+from urlparse import urlparse
 import datetime
 import re
-import parse_knesset_bill_pdf
 import logging
+import os
+
+from BeautifulSoup import BeautifulSoup
+from HTMLParser import HTMLParseError
+from django.core.files.base import ContentFile
+
+from links.models import Link, LinkedFile
+import parse_knesset_bill_pdf
 from parse_government_bill_pdf import GovProposal
 
 logger = logging.getLogger("open-knesset.parse_laws")
@@ -18,7 +24,7 @@ class ParseLaws(object):
     url = None
     
     def get_page_with_param(self,params):
-        logger.debug('get_page_with_param: self.url='+self.url)
+        logger.debug('get_page_with_param: self.url=%s, params=%s' % (self.url, params))
         if params == None:
             try:
                 html_page = urllib2.urlopen(self.url).read().decode('windows-1255').encode('utf-8')
@@ -225,11 +231,29 @@ class ParseGovLaws(ParseKnessetLaws):
         self.parse_pages_booklet()
 
     def parse_pdf(self,pdf_url):
-        filename = 'tmp.pdf'
-        f = open(filename,'wb')
-        d = urllib2.urlopen(pdf_url)
-        f.write(d.read())
-        f.close()
+        """ Grab a single pdf url, using cache via LinkedFile
+        """
+        existing_count = Link.objects.filter(url=pdf_url).count()
+        if existing_count < 1:
+            link = Link(url=pdf_url)
+            link.save()
+        else:
+            if existing_count > 1:
+                print "WARNING: you have two objects with the url %s. Taking the first" % pdf_url
+            link = Link.objects.filter(url=pdf_url).iterator().next()
+        filename = None
+        if link.linkedfile_set.count() > 0:
+            files = [f for f in link.linkedfile_set.order_by('last_updated') if f.link_file.name != '']
+            if len(files) > 0:
+                filename = files[0].link_file.path
+                logger.debug('reusing %s from %s' % (pdf_url, filename))
+        if not filename:
+            logger.debug('getting %s' % pdf_url)
+            contents = urllib2.urlopen(pdf_url).read()
+            link_file = LinkedFile(link=link)
+            saved_filename = os.path.basename(urlparse(pdf_url).path)
+            link_file.link_file.save(saved_filename, ContentFile(contents))
+            filename = link_file.link_file.path
         prop = GovProposal(filename)
         
         # TODO: check if parsing handles more than 1 prop in a booklet                

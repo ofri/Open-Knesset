@@ -53,4 +53,3 @@ class LinkedFile(models.Model):
     sha1 = models.CharField(max_length=1000, null=True)
     last_updated = models.DateTimeField(auto_now=True, null=True)
     link_file = models.FileField(storage=link_file_storage, upload_to='link_files')
-
