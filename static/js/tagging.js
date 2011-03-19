@@ -1,9 +1,9 @@
 var selected_tags = {};
 
+
 function get_tags_list() {
     $("#possible_tags").html('');
-    $.getJSON('/api/tag/', get_tags_list_callback );
-
+    $.ajax({url: '/api/tag/', success: get_tags_list_callback, cache: false});
 }
 
 function get_tags_list_callback(data) {
@@ -14,6 +14,13 @@ function get_tags_list_callback(data) {
           });
     var url = '/api/tag/'+window.location.pathname.split('/')[1]+'/'+window.location.pathname.split('/')[2]+'/';
     $.ajax({url: url, success: mark_selected_tags, cache: false});
+    $('#create_tag').show();
+    $('#create_tag_form').submit(function(){
+        var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+        var tag = $('#tag').val();        
+        $.post("create-tag/", { tag: tag, csrfmiddlewaretoken: csrf }, add_tag_callback );
+        return false;
+    });
 }
 
 function mark_selected_tags(data){    
@@ -38,7 +45,8 @@ function toggle_tag(tag_id) {
 function add_tag_callback(data) {    
     var item = eval('('+data+')');
     $('#no-tags-yet').remove();
-    var href = "javascript:toggle_tag("+item.id+");";
+    if( $("#tag_"+item.id).length ){ return }; // we already have this tag.
+    var href = item.url;
     $('<a class="tag">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#tags");
     $("#tags").append(document.createTextNode(" "));
 }

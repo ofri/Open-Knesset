@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+from django.utils.translation import ugettext as _
 from django.db import models
 from django.contrib.comments.views.comments import post_comment
 from django.http import HttpResponse
@@ -11,7 +12,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 import django.contrib.comments.views.moderation as moderation
 from django.utils.encoding import smart_str, smart_unicode
-
+from django.conf import settings
+from mailer import send_html_mail
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -115,3 +117,9 @@ class RequestFactory(Client):
         environ.update(request)
         return WSGIRequest(environ)
 
+def notify_responsible_adult(msg):
+    """Send an email to some responsible adult(s)"""
+    adults = getattr(settings, 'RESPONSIBLE_ADULTS', None)
+    if adults:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')    
+        send_html_mail(_('Open Knesset requires attention'), msg, msg, from_email, adults)

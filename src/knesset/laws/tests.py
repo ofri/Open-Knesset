@@ -3,12 +3,15 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.utils.encoding import smart_str, smart_unicode
+from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 
-from knesset.laws.models import Bill
+from actstream.models import Action
+from tagging.models import Tag, TaggedItem
+
+from knesset.laws.models import Vote,Bill,KnessetProposal
 from knesset.mks.models import Member
-from models import *
 
 try:
     import json
@@ -174,10 +177,20 @@ class BillViewsTest(TestCase):
 class VoteViewsTest(TestCase):
 
     def setUp(self):
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'ADRIAN')
+        g = Group.objects.get(name='Valid Email')
+        self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(), 
                                           title='vote 2')
+        self.tag_1 = Tag.objects.create(name='tag1')
+        self.ti = TaggedItem._default_manager.create(tag=self.tag_1,
+                                                     content_type=ContentType.objects.get_for_model(Vote), 
+                                                     object_id=self.vote_1.id)
 
     def testVoteList(self):
         res = self.client.get(reverse('vote-list'))
@@ -195,6 +208,38 @@ class VoteViewsTest(TestCase):
                                 'laws/vote_detail.html')
         self.assertEqual(res.context['vote'].id, self.vote_1.id)
 
+    def test_vote_tag_cloud(self):
+        res = self.client.get(reverse('vote-tags-cloud'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'laws/vote_tags_cloud.html')
+
+    def test_add_tag_to_vote_login_required(self):
+        url = reverse('add-tag-to-object',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag_id':self.tag_1})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_add_tag_to_vote(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('add-tag-to-object',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag_id':self.tag_1.id})
+        self.assertEqual(res.status_code, 200)
+
+    def test_create_tag_permission_required(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('create-tag',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+        
+    def test_create_tag(self):
+        self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
+        url = reverse('create-tag',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertEqual(res.status_code, 200)
+        
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
