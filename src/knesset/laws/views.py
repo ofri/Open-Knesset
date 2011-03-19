@@ -414,8 +414,9 @@ def create_tag_and_add_to_item(request, object_type, object_id):
     """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
     if request.method == 'POST' and 'tag' in request.POST:
         tag = request.POST['tag']
-        logger.info("user %s is creating tag %s" % (request.user, tag))
-        notify_responsible_adult("user %s is creating tag %s" % (request.user, tag))
+        msg = "user %s is creating tag %s on object_type %s and object_id %s".encode('utf8') % (request.user.username, tag, object_type, object_id)
+        logger.info(msg)
+        notify_responsible_adult(msg)
         if len(tag)<3:
             return HttpResponseBadRequest()        
         try:
