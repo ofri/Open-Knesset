@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import permission_required
-from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseNotAllowed
+from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.db.models import Count, Q
 from django.db import IntegrityError
 from django.shortcuts import render_to_response, get_object_or_404
@@ -413,12 +413,15 @@ def remove_tag_from_object(request, object_type, object_id):
 def create_tag_and_add_to_item(request, object_type, object_id):
     """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
     if request.method == 'POST' and 'tag' in request.POST:
-        logger.info("user %s is creating tag %s" % (request.user, request.POST['tag']))
-        notify_responsible_adult("user %s is creating tag %s" % (request.user, request.POST['tag']))        
+        tag = request.POST['tag']
+        logger.info("user %s is creating tag %s" % (request.user, tag))
+        notify_responsible_adult("user %s is creating tag %s" % (request.user, tag))
+        if len(tag)<3:
+            return HttpResponseBadRequest()        
         try:
-            tag = Tag.objects.create(name=request.POST['tag'])
+            tag = Tag.objects.create(name=tag)
         except IntegrityError:
-            tag = Tag.objects.filter(name=request.POST['tag'])[0]
+            tag = Tag.objects.filter(name=tag)[0]
         return _add_tag_to_object(request.user, object_type, object_id, tag)
     else:
         return HttpResponseNotAllowed(['POST'])
