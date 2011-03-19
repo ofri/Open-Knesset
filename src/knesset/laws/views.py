@@ -419,10 +419,18 @@ def create_tag_and_add_to_item(request, object_type, object_id):
         notify_responsible_adult(msg)
         if len(tag)<3:
             return HttpResponseBadRequest()        
-        try:
-            tag = Tag.objects.create(name=tag)
-        except IntegrityError:
-            tag = Tag.objects.filter(name=tag)[0]
+        tags = Tag.objects.filter(name=tag)
+        if not tags:
+            try:
+                tag = Tag.objects.create(name=tag)
+            except Exception:
+                logger.warn("can't create tag %s" % tag)
+                return HttpResponseBadRequest()
+        if len(tags)==1:
+            tag = tags[0]
+        if len(tags)>1:
+            logger.warn("More than 1 tag: %s" % tag)
+            return HttpResponseBadRequest()
         return _add_tag_to_object(request.user, object_type, object_id, tag)
     else:
         return HttpResponseNotAllowed(['POST'])
