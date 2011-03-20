@@ -25,7 +25,7 @@ VOTE_ACTION_TYPE_CHOICES = (
         (u'no-vote', _('No Vote')),
 )
 
-
+CONVERT_TO_DISCUSSION_HEADER = 'להעביר את הנושא לוועדה'.decode('utf8')
 
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
@@ -371,10 +371,11 @@ class GovProposal(BillProposal):
 BILL_STAGE_CHOICES = (
         (u'1', _(u'Proposed')),
         (u'2', _(u'Pre-Approved')),
-        (u'-2',_( u'Failed Pre-Approval')),
+        (u'-2',_(u'Failed Pre-Approval')),
+        (u'-2.1', _(u'Converted to discussion')),
         (u'3', _(u'In Committee')),
         (u'4', _(u'First Vote')),
-        (u'-4',_( u'Failed First Vote')),
+        (u'-4',_(u'Failed First Vote')),
         (u'5', _(u'Committee Corrections')),
         (u'6', _(u'Approved')),
         (u'-6',_(u'Failed Approval')),
@@ -522,10 +523,16 @@ class Bill(models.Model):
             pass
         for cm in self.first_committee_meetings.all():
             if not(self.stage_date) or self.stage_date < cm.date:
-                self.stage = '3'
-                self.stage_date = cm.date
+                if self.stage != '-2.1': # if it was converted to discussion, seeing it in
+                                         # a cm doesn't mean much.
+                    self.stage = '3'
+                    self.stage_date = cm.date
         for v in self.pre_votes.all():
             if not(self.stage_date) or self.stage_date < v.time.date():
+                if v.title.find(CONVERT_TO_DISCUSSION_HEADER)>=0:
+                    self.stage = '-2.1' # converted to discussion
+                    self.stage_date = v.time.date()
+                    continue
                 if v.for_votes_count() > v.against_votes_count():
                     self.stage = '2'
                 else:

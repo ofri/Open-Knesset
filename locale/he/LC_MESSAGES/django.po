@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-20 00:43+0200\n"
-"PO-Revision-Date: 2011-03-20 00:44+0200\n"
+"POT-Creation-Date: 2011-03-20 02:17+0200\n"
+"PO-Revision-Date: 2011-03-20 02:20+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -410,36 +410,40 @@ msgid "Failed Pre-Approval"
 msgstr "נפלה בקריאה טרומית"
 
 #: laws/models.py:375
+msgid "Converted to discussion"
+msgstr "הוסבה לנושא לדיון"
+
+#: laws/models.py:376
 msgid "In Committee"
 msgstr "בוועדה"
 
-#: laws/models.py:376
+#: laws/models.py:377
 #: templates/laws/bill_detail.html:252
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
-#: laws/models.py:377
+#: laws/models.py:378
 msgid "Failed First Vote"
 msgstr "נפלה בקריאה ראשונה"
 
-#: laws/models.py:378
+#: laws/models.py:379
 msgid "Committee Corrections"
 msgstr "בתיקונים בוועדה"
 
-#: laws/models.py:379
+#: laws/models.py:380
 msgid "Approved"
 msgstr "אושרה"
 
-#: laws/models.py:380
+#: laws/models.py:381
 msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
-#: laws/models.py:399
+#: laws/models.py:400
 #: templates/laws/vote_detail.html:125
 msgid "Bill"
 msgstr "הצעת חוק"
 
-#: laws/models.py:400
+#: laws/models.py:401
 #: laws/urls.py:12
 #: laws/urls.py:13
 #: templates/base.html:81
@@ -493,7 +497,7 @@ msgid "Votes tagged %(tag)s by %(member)s"
 msgstr "הצבעות של %(member)s בנושא %(tag)s"
 
 #: laws/views.py:133
-#: laws/views.py:427
+#: laws/views.py:439
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
@@ -512,11 +516,11 @@ msgstr "הוצעו"
 
 #: laws/views.py:233
 msgid "(Bills) passed pre-vote"
-msgstr "אושרו טרומית"
+msgstr "עברו טרומית"
 
 #: laws/views.py:234
 msgid "(Bills) passed first vote"
-msgstr "אושרו בקריאה ראשונה"
+msgstr "עברו קריאה ראשונה"
 
 #: laws/views.py:235
 msgid "(Bills) approved"
@@ -761,12 +765,12 @@ msgstr "לפי מספר הצעות חוק שהוצעו"
 #: mks/views.py:61
 #: mks/views.py:98
 msgid "By number of bills pre-approved"
-msgstr "לפי מספר הצעות חוק שאושרו טרומית"
+msgstr "לפי מספר הצעות חוק שעברו טרומית"
 
 #: mks/views.py:62
 #: mks/views.py:112
 msgid "By number of bills first-approved"
-msgstr "לפי מספר הצעות חוק שאושרו בקריאה ראשונה"
+msgstr "לפי מספר הצעות חוק שעברו קריאה ראשונה"
 
 #: mks/views.py:63
 #: mks/views.py:126
@@ -825,11 +829,11 @@ msgstr "לפי לפי מספר הצעות חוק שהוצעו"
 
 #: mks/views.py:295
 msgid "By bills passed pre vote"
-msgstr "לפי הצעות חוק שאושרו טרומית"
+msgstr "לפי הצעות חוק שעברו טרומית"
 
 #: mks/views.py:296
 msgid "By bills passed first vote"
-msgstr "לפי הצעות חוק שאושרו בקריאה ראשונה"
+msgstr "לפי הצעות חוק שעברו קריאה ראשונה"
 
 #: mks/views.py:297
 msgid "By bills approved"
@@ -849,11 +853,11 @@ msgstr "מפלגות לפי מספר הצעות חוק שהוצעו לכל ח\"�
 
 #: mks/views.py:417
 msgid "Parties by number of bills passed pre vote per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
+msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה טרומית לכל ח\"כ"
 
 #: mks/views.py:432
 msgid "Parties by number of bills passed first vote per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שאושרו בקריאה ראשונה לכל ח\"כ"
+msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה ראשונה לכל ח\"כ"
 
 #: mks/views.py:447
 msgid "Parties by number of bills passed approved per seat"
@@ -2037,11 +2041,11 @@ msgstr "מספר הצעות חוק שהוצעו"
 
 #: templates/mks/member_detail.html:268
 msgid "Bills passed pre-vote"
-msgstr "הצעות חוק שאושרו טרומית"
+msgstr "הצעות חוק שעברו קריאה טרומית"
 
 #: templates/mks/member_detail.html:276
 msgid "Bills passed first vote"
-msgstr "הצעות חוק שאושרו בקריאה ראשונה"
+msgstr "הצעות חוק שעברו קריאה ראשונה"
 
 #: templates/mks/member_detail.html:284
 msgid "Bills approved"
