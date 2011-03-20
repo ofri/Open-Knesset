@@ -25,7 +25,8 @@ VOTE_ACTION_TYPE_CHOICES = (
         (u'no-vote', _('No Vote')),
 )
 
-CONVERT_TO_DISCUSSION_HEADER = 'להעביר את הנושא לוועדה'.decode('utf8')
+CONVERT_TO_DISCUSSION_HEADERS = ('להעביר את הנושא'.decode('utf8'), 'העברת הנושא'.decode('utf8'))
+
 
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
@@ -529,10 +530,12 @@ class Bill(models.Model):
                     self.stage_date = cm.date
         for v in self.pre_votes.all():
             if not(self.stage_date) or self.stage_date < v.time.date():
-                if v.title.find(CONVERT_TO_DISCUSSION_HEADER)>=0:
-                    self.stage = '-2.1' # converted to discussion
-                    self.stage_date = v.time.date()
-                    continue
+                for h in CONVERT_TO_DISCUSSION_HEADERS:
+                    if v.title.find(h)>=0:
+                        self.stage = '-2.1' # converted to discussion
+                        self.stage_date = v.time.date()                    
+        for v in self.pre_votes.all():
+            if not(self.stage_date) or self.stage_date < v.time.date():
                 if v.for_votes_count() > v.against_votes_count():
                     self.stage = '2'
                 else:
