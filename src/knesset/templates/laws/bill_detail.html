@@ -393,7 +393,7 @@
         {% if object.tags %}
             <div id="tags">
             {% for t in object.tags %}
-               <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+               <a href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
             {% endfor %}
             </div>
         {% else %}
