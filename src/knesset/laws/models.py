@@ -370,6 +370,7 @@ class GovProposal(BillProposal):
                                  blank=True, null=True)
 
 BILL_STAGE_CHOICES = (
+        (u'?', _(u'Unknown')),
         (u'1', _(u'Proposed')),
         (u'2', _(u'Pre-Approved')),
         (u'-2',_(u'Failed Pre-Approval')),
@@ -521,6 +522,13 @@ class Bill(models.Model):
                 self.stage = '3'
                 self.stage_date = kp.date
         except KnessetProposal.DoesNotExist:
+            pass
+        try:
+            gp = self.gov_proposal
+            if not(self.stage_date) or self.stage_date < gp.date:
+                self.stage = '3'
+                self.stage_date = gp.date
+        except GovProposal.DoesNotExist:
             pass
         for cm in self.first_committee_meetings.all():
             if not(self.stage_date) or self.stage_date < cm.date:
