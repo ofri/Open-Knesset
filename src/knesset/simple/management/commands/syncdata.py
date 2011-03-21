@@ -136,17 +136,25 @@ class Command(NoArgsCommand):
         logger.debug("finished updating laws data")
 
 
-    def update_votes(self):
-        """This function updates votes data online, without saving to files."""
+    def update_votes(self, start_from_id=None):
+        """Update votes data online, without saving to files.
+           start_from_id - to manually override the id from which we'll start looking.
+        
+        """
+        
 
         logger.info("update votes")
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
         if current_max_src_id == None: # the db contains no votes, meaning its empty
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
-        vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
+        vote_id = start_from_id or current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1, if not manually set
         limit_src_id = vote_id + 60 # look for next 60 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
+            if Vote.objects.filter(src_id=vote_id).count(): # we already have this vote
+                logger.debug('skipping reading vote with src_id %d, because we already have it' % vote_id)
+                vote_id = vote_id+1
+                continue # skip reading it again.
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
