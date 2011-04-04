@@ -475,18 +475,25 @@ class Bill(models.Model):
         self.update_stage()
     
     def update_votes(self):
+        used_votes = [] # ids of votes already assigned 'roles', so we won't match a vote in 2 places
         kp = KnessetProposal.objects.filter(bill=self)
         if len(kp):
             for this_v in kp[0].votes.all():
                 if (this_v.title.find('אישור'.decode('utf8')) == 0):
                     self.approval_vote = this_v
+                    used_votes.append(this_v.id)
                 if this_v.title.find('להעביר את'.decode('utf8')) == 0:
-                    self.first_vote = this_v
+                    if this_v.time.date() > kp[0].date:
+                        self.first_vote = this_v
+                    else:
+                        self.pre_votes.add(this_v)
+                    used_votes.append(this_v.id)
         pps = PrivateProposal.objects.filter(bill=self)
         if len(pps):
             for pp in pps:
                 for this_v in pp.votes.all():
-                    self.pre_votes.add(this_v)
+                    if this_v.id not in used_votes: 
+                        self.pre_votes.add(this_v)
         self.update_stage()
 
     
