@@ -1,5 +1,6 @@
 import datetime
 import urllib
+from operator import attrgetter
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -310,7 +311,11 @@ class TagHandler(BaseHandler):
             tags_ids = TaggedItem.objects.filter(object_id=object_id).filter(content_type=ctype).values_list('tag', flat=True)
             return Tag.objects.filter(id__in=tags_ids)
 
-        return Tag.objects.usage_for_model(Vote)
+        vote_tags = Tag.objects.usage_for_model(Vote)
+        bill_tags = Tag.objects.usage_for_model(Bill)
+        all_tags = list(set(vote_tags).union(bill_tags))
+        all_tags.sort(key=attrgetter('name'))  
+        return all_tags 
     
     @classmethod
     def number_of_items(self, tag):

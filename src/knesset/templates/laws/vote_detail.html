@@ -55,7 +55,7 @@
             {% if vote.tags %}
                 <div id="tags">
                 {% for t in vote.tags %}
-                   <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }}</a>
+                   <a href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
                 {% endfor %}
                 </div>
             {% else %}

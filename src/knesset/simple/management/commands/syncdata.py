@@ -149,18 +149,19 @@ class Command(NoArgsCommand):
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
         vote_id = start_from_id or current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1, if not manually set
-        limit_src_id = vote_id + 60 # look for next 60 votes. if results are found, this value will be incremented.
+        limit_src_id = current_max_src_id + 100 # look for next 100 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
             if Vote.objects.filter(src_id=vote_id).count(): # we already have this vote
                 logger.debug('skipping reading vote with src_id %d, because we already have it' % vote_id)
-                vote_id = vote_id+1
+                vote_id = vote_id + 1
+                limit_src_id = current_max_src_id + 100 # look for next 100 votes.
                 continue # skip reading it again.
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
                 logger.debug("no vote found at id %d" % vote_id)
             else:
-                limit_src_id = vote_id + 20 # results found, so we'll look for at least 20 more votes
+                limit_src_id = vote_id + 100 # results found, so we'll look for at least 100 more votes
                 (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
 
         #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t')
