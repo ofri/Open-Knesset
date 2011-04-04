@@ -476,6 +476,16 @@ class Bill(models.Model):
     
     def update_votes(self):
         used_votes = [] # ids of votes already assigned 'roles', so we won't match a vote in 2 places
+        gp = GovProposal.objects.filter(bill=self)
+        if gp:
+            gp = gp[0]
+            for this_v in gp.votes.all():
+                if (this_v.title.find('אישור'.decode('utf8')) == 0):
+                    self.approval_vote = this_v
+                    used_votes.append(this_v.id)
+                if this_v.title.find('להעביר את'.decode('utf8')) == 0:
+                    self.first_vote = this_v
+        
         kp = KnessetProposal.objects.filter(bill=self)
         if len(kp):
             for this_v in kp[0].votes.all():
