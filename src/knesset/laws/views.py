@@ -13,6 +13,7 @@ from django.db import IntegrityError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -24,7 +25,7 @@ from knesset.laws.models import *
 from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav.views import ListDetailView
-from knesset.hashnav import DetailView, ListView, method_decorator
+from knesset.hashnav import DetailView, ListView
 from knesset.agendas.models import Agenda
 
 import urllib
@@ -147,7 +148,7 @@ def vote_tag(request, tag):
         average = float(sum([mk.count for mk in mks]))/len(mks)
         mks = [mk for mk in mks if mk.count>=average]
         mks = tagging.utils.calculate_cloud(mks)
-        extra_context['members'] = mks    
+        extra_context['members'] = mks
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
@@ -155,23 +156,24 @@ def vote_tag(request, tag):
 
 
 class BillDetailView (DetailView):
-    allowed_methods = ['GET', 'POST']
-    
+    allowed_methods = ['get', 'post']
+    model = Bill
+
     def get_object(self):
         try:
             return super(BillDetailView, self).get_object()
         except Http404:
             self.slug_field = "popular_name_slug"
             return super(BillDetailView, self).get_object()
-            
-    def get_context(self, *args, **kwargs):
-        context = super(BillDetailView, self).get_context(*args, **kwargs)       
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BillDetailView, self).get_context_data(*args, **kwargs)
         bill = context['object']
         try:
             context['title'] = "%s,%s" % (bill.law.title, bill.title)
         except AttributeError:
             context['title'] = bill.title
-        if bill.popular_name is not None and bill.popular_name != "":
+        if bill.popular_name:
             context["keywords"] = bill.popular_name
             context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         try:
@@ -193,24 +195,30 @@ class BillDetailView (DetailView):
         return context
 
     @method_decorator(login_required)
-    def POST(self, object_id, **kwargs):
+    def post(self, request, **kwargs):
+
+        object_id = kwargs['pk']
+        if not object_id:
+            return HttpResponseBadRequest()
+
+
         vote = None
         bill = get_object_or_404(Bill, pk=object_id)
-        user_input_type = self.request.POST.get('user_input_type')
+        user_input_type = request.POST.get('user_input_type')
         if user_input_type == 'approval vote':
-            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
             bill.approval_vote = vote
             bill.update_stage()
         if user_input_type == 'first vote':
-            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
             bill.first_vote = vote
             bill.update_stage()
         if user_input_type == 'pre vote':
-            vote = Vote.objects.get(pk=self.request.POST.get('vote_id'))
+            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
             bill.pre_votes.add(vote)
             bill.update_stage()
 
-        action.send(self.request.user, verb='added-vote-to-bill',
+        action.send(request.user, verb='added-vote-to-bill',
                 description=vote,
                 target=bill,
                 timestamp=datetime.datetime.now())
@@ -353,10 +361,11 @@ class VoteListView(ListView):
         return context
 
 class VoteDetailView(DetailView):
+    model = Vote
     template_resource_name = 'vote'
-    
-    def get_context(self):
-        context = super(VoteDetailView, self).get_context()       
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(VoteDetailView, self).get_context_data(*args, **kwargs)
         vote = context['vote']
         context['title'] = vote.title
 
@@ -366,12 +375,12 @@ class VoteDetailView(DetailView):
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
         context['bills'] = related_bills
-        
+
         if self.request.user.is_authenticated():
             context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
         else:
             context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
-        
+
         return context
 
 

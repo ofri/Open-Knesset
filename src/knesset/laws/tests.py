@@ -64,7 +64,7 @@ class BillViewsTest(TestCase):
 
     def testBillDetail(self):
         res = self.client.get(reverse('bill-detail',
-                                 kwargs={'object_id': self.bill_1.id}))
+                                 kwargs={'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
@@ -73,7 +73,7 @@ class BillViewsTest(TestCase):
     def test_bill_detail_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.slug,
-                                         'object_id': self.bill_1.id}))
+                                         'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
@@ -86,7 +86,7 @@ class BillViewsTest(TestCase):
     def test_bill_popular_name_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.popular_name_slug,
-                                         'object_id': self.bill_1.id}))
+                                         'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
@@ -102,7 +102,7 @@ class BillViewsTest(TestCase):
     '''
     def testLoginRequired(self):
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}))
+                           kwargs={'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 302)
         self.assertTrue(res['location'].startswith('%s%s'  %
                                        ('http://testserver', settings.LOGIN_URL)))
@@ -110,7 +110,7 @@ class BillViewsTest(TestCase):
     def testPOSTApprovalVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'approval vote',
                                 'vote_id': self.vote_1.id})
         self.assertEqual(res.status_code, 302)
@@ -126,7 +126,7 @@ class BillViewsTest(TestCase):
     def testPOSTFirstVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'first vote',
                                 'vote_id': self.vote_2.id})
         self.assertEqual(res.status_code, 302)
@@ -142,7 +142,7 @@ class BillViewsTest(TestCase):
     def testPOSTPreVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'pre vote',
                                 'vote_id': self.vote_2.id})
         self.assertEqual(res.status_code, 302)
@@ -181,7 +181,7 @@ class VoteViewsTest(TestCase):
                                               'JKM')
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
                                               'ADRIAN')
-        g = Group.objects.get(name='Valid Email')
+        g, created = Group.objects.get_or_create(name='Valid Email')
         self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
@@ -202,7 +202,7 @@ class VoteViewsTest(TestCase):
 
     def testVoteDetail(self):
         res = self.client.get(reverse('vote-detail',
-                                 kwargs={'object_id': self.vote_1.id}))
+                                 kwargs={'pk': self.vote_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/vote_detail.html')
@@ -232,14 +232,14 @@ class VoteViewsTest(TestCase):
                                  kwargs={'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
-        
+
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
         url = reverse('create-tag',
                                  kwargs={'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertEqual(res.status_code, 200)
-        
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()

@@ -29,12 +29,12 @@ logger = logging.getLogger("open-knesset.committees.views")
 
 class CommitteeDetailView(DetailView):
 
-    allowed_methods = ('GET', )
+    model = Committee
 
-    def get_context(self, *args, **kwargs):       
-        context = super(CommitteeDetailView, self).get_context(*args, **kwargs)
-        cm = context['object']  
-        
+    def get_context_data(self, *args, **kwargs):
+        context = super(CommitteeDetailView, self).get_context_data(*args, **kwargs)
+        cm = context['object']
+
         def annotate_members(qs):
             members = []
             for m in qs:
@@ -54,14 +54,14 @@ class CommitteeDetailView(DetailView):
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
         context['annotations'] = cm.annotations.order_by('-timestamp')
-        return context 
+        return context
 
 class MeetingDetailView(DetailView):
 
-    allowed_methods = ('GET', 'POST')
+    model = CommitteeMeeting
 
-    def get_context(self, *args, **kwargs):
-        context = super(MeetingDetailView, self).get_context(*args, **kwargs)  
+    def get_context_data(self, *args, **kwargs):
+        context = super(MeetingDetailView, self).get_context_data(*args, **kwargs)  
         cm = context['object']
         colors = {}
         speakers = cm.parts.order_by('speaker__mk').values_list('header','speaker__mk').distinct()
@@ -76,12 +76,12 @@ class MeetingDetailView(DetailView):
             parts_lengths[part.id] = len(part.body)
         context['parts_lengths'] = json.dumps(parts_lengths)
         context['paginate_by'] = COMMITTEE_PROTOCOL_PAGINATE_BY
-        return context 
+        return context
 
 
     @method_decorator(login_required)
-    def POST(self, object_id, **kwargs):
-        cm = get_object_or_404(CommitteeMeeting, pk=object_id)
+    def post(self, request, **kwargs):
+        cm = get_object_or_404(CommitteeMeeting, pk=kwargs['pk'])
         bill = None
         request = self.request
         user_input_type = request.POST.get('user_input_type')
