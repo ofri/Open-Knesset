@@ -385,6 +385,7 @@ BILL_STAGE_CHOICES = (
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
+    full_title = models.CharField(max_length=2000, blank=True)
     slug = models.SlugField(max_length=1000)
     popular_name = models.CharField(max_length=1000, blank=True)
     popular_name_slug = models.CharField(max_length=1000, blank=True)

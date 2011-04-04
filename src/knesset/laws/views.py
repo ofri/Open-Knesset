@@ -93,12 +93,12 @@ def bill_auto_complete(request):
     if not 'query' in request.GET:
         raise Http404
 
-    options = Bill.objects.filter(title__icontains=request.GET['query'])[:30]
+    options = Bill.objects.filter(full_title__icontains=request.GET['query'])[:30]
     data = []
     suggestions = []
     for i in options:
         data.append(i.id)
-        suggestions.append(i.title)
+        suggestions.append(i.full_title)
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 
