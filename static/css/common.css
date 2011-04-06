@@ -6,7 +6,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 /* SETUP */
 
-body { margin:0; padding:0; background-color:#3e6c86; color:white; }
+body { margin:0; padding:0; background-color:#3e6c86; background-image:url(../img/background-blue.jpg); color:white; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
 #container { width:80%; margin: 0 auto;}
 #homepage #container { max-width:100em; }
@@ -83,6 +83,9 @@ a:hover { text-decoration:underline;}
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
     border-radius:1em;
+    -moz-box-shadow: 4px 4px 6px rgba(0,0,0,.9);
+    -webkit-box-shadow: 4px 4px 6px rgba(0,0,0,.9);
+    box-shadow: 4px 4px 6px rgba(0,0,0,.9);    
 }
 #content-main>div { clear:both; padding-top:0.5em;}
 .sidebar { font-size:92%; }
