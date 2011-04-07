@@ -12,8 +12,19 @@
 {% block keywords %}{{ title }},{{ keywords }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
+{% block messages %}
+<span id="message_login">
+    {% trans "You have to be logged in to enable the watch feature." %}<br>
+    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
+    {% trans "or" %}
+    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
+</span>
+{% endblock %}
 {% block divcontent %}
-<h1>{{ object.law.title }} {{ object.title }}</h1>
+    <ul class="actions">
+        <li><span id="watch" class="awesome-button medium"></span></li>        
+    </ul>
+    <h1>{{ object.law.title }} {{ object.title }}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
@@ -417,10 +428,56 @@
     
     <script type="text/javascript"><!--
     
-    $(document).ready(function() {
-          $(".proposal_content_text").hide();
-          $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
+      $(document).ready(function() {
+            $(".proposal_content_text").hide();
+            $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
                                                         return false;});
+                                                        
+                                                        
+            var object_id = {{object.id}};
+            {% if watched %}
+                document.is_watched = true;
+                $('#watch').html("{% trans 'Unwatch' %}");
+            {% else %}
+                document.is_watched = false;
+                $('#watch').html("{% trans 'Watch' %}");
+            {% endif %};
+            $('#watch').click( function () {
+                if (document.is_watched) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{% url follow-bills %}',
+                        data: {unwatch: object_id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = false;
+                            this.html("{% trans 'Watch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_unknown").html()
+                            $.jGrowl(msg, {life: 5000});
+                            $('#message_login').show();
+                        }
+                    });
+                }
+                else {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{% url follow-bills %}',
+                        data: {watch: object_id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = true;
+                            this.html("{% trans 'Unwatch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_login").html()
+                            $.jGrowl(msg, {sticky: true});
+                        }
+                    });
+                }
+                return (false);
+            })
     });
     
     --></script>

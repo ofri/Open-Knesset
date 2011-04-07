@@ -56,6 +56,12 @@ class UserProfile(models.Model):
                 content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
     
     @property
+    def bills(self):
+        return map(lambda x: x.actor, 
+            Follow.objects.filter(user=self.user, 
+                content_type=ContentType.objects.get_for_model(Bill)).select_related('actor'))
+
+    @property
     def parties(self):
         #TODO: ther has to be a faster way
         return map(lambda x: x.actor, 

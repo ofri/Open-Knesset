@@ -176,6 +176,11 @@ class BillDetailView (DetailView):
         if bill.popular_name:
             context["keywords"] = bill.popular_name
             context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            context['watched'] = bill in p.bills
+        else:
+            context['watched'] = False
         try:
             kp = bill.knesset_proposal
             t = kp.law.title + ' ' + kp.title
