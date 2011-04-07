@@ -26,16 +26,16 @@ from knesset.committees.models import CommitteeMeeting
 from forms import RegistrationForm, EditProfileForm
 
 class PublicUserProfile(DetailView):
-
-    queryset = User.objects.all()
+    model = User
     template_resource_name = 'viewed_user' # can't be 'user' because that name is 
                                            # overriden by request context processor!
     slug_field='username'
+    context_object_name = 'viewed_user'
 
-    def get_context(self):
-        context = super(PublicUserProfile, self).get_context()
-        user = context['viewed_user']
-        context.update ({
+    def get_context_data(self, **kwargs):
+        context = super(PublicUserProfile, self).get_context_data(**kwargs)
+        user = self.object
+        context.update({
             'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
             'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
         })

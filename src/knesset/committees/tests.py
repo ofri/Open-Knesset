@@ -112,7 +112,7 @@ I have a deadline''')
 
     def testLoginRequired(self):
         res = self.client.post(reverse('committee-meeting',
-                           kwargs={'object_id': self.meeting_1.id}))
+                           kwargs={'pk': self.meeting_1.id}))
         self.assertFalse(self.bill_1 in self.meeting_1.bills_first.all())
         self.assertEqual(res.status_code, 302)
         self.assertTrue(res['location'].startswith('%s%s'  %
@@ -121,7 +121,7 @@ I have a deadline''')
     def testConnectToMK(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('committee-meeting',
-                           kwargs={'object_id': self.meeting_1.id}),
+                           kwargs={'pk': self.meeting_1.id}),
                                {'user_input_type': 'mk',
                                 'mk_name': self.mk_1.name})
         self.assertEqual(res.status_code, 302)
@@ -131,7 +131,7 @@ I have a deadline''')
     def testConnectToBill(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('committee-meeting',
-                                       kwargs={'object_id':
+                                       kwargs={'pk':
                                                self.meeting_1.id}),
                                {'user_input_type': 'bill',
                                 'bill_id': self.bill_1.id})
