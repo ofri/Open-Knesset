@@ -10,6 +10,7 @@ from actstream import follow
 from actstream.models import Follow
 
 from knesset.mks.models import Party, Member, GENDER_CHOICES
+from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
 from knesset.committees.models import CommitteeMeeting
 
@@ -53,7 +54,7 @@ class UserProfile(models.Model):
         return map(lambda x: x.actor, 
             Follow.objects.filter(user=self.user, 
                 content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
-
+    
     @property
     def parties(self):
         #TODO: ther has to be a faster way
@@ -77,7 +78,7 @@ class UserProfile(models.Model):
         
     @models.permalink
     def get_absolute_url(self):
-        return ('public-profile', (), {'object_id': self.user.id})
+        return ('public-profile', (), {'pk': self.user.id})
 
     def has(self, badge_type):
         return self.badges.filter(badge_type=badge_type).count()>0
