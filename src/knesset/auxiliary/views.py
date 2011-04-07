@@ -24,7 +24,7 @@ def main(request):
         context['vote'] = votes[random.randrange(votes.count())]
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
         tags = Tag.objects.cloud_for_model(Bill)
-        context['tag'] = tags[random.randrange(len(tags))]
+        context['tag'] = random.choice(tags) if tags else None
         context['annotations'] = Annotation.objects.all().order_by('timestamp').reverse()
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')    
