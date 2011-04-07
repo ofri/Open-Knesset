@@ -206,7 +206,7 @@ class Vote(models.Model):
     objects = VoteManager()
 
     class Meta:
-        ordering = ('-time',)
+        ordering = ('-time','-id')
         verbose_name = _('Vote')
         verbose_name_plural = _('Votes')
 
