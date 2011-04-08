@@ -1,22 +1,23 @@
 #encoding: utf-8
 import itertools
+import logging
 from datetime import date, timedelta
 
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
-from django.template.defaultfilters import slugify
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
+from tagging.forms import TagField
+from actstream import Action
+from actstream.models import action
+
+from knesset.mks.models import Member, Party
 from knesset.tagvotes.models import TagVote
 from knesset.utils import disable_for_loaddata, slugify_name
 
-from tagging.forms import TagField
-
-import logging
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', _('For')),
@@ -549,9 +550,10 @@ class Bill(models.Model):
         except GovProposal.DoesNotExist:
             pass
         for cm in self.first_committee_meetings.all():
-            if not(self.stage_date) or self.stage_date < cm.date:
-                if self.stage != '-2.1': # if it was converted to discussion, seeing it in
-                                         # a cm doesn't mean much.
+            if not(self.stage_date) or self.stage_date < cm.date:                
+                # if it was converted to discussion, seeing it in
+                # a cm doesn't mean much.
+                if self.stage != '-2.1':                                          
                     self.stage = '3'
                     self.stage_date = cm.date
         for v in self.pre_votes.all():
