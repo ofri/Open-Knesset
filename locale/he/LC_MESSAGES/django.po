@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-08 15:59+0300\n"
-"PO-Revision-Date: 2011-04-08 16:00+0200\n"
+"POT-Creation-Date: 2011-04-08 16:27+0300\n"
+"PO-Revision-Date: 2011-04-08 16:28+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -883,7 +883,7 @@ msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 msgid "Other Updates"
 msgstr "עדכונים שונים"
 
-#: notify/management/commands/notify.py:168
+#: notify/management/commands/notify.py:162
 #: templates/notify/header.html:3
 #: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
@@ -1071,6 +1071,15 @@ msgstr "אנא השתמש/י בקישור שנשלח במייל כדי לאשר 
 #: templates/accounts/email_validation_successful.html:8
 msgid "Your email has been validated, so you can now edit stuff!"
 msgstr "הדואר האלקטרוני אומת. מעכשיו תוכל/י לערוך."
+
+#: templates/activity/agenda-vote_relation_updated/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"A vote's relation to the agenda has changed: <a href=\"http://%(domain)s%(url)s\">%(vote)s</a>\n"
+msgstr ""
+"\n"
+"שיוך ההצבעה לאג'נדה עודכן: <a href=\"http://%(domain)s%(url)s\">%(vote)s</a>\n"
 
 #: templates/activity/agenda_ascribed/action_email.html:2
 #, python-format
