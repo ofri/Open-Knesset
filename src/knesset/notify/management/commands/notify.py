@@ -15,6 +15,7 @@ logger = logging.getLogger("open-knesset.notify")
 from actstream.models import Follow, Action
 from mailer import send_html_mail
 from knesset.mks.models import Member
+from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
 from knesset.notify.models import LastSent
 from knesset.user.models import UserProfile
@@ -24,9 +25,10 @@ class Command(NoArgsCommand):
 
     requires_model_validation = False
 
-    update_models = [Member,Agenda,None]
+    update_models = [Member,Bill,Agenda,None]
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
     days_back = getattr(settings, 'DEFAULT_NOTIFICATION_DAYS_BACK', 10)
+    print days_back
     lang = getattr(settings, 'LANGUAGE_CODE', 'he')
     domain = Site.objects.get_current().domain
 
@@ -51,15 +53,18 @@ class Command(NoArgsCommand):
             return (model, _('Other Updates'), _('Other Updates')) 
 
     def get_email_for_user(self, user):
+        print user.username
         updates = dict(zip(self.update_models, ([] for x in self.update_models))) # will contain the updates to be sent
         updates_html = dict(zip(self.update_models, ([] for x in self.update_models)))
         follows = Follow.objects.filter(user=user) # everything this user is following
         # sometime a user follows something several times. we want to filter that out:
         follows = set([f.actor for f in follows])
         for f in follows:
+            
             if not f:
                 logger.warning('Follow object with None actor. ignoring')
                 continue
+            print "object = %s    id = %d" % (f, f.id)
             model_class = f.__class__
             model_template = f.__class__.__name__.lower()
             try: 
@@ -75,6 +80,7 @@ class Command(NoArgsCommand):
             try: # get actions that happened since last update
                 last_sent = LastSent.objects.get(user=user, content_type=content_type, object_pk=f.id)
                 last_sent_time = last_sent.time
+                print "last_sent_time = %s" % str(last_sent_time)
                 stream = Action.objects.filter(actor_content_type = content_type,
                                                actor_object_id = f.id,
                                                timestamp__gt=last_sent_time,
@@ -86,7 +92,9 @@ class Command(NoArgsCommand):
                                                timestamp__gt=datetime.datetime.now()-datetime.timedelta(self.days_back),
                                                ).order_by('-timestamp')
                 last_sent = LastSent.objects.create(user=user,content_type=content_type, object_pk=f.id)
+                print "first time sending this object"
             if stream: # this actor has some updates
+                print("len(stream)=%d" % len(stream))
                 try: # genereate the appropriate header for this actor class
                     header = render_to_string(('notify/%(model)s_header.txt' % {'model': model_template}),{'model':model_name,'object':f})
                 except TemplateDoesNotExist:
@@ -99,6 +107,7 @@ class Command(NoArgsCommand):
                 updates_html[key].append(header_html)
                 
             for action_instance in stream: # now generate the updates themselves
+                print "action_instance = %s" % action_instance
                 try:                            
                     action_output = render_to_string(('activity/%(verb)s/action_email.txt' % { 'verb':action_instance.verb.replace(' ','_') }),{ 'action':action_instance },None)
                 except TemplateDoesNotExist: # fallback to the generic template

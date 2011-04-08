@@ -581,11 +581,6 @@ class Bill(models.Model):
         Action.objects.stream_for_actor(self).delete()
         ps = list(self.proposals.all())
         try:
-            ps.append(self.knesset_proposal)
-        except KnessetProposal.DoesNotExist:
-            pass
-
-        try:
             ps.append(self.gov_proposal)
         except GovProposal.DoesNotExist:
             pass
@@ -593,17 +588,32 @@ class Bill(models.Model):
         for p in ps:
             action.send(self, verb='was-proposed', target=p,
                         timestamp=p.date, description=p.title)
+                        
+        try:
+            p = self.knesset_proposal
+            action.send(self, verb='was-knesset-proposed', target=p,
+                        timestamp=p.date, description=p.title)
+        except KnessetProposal.DoesNotExist:
+            pass
 
         for v in self.pre_votes.all():
-            action.send(self, verb='pre-voted', target=v,
-                        timestamp=v.time, description=v.passed)
+            discussion = False
+            for h in CONVERT_TO_DISCUSSION_HEADERS:
+                if v.title.find(h)>=0: # converted to discussion
+                    discussion = True
+            if discussion:
+                action.send(self, verb='was-converted-to-discussion', target=v,
+                            timestamp=v.time)
+            else:
+                action.send(self, verb='was-pre-voted', target=v,
+                            timestamp=v.time, description=v.passed)
 
         if self.first_vote:
-            action.send(self, verb='first-voted', target=self.first_vote,
+            action.send(self, verb='was-first-voted', target=self.first_vote,
                         timestamp=self.first_vote.time, description=self.first_vote.passed)
 
         if self.approval_vote:
-            action.send(self, verb='approval-voted', target=self.approval_vote,
+            action.send(self, verb='was-approval-voted', target=self.approval_vote,
                         timestamp=self.approval_vote.time, description=self.approval_vote.passed)
 
         cms = itertools.chain(self.second_committee_meetings.all(),

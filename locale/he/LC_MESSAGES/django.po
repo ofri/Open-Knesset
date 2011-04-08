@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-08 02:14+0300\n"
-"PO-Revision-Date: 2011-04-08 02:14+0200\n"
+"POT-Creation-Date: 2011-04-08 15:59+0300\n"
+"PO-Revision-Date: 2011-04-08 16:00+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -342,7 +342,7 @@ msgstr "הזנה של הצעות חוק בכנסת"
 msgid "Bills from the Open Knesset site"
 msgstr "הצעות חוק מאתר כנסת פתוחה"
 
-#: laws/models.py:22
+#: laws/models.py:23
 #: templates/include/member_detail.html:50
 #: templates/include/vote_detail.html:13
 #: templates/laws/bill_detail.html:164
@@ -354,7 +354,7 @@ msgstr "הצעות חוק מאתר כנסת פתוחה"
 msgid "For"
 msgstr "בעד"
 
-#: laws/models.py:23
+#: laws/models.py:24
 #: templates/include/member_detail.html:58
 #: templates/include/vote_detail.html:30
 #: templates/laws/bill_detail.html:167
@@ -366,26 +366,26 @@ msgstr "בעד"
 msgid "Against"
 msgstr "נגד"
 
-#: laws/models.py:24
+#: laws/models.py:25
 #: templates/include/member_detail.html:66
 msgid "Abstain"
 msgstr "נמנע"
 
-#: laws/models.py:25
+#: laws/models.py:26
 #: templates/include/member_detail.html:74
 msgid "No Vote"
 msgstr "נוכח ולא הצביע"
 
-#: laws/models.py:49
-#: laws/models.py:60
+#: laws/models.py:50
+#: laws/models.py:61
 msgid "N/A"
 msgstr "לא ישים"
 
-#: laws/models.py:210
+#: laws/models.py:211
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:211
+#: laws/models.py:212
 #: laws/urls.py:11
 #: laws/urls.py:14
 #: templates/include/member_detail.html:47
@@ -396,58 +396,58 @@ msgstr "הצבעה"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/models.py:373
+#: laws/models.py:374
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: laws/models.py:374
+#: laws/models.py:375
 #: mks/forms.py:6
 msgid "Proposed"
 msgstr "הצעה"
 
-#: laws/models.py:375
+#: laws/models.py:376
 msgid "Pre-Approved"
 msgstr "עברה קריאה טרומית"
 
-#: laws/models.py:376
+#: laws/models.py:377
 msgid "Failed Pre-Approval"
 msgstr "נפלה בקריאה טרומית"
 
-#: laws/models.py:377
+#: laws/models.py:378
 msgid "Converted to discussion"
 msgstr "הוסבה לנושא לדיון"
 
-#: laws/models.py:378
+#: laws/models.py:379
 msgid "In Committee"
 msgstr "בוועדה"
 
-#: laws/models.py:379
+#: laws/models.py:380
 #: templates/laws/bill_detail.html:283
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
-#: laws/models.py:380
+#: laws/models.py:381
 msgid "Failed First Vote"
 msgstr "נפלה בקריאה ראשונה"
 
-#: laws/models.py:381
+#: laws/models.py:382
 msgid "Committee Corrections"
 msgstr "בתיקונים בוועדה"
 
-#: laws/models.py:382
+#: laws/models.py:383
 msgid "Approved"
 msgstr "אושרה"
 
-#: laws/models.py:383
+#: laws/models.py:384
 msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
-#: laws/models.py:403
+#: laws/models.py:404
 #: templates/laws/vote_detail.html:125
 msgid "Bill"
 msgstr "הצעת חוק"
 
-#: laws/models.py:404
+#: laws/models.py:405
 #: laws/urls.py:12
 #: templates/base.html:107
 #: templates/committees/committeemeeting_detail.html:45
@@ -879,11 +879,11 @@ msgstr "מפלגות לפי ממוצע ישיבות וועדות בחודש"
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 
-#: notify/management/commands/notify.py:51
+#: notify/management/commands/notify.py:53
 msgid "Other Updates"
 msgstr "עדכונים שונים"
 
-#: notify/management/commands/notify.py:159
+#: notify/management/commands/notify.py:168
 #: templates/notify/header.html:3
 #: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
@@ -1129,6 +1129,130 @@ msgstr "של"
 #: templates/activity/voted/action_email.txt:2
 msgid "present and didn't vote"
 msgstr "נכח ולא הצביע"
+
+#: templates/activity/was-approval-voted/action_email.html:3
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">passed approval vote</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">אושרה בקריאה שלישית</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-approval-voted/action_email.html:7
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">failed approval vote</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">נפלה בקריאה שלישית</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-converted-to-discussion/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"<span class=\"action-verb\">was converted to discussion</span> on %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+msgstr ""
+"\n"
+"<span class=\"action-verb\">הוסבה לנושא לדיון</span> בתאריך %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+
+#: templates/activity/was-discussed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"<span class=\"action-verb\">was discussed</span> on %(date)s: <a href=\"http://%(domain)s%(url)s\">%(committee_meeting)s</a><br>\n"
+msgstr ""
+"\n"
+"<span class=\"action-verb\">נידונה בוועדה</span> בתאריך %(date)s: <a href=\"http://%(domain)s%(url)s\">%(committee_meeting)s</a><br>\n"
+
+#: templates/activity/was-first-voted/action_email.html:3
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">passed first vote</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">עברה קריאה ראשונה</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-first-voted/action_email.html:7
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">failed first vote</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">נפלה בקריאה ראשונה</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-knesset-proposed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"<span class=\"action-verb\">was knesset-proposed</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">see more details</a><br>\n"
+msgstr ""
+"\n"
+"<span class=\"action-verb\">נוסחה על ידי וועדה</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">פרטים נוספים</a><br>\n"
+
+#: templates/activity/was-pre-voted/action_email.html:3
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">passed pre vote</span> on %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">עברה קריאה טרומית</span> בתאריך %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-pre-voted/action_email.html:7
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">failed pre vote</span> on %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">נפלה בקריאה טרומית</span> בתאריך %(time)s. <a href=\"http://%(domain)s%(url)s\">%(vote)s</a><br>\n"
+"    "
+
+#: templates/activity/was-proposed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"<span class=\"action-verb\">was proposed</span> on %(date)s. <a href=\"http://%(domain)s%(url)s\">see more details</a><br>\n"
+msgstr ""
+"\n"
+"<span class=\"action-verb\">הוצעה</span> בתאריך %(date)s. <a href=\"http://%(domain)s%(url)s\">פרטים נוספים</a><br>\n"
+
+#: templates/activity/was-voted-on-gov/action_email.html:3
+#, python-format
+msgid ""
+"\n"
+"    <span class=\"action-verb\">government stand was decided</span> on %(date)s: %(stand)s<br>\n"
+"    "
+msgstr ""
+"\n"
+"    <span class=\"action-verb\">עמדת הממשלה נקבעה בתאריך</span> %(date)s: %(stand)s<br>\n"
+"    "
+
+#: templates/activity/was-voted-on-gov/action_email.html:7
+#, python-format
+msgid ""
+"\n"
+"    the government discussed the bill on %(date)s<br>\n"
+"    "
+msgstr ""
+"\n"
+"    הממשלה דנה בחוק בתאריך %(date)s<br>\n"
+"    "
 
 #: templates/activity_aggr/tag-voted/aggr_action.html:5
 msgid "voted on several tags"
