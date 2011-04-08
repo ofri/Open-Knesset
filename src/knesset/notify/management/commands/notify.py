@@ -50,7 +50,7 @@ class Command(NoArgsCommand):
         except TemplateDoesNotExist:
             return (model, model._meta.verbose_name_plural, '<h2>%s</h2>' % model._meta.verbose_name_plural.format()) 
         except AttributeError:
-            return (model, _('Other Updates'), _('Other Updates')) 
+            return (model, _('Other Updates'), '<h2>%s</h2>' % _('Other Updates')) 
 
     def get_email_for_user(self, user):
         print user.username
