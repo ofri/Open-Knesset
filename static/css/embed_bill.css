@@ -1,0 +1,235 @@
+body{
+    margin:0px;
+    background: #fafafc;
+    direction: rtl;
+    text-align: right;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666;
+    font-size: 15px;
+    max-height: 500px;
+}
+
+a{
+	color: #0080ff;
+}
+
+#header,
+#graph,
+#footer{
+	width: 500px;
+}
+
+#header{
+    background: #FAFAFC;
+    height: 60px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 20;
+	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+}
+#header:hover{
+	height: 330px;
+}
+	#details{
+		margin: 10px 0;
+		padding: 0 10px;
+		width: 362px;
+		float: right;
+		border-left: 1px dotted #cccccc;
+	}
+		.label{
+			font-size: 11px;
+			color: #808080;
+			display: block;
+		}
+		h1{
+			font-size: 13px;
+			font-weight: bold;
+			color: #0080ff;
+			margin-top: 0;
+		}
+		#excerpt{
+			margin: 10px 0; 
+		}
+			#excerpt p{
+				margin: 0 0 10px;
+			}
+			#external-links a{
+				display: block;
+				font-size: 13px;
+			}
+	#pms{
+		margin: 10px;
+		float: right;
+	}
+	a.pull{
+		clear: both;
+		width: 100%;
+		display: block;
+		background: #eeeff5;
+		text-indent: -30000px;
+		text-decoration: none;
+		position: absolute;
+		bottom: 0;
+	}
+
+#graph{
+	
+}
+	ul#steps{
+		margin: 0;
+		padding: 0;
+	}
+		ul#steps li{
+			background: #eeeff5 repeat-y;
+			width: 50px;
+			float: right;
+			height: 100%;
+			margin: 0;
+			min-height: 360px;
+			padding-top: 40px;
+			position: relative;
+			list-style: none;
+		}
+		ul#steps li.current{
+			/*background-image: url(../img/embed_step_shadow.png);*/
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+		}
+		ul#steps li.odd{
+			background-color: #f5f5f9;
+		}
+		ul#steps li.passed{
+			background-color: #e6eee6;
+		}
+		ul#steps li.odd.passed{
+			background-color: #d6e3d6;
+		}
+		ul#steps li.failed{
+			background-color: #f8ded7;
+		}
+		ul#steps li.odd.failed{
+			background-color: #f4c8bd;
+		}
+			ul#steps li div.step{
+				height: 86px;
+			}
+			ul#steps li.passed div.step{
+				background: url(../img/embed_line_passed.png) bottom repeat-x;
+			}
+			ul#steps li#initiated div.step{
+				background-position: bottom left;
+				background-repeat: no-repeat;
+			}
+			ul#steps li#passed div.step{
+				background-position: bottom right;
+				background-repeat: no-repeat;
+			}
+			ul#steps li.pending.current div.step{
+				background: url(../img/embed_line_pending.png) bottom right no-repeat;
+			}
+			ul#steps li.failed.current div.step{
+				background: url(../img/embed_line_failed.png) bottom right no-repeat;
+			}
+				ul#steps li a{
+					display: none;
+					width: 20px;
+					height: 20px;
+					margin: 0 auto 8px;
+					text-indent: -30000px;
+					text-decoration: none;
+				}
+				ul#steps li:hover a{
+					display: block;
+				}
+				ul#steps li a.link{
+					background: url(../img/embed_link.png);
+				}
+				ul#steps li a.info{
+					background: url(../img/embed_info.png);
+				}
+				ul#steps li.pending a{
+					background-position: 0 -20px;
+				}
+				ul#steps li.failed a{
+					background-position: 0 -40px;
+				}
+				ul#steps li a:hover{
+					background-position: 0 bottom;
+				}
+				ul#steps li span.date{
+					display: block;
+					position: absolute;
+					bottom: 0;
+					text-align: center;
+					font-size: 11px;
+					height: 60px;
+					margin: 0 auto;
+					width: 100%;
+					color: #808080;
+					opacity: 0.5;
+				}
+				ul#steps li.passed span.date{
+					color: #43873a;
+				}
+				ul#steps li:hover span.date{
+					opacity: 1;
+				}
+				ul#steps li .icon{
+					position: absolute;
+					top: 100px;
+					width: 100%;
+					height: 50px;
+					background: url(../img/embed_icons_pending.png);
+					text-indent: -999999px;
+				}
+				ul#steps li#initiated .icon{
+					background-position: -450px center;
+				}
+				ul#steps li#pre-vote .icon{
+					background-position: -400px center;
+				}
+				ul#steps li#summoned-1 .icon{
+					background-position: -350px center;
+				}
+				ul#steps li#committee-1 .icon{
+					background-position: -300px 0;
+				}
+				ul#steps li#vote-1 .icon{
+					background-position: -250px 0;
+				}
+				ul#steps li#summoned-2 .icon{
+					background-position: -200px 0;
+				}
+				ul#steps li#committee-2 .icon{
+					background-position: -150px 0;
+				}
+				ul#steps li#vote-2 .icon{
+					background-position: -100px 0;
+				}
+				ul#steps li#vote-3 .icon{
+					background-position: -50px 0;
+				}
+				ul#steps li#passed .icon{
+					background-position: 0px 0;
+				}
+				ul#steps li.passed .icon{
+					background-image: url(../img/embed_icons_passed.png);
+				}
+				ul#steps li.failed .icon{
+					background-image: url(../img/embed_icons_failed.png);
+				}
+				
+#footer{
+	position: absolute;
+	bottom: 0;
+    background: #FAFAFC;
+    height: 20px;
+    font-size: 13px;
+	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+}
+	#footer #credit{
+		float: right;
+	}
+	#footer #share{
+		float: left;
+	}
