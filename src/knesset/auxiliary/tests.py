@@ -10,14 +10,7 @@ from tagging.models import Tag,TaggedItem
 from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
-
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
+from django.utils import simplejson as json
 
 class InternalLinksTest(TestCase):
 

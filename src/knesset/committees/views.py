@@ -15,14 +15,7 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event 
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
-
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
+from django.utils import simplejson as json
 
 logger = logging.getLogger("open-knesset.committees.views")
 
