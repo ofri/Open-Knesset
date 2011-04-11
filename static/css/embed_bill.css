@@ -43,10 +43,16 @@ a{
 			display: block;
 		}
 		h1{
-			font-size: 13px;
-			font-weight: bold;
-			color: #0080ff;
-			margin-top: 0;
+		    color: #0080FF;
+		    font-size: 13px;
+		    font-weight: bold;
+		    height: 1em;
+		    margin-top: 0;
+		    overflow: hidden;
+		}
+		#header:hover h1{
+			height: auto;
+			overflow: auto;
 		}
 		#excerpt{
 			margin: 10px 0; 
@@ -58,10 +64,45 @@ a{
 				display: block;
 				font-size: 13px;
 			}
+		#header .status{
+			display: none;
+		}
 	#pms{
 		margin: 10px;
 		float: right;
+		width: 97px;
 	}
+		#pms ul{
+			height: 26px;
+			overflow: hidden;
+			margin: 0;
+    		padding: 0;
+    		float: right;
+    		width: 75px;
+		}
+		#header:hover #pms ul{
+			height: auto;
+			overflow: auto;
+    		width: 100px;
+		}
+			#pms li,
+			#pms a.more{
+				float: right;
+				margin-left: 3px;
+				list-style: none;
+			}
+			#pms a.more{
+				margin-left: 0;
+				text-decoration: none;
+				line-height: 1.5em;
+			}
+			#header:hover #pms a.more{
+				display: none;
+			}
+				#pms li img{
+					width: 20px;
+					border: 1px solid #1088fe;
+				}
 	a.pull{
 		clear: both;
 		width: 100%;
@@ -71,6 +112,7 @@ a{
 		text-decoration: none;
 		position: absolute;
 		bottom: 0;
+		height: 10px;
 	}
 
 #graph{
@@ -171,6 +213,9 @@ a{
 				ul#steps li.passed span.date{
 					color: #43873a;
 				}
+				ul#steps li.failed span.date{
+					color: #b44630;
+				}
 				ul#steps li:hover span.date{
 					opacity: 1;
 				}
@@ -222,14 +267,23 @@ a{
 #footer{
 	position: absolute;
 	bottom: 0;
-    background: #FAFAFC;
+    background: #EEEFF5;
     height: 20px;
     font-size: 13px;
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
 }
+	#footer,
+	#footer a{
+		color: #999;
+	}
+	#footer a:hover{
+		color: #666;
+	}
 	#footer #credit{
 		float: right;
+		padding: 1px 5px;
 	}
 	#footer #share{
 		float: left;
+		padding: 1px 5px;
 	}
