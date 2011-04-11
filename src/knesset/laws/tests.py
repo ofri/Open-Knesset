@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_str, smart_unicode
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from actstream.models import Action
@@ -182,6 +182,10 @@ class VoteViewsTest(TestCase):
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
                                               'ADRIAN')
         g, created = Group.objects.get_or_create(name='Valid Email')
+        ct = ContentType.objects.get_for_model(Tag)
+        p = Permission.objects.get(codename='add_tag', content_type=ct)        
+        g.permissions.add(p)
+        
         self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
