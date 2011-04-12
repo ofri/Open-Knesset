@@ -101,6 +101,7 @@ a{
 			}
 				#pms li img{
 					width: 20px;
+					height: auto;
 					border: 1px solid #1088fe;
 				}
 	a.pull{
