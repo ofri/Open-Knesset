@@ -140,6 +140,9 @@ a{
 			position: relative;
 			list-style: none;
 		}
+		ul#steps li:hover{
+			background-image: url(../img/embed_hover.png);
+		}
 		ul#steps li.current{
 			/*background-image: url(../img/embed_step_shadow.png);*/
 			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
