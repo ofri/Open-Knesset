@@ -6,7 +6,6 @@ body{
     font-family: Arial, Helvetica, sans-serif;
     color: #666;
     font-size: 15px;
-    max-height: 500px;
 }
 
 a{
@@ -16,9 +15,9 @@ a{
 #header,
 #graph,
 #footer{
-	width: 500px;
+	max-width: 500px;
+    width: 100%;
 }
-
 #header{
     background: #FAFAFC;
     height: 60px;
@@ -26,15 +25,14 @@ a{
     position: absolute;
     z-index: 20;
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+	top:0;
 }
 #header:hover{
 	height: 330px;
 }
 	#details{
-		margin: 10px 0;
-		padding: 0 10px;
-		width: 362px;
-		float: right;
+		margin: 10px 0 0 120px;
+    	padding: 0 10px;
 		border-left: 1px dotted #cccccc;
 	}
 		.label{
@@ -46,7 +44,7 @@ a{
 		    color: #0080FF;
 		    font-size: 13px;
 		    font-weight: bold;
-		    height: 1em;
+		    height: 1.4em;
 		    margin-top: 0;
 		    overflow: hidden;
 		}
@@ -69,11 +67,13 @@ a{
 		}
 	#pms{
 		margin: 10px;
-		float: right;
-		width: 97px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100px;
 	}
 		#pms ul{
-			height: 26px;
+			height: 25px;
 			overflow: hidden;
 			margin: 0;
     		padding: 0;
@@ -82,14 +82,15 @@ a{
 		}
 		#header:hover #pms ul{
 			height: auto;
-			overflow: auto;
     		width: 100px;
 		}
 			#pms li,
 			#pms a.more{
 				float: right;
-				margin-left: 3px;
-				list-style: none;
+			    height: 22px;
+			    list-style: none outside none;
+			    margin-bottom: 3px;
+			    margin-left: 3px;
 			}
 			#pms a.more{
 				margin-left: 0;
@@ -117,19 +118,24 @@ a{
 	}
 
 #graph{
-	
+	margin-top: 40px;
+}
+#vote, .step-label, .status, #gov-position{
+	display: none;
 }
 	ul#steps{
 		margin: 0;
 		padding: 0;
+	    overflow: hidden;
 	}
 		ul#steps li{
 			background: #eeeff5 repeat-y;
-			width: 50px;
+			max-width: 50px;
+			width: 10%;
 			float: right;
 			height: 100%;
 			margin: 0;
-			min-height: 360px;
+			min-height: 250px;
 			padding-top: 40px;
 			position: relative;
 			list-style: none;
@@ -211,10 +217,10 @@ a{
 					color: #808080;
 					opacity: 0.5;
 				}
-				ul#steps li.passed span.date{
+				ul#steps li.passed span{
 					color: #43873a;
 				}
-				ul#steps li.failed span.date{
+				ul#steps li.failed span{
 					color: #b44630;
 				}
 				ul#steps li:hover span.date{
@@ -263,6 +269,45 @@ a{
 				}
 				ul#steps li.failed .icon{
 					background-image: url(../img/embed_icons_failed.png);
+				}
+				ul#steps li .tooltip{
+				    display: none;
+				    height: 30px;
+				    position: absolute;
+				    text-align: center;
+				    top: 160px;
+				    left: -150%;
+				    width: 400%;
+				    z-index: 200;
+				}
+				ul#steps li .tooltip span{
+					background: url(../img/embed_tooltip_pending.png) center;
+					padding: 11px 4px 4px;
+					font-size: 13px;
+					height: 20px;
+				}
+				ul#steps li#initiated .tooltip{
+					left: -310%;
+					text-align: right;
+				}
+				ul#steps li#initiated .tooltip span{
+					background-position: 40% 0;
+				}
+				ul#steps li#passed .tooltip{
+					right: -310%;
+					text-align: left;
+				}
+				ul#steps li#passed .tooltip span{
+					background-position: 86% 0;
+				}
+				ul#steps li.passed .tooltip span{
+					background-image: url(../img/embed_tooltip_passed.png);
+				}
+				ul#steps li.failed .tooltip span{
+					background-image: url(../img/embed_tooltip_failed.png);
+				}
+				ul#steps li:hover .tooltip{
+					display: block;
 				}
 				
 #footer{
