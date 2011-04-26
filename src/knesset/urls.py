@@ -66,7 +66,7 @@ urlpatterns = patterns('',
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
      (r'^annotate/', include('annotatetext.urls')),
      (r'^avatar/', include('avatar.urls')),
-     (r'^pingback/', default_server),
+     url(r'^pingback/', default_server, name='pingback-server'),
      url(r'^trackback/member/(?P<object_id>\d+)/$', TrackBackServer(get_mk_entry, mk_is_backlinkable),name='member-trackback'),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns

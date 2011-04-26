@@ -8,7 +8,7 @@ from django.utils import translation
 from django.conf import settings
 
 from models import Agenda, AgendaVote
-from knesset.laws.models import Vote
+from knesset.laws.models import Vote, VoteAction
 from knesset.mks.models import Party, Member
 
 just_id = lambda x: x.id
@@ -42,6 +42,8 @@ class SimpleTest(TestCase):
         self.agenda_3.editors = [self.user_2]
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
+        self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
+        self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
                                                       score=-1,
@@ -107,3 +109,25 @@ class SimpleTest(TestCase):
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
+
+    def testAgendaMkDetail(self):
+        res = self.client.get(reverse('mk-agenda-detail', 
+                                      kwargs={'object_id': self.agenda_1.id,
+                                              'member_id': self.mk_1.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
+        self.assertEqual(int(res.context['score']), -33)
+        self.assertEqual(len(res.context['related_votes']), 2)
+        
+        
+    def tearDown(self):
+        self.party_1.delete()
+        self.mk_1.delete()
+        self.user_1.delete()
+        self.user_2.delete()
+        self.user_3.delete()        
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.agenda_1.delete()
+        self.agenda_2.delete()
+        self.agenda_3.delete()

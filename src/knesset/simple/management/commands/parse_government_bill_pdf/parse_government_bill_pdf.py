@@ -10,6 +10,8 @@ from util import flatten
 from textutil import reverse_numbers, asblocks, fix_superscripts
 from pdftools import pdftotext, pdfinfo
 
+DEBUG = False
+
 def readable(txt):
     if isinstance(txt, list):
         txt = '\n'.join(txt)
@@ -20,10 +22,6 @@ def show_blocks(bs):
     return readable(flatten(zip(bs, ['\n']*len(bs))))
 def show_block(bs):
     return readable(bs)
-
-# the actual width/height is (481.89, 680.3149999999999) (page.get_size())
-left_column_rect = (0,0,1000,400) # including all bottom text, like comments
-footer_rect = (0,0,1000,20) # 20-50
 
 def asreversed_number_blocks(text):
     return asblocks([reverse_numbers(l).strip() for l in text])
@@ -99,7 +97,7 @@ def parse_proposal_page(top_text, bottom_text):
     """
     #top_blocks = asblocks(reverse_numbers(''.join(top_text)).split('\n'))
     top_text, superscripts = fix_superscripts(top_text)
-    if len(superscripts) > 0:
+    if len(superscripts) > 0 and DEBUG:
         print "superscripts = %r" % superscripts
     top_blocks = asreversed_number_blocks(top_text)
     # Here is how a proposal second page looks: (actually the rest are pretty much
@@ -150,7 +148,7 @@ def parse_proposal_page(top_text, bottom_text):
 
 GovPage = namedtuple('GovPage', "n_proposal n_details proposal details bottom superscripts".split())
 
-class GovProposal(object):
+class GovProposalParser(object):
     """ Extract text for presentaiton and search from government law proposals.
     
     HOW:
@@ -180,7 +178,7 @@ class GovProposal(object):
         self._proposal = ''
         self._details = ''
 
-    def to_str(self, show_details):
+    def to_unicode(self, show_details):
         proposal, details = self.proposal, self.details
         n_proposals = [page.n_proposal for page in self._pages]
         n_details = [page.n_details for page in self._pages]
@@ -197,10 +195,10 @@ class GovProposal(object):
                 "?"*20,
                 show_block(details)])
         lines.append("-"*20)
-        return '\n'.join(lines)
+        return u'\n'.join(lines)
 
     def __str__(self):
-        return self.to_str(False)
+        return self.to_unicode(False)
 
     __repr__ = __str__
 

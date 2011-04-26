@@ -1,10 +1,6 @@
-<a class="vote-up{% if current_vote_up %} selected{% endif %}"
-href="{% url vote-on-tag vote.ctype|lower vote.id tag.id +1 %}"></a>
-<a class="vote-down{% if current_vote_down %} selected{% endif %}"
-href="{% url vote-on-tag vote.ctype|lower vote.id tag.id -1 %}"></a>
 {% if vote.ctype == 'vote' %}
-<a href="{% url tagged-votes tag=tag %}" class="tag">{{ tag }} ({{ tag.score }})</a>
+<a href="{% url tagged-votes tag=tag %}" class="tag">{{ tag }}</a>
 {% else %}
-<a href="{% url bill-tag tag=tag %}" class="tag">{{ tag }} ({{ tag.score }})</a>
+<a href="{% url bill-tag tag=tag %}" class="tag">{{ tag }}</a>
 {% endif %}
 

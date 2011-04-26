@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load mks %}
 <ul class="member-summary">
-    <li>{{ mk|mk_card }}</li>
+    <li>{% mk_card mk %}</li>
     <li>
         {% trans 'Presence:' %} 
         <div id="percent_{{mk.id}}" class="percent"></div>

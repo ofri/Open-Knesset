@@ -7,61 +7,28 @@
 {% load comments %}
 {% load user %}
 {% load hitcount_tags %}
-{% block extratitle %}{{ object.name }}{% endblock %}
-{% block keywords %}{{ object.name }}{% endblock %}
-{% block description %}{{ object.title }} - {% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ object.name }}, {{ member }}{% endblock %}
+{% block description %}{{ title }}{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %}
-	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			/*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
-			register_watch({{object.id}}, "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url follow-agendas %}");
-		});
-	</script>
-{% endblock %}
-{% block subnav %}
-	<a id="watch" class="button" href="."></a>
-	&bull;
-    <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
-{% endblock %}
-{% block messages %}
-<span id="message_login">
-    {% trans "You have to be logged in to enable the watch feature." %}<br>
-    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
-    {% trans "or" %}
-    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
-</span>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
 {% endblock %}
 {% block divcontent %}
-    <h1>{{ object }}</h1>
+    <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
     <div id="agenda-info">
-        <div>
-            <h3>{% trans "Edited by" %}</h3>
-            {% for editor in object.editors.all %}
-                {% user editor %}
-            {% endfor %}
-            {% if user in object.editors.all %}
-                <div class="edit">
-                    <a href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-                </div>
-            {% endif %}            
-        </div>
-        <div>
-            <h2> {% trans "Description" %}</h2>
-            {{ object.description }}
-        </div>
+    	<div class="item-list">        
+		<h2>{% trans 'Overall score' %} <span class="numeric">{{score|floatformat:"0"}}%</span></h2> 			
+			<div id="member_percentile" class="percentile {% if score < 0 %}percentile_against{% endif %}"></div>
+			<script>set_percentile('member',({{ score }}+100)/2);</script>							
 
-    	<div class="item-list">
-        
-        <h2> {% trans "Ascribed Votes" %}</h2>
+		<h2>{% trans 'Score details' %}</h2>
         <table id="agenda-votes">
+        			
             {% for agendavote in related_votes %}
                 <tr>
                     <td>
-                        <div class="agenda-score">
+                        <div class="agenda-score numeric">
                             {{ agendavote.score }}
                         </div>
                     </td>
@@ -77,7 +44,7 @@
                 <tr>
                 	<td></td>
                 	<td>
-                	{{ member.name }} {% trans "Voted" %} {% trans agendavote.voteaction.type %}
+                	{{ member.name }} {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}
                 	</td>
                 	
                 </tr>

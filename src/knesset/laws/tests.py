@@ -3,12 +3,15 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.utils.encoding import smart_str, smart_unicode
+from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 
-from knesset.laws.models import Bill
+from actstream.models import Action
+from tagging.models import Tag, TaggedItem
+
+from knesset.laws.models import Vote,Bill,KnessetProposal
 from knesset.mks.models import Member
-from models import *
 
 try:
     import json
@@ -31,6 +34,7 @@ class BillViewsTest(TestCase):
                                               'JKM')
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
+        self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill_1)
         self.mk_1 = Member.objects.create(name='mk 1')
 
@@ -40,18 +44,18 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res, 'laws/bill_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
-                         [ self.bill_1.id, self.bill_2.id, ])
+                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id ])
     def testBillListByStage(self):
         res = self.client.get(reverse('bill-list'), {'stage': 'all'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
-                         [ self.bill_1.id, self.bill_2.id, ])
+                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id])
         res = self.client.get(reverse('bill-list'), {'stage': '1'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
         res = self.client.get(reverse('bill-list'), {'stage': '2'})
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), [self.bill_2.id])
+        self.assertEqual(map(just_id, object_list), [self.bill_2.id, self.bill_3.id])
 
     def testBillListByBooklet(self):
         res = self.client.get(reverse('bill-list'), {'booklet': '2'})
@@ -66,27 +70,27 @@ class BillViewsTest(TestCase):
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
         
-    '''def test_bill_detail_by_slug(self):
+    def test_bill_detail_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
-                                 kwargs={'slug': self.bill_1.slug}))
+                                 kwargs={'slug': self.bill_1.slug,
+                                         'object_id': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-    '''    
+        
     def test_bill_popular_name(self):
         res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
         self.assertEqual(res.status_code, 404)
         
-    '''def test_bill_popular_name_by_slug(self):
+    def test_bill_popular_name_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
-                                 kwargs={'slug': self.bill_1.popular_name_slug}))
+                                 kwargs={'slug': self.bill_1.popular_name_slug,
+                                         'object_id': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-    '''
-        
     '''
     def test_bill_detail_hebrew_name_by_slug(self):
         res = self.client.get(reverse('bill-detail',
@@ -163,6 +167,7 @@ class BillViewsTest(TestCase):
         self.vote_2.delete()
         self.bill_1.delete()
         self.bill_2.delete()
+        self.bill_3.delete()
         self.jacob.delete()
         self.mk_1.delete()
 
@@ -172,10 +177,20 @@ class BillViewsTest(TestCase):
 class VoteViewsTest(TestCase):
 
     def setUp(self):
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'ADRIAN')
+        g = Group.objects.get(name='Valid Email')
+        self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(), 
                                           title='vote 2')
+        self.tag_1 = Tag.objects.create(name='tag1')
+        self.ti = TaggedItem._default_manager.create(tag=self.tag_1,
+                                                     content_type=ContentType.objects.get_for_model(Vote), 
+                                                     object_id=self.vote_1.id)
 
     def testVoteList(self):
         res = self.client.get(reverse('vote-list'))
@@ -193,6 +208,38 @@ class VoteViewsTest(TestCase):
                                 'laws/vote_detail.html')
         self.assertEqual(res.context['vote'].id, self.vote_1.id)
 
+    def test_vote_tag_cloud(self):
+        res = self.client.get(reverse('vote-tags-cloud'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'laws/vote_tags_cloud.html')
+
+    def test_add_tag_to_vote_login_required(self):
+        url = reverse('add-tag-to-object',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag_id':self.tag_1})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_add_tag_to_vote(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('add-tag-to-object',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag_id':self.tag_1.id})
+        self.assertEqual(res.status_code, 200)
+
+    def test_create_tag_permission_required(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('create-tag',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+        
+    def test_create_tag(self):
+        self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
+        url = reverse('create-tag',
+                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertEqual(res.status_code, 200)
+        
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
@@ -213,11 +260,10 @@ class testVoteAPI(TestCase):
         self.assertEqual(res.status_code,200)
         votes = json.loads(res.content)
         self.assertEqual(set(map(lambda x: x['title'], votes)), set([self.vote_1.title, self.vote_2.title]))
-    
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
-# TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views
 
 class BillStreamTest(TestCase):
     def setUp(self):
@@ -225,17 +271,22 @@ class BillStreamTest(TestCase):
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime(2011, 4, 4),
                                           title='vote 2')
-        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
-                                              'JKM')
         self.bill = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill.pre_votes.add(self.vote_1)
-        self.bill.first_votes.add(self.vote_2)
+        self.bill.first_vote = self.vote_2
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill, date=datetime(2005, 1, 22))
-        self.mk_1 = Member.objects.create(name='mk 1')
 
     def testGenerate(self):
         self.bill.generate_activity_stream()
         s = Action.objects.stream_for_actor(self.bill)
         self.assertEqual(s.count(),3)
+
+    def tearDown(self):
+        self.bill.pre_votes.all().delete()
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.kp_1.delete()
+        self.bill.delete()
+
 
 # TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views

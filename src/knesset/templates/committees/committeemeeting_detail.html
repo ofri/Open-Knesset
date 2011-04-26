@@ -37,7 +37,7 @@
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
     <h1>{{ object.topics|safe }}</h1>
     <h2>{{ title }}</h2>
-    <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{{  m|mk_card }}{% endfor %}<br>
+    <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{% mk_card m %}{% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
     {% endif %}                

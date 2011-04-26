@@ -1,7 +1,6 @@
 {% extends "two_cols.html" %}
 {% load i18n %}
 {% load tagging_tags %}
-{% load laws_extra %}
 {% load links %}
 {% load mks %}
 {% load agendas %}
@@ -24,19 +23,31 @@
         <div id="tagging-container">
         {% if user.is_authenticated %}
             <h3>{% trans "Tags" %}</h3>
-            {% if vote.tags %}
-                <div id="vote-tags">
-                {% for t in vote.tags %}
-                    {% user_votes user vote t %} <br/>
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans "No tags yet" %}<br />        
-            {% endif %}
+            <div id="tags">
+                {% if vote.tags %}
+                    
+                    {% for t in vote.tags %}
+                        <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a> 
+                    {% endfor %}
+                {% else %}
+                    <span id="no-tags-yet">{% trans "No tags yet" %}</span>        
+                {% endif %}
+                </div>            
             <div id="add_tags">
-                <span>{% trans "Suggest Tags" %}</span> 
+                <span>{% trans "Edit Tags" %}</span> 
                 <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                 </span>
+                <div id="create_tag" style='display:none'>
+                    {% if perms.tagging.add_tag %}
+                        <form id="create_tag_form" action="#">{% csrf_token %}
+                            <label for="tag">{% trans 'Create new tag' %}: </label>
+                            <input type="text" name="tag" id="tag">
+                            <input type="submit" value="{% trans 'Send' %}">
+                        </form>
+                    {% else %}
+                        {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
+                    {% endif %}                    
+                </div>                
             </div>
 
         {% else %}
@@ -44,7 +55,7 @@
             {% if vote.tags %}
                 <div id="tags">
                 {% for t in vote.tags %}
-                   <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }} ({{ t.score }})</a>
+                   <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }}</a>
                 {% endfor %}
                 </div>
             {% else %}
@@ -78,7 +89,7 @@
                 {% endblocktrans %}
                 <div>
                 {% for m in vote.for_votes %}
-                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{{ m.member|mk_card }}</a>
+                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{% mk_card m.member %}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
@@ -99,7 +110,7 @@
                 {% endblocktrans %}
                 <div>
                 {% for m in vote.against_votes %}
-                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{{ m.member|mk_card }}</a>
+                <a class="hashnav item dontwrap " id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{% mk_card m.member 'mk-card-against' %}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}

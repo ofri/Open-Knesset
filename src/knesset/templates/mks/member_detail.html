@@ -7,13 +7,15 @@
 {% load pagination_tags %}
 {% load pingback_tags %}
 {% load trackback_tags %}
+{% load backlinks_tags %}
+{% load absurl %}
 {% load cache %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
 {% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
 {% if object.backlinks_enabled %}
-    {% url member-trackback slug=object.slug as trackback_url %}
+    {% url member-trackback object_id=object.id as trackback_url %}
     {% trackback_rdf object.get_absolute_url object.title trackback_url True %}
 {% endif %}
     <style>
@@ -321,9 +323,9 @@
 											<script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
 											
 										</td>
-										<!-- <td>
-										<a href="{% url agenda-list %}{{agenda.id}}/member/{{object.id}}">#</a>
-										</td> -->
+										<td>
+										<a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
+										</td>
 									</tr>
 								{% endfor %}
 								</table>
@@ -366,24 +368,36 @@
 
 	<br/>
 	{% if object.backlinks_enabled %}
-	<div style="clear:both;">
-	{% with entry_pings.count as num_pings %}
-    {% if num_pings %}
-    
-      <p>{% trans 'This entry has been pinged' noop %}{{ num_pings }} {% trans 'time%(num_pings|pluralize:"s")' noop%}</p>
-      <p>
-        <ul>
-        {% for ping in entry_pings %}
-        <li>{% trans 'From' noop %}<a href="{{ ping.source_url }}">&ldquo;{{ ping.title }}&ldquo;</a> {% trans "on the" noop %}{{ received|date:"jS F, Y" }}: {{ ping.excerpt }}</li>
-        {% endfor %}
-    </ul>
-    </p>    
-    {% else %}
-    <p>{% trans "This entry has not been pinged." noop%}</p>
-    {% endif %}
-    {% endwith %}
-    <p>{% trans "TrackBack:" noop %}{% url member-trackback slug=object.slug as trackback_url %}</p>
-	</div>
+    	<div style="clear:both;">
+        {% backlinks_for_model object as entry_pings %}
+    	{% with entry_pings.count as num_pings %}
+            {% if num_pings %}
+                <p>
+                {% blocktrans count counter=num_pings %}
+                    This entry has been pinged.
+                    {% plural %}
+                    This entry has been pinged {{ counter }} times.
+                {% endblocktrans %}
+                </p>              
+                <p>
+                    <ul>
+                        {% for ping in entry_pings %}
+                            <li>
+                            {% with url=ping.source_url title=ping.title received=ping.received excerpt=ping.excerpt %}
+                            {% blocktrans %}
+                                From <a href="http://{{ url }}">&ldquo;{{ title }}&ldquo;</a> on the {{ received }}: {{ excerpt }}
+                            {% endblocktrans %}
+                            {% endwith %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </p>    
+            {% else %}
+                <p>{% trans "This entry has not been pinged." %}</p>
+            {% endif %}
+        {% endwith %}
+        <p>{% trans "TrackBack:" %} <span style="direction:ltr">{% absurl member-trackback object_id=object.id %}</span> </p>
+    	</div>
 	{% endif %} 
 	<br />
     <div style="clear:both;"></div>

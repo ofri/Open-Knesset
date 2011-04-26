@@ -71,7 +71,7 @@ class Command(BaseCommand):
                                                            which_pk = committee.id,
                                                            which_type = self.committee_ct,
                                                            )
-                print "new event at %s: %s" % (ev.when, ev.what)
+                logger.debug("new event at %s: %s" % (ev.when, ev.what))
             except Committee.DoesNotExist:
                 logger.debug("couldn't find committee  %s" % row[0])
                 try:
@@ -84,6 +84,8 @@ class Command(BaseCommand):
                 logger.debug("created %s" % ev)
         
     def handle(self, *args, **options):
+        logger.debug('Events objects count before update: %d' % Event.objects.count())
         r = self.parse_future_committee_meetings()
         logger.debug(r)
         self.update_future_committee_meetings_db(r)
+        logger.debug('Events objects count after update: %d' % Event.objects.count())

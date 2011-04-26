@@ -136,17 +136,25 @@ class Command(NoArgsCommand):
         logger.debug("finished updating laws data")
 
 
-    def update_votes(self):
-        """This function updates votes data online, without saving to files."""
+    def update_votes(self, start_from_id=None):
+        """Update votes data online, without saving to files.
+           start_from_id - to manually override the id from which we'll start looking.
+        
+        """
+        
 
         logger.info("update votes")
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
         if current_max_src_id == None: # the db contains no votes, meaning its empty
             print "DB is empty. --update can only be used to update, not for first time loading. \ntry --all, or get some data using initial_data.json\n"
             return
-        vote_id = current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1
+        vote_id = start_from_id or current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1, if not manually set
         limit_src_id = vote_id + 60 # look for next 60 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
+            if Vote.objects.filter(src_id=vote_id).count(): # we already have this vote
+                logger.debug('skipping reading vote with src_id %d, because we already have it' % vote_id)
+                vote_id = vote_id+1
+                continue # skip reading it again.
             (page, vote_src_url) = self.read_votes_page(vote_id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
@@ -1087,38 +1095,46 @@ class Command(NoArgsCommand):
             if proposal['comment']:
                 title += ' ' + proposal['comment']
             if len(title)<=1:
-                title = u'חוק חדש'
+                title = 'חוק חדש'.decode('utf8')
             (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
                                                                  source_url=proposal['link'],
                                                                  title=title, law=law, date=proposal['date'])
             if created:
                 kl.save()
 
-            for orig in proposal['original_ids']: # go over all originals in the document
-                knesset_id = int(orig.split('/')[1]) # check if they are from current Knesset
-                if knesset_id != 18:
-                    continue
-                orig_id = int(orig.split('/')[0]) # find the PP id
-                try:
-                    pp = PrivateProposal.objects.get(proposal_id=orig_id) # find our PP object
-                    kl.originals.add(pp) # and add a link to it
-                    if pp.bill:
-                        if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
-                            if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
-                                logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
-                            else:
-                                kl.bill = pp.bill
-                                kl.save()
-                                kl.bill.title = kl.title # update the title
-                                if kl.bill.stage_date < kl.date:
-                                    kl.bill.stage_date = kl.date
-                                    kl.bill.stage = '3'
-                                kl.bill.save()
-                        else: # this kl already had a bill (from another PP)
-                            kl.bill.merge(pp.bill) # merge them
-
-                except PrivateProposal.DoesNotExist:
-                    logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
+            if not(proposal.has_key('original_ids')):
+                logger.warn('Knesset proposal %d doesn\'t have original ids' % kl.id)
+            else:
+                for orig in proposal['original_ids']: # go over all originals in the document
+                    try:
+                        knesset_id = int(orig.split('/')[1]) # check if they are from current Knesset
+                    except:
+                        logger.warn('knesset proposal %d doesn\'t have knesset id' % kl.id)
+                        continue
+                    if knesset_id != 18:
+                        logger.warn('knesset proposal %d has wrong knesset id (%d)' % (kl.id, knesset_id))
+                        continue
+                    orig_id = int(orig.split('/')[0]) # find the PP id
+                    try:
+                        pp = PrivateProposal.objects.get(proposal_id=orig_id) # find our PP object
+                        kl.originals.add(pp) # and add a link to it
+                        if pp.bill:
+                            if not(kl.bill): # this kl stil has no bill associated with it, but PP has one
+                                if KnessetProposal.objects.filter(bill=pp.bill).count(): # this bill is already taken by another KP
+                                    logger.warn('Bill %d already has a KP, but should be assigned to KP %d' % (pp.bill.id, kl.id))
+                                else:
+                                    kl.bill = pp.bill
+                                    kl.save()
+                                    kl.bill.title = kl.title # update the title
+                                    if kl.bill.stage_date < kl.date:
+                                        kl.bill.stage_date = kl.date
+                                        kl.bill.stage = '3'
+                                    kl.bill.save()
+                            else: # this kl already had a bill (from another PP)
+                                kl.bill.merge(pp.bill) # merge them
+    
+                    except PrivateProposal.DoesNotExist:
+                        logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
 
             if not(kl.bill): # finished all original PPs, but found no bill yet - create a new bill
                 b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
@@ -1132,32 +1148,7 @@ class Command(NoArgsCommand):
         if not last_booklet: # there were no KPs in the DB
             last_booklet = 500
         proposals = parse_laws.ParseGovLaws(last_booklet)
-        for proposal in proposals.laws_data:
-            if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
-                continue
-            law_name = proposal['law']
-            (law, created) = Law.objects.get_or_create(title=law_name)
-            if created:
-                law.save()
-            if law.merged_into:
-                law = law.merged_into
-            title = u''
-            if proposal['correction']:
-                title += proposal['correction']
-            if proposal['comment']:
-                title += ' ' + proposal['comment']
-            if len(title)<=1:
-                title = u'חוק חדש'
-            (gp,created) = GovProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
-                                                                 source_url=proposal['link'],
-                                                                 title=title, law=law, date=proposal['date'])
-            if created:
-                gp.save()
-
-            b = Bill(law=law, title=title, stage='3', stage_date=proposal['date'])
-            b.save()
-            gp.bill = b
-            gp.save()
+        proposals.parse_gov_laws()
 
     def find_proposals_in_other_data(self):
         """
@@ -1292,14 +1283,44 @@ class Command(NoArgsCommand):
                     if cannonize(b.title)==cannonize(bills[i2].title):
                         b.merge(bills[i2])
 
+    def correct_votes_matching(self):
+        """tries to find votes that are matched to bills in incorrect places 
+            (e.g approval votes attached as pre votes) and correct them
+            
+            """
+        logger.debug("correct_votes_matching")
+        for v in Vote.objects.filter(title__contains="אישור החוק"):
+            if v.bills_pre_votes.count() == 1:
+                logger.info("vote %d is approval but linked as pre. trying to fix" % v.id)
+                bill_pre_voted = v.bills_pre_votes.all()[0]
+                bills_approved = Bill.objects.filter(approval_vote=v) 
+                if bills_approved.count() == 1:
+                    bill_approved = Bill.objects.filter(approval_vote=v)[0]
+                    if bill_approved == bill_pre_voted: # its the same bill, just matched at wrong place
+                        v.bills_pre_votes.remove(bill_pre_voted)
+                    else:                                    
+                        logger.warn('vote %d is connected as both an approval (for bill %d) and pre (for bill %d)' % (v.id, bill_approved.id, bill_pre_voted.id))
+                        continue
+                if bills_approved.count() > 1:
+                    logger.warn('vote %d is connected as an approval for more than 1 bill' % (v.id))
+                    continue
+                bill_pre_voted.approval_vote = v
+                v.bills_pre_votes.remove(bill_pre_voted)
+                bill_pre_voted.save()
+                bill_pre_voted.update_stage()
+                
+                
+
     def update_mk_role_descriptions(self):
         mk_govt_roles = mk_roles_parser.parse_mk_govt_roles()
+        for member in Member.objects.all():
+            member.current_role_descriptions = None
+            member.save()
         for (mk,roles) in mk_govt_roles.items():
             try:
-                member = Member.objects.get(pk=mk)
-                if not member.current_role_descriptions:
-                    member.current_role_descriptions = unicode(roles)
-                    member.save()
+                member = Member.objects.get(pk=mk)                
+                member.current_role_descriptions = unicode(roles)
+                member.save()
             except Member.DoesNotExist:
                 logger.warn('Found MK in govt roles with no matching MK: %s' % mk)
         mk_knesset_roles = mk_roles_parser.parse_mk_knesset_roles()
@@ -1398,6 +1419,7 @@ class Command(NoArgsCommand):
             self.parse_laws()
             self.find_proposals_in_other_data()
             self.merge_duplicate_laws()
+            self.correct_votes_matching()
 
         if dump_to_file:
             print "writing votes to tsv file"
@@ -1413,6 +1435,7 @@ class Command(NoArgsCommand):
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
+            self.correct_votes_matching()
             logger.debug('finished update')
 
 def update_vote_properties(v):

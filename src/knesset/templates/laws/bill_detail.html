@@ -17,7 +17,7 @@
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
-        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer|mk_card }}</a> 
+        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a> 
     {% endfor %}<br>
     <div id="bill-canvas">
     </div>
@@ -362,19 +362,30 @@
     <div id="tagging-container">
     {% if user.is_authenticated %}
         <h3>{% trans "Tags" %}</h3>
-        {% if object.tags %}
-            <div id="vote-tags">
-            {% for t in object.tags %}
-                {% user_votes user object t %} <br />        
-            {% endfor %}
-            </div>
-        {% else %}
-            {% trans "No tags yet" %}<br />        
-        {% endif %}
+        <div id="tags">
+            {% if object.tags %}            
+                {% for t in object.tags %}
+                    <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a> 
+                {% endfor %}            
+            {% else %}
+                <span id="no-tags-yet">{% trans "No tags yet" %}</span>        
+            {% endif %}
+        </div>
         <div id="add_tags">
-            <span>{% trans "Suggest Tags" %}</span> 
+            <span>{% trans "Edit Tags" %}</span> 
             <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
             </span>
+            <div id="create_tag" style='display:none'>
+                {% if perms.tagging.add_tag %}
+                    <form id="create_tag_form" action="#">{% csrf_token %}
+                        <label for="tag">{% trans 'Create new tag' %}: </label>
+                        <input type="text" name="tag" id="tag">
+                        <input type="submit" value="{% trans 'Send' %}">
+                    </form>
+                {% else %}
+                    {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
+                {% endif %}                    
+            </div>
         </div>
 
     {% else %}

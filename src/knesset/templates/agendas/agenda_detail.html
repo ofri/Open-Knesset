@@ -10,8 +10,7 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.title }} - {% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %}
 	<script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
@@ -63,20 +62,20 @@
         		</tr>
 	         	{% for selected_mk in selected_mks_top %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
 	         			<td>
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
                             <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>                            
                         </td>
-	        			</tr>
+        			</tr>
 	         	{% endfor %}
 	         	<tr>
         			<td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
         		</tr>
 	         	{% for selected_mk in selected_mks_bottom %}
 	         		<tr>
-	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url member-detail selected_mk.id %}">{{ selected_mk }}</a></td>
+	         			<td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
 	         			<td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
 	         			<td>
                             <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
@@ -112,7 +111,7 @@
             {% for agendavote in object.agendavotes.all %}
                 <tr>
                     <td>
-                        <div class="agenda-score">
+                        <div class="agenda-score numeric">
                             {{ agendavote.score }}
                         </div>
                     </td>
@@ -121,7 +120,9 @@
                             <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
                                 {{ agendavote.vote.title }}<br/>
                             </a>
-
+							<span class="reasoning">
+								{{ agendavote.reasoning }}
+							</span>
                         </div>
                     </td>
                 </tr>

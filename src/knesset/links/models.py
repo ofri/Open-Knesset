@@ -1,9 +1,15 @@
+import os
+
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 from managers import LinksManager
+
+link_file_storage = FileSystemStorage(os.path.join(settings.DATA_ROOT, 'link_files_storage'))
 
 _default_linktype = False
 def get_default_linktype():
@@ -24,7 +30,7 @@ class LinkType(models.Model):
         return self.title
 
 class Link(models.Model):
-    url = models.URLField(verbose_name='URL')
+    url = models.URLField(verbose_name='URL', max_length=1000)
     title = models.CharField(max_length=200, verbose_name=_('title'))
     content_type   = models.ForeignKey(ContentType,
             verbose_name=_('content type'),
@@ -42,3 +48,8 @@ class Link(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.title, self.url)
 
+class LinkedFile(models.Model):
+    link = models.ForeignKey(Link)
+    sha1 = models.CharField(max_length=1000, null=True)
+    last_updated = models.DateTimeField(auto_now=True, null=True)
+    link_file = models.FileField(storage=link_file_storage, upload_to='link_files')

@@ -6,6 +6,8 @@ import sys
 
 from textutil import asblocks, sanitize
 
+DEBUG=False
+
 def which(x):
     for p in os.environ['PATH'].split(':'):
         path = os.path.join(p, x)
@@ -33,8 +35,22 @@ def local_or_system(toolname):
 PDFTOTEXT=local_or_system('pdftotext')
 PDFINFO=local_or_system('pdfinfo')
 
-print "pdftotext from %s" % PDFTOTEXT
-print "pdfinfo from %s" % PDFINFO
+def pdftotext_version():
+    p = subprocess.Popen(executable=PDFTOTEXT, args=[PDFTOTEXT, '-v'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    major, minor, patchlevel = p.stderr.readlines()[0].split()[-1].split('.')
+    p.kill()
+    return major, minor, patchlevel
+
+PDFTOTEXT_VERSION = pdftotext_version()
+
+if DEBUG:
+    print "pdftotext from %s, version %s" % (PDFTOTEXT, str(PDFTOTEXT_VERSION))
+    print "pdfinfo from %s" % PDFINFO
+
+def pdftotext_version_pass():
+    major,minor,patch_level = PDFTOTEXT_VERSION
+    major,minor = int(major),int(minor)
+    return (major >= 1) or ((major == 0) and (minor >= 14))
 
 def capture_output(args):
     return subprocess.Popen(args, stdout=subprocess.PIPE).stdout.readlines()

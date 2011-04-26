@@ -98,7 +98,7 @@ class Agenda(models.Model):
         unique_together = (("name", "public_owner_name"),)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.name,_('by'),self.public_owner_name)
+        return "%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
     
     @models.permalink
     def get_absolute_url(self):
@@ -139,7 +139,7 @@ class Agenda(models.Model):
         #   2) the member participated in and either voted for or against
         # for_votes      = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct()
         #against_votes   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct()
-        vote_actions = VoteAction.objects.filter(member=member,vote__agendavote__agenda=self)
+        vote_actions = VoteAction.objects.filter(member=member,vote__agendavotes__agenda=self)
         all_votes = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member).distinct()
         # TODO: improve ugly code below
         member_votes = list()

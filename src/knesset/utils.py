@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+from django.utils.translation import ugettext as _
 from django.db import models
 from django.contrib.comments.views.comments import post_comment
 from django.http import HttpResponse
@@ -11,7 +12,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 import django.contrib.comments.views.moderation as moderation
 from django.utils.encoding import smart_str, smart_unicode
-
+from django.conf import settings
+from mailer import send_html_mail
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -47,14 +49,17 @@ def delete(request, comment_id):
     else:
         raise Http404
     
-
-def cannonize(s):
+def clean_string(s):
     if isinstance(s,unicode):
-        shitty_chars = [u'\u200e', u'\u200f', u'\u202a',u'\u202c',u'\u202d',u'\u202e', u'\u201d', u'\u2013']
+        shitty_chars = [u'\u200e', u'\u200f', u'\u202a',u'\u202b',u'\u202c',u'\u202d',u'\u202e', u'\u201d', u'\u2013']
         trans = dict([(ord(chr), None) for chr in shitty_chars])
         s = s.translate(trans)
     else:
-        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
+        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')    
+    return s
+        
+def cannonize(s):
+    s = clean_string(s)
     s.replace('&nbsp',' ')
     s.replace('\n','')
     s = re.sub("""\d{4,4}""",'',s)
@@ -112,3 +117,9 @@ class RequestFactory(Client):
         environ.update(request)
         return WSGIRequest(environ)
 
+def notify_responsible_adult(msg):
+    """Send an email to some responsible adult(s)"""
+    adults = getattr(settings, 'RESPONSIBLE_ADULTS', None)
+    if adults:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')    
+        send_html_mail(_('Open Knesset requires attention'), msg, msg, from_email, adults)

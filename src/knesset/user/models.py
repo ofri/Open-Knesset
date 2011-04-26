@@ -15,7 +15,7 @@ from knesset.committees.models import CommitteeMeeting
 
 
 NOTIFICATION_PERIOD_CHOICES = (
-    (u'N', _('None')),
+    (u'N', _('No Email')),
     (u'D', _('Daily')),
     (u'W', _('Weekly')),
 )

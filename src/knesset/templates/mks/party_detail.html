@@ -34,7 +34,7 @@
 	    </table>
 	    <h3>{% trans 'Current MKs' %}</h3>
 	    {% for o in object.current_members.all %}
-	        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o|mk_card }}</a>&nbsp;
+	        <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{% mk_card o %}</a>&nbsp;
 	    {% empty %}
 	        {% trans "Data base empty, no objects" %}
 	    {% endfor %}
@@ -42,7 +42,7 @@
 	    <br/>
 	    <h3>{% trans 'Past MKs' %}</h3>
 	        {% for o in object.past_members %}
-	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{{ o|mk_card }}</a>&nbsp;
+	            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url member-detail o.id %}">{% mk_card o %}</a>&nbsp;
 	        {% endfor %}
 	    {% endif %}
 

@@ -25,6 +25,7 @@ VOTE_ACTION_TYPE_CHOICES = (
         (u'no-vote', _('No Vote')),
 )
 
+CONVERT_TO_DISCUSSION_HEADERS = ('להעביר את הנושא'.decode('utf8'), 'העברת הנושא'.decode('utf8'))
 
 
 class PartyVotingStatistics(models.Model):
@@ -135,6 +136,15 @@ class VoteAction(models.Model):
     against_opposition = models.BooleanField(default=False)
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
+
+@disable_for_loaddata
+def record_vote_action(sender, created, instance, **kwargs):
+    if created:
+        action.send(instance.member, verb='voted',
+                    description=instance.get_type_display(),
+                    target = instance.vote,
+                    timestamp=instance.vote.time)
+post_save.connect(record_vote_action, sender=VoteAction)
 
 class VoteManager(models.Manager):
     # TODO: add i18n to the types so we'd have
@@ -360,12 +370,14 @@ class GovProposal(BillProposal):
                                  blank=True, null=True)
 
 BILL_STAGE_CHOICES = (
+        (u'?', _(u'Unknown')),
         (u'1', _(u'Proposed')),
         (u'2', _(u'Pre-Approved')),
-        (u'-2',_( u'Failed Pre-Approval')),
+        (u'-2',_(u'Failed Pre-Approval')),
+        (u'-2.1', _(u'Converted to discussion')),
         (u'3', _(u'In Committee')),
         (u'4', _(u'First Vote')),
-        (u'-4',_( u'Failed First Vote')),
+        (u'-4',_(u'Failed First Vote')),
         (u'5', _(u'Committee Corrections')),
         (u'6', _(u'Approved')),
         (u'-6',_(u'Failed Approval')),
@@ -373,7 +385,7 @@ BILL_STAGE_CHOICES = (
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
-    slug = models.CharField(max_length=1000)
+    slug = models.SlugField(max_length=1000)
     popular_name = models.CharField(max_length=1000, blank=True)
     popular_name_slug = models.CharField(max_length=1000, blank=True)
     law = models.ForeignKey('Law', related_name="bills", blank=True, null=True)
@@ -511,10 +523,25 @@ class Bill(models.Model):
                 self.stage_date = kp.date
         except KnessetProposal.DoesNotExist:
             pass
+        try:
+            gp = self.gov_proposal
+            if not(self.stage_date) or self.stage_date < gp.date:
+                self.stage = '3'
+                self.stage_date = gp.date
+        except GovProposal.DoesNotExist:
+            pass
         for cm in self.first_committee_meetings.all():
             if not(self.stage_date) or self.stage_date < cm.date:
-                self.stage = '3'
-                self.stage_date = cm.date
+                if self.stage != '-2.1': # if it was converted to discussion, seeing it in
+                                         # a cm doesn't mean much.
+                    self.stage = '3'
+                    self.stage_date = cm.date
+        for v in self.pre_votes.all():
+            if not(self.stage_date) or self.stage_date < v.time.date():
+                for h in CONVERT_TO_DISCUSSION_HEADERS:
+                    if v.title.find(h)>=0:
+                        self.stage = '-2.1' # converted to discussion
+                        self.stage_date = v.time.date()                    
         for v in self.pre_votes.all():
             if not(self.stage_date) or self.stage_date < v.time.date():
                 if v.for_votes_count() > v.against_votes_count():
