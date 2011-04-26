@@ -34,6 +34,7 @@ a{
 		margin: 10px 0 0 120px;
     	padding: 0 10px;
 		border-left: 1px dotted #cccccc;
+		position: relative;
 	}
 		.label{
 			font-size: 11px;
@@ -61,10 +62,39 @@ a{
 			#external-links a{
 				display: block;
 				font-size: 13px;
+				padding-right: 20px;
+				line-height: 1.4em;
 			}
-		#header .status{
-			display: none;
+			#external-links a.oknesset-resource{
+				background: url(../img/oknesset_favicon.png) right no-repeat;
+			}
+			#external-links a.knesset-resource{
+				background: url(../img/knesset_favicon.png) right no-repeat;
+			}
+			
+		.status{
+		    background: url("../img/embed_passed.png") no-repeat scroll 0 0 transparent;
+		    display: block;
+		    float: left;
+		    height: 40px;
+		    left: 10px;
+		    margin-top: -30px;
+		    position: absolute;
+		    text-indent: -9999px;
+		    top: 70px;
+		    width: 80px;
+		    z-index: 10;
 		}
+		
+		#header .status{
+			bottom: 10px;
+			top: auto;
+		}
+		
+		.status.failed{
+			background: url(../img/embed_failed.png) no-repeat;
+		}
+		
 	#pms{
 		margin: 10px;
 		position: absolute;
@@ -117,17 +147,19 @@ a{
 		height: 10px;
 	}
 
-#vote, .status, #gov-position{
+#gov-position{
 	display: none;
 }
 #graph{
-	margin-top: 40px;
+	margin-top: 60px;
+	position: relative;
 }
 	ul#steps{
 		margin: 0;
 		padding: 0;
 	    overflow: hidden;
 		list-style-type: none;
+		width: 100%;
 	}
 		ul#steps li{
 			background: #eeeff5 repeat-y;
