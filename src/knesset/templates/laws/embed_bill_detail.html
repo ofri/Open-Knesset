@@ -5,178 +5,302 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
 	<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.bt.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
-	<script type="text/javascript">
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
+	<!--<script type="text/javascript">
 		var stream = {{ stream|safe }};
+		// var bill = {{ bill }};
 			/*{ "note": "True/False/..." 
 				"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
 				"target": "/vote/xxxx/",
 				"time": 1279717260 }
 		*/
 		
-		function renderItemDetail(item) {
-			var itemDate = new Date(item.time * 1000), itemEl = $("<div></div>").addClass("item_detail");
-			$("<div></div>").appendTo(itemEl).text(item.note);
-			$("<div></div>").appendTo(itemEl).text(item.verb);
-			$("<a>link</a>").appendTo(itemEl).attr("href", "http://localhost:8000" + item.target);
-			$("<div></div>").appendTo(itemEl).text(itemDate.getDay() + "/" + itemDate.getMonth() + "/" + itemDate.getFullYear()).addClass("item_time");
-			return itemEl;
-		}
-		
-		function renderItem(item) {
-	        var tooltipOptions = {
-	        	cssStyles: {
-	        		'background-color':'black',
-	        		'color':'white',
-	        	},
-	        	width: '200px',
-	        	positions: ['bottom'],
-	        	preShow: function(box) {
-	        		$("<div></div>").appendTo($(box)).text(item.note);
-					$("<div></div>").appendTo($(box)).text(item.verb);
-					$("<a>link</a>").appendTo($(box)).attr("href", "http://localhost:8000" + item.target);
-	        	}
-		    };
+		/*
+states:
+	1. initiated
+	2. pre-voted
+	3. summoned-1
+	4. commity-1
+	5. first-voted
+	6. summoned-2
+	7. commity-2
+	8. second-voted
+	9. approval-voted
+	10. done
 		
 		
 		
-			var itemDate = new Date(item.time * 1000), itemEl = $("<li></li>").addClass("item");
-			/*$("<div></div>").appendTo(itemEl).text(item.note);
-			$("<div></div>").appendTo(itemEl).text(item.verb);
-			$("<a>link</a>").appendTo(itemEl).attr("href", "http://localhost:8000" + item.target);*/
-			$("<div></div>").appendTo(itemEl)
-				.addClass("item_expand")
-				/*.click(function() {
-					$(".item_detail").remove();
-					renderItemDetail(item).appendTo(".item_expanded");
-					itemEl.effect("scale", {}, "slow", null);
-					$(".item_expanded").show("scale", {}, "slow", null);}) */
-				.bt("verb:" + item.verb + " description:" + item.note + " target:" + item.target, tooltipOptions);
-			$("<div></div>").appendTo(itemEl).text(itemDate.getDay() + "/" + itemDate.getMonth() + "/" + itemDate.getFullYear()).addClass("item_time");
-			return itemEl;
-		}
+		*/
+		var VERB_WAS_PROPOSED = "was-proposed",
+			VERB_PRE_VOTED = "pre-voted",
+			VERB_FIRST_VOTED = "first-voted",
+			VERB_APPROVAL_VOTED = "approval-voted",
+			VERB_WAS_DISCUSSED = "was-discussed",
+			VERB_WAS_VOTED_ON_GOV = "was-voted-on-gov",
+			
+			STATE_INITIATED = "initiated",
+			STATE_PRE_VOTED = "pre-voted",
+			STATE_SUMMONED_1 = "summoned-1",
+			STATE_COMMITY_1 = "commity-1",
+			STATE_FIRST_VOTED = "first-voted",
+			STATE_SUMMONED_2 = "summoned-2",
+			STATE_COMMITY_2 = "commity-2",
+			STATE_SECOND_VOTED = "second-voted",
+			STATE_APPROVAL_VOTED = "approval-voted",
+			STATE_DONE = "done";
+			
+		var states = [
+			"initiated", "pre-voted", "summoned-1", "commity-1", "first-voted", "summoned-2", "commity-2", "second-voted", "approval-voted", "done"
+		];
 		
+		// for every verb, this object holds the next state. in case a verb may lead to several states (depending on the current state), the value should be an array of all possible states, sorted by precedence.
+		// right now, we're missing a verb that leads to "summoned-x" and to "second-voted"
+		var	transitions = {
+				"was-proposed" 		: "initiated",
+				"pre-voted"			: "pre-voted",
+				"first-voted"		: "first-voted",
+				"approval-voted"	: "approval-voted",
+				"was-discussed"		: ["commity-1", "commity-2"],
+				"was-voted-on-gov"	: "first-voted" // didn't really know where to put this...  
+			};
+	</script> -->
+
+	<!-- TODO: get the bill in JSON for the proposers?-->
+	<script type="text/javascript">
 		$(function() {
-			$(".log").text(JSON.stringify(stream));
-			$(".content_container").css("width", (stream.length * 100) + "px");
-			$(".item_expanded_close").click(function() {
-					$(".item_expanded").hide("scale", {}, "slow", null);
-				});
-			for (var item in stream) {
-				renderItem(stream[item]).appendTo($(".items"));
+			/*
+			  { "note": "True/False/..." 
+				"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
+				"target": "/vote/xxxx/",
+				"time": 1279717260 }
+			*/
+			var stream = {{stream|safe}};
+			//alert(JSON.stringify(stream));
+			var status;
+			for (var a in stream) {
+				// determin date
+				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth(), year = d.getFullYear(),
+				    dateHtml = day+'/'+month+'<br>'+year;
+				var verb = stream[a]['verb'];
+				
+				switch (verb) {
+					case 'approval-voted':
+						if (stream[a]['note'] == 'True') {
+							status = true;
+							$('#passed .date').html(dateHtml);
+						}
+						$('#vote-2 .date, #vote-3 .date').html(dateHtml);
+						break;
+					case 'first-voted':
+						$('#vote-1 .date').html(dateHtml);
+						break;
+					case 'pre-voted':
+						$('#pre-vote .date').html(dateHtml);
+						break;
+					case 'was-proposed':
+						$('#initiated .date').html(dateHtml);
+					default:
+						break;
+				}
+				
+				
 			}
+			
+			if (status) $('.status').addClass('passed').text('אושרה');
+			else $('.status').addClass('failed').text('נדחתה');
+			
+			/*
+			 * TODO (summary):
+			 *   1. bill abstract
+			 *   2. links
+			 * √ 3. bill title - bill.law.title VS. bill.title
+			 * √ 4. status
+			 *   5. pms - client OR server ? 
+			 *   6. dates - done for votes. what about future estimations?
+			 *   7. phase backgrounds
+			 *   8. active phase
+			 *   9. link "?" - try to do the expand if possible
+			 *  10. scale for votes - where to get the data? 
+			 *  11. what about DUPLICATIONS?
+			 */ 
+			 
 		});
 	</script>
-	
-	<style>
-		body { margin: 0; padding: 0; direction: rtl;}
-		
-		.content_container { 
-			width: 100%;
-			/*height: 450px;*/
-			overflow: auto;
-		}
-		
-		.items {
-			list-style-type: none;
-			padding: 0;
-			position: relative;
-		}
-		
-		.item_expand {
-			position: absolute;
-			width: 25px;
-			height: 25px;
-			background-color: white;
-			top: 150px;
-			right: 45px;
-		}
-		
-		.item_expanded {
-			width: 300px;
-			height: 300px;
-			background-color:#cab;
-			font-size: 24px;
-			display:none;
-		}
-		
-		.item_expanded_close {
-			background-color:black;
-			color:white;
-			position: absolute;
-			left:0;
-			top:0;
-			width:25px;
-			height:25px;
-			z-index:1;
-			display:none;
-		}
-		
-		.item {
-			position: relative;
-			float: right;
-			width: 100px;
-			height: 300px;
-			
-			font-family: narkisim;
-			font-size: 14px;
-			
-		}
-		
-		li.item:nth-child(even) {
-			background-color: #abc;
-		}
-		
-		li.item:nth-child(odd) {
-			background-color: #bac;
-		}
-		
-		.item_time {
-			position: absolute;
-			bottom: 0;
-		}
-		
-		.item_detail {
-			position: relative;
-			font-size: 24px;
-			height:100%;
-		}
-		
-		.log_container {
-			width: 100%;
-			height: 30%;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			/*border: 2px solid black;*/
-			overflow: auto;
-			margin: 10px;
-		}
-	
-		.log {
-			width: 100%;
-		}
-		
-		.log_header {
-			position: relative;
-			width: 100%;
-			height: 25px;
-			color: white;
-			background-color: orange;
-		}
-	</style>	
 </head>
 
 <body>
-	<div class="content_container">
-		Hover on the white squares...
-		<ul class="items"></ul>
-		<div class="item_expanded">asdfasdf</div>
+	<div id="header">
+		<div id="details">
+			<div id="title">
+				<span class="label">שם ההצעה:</span>
+				<h1>{{bill.law.title}}: {{bill.title}}</h1>
+				<!-- TODO: delete hardcoded data
+					<h1>חוק הרשויות המקומיות (פטור חיילים, נפגעי מלחמה ושוטרים מארנונה) תיקון - פטור מארנונה לעסק של נכה שאין ממנו הכנסות באותה שנה</h1>
+				-->
+			</div>
+			<div id="excerpt">
+				<span class="label">תקציר:</span>
+				<p>יש את המידע הזה בכלל?</p>
+				<!-- TODO: delete hardcoded data
+				<p>מוצע לקבוע פטור מלא מארנונה לעסק של נכה הזכאי באותה שנה לתגמולים או למענק לפי חוק הנכים (תגמולים ושיקום), התשי"ט–1959 או לפי חוק נכי המלחמה בנאצים, התשי"ד–1954 ס"ח התשי"ד, עמ' 76., וזאת כאשר אין לעסק הכנסות באותה שנה. כן מוצע כי זכאי לפטור שכבר שילם את הארנונה יקבל החזר בגובה התשלום.</p>
+				-->
+			</div>
+			<div id="external-links">
+				<span class="label">קישורים נוספים:</span>
+				<!-- TODO: how to write the URL? -->
+				<!-- <a href="(% url bill bill.id %)" class="oknesset-resource">החוק באתר כנסת פתוחה</a> -->
+				<a href="#" class="oknesset-resource">החוק באתר כנסת פתוחה</a>
+				<a href="#" class="knesset-resource">החוק באתר הכנסת (pdf)</a>
+			</div>
+			<div>
+				<!-- TODO: add dynamically -->
+				<span class="status"></span>
+			</div>
+		</div>
+		<div id="pms">
+			<div class="label">יזמו:</div>
+			<ul>
+				<!-- TODO: do this in javascript --> 
+				{% for proposer in bill.proposers.all %}
+				<li><a href="#"><img src="{{proposer.img_url}}" alt="amit"/></a></li>
+				{% endfor %}
+				<!-- TODO: delete harcoded data
+				<li><a href="#"><img src="../img/embed_dummy_1.png" alt="שם החכ"/></a></li>
+				<li><a href="#"><img src="../img/embed_dummy_2.png" alt="שם החכ"/></a></li>
+				<li><a href="#"><img src="../img/embed_dummy_3.png" alt="שם החכ"/></a></li>
+				<li><a href="#"><img src="../img/embed_dummy_4.png" alt="שם החכ"/></a></li>
+				<li><a href="#"><img src="../img/embed_dummy_5.png" alt="שם החכ"/></a></li>
+				-->
+			</ul>
+			<!-- TODO: how to get the number of proposers? -->
+			<a href="#" class="more">+{{bill.propsers.all.count}}</a>
+		</div>
+		<a class="pull" href="#">pull</a>
 	</div>
-	
-	<!--<div class="log_container"><div class="log_header">Raw Stream:</div><div class="log"></div></div>-->
-
+	<div id="graph">
+		<span class="status"></span>
+		<div id="gov-position">
+			<div class="step">
+				<span class="date">
+					(טרם פורסמה)
+				</span>
+			</div>
+		</div>
+		<ul id="steps">
+			<li id="initiated" class="odd passed first">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>יזום ההצעה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="pre-vote" class="passed voted">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip score">
+						<span class="balance">32/28</span>
+						<div class="scale" style="width:60px">
+							<span class="against" style="width:28px; background-position: -62px bottom;">28 against</span>
+							<span class="for">32 for</span>
+						</div>
+					</div>
+					<div class="tooltip"><span>קריאה טרומית</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="summoned-1" class="odd passed">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="committee-1" class="passed">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ישיבות ועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-1" class="odd voted failed current">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip score">
+						<span class="balance">28/53</span>
+						<div class="scale" style="width:80px">
+							<span class="against" style="background-position: -47px bottom; width:53px">40 against</span>
+							<span class="for">28 for</span>
+						</div>
+					</div>
+					<div class="tooltip"><span>קריאה ראשונה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="summoned-2" class="failed">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="committee-2" class="odd failed">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ישיבות ועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-2" class="pending voted current">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>קריאה שניה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-3" class="odd voted pending">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>קריאה שלישית</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="passed" class="pending last">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div id="footer">
+		<div id="credit">עובד והונגש ע"י <a href="http://oknesset.org">כנסת פתוחה</a> ו<a href="http://yeda.us">הסדנא לידע ציבורי</a></div>
+		<div id="share">
+			<a href="#" class="embed">הטמעה</a>
+			<a href="#" class="link">קישור</a>
+		</div>
+	</div>
 </body>
 </html>
 
