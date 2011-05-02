@@ -7,74 +7,44 @@
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
 	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
-	<!--<script type="text/javascript">
-		var stream = {{ stream|safe }};
-		// var bill = {{ bill }};
-			/*{ "note": "True/False/..." 
-				"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
-				"target": "/vote/xxxx/",
-				"time": 1279717260 }
-		*/
-		
-		/*
+	
+	<script type="text/javascript">
+/*
 states:
-	1. initiated
-	2. pre-voted
-	3. summoned-1
+	1. initiated ("was-proposed")
+	2. pre-vote ("pre-voted")
+	3. summoned-1 
 	4. commity-1
-	5. first-voted
+	5. vote-1 ("first-voted")
 	6. summoned-2
 	7. commity-2
-	8. second-voted
-	9. approval-voted
-	10. done
+	8. vote-2 ("second-voted")
+	9. vote-3 ("approval-voted")
+	10. passed ("approval-voted" == true)
+	
+stream example:
+  { "note": "True/False/..." 
+	"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
+	"target": "/vote/xxxx/",
+	"time": 1279717260 }
 		
-		
-		
-		*/
-		var VERB_WAS_PROPOSED = "was-proposed",
-			VERB_PRE_VOTED = "pre-voted",
-			VERB_FIRST_VOTED = "first-voted",
-			VERB_APPROVAL_VOTED = "approval-voted",
-			VERB_WAS_DISCUSSED = "was-discussed",
-			VERB_WAS_VOTED_ON_GOV = "was-voted-on-gov",
-			
-			STATE_INITIATED = "initiated",
-			STATE_PRE_VOTED = "pre-voted",
-			STATE_SUMMONED_1 = "summoned-1",
-			STATE_COMMITY_1 = "commity-1",
-			STATE_FIRST_VOTED = "first-voted",
-			STATE_SUMMONED_2 = "summoned-2",
-			STATE_COMMITY_2 = "commity-2",
-			STATE_SECOND_VOTED = "second-voted",
-			STATE_APPROVAL_VOTED = "approval-voted",
-			STATE_DONE = "done";
-			
-		var states = [
-			"initiated", "pre-voted", "summoned-1", "commity-1", "first-voted", "summoned-2", "commity-2", "second-voted", "approval-voted", "done"
-		];
-		
-		// for every verb, this object holds the next state. in case a verb may lead to several states (depending on the current state), the value should be an array of all possible states, sorted by precedence.
-		// right now, we're missing a verb that leads to "summoned-x" and to "second-voted"
-		var	transitions = {
-				"was-proposed" 		: "initiated",
-				"pre-voted"			: "pre-voted",
-				"first-voted"		: "first-voted",
-				"approval-voted"	: "approval-voted",
-				"was-discussed"		: ["commity-1", "commity-2"],
-				"was-voted-on-gov"	: "first-voted" // didn't really know where to put this...  
-			};
-	</script> -->
+*/
 
-	<!-- TODO: get the bill in JSON for the proposers?-->
-	<script type="text/javascript">
+/*
+ * TODO (summary):
+ *   1. bill abstract
+ * √ 2. links
+ * √ 3. bill title - bill.law.title VS. bill.title
+ * √ 4. status
+ *   6. dates - done for votes. what about future estimations?
+ *   7. phase backgrounds
+ *   8. active phase
+ *   9. link "?" - try to do the expand if possible
+ *  10. scale for votes - where to get the data? 
+ *  11. what about DUPLICATIONS?
+ */ 
+			 
 		$(function() {
-			/*
-			  { "note": "True/False/..." 
-				"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
-				"target": "/vote/xxxx/",
-				"time": 1279717260 }
-			*/
 			var stream = {{stream|safe}};
 			//alert(JSON.stringify(stream));
 			var status;
@@ -110,21 +80,8 @@ states:
 			if (status) $('.status').addClass('passed').text('אושרה');
 			else $('.status').addClass('failed').text('נדחתה');
 			
-			/*
-			 * TODO (summary):
-			 *   1. bill abstract
-			 *   2. links
-			 * √ 3. bill title - bill.law.title VS. bill.title
-			 * √ 4. status
-			 *   5. pms - client OR server ? 
-			 *   6. dates - done for votes. what about future estimations?
-			 *   7. phase backgrounds
-			 *   8. active phase
-			 *   9. link "?" - try to do the expand if possible
-			 *  10. scale for votes - where to get the data? 
-			 *  11. what about DUPLICATIONS?
-			 */ 
-			 
+			var pCount = {{bill.proposers.count}};
+			if (pCount > 3) $('.more').text((pCount-3) + '+');
 		});
 	</script>
 </head>
@@ -135,46 +92,28 @@ states:
 			<div id="title">
 				<span class="label">שם ההצעה:</span>
 				<h1>{{bill.law.title}}: {{bill.title}}</h1>
-				<!-- TODO: delete hardcoded data
-					<h1>חוק הרשויות המקומיות (פטור חיילים, נפגעי מלחמה ושוטרים מארנונה) תיקון - פטור מארנונה לעסק של נכה שאין ממנו הכנסות באותה שנה</h1>
-				-->
 			</div>
 			<div id="excerpt">
 				<span class="label">תקציר:</span>
 				<p>יש את המידע הזה בכלל?</p>
-				<!-- TODO: delete hardcoded data
-				<p>מוצע לקבוע פטור מלא מארנונה לעסק של נכה הזכאי באותה שנה לתגמולים או למענק לפי חוק הנכים (תגמולים ושיקום), התשי"ט–1959 או לפי חוק נכי המלחמה בנאצים, התשי"ד–1954 ס"ח התשי"ד, עמ' 76., וזאת כאשר אין לעסק הכנסות באותה שנה. כן מוצע כי זכאי לפטור שכבר שילם את הארנונה יקבל החזר בגובה התשלום.</p>
-				-->
 			</div>
 			<div id="external-links">
 				<span class="label">קישורים נוספים:</span>
-				<!-- TODO: how to write the URL? -->
-				<!-- <a href="(% url bill bill.id %)" class="oknesset-resource">החוק באתר כנסת פתוחה</a> -->
-				<a href="#" class="oknesset-resource">החוק באתר כנסת פתוחה</a>
-				<a href="#" class="knesset-resource">החוק באתר הכנסת (pdf)</a>
+				<a href="{% url bill-detail bill.id %}" class="oknesset-resource">החוק באתר כנסת פתוחה</a>
+				<!--<a href="#" class="knesset-resource">החוק באתר הכנסת (pdf)</a>-->
 			</div>
 			<div>
-				<!-- TODO: add dynamically -->
 				<span class="status"></span>
 			</div>
 		</div>
 		<div id="pms">
 			<div class="label">יזמו:</div>
 			<ul>
-				<!-- TODO: do this in javascript --> 
 				{% for proposer in bill.proposers.all %}
-				<li><a href="#"><img src="{{proposer.img_url}}" alt="amit"/></a></li>
+				<li><a href="{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
 				{% endfor %}
-				<!-- TODO: delete harcoded data
-				<li><a href="#"><img src="../img/embed_dummy_1.png" alt="שם החכ"/></a></li>
-				<li><a href="#"><img src="../img/embed_dummy_2.png" alt="שם החכ"/></a></li>
-				<li><a href="#"><img src="../img/embed_dummy_3.png" alt="שם החכ"/></a></li>
-				<li><a href="#"><img src="../img/embed_dummy_4.png" alt="שם החכ"/></a></li>
-				<li><a href="#"><img src="../img/embed_dummy_5.png" alt="שם החכ"/></a></li>
-				-->
 			</ul>
-			<!-- TODO: how to get the number of proposers? -->
-			<a href="#" class="more">+{{bill.propsers.all.count}}</a>
+			<a href="#" class="more"></a>
 		</div>
 		<a class="pull" href="#">pull</a>
 	</div>

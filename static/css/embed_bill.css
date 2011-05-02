@@ -20,7 +20,7 @@ a{
 }
 #header{
     background: #FAFAFC;
-    height: 60px;
+    height: 70px;
     overflow: hidden;
     position: absolute;
     z-index: 20;
@@ -54,7 +54,7 @@ a{
 			overflow: auto;
 		}
 		#excerpt{
-			margin: 10px 0; 
+			margin: 15px 0; 
 		}
 			#excerpt p{
 				margin: 0 0 10px;
@@ -103,7 +103,7 @@ a{
 		width: 100px;
 	}
 		#pms ul{
-			height: 25px;
+			height: 35px;
 			overflow: hidden;
 			margin: 0;
     		padding: 0;
@@ -117,7 +117,7 @@ a{
 			#pms li,
 			#pms a.more{
 				float: right;
-			    height: 22px;
+			    height: 32px;
 			    list-style: none outside none;
 			    margin-bottom: 3px;
 			    margin-left: 3px;
