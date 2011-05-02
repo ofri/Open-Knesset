@@ -22,17 +22,10 @@ from backlinks.pingback.server import PingbackServer
 from django import template
 #from knesset.mks.server_urls import mock_pingback_server
 from knesset.mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
-
+from django.utils import simplejson as json
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
 
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
 
 just_id = lambda x: x.id
 

@@ -1,7 +1,7 @@
 #encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
-from django.utils import simplejson
+from django.utils import simplejson as json
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -33,7 +33,6 @@ import urllib2
 import difflib
 import logging 
 import datetime
-import json
 from time import mktime
 
 logger = logging.getLogger("open-knesset.laws.views")
@@ -103,7 +102,7 @@ def bill_auto_complete(request):
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 
-    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), mimetype='application/json')
 
 def vote_tags_cloud(request, min_posts_count=1):
     member = None
@@ -473,7 +472,7 @@ def vote_auto_complete(request):
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 
-    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), mimetype='application/json')
 
 def embed_bill_details(request, object_id):
     bill = get_object_or_404(Bill, pk=object_id)
