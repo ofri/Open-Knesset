@@ -3,10 +3,10 @@
 {% load laws_extra %}
 {% load tagging_tags %}
 {% load mks %}
-{% block extrahead %} 
+{% block extrahead %}
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script> 
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
 {% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }},{{ keywords }}{% endblock %}
@@ -22,77 +22,77 @@
 {% endblock %}
 {% block divcontent %}
     <ul class="actions">
-        <li><span id="watch" class="awesome-button medium"></span></li>        
+        <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
     <h1>{{ object.law.title }} {{ object.title }}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
-        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a> 
+        <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
     {% endfor %}<br>
     <div id="bill-canvas">
     </div>
 
     <script type="text/javascript">
-		function connect_el_to_div( el, div ) {
-			el.click( function () {
+        function connect_el_to_div( el, div ) {
+            el.click( function () {
                 $("#visible-bill-stage").html($("#"+div).html());
-                var options = { 
+                var options = {
                      serviceUrl:'/vote/auto_complete/',
-                     minChars:2, 
+                     minChars:2,
                      maxHeight:400,
                      width:600,
                      deferRequestBy: 100, //miliseconds
-                     onSelect: function(value, data, me){ 
+                     onSelect: function(value, data, me){
                         me.siblings("input[name$='vote_id']").val(data);
                         me.siblings("input[type$='submit']").removeAttr('disabled'); },
                      };
 
                 $('.vote_input').each(function(item) {
-                     $(this).keydown(function() { 
+                     $(this).keydown(function() {
                         $(this).siblings("input[name$='vote_id']").val('');
-                        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); 
-                     }); 
-                     $(this).autocomplete(options); 
-                     
-                });
-                
-				return true;
-			} );
-		}
+                        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled');
+                     });
+                     $(this).autocomplete(options);
 
-    	Raphael.fn.my_arrow = function ( x,y,div,active ) {
-			var paper = this;
-			var realx = 850 - x;
-			var path_params;
-			if ( active ) {
-			 	path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
-			} else {
-			 	path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
-			}
-			var l = paper.path(["M",realx,y,"h",-90,"l",-15,30,"l",15,30,"h",90,"l",-15,-30,"Z"]).attr(path_params);
-			 
-		    
-			function add_animation(el,l) {
-	            el.hover(function () {
-		            l.attr({"stroke-width": "2px",
-		            		"stroke":"#224",
-		            		"scale": [1.1,1.1]});
-	                return true;
-	            },
-	            function () {
-		            l.attr({"stroke-width": "1px",
-		            		"stroke":"#777",
-		            		"scale": [1,1]});
-	                return true;
-	            });
-			}
-			l.toBack();
-			$(l.node).css("cursor","pointer");
-			add_animation(l,l);
-        	connect_el_to_div(l,div);
-		    return l;
-		};
+                });
+
+                return true;
+            } );
+        }
+
+        Raphael.fn.my_arrow = function ( x,y,div,active ) {
+            var paper = this;
+            var realx = 850 - x;
+            var path_params;
+            if ( active ) {
+                path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
+            } else {
+                path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
+            }
+            var l = paper.path(["M",realx,y,"h",-90,"l",-15,30,"l",15,30,"h",90,"l",-15,-30,"Z"]).attr(path_params);
+
+
+            function add_animation(el,l) {
+                el.hover(function () {
+                    l.attr({"stroke-width": "2px",
+                            "stroke":"#224",
+                            "scale": [1.1,1.1]});
+                    return true;
+                },
+                function () {
+                    l.attr({"stroke-width": "1px",
+                            "stroke":"#777",
+                            "scale": [1,1]});
+                    return true;
+                });
+            }
+            l.toBack();
+            $(l.node).css("cursor","pointer");
+            add_animation(l,l);
+            connect_el_to_div(l,div);
+            return l;
+        };
 
         Raphael.fn.my_box = function ( x,y,div,active ) {
             var paper = this;
@@ -104,8 +104,8 @@
                  path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
             }
             var l = paper.path(["M",realx,y,"h",-500,"l",-7,15,"l",7,15,"h",500,"l",7,-15,"Z"]).attr(path_params);
-             
-            
+
+
             function add_animation(el,l) {
                 el.hover(function () {
                     l.attr({"stroke-width": "2px",
@@ -127,31 +127,31 @@
             return l;
         };
 
-    	Raphael.fn.approved = function ( _x,y,approved ) {
-			var paper = this;
-			var s=paper.set(),
-			    im,
-				x = 850-_x,
-				circle_radius = 15,
-				circle_x = x + circle_radius,
-				circle_y = y + circle_radius,
-				c = paper.circle(circle_x,circle_y,circle_radius);
-        	if ( approved == null ) {
-            	im = paper.image("{{MEDIA_URL}}img/unknown.png",x,y,30,30);
-        	} else if ( approved ) {
-            	c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#4c4"});
-            	im = paper.image("{{MEDIA_URL}}img/ok.png",x,y,30,30);
-        	} else {
-            	c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#c44"});
-            	im = paper.image("{{MEDIA_URL}}img/stop.png",x,y,30,30);
-        	}
-        	s.push(c,im);
-        	return s;
-    	}
-    		
-		var paper = Raphael("bill-canvas", 850, 150);
-		var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,130);
-	</script>
+        Raphael.fn.approved = function ( _x,y,approved ) {
+            var paper = this;
+            var s=paper.set(),
+                im,
+                x = 850-_x,
+                circle_radius = 15,
+                circle_x = x + circle_radius,
+                circle_y = y + circle_radius,
+                c = paper.circle(circle_x,circle_y,circle_radius);
+            if ( approved == null ) {
+                im = paper.image("{{MEDIA_URL}}img/unknown.png",x,y,30,30);
+            } else if ( approved ) {
+                c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#4c4"});
+                im = paper.image("{{MEDIA_URL}}img/ok.png",x,y,30,30);
+            } else {
+                c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#c44"});
+                im = paper.image("{{MEDIA_URL}}img/stop.png",x,y,30,30);
+            }
+            s.push(c,im);
+            return s;
+        }
+
+        var paper = Raphael("bill-canvas", 850, 150);
+        var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,130);
+    </script>
 
     <div id="visible-bill-stage">
     </div>
@@ -167,13 +167,13 @@
                 <span class="gov-stand">{% trans 'Against' %}</span>
             {% endif %}
         {% endif %}
-        {{ d.date }} {{ d.title }}<br>{{ d.subtitle }}<br>{{ d.text|safe }}<br><a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a><br> 
+        {{ d.date }} {{ d.title }}<br>{{ d.subtitle }}<br>{{ d.text|safe }}<br><a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a><br>
         </p>
     {% empty %}
         {% trans 'No Info' %}
     {% endfor %}
     <script type="text/javascript">
-        var rect1 = paper.my_box(105,80,"gov-decision", 
+        var rect1 = paper.my_box(105,80,"gov-decision",
     {% if object.gov_decisions.all %}
         true
     {% else %}
@@ -182,14 +182,14 @@
     );
     </script>
     </div>
-        
+
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
     {% if object.gov_proposal %}
         {% trans 'Government Proposal' %} - {{ object.gov_proposal.title }} ({{ object.gov_proposal.date }}) {% trans 'booklet' %} {{ object.gov_proposal.booklet_number }} <a href="{{ object.gov_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a>
     {% else %}
         {% for pp in object.proposals.all %}
-            p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a> 
+            p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a>
             <div class="proposal_content">
                 {% if pp.content_html %}
                     <div class="proposal_content_header"><a href="#">{% trans 'Read Proposal' %}</a></div>
@@ -203,14 +203,14 @@
         {% endfor %}
     {% endif %}
     <script type="text/javascript">
-		var rect1 = paper.my_arrow(10,10,"bill-initiation", 
+        var rect1 = paper.my_arrow(10,10,"bill-initiation",
     {% if object.proposals.all or object.gov_proposal %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	</script>
+    </script>
     </div>
 
     <div id="bill-pre-vote" class="bill-stage">
@@ -227,59 +227,59 @@
             <input type="hidden" name="vote_id"></input>
             <input type="submit" disabled value="{% trans 'Submit' %}"></input>
         </form>
-        {% endif %}                
-    {% endfor %}     
+        {% endif %}
+    {% endfor %}
     <script type="text/javascript">
-		var rect2 = paper.my_arrow(110,10,"bill-pre-vote", 
+        var rect2 = paper.my_arrow(110,10,"bill-pre-vote",
     {% if object.pre_votes.all %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	</script>
+    </script>
     </div>
-    
+
     <div id="bill-first-committee-meetings" class="bill-stage">
     <h2>{% trans 'Committee Meetings' %}</h2>
     {% for cm in object.first_committee_meetings.all %}
         <a class="item" href="{% url committee-meeting cm.id %}">{{ cm.committee.name }} {{ cm.date }}</a><br>
     {% empty %}
         {% trans 'No Info' %}
-    {% endfor %}     
+    {% endfor %}
     <script type="text/javascript">
-		var rect3 = paper.my_arrow(210,10,"bill-first-committee-meetings", 
+        var rect3 = paper.my_arrow(210,10,"bill-first-committee-meetings",
     {% if object.first_committee_meetings.all %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
     {% for v in object.pre_votes.all %}
-	    var im2 = paper.approved(235,25,{{ v.for_votes_count }}  > {{ v.against_votes_count }});
-	{% endfor %}     
-	</script>
-	</div>
+        var im2 = paper.approved(235,25,{{ v.for_votes_count }}  > {{ v.against_votes_count }});
+    {% endfor %}
+    </script>
+    </div>
 
     <div id="bill-after-committee" class="bill-stage">
-    <h2>{% trans 'Bill formulated by the committee' %}</h2> 
+    <h2>{% trans 'Bill formulated by the committee' %}</h2>
     {% if object.knesset_proposal %}
-        {{ object.knesset_proposal.title }} <a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a> 
+        {{ object.knesset_proposal.title }} <a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a>
     {% else %}
         {% trans 'No Info' %}
-    {% endif %}  
+    {% endif %}
     <script type="text/javascript">
-		var rect4 = paper.my_arrow(310,10,"bill-after-committee", 
+        var rect4 = paper.my_arrow(310,10,"bill-after-committee",
     {% if object.knesset_proposal %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	</script>
-	</div>  
+    </script>
+    </div>
 
-	<div id="bill-first-vote" class="bill-stage">
+    <div id="bill-first-vote" class="bill-stage">
     <h2>{% trans 'First Vote' %}</h2>
     {% if object.first_vote %}
         <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
@@ -294,18 +294,18 @@
             <input type="hidden" name="vote_id"></input>
             <input type="submit" disabled value="{% trans 'Submit' %}"></input>
         </form>
-        {% endif %}        
+        {% endif %}
     {% endif %}
     <script type="text/javascript">
-		var rect5 = paper.my_arrow(410,10,"bill-first-vote", 
+        var rect5 = paper.my_arrow(410,10,"bill-first-vote",
     {% if object.first_vote %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	</script>
-    </div>     
+    </script>
+    </div>
 
     <div id="bill-second-committee-meetings" class="bill-stage">
     <h2>{% trans 'Committee Meetings' %}</h2>
@@ -315,19 +315,19 @@
         {% trans 'No Info' %}
     {% endfor %}
     <script type="text/javascript">
-		var rect6 = paper.my_arrow(510,10,"bill-second-committee-meetings", 
+        var rect6 = paper.my_arrow(510,10,"bill-second-committee-meetings",
     {% if object.second_committee_meetings.all %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	{% if object.first_vote %}
-	    var im5 = paper.approved(535,25,{{ object.first_vote.for_votes_count }}  > {{ object.first_vote.against_votes_count }});
-	{% endif %}     
-	</script>
-    </div>     
-        
+    {% if object.first_vote %}
+        var im5 = paper.approved(535,25,{{ object.first_vote.for_votes_count }}  > {{ object.first_vote.against_votes_count }});
+    {% endif %}
+    </script>
+    </div>
+
     <div id="bill-approval" class="bill-stage">
     <h2>{% trans 'Bill Approval' %}</h2>
     {% if object.approval_vote %}
@@ -345,45 +345,45 @@
         {% endif %}
     {% endif %}
     <script type="text/javascript">
-		var rect7 = paper.my_arrow(610,10,"bill-approval", 
+        var rect7 = paper.my_arrow(610,10,"bill-approval",
     {% if object.approval_vote %}
-		true
+        true
     {% else %}
-	    false
+        false
     {% endif %}
     );
-	{% if object.approval_vote %}
-	    var im7 = paper.approved(735,25,{{ object.approval_vote.for_votes_count }}  > {{ object.approval_vote.against_votes_count }});
-	    var bg = paper.circle(70,40,38).attr({"fill":"#fff","stroke-width":"3px","stroke":"#ff8"}),
-	    	law = paper.image("{{MEDIA_URL}}img/law.png",40,8,60,66);
-	{% endif %}     
-	</script>
-    </div>     
-    
-	<script type="text/javascript">
-		$(titles.node).attr("pointer-events","none");
-		
-		var pos = $("#bill-canvas").position();
-		$(".bill-stage").css("position","absolute");
-		$(".bill-stage").css("top",pos.top + 200);		
-		$(".bill-stage").css("visibility","hidden");
+    {% if object.approval_vote %}
+        var im7 = paper.approved(735,25,{{ object.approval_vote.for_votes_count }}  > {{ object.approval_vote.against_votes_count }});
+        var bg = paper.circle(70,40,38).attr({"fill":"#fff","stroke-width":"3px","stroke":"#ff8"}),
+            law = paper.image("{{MEDIA_URL}}img/law.png",40,8,60,66);
+    {% endif %}
+    </script>
+    </div>
+
+    <script type="text/javascript">
+        $(titles.node).attr("pointer-events","none");
+
+        var pos = $("#bill-canvas").position();
+        $(".bill-stage").css("position","absolute");
+        $(".bill-stage").css("top",pos.top + 200);
+        $(".bill-stage").css("visibility","hidden");
         $("#visible-bill-stage").html($("#bill-initiation").html());
 
-	</script>
+    </script>
     <div id="tagging-container">
     {% if user.is_authenticated %}
         <h3>{% trans "Tags" %}</h3>
         <div id="tags">
-            {% if object.tags %}            
+            {% if object.tags %}
                 {% for t in object.tags %}
-                    <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a> 
-                {% endfor %}            
+                    <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
+                {% endfor %}
             {% else %}
-                <span id="no-tags-yet">{% trans "No tags yet" %}</span>        
+                <span id="no-tags-yet">{% trans "No tags yet" %}</span>
             {% endif %}
         </div>
         <div id="add_tags">
-            <span>{% trans "Edit Tags" %}</span> 
+            <span>{% trans "Edit Tags" %}</span>
             <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
             </span>
             <div id="create_tag" style='display:none'>
@@ -395,7 +395,7 @@
                     </form>
                 {% else %}
                     {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                {% endif %}                    
+                {% endif %}
             </div>
         </div>
 
@@ -414,9 +414,9 @@
         (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
     {% endif %}
     </div>
-	
+
     {% include 'comments/object_comment_list.html' %}
-            
+
     {% if close_votes %}
         <div id="suggested-votes">
         <h2>{% trans 'suggested votes' %}</h2>
@@ -425,15 +425,15 @@
         {% endfor %}
         </div>
     {% endif %}
-    
+
     <script type="text/javascript"><!--
-    
+
       $(document).ready(function() {
             $(".proposal_content_text").hide();
             $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
                                                         return false;});
-                                                        
-                                                        
+
+
             var object_id = {{object.id}};
             {% if watched %}
                 document.is_watched = true;
@@ -479,7 +479,7 @@
                 return (false);
             })
     });
-    
+
     --></script>
-	
+
 {% endblock %}
