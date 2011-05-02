@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView
 from django.core.cache import cache
-
+from django.utils import simplejson as json
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from backlinks.pingback.server import default_server
@@ -21,14 +21,6 @@ from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.agendas.models import Agenda
 
 import logging
-
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
 
 
 logger = logging.getLogger("open-knesset.mks")

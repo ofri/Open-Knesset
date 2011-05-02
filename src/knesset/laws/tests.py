@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_str, smart_unicode
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.utils import simplejson as json
 
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
@@ -13,13 +14,6 @@ from tagging.models import Tag, TaggedItem
 from knesset.laws.models import Vote,Bill,KnessetProposal
 from knesset.mks.models import Member
 
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
 
 just_id = lambda x: x.id
 
