@@ -639,6 +639,7 @@ div.mk-card>a { padding:0px; }
 .tip { width: 20em; padding: 0.5em; display: none; }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
 #content-main .proposal_content_text { margin:1em; padding:0em 1em; border:1px dashed gray; width:60%; line-height:1.6;}
+#content-main .explanation-header { margin-top:1em; font-size:120%; font-weight:bold }
 #debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}
 .datelookup { float: left; }
 #content-main .watched { 

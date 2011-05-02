@@ -30,6 +30,11 @@ DATA_ROOT = getattr(settings, 'DATA_ROOT',
 
 logger = logging.getLogger("open-knesset.syncdata")
 
+# defines for finding explanation part in private proposals
+p_explanation = '</p><p class="explanation-header">דברי הסבר</p><p>'.decode('utf8')
+strong_explanation = re.compile('<strong>\s*ד\s*ב\s*ר\s*י\s*ה\s*ס\s*ב\s*ר\s*</strong>'.decode('utf8'),re.UNICODE)
+explanation = re.compile('ד\s*ב\s*ר\s*י\s*ה\s*ס\s*ב\s*ר'.decode('utf8'), re.UNICODE)
+
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option('--all', action='store_true', dest='all',
@@ -139,9 +144,9 @@ class Command(NoArgsCommand):
     def update_votes(self, start_from_id=None):
         """Update votes data online, without saving to files.
            start_from_id - to manually override the id from which we'll start looking.
-        
+
         """
-        
+
 
         logger.info("update votes")
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
@@ -222,7 +227,7 @@ class Command(NoArgsCommand):
 
                 update_vote_properties(v)
                 v = Vote.objects.get(src_id=vote_id)
-                self.find_synced_protocol(v)                
+                self.find_synced_protocol(v)
 
             vote_id += 1
 
@@ -805,7 +810,7 @@ class Command(NoArgsCommand):
             if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
                 cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
                 logger.debug('cm %d already exists' % cm.id)
-                continue                
+                continue
             elif CommitteeMeeting.objects.filter(src_url=link).count():
                 cm = CommitteeMeeting.objects.get(src_url=link)
                 logger.debug('cm %d is being updated' % cm.id)
@@ -829,12 +834,12 @@ class Command(NoArgsCommand):
                 cm.protocol_text = self.get_committee_protocol_text(link)
                 updated_protocol = True
             cm.save()
-            
+
             if updated_protocol:
                 cm.create_protocol_parts()
             try:
                 r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
-                
+
                 s = r.split('\n')
                 #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
                 for (i,name) in enumerate(mk_names):
@@ -986,9 +991,29 @@ class Command(NoArgsCommand):
                     date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
 
+    def update_private_proposal_content_html(self,pp):
+        html = parse_remote.rtf(pp.source_url)
+        if html:
+            html = html.decode('utf8')
+            if html.find(p_explanation)>=0:
+                # this html is OK (should not happen)
+                pass
+            elif strong_explanation.search(html):
+                # we already have the explanation highlighted, fix format
+                html = strong_explanation.sub(p_explanation, html)
+                logger.debug('fixed highlighting in private proposal %d in bill %d' % (pp.id, pp.bill.id))
+
+            elif explanation.search(html):
+                # highlight it
+                html = explanation.sub(p_explanation, html)
+                logger.debug('highlighed explanation in private proposal %d in bill %d' % (pp.id, pp.bill.id))
+
+            pp.content_html = html
+            pp.save()
+
     def parse_laws(self, private_proposals_days=None):
         """parse private proposal, knesset proposals and gov proposals
-           private_proposals_days - override default "days-back" to look for in private proposals. 
+           private_proposals_days - override default "days-back" to look for in private proposals.
                                     should be the number of days back to look
         """
         mks = Member.objects.values('id','name')
@@ -1004,6 +1029,8 @@ class Command(NoArgsCommand):
             if not d:
                 d = datetime.date(2009,2,24)
             days = (datetime.date.today() - d).days
+
+
         proposals = parse_laws.ParsePrivateLaws(days)
         for proposal in proposals.laws_data:
 
@@ -1068,12 +1095,9 @@ class Command(NoArgsCommand):
                     b.proposers.add(m)
                 pl.bill = b # assign this bill to this PP
                 pl.save()
-            
+
             if not pl.content_html:
-                html = parse_remote.rtf(pl.source_url)
-                if html:
-                    pl.content_html = html
-                    pl.save()
+                update_private_proposal_content_html(pl)
 
         # knesset laws
         logger.debug('parsing knesset laws')
@@ -1133,7 +1157,7 @@ class Command(NoArgsCommand):
                                     kl.bill.save()
                             else: # this kl already had a bill (from another PP)
                                 kl.bill.merge(pp.bill) # merge them
-    
+
                     except PrivateProposal.DoesNotExist:
                         logger.warn(u"can't find private proposal with id %d, referenced by knesset proposal %d %s %s" % (orig_id, kl.id, kl.title, kl.source_url))
 
@@ -1285,21 +1309,21 @@ class Command(NoArgsCommand):
                         b.merge(bills[i2])
 
     def correct_votes_matching(self):
-        """tries to find votes that are matched to bills in incorrect places 
+        """tries to find votes that are matched to bills in incorrect places
             (e.g approval votes attached as pre votes) and correct them
-            
+
             """
         logger.debug("correct_votes_matching")
         for v in Vote.objects.filter(title__contains="אישור החוק"):
             if v.bills_pre_votes.count() == 1:
                 logger.info("vote %d is approval but linked as pre. trying to fix" % v.id)
                 bill_pre_voted = v.bills_pre_votes.all()[0]
-                bills_approved = Bill.objects.filter(approval_vote=v) 
+                bills_approved = Bill.objects.filter(approval_vote=v)
                 if bills_approved.count() == 1:
                     bill_approved = Bill.objects.filter(approval_vote=v)[0]
                     if bill_approved == bill_pre_voted: # its the same bill, just matched at wrong place
                         v.bills_pre_votes.remove(bill_pre_voted)
-                    else:                                    
+                    else:
                         logger.warn('vote %d is connected as both an approval (for bill %d) and pre (for bill %d)' % (v.id, bill_approved.id, bill_pre_voted.id))
                         continue
                 if bills_approved.count() > 1:
@@ -1309,8 +1333,8 @@ class Command(NoArgsCommand):
                 v.bills_pre_votes.remove(bill_pre_voted)
                 bill_pre_voted.save()
                 bill_pre_voted.update_stage()
-                
-                
+
+
 
     def update_mk_role_descriptions(self):
         mk_govt_roles = mk_roles_parser.parse_mk_govt_roles()
@@ -1319,7 +1343,7 @@ class Command(NoArgsCommand):
             member.save()
         for (mk,roles) in mk_govt_roles.items():
             try:
-                member = Member.objects.get(pk=mk)                
+                member = Member.objects.get(pk=mk)
                 member.current_role_descriptions = unicode(roles)
                 member.save()
             except Member.DoesNotExist:
@@ -1345,7 +1369,7 @@ class Command(NoArgsCommand):
             month = t.month-1
             if month==0:
                 month=12
-            year = t.year    
+            year = t.year
         try:
             parser = ParseGLC(year-2000, month)
         except urllib2.URLError,e:
@@ -1372,7 +1396,7 @@ class Command(NoArgsCommand):
                 # try to find a private proposal this decision is referencing
                 try:
                     pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
-                    re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years                        
+                    re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
                     pp = PrivateProposal.objects.get(proposal_id=pp_id)
                     decision.bill = pp.bill
                     decision.save()
