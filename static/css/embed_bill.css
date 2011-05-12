@@ -27,9 +27,11 @@ a{
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
 	top:0;
 }
-#header:hover{
+
+.header-hover{
 	height: 330px;
 }
+
 	#details{
 		margin: 10px 0 0 120px;
     	padding: 0 10px;
@@ -45,11 +47,11 @@ a{
 		    color: #0080FF;
 		    font-size: 13px;
 		    font-weight: bold;
-		    height: 1.4em;
+		    height: 1.35em;
 		    margin-top: 0;
 		    overflow: hidden;
 		}
-		#header:hover h1{
+		.header-hover h1{
 			height: auto;
 			overflow: auto;
 		}
@@ -73,7 +75,7 @@ a{
 			}
 			
 		.status{
-		    background: url("../img/embed_passed.png") no-repeat scroll 0 0 transparent;
+		    background: scroll 0 0 transparent;
 		    display: block;
 		    float: left;
 		    height: 40px;
@@ -89,6 +91,10 @@ a{
 		#header .status{
 			bottom: 10px;
 			top: auto;
+		}
+		
+		.status.passed{
+			background: url(../img/embed_passed.png) no-repeat;
 		}
 		
 		.status.failed{
@@ -110,7 +116,7 @@ a{
     		float: right;
     		width: 75px;
 		}
-		#header:hover #pms ul{
+		.header-hover #pms ul{
 			height: auto;
     		width: 100px;
 		}
@@ -127,7 +133,7 @@ a{
 				text-decoration: none;
 				line-height: 1.5em;
 			}
-			#header:hover #pms a.more{
+			.header-hover #pms a.more{
 				display: none;
 			}
 				#pms li img{

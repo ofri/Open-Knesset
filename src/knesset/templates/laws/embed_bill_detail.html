@@ -41,48 +41,87 @@ stream example:
  *   8. active phase
  *   9. link "?" - try to do the expand if possible
  *  10. scale for votes - where to get the data? 
- *  11. what about DUPLICATIONS?
+ * √11. what about DUPLICATIONS? go chronologically from the end. all the rest is history
+ *  12. expand with jQuery UI on click on little arrow in pull DIV
  */ 
-			 
+ 
+ /*
+  * 
+  * <li id="vote-1" class="passed/failed/pending voted odd current">
+  */
+			
+		var expanded;
+		
 		$(function() {
 			var stream = {{stream|safe}};
-			//alert(JSON.stringify(stream));
+			alert(JSON.stringify(stream));
 			var status;
 			for (var a in stream) {
 				// determin date
 				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth(), year = d.getFullYear(),
 				    dateHtml = day+'/'+month+'<br>'+year;
 				var verb = stream[a]['verb'];
+				var wasFirstVoted, wasPreVoted, wasApprovalVoted;
 				
 				switch (verb) {
 					case 'approval-voted':
 						if (stream[a]['note'] == 'True') {
 							status = true;
 							$('#passed .date').html(dateHtml);
-						}
+						} else
+							status = false;
 						$('#vote-2 .date, #vote-3 .date').html(dateHtml);
+						wasApprovalVoted = true;
 						break;
 					case 'first-voted':
 						$('#vote-1 .date').html(dateHtml);
+						$('ul#steps li#committee-1').addClass('passed');
+						$('ul#steps li#summoned-1').addClass('passed');
+						if (stream[a]['note'] == 'True') {
+							$('ul#steps li#vote-1').addClass('passed');
+						} else {
+							$('ul#steps li#vote-1').addClass('failed');
+							status = false;
+						}
+						wasFirstVoted = true;
 						break;
 					case 'pre-voted':
 						$('#pre-vote .date').html(dateHtml);
+						if (stream[a]['note'] == 'True') {
+							$('ul#steps li#pre-vote').addClass('passed');
+						} else {
+							$('ul#steps li#pre-vote').addClass('failed');
+							status = false;
+						}
+						wasPreVoted = true;
 						break;
 					case 'was-proposed':
 						$('#initiated .date').html(dateHtml);
+						$('ul#steps li#initiated').addClass('passed');
 					default:
 						break;
 				}
 				
 				
 			}
-			
+
 			if (status) $('.status').addClass('passed').text('אושרה');
-			else $('.status').addClass('failed').text('נדחתה');
+			else if(status==false) $('.status').addClass('failed').text('נדחתה');
 			
 			var pCount = {{bill.proposers.count}};
 			if (pCount > 3) $('.more').text((pCount-3) + '+');
+			
+			$('.pull').bind('click', onPull);
 		});
+		
+		function onPull() {
+			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
+			if (!expanded) $('#header').addClass('header-hover');		
+			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
+				if (!expanded) $('#header').removeClass('header-hover');
+			});
+			expanded = !expanded;
+		}
 	</script>
 </head>
 
@@ -95,7 +134,7 @@ stream example:
 			</div>
 			<div id="excerpt">
 				<span class="label">תקציר:</span>
-				<p>יש את המידע הזה בכלל?</p>
+				<p>יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל?</p>
 			</div>
 			<div id="external-links">
 				<span class="label">קישורים נוספים:</span>
@@ -127,7 +166,7 @@ stream example:
 			</div>
 		</div>
 		<ul id="steps">
-			<li id="initiated" class="odd passed first">
+			<li id="initiated" class="odd first">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -136,7 +175,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="pre-vote" class="passed voted">
+			<li id="pre-vote" class="voted">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -152,7 +191,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="summoned-1" class="odd passed">
+			<li id="summoned-1" class="odd">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -161,7 +200,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="committee-1" class="passed">
+			<li id="committee-1" class="">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -170,7 +209,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-1" class="odd voted failed current">
+			<li id="vote-1" class="odd">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -186,7 +225,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="summoned-2" class="failed">
+			<li id="summoned-2" class="">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -195,7 +234,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="committee-2" class="odd failed">
+			<li id="committee-2" class="odd">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -204,7 +243,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-2" class="pending voted current">
+			<li id="vote-2" class="pending">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -213,7 +252,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-3" class="odd voted pending">
+			<li id="vote-3" class="odd pending">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
