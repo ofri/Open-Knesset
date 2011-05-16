@@ -84,6 +84,7 @@ a{
 		    top: 70px;
 		    width: 80px;
 		    z-index: 10;
+		    overflow: hidden;
 		}
 		
 		#header .status{
@@ -394,7 +395,7 @@ a{
 	bottom: 0;
     background: #EEEFF5;
     height: 20px;
-    font-size: 13px;
+    font-size: 11px;
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
 }
 	#footer,
@@ -411,4 +412,16 @@ a{
 	#footer #share{
 		float: left;
 		padding: 1px 5px;
+	}
+	#footer #share a{
+		background: url(file:///Users/mushon/Sites/Open-Knesset/static/img/embed_link.png) right -20px no-repeat;
+		padding: 2px 20px 2px 0;
+		margin-right: 3px;
+		text-decoration: none;
+	}
+	#footer #share a.embed{
+		background-image: url(file:///Users/mushon/Sites/Open-Knesset/static/img/embed_embed.png);
+	}
+	#footer #share a:hover{
+		background-position: right -60px;
 	}
