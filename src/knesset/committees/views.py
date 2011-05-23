@@ -28,19 +28,11 @@ class CommitteeDetailView(DetailView):
         context = super(CommitteeDetailView, self).get_context_data(*args, **kwargs)
         cm = context['object']
 
-        def annotate_members(qs):
-            members = []
-            for m in qs:
-                m.meetings_count = (100 * m.committee_meetings.filter(committee=cm).count()) / cm.meetings.count()
-                members.append(m)
-            members.sort(key=lambda x:x.meetings_count, reverse=True)
-            return members
-
         context['chairpersons'] = cm.chairpersons.all()
         context['replacements'] = cm.replacements.all()
-        context['members'] = annotate_members(\
-            (cm.members.all()|context['chairpersons']|context['replacements']).distinct())
+        context['members'] = cm.members_by_presence()
         recent_meetings = cm.meetings.all().order_by('-date')[:10]
+
         context['meetings_list'] = recent_meetings
         ref_date = recent_meetings[0].date+datetime.timedelta(1) if recent_meetings.count() > 0 else datetime.datetime.now()
         cur_date = datetime.datetime.now()
