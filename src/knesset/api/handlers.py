@@ -12,18 +12,25 @@ from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
+from knesset.committees.models import CommitteeMeeting
 import math
 from django.forms import model_to_dict
 
 DEFAULT_PAGE_LEN = 20
-def limit_by_request(qs, request):
-    if 'num' in request.GET:
-        num = int(request.GET['num'])
-        page = 'page' in request.GET and int(request.GET['page']) or 0
-        return qs[page*num:(page+1)*num]
-    return qs
+class HandlerExtensions():
+    ''' a collection of extensions to Piston's `BaseHandler` '''
+    @classmethod
+    def url(self, a):
+        ''' return the url of the objects page on the site '''
+        return a.get_absolute_url()
 
-class MemberHandler(BaseHandler):
+    @classmethod
+    def limit_by_request(self, request):
+        num = int(request.GET.get('num', DEFAULT_PAGE_LEN))
+        page = int(request.GET.get('page', 0))
+        return self.qs[page*num:(page+1)*num]
+
+class MemberHandler(BaseHandler, HandlerExtensions):
     fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
     allowed_methods = ('GET')
     model = Member
@@ -32,10 +39,6 @@ class MemberHandler(BaseHandler):
     @classmethod
     def gender (self, member):
         return member.get_gender_display()
-
-    @classmethod
-    def url (self, member):
-        return member.get_absolute_url()
 
     @classmethod
     def party (self, member):
@@ -134,7 +137,7 @@ class MemberHandler(BaseHandler):
 
         return super(MemberHandler,self).read(request, **kwargs)
 
-class VoteHandler(BaseHandler):
+class VoteHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'title', 'time', 
               'summary','full_text',
               'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
@@ -167,10 +170,6 @@ class VoteHandler(BaseHandler):
         return qs[page_len*page_num:page_len*(page_num +1)]
 
     @classmethod
-    def url(self, vote):
-        return vote.get_absolute_url()
-
-    @classmethod
     def for_votes(self, vote):
         return vote.get_voters_id('for')
 
@@ -199,7 +198,7 @@ class VoteHandler(BaseHandler):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas)) 
 
-class BillHandler(BaseHandler):
+class BillHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'bill_title', 
               'stage_text', 'stage_date',
               'votes', 
@@ -233,10 +232,6 @@ class BillHandler(BaseHandler):
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
-
-    @classmethod
-    def url(self, bill):
-        return bill.get_absolute_url()
 
     @classmethod
     def stage_text(self, bill):
@@ -362,3 +357,20 @@ class AgendaHandler(BaseHandler):
     @classmethod
     def number_of_items(self, agenda):
         return agenda.agendavotes.count()
+    
+class CommitteeMeetingHandler(BaseHandler):
+    fields = ('committee_name', 'url', 'date', 'topics', 'protocol_text', 'src_url',
+              ('mks_attended' , ('name')),
+              )
+    allowed_methods = ('GET',)
+    model = CommitteeMeeting
+
+    def read(self, request, **kwargs):
+        ''' returns a meeting or a list of meetings '''
+        r = super(CommitteeMeetingHandler, self).read(request, **kwargs)
+        if 'id' in kwargs:
+            return r
+        else:
+            return limit_by_request(r, request)
+
+

@@ -10,6 +10,7 @@ member_handler = cache_page(Resource(MemberHandler), 60*15)
 party_handler = cache_page(Resource(PartyHandler), 60*15)
 tag_handler = cache_page(Resource(TagHandler), 60*15)
 agenda_handler = cache_page(Resource(AgendaHandler), 60*15)
+committee_meeting_handler = cache_page(Resource(CommitteeMeetingHandler), 60*15)
 
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler, name='vote-handler'),
@@ -26,5 +27,7 @@ urlpatterns = patterns('',
       url(r'^agenda/$', agenda_handler, name='agenda-handler'),
       url(r'^agenda/(?P<id>[0-9]+)/$', agenda_handler, name='agenda-handler'),
       url(r'^agenda/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', agenda_handler, name='agenda-handler'),
+      url(r'^committee_meeting/$', committee_meeting_handler, name='committee-meeting-handler'),
+      url(r'^committee_meeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
       )
 
