@@ -639,6 +639,7 @@ div.mk-card>a { padding:0px; }
 .tip { width: 20em; padding: 0.5em; display: none; }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
 #content-main .proposal_content_text { margin:1em; padding:0em 1em; border:1px dashed gray; width:60%; line-height:1.6;}
+#content-main .explanation-header { margin-top:1em; font-size:120%; font-weight:bold }
 #debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}
 .datelookup { float: left; }
 #content-main .watched { 
@@ -764,3 +765,7 @@ div.general_discipline_control {
 .two_cols>div.secondary {float: left; width:35%; }
 .two_cols>h2 {margin-bottom: 1.5em; }
 .editors_agendas li {list-style-type:none;}
+
+#content-main div.about-page p { margin:1em 1em; }
+#content-main div.about-page h4 { margin-right:1em; }
+#content-main div.about-page h2 { margin-top:2em; }

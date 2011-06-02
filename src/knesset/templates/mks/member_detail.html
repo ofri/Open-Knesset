@@ -396,7 +396,7 @@
                 <p>{% trans "This entry has not been pinged." %}</p>
             {% endif %}
         {% endwith %}
-        <p>{% trans "TrackBack:" %} <span style="direction:ltr">{% absurl member-trackback object_id=object.id %}</span> </p>
+        <p>{% trans "TrackBack:" %} <span style="direction:ltr; unicode-bidi:embed;">{% absurl member-trackback object_id=object.id %}</span> </p>
     	</div>
 	{% endif %} 
 	<br />

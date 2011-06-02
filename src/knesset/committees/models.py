@@ -45,14 +45,26 @@ class Committee(models.Model):
                               "%s.committee_id=%%s" % meeting_tn],
                     params = [ self.id ]).distinct()
 
+    def members_by_presence(self):
+        members = []
+        for m in (self.members.all()|
+                  self.chairpersons.all()|
+                  self.replacements.all()).distinct():
+            m.meetings_count = \
+                100 * m.committee_meetings.filter(committee=self).count() \
+                / self.meetings.count()
+            members.append(m)
+        members.sort(key=lambda x:x.meetings_count, reverse=True)
+        return members
+
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
-    """Retunrs true if 'line' looks like something should should be a protocol part header"""    
+    """Retunrs true if 'line' looks like something should should be a protocol part header"""
     if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
         return False
     return True
-       
+
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
     # TODO: do we really need a date string? can't we just format date?
@@ -63,7 +75,7 @@ class CommitteeMeeting(models.Model):
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
     src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
-    
+
     class Meta:
         ordering = ('-date',)
         verbose_name = _('Committee Meeting')
@@ -75,7 +87,7 @@ class CommitteeMeeting(models.Model):
     def __unicode__(self):
         return (u"%s - %s" % (self.committee.name,
                                 self.title())).replace("&nbsp;", u"\u00A0")
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
@@ -87,10 +99,10 @@ class CommitteeMeeting(models.Model):
     def create_protocol_parts(self, delete_existing=False):
         """ Create protocol parts from this instance's protocol_text
             Optionally, delete existing parts.
-            If the meeting already has parts, and you don't ask to 
+            If the meeting already has parts, and you don't ask to
             delete them, a ValidationError will be thrown, because
             it doesn't make sense to create the parts again.
-        """    
+        """
         if delete_existing:
             ppct = ContentType.objects.get_for_model(ProtocolPart)
             annotations = Annotation.objects.filter(content_type=ppct, object_id__in=self.parts.all)
@@ -100,28 +112,28 @@ class CommitteeMeeting(models.Model):
         else:
             if self.parts.count():
                 raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
-                
+
         if not self.protocol_text: # sometimes there are empty protocols
             return # then we don't need to do anything here.
-            
+
         # break the protocol to its parts
-        # first, fix places where the colon is in the begining of next line 
+        # first, fix places where the colon is in the begining of next line
         # (move it to the end of the correct line)
         protocol_text = []
         for line in re.sub("[ ]+"," ", self.protocol_text).split('\n'):
             if line.startswith(':'):
                 protocol_text[-1] += ':'
-                protocol_text.append(line[1:])                    
+                protocol_text.append(line[1:])
             else:
                 protocol_text.append(line)
 
         i = 1
         section = []
-        header = ''               
-            
-        # now create the sections    
+        header = ''
+
+        # now create the sections
         for line in protocol_text:
-            if legitimate_header(line):            
+            if legitimate_header(line):
                 if section:
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
@@ -130,10 +142,10 @@ class CommitteeMeeting(models.Model):
                 section = []
             else:
                 section.append (line)
-                
+
         # don't forget the last section
         ProtocolPart(meeting=self, order=i,
-            header=header, body='\n'.join(section)).save()        
+            header=header, body='\n'.join(section)).save()
 
 class ProtocolPartManager(models.Manager):
     def list(self):
@@ -149,9 +161,9 @@ class ProtocolPart(models.Model):
 
     annotatable = True
 
-    def get_absolute_url(self): 
-        if self.order == 1: 
-            return self.meeting.get_absolute_url() 
+    def get_absolute_url(self):
+        if self.order == 1:
+            return self.meeting.get_absolute_url()
         else:
             page_num = 1 + (self.order-1)/COMMITTEE_PROTOCOL_PAGINATE_BY
             if page_num==1: # this is on first page
@@ -165,6 +177,6 @@ class ProtocolPart(models.Model):
     def __unicode__(self):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
                               self.header)
-    
+
 
 from listeners import *

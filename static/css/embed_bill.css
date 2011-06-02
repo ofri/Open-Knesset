@@ -1,0 +1,414 @@
+body{
+    margin:0px;
+    background: #fafafc;
+    direction: rtl;
+    text-align: right;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666;
+    font-size: 15px;
+}
+
+a{
+	color: #0080ff;
+}
+
+#header,
+#graph,
+#footer{
+	max-width: 500px;
+    width: 100%;
+}
+#header{
+    background: #FAFAFC;
+    height: 60px;
+    overflow: hidden;
+    position: absolute;
+    z-index: 20;
+	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+	top:0;
+}
+#header:hover{
+	height: 330px;
+}
+	#details{
+		margin: 10px 0 0 120px;
+    	padding: 0 10px;
+		border-left: 1px dotted #cccccc;
+		position: relative;
+	}
+		.label{
+			font-size: 11px;
+			color: #808080;
+			display: block;
+		}
+		h1{
+		    color: #0080FF;
+		    font-size: 13px;
+		    font-weight: bold;
+		    height: 1.4em;
+		    margin-top: 0;
+		    overflow: hidden;
+		}
+		#header:hover h1{
+			height: auto;
+			overflow: auto;
+		}
+		#excerpt{
+			margin: 10px 0; 
+		}
+			#excerpt p{
+				margin: 0 0 10px;
+			}
+			#external-links a{
+				display: block;
+				font-size: 13px;
+				padding-right: 20px;
+				line-height: 1.4em;
+			}
+			#external-links a.oknesset-resource{
+				background: url(../img/oknesset_favicon.png) right no-repeat;
+			}
+			#external-links a.knesset-resource{
+				background: url(../img/knesset_favicon.png) right no-repeat;
+			}
+			
+		.status{
+		    background: url("../img/embed_passed.png") no-repeat scroll 0 0 transparent;
+		    display: block;
+		    float: left;
+		    height: 40px;
+		    left: 10px;
+		    margin-top: -30px;
+		    position: absolute;
+		    text-indent: -9999px;
+		    top: 70px;
+		    width: 80px;
+		    z-index: 10;
+		}
+		
+		#header .status{
+			bottom: 10px;
+			top: auto;
+		}
+		
+		.status.failed{
+			background: url(../img/embed_failed.png) no-repeat;
+		}
+		
+	#pms{
+		margin: 10px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100px;
+	}
+		#pms ul{
+			height: 25px;
+			overflow: hidden;
+			margin: 0;
+    		padding: 0;
+    		float: right;
+    		width: 75px;
+		}
+		#header:hover #pms ul{
+			height: auto;
+    		width: 100px;
+		}
+			#pms li,
+			#pms a.more{
+				float: right;
+			    height: 22px;
+			    list-style: none outside none;
+			    margin-bottom: 3px;
+			    margin-left: 3px;
+			}
+			#pms a.more{
+				margin-left: 0;
+				text-decoration: none;
+				line-height: 1.5em;
+			}
+			#header:hover #pms a.more{
+				display: none;
+			}
+				#pms li img{
+					width: 20px;
+					height: auto;
+					border: 1px solid #1088fe;
+				}
+	a.pull{
+		clear: both;
+		width: 100%;
+		display: block;
+		background: #eeeff5;
+		text-indent: -30000px;
+		text-decoration: none;
+		position: absolute;
+		bottom: 0;
+		height: 10px;
+	}
+
+#gov-position{
+	display: none;
+}
+#graph{
+	margin-top: 60px;
+	position: relative;
+}
+	ul#steps{
+		margin: 0;
+		padding: 0;
+	    overflow: hidden;
+		list-style-type: none;
+		width: 100%;
+	}
+		ul#steps li{
+			background: #eeeff5 repeat-y;
+			max-width: 50px;
+			width: 10%;
+			float: right;
+			height: 100%;
+			margin: 0;
+			min-height: 250px;
+			padding-top: 40px;
+			position: relative;
+		}
+		ul#steps li:hover{
+			background-image: url(../img/embed_hover.png);
+		}
+		ul#steps li.current{
+			/*background-image: url(../img/embed_step_shadow.png);*/
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+		}
+		ul#steps li.odd{
+			background-color: #f5f5f9;
+		}
+		ul#steps li.passed{
+			background-color: #e6eee6;
+		}
+		ul#steps li.odd.passed{
+			background-color: #d6e3d6;
+		}
+		ul#steps li.failed{
+			background-color: #f8ded7;
+		}
+		ul#steps li.odd.failed{
+			background-color: #f4c8bd;
+		}
+			ul#steps li div.step{
+				height: 86px;
+			}
+			ul#steps li.passed div.step{
+				background: url(../img/embed_line_passed.png) bottom repeat-x;
+			}
+			ul#steps li#initiated div.step{
+				background-position: bottom left;
+				background-repeat: no-repeat;
+			}
+			ul#steps li#passed div.step{
+				background-position: bottom right;
+				background-repeat: no-repeat;
+			}
+			ul#steps li.pending.current div.step{
+				background: url(../img/embed_line_pending.png) bottom right no-repeat;
+			}
+			ul#steps li.failed.current div.step{
+				background: url(../img/embed_line_failed.png) bottom right no-repeat;
+			}
+				ul#steps li a{
+					display: none;
+					width: 20px;
+					height: 20px;
+					margin: 0 auto 8px;
+					text-indent: -30000px;
+					text-decoration: none;
+				}
+				ul#steps li:hover a{
+					display: block;
+				}
+				ul#steps li a.link{
+					background: url(../img/embed_link.png);
+				}
+				ul#steps li a.info{
+					background: url(../img/embed_info.png);
+				}
+				ul#steps li.pending a{
+					background-position: 0 -20px;
+				}
+				ul#steps li.failed a{
+					background-position: 0 -40px;
+				}
+				ul#steps li a:hover{
+					background-position: 0 bottom;
+				}
+				ul#steps li span.date{
+					display: block;
+					position: absolute;
+					bottom: 0;
+					text-align: center;
+					font-size: 11px;
+					height: 60px;
+					margin: 0 auto;
+					width: 100%;
+					color: #808080;
+					opacity: 0.5;
+				}
+				ul#steps li.passed span{
+					color: #43873a;
+				}
+				ul#steps li.failed span{
+					color: #b44630;
+				}
+				ul#steps li:hover span.date{
+					opacity: 1;
+				}
+				ul#steps li .icon{
+					position: absolute;
+					top: 100px;
+					width: 100%;
+					height: 50px;
+					background: url(../img/embed_icons_pending.png);
+					text-indent: -999999px;
+				}
+				ul#steps li#initiated .icon{
+					background-position: -450px center;
+				}
+				ul#steps li#pre-vote .icon{
+					background-position: -400px center;
+				}
+				ul#steps li#summoned-1 .icon{
+					background-position: -350px center;
+				}
+				ul#steps li#committee-1 .icon{
+					background-position: -300px 0;
+				}
+				ul#steps li#vote-1 .icon{
+					background-position: -250px 0;
+				}
+				ul#steps li#summoned-2 .icon{
+					background-position: -200px 0;
+				}
+				ul#steps li#committee-2 .icon{
+					background-position: -150px 0;
+				}
+				ul#steps li#vote-2 .icon{
+					background-position: -100px 0;
+				}
+				ul#steps li#vote-3 .icon{
+					background-position: -50px 0;
+				}
+				ul#steps li#passed .icon{
+					background-position: 0px 0;
+				}
+				ul#steps li.passed .icon{
+					background-image: url(../img/embed_icons_passed.png);
+				}
+				ul#steps li.failed .icon{
+					background-image: url(../img/embed_icons_failed.png);
+				}
+				ul#steps li .tooltip{
+				    display: none;
+				    height: 30px;
+				    position: absolute;
+				    text-align: center;
+				    top: 155px;
+				    left: -150%;
+				    width: 400%;
+				    z-index: 200;
+				}
+				ul#steps li .tooltip span{
+					background: url(../img/embed_tooltip_pending.png) center;
+					padding: 11px 4px 4px;
+					font-size: 13px;
+					height: 20px;
+				}
+				ul#steps li.first .tooltip{
+					left: -310%;
+					text-align: right;
+				}
+				ul#steps li.first .tooltip span{
+					background-position: 40% 0;
+				}
+				ul#steps li.last .tooltip{
+					right: -310%;
+					text-align: left;
+				}
+				ul#steps li.last .tooltip span{
+					background-position: 86% 0;
+				}
+				ul#steps li.passed .tooltip span{
+					background-image: url(../img/embed_tooltip_passed.png);
+				}
+				ul#steps li.failed .tooltip span{
+					background-image: url(../img/embed_tooltip_failed.png);
+				}
+				ul#steps li:hover .tooltip,
+				ul#steps li.hover .tooltip{
+					display: block;
+				}
+				ul#steps li.voted .step{
+					margin-top: -30px;
+					padding-bottom: 30px;
+				}
+				ul#steps li.voted .score{
+					top: 75px;
+					width: 300%;
+					left: -100%;
+				}
+				ul#steps li.voted .score span{
+					background-image: url(../img/embed_scale.png);
+					background-repeat:no-repeat;
+					color: #fff;
+					position: absolute;
+					text-indent: -99999px;
+					display: block;
+					height: 19px;
+					padding: 11px 0 0;
+				}
+				ul#steps li.voted .score .scale{
+					width: 120px;
+					text-align: center;
+					overflow: hidden;
+					margin: 0 auto;
+				}
+				ul#steps li.voted .score span.for{
+					background-position: top;
+					width: 100%;
+					position: static;
+				}
+				ul#steps li.voted .score span.against{
+					background-position: right bottom;
+    				z-index: 10;
+				}
+				ul#steps li.voted .score span.balance{
+				    background: none repeat scroll 0 0 transparent;
+				    position: absolute;
+				    text-align: center;
+				    text-indent: 0;
+				    width: 100%;
+				    z-index: 20;
+				    padding-top:3px;
+				}
+				
+#footer{
+	position: absolute;
+	bottom: 0;
+    background: #EEEFF5;
+    height: 20px;
+    font-size: 13px;
+	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+}
+	#footer,
+	#footer a{
+		color: #999;
+	}
+	#footer a:hover{
+		color: #666;
+	}
+	#footer #credit{
+		float: right;
+		padding: 1px 5px;
+	}
+	#footer #share{
+		float: left;
+		padding: 1px 5px;
+	}

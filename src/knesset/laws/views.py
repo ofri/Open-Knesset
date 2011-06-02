@@ -1,7 +1,7 @@
 #encoding: utf-8
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
-from django.utils import simplejson
+from django.utils import simplejson as json
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -31,16 +31,15 @@ from knesset.agendas.models import Agenda
 import urllib
 import urllib2
 import difflib
-import logging 
+import logging
 import datetime
-import json
 from time import mktime
 
 logger = logging.getLogger("open-knesset.laws.views")
 
 def bill_tags_cloud(request, min_posts_count=1):
     member = None
-    if 'member' in request.GET: 
+    if 'member' in request.GET:
         member = get_object_or_404(Member, pk=request.GET['member'])
         tags_cloud = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
@@ -54,15 +53,15 @@ def bill_tags_cloud(request, min_posts_count=1):
 def bill_tag(request, tag):
     tag_instance = get_tag(tag)
     if tag_instance is None:
-        raise Http404(_('No Tag found matching "%s".') % tag)        
-    
+        raise Http404(_('No Tag found matching "%s".') % tag)
+
     extra_context = {'tag':tag_instance}
     extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
     if 'member' in request.GET:
         try:
             member_id = int(request.GET['member'])
         except ValueError:
-            raise Http404(_('No Member found matching "%s".') % request.GET['member']) 
+            raise Http404(_('No Member found matching "%s".') % request.GET['member'])
         extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
         extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
         extra_context['title'] = _('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
@@ -84,7 +83,7 @@ def bill_tag(request, tag):
     mks = tagging.utils.calculate_cloud(mks)
     extra_context['members'] = mks
     return object_list(request, queryset,
-    #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
         template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
 
 def bill_auto_complete(request):
@@ -103,11 +102,11 @@ def bill_auto_complete(request):
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 
-    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), mimetype='application/json')
 
 def vote_tags_cloud(request, min_posts_count=1):
     member = None
-    if 'member' in request.GET: 
+    if 'member' in request.GET:
         member = get_object_or_404(Member, pk=request.GET['member'])
         tags_cloud = Tag.objects.usage_for_queryset(member.votes.all(),counts=True)
         tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
@@ -121,11 +120,11 @@ def vote_tags_cloud(request, min_posts_count=1):
 def vote_tag(request, tag):
     tag_instance = get_tag(tag)
     if tag_instance is None:
-        raise Http404(_('No Tag found matching "%s".') % tag)        
-    
+        raise Http404(_('No Tag found matching "%s".') % tag)
+
     extra_context = {'tag':tag_instance}
     extra_context['tag_url'] = reverse('vote-tag',args=[tag_instance])
-    if 'member' in request.GET: 
+    if 'member' in request.GET:
         extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
         extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
         extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
@@ -150,7 +149,7 @@ def vote_tag(request, tag):
         mks = tagging.utils.calculate_cloud(mks)
         extra_context['members'] = mks
     return object_list(request, queryset,
-    #return tagged_object_list(request, queryset_or_model=qs, tag=tag, 
+    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
 
 
@@ -253,22 +252,26 @@ class BillListView (ListView):
         booklet = self.request.GET.get('booklet', False)
         member = self.request.GET.get('member', False)
         if member:
+            try:
+                member = int(member)
+            except ValueError:
+                raise Http404(_('Invalid member id'))
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()			
+            qs = member.bills.all()
         else:
             qs = self.queryset._clone()
         if stage and stage!='all':
             if stage in self.bill_stages:
                 qs = qs.filter(self.bill_stages[stage])
             else:
-                qs = qs.filter(stage=stage)            
+                qs = qs.filter(stage=stage)
         elif booklet:
             kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
-            qs = qs.filter(knesset_proposal__in=kps)        
+            qs = qs.filter(knesset_proposal__in=kps)
         return qs.order_by('-stage_date')
 
     def get_context(self):
-        context = super(BillListView, self).get_context()       
+        context = super(BillListView, self).get_context()
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         stage = self.request.GET.get('stage', False)
         booklet = self.request.GET.get('booklet', False)
@@ -284,22 +287,22 @@ class BillListView (ListView):
         elif booklet:
             context['title']=_('Bills published in knesset booklet number %s') % booklet
         else:
-            r[0][2] = True                
+            r[0][2] = True
         if member:
             context['member'] = get_object_or_404(Member, pk=member)
-            context['member_url'] = reverse('member-detail',args=[context['member'].id])            
+            context['member_url'] = reverse('member-detail',args=[context['member'].id])
             if stage in self.bill_stages_names:
                 context['title'] = _('Bills %(stage)s by %(member)s') % {'stage': self.bill_stages_names[stage], 'member':context['member'].name}
             else:
                 context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
-            
+
         context['friend_pages'] = r
         return context
-        
+
 class VoteListView(ListView):
 
     session_votes_key = 'selected_votes'
-    
+
     friend_pages = [
             ('type','all',_('All votes')),
             ('type','law-approve', _('Law Approvals')),
@@ -310,7 +313,7 @@ class VoteListView(ListView):
             ('type','continuation', _('Continuation')),
             ('tagged','all',_('All')),
             ('tagged','false',_('Untagged Votes')),
-            ('tagged','true',_('Tagged Votes')),            
+            ('tagged','true',_('Tagged Votes')),
             ('since','7',_('Last Week')),
             ('since','30',_('Last Month')),
             ('since','all',_('All times')),
@@ -318,20 +321,20 @@ class VoteListView(ListView):
             ('order','controversy', _('Controversy')),
             ('order','against-party',_('Against Party')),
             ('order','votes',_('Number of votes')),
-            
+
         ]
 
     def get_queryset(self, **kwargs):
         saved_selection = self.request.session.get(self.session_votes_key, dict())
         self.options = {}
         for key in ['type', 'tagged', 'since', 'order']:
-            self.options[key] = self.request.GET.get(key, 
+            self.options[key] = self.request.GET.get(key,
                                          saved_selection.get(key, None))
-        
+
         return Vote.objects.filter_and_order(**self.options)
-        
+
     def get_context(self):
-        context = super(VoteListView, self).get_context()       
+        context = super(VoteListView, self).get_context()
         friend_page = {}
         for key in ['type', 'tagged', 'since', 'order']:
             if self.options[key]:
@@ -339,7 +342,7 @@ class VoteListView(ListView):
             else:
                 friend_page[key] = 'all' if key!='order' else 'time'
         self.request.session[self.session_votes_key] = friend_page
-        
+
         r = {}
 
         for key, value, name in self.friend_pages:
@@ -354,7 +357,7 @@ class VoteListView(ListView):
             url =  "./?%s" % urllib.urlencode(page)
             if key not in r:
                 r[key] = []
-            r[key].append((url, name, current))        
+            r[key].append((url, name, current))
 
         context['friend_pages'] = r
         if self.request.user.is_authenticated():
@@ -391,36 +394,36 @@ class VoteDetailView(DetailView):
 
 def _add_tag_to_object(user, object_type, object_id, tag):
     ctype = get_object_or_404(ContentType,model=object_type)
-    (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)                
+    (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
     action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
     if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
         url = reverse('bill-tag',args=[tag])
     else:
         url = reverse('vote-tag',args=[tag])
     return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
-    
+
 @login_required
 def add_tag_to_object(request, object_type, object_id):
     """add a POSTed tag_id to object_type object_id by the current user"""
-    
+
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
+        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
         return _add_tag_to_object(request.user, object_type, object_id, tag)
     return HttpResponseNotAllowed(['POST'])
-        
+
 @login_required
 def remove_tag_from_object(request, object_type, object_id):
     """remove a POSTed tag_id from object_type object_id"""
     ctype = get_object_or_404(ContentType,model=object_type)
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])        
+        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
         ti = TaggedItem._default_manager.filter(tag=tag, content_type=ctype, object_id=object_id)
         if len(ti)==1:
             logger.debug('user %s is deleting tagged item %d' % (request.user.username, ti[0].id))
             ti[0].delete()
             action.send(request.user,verb='removed-tag', target=ti[0], description='%s' % (tag.name))
         else:
-            logger.debug('user %s tried removing tag %d from object, but failed, because len(tagged_items)!=1' % (request.user.username, tag.id))        
+            logger.debug('user %s tried removing tag %d from object, but failed, because len(tagged_items)!=1' % (request.user.username, tag.id))
     return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
 
 @permission_required('tagging.add_tag')
@@ -432,7 +435,7 @@ def create_tag_and_add_to_item(request, object_type, object_id):
         logger.info(msg)
         notify_responsible_adult(msg)
         if len(tag)<3:
-            return HttpResponseBadRequest()        
+            return HttpResponseBadRequest()
         tags = Tag.objects.filter(name=tag)
         if not tags:
             try:
@@ -473,7 +476,7 @@ def vote_auto_complete(request):
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 
-    return HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), mimetype='application/json')
 
 def embed_bill_details(request, object_id):
     bill = get_object_or_404(Bill, pk=object_id)

@@ -6,7 +6,6 @@ install_requires = [
 #    'python-yadis',
     'oauth',
     'django-tagging',
-    'simplejson',
     'South',
     'pyth',
     'django-debug-toolbar',
