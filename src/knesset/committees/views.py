@@ -31,9 +31,7 @@ class CommitteeDetailView(DetailView):
         context['chairpersons'] = cm.chairpersons.all()
         context['replacements'] = cm.replacements.all()
         context['members'] = cm.members_by_presence()
-        recent_meetings = cm.meetings.all().order_by('-date')[:10]
-
-        context['meetings_list'] = recent_meetings
+        context['meetings_list'] = cm.recent_meetings()
         ref_date = recent_meetings[0].date+datetime.timedelta(1) if recent_meetings.count() > 0 else datetime.datetime.now()
         cur_date = datetime.datetime.now()
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)

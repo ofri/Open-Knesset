@@ -57,6 +57,8 @@ class Committee(models.Model):
         members.sort(key=lambda x:x.meetings_count, reverse=True)
         return members
 
+    def recent_meetings(self):
+        return self.meetings.all().order_by('-date')[:10]
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
