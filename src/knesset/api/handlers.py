@@ -25,7 +25,6 @@ class HandlerExtensions():
         ''' return the url of the objects page on the site '''
         return a.get_absolute_url()
 
-    @classmethod
     def limit_by_request(self, request):
         num = int(request.GET.get('num', DEFAULT_PAGE_LEN))
         page = int(request.GET.get('page', 0))
@@ -138,13 +137,8 @@ class MemberHandler(BaseHandler, HandlerExtensions):
 
         return super(MemberHandler,self).read(request, **kwargs)
 
-<<<<<<< HEAD
-class VoteHandler(BaseHandler):
-    fields = ('url', 'title', 'time',
-=======
 class VoteHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'title', 'time',
->>>>>>> 6fb425bc981048fa8bbc7af7b93237dd05f6b045
               'summary','full_text',
               'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
               'agendas',
@@ -204,13 +198,8 @@ class VoteHandler(BaseHandler, HandlerExtensions):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
         return dict(zip([a['id'] for a in agendas],agendas))
 
-<<<<<<< HEAD
-class BillHandler(BaseHandler):
-    fields = ('url', 'bill_title',
-=======
 class BillHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'bill_title',
->>>>>>> 6fb425bc981048fa8bbc7af7b93237dd05f6b045
               'stage_text', 'stage_date',
               'votes',
               'committee_meetings',
@@ -369,7 +358,7 @@ class AgendaHandler(BaseHandler):
     def number_of_items(self, agenda):
         return agenda.agendavotes.count()
 
-class CommitteeHandler(BaseHandler):
+class CommitteeHandler(BaseHandler, HandlerExtensions):
     fields = ('id',
               'url',
               'name',
@@ -393,12 +382,18 @@ class CommitteeHandler(BaseHandler):
                    'presence' : x.meetings_count }
                 for x in committee.members_by_presence() ]
 
-class CommitteeMeetingHandler(BaseHandler):
+class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):
     fields = ('committee_name', 'url', 'date', 'topics', 'protocol_text', 'src_url',
-              ('mks_attended' , ('name')),
+              'mks_attended',
               )
     allowed_methods = ('GET',)
     model = CommitteeMeeting
+
+    @classmethod
+    def mks_attended(cls, cm):
+        return [ { 'url': x.get_absolute_url(),
+                   'name': x.name }
+                for x in cm.mks_attended.all()]
 
     def read(self, request, **kwargs):
         ''' returns a meeting or a list of meetings '''
@@ -406,6 +401,5 @@ class CommitteeMeetingHandler(BaseHandler):
         if 'id' in kwargs:
             return r
         else:
-            return limit_by_request(r, request)
-
-
+            self.qs = r
+            return self.limit_by_request(request)
