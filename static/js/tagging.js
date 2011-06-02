@@ -31,12 +31,13 @@ function mark_selected_tags(data){
 }
 
 function toggle_tag(tag_id) {
+    var csrf = $('input[name="csrfmiddlewaretoken"]').val();
     if (tag_id in selected_tags){
-        $.post("remove-tag/", { tag_id: tag_id }, remove_tag_callback );
+        $.post("remove-tag/", { tag_id: tag_id, csrfmiddlewaretoken: csrf }, remove_tag_callback );
         $("#possible_tag_"+tag_id).removeClass("selected");
         delete selected_tags[tag_id];
     } else {
-        $.post("add-tag/", { tag_id: tag_id }, add_tag_callback );
+        $.post("add-tag/", { tag_id: tag_id, csrfmiddlewaretoken: csrf }, add_tag_callback );
         $("#possible_tag_"+tag_id).addClass("selected");
         selected_tags[tag_id] = 1;
     }
