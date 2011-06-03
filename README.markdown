@@ -16,21 +16,28 @@ For Ubuntu, make sure the following packages are installed:
 
     sudo apt-get install python python-imaging python-setuptools
 
-$ python bootstrap.py
-$ bin/buildout
-$ bin/test
-$ bin/django syncdb --migrate     # do not create a superuser account
-$ bin/django loaddata dev
-$ bin/django createsuperuser      # to create your superuser account
-$ bin/django runserver
-# create your local setting file to store a bunch of things that you do NOT want to push to everyone
-# NOTE: NEVER push settings.py with local changes!
-$ vi src/knesset/local_settings.py 
-$ DATABASE_NAME = '<your-local-path>dev.db'  # Or path to database file if using sqlite3.
+* `python bootstrap.py`
 
+* `bin/buildout`
+
+* `bin/test`
+
+* `bin/django syncdb --migrate`     # do not create a superuser account
+
+* `bin/django loaddata dev`
+
+* `bin/django createsuperuser` # to create your superuser account
+
+* `bin/django runserver`
+
+* vi src/knesset/local_settings.py # create your local setting file to store a bunch of things that you do NOT want to push to everyone # NOTE: NEVER push settings.py with local changes!
+
+* sample input for local_settings.py: DATABASE_NAME = '<your-local-path>dev.db'  # Or path to database file if using sqlite3.
+
+Trouble?
 =======
-*Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
-*If you see a recurring error regarding PIL edit setup.py and remove the line that has 'pil' on it*
+* Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
+* If you see a recurring error regarding PIL edit setup.py and remove the line that has 'pil' on it.
 
 NOTES
 =====
