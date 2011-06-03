@@ -20,13 +20,13 @@ class TestPublicProfile(TestCase):
         
     def testPublicProfile(self):
         res = self.client.get(reverse('public-profile',
-                                 kwargs={'object_id': self.jacob.id}))
+                                 kwargs={'pk': self.jacob.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'user/public_profile.html')
         self.assertEqual(res.context['viewed_user'], self.jacob)
         res = self.client.get(reverse('public-profile',
-                                 kwargs={'object_id': self.adrian.id}))
+                                 kwargs={'pk': self.adrian.id}))
         self.assertEqual(res.status_code, 200)
         self.assertFalse('details' in res.content)
 

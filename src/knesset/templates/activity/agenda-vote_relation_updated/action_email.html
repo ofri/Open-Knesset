@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.vote.get_absolute_url as url and action.target.vote.title as vote %}
+A vote's relation to the agenda has changed: <a href="http://{{domain}}{{ url }}">{{ vote }}</a>
+{% endblocktrans %}<br>

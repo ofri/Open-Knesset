@@ -18,6 +18,7 @@ from actstream.models import Action, Follow
 
 from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
+from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
 from knesset.hashnav import DetailView, ListView
 from knesset.tagvotes.models import TagVote
@@ -26,16 +27,16 @@ from knesset.committees.models import CommitteeMeeting
 from forms import RegistrationForm, EditProfileForm
 
 class PublicUserProfile(DetailView):
-
-    queryset = User.objects.all()
+    model = User
     template_resource_name = 'viewed_user' # can't be 'user' because that name is 
                                            # overriden by request context processor!
     slug_field='username'
+    context_object_name = 'viewed_user'
 
-    def get_context(self):
-        context = super(PublicUserProfile, self).get_context()
-        user = context['viewed_user']
-        context.update ({
+    def get_context_data(self, **kwargs):
+        context = super(PublicUserProfile, self).get_context_data(**kwargs)
+        user = self.object
+        context.update({
             'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
             'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
         })
@@ -137,6 +138,7 @@ def user_unfollows(request):
         'member': ContentType.objects.get_for_model(Member),
         'meeting': ContentType.objects.get_for_model(CommitteeMeeting),
         'agenda': ContentType.objects.get_for_model(Agenda),
+        'bill': ContentType.objects.get_for_model(Bill),
     }
     if what not in what_types:
         return HttpResponseBadRequest('what parameter has to be one of: member, meeting,agenda')
@@ -162,6 +164,27 @@ def follow_members(request):
                 follow(request.user, member)
             except Member.DoesNotExist:
                 return HttpResponseBadRequest('bad member id')
+        return HttpResponse('OK')
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+def follow_bills(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
+    if request.method == 'POST':
+        unwatch_id = request.POST.get('unwatch', None)
+        if unwatch_id:
+            bill = get_object_or_404(Bill, pk=unwatch_id)
+            unfollow(request.user, bill, send_action=True)
+        else:
+            watch_id = request.POST.get('watch', None)
+            if not watch_id:
+                return HttpResponseServerError('neither "watch" nor "unwatch" arguments specified')
+            try:
+                bill = get_object_or_404(Bill, pk=watch_id)
+                follow(request.user, bill)
+            except Member.DoesNotExist:
+                return HttpResponseBadRequest('bad bill id')
         return HttpResponse('OK')
     else:
         return HttpResponseNotAllowed(['POST'])

@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target as proposal and action.timestamp|date:"d/m/Y" as date %}
+<span class="action-verb">was proposed</span> on {{ date }}. <a href="http://{{domain}}{{ url }}">see more details</a><br>
+{% endblocktrans %}

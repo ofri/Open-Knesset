@@ -4,6 +4,7 @@
     </div>
     <div>
         <a href="{% url member-detail mk.id %}">{{ mk.name }}</a><br>
-        <a href="{% url party-detail mk.current_party.id %}">{{ mk.current_party.name }}</a>
+        <a href="{% url party-detail mk.current_party.id %}">{{ mk.current_party.name }}</a><br>
+        {{ mk.get_role }}        
     </div>
 </div>

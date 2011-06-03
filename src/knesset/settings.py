@@ -187,6 +187,11 @@ HITCOUNT_EXCLUDE_USER_GROUP = ( )
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-xunit']
 
+
+SERIALIZATION_MODULES = {
+    'oknesset' : 'auxiliary.serializers'
+}
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try: 

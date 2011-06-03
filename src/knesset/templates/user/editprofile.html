@@ -26,6 +26,20 @@
             {% endfor %}
         </td>
     </tr>
+    {% for bill in request.user.get_profile.bills %}
+    <tr>
+        {% if forloop.first %}
+            <th><label>{% trans "Following Bills" %}:</label></th>
+        {% else %}
+            <th></th>
+        {% endif %}
+        <td>
+           <a class="item" id="following-bill-{{bill.id}}" href="{{ bill.get_absolute_url }}">
+            <img class="unfollow" id="unfollow-bill-{{ bill.id }}" src="{{ MEDIA_URL }}img/X.png" />
+            {{ bill }}</a>
+        </td>
+    </tr>
+    {% endfor %}
     {% for meeting in request.user.get_profile.meetings %}
     <tr>
         {% if forloop.first %}

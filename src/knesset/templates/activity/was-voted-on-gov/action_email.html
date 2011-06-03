@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if action.description != 'None' %}
+    {% blocktrans with action.timestamp|date:"d/m/Y" as date and action.description as stand %}
+    <span class="action-verb">government stand was decided</span> on {{ date }}: {{ stand }}<br>
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans with action.timestamp|date:"d/m/Y" as date %}
+    the government discussed the bill on {{ date }}<br>
+    {% endblocktrans %}
+{% endif %}

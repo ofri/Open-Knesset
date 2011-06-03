@@ -63,7 +63,7 @@
         {% if o.tags %}    
             <!--{% trans 'Tags' %}:-->
             {% for t in o.tags %}                
-                <a href="{% url tagged-votes tag=t %}" class="tag">{{ t }}</a>
+                <a href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
             {% endfor %}
         {% else %}
             <!--{% trans 'No tags' %}-->

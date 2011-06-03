@@ -38,14 +38,13 @@ class AgendaListView (ListView):
         return context
         
 class AgendaDetailView (DetailView):
+    model = Agenda
     class ForbiddenAgenda(Exception):
         pass
     
-    queryset = Agenda.objects.all()
-    
-    def GET(self, *arg, **kwargs):
+    def get(self, request, *arg, **kwargs):
         try:
-            response = super(AgendaDetailView, self).GET(*arg, **kwargs)
+            response = super(AgendaDetailView, self).get(request, *arg, **kwargs)
         except self.ForbiddenAgenda:
             return HttpResponseForbidden()
         return response
@@ -57,8 +56,8 @@ class AgendaDetailView (DetailView):
         else:
             raise self.ForbiddenAgenda
         
-    def get_context(self, *args, **kwargs):
-        context = super(AgendaDetailView, self).get_context(*args, **kwargs)       
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaDetailView, self).get_context_data(*args, **kwargs)       
         agenda = context['object']
         try:
             context['title'] = "%s" % agenda.name
@@ -70,32 +69,30 @@ class AgendaDetailView (DetailView):
             watched = agenda in p.agendas
         else:
             watched = False
-        
+
         context.update({'watched_object': watched})
-        
+
         mks = agenda.selected_instances(Member, top=5,bottom=5)
         selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
         context.update({'selected_mks_top': mks['top'], 'selected_mks_bottom': mks['bottom']})
         context.update({'selected_parties': selected_parties })
-        
-        return context
-    
-class AgendaMkDetailView (DetailView):
-    template_name = 'agendas/mk_agenda_detail.html'
-    
-    def get_queryset(self):
-        return Agenda.objects.all()
 
-    def get_context(self, *args, **kwargs):
-        context = super(AgendaMkDetailView, self).get_context(*args, **kwargs)       
+        return context
+
+class AgendaMkDetailView (DetailView):
+    model = Agenda
+    template_name = 'agendas/mk_agenda_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaMkDetailView, self).get_context_data(*args, **kwargs)
         agenda = context['object']
         context['agenda_url'] = agenda.get_absolute_url()
-        context['agenda_name'] = agenda.name        
-        member =  Member.objects.get(pk=self.member_id)
+        context['agenda_name'] = agenda.name
+        member =  Member.objects.get(pk=context['member_id'])
         context['member'] = member
         context['member_url'] = member.get_absolute_url()
         context['score'] = agenda.member_score(member)
-        
+
         try:
             context['title'] = _("Analysis of %(member)s votes by agenda %(agenda)s") % {'member':member.name, 'agenda':agenda.name}
         except AttributeError:
@@ -103,31 +100,31 @@ class AgendaMkDetailView (DetailView):
             logger.error('Attribute error trying to generate title for agenda %d member %d' % (self.object_id,self.member_id))
 
         related_mk_votes = agenda.related_mk_votes(member)
-        
+
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = agenda in p.agendas
         else:
             watched = False
-        
+
         context.update({'watched_object': watched})
         context.update({'related_votes': related_mk_votes})
-        
+
         return context
 
 class AgendaDetailEditView (DetailView):
-    allowed_methods = ['GET', 'POST']
+    model = Agenda
     template_name = 'agendas/agenda_detail_edit.html'
 
-    def __call__(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         agenda = get_object_or_404(Agenda, pk=kwargs['object_id'])
         if request.user in agenda.editors.all():
-            return super(AgendaDetailEditView, self).__call__(request, *args, **kwargs)
+            return super(AgendaDetailEditView, self).get(request, *args, **kwargs)
         else:
             return HttpResponseRedirect(agenda.get_absolute_url())
 
-    def get_context(self, *args, **kwargs):
-        context = super(AgendaDetailEditView, self).get_context(*args, **kwargs)       
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaDetailEditView, self).get_context_data(*args, **kwargs)
         agenda = context['object']
         form = getattr (self, 'form', None)
         if form is None:
@@ -135,11 +132,13 @@ class AgendaDetailEditView (DetailView):
         context['form'] = form
         return context
 
-    @method_decorator(login_required)
-    def POST(self, object_id, **kwargs):
+    def post(self, request, **kwargs):
+        object_id = kwargs.get('pk' , kwargs.get('object_id'), None)
+        agenda = get_object_or_404(Agenda, pk=object_id)
+        if request.user not in agenda.editors.all():
+            return HttpResponseForbidden()
         form = EditAgendaForm(data=self.request.POST)
         if form.is_valid(): # All validation rules pass
-            agenda = get_object_or_404(Agenda, pk=object_id)
             agenda.name = form.cleaned_data['name']
             agenda.public_owner_name = form.cleaned_data['public_owner_name']
             agenda.description = form.cleaned_data['description']
@@ -150,11 +149,10 @@ class AgendaDetailEditView (DetailView):
             self.form = form
             return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
 
-
 class MockApiCaller(Client):
     def get_vote_api(self,vote):
         return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else? 
-    
+
     def request(self, **request):
         environ = {
             'HTTP_COOKIE': self.cookies,
