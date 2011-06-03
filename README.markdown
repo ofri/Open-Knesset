@@ -7,7 +7,7 @@ For Ubuntu, make sure the following packages are installed:
 
 - `python bootstrap.py`
 
-- `bin/buildout`
+- `bin/buildout` (if you have a problem, see "Trouble?" below)
 
 - `bin/test`
 
