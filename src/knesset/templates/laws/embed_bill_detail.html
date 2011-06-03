@@ -102,7 +102,12 @@ stream example:
 						}
 						wasFirstVoted = true;
 						break;
-					case 'pre-voted':
+					case 'was-pre-voted':
+					    {% if bill.pre_votes.count > 0 %}
+					    	$('ul#steps li#pre-vote .step .score .balance').text(
+					    	    '{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
+					    	        '{{bill.pre_votes.all.iterator.next.against_votes_count}}');
+					    {% endif %}
 						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
