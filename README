@@ -12,6 +12,10 @@ $ git clone paste_the_ssh_address_here.git
 Installation:
 =============
 
+For Ubuntu, make sure the following packages are installed:
+
+    sudo apt-get install python python-imaging python-setuptools
+
 $ python bootstrap.py
 $ bin/buildout
 $ bin/test
@@ -26,6 +30,7 @@ $ DATABASE_NAME = '<your-local-path>dev.db'  # Or path to database file if using
 
 =======
 *Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
+*If you see a recurring error regarding PIL edit setup.py and remove the line that has 'pil' on it*
 
 NOTES
 =====
