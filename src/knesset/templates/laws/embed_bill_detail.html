@@ -76,7 +76,7 @@ stream example:
 				var wasFirstVoted, wasPreVoted, wasApprovalVoted;
 				
 				switch (verb) {
-					case 'approval-voted':
+					case 'was-approval-voted':
 						$('ul#steps li#vote-2 .date, ul#steps li#vote-3 .date').html(dateHtml);
 						$('ul#steps li#committee-2').addClass('passed');
 						$('ul#steps li#summoned-2').addClass('passed');
@@ -90,7 +90,7 @@ stream example:
 						}
 						wasApprovalVoted = true;
 						break;
-					case 'first-voted':
+					case 'was-first-voted':
 						$('ul#steps li#vote-1 .date').html(dateHtml);
 						$('ul#steps li#committee-1').addClass('passed');
 						$('ul#steps li#summoned-1').addClass('passed');
@@ -103,11 +103,6 @@ stream example:
 						wasFirstVoted = true;
 						break;
 					case 'was-pre-voted':
-					    {% if bill.pre_votes.count > 0 %}
-					    	$('ul#steps li#pre-vote .step .score .balance').text(
-					    	    '{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
-					    	        '{{bill.pre_votes.all.iterator.next.against_votes_count}}');
-					    {% endif %}
 						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
@@ -120,6 +115,16 @@ stream example:
 					case 'was-proposed':
 						$('ul#steps li#initiated .date').html(dateHtml);
 						$('ul#steps li#initiated').addClass('passed');
+						break;
+					case 'was-discussed':
+						// there cannot be a failure in a committee discussion, only success
+						if (stream[a].note == '1') {
+							$("ul#steps li#committee-1, ul#steps li#summoned-1").addClass('passed');
+							$("ul#steps li#committee-1 .date").html(dateHtml);
+						} else {
+							$("ul#steps li#committee-2, ul#steps li#summoned-2").addClass('passed');
+							$("ul#steps li#committee-2 .date").html(dateHtml);
+						}
 					default:
 						break;
 				}
