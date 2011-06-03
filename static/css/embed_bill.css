@@ -308,31 +308,38 @@ a{
 					background-image: url(../img/embed_icons_failed.png);
 				}
 				ul#steps li .tooltip{
-				    height: 30px;
-				    position: absolute;
-				    text-align: center;
-				    top: 155px;
-				    left: -150%;
-				    width: 400%;
-				    z-index: 200;
+					height: 30px;
+					position: absolute;
+					text-align: center;
+					top: 155px;
+					left: -25px;
+					z-index: 200;
+					width: 100px;
+					overflow: hidden;
 				}
 				.tooltip .bubble {
 					background: url(../img/embed_tooltip_pending.png) center;
 					margin: 0 auto;
 					padding: 11px 4px 4px;
 					font-size: 13px;
-					height: 20px;
+					height: 16px;
 				}
 				ul#steps li.first .tooltip{
-					left: -310%;
-					text-align: right;
+					right: 5px;
+					text-align: left;
 				}
 				ul#steps li .tooltip .bubble{
-					background-position: 40% 0;
+					background-position: 50% top;
+				}
+				ul#steps li.first .tooltip .bubble {
+				  background-position: -20px top;
 				}
 				ul#steps li.last .tooltip{
-					right: -310%;
-					text-align: left;
+					left: 5px;
+					text-align: right;
+				}
+				ul#steps li.last .tooltip .bubble {
+					background-position: 120px;
 				}
 				ul#steps li.passed .tooltip span{
 					background-image: url(../img/embed_tooltip_passed.png);
