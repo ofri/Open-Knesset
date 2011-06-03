@@ -73,12 +73,12 @@ First time
 Every other time
 -----------------
 
-$ git diff # to know what changed since your last commit
-$ git add -filename # if you added new files (commit doesn't add new files)
-$ git commit -a # commit all changes to your local repository
-# commit note should include fix#: [number] of the redline bug number youre fixing (if any)
-$ git push # push changes to git repo
-# go to git, do a "pull request" from [release manager] so code will get to production
+- git diff # to know what changed since your last commit
+- git add -filename # if you added new files (commit doesn't add new files)
+- git commit -a # commit all changes to your local repository
+- commit note should include fix#: [number] of the redline bug number youre fixing (if any)
+- git push # push changes to git repo
+- go to git, do a "pull request" from [release manager] so code will get to production
 
 Updating Text 
 ==============
