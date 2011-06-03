@@ -51,42 +51,59 @@ stream example:
   */
 			
 		var expanded;
+		var stream = {{stream|safe}};
+		
+		function showLog() {
+			//alert(JSON.stringify(stream));
+			var log = $("#log");
+			for (var a in stream) {
+				var inner = $("<p></p>").appendTo(log);//.text(JSON.stringify(stream[a])));
+				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
+				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
+				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
+				inner.append($("<span style='color:red;'>target: </span>")).append($("<span>" + stream[a].target + "</span><br>"));
+			}
+		}
 		
 		$(function() {
-			var stream = {{stream|safe}};
-			alert(JSON.stringify(stream));
+			showLog();
 			var status;
 			for (var a in stream) {
 				// determin date
-				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth(), year = d.getFullYear(),
+				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth()+1, year = d.getFullYear(),
 				    dateHtml = day+'/'+month+'<br>'+year;
 				var verb = stream[a]['verb'];
 				var wasFirstVoted, wasPreVoted, wasApprovalVoted;
 				
 				switch (verb) {
 					case 'approval-voted':
+						$('ul#steps li#vote-2 .date, ul#steps li#vote-3 .date').html(dateHtml);
+						$('ul#steps li#committee-2').addClass('passed');
+						$('ul#steps li#summoned-2').addClass('passed');
 						if (stream[a]['note'] == 'True') {
 							status = true;
-							$('#passed .date').html(dateHtml);
-						} else
+							$('ul#steps li#passed .date').html(dateHtml);
+							$('ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3').addClass("passed");
+						} else {
 							status = false;
-						$('#vote-2 .date, #vote-3 .date').html(dateHtml);
+							$('ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3').addClass("failed");
+						}
 						wasApprovalVoted = true;
 						break;
 					case 'first-voted':
-						$('#vote-1 .date').html(dateHtml);
+						$('ul#steps li#vote-1 .date').html(dateHtml);
 						$('ul#steps li#committee-1').addClass('passed');
 						$('ul#steps li#summoned-1').addClass('passed');
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#vote-1').addClass('passed');
 						} else {
-							$('ul#steps li#vote-1').addClass('failed');
+							$('ul#steps li#vote-1, ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3, ul#steps li#committee-2, ul#steps li#summoned-2').addClass('failed');
 							status = false;
 						}
 						wasFirstVoted = true;
 						break;
 					case 'pre-voted':
-						$('#pre-vote .date').html(dateHtml);
+						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
 						} else {
@@ -96,7 +113,7 @@ stream example:
 						wasPreVoted = true;
 						break;
 					case 'was-proposed':
-						$('#initiated .date').html(dateHtml);
+						$('ul#steps li#initiated .date').html(dateHtml);
 						$('ul#steps li#initiated').addClass('passed');
 					default:
 						break;
@@ -279,6 +296,7 @@ stream example:
 			<a href="#" class="link">קישור</a>
 		</div>
 	</div>
+	<div id="log" style="position:absolute; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>
 </body>
 </html>
 
