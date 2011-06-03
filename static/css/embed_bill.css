@@ -312,34 +312,34 @@ a{
 					position: absolute;
 					text-align: center;
 					top: 155px;
-					left: -25px;
+					left: -150%;
+					line-height: 30px;
+					width: 400%;
 					z-index: 200;
-					width: 100px;
 					overflow: hidden;
 				}
 				.tooltip .bubble {
 					background: url(../img/embed_tooltip_pending.png) center;
 					margin: 0 auto;
-					padding: 11px 4px 4px;
+					padding: 9px 4px 4px;
 					font-size: 13px;
-					height: 16px;
 				}
 				ul#steps li.first .tooltip{
 					right: 5px;
-					text-align: left;
+					text-align: right;
 				}
 				ul#steps li .tooltip .bubble{
 					background-position: 50% top;
 				}
 				ul#steps li.first .tooltip .bubble {
-				  background-position: -20px top;
+				  background-position: 40% top;
 				}
 				ul#steps li.last .tooltip{
 					left: 5px;
-					text-align: right;
+					text-align: left;
 				}
 				ul#steps li.last .tooltip .bubble {
-					background-position: 120px;
+					background-position: 86%;
 				}
 				ul#steps li.passed .tooltip span{
 					background-image: url(../img/embed_tooltip_passed.png);
@@ -393,7 +393,7 @@ a{
 						text-align:center;
 				    width: 100%;
 				    z-index: 20;
-						top: 1px;
+						top: -4px;
 				}
 				
 #footer{

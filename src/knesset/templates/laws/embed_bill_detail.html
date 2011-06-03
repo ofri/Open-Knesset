@@ -71,10 +71,11 @@ stream example:
 			$.each(ids, function(ind, id) {
 				var $li = $('<li />').attr({id: id});
 				if (ind === 0) {
-					$li.addClass('first');
+					// the CSS hacks for edge tooltips are not cross-browser compatible.
+					//$li.addClass('first');
 				}
 				if (ind === ids.length - 1) {
-					$li.addClass('last');
+					//$li.addClass('last');
 				}
 				if ((ind % 2) === 1) {
 					$li.addClass('odd');
@@ -115,7 +116,7 @@ stream example:
 				}
 				
 				var $tooltip = $('<div />').addClass('tooltip').append(
-						$('<div>?</div>').addClass('bubble')
+						$('<span>Some long Text</span>').addClass('bubble')
 				  );
 				$tooltip.hide();
 				$stepdiv.append($tooltip);
