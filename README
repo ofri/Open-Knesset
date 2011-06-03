@@ -28,13 +28,10 @@ $ bin/django runserver
 $ vi src/knesset/local_settings.py 
 $ DATABASE_NAME = '<your-local-path>dev.db'  # Or path to database file if using sqlite3.
 
-=======
-*Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
-*If you see a recurring error regarding PIL edit setup.py and remove the line that has 'pil' on it*
-
-NOTES
+TROUBLE?
 =====
 
+- Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
 - currently using MySQL as the database engine is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' can be fixed 
   by installing the python-dev package

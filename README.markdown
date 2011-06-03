@@ -1,14 +1,3 @@
-Get the Code:
-============
-
-Fork code repository:
-Browse to http://github.com/hasadna/Open-Knesset
-and click Fork
-Browse to your Open-Knesset fork and click the SSH button. 
-Copy the SSH address and run the following command (widows users - use git bash)
-$ git clone paste_the_ssh_address_here.git
-
-
 Installation:
 =============
 
@@ -16,32 +5,27 @@ For Ubuntu, make sure the following packages are installed:
 
     sudo apt-get install python python-imaging python-setuptools
 
-* `python bootstrap.py`
+- `python bootstrap.py`
 
-* `bin/buildout`
+- `bin/buildout`
 
-* `bin/test`
+- `bin/test`
 
-* `bin/django syncdb --migrate`     # do not create a superuser account
+- `bin/django syncdb --migrate`     # do not create a superuser account
 
-* `bin/django loaddata dev`
+- `bin/django loaddata dev`
 
-* `bin/django createsuperuser` # to create your superuser account
+- `bin/django createsuperuser` # to create your superuser account
 
-* `bin/django runserver`
+- `bin/django runserver`
 
-* vi src/knesset/local_settings.py # create your local setting file to store a bunch of things that you do NOT want to push to everyone # NOTE: NEVER push settings.py with local changes!
+- `vi src/knesset/local_settings.py` # create your local setting file to store a bunch of things that you do NOT want to push to everyone # NOTE: NEVER push settings.py with local changes!
 
-* sample input for local_settings.py: DATABASE_NAME = '<your-local-path>dev.db'  # Or path to database file if using sqlite3.
+- sample input for local_settings.py: `DATABASE_NAME = '<your-local-path>dev.db'`  # Or path to database file if using sqlite3.
 
 Trouble?
 =======
-* Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
-* If you see a recurring error regarding PIL edit setup.py and remove the line that has 'pil' on it.
-
-NOTES
-=====
-
+- Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
 - currently using MySQL as the database engine is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' can be fixed 
   by installing the python-dev package
@@ -49,36 +33,35 @@ NOTES
 Update - get your branch updated with the changes done by others
 ======
 
-$ cd Open-Knesset 
-$ git pull git://github.com/hasadna/Open-Knesset.git master
-$ bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
-$ bin/django syncdb --migrate      # do not create a superuser account
-$ bin/test
-$ bin/django runserver
+- cd Open-Knesset 
+- git pull git://github.com/hasadna/Open-Knesset.git master
+- bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+- bin/django syncdb --migrate      # do not create a superuser account
+- bin/test
+- bin/django runserver
 
-# if you get the add_persons_aliases alert try this:
-$ bin/django migrate --fake persons 0001
+if you get the add_persons_aliases alert try `bin/django migrate --fake persons 0001`
 
 Updating the translation strings:
 ================================
-$ cd src/knesset
-$ ../../bin/django makemessages -a -e txt,html
+- cd src/knesset
+- ../../bin/django makemessages -a -e txt,html
 <edit src/knesset/locale/he/LC_MESSAGES/django.po, find your strings and change it to the correct translation>
-$ ../../bin/django compilemessages
+- ../../bin/django compilemessages
 
 Windows Users:
 --------------
 
 Prerequisites:
-Download and install Python 2.7 from http://www.python.org/download/windows/
-Make sure python and svn are in the system path (control panel->system->advanced->environment variables)
-Download and install svn client from http://www.sliksvn.com/en/download
-Download and install git by following http://help.github.com/win-git-installation/
-Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
+- Download and install Python 2.7 from http://www.python.org/download/windows/
+- Make sure python and svn are in the system path (control panel->system->advanced->environment variables)
+- Download and install svn client from http://www.sliksvn.com/en/download
+- Download and install git by following http://help.github.com/win-git-installation/
+- Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
 
 Running the installation instructions:
-open command line change dir to the Open-Knesset folder
-run the installation instructions above (Without the $ ofcourse and with backslashes)
+- open command line change dir to the Open-Knesset folder
+- run the installation instructions above (Without the $ ofcourse and with backslashes)
 
 Checking in
 ==============
@@ -103,11 +86,11 @@ Updating Text
 Adding a field to existing model
 ================================
 
-# add the field you want to model sample_model
-# see our naming conventions for migrations: under the directory "migrations" under the model's folder - notice the number is added automatically
-# so 0003_add_members_blog is actually add_members_blog
-$ bin/django schemamigration knesset.sample_model --auto naming_convention_change_name
-$ bin/django syncdb --migrate
+- add the field you want to model sample_model
+- see our naming conventions for migrations: under the directory "migrations" under the model's folder - notice the number is added automatically
+- so 0003_add_members_blog is actually add_members_blog
+- bin/django schemamigration knesset.sample_model --auto naming_convention_change_name
+- bin/django syncdb --migrate
 
 
  
