@@ -11,11 +11,14 @@ from knesset.laws.models import Vote,VoteAction,Bill
 class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
-        mks = Member.objects.order_by('current_party__is_coalition','current_party__name').values('id','name','current_party')
+        mks = Member.objects.order_by('current_party__is_coalition','current_party__name')\
+                .values('id','name','current_party__name')
         f = open(os.path.join(settings.DATA_ROOT, 'mks.csv'), 'wt')
-        mk_writer = csv.writer(f)
+        mk_writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
         for mk in mks:
-            row = [mk['id'], mk['name'].encode('utf8'), mk['current_party']]
+            row = [mk['id'], 
+                   '%s' % mk['name'].encode('utf8'),
+                   '%s' % mk['current_party__name'].encode('utf8')]
             mk_writer.writerow(row)
         f.close()
 
