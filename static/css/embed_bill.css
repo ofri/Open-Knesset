@@ -220,21 +220,17 @@ a{
 			ul#steps li.failed.current div.step{
 				background: url(../img/embed_line_failed.png) bottom right no-repeat;
 			}
-				ul#steps li a{
-					display: none;
+				.ok_hoveritem{
 					width: 20px;
 					height: 20px;
 					margin: 0 auto 8px;
 					text-indent: -30000px;
 					text-decoration: none;
 				}
-				ul#steps li:hover a{
-					display: block;
-				}
-				ul#steps li a.link{
+				.ok_link{
 					background: url(../img/embed_link.png);
 				}
-				ul#steps li a.info{
+				.ok_info{
 					background: url(../img/embed_info.png);
 				}
 				ul#steps li.pending a{
@@ -243,10 +239,10 @@ a{
 				ul#steps li.failed a{
 					background-position: 0 -40px;
 				}
-				ul#steps li a:hover{
+				.ok_hoveritem:hover{
 					background-position: 0 bottom;
 				}
-				ul#steps li span.date{
+				ul#steps li .date{
 					display: block;
 					position: absolute;
 					bottom: 0;
@@ -312,7 +308,6 @@ a{
 					background-image: url(../img/embed_icons_failed.png);
 				}
 				ul#steps li .tooltip{
-				    display: none;
 				    height: 30px;
 				    position: absolute;
 				    text-align: center;
@@ -321,8 +316,9 @@ a{
 				    width: 400%;
 				    z-index: 200;
 				}
-				ul#steps li .tooltip span{
+				.tooltip .bubble {
 					background: url(../img/embed_tooltip_pending.png) center;
+					margin: 0 auto;
 					padding: 11px 4px 4px;
 					font-size: 13px;
 					height: 20px;
@@ -331,15 +327,12 @@ a{
 					left: -310%;
 					text-align: right;
 				}
-				ul#steps li.first .tooltip span{
+				ul#steps li .tooltip .bubble{
 					background-position: 40% 0;
 				}
 				ul#steps li.last .tooltip{
 					right: -310%;
 					text-align: left;
-				}
-				ul#steps li.last .tooltip span{
-					background-position: 86% 0;
 				}
 				ul#steps li.passed .tooltip span{
 					background-image: url(../img/embed_tooltip_passed.png);
@@ -385,14 +378,15 @@ a{
 					background-position: right bottom;
     				z-index: 10;
 				}
-				ul#steps li.voted .score span.balance{
+				ul#steps li.voted .score div.balance{
 				    background: none repeat scroll 0 0 transparent;
+						color: #fff;
+						font-weight: bold;
 				    position: absolute;
-				    text-align: center;
-				    text-indent: 0;
+						text-align:center;
 				    width: 100%;
 				    z-index: 20;
-				    padding-top:3px;
+						top: 1px;
 				}
 				
 #footer{

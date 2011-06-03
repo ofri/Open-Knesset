@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 <head>
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css">
 	
-	<script type="text/javascript">
+	<script>
 /*
 states:
 	1. initiated ("was-proposed")
@@ -57,16 +57,192 @@ stream example:
 			//alert(JSON.stringify(stream));
 			var log = $("#log");
 			for (var a in stream) {
-				var inner = $("<p></p>").appendTo(log);//.text(JSON.stringify(stream[a])));
-				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
-				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
-				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
-				inner.append($("<span style='color:red;'>target: </span>")).append($("<span>" + stream[a].target + "</span><br>"));
+				var inner = $("<p />").appendTo(log);//.text(JSON.stringify(stream[a])));
+				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br />"));
+				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br />"));
+				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br />"));
+				inner.append($("<span style='color:red;'>target: </span>")).append($("<span>" + stream[a].target + "</span><br />"));
 			}
+		}
+		
+		function populateSteps() {
+			var ids = ['initiated','pre-vote','summoned-1','committee-1','vote-1','summoned-2','committee-2',
+			           'vote-2','vote-3','passed'];
+			$.each(ids, function(ind, id) {
+				var $li = $('<li />').attr({id: id});
+				if (ind === 0) {
+					$li.addClass('first');
+				}
+				if ((ind % 2) === 1) {
+					$li.addClass('odd');
+				}
+				
+				var $stepdiv = $('<div />').addClass('step');
+				var $ok_link = $('<a href="#" />').addClass('link').append(
+					  $('<div>קישור</div>').addClass('ok_link').addClass('ok_hoveritem')
+				  );
+				$ok_link.hide();
+				$stepdiv.append($ok_link);
+				var $ok_info = $('<a href="#" />').addClass('info').append(
+					  $('<div>מידע</div>').addClass('ok_info').addClass('ok_hoveritem')
+				  );
+				$ok_info.hide();
+				$stepdiv.append($ok_info);
+				
+				var $ok_icon = $('<div>icon</div>').addClass('icon');
+				$stepdiv.append($ok_icon);
+				
+				if ((id.indexOf('vote') === 0) && (id === 'vote-2')) {
+				  var $tooltip_score = $('<div />').addClass('tooltip').addClass('score');
+				  var $balance = $('<div>32/28</div>').addClass('balance');
+				  var $scale = $('<div />').addClass('scale').attr({
+							style: 'width:80px' });
+					var $against = $('<span />').addClass('against').attr({
+					    style:"background-position: -47px bottom; width:53px"});
+					var $for = $('<span />').addClass('for');
+					$scale.append($against).append($for);
+					$tooltip_score.append($scale);
+					$tooltip_score.append($balance);
+					$tooltip_score.hide();
+					
+					$ok_icon.hover(function() {$tooltip_score.show();}, function() {$tooltip_score.hide()});
+					
+					$stepdiv.append($tooltip_score);
+					$li.addClass('voted');
+				}
+				
+				var $tooltip = $('<div />').addClass('tooltip').append(
+						$('<div>?</div>').addClass('bubble')
+				  );
+				$tooltip.hide();
+				$stepdiv.append($tooltip);
+				
+				$ok_icon.hover(function() {
+				    $tooltip.show();
+				    $ok_link.show();
+				    $ok_info.show();
+				  }, function() {
+				    $tooltip.hide();
+				    $ok_link.hide();
+				    $ok_info.hide();
+				});
+				
+				var $date = $('<div>?</div>').addClass('date');
+				$stepdiv.append($date);
+				
+				$li.append($stepdiv);
+				
+				$('#steps').append($li);
+			});
+// 			<li id="initiated" class="odd first">
+// 				<div class="step">
+// 					<a href="#" class="link"><div class="ok_link ok_hoveritem">קישור</div></a>
+// 					<a href="#" class="info"><div class="ok_info ok_hoveritem">מידע</div></a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>יזום ההצעה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="pre-vote" class="voted">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip score">
+// 						<span class="balance">32/28</span>
+// 						<div class="scale" style="width:60px">
+// 							<span class="against" style="width:28px; background-position: -62px bottom;">28 against</span>
+// 							<span class="for">32 for</span>
+// 						</div>
+// 					</div>
+// 					<div class="tooltip"><span>קריאה טרומית</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="summoned-1" class="odd">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="committee-1" class="">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>ישיבות ועדה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="vote-1" class="odd">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip score">
+// 						<span class="balance">28/53</span>
+// 						<div class="scale" style="width:80px">
+// 							<span class="against" style="background-position: -47px bottom; width:53px">40 against</span>
+// 							<span class="for">28 for</span>
+// 						</div>
+// 					</div>
+// 					<div class="tooltip"><span>קריאה ראשונה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="summoned-2" class="">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="committee-2" class="odd">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>ישיבות ועדה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="vote-2" class="pending">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>קריאה שניה</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="vote-3" class="odd pending">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>קריאה שלישית</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
+// 			<li id="passed" class="pending last">
+// 				<div class="step">
+// 					<a href="#" class="link">קישור</a>
+// 					<a href="#" class="info">מידע</a>
+// 					<div class="icon">icon</div>
+// 					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
+// 					<span class="date">?</span>
+// 				</div>
+// 			</li>
 		}
 		
 		$(function() {
 			showLog();
+			populateSteps();
 			var status;
 			for (var a in stream) {
 				// determin date
@@ -166,7 +342,7 @@ stream example:
 			<div class="label">יזמו:</div>
 			<ul>
 				{% for proposer in bill.proposers.all %}
-				<li><a href="{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
+				<li><a href="{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"></a></li>
 				{% endfor %}
 			</ul>
 			<a href="#" class="more"></a>
@@ -183,110 +359,7 @@ stream example:
 			</div>
 		</div>
 		<ul id="steps">
-			<li id="initiated" class="odd first">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>יזום ההצעה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="pre-vote" class="voted">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">32/28</span>
-						<div class="scale" style="width:60px">
-							<span class="against" style="width:28px; background-position: -62px bottom;">28 against</span>
-							<span class="for">32 for</span>
-						</div>
-					</div>
-					<div class="tooltip"><span>קריאה טרומית</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="summoned-1" class="odd">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="committee-1" class="">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ישיבות ועדה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="vote-1" class="odd">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">28/53</span>
-						<div class="scale" style="width:80px">
-							<span class="against" style="background-position: -47px bottom; width:53px">40 against</span>
-							<span class="for">28 for</span>
-						</div>
-					</div>
-					<div class="tooltip"><span>קריאה ראשונה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="summoned-2" class="">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="committee-2" class="odd">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ישיבות ועדה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="vote-2" class="pending">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>קריאה שניה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="vote-3" class="odd pending">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>קריאה שלישית</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<li id="passed" class="pending last">
-				<div class="step">
-					<a href="#" class="link">קישור</a>
-					<a href="#" class="info">מידע</a>
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
+			
 		</ul>
 	</div>
 	<div id="footer">
