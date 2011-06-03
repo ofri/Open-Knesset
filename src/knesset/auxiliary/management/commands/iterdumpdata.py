@@ -107,9 +107,9 @@ class Command(BaseCommand):
                 continue
             if not model._meta.proxy and router.allow_syncdb(using, model):
                 if use_base_manager:
-                    objects_chains.append(model._base_manager.using(using).all())
+                    objects_chains.append(model._base_manager.using(using).iterator())
                 else:
-                    objects_chains.append(model._default_manager.using(using).all())
+                    objects_chains.append(model._default_manager.using(using).iterator())
 
         try:
             return serializers.serialize(format, chain(*objects_chains), indent=indent,
