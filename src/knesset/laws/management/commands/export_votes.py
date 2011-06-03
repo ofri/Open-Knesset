@@ -11,8 +11,14 @@ from knesset.laws.models import Vote,VoteAction,Bill
 class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
-        mks = Member.objects.order_by('current_party').values('id','name','current_party')
-        
+        mks = Member.objects.order_by('current_party__is_coalition','current_party__name').values('id','name','current_party')
+        f = open(os.path.join(settings.DATA_ROOT, 'mks.csv'), 'wt')
+        mk_writer = csv.writer(f)
+        for mk in mks:
+            row = [mk['id'], mk['name'].encode('utf8'), mk['current_party']]
+            mk_writer.writerow(row)
+        f.close()
+
         vote_tags = Tag.objects.usage_for_model(Vote)
         bill_tags = Tag.objects.usage_for_model(Bill)
         all_tags = list(set(vote_tags).union(bill_tags))
@@ -57,7 +63,7 @@ class Command(NoArgsCommand):
         f.close()
         f2.close()
 
-        
+
 
 
 
