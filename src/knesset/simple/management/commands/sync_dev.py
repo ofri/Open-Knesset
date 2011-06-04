@@ -24,7 +24,7 @@ class Command(NoArgsCommand):
 
         # reset data in needed models
         for reset_model in self.reset_models:
-            model = get_model(reset_model.split('.'))
+            model = get_model(*reset_model.split('.'))
             model.objects.using(self.DB).delete()
 
         ignore_models = []
@@ -54,7 +54,7 @@ class Command(NoArgsCommand):
                 if not (app_label in ignore_apps or name_pair in ignore_models):
 
                     if verbosity > 1:
-                        print "Exporting %s.%s" % name_pair
+                        print "Exporting %s.%s" % tuple(name_pair)
 
                     qs = model.objects.all()
                     if name_pair in only_latest:
