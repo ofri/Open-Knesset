@@ -34,8 +34,7 @@
     </div>
 
     <script type="text/javascript">
-        function connect_el_to_div( el, div ) {
-            el.click( function () {
+        function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
                 var options = {
                      serviceUrl:'/vote/auto_complete/',
@@ -58,6 +57,11 @@
                 });
 
                 return true;
+         }
+        
+        function connect_el_to_div( el, div ) {
+            el.click( function () {
+                show_only_vote_stage_div(div);
             } );
         }
 
@@ -433,6 +437,10 @@
             $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
                                                         return false;});
 
+            if (location.hash) {
+              // Can be '#' + one of the "bill-stage" class divs.
+              show_only_vote_stage_div(location.hash.substring(1));
+            }
 
             var object_id = {{object.id}};
             {% if watched %}
@@ -442,6 +450,7 @@
                 document.is_watched = false;
                 $('#watch').html("{% trans 'Watch' %}");
             {% endif %};
+
             $('#watch').click( function () {
                 if (document.is_watched) {
                     jQuery.ajax({
@@ -477,7 +486,8 @@
                     });
                 }
                 return (false);
-            })
+            }
+            )
     });
 
     --></script>
