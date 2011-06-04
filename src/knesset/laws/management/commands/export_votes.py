@@ -16,7 +16,7 @@ class Command(NoArgsCommand):
         f = open(os.path.join(settings.DATA_ROOT, 'mks.csv'), 'wt')
         mk_writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
         for mk in mks:
-            row = [mk['id'], 
+            row = [mk['id'],
                    '%s' % mk['name'].encode('utf8'),
                    '%s' % mk['current_party__name'].encode('utf8')]
             mk_writer.writerow(row)
@@ -33,6 +33,14 @@ class Command(NoArgsCommand):
         for mk in mks:
             header.append(mk['id'])
         mk_writer.writerow(header)
+
+        f2 = open(os.path.join(settings.DATA_ROOT, 'tags.csv'), 'wt')
+        tag_writer = csv.writer(f2)
+        header = ['Tag id', 'Tag Name']
+        tag_writer.writerow(header)
+        for tag in all_tags:
+            tag_writer.writerow([tag.id, tag.name.encode('utf8')])
+        f2.close()
 
         f2 = open(os.path.join(settings.DATA_ROOT, 'votes_tags.csv'), 'wt')
         tag_writer = csv.writer(f2)
