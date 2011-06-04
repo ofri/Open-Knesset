@@ -65,12 +65,22 @@ class Command(NoArgsCommand):
                     counted = 0
                     total = 0
                     for obj in qs.iterator():
-                        obj.save(using=self.DB)
-                        counted += 1
-                        total += 1
                         if counted > self.COMMIT_EVERY:
                             if verbosity > 1:
                                 print "    committed %d so far" % total
                             transaction.commit(using=self.DB)
                             counted = 0
+
+                        # obfuscate user data
+                        if name_pair == ['auth', 'user']:
+                            obj.set_unusable_password()
+                            uid = 'user_%s' % obj.pk
+                            obj.username = uid
+                            obj.first_name = uid
+                            obj.last_name = uid
+                            obj.email = '%s@example.com' % uid
+
+                        obj.save(using=self.DB)
+                        counted += 1
+                        total += 1
                     print "    %d Exported" % total
