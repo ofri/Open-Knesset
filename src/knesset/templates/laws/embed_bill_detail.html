@@ -81,7 +81,7 @@ stream example:
 		
 		$(function() {
 			showLog();
-			var status, phase = -1;
+			var status, phase = -1, committees = [], proposedDate, finalDate;
 			for (var a in stream) {
 				// determine date
 				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth()+1, year = d.getFullYear(),
@@ -103,6 +103,7 @@ stream example:
 							status = false;
 							$('ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3').addClass("failed");
 						}
+						finalDate = day + "/" + month + "/" + year;
 						break;
 					case 'was-first-voted':
 						$('ul#steps li#vote-1 .date').html(dateHtml);
@@ -116,14 +117,14 @@ stream example:
 						}
 						break;
 					case 'was-pre-voted':
-                                                {% if bill.pre_votes.count > 0 %}
-					    	    $('ul#steps li#pre-vote .step .score .balance').text(
-                                                     '{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
+                    	{% if bill.pre_votes.count > 0 %}
+					    	$('ul#steps li#pre-vote .step .score .balance').text('{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
 					    	        '{{bill.pre_votes.all.iterator.next.against_votes_count}}');
-                                                {% else %}
-                                                    $('ul#steps li#pre-vote .step .score').hide();
-                                                {% endif %}
-$('ul#steps li#pre-vote .date').html(dateHtml);
+                        {% else %}
+                            $('ul#steps li#pre-vote .step .score').hide();
+                        {% endif %}
+						
+						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
 						} else {
@@ -134,16 +135,19 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 					case 'was-proposed':
 						$('ul#steps li#initiated .date').html(dateHtml);
 						$('ul#steps li#initiated').addClass('passed');
+						proposedDate = day + "/" + month + "/" + year;
 						break;
 					case 'was-discussed-1':
 						// there cannot be a failure in a committee discussion, only success
 						$("ul#steps li#committee-1, ul#steps li#summoned-1").addClass('passed');
 						$("ul#steps li#committee-1 .date").html(dateHtml);
+						committees.push(stream[a]['note']);
 						break;
 					case 'was-discussed-2':
 						// there cannot be a failure in a committee discussion, only success
 						$("ul#steps li#committee-2, ul#steps li#summoned-2").addClass('passed');
 						$("ul#steps li#committee-2 .date").html(dateHtml);
+						committees.push(stream[a]['note']);
 						break;
 					case 'was-knesset-proposed':
 						$("ul#steps li#committee-1, ul#steps li#summoned-1").addClass('passed');
@@ -166,6 +170,22 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 					b=!b;}, 500);
 			}
 			
+			// generate excerpt
+			var excerpt = "הצעה שהוגשה בתאריך " + proposedDate;
+			if (committees.length) {
+				excerpt += " ונידונה ב";
+				for (var i=0; i < committees.length-1; i++) excerpt += committees[i] + ", ";
+				excerpt += "וב" + committees[committees.length-1] + ". ";
+			} else excerpt += ". ";
+			
+			if (finalDate) {
+				var outcome = status ? "אושרה" : "נדחתה";
+				excerpt += outcome + " בתאריך " + finalDate + ".";
+			}
+
+			$("#excerpt").append($("<p></p>").text(excerpt));
+
+			// proposers
 			var pCount = {{bill.proposers.count}};
 			if (pCount > 3) $('.more').text((pCount-3) + '+');
 			
@@ -192,7 +212,6 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</div>
 			<div id="excerpt">
 				<span class="label">תקציר:</span>
-				<p>יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל? יש את המידע הזה בכלל?</p>
 			</div>
 			<div id="external-links">
 				<span class="label">קישורים נוספים:</span>
