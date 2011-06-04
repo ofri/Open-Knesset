@@ -7,8 +7,7 @@ class AgendaVoteInline(admin.TabularInline):
     extra = 1
 
 class AgendaAdmin(admin.ModelAdmin):
-#    inlines = (AgendaVoteInline, )
-    pass
+    filter_horizontal = ('editors',)
 admin.site.register(Agenda, AgendaAdmin)
 
 #class AgendaVoteAdmin(admin.ModelAdmin):
