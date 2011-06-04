@@ -1,194 +1,76 @@
 # no handling now: posts
 
-from datetime import date
-from django.db.models import Q
 from django.core.management.base import NoArgsCommand
-
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import User
-from django.contrib.comments.models import Comment
-from knesset.mks.models import Member,Party
-from knesset.laws.models import Law,Bill,PrivateProposal,KnessetProposal,Vote,VoteAction,MemberVotingStatistics,PartyVotingStatistics
-from knesset.committees.models import Committee,CommitteeMeeting
-from knesset.links.models import Link, LinkType
-from knesset.user.models import UserProfile
-import tagging
-import actstream
-import planet
-
+from django.core.management import call_command
+from django.db.models import get_apps, get_models, get_model
+from django.db import transaction
 
 class Command(NoArgsCommand):
-    
+    """Export the sqlite database for developers, while whitelisting user data"""
+
+    reset_models = ('contenttypes.contenttype', )
+    ignore_models = ('sessions.session', 'auth.message', 'mailer',
+        'accounts.email_validation', 'hitcount', 'actstream.follow')
+    only_latest = ('actstream.action', )
+
+    LATEST_COUNT = 1000
+    DB = 'dev'
+    COMMIT_EVERY = 100
+
     def handle_noargs(self, **options):
-    
-        parties = Party.objects.all()
 
-        mk_ids = []
-        for p in parties:
-            mk_ids.append(p.members.all()[0].id)
+        call_command('syncdb', database=self.DB, interactive=False)
+        call_command('migrate', database=self.DB)
 
-        mks = Member.objects.filter(id__in=mk_ids)
+        # reset data in needed models
+        for reset_model in self.reset_models:
+            model = get_model(reset_model.split('.'))
+            model.objects.using(self.DB).delete()
 
+        ignore_models = []
+        ignore_apps = []
 
+        verbosity = int(options.get('verbosity', 1))
 
-        bills = Bill.objects.filter(proposers__in=mks)
+        for label in self.ignore_models:
+            to_ignore = label.split('.')
 
-        laws = set([bill.law for bill in bills])
+            if len(to_ignore) == 1:
+                ignore_apps.append(label)
+            else:
+                ignore_models.append(to_ignore)
 
-        pps = []
-        kps = []
-        for b in bills:
-            pps.extend(b.proposals.all())
-            if KnessetProposal.objects.filter(bill=b).count()>0:
-                kps.append(b.knesset_proposal)
+        only_latest = [x.split('.') for x in self.only_latest]
 
-        for pp in pps:
-            laws.add(pp.law)
+        app_list = get_apps()
 
-        for kp in kps:
-            laws.add(kp.law)
+        for app in app_list:
+            for model in get_models(app):
+                app_label = model._meta.app_label
+                module_name = model._meta.module_name
 
+                name_pair = [app_label, module_name]
 
-        votes = list(Vote.objects.filter(bills_pre_votes__in=bills))
-        votes.extend(list(Vote.objects.filter(bills_first__in=bills)))
-        votes.extend(list(Vote.objects.filter(bill_approved__in=bills)))
-        vote_actions = VoteAction.objects.filter(member__in=mks, vote__in=votes)
+                if not (app_label in ignore_apps or name_pair in ignore_models):
 
-        cms = CommitteeMeeting.objects.filter(mks_attended__in=mks, date__gt=date(2010,05,01), date__lt=date(2010,05,05)).distinct('id')
-        committees = set([cm.committee for cm in cms])
+                    if verbosity > 1:
+                        print "Exporting %s.%s" % name_pair
 
-        tags = tagging.models.Tag.objects.usage_for_queryset(bills)
-        tagged_items = tagging.models.TaggedItem.objects.filter(Q(tag__in=tags, object_id__in=[bill.id for bill in bills])|
-                                                                Q(tag__in=tags, object_id__in=[vote.id for vote in votes]))
+                    qs = model.objects.all()
+                    if name_pair in only_latest:
+                        qs = qs[:self.LATEST_COUNT]
+                        if verbosity > 1:
+                            print "    Exporting only %d latest" % self.LATEST_COUNT
 
-        mk_ct = ContentType.objects.get_for_model(Member)
-        vote_ct = ContentType.objects.get_for_model(Vote)
-        links = list(Link.objects.filter(content_type=mk_ct,object_pk__in=[mk.id for mk in mks]))
-        links.extend(list(Link.objects.filter(content_type=vote_ct, object_pk__in=[vote.id for vote in votes])))
-
-        actions = actstream.models.Action.objects.filter(actor_object_id__in=mk_ids, 
-                                                         actor_content_type=mk_ct, 
-                                                         timestamp__gt=date(2010,05,01), 
-                                                         timestamp__lt=date(2010,05,20))
-
-        comments = Comment.objects.all()
-        users = set([c.user for c in comments])
-        user_profiles = UserProfile.objects.filter(user__in=users)
-
-
-        blogs = planet.models.Blog.objects.filter(member__in=mks)
-        feeds = planet.models.Feed.objects.filter(blog__in=blogs)
-        posts = planet.models.Post.objects.filter(feed__in=feeds)
-        generators = set([feed.generator for feed in feeds])
-
-        ContentType.objects.using('dev').all().delete()
-        for ct in ContentType.objects.all():
-            ct.save(using='dev')
-
-
-        for mk in mks:
-            mvs = MemberVotingStatistics.objects.get(member=mk)
-            mk.user = None
-            mk.save(using='dev')
-            mvs.save(using='dev')
-
-
-        for p in parties:
-            pvs = PartyVotingStatistics.objects.get(party=p)
-            p.save(using='dev')
-            pvs.save(using='dev')
-
-
-        for bill in bills:
-            proposers = bill.proposers.filter(id__in=[mk.id for mk in mks])
-            bill.save(using='dev')
-            for mk in proposers:
-                bill.proposers.add(Member.objects.using('dev').get(pk=mk.id))
-
-
-        for law in laws:
-            law.save(using='dev')
-
-
-        for pp in pps:
-            proposers = pp.proposers.filter(id__in=[mk.id for mk in mks])
-            pp.save(using='dev')
-            for mk in proposers:
-                pp.proposers.add(Member.objects.using('dev').get(pk=mk.id))
-
-
-        for kp in kps:
-            kp.save(using='dev')
-
-
-        for vote in votes:
-            b = vote.bills_pre_votes.all()
-            vote.save(using='dev')
-            for bill in b:
-                if bill in bills:
-                    vote.bills_pre_votes.add(Bill.objects.using('dev').get(pk=bill.id))
-
-
-        for va in vote_actions:
-            va.save(using='dev')
-
-
-        for committee in committees:
-            committee.save(using='dev')
-
-
-        for cm in cms:
-            attended = cm.mks_attended.filter(id__in=[mk.id for mk in mks])
-            cm.save(using='dev')
-            for mk in attended:
-                cm.mks_attended.add(Member.objects.using('dev').get(pk=mk.id))
-            
-            cm.save(using='dev')
-
-
-        for tag in tags:
-            tag.save(using='dev')
-
-
-        for ti in tagged_items:
-            ti.save(using='dev')
-
-
-        for link in links:
-            lt = link.link_type
-            link.save(using='dev')
-            if lt:
-                lt.save(using='dev')
-
-
-        for a in actions:
-            a.save(using='dev')
-
-
-        for c in comments:
-            c.save(using='dev')
-
-
-        for u in users:
-            u.set_password('123456')
-            u.save(using='dev')
-
-
-        for up in user_profiles:
-            up.save(using='dev')
-
-
-        for blog in blogs:
-            blog.save(using='dev')
-        
-        for feed in feeds:
-            # feed.objects.using('dev').save(using='dev') # can't beacuse of planet
-            feed._state.db = 'dev'
-            feed.save()
-
-        for generator in generators:
-            generator.save(using='dev')
-            
-        
-        for post in posts:
-            post.save(using='dev')
+                    counted = 0
+                    total = 0
+                    for obj in qs.iterator():
+                        obj.save(using=self.DB)
+                        counted += 1
+                        total += 1
+                        if counted > self.COMMIT_EVERY:
+                            if verbosity > 1:
+                                print "    committed %d so far" % total
+                            transaction.commit(using=self.DB)
+                            counted = 0
+                    print "    %d Exported" % total
