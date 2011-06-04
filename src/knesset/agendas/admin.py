@@ -7,7 +7,8 @@ class AgendaVoteInline(admin.TabularInline):
     extra = 1
 
 class AgendaAdmin(admin.ModelAdmin):
-    inlines = (AgendaVoteInline, )    
+#    inlines = (AgendaVoteInline, )
+    pass
 admin.site.register(Agenda, AgendaAdmin)
 
 #class AgendaVoteAdmin(admin.ModelAdmin):
