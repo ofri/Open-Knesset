@@ -19,8 +19,8 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
 
-        call_command('syncdb', database=self.DB, interactive=False)
-        call_command('migrate', database=self.DB)
+        call_command('syncdb', database=self.DB, interactive=False,
+                migrate_all=True)
 
         # reset data in needed models
         for reset_model in self.reset_models:
