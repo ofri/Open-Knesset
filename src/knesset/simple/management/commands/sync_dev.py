@@ -10,7 +10,8 @@ class Command(NoArgsCommand):
 
     reset_models = ('contenttypes.contenttype', )
     ignore_models = ('sessions.session', 'auth.message', 'mailer',
-        'accounts.email_validation', 'hitcount', 'actstream.follow')
+        'accounts.email_validation', 'hitcount', 'actstream.follow',
+        'avatar')
     only_latest = ('actstream.action', )
 
     LATEST_COUNT = 1000
