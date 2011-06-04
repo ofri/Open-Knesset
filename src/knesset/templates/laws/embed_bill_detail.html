@@ -225,8 +225,11 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 		</div>
 		<ul id="steps">
 			<li id="initiated" class="odd first">
+                {% comment %} Note that the stage names in the url must remain in sync with bill_detail.html {% endcomment %} 
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.proposals.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-initiation" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>יזום ההצעה</span></div>
@@ -235,7 +238,9 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="pre-vote" class="voted">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.pre_votes.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-pre-vote" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip score">
@@ -251,7 +256,10 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="summoned-1" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - need to replace with planned events, as soon as we have them {% endcomment %} 
+				    {% if bill.first_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
@@ -260,7 +268,9 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="committee-1" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.first_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
@@ -269,7 +279,9 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="vote-1" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.first_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-vote" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip score">
@@ -285,7 +297,10 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="summoned-2" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - need to replace with planned events, as soon as we have them {% endcomment %} 
+				    {% if bill.second_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
@@ -294,7 +309,9 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="committee-2" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.second_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
@@ -303,7 +320,10 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="vote-2" class="pending">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
+				    {% if bill.approval_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-approval" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שניה</span></div>
@@ -312,7 +332,10 @@ $('ul#steps li#pre-vote .date').html(dateHtml);
 			</li>
 			<li id="vote-3" class="odd pending">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
+				    {% if bill.approval_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-approval" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שלישית</span></div>
