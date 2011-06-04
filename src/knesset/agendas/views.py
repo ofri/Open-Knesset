@@ -72,9 +72,18 @@ class AgendaDetailView (DetailView):
 
         context.update({'watched_object': watched})
 
-        mks = agenda.selected_instances(Member, top=5,bottom=5)
+        if self.request.GET.get('all_mks',False):
+            mks = agenda.selected_instances(Member, top=200, bottom=0)
+            context.update({'selected_mks':mks['top'],'all_mks':True})
+        else:
+            mks = agenda.selected_instances(Member, top=5,bottom=5)
+            context.update({'selected_mks_top': mks['top'],
+                            'selected_mks_bottom': mks['bottom'],
+                            'all_mks':False})
+
+
+
         selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-        context.update({'selected_mks_top': mks['top'], 'selected_mks_bottom': mks['bottom']})
         context.update({'selected_parties': selected_parties })
 
         return context
