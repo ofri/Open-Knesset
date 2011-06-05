@@ -13,6 +13,7 @@ class ParseGLC:
         self.pmo_url = r"http://www.pmo.gov.il"
         self.base_url = r"http://www.pmo.gov.il/PMO/vadot/hakika/2008-2011/"
         self.scraped_data = self.parse_pages_per_month(year_num, month)
+        self.list_url = '' # will be deduced in runtime.
         
     def get_page(self,url):
         html_page = None
@@ -48,11 +49,26 @@ class ParseGLC:
         return int (matches[-1])        
         
     def parse_page(self, year, month, page):
-        # Build the suffix of the URL (i.e '06-2010/deslist0610.htm?Page=1')
-        pageURLSuffix = "%02d-20%02d/deslist%02d%02d.htm?Page=%d" % (month, year, month, year, page)
-
+        if page==1:
+            pageURL = "%s%02d-20%02d/" % (self.base_url, month, year)
+        else:
+            pageURL = "%s%s" % (self.pmo_url, self.nextPageURL)
+            
         # Fetch the page
-        html_page = self.get_page(self.base_url + pageURLSuffix)
+        html_page = self.get_page(pageURL)
+        
+        # Figure how the fuck they named the next pages,
+        # Until March 2011 the pages looked like
+        # http://www.pmo.gov.il/PMO/vadot/hakika/2008-2011/03-2011/deslist0311.htm?Page=1
+        # and on april they changed to
+        # http://www.pmo.gov.il/PMO/vadot/hakika/2008-2011/04-2011/hakika0411.htm?Page=1
+        # PMO - Fuck You.
+        
+        try:
+            self.nextPageURL = re.search('<a(.*?)href="(.*?)"(.*?)הבא(.*?)</a>', html_page).group(2)
+        except AttributeError:
+            self.nextPageURL = None # No more pages            
+
         # Parse the individual entires by following their URL
         return self.parse_entries(html_page)
 
@@ -114,6 +130,11 @@ def main():
     parser = ParseGLC(10, 6)
     for d in parser.scraped_data:
         print "sub_subject:%s\n\nsubject: %s\n\ntext: %s\n\n\n\n" % (d["subtitle"], d["title"], d["decision"])
+
+    parser = ParseGLC(11, 4)
+    for d in parser.scraped_data:
+        print "sub_subject:%s\n\nsubject: %s\n\ntext: %s\n\n\n\n" % (d["subtitle"], d["title"], d["decision"])
+
 
 if __name__ == "__main__":
     main()
