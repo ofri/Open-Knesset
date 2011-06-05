@@ -615,13 +615,15 @@ class Bill(models.Model):
         if self.approval_vote:
             action.send(self, verb='was-approval-voted', target=self.approval_vote,
                         timestamp=self.approval_vote.time, description=self.approval_vote.passed)
-
-        cms = itertools.chain(self.second_committee_meetings.all(),
-                              self.first_committee_meetings.all())
-        for cm in cms:
-            action.send(self, verb='was-discussed', target=cm,
+        
+        for cm in self.first_committee_meetings.all():
+            action.send(self, verb='was-discussed-1', target=cm,
                         timestamp=cm.date, description=cm.committee.name)
-
+            
+        for cm in self.second_committee_meetings.all():
+            action.send(self, verb='was-discussed-2', target=cm,
+                        timestamp=cm.date, description=cm.committee.name)
+            
         for g in self.gov_decisions.all():
             action.send(self, verb='was-voted-on-gov', target=g,
                         timestamp=g.date, description=str(g.stand))
