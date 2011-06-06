@@ -143,7 +143,8 @@ class Migration(DataMigration):
                 member.residence_centrality = centrality[i]
                 member.save()
             except orm.Member.DoesNotExist:
-                print 'memer %s not found in db' % m
+                #print 'memer %s not found in db' % m
+                pass
 
     def backwards(self, orm):
         "Write your backwards methods here."

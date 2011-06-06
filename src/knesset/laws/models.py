@@ -1,22 +1,23 @@
 #encoding: utf-8
 import itertools
+import logging
 from datetime import date, timedelta
 
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
-from django.template.defaultfilters import slugify
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from knesset.mks.models import Member, Party
 from tagging.models import Tag, TaggedItem
+from tagging.forms import TagField
+from actstream import Action
+from actstream.models import action
+
+from knesset.mks.models import Member, Party
 from knesset.tagvotes.models import TagVote
 from knesset.utils import disable_for_loaddata, slugify_name
 
-from tagging.forms import TagField
-
-import logging
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
         (u'for', _('For')),
@@ -206,7 +207,7 @@ class Vote(models.Model):
     objects = VoteManager()
 
     class Meta:
-        ordering = ('-time',)
+        ordering = ('-time','-id')
         verbose_name = _('Vote')
         verbose_name_plural = _('Votes')
 
@@ -385,6 +386,7 @@ BILL_STAGE_CHOICES = (
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
+    full_title = models.CharField(max_length=2000, blank=True)
     slug = models.SlugField(max_length=1000)
     popular_name = models.CharField(max_length=1000, blank=True)
     popular_name_slug = models.CharField(max_length=1000, blank=True)
@@ -475,18 +477,35 @@ class Bill(models.Model):
         self.update_stage()
     
     def update_votes(self):
+        used_votes = [] # ids of votes already assigned 'roles', so we won't match a vote in 2 places
+        gp = GovProposal.objects.filter(bill=self)
+        if gp:
+            gp = gp[0]
+            for this_v in gp.votes.all():
+                if (this_v.title.find('אישור'.decode('utf8')) == 0):
+                    self.approval_vote = this_v
+                    used_votes.append(this_v.id)
+                if this_v.title.find('להעביר את'.decode('utf8')) == 0:
+                    self.first_vote = this_v
+        
         kp = KnessetProposal.objects.filter(bill=self)
         if len(kp):
             for this_v in kp[0].votes.all():
                 if (this_v.title.find('אישור'.decode('utf8')) == 0):
                     self.approval_vote = this_v
+                    used_votes.append(this_v.id)
                 if this_v.title.find('להעביר את'.decode('utf8')) == 0:
-                    self.first_vote = this_v
+                    if this_v.time.date() > kp[0].date:
+                        self.first_vote = this_v
+                    else:
+                        self.pre_votes.add(this_v)
+                    used_votes.append(this_v.id)
         pps = PrivateProposal.objects.filter(bill=self)
         if len(pps):
             for pp in pps:
                 for this_v in pp.votes.all():
-                    self.pre_votes.add(this_v)
+                    if this_v.id not in used_votes: 
+                        self.pre_votes.add(this_v)
         self.update_stage()
 
     
@@ -531,9 +550,10 @@ class Bill(models.Model):
         except GovProposal.DoesNotExist:
             pass
         for cm in self.first_committee_meetings.all():
-            if not(self.stage_date) or self.stage_date < cm.date:
-                if self.stage != '-2.1': # if it was converted to discussion, seeing it in
-                                         # a cm doesn't mean much.
+            if not(self.stage_date) or self.stage_date < cm.date:                
+                # if it was converted to discussion, seeing it in
+                # a cm doesn't mean much.
+                if self.stage != '-2.1':                                          
                     self.stage = '3'
                     self.stage_date = cm.date
         for v in self.pre_votes.all():
@@ -561,11 +581,6 @@ class Bill(models.Model):
         Action.objects.stream_for_actor(self).delete()
         ps = list(self.proposals.all())
         try:
-            ps.append(self.knesset_proposal)
-        except KnessetProposal.DoesNotExist:
-            pass
-
-        try:
             ps.append(self.gov_proposal)
         except GovProposal.DoesNotExist:
             pass
@@ -573,25 +588,42 @@ class Bill(models.Model):
         for p in ps:
             action.send(self, verb='was-proposed', target=p,
                         timestamp=p.date, description=p.title)
+                        
+        try:
+            p = self.knesset_proposal
+            action.send(self, verb='was-knesset-proposed', target=p,
+                        timestamp=p.date, description=p.title)
+        except KnessetProposal.DoesNotExist:
+            pass
 
         for v in self.pre_votes.all():
-            action.send(self, verb='pre-voted', target=v,
-                        timestamp=v.time, description=v.passed)
+            discussion = False
+            for h in CONVERT_TO_DISCUSSION_HEADERS:
+                if v.title.find(h)>=0: # converted to discussion
+                    discussion = True
+            if discussion:
+                action.send(self, verb='was-converted-to-discussion', target=v,
+                            timestamp=v.time)
+            else:
+                action.send(self, verb='was-pre-voted', target=v,
+                            timestamp=v.time, description=v.passed)
 
         if self.first_vote:
-            action.send(self, verb='first-voted', target=self.first_vote,
+            action.send(self, verb='was-first-voted', target=self.first_vote,
                         timestamp=self.first_vote.time, description=self.first_vote.passed)
 
         if self.approval_vote:
-            action.send(self, verb='approval-voted', target=self.approval_vote,
+            action.send(self, verb='was-approval-voted', target=self.approval_vote,
                         timestamp=self.approval_vote.time, description=self.approval_vote.passed)
-
-        cms = itertools.chain(self.second_committee_meetings.all(),
-                              self.first_committee_meetings.all())
-        for cm in cms:
-            action.send(self, verb='was-discussed', target=cm,
+        
+        for cm in self.first_committee_meetings.all():
+            action.send(self, verb='was-discussed-1', target=cm,
                         timestamp=cm.date, description=cm.committee.name)
-
+            
+        for cm in self.second_committee_meetings.all():
+            action.send(self, verb='was-discussed-2', target=cm,
+                        timestamp=cm.date, description=cm.committee.name)
+            
         for g in self.gov_decisions.all():
             action.send(self, verb='was-voted-on-gov', target=g,
                         timestamp=g.date, description=str(g.stand))

@@ -5,14 +5,15 @@ from django.conf import settings
 from django.db.models import Sum, Q
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.core.cache import cache
-
+from django.utils import simplejson as json
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 
+from knesset.hashnav.detail import DetailView
 from knesset.mks.models import Member, Party
 from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
@@ -20,14 +21,6 @@ from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.agendas.models import Agenda
 
 import logging
-
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
 
 
 logger = logging.getLogger("open-knesset.mks")

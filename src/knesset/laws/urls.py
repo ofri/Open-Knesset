@@ -10,9 +10,9 @@ import feeds
 
 vote_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes':True,'title':ugettext('Votes')})
 bill_list_view = BillListView(queryset=Bill.objects.all().filter(law__merged_into=None).order_by('-stage_date'), paginate_by=20,extra_context={'title':ugettext('Bills')})
-bill_detail_view = BillDetailView(queryset=Bill.objects.all(), extra_context={'title':ugettext('Bills')})
+bill_detail_view = BillDetailView.as_view()
 vote_list_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes':True,'title':ugettext('Votes')})
-vote_detail_view = VoteDetailView(queryset = Vote.objects.all(), extra_context={'votes':True})
+vote_detail_view = VoteDetailView.as_view()
 
 lawsurlpatterns = patterns ('',
     url(r'^bill/$', bill_list_view, name='bill-list'),
@@ -21,15 +21,15 @@ lawsurlpatterns = patterns ('',
     url(r'^bill/tag/(?P<tag>.*)/$', bill_tag, name='bill-tag'),
     url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', redirect_to,
         {'url': '/bill/?booklet=%(booklet_num)s', 'premanent': True }),
-    url(r'^bill/(?P<object_id>\d+)/$', bill_detail_view, name='bill-detail'),
+    url(r'^bill/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail'),
     url(r'^bill/(?P<object_id>\d+)/embed/$', embed_bill_details, name='embed-bill-details'),
     url(r'^bill/auto_complete/$', bill_auto_complete, name='bill-auto-complete'),
-    url(r'^bill/(?P<slug>[\w\-\"]+)/(?P<object_id>\d+)/$', bill_detail_view, name='bill-detail-with-slug'),
+    url(r'^bill/(?P<slug>[\w\-\"]+)/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail-with-slug'),
     url(r'^vote/$', vote_list_view, name='vote-list'),
     url(r'^vote/tag/$', vote_tags_cloud, name='vote-tags-cloud'),
     url(r'^vote/rss/$', feeds.Votes(), name='votes-feed'),
     url(r'^vote/tag/(?P<tag>.*)/$', vote_tag, name='vote-tag'),
-    url(r'^vote/(?P<object_id>\d+)/$', vote_detail_view, name='vote-detail'),
+    url(r'^vote/(?P<pk>\d+)/$', vote_detail_view, name='vote-detail'),
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),

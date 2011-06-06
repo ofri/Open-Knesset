@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if action.description == 'True' %}
+    {% blocktrans with action.target.get_absolute_url as url and action.target as vote and action.timestamp|date:"d/m/Y" as date %}
+    <span class="action-verb">passed first vote</span> on {{ date }}. <a href="http://{{domain}}{{ url }}">{{ vote }}</a><br>
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans with action.target.get_absolute_url as url and action.target as vote and action.timestamp|date:"d/m/Y" as date %}
+    <span class="action-verb">failed first vote</span> on {{ date }}. <a href="http://{{domain}}{{ url }}">{{ vote }}</a><br>
+    {% endblocktrans %}
+{% endif %}

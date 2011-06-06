@@ -102,7 +102,7 @@ class SimpleTest(TestCase):
         
         # Access public agenda while not logged in
         res = self.client.get(reverse('agenda-detail', 
-                                      kwargs={'object_id': self.agenda_1.id}))
+                                      kwargs={'pk': self.agenda_1.id}))
         self.assertTemplateUsed(res,
                                 'agendas/agenda_detail.html')
         self.assertEqual(res.context['object'].id, self.agenda_1.id)
@@ -112,7 +112,7 @@ class SimpleTest(TestCase):
 
     def testAgendaMkDetail(self):
         res = self.client.get(reverse('mk-agenda-detail', 
-                                      kwargs={'object_id': self.agenda_1.id,
+                                      kwargs={'pk': self.agenda_1.id,
                                               'member_id': self.mk_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')

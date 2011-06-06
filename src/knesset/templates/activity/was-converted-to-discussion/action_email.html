@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target as vote and action.timestamp|date:"d/m/Y" as time %}
+<span class="action-verb">was converted to discussion</span> on {{ time }}. <a href="http://{{domain}}{{ url }}">{{ vote }}</a><br>
+{% endblocktrans %}

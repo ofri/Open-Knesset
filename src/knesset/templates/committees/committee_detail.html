@@ -12,7 +12,7 @@
     <script>
     function set_percent(id,value) {
         $("#percent_"+id).css('background-position',((100-value))+"px 0px");
-        $("#percent_"+id).html(value+"%");               
+        $("#percent_"+id).html(value+"%");
     }
     </script>
 {% endblock %}
@@ -20,23 +20,23 @@
   <h2>{{object.name}}</h2>
   <div class="main-column">
     {% if members %}
-	    <h3>{% trans 'Committee Members' %}</h3>
+        <h3>{% trans 'Committee Members' %}</h3>
         <div class="clear"></div>
         <ul class="summaries">
-	    {% for mk in members %}
-	        <li> {% include "committees/_member_summary.html" %} </li>
-	    {% endfor %}
+        {% for mk in members %}
+            <li> {% include "committees/_member_summary.html" %} </li>
+        {% endfor %}
         </ul>
     {% endif %}
     <div class="clear"></div>
     <h3>{% trans 'Future Meetings' %}</h3>
-	<ul class="item-list">
+    <ul class="item-list">
         {% for o in future_meetings_list %}
             {% include "events/_event_li.html" %}
         {% empty %}
             {% trans "None" %}
         {% endfor %}
-	</ul>
+    </ul>
     <h3>{% trans 'Meetings for which a protocol was not yet published' %}</h3>
     <ul class="item-list">
         {% for o in protocol_not_yet_published_list %}
@@ -46,13 +46,13 @@
         {% endfor %}
     </ul>
     <h3>{% trans 'Last Meetings' %}</h3>
-	<ul class="item-list">
+    <ul class="item-list">
         {% for o in meetings_list %}
             {% include "committees/_meeting_li.html" %}
         {% empty %}
             {% trans "None" %}
         {% endfor %}
-	</ul>
+    </ul>
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
   </div>
   <div class="secondary-column">

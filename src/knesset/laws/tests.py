@@ -4,8 +4,9 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_str, smart_unicode
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.utils import simplejson as json
 
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
@@ -13,13 +14,6 @@ from tagging.models import Tag, TaggedItem
 from knesset.laws.models import Vote,Bill,KnessetProposal
 from knesset.mks.models import Member
 
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise ImportError("Need a json decoder")
 
 just_id = lambda x: x.id
 
@@ -28,7 +22,7 @@ class BillViewsTest(TestCase):
     def setUp(self):
         self.vote_1 = Vote.objects.create(time=datetime.now(),
                                           title='vote 1')
-        self.vote_2 = Vote.objects.create(time=datetime.now(), 
+        self.vote_2 = Vote.objects.create(time=datetime.now(),
                                           title='vote 2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
@@ -43,12 +37,12 @@ class BillViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'laws/bill_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.bill_1.id, self.bill_2.id, self.bill_3.id ])
     def testBillListByStage(self):
         res = self.client.get(reverse('bill-list'), {'stage': 'all'})
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.bill_1.id, self.bill_2.id, self.bill_3.id])
         res = self.client.get(reverse('bill-list'), {'stage': '1'})
         object_list = res.context['object_list']
@@ -57,6 +51,21 @@ class BillViewsTest(TestCase):
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_2.id, self.bill_3.id])
 
+    def test_bill_list_with_member(self):
+        "Test the view of bills proposed by specific MK"
+        res = self.client.get(reverse('bill-list'), {'member':self.mk_1.id})
+        self.assertEqual(res.status_code,200)
+
+    def test_bill_list_with_invalid_member(self):
+        "test the view of bills proposed by specific mk, with invalid parameter"
+        res = self.client.get(reverse('bill-list'), {'member':'qwertyuiop'})
+        self.assertEqual(res.status_code,404)
+
+    def test_bill_list_with_nonexisting_member(self):
+        "test the view of bills proposed by specific mk, with nonexisting parameter"
+        res = self.client.get(reverse('bill-list'), {'member':'0'})
+        self.assertEqual(res.status_code,404)
+
     def testBillListByBooklet(self):
         res = self.client.get(reverse('bill-list'), {'booklet': '2'})
         object_list = res.context['object_list']
@@ -64,29 +73,29 @@ class BillViewsTest(TestCase):
 
     def testBillDetail(self):
         res = self.client.get(reverse('bill-detail',
-                                 kwargs={'object_id': self.bill_1.id}))
+                                 kwargs={'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-        
+
     def test_bill_detail_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.slug,
-                                         'object_id': self.bill_1.id}))
+                                         'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
         self.assertEqual(res.context['object'].id, self.bill_1.id)
-        
+
     def test_bill_popular_name(self):
         res = self.client.get('/bill/'+self.bill_1.popular_name+'/')
         self.assertEqual(res.status_code, 404)
-        
+
     def test_bill_popular_name_by_slug(self):
         res = self.client.get(reverse('bill-detail-with-slug',
                                  kwargs={'slug': self.bill_1.popular_name_slug,
-                                         'object_id': self.bill_1.id}))
+                                         'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/bill_detail.html')
@@ -102,7 +111,7 @@ class BillViewsTest(TestCase):
     '''
     def testLoginRequired(self):
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}))
+                           kwargs={'pk': self.bill_1.id}))
         self.assertEqual(res.status_code, 302)
         self.assertTrue(res['location'].startswith('%s%s'  %
                                        ('http://testserver', settings.LOGIN_URL)))
@@ -110,7 +119,7 @@ class BillViewsTest(TestCase):
     def testPOSTApprovalVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'approval vote',
                                 'vote_id': self.vote_1.id})
         self.assertEqual(res.status_code, 302)
@@ -126,7 +135,7 @@ class BillViewsTest(TestCase):
     def testPOSTFirstVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'first vote',
                                 'vote_id': self.vote_2.id})
         self.assertEqual(res.status_code, 302)
@@ -142,7 +151,7 @@ class BillViewsTest(TestCase):
     def testPOSTPreVote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.post(reverse('bill-detail',
-                           kwargs={'object_id': self.bill_1.id}),
+                           kwargs={'pk': self.bill_1.id}),
                                {'user_input_type': 'pre vote',
                                 'vote_id': self.vote_2.id})
         self.assertEqual(res.status_code, 302)
@@ -181,15 +190,19 @@ class VoteViewsTest(TestCase):
                                               'JKM')
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
                                               'ADRIAN')
-        g = Group.objects.get(name='Valid Email')
+        g, created = Group.objects.get_or_create(name='Valid Email')
+        ct = ContentType.objects.get_for_model(Tag)
+        p = Permission.objects.get(codename='add_tag', content_type=ct)
+        g.permissions.add(p)
+
         self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
-        self.vote_2 = Vote.objects.create(time=datetime.now(), 
+        self.vote_2 = Vote.objects.create(time=datetime.now(),
                                           title='vote 2')
         self.tag_1 = Tag.objects.create(name='tag1')
         self.ti = TaggedItem._default_manager.create(tag=self.tag_1,
-                                                     content_type=ContentType.objects.get_for_model(Vote), 
+                                                     content_type=ContentType.objects.get_for_model(Vote),
                                                      object_id=self.vote_1.id)
 
     def testVoteList(self):
@@ -197,12 +210,12 @@ class VoteViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'laws/vote_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.vote_2.id, self.vote_1.id, ])
 
     def testVoteDetail(self):
         res = self.client.get(reverse('vote-detail',
-                                 kwargs={'object_id': self.vote_1.id}))
+                                 kwargs={'pk': self.vote_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'laws/vote_detail.html')
@@ -232,14 +245,14 @@ class VoteViewsTest(TestCase):
                                  kwargs={'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
-        
+
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
         url = reverse('create-tag',
                                  kwargs={'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertEqual(res.status_code, 200)
-        
+
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
@@ -248,15 +261,15 @@ class testVoteAPI(TestCase):
     def setUp(self):
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
-        self.vote_2 = Vote.objects.create(time=datetime.now(), 
+        self.vote_2 = Vote.objects.create(time=datetime.now(),
                                           title='vote 2')
 
     def testDaysBackAPI(self):
-        res = self.client.get(reverse('vote-handler'), {'days_back': '300'}) 
+        res = self.client.get(reverse('vote-handler'), {'days_back': '300'})
         self.assertEqual(res.status_code,200)
         votes = json.loads(res.content)
         self.assertEqual(map(lambda x: x['title'], votes), [self.vote_2.title])
-        res = self.client.get(reverse('vote-handler'), {'days_back': '30000'}) 
+        res = self.client.get(reverse('vote-handler'), {'days_back': '30000'})
         self.assertEqual(res.status_code,200)
         votes = json.loads(res.content)
         self.assertEqual(set(map(lambda x: x['title'], votes)), set([self.vote_1.title, self.vote_2.title]))
