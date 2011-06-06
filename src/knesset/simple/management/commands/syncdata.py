@@ -838,7 +838,7 @@ class Command(NoArgsCommand):
             if updated_protocol:
                 cm.create_protocol_parts()
             try:
-                r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                r = re.search("חברי הו?ועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
 
                 s = r.split('\n')
                 #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
@@ -1097,7 +1097,7 @@ class Command(NoArgsCommand):
                 pl.save()
 
             if not pl.content_html:
-                update_private_proposal_content_html(pl)
+                self.update_private_proposal_content_html(pl)
 
         # knesset laws
         logger.debug('parsing knesset laws')
