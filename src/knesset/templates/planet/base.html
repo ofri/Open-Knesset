@@ -64,19 +64,4 @@
 {% endblock %}
 
 {% block footer %}
-<script>
-    $(document).ready ( function () {
-        var parts=document.URL.split('/');
-        var s = [];
-        if (parts.length<=4)
-            s = $('#subnav a[href$="posts/"]');
-        else if (parts.length==6)
-            s = $('#subnav a[href$="'+parts [4]+'/"]');
-        if (s.length) {
-            var t = $(s).html();
-            $(s).parent().html(t);
-        }
-
-    })
-</script>
 {% endblock %}
