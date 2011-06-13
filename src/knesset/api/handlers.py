@@ -204,7 +204,8 @@ class BillHandler(BaseHandler, HandlerExtensions):
               'votes',
               'committee_meetings',
               'proposing_mks',
-              'tags'
+              'tags',
+              'proposals'
              )
 
     exclude = ('member')
@@ -267,6 +268,25 @@ class BillHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def bill_title(self,bill):
         return u"%s, %s" % (bill.law.title, bill.title)
+
+    @classmethod
+    def proposals(self, bill):
+        gov_prop = None
+        try:
+            gov_prop = bill.gov_proposal.source_url
+        except  Exception as inst:
+            gov_prop = None
+
+
+        knesset_prop = None
+        try:
+            knesset_prop = bill.knesset_proposal.source_url
+        except Exception as inst:
+            knesset_prop = None
+
+            
+        return {'gov_prop': gov_prop, 'knesset_prop': knesset_prop, 'private_props': [ prop.source_url for prop in bill.proposals.all() ]}
+        
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
