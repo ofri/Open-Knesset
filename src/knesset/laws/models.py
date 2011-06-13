@@ -250,6 +250,12 @@ class Vote(models.Model):
     def against_opposition_votes_count(self):
         return VoteAction.objects.filter(vote=self, against_opposition=True).count()
 
+    def against_own_bill_votes(self):
+        return self.votes.filter(voteaction__against_own_bill=True)
+
+    def against_own_bill_votes_count(self):
+        return self.against_own_bill_votes().count()
+
     def short_summary(self):
         if self.summary==None:
             return ''
