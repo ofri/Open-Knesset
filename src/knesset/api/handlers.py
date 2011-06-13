@@ -9,7 +9,7 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction, Bill
+from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
 from tagging.models import Tag, TaggedItem
@@ -271,21 +271,23 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
     @classmethod
     def proposals(self, bill):
-        gov_prop = None
+        gov_proposal = {}
+
         try:
-            gov_prop = bill.gov_proposal.source_url
-        except  Exception as inst:
-            gov_prop = None
+            gov_proposal = {'source_url': bill.gov_proposal.source_url, 'date': bill.gov_proposal.date}
+        except GovProposal.DoesNotExist:
+            pass
+        
+        knesset_proposal = {}
 
-
-        knesset_prop = None
         try:
-            knesset_prop = bill.knesset_proposal.source_url
-        except Exception as inst:
-            knesset_prop = None
-
-            
-        return {'gov_prop': gov_prop, 'knesset_prop': knesset_prop, 'private_props': [ prop.source_url for prop in bill.proposals.all() ]}
+            knesset_proposal = {'source_url': bill.knesset_proposal.source_url, 'date': bill.knesset_proposal.date}
+        except KnessetProposal.DoesNotExist:
+            pass
+        
+        return {'gov_proposal': gov_proposal,
+                'knesset_prop': knesset_proposal,
+                'private_proposals': [{'source_url': prop.source_url, 'date': prop.date} for prop in bill.proposals.all()]}
         
 
 class PartyHandler(BaseHandler):
