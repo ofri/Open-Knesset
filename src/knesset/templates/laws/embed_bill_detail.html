@@ -69,10 +69,9 @@ stream example:
 		
 		
 		function showLog() {
-			//alert(JSON.stringify(stream));
-			var log = $("#log");
+			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
 			for (var a in stream) {
-				var inner = $("<p></p>").appendTo(log);//.text(JSON.stringify(stream[a])));
+				var inner = $("<p></p>").appendTo(log);
 				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
 				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
 				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
@@ -113,6 +112,7 @@ stream example:
 						} else {
 							$('ul#steps li#vote-1, ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3, ul#steps li#committee-2, ul#steps li#summoned-2').addClass('failed');
 							status = false;
+							finalDate = day + "/" + month + "/" + year;
 						}
 						break;
 					case 'was-pre-voted':
@@ -128,8 +128,9 @@ stream example:
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
 						} else {
-							$('ul#steps li#pre-vote').addClass('failed');
+							$('ul#steps li#pre-vote, li#summoned-1, li#summoned-2, li#committee-1, li#committee-2, li#vote-1, li#vote-2, li#vote-3, li#passed').addClass('failed');
 							status = false;
+							finalDate = day + "/" + month + "/" + year;
 						}
 						break;
 					case 'was-proposed':
@@ -379,7 +380,6 @@ stream example:
 			<a href="#" class="link">קישור</a>
 		</div>
 	</div>
-	<div id="log" style="position:absolute; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>
 </body>
 </html>
 
