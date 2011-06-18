@@ -24,7 +24,7 @@ class SimpleTest(TestCase):
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
         self.user_3.is_superuser = True
         self.user_3.save()
-        
+
         self.agenda_1 = Agenda.objects.create(name='agenda 1',
                                               description='a bloody good agenda 1',
                                               public_owner_name='Dr. Jacob',
@@ -56,9 +56,9 @@ class SimpleTest(TestCase):
                                                       vote=self.vote_2,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
-        
+
         self.domain = 'http://' + Site.objects.get_current().domain
-    
+
     def testAgendaList(self):
         translation.activate(settings.LANGUAGE_CODE)
         # test anonymous user
@@ -66,42 +66,42 @@ class SimpleTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.agenda_1.id, self.agenda_2.id, ])
-        
+
         # test logged in user 1
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         res = self.client.get(reverse('agenda-list'))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.agenda_1.id, self.agenda_2.id, ])
-        
+
         # test logged in user 2
         self.assertTrue(self.client.login(username='superman', password='CRP'))
         res = self.client.get(reverse('agenda-list'))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
-        
+
         # test logged in as superuser
         self.assertTrue(self.client.login(username='john', password='LSD'))
         res = self.client.get(reverse('agenda-list'))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
-        
+
         translation.deactivate()
-        
+
     def testAgendaDetail(self):
-        
+
         # Access public agenda while not logged in
-        res = self.client.get(reverse('agenda-detail', 
+        res = self.client.get(reverse('agenda-detail',
                                       kwargs={'pk': self.agenda_1.id}))
         self.assertTemplateUsed(res,
                                 'agendas/agenda_detail.html')
@@ -110,22 +110,61 @@ class SimpleTest(TestCase):
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
 
+    def test_agenda_edit(self):
+
+        # Try to edit agenda while not logged in
+        res = self.client.get(reverse('agenda-detail-edit',
+                                      kwargs={'pk': self.agenda_1.id}))
+        self.assertRedirects(res, reverse('agenda-detail',
+                                          kwargs={'pk':self.agenda_1.id}))
+
+        # login as a user who's not the editor and try
+        self.assertTrue(self.client.login(username='john',
+                                          password='LSD'))
+        res = self.client.get(reverse('agenda-detail-edit',
+                                      kwargs={'pk': self.agenda_1.id}))
+        self.assertRedirects(res, reverse('agenda-detail',
+                                          kwargs={'pk':self.agenda_1.id}))
+
+        # now login as the editor and try again
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        res = self.client.get(reverse('agenda-detail-edit',
+                                      kwargs={'pk': self.agenda_1.id}))
+        self.assertTemplateUsed(res,
+                                'agendas/agenda_detail_edit.html')
+        self.assertEqual(res.context['object'].id, self.agenda_1.id)
+        self.assertEqual(res.context['object'].description, self.agenda_1.description)
+        self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
+        self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
+
+        # try to edit
+        res = self.client.post(reverse('agenda-detail-edit',
+                                       kwargs={'pk':self.agenda_1.id}),
+                               {'name':'test1',
+                                'public_owner_name':'test2',
+                                'description': 'test3 description description' \
+                                +'description'})
+        self.assertEqual(res.status_code, 302)
+        agenda = Agenda.objects.get(id=self.agenda_1.id)
+        self.assertEqual(agenda.name, 'test1')
+
+
     def testAgendaMkDetail(self):
-        res = self.client.get(reverse('mk-agenda-detail', 
+        res = self.client.get(reverse('mk-agenda-detail',
                                       kwargs={'pk': self.agenda_1.id,
                                               'member_id': self.mk_1.id}))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/mk_agenda_detail.html')
         self.assertEqual(int(res.context['score']), -33)
         self.assertEqual(len(res.context['related_votes']), 2)
-        
-        
+
+
     def tearDown(self):
         self.party_1.delete()
         self.mk_1.delete()
         self.user_1.delete()
         self.user_2.delete()
-        self.user_3.delete()        
+        self.user_3.delete()
         self.vote_1.delete()
         self.vote_2.delete()
         self.agenda_1.delete()
