@@ -259,7 +259,12 @@ stream example:
 			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
 			if (!expanded) $('#header').addClass('header-hover');		
 			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
-				if (!expanded) $('#header').removeClass('header-hover');
+				if (!expanded) {
+					$('#header').removeClass('header-hover');
+					$(".pull .arrow").removeClass("up").addClass("down");
+				} else {
+					$(".pull .arrow").removeClass("down").addClass("up");	
+				}
 			});
 			expanded = !expanded;
 		}
@@ -294,7 +299,7 @@ stream example:
 			</ul>
 			<a href="#" class="more"></a>
 		</div>
-		<a class="pull" href="#">pull</a>
+		<div class="pull"><div class="arrow down"></div></div>
 	</div>
 	<div id="graph">
 		<span class="status"></span>

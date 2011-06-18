@@ -56,7 +56,7 @@ a{
 			overflow: auto;
 		}
 		#excerpt{
-			margin: 15px 0; 
+			margin: 18px 0; 
 		}
 			#excerpt p{
 				margin: 0 0 10px;
@@ -141,7 +141,7 @@ a{
 					height: auto;
 					border: 1px solid #1088fe;
 				}
-	a.pull{
+	.pull{
 		clear: both;
 		width: 100%;
 		display: block;
@@ -151,7 +151,20 @@ a{
 		position: absolute;
 		bottom: 0;
 		height: 10px;
+		cursor: pointer;
 	}
+		.pull .arrow {
+			width: 9px;
+			height: 9px;
+			position: absolute;
+			left: 50%;
+		}
+			.pull .arrow.down {
+				background: url(../img/embed_arrow_down.png) no-repeat;
+			}
+			.pull .arrow.up {
+				background: url(../img/embed_arrow_up.png) no-repeat;
+			}
 
 #gov-position{
 	display: none;
