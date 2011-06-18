@@ -3,33 +3,31 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
-		<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
-
-		<title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
-
-		{% if debug %}
-    		<meta NAME="ROBOTS" content="NOINDEX, NOFOLLOW">
-		{% else %}
-    		<meta name="ROBOTS" content="ALL">
-		{% endif %}
-		<meta http-equiv="imagetoolbar" content="no"/>
-		<meta name="MSSmartTagsPreventParsing" content="true" >
-		<meta name="Authors" content="OpenKnesset">
-		<meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
-		<meta name="keywords" content="{% trans 'Open Knesset' %},Parliament, Knesset, Open Source,{% block keywords %}{% endblock %}" >
-		<meta name="description" content="{% block description %}{% endblock %} {% trans "I'm just sitting here watching the wheels go round and round." %}">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+        <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
+        <title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
+        {% if debug %}
+            <meta NAME="ROBOTS" content="NOINDEX, NOFOLLOW">
+        {% else %}
+            <meta name="ROBOTS" content="ALL">
+        {% endif %}
+        <meta http-equiv="imagetoolbar" content="no"/>
+        <meta name="MSSmartTagsPreventParsing" content="true" >
+        <meta name="Authors" content="OpenKnesset">
+        <meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
+        <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
+        <meta name="description" content="{% block description %}{% endblock %} {% trans "Information for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public" %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
         <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
-		<link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
+        <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
+        <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
-	    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-	    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
+        <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
 
         {% if not debug %}
         <script type="text/javascript">
@@ -42,10 +40,10 @@
             pageTracker._setDomainName(".oknesset.org");
             pageTracker._trackPageview();
             } catch(err) {}
-        </script>        
+        </script>
         {% endif %}
-        
-        <script>            
+
+        <script>
             $('html').ajaxSend(function(event, xhr, settings) {
                 function getCookie(name) {
                     var cookieValue = null;
@@ -66,32 +64,32 @@
                     // Only send the token to relative URLs i.e. locally.
                     xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
                 }
-            });            
-        </script>        
-        
-		{% if LANGUAGE_BIDI %}
-		<style>
-        	#nav-global li { float:right; }
+            });
+        </script>
+
+        {% if LANGUAGE_BIDI %}
+        <style>
+            #nav-global li { float:right; }
             #member-photo { float:right; margin:0.5em;}
-		body { direction: rtl; }
-		</style>
+        body { direction: rtl; }
+        </style>
         <script>
             $.jGrowl.defaults.position="top-left";
         </script>
 
-		{% endif %}
+        {% endif %}
       {% block extrahead %}{% endblock %}
-	</head>
+    </head>
 
-	<body>
-	{% if debug %}
-	<div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>
-	{% endif %}
-	<div id="container">
+    <body>
+    {% if debug %}
+    <div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>
+    {% endif %}
+    <div id="container">
         <div id="accounts">
             {% if user.is_authenticated %}
                 <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a>
-                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> 
+                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a>
                 <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
             {% else %}
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
@@ -100,54 +98,54 @@
         <div id="search">
     {% search_form "search_page" %}
 </div>
-		<div id="header">
-			<ul id="nav-global">
+        <div id="header">
+            <ul id="nav-global">
 
                 <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a class="hashnav" href="{% url main%}">{% trans 'Main' %}</a> </li>
                 <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
-				<li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-				<li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
-				<li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-                <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>                
-                <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>                
+                <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a class="hashnav" href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
+                <li id="nav-members" {% block nav-members %} {% endblock %} > <a class="hashnav" href="{% url member-list %}">{% trans 'Members' %}</a> </li>
+                <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
+                <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
+                <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
                 <li id="nav-planet" {% block nav-planet %} {% endblock %} > <a class="hashnav" href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
-				<li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
-			</ul>
-            
-		</div>
-		<!-- END Header -->
-		<div id="billboard"></div>
-		<div id="columnwrap">
-			{% block columnwrap %}                
+                <li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
+            </ul>
+
+        </div>
+        <!-- END Header -->
+        <div id="billboard"></div>
+        <div id="columnwrap">
+            {% block columnwrap %}
                 <div id="cse" class="main" style="display:none;"></div>
-				<div id="content-main" class="main">
+                <div id="content-main" class="main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
                     {% block social %}{% if not debug %}
                     <table class="content-footer">
-					  	<tr>
-					  	<td>
-							<a title="Post to Google Buzz" class="google-buzz-button" href="http://www.google.com/buzz/post" data-button-style="normal-count" data-locale="iw"></a>
-							<script type="text/javascript" src="http://www.google.com/buzz/api/button.js"></script>
-					  	</td>
-					  	<td>
-						<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Foknesset.org{{ request.path|iriencode }}&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
-					  	</td>
-					  	</tr>
-					</table> {% endif %}
+                        <tr>
+                        <td>
+                            <a title="Post to Google Buzz" class="google-buzz-button" href="http://www.google.com/buzz/post" data-button-style="normal-count" data-locale="iw"></a>
+                            <script type="text/javascript" src="http://www.google.com/buzz/api/button.js"></script>
+                        </td>
+                        <td>
+                        <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Foknesset.org{{ request.path|iriencode }}&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
+                        </td>
+                        </tr>
+                    </table> {% endif %}
                     {% endblock %}
-				</div>
-				<!-- END #content-main -->
-			{% endblock %}
-		</div>
-		<!-- END #content -->
-		<div id="footer">
-			<p><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></p>
-		</div>
-		<!-- END #footer -->
-	</div>
+                </div>
+                <!-- END #content-main -->
+            {% endblock %}
+        </div>
+        <!-- END #content -->
+        <div id="footer">
+            <p><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></p>
+        </div>
+        <!-- END #footer -->
+    </div>
     {% block footer %}
     {% endblock %}
-	</body>
+    </body>
 </html>
 
