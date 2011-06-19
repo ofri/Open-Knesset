@@ -9,7 +9,7 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction, Bill
+from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
 from tagging.models import Tag, TaggedItem
@@ -204,7 +204,8 @@ class BillHandler(BaseHandler, HandlerExtensions):
               'votes',
               'committee_meetings',
               'proposing_mks',
-              'tags'
+              'tags',
+              'proposals'
              )
 
     exclude = ('member')
@@ -267,6 +268,27 @@ class BillHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def bill_title(self,bill):
         return u"%s, %s" % (bill.law.title, bill.title)
+
+    @classmethod
+    def proposals(self, bill):
+        gov_proposal = {}
+
+        try:
+            gov_proposal = {'source_url': bill.gov_proposal.source_url, 'date': bill.gov_proposal.date}
+        except GovProposal.DoesNotExist:
+            pass
+        
+        knesset_proposal = {}
+
+        try:
+            knesset_proposal = {'source_url': bill.knesset_proposal.source_url, 'date': bill.knesset_proposal.date}
+        except KnessetProposal.DoesNotExist:
+            pass
+        
+        return {'gov_proposal': gov_proposal,
+                'knesset_prop': knesset_proposal,
+                'private_proposals': [{'source_url': prop.source_url, 'date': prop.date} for prop in bill.proposals.all()]}
+        
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
