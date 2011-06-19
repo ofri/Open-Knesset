@@ -56,7 +56,7 @@ a{
 			overflow: auto;
 		}
 		#excerpt{
-			margin: 15px 0; 
+			margin: 18px 0; 
 		}
 			#excerpt p{
 				margin: 0 0 10px;
@@ -141,7 +141,7 @@ a{
 					height: auto;
 					border: 1px solid #1088fe;
 				}
-	a.pull{
+	.pull{
 		clear: both;
 		width: 100%;
 		display: block;
@@ -151,7 +151,20 @@ a{
 		position: absolute;
 		bottom: 0;
 		height: 10px;
+		cursor: pointer;
 	}
+		.pull .arrow {
+			width: 9px;
+			height: 9px;
+			position: absolute;
+			left: 50%;
+		}
+			.pull .arrow.down {
+				background: url(../img/embed_arrow_down.png) no-repeat;
+			}
+			.pull .arrow.up {
+				background: url(../img/embed_arrow_up.png) no-repeat;
+			}
 
 #gov-position{
 	display: none;
@@ -274,6 +287,8 @@ a{
 					height: 50px;
 					background: url(../img/embed_icons_pending.png);
 					text-indent: -999999px;
+					z-index: 1;
+					display: block;
 				}
 				ul#steps li#initiated .icon{
 					background-position: -450px center;
@@ -351,16 +366,25 @@ a{
 				ul#steps li.hover .tooltip{
 					display: block;
 				}
+				
+				ul#steps li .tooltip-score{
+				    display: none;
+				    position: absolute;
+				    z-index: 200;
+				}
+				ul#steps li.voted:hover .tooltip-score {
+					display: block;
+				}
 				ul#steps li.voted .step{
 					margin-top: -30px;
 					padding-bottom: 30px;
 				}
-				ul#steps li.voted .score{
+				ul#steps li.voted .tooltip-score{
 					top: 75px;
 					width: 300%;
 					left: -100%;
 				}
-				ul#steps li.voted .score span{
+				ul#steps li.voted .tooltip-score span{
 					background-image: url(../img/embed_scale.png);
 					background-repeat:no-repeat;
 					color: #fff;
@@ -370,22 +394,22 @@ a{
 					height: 19px;
 					padding: 11px 0 0;
 				}
-				ul#steps li.voted .score .scale{
+				ul#steps li.voted .tooltip-score .scale{
 					width: 120px;
 					text-align: center;
 					overflow: hidden;
 					margin: 0 auto;
 				}
-				ul#steps li.voted .score span.for{
+				ul#steps li.voted .tooltip-score span.for{
 					background-position: top;
 					width: 100%;
 					position: static;
 				}
-				ul#steps li.voted .score span.against{
+				ul#steps li.voted .tooltip-score span.against{
 					background-position: right bottom;
     				z-index: 10;
 				}
-				ul#steps li.voted .score span.balance{
+				ul#steps li.voted .tooltip-score span.balance{
 				    background: none repeat scroll 0 0 transparent;
 				    position: absolute;
 				    text-align: center;
@@ -396,7 +420,7 @@ a{
 				}
 				
 #footer{
-	position: absolute;
+	position: relative;
 	bottom: 0;
     background: #EEEFF5;
     height: 20px;
