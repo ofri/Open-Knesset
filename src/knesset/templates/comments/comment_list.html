@@ -1,40 +1,30 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load laws_extra %}
+{% block extratitle %}{% trans 'Recent comments' %}{% endblock %}
+{% block description %}{% trans 'Recent comments' %} - {% endblock %}
 {% block divcontent %}
-	<h1>Recent comments</h1>
+    <h1>{% trans 'Recent comments' %}</h1>
+    {% for comment in object_list %}
+    <div class="comment" id="c{{ comment.id }}">
+        <h3>
+            <a href="{{ comment.get_absolute_url }}">
+                {% with comment.user.username|escape as username and comment.content_object.title as title %}
+                    {% blocktrans %}{{ username }} on {{ title }}{% endblocktrans %}
+                {% endwith %}
+                <span class="small quiet">
+                    {% with comment.submit_date|date:"F j, Y" as date and comment.submit_date|date:"P" as time %}
+                    {% blocktrans %}{{ date }} at {{ time }}{% endblocktrans %}
+                    {% endwith %}
+                </span>
+            </a>
+        </h3>
+        {{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}
+    </div>
+    {% endfor %}
 
-	<p>
-		{% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a> | 
-		{% endif %}
-        {% trans "Page" %} {{ page_obj.number }} of {{ paginator.num_pages }} 
-		{% if page_obj.has_next %}
-            | <a href="?page={{ page_obj.next_page_number }}"> {% trans "Next" %}</a>
-		{% endif %}
-    </p>
-
-	{% for comment in object_list %}
-	<div class="comment" id="c{{ comment.id }}">
-	    <h3>
-			<a href="{{ comment.get_absolute_url }}">
-				{{ comment.user.username|escape }} on {{ comment.content_object.title }}
-				<span class="small quiet">
-					{{ comment.submit_date|date:"F j, Y" }} at {{ comment.submit_date|date:"P" }}
-				</span>
-			</a>
-		</h3>
-	    {{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}
-	</div>
-	{% endfor %}
-
-	<p>
-		{% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a> | 
-		{% endif %}
-        {% trans "Page" %} {{ page_obj.number }} of {{ paginator.num_pages }} 
-		{% if page_obj.has_next %}
-            | <a href="?page={{ page_obj.next_page_number }}"> {% trans "Next" %}</a>
-		{% endif %}
-    </p>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
 {% endblock %}
 

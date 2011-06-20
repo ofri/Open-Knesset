@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-21 00:55+0300\n"
-"PO-Revision-Date: 2011-06-21 00:55+0200\n"
+"POT-Creation-Date: 2011-06-21 02:26+0300\n"
+"PO-Revision-Date: 2011-06-21 02:27+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -248,12 +248,12 @@ msgstr "אין"
 msgid "Analysis of %(member)s votes by agenda %(agenda)s"
 msgstr "ניתוח ההצבעות של %(member)s לפי אג'נדה %(agenda)s"
 
-#: auxiliary/views.py:21
+#: auxiliary/views.py:23
 #: templates/main.he.html:4
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:37
+#: auxiliary/views.py:39
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -636,18 +636,18 @@ msgstr "הצבעות נגד המפלגה"
 msgid "Number of votes"
 msgstr "מספר הצבעות"
 
-#: laws/templatetags/laws_extra.py:30
-#: laws/templatetags/laws_extra.py:33
-#: laws/templatetags/laws_extra.py:39
-#: laws/templatetags/laws_extra.py:42
-#: laws/templatetags/laws_extra.py:51
+#: laws/templatetags/laws_extra.py:34
+#: laws/templatetags/laws_extra.py:37
+#: laws/templatetags/laws_extra.py:47
+#: laws/templatetags/laws_extra.py:50
+#: laws/templatetags/laws_extra.py:59
 #: templates/mks/member_detail.html:188
 #: templates/mks/member_detail.html:228
 #: templates/mks/member_detail.html:298
 msgid "Not enough data"
 msgstr "אין מספיק נתונים"
 
-#: laws/templatetags/laws_extra.py:65
+#: laws/templatetags/laws_extra.py:73
 msgid "Absent"
 msgstr "לא נוכח"
 
@@ -1494,6 +1494,22 @@ msgstr "העלה תמונה חדשה"
 #: templates/badges/all_badge_list.html:5
 msgid "Badges"
 msgstr "אותות"
+
+#: templates/comments/comment_list.html:4
+#: templates/comments/comment_list.html:5
+#: templates/comments/comment_list.html:7
+msgid "Recent comments"
+msgstr "תגובות אחרונות"
+
+#: templates/comments/comment_list.html:13
+#, python-format
+msgid "%(username)s on %(title)s"
+msgstr "%(username)s על %(title)s"
+
+#: templates/comments/comment_list.html:17
+#, python-format
+msgid "%(date)s at %(time)s"
+msgstr "%(date)s ב- %(time)s"
 
 #: templates/comments/delete.html:4
 msgid "Remove a comment"
@@ -2818,6 +2834,14 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
+#, fuzzy
+#~ msgid "Previous"
+#~ msgstr "העמוד הקודם"
+
+#, fuzzy
+#~ msgid "Page"
+#~ msgstr "עמודים"
+
 #~ msgid "I'm just sitting here watching the wheels go round and round."
 #~ msgstr "אתר הכנסת הפתוחה"
 
@@ -4048,9 +4072,6 @@ msgstr "שבועי"
 #~ msgid "Date (without time)"
 #~ msgstr "תאריך (ללא שעה)"
 
-#~ msgid "Date (with time)"
-#~ msgstr "תאריך (כולל שעה)"
-
 #~ msgid "Decimal number"
 #~ msgstr "מספר עשרוני"
 
@@ -4264,9 +4285,6 @@ msgstr "שבועי"
 
 #~ msgid "Metadata"
 #~ msgstr "מטא-נתונים"
-
-#~ msgid "%(site_name)s comments"
-#~ msgstr "הערות ל %(site_name)s"
 
 #~ msgid "Watch your mouth! The word %s is not allowed here."
 
