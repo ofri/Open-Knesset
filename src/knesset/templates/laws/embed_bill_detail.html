@@ -124,6 +124,7 @@ stream example:
 		
 		$(function() {
 			//showLog();
+			$("head").append($("<title>{{bill.law.title}}: {{bill.title}}</title>"));
 			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
 			for (var a in stream) {
 				// determine date

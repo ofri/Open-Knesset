@@ -584,6 +584,7 @@ class Bill(models.Model):
                 self.stage = '1'
                 self.stage_date = pp.date
         self.save()
+        self.generate_activity_stream()
 
     def generate_activity_stream(self):
         ''' create an activity stream based on the data stored in self '''
@@ -651,5 +652,8 @@ class GovLegislationCommitteeDecision(models.Model):
     number = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return u"%s" % (self.title)
+    
+    def get_absolute_url(self):
+        return self.bill.get_absolute_url()
 
 from listeners import *
