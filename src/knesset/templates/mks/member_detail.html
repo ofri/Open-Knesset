@@ -23,7 +23,7 @@
     </style>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
     <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
-    <script>    
+    <script>
     function toggle_factional_discipline() {
         $(".factional_discipline_row").toggleClass("discipline_row");
         $(".factional_discipline_control").toggleClass("discipline_hide_control");
@@ -32,9 +32,15 @@
         $(".general_discipline_row").toggleClass("discipline_row");
         $(".general_discipline_control").toggleClass("discipline_hide_control");
     }
+    function toggle_votes_against_own_bills() {
+        $(".votes_against_own_bills_row").toggleClass("discipline_row");
+        $(".votes_against_own_bills_control").toggleClass("discipline_hide_control");
+    }
+
     $( function () {
             $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
             $(".general_discipline").click( function () { toggle_general_discipline(); } );
+            $(".votes_against_own_bills").click( function () { toggle_votes_against_own_bills(); } );
        }
     );
     </script>
@@ -68,17 +74,16 @@
         <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
         <h2> {{ object.get_role }} </h2>
     </div>
-    <div class="clear"></div>    
+    <div class="clear"></div>
     <div class="details">
-    
         <table style="width:100%;border:none;">
             <tbody>
                 <tr style="vertical-align:top;">
                     <td width="50%">
                         <div>
                             <table>
-                                <tr>                                    
-                                    
+                                <tr>
+
                                     <td>
                                         <h3> {% trans "Personal Information" %}</h3>
                                         <table id="member-info">
@@ -104,22 +109,22 @@
                                                 <td>{% trans "place of residence" %}</td>
                                                 <td>{{ object.place_of_residence }}</td>
                                             </tr>
-                                            <tr> 
+                                            <tr>
                                                 <td>{% trans "residence centrality" %}</td>
                                                 <td>{{ object.residence_centrality }}</td>
                                             </tr>
-                                            <tr> 
+                                            <tr>
                                                 <td>{% trans "residence economy" %}</td>
                                                 <td>{{ object.residence_economy }}</td>
                                             </tr>
-                            
+
                                         </table>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <br/>
-                        
+
                         {% if object.is_current %}
                         <div>
                             <h3> {% trans "Contact Information" %}</h3>
@@ -146,17 +151,17 @@
                             <table>
                                 <tr>
                                     <td style="width:140px;">{% trans "Number of votes" %}</td>
-                                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>                                    
+                                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>
                                 </tr>
                                 <tr>
                                     <td style="width:140px;">{% trans "Last 30 days" %}</td>
-                                    <td style="width:102px;">{{ object|recent_votes_count }}</td>                                    
+                                    <td style="width:102px;">{{ object|recent_votes_count }}</td>
                                 </tr>
                                 <tr>
                                     <td>{% if factional_discipline %}
                                             <a class="factional_discipline">
                                         {% endif %}
-                                        {% trans "Factional discipline" %} 
+                                        {% trans "Factional discipline" %}
                                         {% if factional_discipline %}
                                             </a>
                                             <div class="factional_discipline factional_discipline_control expand_button"></div>
@@ -168,21 +173,21 @@
                                         {% else %}
                                             {% trans 'Not enough data' %}
                                         {% endif %}
-                                    </td>                                   
-                                </tr>                                                                
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td colspan="3" class="factional_discipline_row discipline_row">
                                         <h4>{% trans 'factional discipline explained' %}</h4>
                                         {% for voteaction in factional_discipline %}
-                                            <p class="factional_discipline_row discipline_row">    
+                                            <p class="factional_discipline_row discipline_row">
                                                 {% if object.is_female %}
-                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
                                                 {% else %}
-                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
                                                 {% endif %}
-                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
                                             </p>
-                                        {% endfor %}                        
+                                        {% endfor %}
                                     </td>
                                 </tr>
                                 <tr>
@@ -205,9 +210,9 @@
                                         {% endif %}
                                     </td>
                                     <td>{% if object.voting_statistics.coalition_discipline %}
-                                            {{ object.voting_statistics.coalition_discipline }}%                                            
+                                            {{ object.voting_statistics.coalition_discipline }}%
                                         {% else %}{% trans 'Not enough data' %}{% endif %}
-                                    </td>                                   
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="general_discipline_row discipline_row">
@@ -216,26 +221,57 @@
                                         {% else %}
                                             <h4>{% trans 'general discipline explained opposition' %}</h4>
                                         {% endif %}
-                                        
+
                                         {% for voteaction in general_discipline %}
-                                            <p class="general_discipline_row discipline_row">                                                   
+                                            <p class="general_discipline_row discipline_row">
                                                 {% if object.is_female %}
-                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
                                                 {% else %}
-                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
                                                 {% endif %}
-                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
                                             </p>
-                                        {% endfor %}                                        
+                                        {% endfor %}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_coalition_discipline }}%</td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        {% if votes_against_own_bills %}
+                                            <a class="votes_against_own_bills">
+                                        {% endif %}
+                                        {% trans "Votes against own bills" %}
+                                        {% if votes_against_own_bills %}
+                                            </a>
+                                            <div class="votes_against_own_bills votes_against_own_bills_control expand_button"></div>
+                                            <div class="votes_against_own_bills votes_against_own_bills_control collapse_button discipline_hide_control"></div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if votes_against_own_bills %}
+                                            {{ votes_against_own_bills|length }}
+                                        {% else %}{% trans 'None' %}{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="votes_against_own_bills_row discipline_row">
+                                        {% for voteaction in votes_against_own_bills %}
+                                            <p class="votes_against_own_bills_row discipline_row">
+                                                {% if object.is_female %}
+                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
+                                                {% else %}
+                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
+                                                {% endif %}
+                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
+                                            </p>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
                             </table>
                             <br/>
                             <h3>{% trans "Attendance" %}</h3>
-                            <table>   
+                            <table>
                                 <tr>
                                     <td style="width:140px;">{% trans "Knesset presence" %}</td>
                                     <td style="width:200px;">
@@ -292,13 +328,13 @@
                                         <div id="approved_percentile" class="percentile"></div>
                                         <script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
                                     </td>
-                                </tr>       
-                
+                                </tr>
+
                             </table>
                         </div>
                         <br/>
-            
-                        
+
+
                     </td>
 
                     <td style="width:45%;vertical-align:top;">
@@ -311,7 +347,7 @@
                         <div>
                             <h3>{% trans "Proposed bills topics" %}</h3>
                             <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
-                        </div>  <br/>                                   
+                        </div>  <br/>
 
 {% endcache %}
                         <div>
@@ -322,11 +358,11 @@
                                     <tr style="height:4em;">
                                         <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
                                         <td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
-                                        <td class="numeric">{{agenda.score|floatformat:"0"}}%</td> 
+                                        <td class="numeric">{{agenda.score|floatformat:"0"}}%</td>
                                         <td>
                                             <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
                                             <script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
-                                            
+
                                         </td>
                                         <td>
                                         <a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
@@ -335,18 +371,18 @@
                                 {% endfor %}
                                 </table>
                             </div>
-                        </div>                  
-                    
+                        </div>
+
                     </td>
                 </tr>
             </tbody>
         </table>
-            
+
         <br/>
 
 {% cache 600 mks_detail_activities object.id request.page request.get_full_path %}
-        
-        <div class="activities">  
+
+        <div class="activities">
             <form class="select" method="get" action=".">
                 <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
                 {{verbs_form}}
@@ -367,8 +403,8 @@
                 {% endfor %}
             {% paginate %}
         </div>
-        
-        
+
+
     </div>
 
     <br/>
@@ -383,7 +419,7 @@
                     {% plural %}
                     This entry has been pinged {{ counter }} times.
                 {% endblocktrans %}
-                </p>              
+                </p>
                 <p>
                     <ul>
                         {% for ping in entry_pings %}
@@ -396,14 +432,14 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </p>    
+                </p>
             {% else %}
                 <p>{% trans "This entry has not been pinged." %}</p>
             {% endif %}
         {% endwith %}
         <p>{% trans "TrackBack:" %} <span style="direction:ltr; unicode-bidi:embed;">{% absurl member-trackback object_id=object.id %}</span> </p>
         </div>
-    {% endif %} 
+    {% endif %}
     <br />
     <div style="clear:both;"></div>
 {% endcache %}

@@ -153,12 +153,12 @@ class MemberListView(ListView):
                 x.extra = x.committee_meetings_per_month()
             context['past_mks'].sort(key=lambda x:x.extra or 0, reverse=True)
             context['friend_pages'][7][2] = True
-            context['norm_factor'] = float(qs[0].extra)/50.0            
+            context['norm_factor'] = float(qs[0].extra)/50.0
             context['title'] = "%s %s" % (_('Members'), _('By average monthly committee meetings'))
         elif info=='graph':
             context['friend_pages'][8][2] = True
             context['title'] = "%s %s" % (_('Members'), _('Graphical view'))
-        context['object_list']=qs        
+        context['object_list']=qs
         cache.set('object_list_by_%s' % info, context, 900)
         original_context.update(context)
         return original_context
@@ -172,14 +172,14 @@ class MemberDetailView(DetailView):
         member_count = float(all_members.count())
 
         member_val = getattr(member,inprop) or 0
-               
+
         get_inprop = lambda x: getattr(x,inprop) or 0
         avg = sum(map(get_inprop, all_members))
         avg = avg / member_count
         var = sum(map(lambda x: (get_inprop(x)-avg)**2, all_members))
         var = var / member_count
-        
-        outdict[outvalprop] = member_val 
+
+        outdict[outvalprop] = member_val
         outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
 
     def calc_bill_stats(self,member,bills_statistics,stattype):
@@ -188,8 +188,8 @@ class MemberDetailView(DetailView):
                               'bills_stats_%s' % stattype,
                               stattype,
                               '%s_percentile' % stattype)
-        
-    
+
+
     def get_context_data (self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
@@ -198,7 +198,7 @@ class MemberDetailView(DetailView):
             watched = member in p.members
         else:
             watched = False
-            
+
         verbs = None
         if 'verbs' in self.request.GET:
             verbs_form = VerbsForm(self.request.GET)
@@ -209,12 +209,12 @@ class MemberDetailView(DetailView):
             verbs_form = VerbsForm({'verbs': verbs})
 
         presence = {}
-        self.calc_percentile(member, presence, 
-                             'average_weekly_presence_hours', 
+        self.calc_percentile(member, presence,
+                             'average_weekly_presence_hours',
                              'average_weekly_presence_hours',
                              'average_weekly_presence_hours_percentile' )
-        self.calc_percentile(member, presence, 
-                             'average_monthly_committee_presence', 
+        self.calc_percentile(member, presence,
+                             'average_monthly_committee_presence',
                              'average_monthly_committee_presence',
                              'average_monthly_committee_presence_percentile' )
 
@@ -245,8 +245,11 @@ class MemberDetailView(DetailView):
                     watched_agenda.watched = True
                     agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
-        
+
         factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+
+        votes_against_own_bills = VoteAction.objects.filter(member=member,
+                                                            against_own_bill=True)
 
         general_discipline_params = { 'member' : member }
         is_coalition = member.current_party.is_coalition
@@ -255,7 +258,7 @@ class MemberDetailView(DetailView):
         else:
             general_discipline_params['against_opposition'] = True
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
-        
+
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
@@ -264,6 +267,7 @@ class MemberDetailView(DetailView):
                 'agendas':agendas,
                 'presence':presence,
                 'factional_discipline':factional_discipline,
+                'votes_against_own_bills':votes_against_own_bills,
                 'general_discipline':general_discipline,
                })
         return context
@@ -344,7 +348,7 @@ class PartyListView(ListView):
                 context['norm_factor'] = (100.0-m)/15
                 context['baseline'] = m - 2
                 context['title'] = "%s" % (_('Parties'))
-                
+
             if info=='residence-centrality':
                 m = 10
                 for p in context['coalition']:
@@ -437,8 +441,8 @@ class PartyListView(ListView):
                 context['friend_pages'][9][2] = True
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
-                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))                    
-			
+                context['title'] = "%s" % (_('Parties by number of bills passed approved per seat'))
+
             if info=='presence':
                 m = 9999
                 for p in context['coalition']:
@@ -460,7 +464,7 @@ class PartyListView(ListView):
                 context['friend_pages'][10][2] = True
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
-                context['title'] = "%s" % (_('Parties by average weekly hours of presence'))                    
+                context['title'] = "%s" % (_('Parties by average weekly hours of presence'))
 
             if info=='committees':
                 m = 9999
@@ -483,8 +487,8 @@ class PartyListView(ListView):
                 context['friend_pages'][11][2] = True
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
-                context['title'] = "%s" % (_('Parties by monthly committee meetings'))  
-			
+                context['title'] = "%s" % (_('Parties by monthly committee meetings'))
+
         return context
 
 class PartyDetailView(DetailView):
@@ -512,7 +516,7 @@ class PartyDetailView(DetailView):
                     watched_agenda.watched = True
                     agendas.append(watched_agenda)
         agendas.sort(key=attrgetter('score'), reverse=True)
-        
+
         context.update({'agendas':agendas})
         return context
 
