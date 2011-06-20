@@ -4,16 +4,14 @@
 	<h1>Recent comments</h1>
 
 	<p>
-		{% if has_previous %}
-			<a href="?page={{ previous }}">Previous</a> | 
+		{% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a> | 
 		{% endif %}
-	
-		Page {{ page }} of {{ pages }} 
-	
-		{% if has_next %}
-			| <a href="?page={{ next }}">Next</a>
+        {% trans "Page" %} {{ page_obj.number }} of {{ paginator.num_pages }} 
+		{% if page_obj.has_next %}
+            | <a href="?page={{ page_obj.next_page_number }}"> {% trans "Next" %}</a>
 		{% endif %}
-	</p>
+    </p>
 
 	{% for comment in object_list %}
 	<div class="comment" id="c{{ comment.id }}">
@@ -30,15 +28,13 @@
 	{% endfor %}
 
 	<p>
-		{% if has_previous %}
-			<a href="?page={{ previous }}">Previous</a> | 
+		{% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a> | 
 		{% endif %}
-	
-		Page {{ page }} of {{ pages }} 
-	
-		{% if has_next %}
-			| <a href="?page={{ next }}">Next</a>
+        {% trans "Page" %} {{ page_obj.number }} of {{ paginator.num_pages }} 
+		{% if page_obj.has_next %}
+            | <a href="?page={{ page_obj.next_page_number }}"> {% trans "Next" %}</a>
 		{% endif %}
-	</p>
+    </p>
 {% endblock %}
 
