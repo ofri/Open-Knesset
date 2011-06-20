@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date,datetime
 from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -29,7 +29,9 @@ class BillViewsTest(TestCase):
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
         self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
-        self.kp_1 = KnessetProposal.objects.create(booklet_number=2, bill=self.bill_1)
+        self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
+                                                   bill=self.bill_1,
+                                                   date=date.today())
         self.mk_1 = Member.objects.create(name='mk 1')
 
     def testBillList(self):
