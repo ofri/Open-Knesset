@@ -87,24 +87,38 @@
                                     <td>
                                         <h3> {% trans "Personal Information" %}</h3>
                                         <table id="member-info">
-                                            <tr>
-                                                <td style="width:200px;">{% trans "age" %}</td>
-                                                <td>{{ object.date_of_birth|timesince }}</td>
-                                            </tr>
+                                            {% if object.date_of_death %}
+                                                <tr>
+                                                    <td style="width:200px;">{% trans "date of birth" %}</td>
+                                                    <td>{{ object.date_of_birth }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>{% trans "date of death" %}</td>
+                                                    <td>{{ object.date_of_death }}</td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td style="width:200px;">{% trans "age" %}</td>
+                                                    <td>{{ object.date_of_birth|timesince }}</td>
+                                                </tr>
+                                            {% endif %}
                                             {% if object.year_of_aliyah %}
                                                 <tr>
                                                     <td>{% trans "year of aliyah" %}</td>
                                                     <td>{{ object.year_of_aliyah }}</td>
                                                 </tr>
                                             {% endif %}
+                                            {% if not object.date_of_death %}
                                             <tr>
                                                 <td>{% trans "family status" %}</td>
                                                 <td>{{ object.family_status }}</td>
                                             </tr>
+                                            {% endif %}
                                             <tr>
                                                 <td>{% trans "place of birth" %}</td>
                                                 <td>{{ object.place_of_birth }}</td>
                                             </tr>
+                                            {% if not object.date_of_death %}
                                             <tr>
                                                 <td>{% trans "place of residence" %}</td>
                                                 <td>{{ object.place_of_residence }}</td>
@@ -117,7 +131,7 @@
                                                 <td>{% trans "residence economy" %}</td>
                                                 <td>{{ object.residence_economy }}</td>
                                             </tr>
-
+                                            {% endif %}
                                         </table>
                                     </td>
                                 </tr>
