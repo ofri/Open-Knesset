@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
-import logging 
+import logging
 from django.contrib.contenttypes.models import ContentType
 import difflib
 import datetime
@@ -13,7 +13,8 @@ from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
-from knesset.events.models import Event 
+from knesset.events.models import Event
+from knesset.utils import clean_string
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
 from django.utils import simplejson as json
 
@@ -31,10 +32,11 @@ class CommitteeDetailView(DetailView):
         context['chairpersons'] = cm.chairpersons.all()
         context['replacements'] = cm.replacements.all()
         context['members'] = cm.members_by_presence()
-        recent_meetings = cm.meetings.all().order_by('-date')[:10]
-
+        recent_meetings = cm.recent_meetings()
         context['meetings_list'] = recent_meetings
-        ref_date = recent_meetings[0].date+datetime.timedelta(1) if recent_meetings.count() > 0 else datetime.datetime.now()
+        ref_date = recent_meetings[0].date+datetime.timedelta(1) \
+                if recent_meetings.count() > 0 \
+                else datetime.datetime.now()
         cur_date = datetime.datetime.now()
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
@@ -46,7 +48,7 @@ class MeetingDetailView(DetailView):
     model = CommitteeMeeting
 
     def get_context_data(self, *args, **kwargs):
-        context = super(MeetingDetailView, self).get_context_data(*args, **kwargs)  
+        context = super(MeetingDetailView, self).get_context_data(*args, **kwargs)
         cm = context['object']
         colors = {}
         speakers = cm.parts.order_by('speaker__mk').values_list('header','speaker__mk').distinct()
@@ -55,6 +57,14 @@ class MeetingDetailView(DetailView):
             (r,g,b) = colorsys.hsv_to_rgb(float(i)/n, 0.5 if mk else 0.3, 255)
             colors[p] = 'rgb(%i, %i, %i)' % (r, g, b)
         context['title'] = _('%(committee)s meeting on %(date)s') % {'committee':cm.committee.name, 'date':cm.date_string}
+        context['description'] = _('%(committee)s meeting on %(date)s on topic %(topic)s') \
+                                   % {'committee':cm.committee.name,
+                                      'date':cm.date_string,
+                                      'topic':cm.topics}
+        context['description'] = clean_string(context['description']).replace('"','')
+        page = self.request.GET.get('page',None)
+        if page:
+            context['description'] += _(' page %(page)s') % {'page':page}
         context['colors'] = colors
         parts_lengths = {}
         for part in cm.parts.all():
@@ -119,7 +129,7 @@ class MeetingsListView(ListView):
         context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
         context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
         context['committee_id'] = self.committee_id
-        return context 
+        return context
 
     def get_queryset (self):
         c_id = getattr(self, 'committee_id', None)
@@ -127,7 +137,7 @@ class MeetingsListView(ListView):
             return CommitteeMeeting.objects.filter(committee__id=c_id)
         else:
             return CommitteeMeeting.objects.all()
-        
+
 def meeting_list_by_date(request, *args, **kwargs):
     committee_id = kwargs.get('committee_id',None)
     date_string = kwargs.get('date',None)
@@ -137,9 +147,9 @@ def meeting_list_by_date(request, *args, **kwargs):
         raise Http404()
     object = get_object_or_404(Committee, pk=committee_id)
     object_list = object.meetings.filter(date=date)
-    
+
     context = {'object_list':object_list, 'committee_id':committee_id}
     context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date}
-    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural } 
+    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
     return render_to_response("committees/committeemeeting_list.html",
-        context, context_instance=RequestContext(request))    
+        context, context_instance=RequestContext(request))

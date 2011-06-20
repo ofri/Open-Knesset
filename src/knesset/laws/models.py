@@ -135,6 +135,7 @@ class VoteAction(models.Model):
     against_party = models.BooleanField(default=False)
     against_coalition = models.BooleanField(default=False)
     against_opposition = models.BooleanField(default=False)
+    against_own_bill = models.BooleanField(default=False)
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
 
@@ -164,7 +165,7 @@ class VoteManager(models.Manager):
         qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
 
         # In dealing with 'tagged' we use an ugly workaround for the fact that generic relations
-        # don't work as expected with annotations. 
+        # don't work as expected with annotations.
         # please read http://code.djangoproject.com/ticket/10461 before trying to change this code
         if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'false':
             qs = qs.exclude(tagged_items__isnull=False)
@@ -249,6 +250,12 @@ class Vote(models.Model):
     def against_opposition_votes_count(self):
         return VoteAction.objects.filter(vote=self, against_opposition=True).count()
 
+    def against_own_bill_votes(self):
+        return self.votes.filter(voteaction__against_own_bill=True)
+
+    def against_own_bill_votes_count(self):
+        return self.against_own_bill_votes().count()
+
     def short_summary(self):
         if self.summary==None:
             return ''
@@ -261,6 +268,15 @@ class Vote(models.Model):
         else:
             return '<a href="%s">link</a>' % self.full_text_url
     full_text_link.allow_tags = True
+
+    def bills(self):
+        "Return a list of all bills related to this vote"
+        result = list(self.bills_pre_votes.all())
+        result.extend(self.bills_first.all())
+        b = Bill.objects.filter(approval_vote=self)
+        if b:
+            result.extend(b)
+        return result
 
     @models.permalink
     def get_absolute_url(self):
@@ -307,13 +323,13 @@ class TagForm(forms.Form):
 class Law(models.Model):
     title = models.CharField(max_length=1000)
     merged_into = models.ForeignKey('Law', related_name='duplicates', blank=True, null=True)
-    
+
     def __unicode__(self):
         return self.title
 
     def merge(self, another_law):
-        """ Merges another_law into this one. 
-            Move all pointers from another_law to self, 
+        """ Merges another_law into this one.
+            Move all pointers from another_law to self,
             Then mark another_law as deleted by setting its merged_into field to self.
         """
         if another_law == self:
@@ -334,7 +350,7 @@ class BillProposal(models.Model):
     knesset_id = models.IntegerField(blank=True, null=True)
     law = models.ForeignKey('Law', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     title = models.CharField(max_length=1000)
-    date = models.DateField(blank=True, null=True)    
+    date = models.DateField(blank=True, null=True)
     source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
     content_html = models.TextField(blank=True,default="")
     committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
@@ -355,7 +371,7 @@ class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
     proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
     joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
-    bill = models.ForeignKey('Bill', related_name='proposals', 
+    bill = models.ForeignKey('Bill', related_name='proposals',
                              blank=True, null=True)
 
 class KnessetProposal(BillProposal):
@@ -394,7 +410,7 @@ class Bill(models.Model):
     stage = models.CharField(max_length=10,choices=BILL_STAGE_CHOICES)
     stage_date = models.DateField(blank=True, null=True) # date of entry to current stage
     pre_votes = models.ManyToManyField('Vote',related_name='bills_pre_votes', blank=True, null=True) # link to pre-votes related to this bill
-    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True) # CM related to this bill, *before* first vote     
+    first_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_first', blank=True, null=True) # CM related to this bill, *before* first vote
     first_vote = models.ForeignKey('Vote',related_name='bills_first', blank=True, null=True) # first vote of this bill
     second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True) # CM related to this bill, *after* first vote
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True) # approval vote of this bill
@@ -410,7 +426,7 @@ class Bill(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('bill-detail', [str(self.id)])
-    
+
     def save(self,**kwargs):
         self.slug = slugify_name(self.title)
         self.popular_name_slug = slugify_name(self.popular_name)
@@ -454,7 +470,7 @@ class Bill(models.Model):
         if(len(my_kp) and len(other_kp)):
             logger.debug('abort merging bill %d into bill %d, because both have KPs' % (another_bill.id, self.id))
             return
-        
+
         for pv in another_bill.pre_votes.all():
             self.pre_votes.add(pv)
         for cm in another_bill.first_committee_meetings.all():
@@ -469,13 +485,13 @@ class Bill(models.Model):
             self.proposers.add(m)
         for pp in another_bill.proposals.all():
             pp.bill = self
-            pp.save()        
+            pp.save()
         if len(other_kp):
             other_kp[0].bill = self
             other_kp[0].save()
         another_bill.delete()
         self.update_stage()
-    
+
     def update_votes(self):
         used_votes = [] # ids of votes already assigned 'roles', so we won't match a vote in 2 places
         gp = GovProposal.objects.filter(bill=self)
@@ -487,7 +503,7 @@ class Bill(models.Model):
                     used_votes.append(this_v.id)
                 if this_v.title.find('להעביר את'.decode('utf8')) == 0:
                     self.first_vote = this_v
-        
+
         kp = KnessetProposal.objects.filter(bill=self)
         if len(kp):
             for this_v in kp[0].votes.all():
@@ -504,11 +520,11 @@ class Bill(models.Model):
         if len(pps):
             for pp in pps:
                 for this_v in pp.votes.all():
-                    if this_v.id not in used_votes: 
+                    if this_v.id not in used_votes:
                         self.pre_votes.add(this_v)
         self.update_stage()
 
-    
+
     def update_stage(self):
         """Updates the stage for this bill according to all current data
         """
@@ -526,7 +542,7 @@ class Bill(models.Model):
                 self.stage_date = cm.date
         if self.stage == '5':
             self.save()
-            return            
+            return
         if self.first_vote:
             if self.first_vote.for_votes_count() > self.first_vote.against_votes_count():
                 self.stage = '4'
@@ -550,10 +566,10 @@ class Bill(models.Model):
         except GovProposal.DoesNotExist:
             pass
         for cm in self.first_committee_meetings.all():
-            if not(self.stage_date) or self.stage_date < cm.date:                
+            if not(self.stage_date) or self.stage_date < cm.date:
                 # if it was converted to discussion, seeing it in
                 # a cm doesn't mean much.
-                if self.stage != '-2.1':                                          
+                if self.stage != '-2.1':
                     self.stage = '3'
                     self.stage_date = cm.date
         for v in self.pre_votes.all():
@@ -561,7 +577,7 @@ class Bill(models.Model):
                 for h in CONVERT_TO_DISCUSSION_HEADERS:
                     if v.title.find(h)>=0:
                         self.stage = '-2.1' # converted to discussion
-                        self.stage_date = v.time.date()                    
+                        self.stage_date = v.time.date()
         for v in self.pre_votes.all():
             if not(self.stage_date) or self.stage_date < v.time.date():
                 if v.for_votes_count() > v.against_votes_count():
@@ -588,7 +604,7 @@ class Bill(models.Model):
         for p in ps:
             action.send(self, verb='was-proposed', target=p,
                         timestamp=p.date, description=p.title)
-                        
+
         try:
             p = self.knesset_proposal
             action.send(self, verb='was-knesset-proposed', target=p,
@@ -616,10 +632,12 @@ class Bill(models.Model):
             action.send(self, verb='was-approval-voted', target=self.approval_vote,
                         timestamp=self.approval_vote.time, description=self.approval_vote.passed)
 
-        cms = itertools.chain(self.second_committee_meetings.all(),
-                              self.first_committee_meetings.all())
-        for cm in cms:
-            action.send(self, verb='was-discussed', target=cm,
+        for cm in self.first_committee_meetings.all():
+            action.send(self, verb='was-discussed-1', target=cm,
+                        timestamp=cm.date, description=cm.committee.name)
+
+        for cm in self.second_committee_meetings.all():
+            action.send(self, verb='was-discussed-2', target=cm,
                         timestamp=cm.date, description=cm.committee.name)
 
         for g in self.gov_decisions.all():

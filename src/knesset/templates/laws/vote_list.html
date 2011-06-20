@@ -6,7 +6,7 @@
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
-{% block subnav %}        
+{% block subnav %}
         {% trans 'Vote types' %}: {% for link in friend_pages.type %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Tags' %}: {% for link in friend_pages.tagged %}        <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
         {% trans 'Time range' %}: {% for link in friend_pages.since %}     <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
@@ -14,55 +14,62 @@
         <a href="{% url vote-tags-cloud %}">{% trans 'Choose by tag' %}</a>
 {% endblock %}
 {% block divcontent %}
-	<div class="item-list">
+    <div class="item-list">
 
     {% for o in object_list %}
 <div class="item">
     <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">
     {{ o.title }}<br/>
     <div class="info">
-		<table>
-	        <tr>
-	        	<td>{% trans 'For' %}:</td>
-	        	<td>{{ o.for_votes_count }}</td>
-	        	<td class="column-bar">{% bar o.for_votes_count "for" %}</td>
-	        </tr>
-	        <tr>
-	        	<td>{% trans 'Against' %}:</td>
-	        	<td>{{ o.against_votes_count }}</td>
-	        	<td class="column-bar">{% bar o.against_votes_count "against" %}</td>
-	        </tr>
+        <table>
+            <tr>
+                <td>{% trans 'For' %}:</td>
+                <td>{{ o.for_votes_count }}</td>
+                <td class="column-bar">{% bar o.for_votes_count "for" %}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Against' %}:</td>
+                <td>{{ o.against_votes_count }}</td>
+                <td class="column-bar">{% bar o.against_votes_count "against" %}</td>
+            </tr>
         </table>
-        <p class="date">{{ o.time_string }}</p> &nbsp; 
+        <p class="date">{{ o.time_string }}</p> &nbsp;
             {% if o.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
             {% if o.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}
-            {% if o.against_party_votes_count %}<p><img src="/static/img/Warning.png" /> 
+            {% if o.against_party_votes_count %}<p><img src="/static/img/Warning.png" />
                 {% blocktrans count o.against_party_votes_count as counter %}
                 {{ counter }} MK voted differently than the majority of his party
                 {% plural %}
                 {{ counter }} MKs voted differently than the majority of their party
-                {% endblocktrans %}</p> &nbsp; 
+                {% endblocktrans %}</p> &nbsp;
             {% endif %}
-            {% if o.against_coalition_votes_count %}<p><img src="/static/img/Error.png" /> 
+            {% if o.against_coalition_votes_count %}<p><img src="/static/img/Error.png" />
                 {% blocktrans count o.against_coalition_votes_count as counter %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
                 {% plural %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
-                {% endblocktrans %}</p> &nbsp; 
+                {% endblocktrans %}</p> &nbsp;
             {% endif %}
-            {% if o.against_opposition_votes_count %}<p><img src="/static/img/Error.png" /> 
+            {% if o.against_opposition_votes_count %}<p><img src="/static/img/Error.png" />
                 {% blocktrans count o.against_opposition_votes_count as counter %}
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
                 {% plural %}
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
-                {% endblocktrans %}</p> &nbsp; 
+                {% endblocktrans %}</p> &nbsp;
+            {% endif %}
+            {% if o.against_own_bill_votes_count %}<p><img src="/static/img/Error-grey.png" />
+                {% blocktrans count o.against_own_bill_votes_count as counter %}
+                {{ counter }} member voted against his/her own bill
+                {% plural %}
+                {{ counter }} members votes against their own bill
+                {% endblocktrans %}</p> &nbsp;
             {% endif %}
     </div>
     </a>
     <div>
-        {% if o.tags %}    
+        {% if o.tags %}
             <!--{% trans 'Tags' %}:-->
-            {% for t in o.tags %}                
+            {% for t in o.tags %}
                 <a href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
             {% endfor %}
         {% else %}
@@ -81,7 +88,7 @@
 {% empty %}
     {% trans "No results found" %}
 {% endfor %}
-	</div>
+    </div>
     {% if paginator %}
         {% pagination page_obj paginator request %}
     {% endif %}

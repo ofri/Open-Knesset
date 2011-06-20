@@ -20,16 +20,18 @@ a{
 }
 #header{
     background: #FAFAFC;
-    height: 60px;
+    height: 70px;
     overflow: hidden;
     position: absolute;
     z-index: 20;
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
 	top:0;
 }
-#header:hover{
+
+.header-hover{
 	height: 330px;
 }
+
 	#details{
 		margin: 10px 0 0 120px;
     	padding: 0 10px;
@@ -45,16 +47,16 @@ a{
 		    color: #0080FF;
 		    font-size: 13px;
 		    font-weight: bold;
-		    height: 1.4em;
+		    height: 1.35em;
 		    margin-top: 0;
 		    overflow: hidden;
 		}
-		#header:hover h1{
+		.header-hover h1{
 			height: auto;
 			overflow: auto;
 		}
 		#excerpt{
-			margin: 10px 0; 
+			margin: 18px 0; 
 		}
 			#excerpt p{
 				margin: 0 0 10px;
@@ -73,7 +75,7 @@ a{
 			}
 			
 		.status{
-		    background: url("../img/embed_passed.png") no-repeat scroll 0 0 transparent;
+		    background: scroll 0 0 transparent;
 		    display: block;
 		    float: left;
 		    height: 40px;
@@ -91,6 +93,10 @@ a{
 			top: auto;
 		}
 		
+		.status.passed{
+			background: url(../img/embed_passed.png) no-repeat;
+		}
+		
 		.status.failed{
 			background: url(../img/embed_failed.png) no-repeat;
 		}
@@ -103,21 +109,21 @@ a{
 		width: 100px;
 	}
 		#pms ul{
-			height: 25px;
+			height: 35px;
 			overflow: hidden;
 			margin: 0;
     		padding: 0;
     		float: right;
     		width: 75px;
 		}
-		#header:hover #pms ul{
+		.header-hover #pms ul{
 			height: auto;
     		width: 100px;
 		}
 			#pms li,
 			#pms a.more{
 				float: right;
-			    height: 22px;
+			    height: 32px;
 			    list-style: none outside none;
 			    margin-bottom: 3px;
 			    margin-left: 3px;
@@ -127,7 +133,7 @@ a{
 				text-decoration: none;
 				line-height: 1.5em;
 			}
-			#header:hover #pms a.more{
+			.header-hover #pms a.more{
 				display: none;
 			}
 				#pms li img{
@@ -135,7 +141,7 @@ a{
 					height: auto;
 					border: 1px solid #1088fe;
 				}
-	a.pull{
+	.pull{
 		clear: both;
 		width: 100%;
 		display: block;
@@ -145,7 +151,20 @@ a{
 		position: absolute;
 		bottom: 0;
 		height: 10px;
+		cursor: pointer;
 	}
+		.pull .arrow {
+			width: 9px;
+			height: 9px;
+			position: absolute;
+			left: 50%;
+		}
+			.pull .arrow.down {
+				background: url(../img/embed_arrow_down.png) no-repeat;
+			}
+			.pull .arrow.up {
+				background: url(../img/embed_arrow_up.png) no-repeat;
+			}
 
 #gov-position{
 	display: none;
@@ -268,6 +287,8 @@ a{
 					height: 50px;
 					background: url(../img/embed_icons_pending.png);
 					text-indent: -999999px;
+					z-index: 1;
+					display: block;
 				}
 				ul#steps li#initiated .icon{
 					background-position: -450px center;
@@ -345,16 +366,25 @@ a{
 				ul#steps li.hover .tooltip{
 					display: block;
 				}
+				
+				ul#steps li .tooltip-score{
+				    display: none;
+				    position: absolute;
+				    z-index: 200;
+				}
+				ul#steps li.voted:hover .tooltip-score {
+					display: block;
+				}
 				ul#steps li.voted .step{
 					margin-top: -30px;
 					padding-bottom: 30px;
 				}
-				ul#steps li.voted .score{
+				ul#steps li.voted .tooltip-score{
 					top: 75px;
 					width: 300%;
 					left: -100%;
 				}
-				ul#steps li.voted .score span{
+				ul#steps li.voted .tooltip-score span{
 					background-image: url(../img/embed_scale.png);
 					background-repeat:no-repeat;
 					color: #fff;
@@ -364,22 +394,22 @@ a{
 					height: 19px;
 					padding: 11px 0 0;
 				}
-				ul#steps li.voted .score .scale{
+				ul#steps li.voted .tooltip-score .scale{
 					width: 120px;
 					text-align: center;
 					overflow: hidden;
 					margin: 0 auto;
 				}
-				ul#steps li.voted .score span.for{
+				ul#steps li.voted .tooltip-score span.for{
 					background-position: top;
 					width: 100%;
 					position: static;
 				}
-				ul#steps li.voted .score span.against{
+				ul#steps li.voted .tooltip-score span.against{
 					background-position: right bottom;
     				z-index: 10;
 				}
-				ul#steps li.voted .score span.balance{
+				ul#steps li.voted .tooltip-score span.balance{
 				    background: none repeat scroll 0 0 transparent;
 				    position: absolute;
 				    text-align: center;
@@ -390,7 +420,7 @@ a{
 				}
 				
 #footer{
-	position: absolute;
+	position: relative;
 	bottom: 0;
     background: #EEEFF5;
     height: 20px;

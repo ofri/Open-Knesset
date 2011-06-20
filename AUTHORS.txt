@@ -1,6 +1,8 @@
 Adam Kariv
 Alon Levy
 Amir Yalon
+Amit Zur
+Ayal Gelles
 Benny Daon
 Boris Dinkevich
 David Shimon
@@ -9,6 +11,7 @@ Imri Goldberg
 Jonathan Livni
 Jonathan Rouach
 Michael Shynar 
+Mushon Zer-Aviv
 Near Privman
 Ofri Raviv
 Omer Gertel

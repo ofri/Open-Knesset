@@ -9,8 +9,9 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction, Bill
+from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
+from knesset.committees.models import Committee, CommitteeMeeting
 from tagging.models import Tag, TaggedItem
 from knesset.committees.models import CommitteeMeeting
 import math
@@ -24,7 +25,6 @@ class HandlerExtensions():
         ''' return the url of the objects page on the site '''
         return a.get_absolute_url()
 
-    @classmethod
     def limit_by_request(self, request):
         num = int(request.GET.get('num', DEFAULT_PAGE_LEN))
         page = int(request.GET.get('page', 0))
@@ -55,7 +55,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def service_time (self, member):
         return member.service_time()
-    
+
     @classmethod
     def discipline (self, member):
         x = member.voting_statistics.discipline()
@@ -106,8 +106,8 @@ class MemberHandler(BaseHandler, HandlerExtensions):
                 cache.set('average_presence_location_%d' % mk.id, mk_location, 60*60*24)
 
                 if mk.id == member.id:
-                    rel_location = mk_location 
-        
+                    rel_location = mk_location
+
         return rel_location
 
     @classmethod
@@ -138,7 +138,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
         return super(MemberHandler,self).read(request, **kwargs)
 
 class VoteHandler(BaseHandler, HandlerExtensions):
-    fields = ('url', 'title', 'time', 
+    fields = ('url', 'title', 'time',
               'summary','full_text',
               'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
               'agendas',
@@ -196,17 +196,18 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         text_scores = [av.get_score_display() for av in agendavotes]
         for i in range(len(agendas)):
             agendas[i].update({'reasoning':reasonings[i], 'text_score':text_scores[i]})
-        return dict(zip([a['id'] for a in agendas],agendas)) 
+        return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
-    fields = ('url', 'bill_title', 
+    fields = ('url', 'bill_title',
               'stage_text', 'stage_date',
-              'votes', 
+              'votes',
               'committee_meetings',
-              'proposing_mks', 
-              'tags'
+              'proposing_mks',
+              'tags',
+              'proposals'
              )
-    
+
     exclude = ('member')
     allowed_methods = ('GET',)
     model = Bill
@@ -263,16 +264,37 @@ class BillHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def tags(self,bill):
         return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
-    
+
     @classmethod
     def bill_title(self,bill):
         return u"%s, %s" % (bill.law.title, bill.title)
+
+    @classmethod
+    def proposals(self, bill):
+        gov_proposal = {}
+
+        try:
+            gov_proposal = {'source_url': bill.gov_proposal.source_url, 'date': bill.gov_proposal.date}
+        except GovProposal.DoesNotExist:
+            pass
+
+        knesset_proposal = {}
+
+        try:
+            knesset_proposal = {'source_url': bill.knesset_proposal.source_url, 'date': bill.knesset_proposal.date}
+        except KnessetProposal.DoesNotExist:
+            pass
+
+        return {'gov_proposal': gov_proposal,
+                'knesset_proposal': knesset_proposal,
+                'private_proposals': [{'source_url': prop.source_url, 'date': prop.date} for prop in bill.proposals.all()]}
+
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')
     allowed_methods = ('GET',)
     model = Party
-    
+
     def read(self, request, **kwargs):
         if id not in kwargs and 'q' in request.GET:
             q = request.GET['q']
@@ -284,11 +306,11 @@ class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
     allowed_methods = ('GET',)
     model = Tag
-    
+
     def read(self, request, **kwargs):
         id = None
         if 'id' in kwargs:
-            id = kwargs['id']        
+            id = kwargs['id']
         if id:
             try:
                 return Tag.objects.get(pk=id)
@@ -309,9 +331,9 @@ class TagHandler(BaseHandler):
         vote_tags = Tag.objects.usage_for_model(Vote)
         bill_tags = Tag.objects.usage_for_model(Bill)
         all_tags = list(set(vote_tags).union(bill_tags))
-        all_tags.sort(key=attrgetter('name'))  
-        return all_tags 
-    
+        all_tags.sort(key=attrgetter('name'))
+        return all_tags
+
     @classmethod
     def number_of_items(self, tag):
         return tag.items.count()
@@ -321,24 +343,24 @@ class AgendaHandler(BaseHandler):
     #       need to expose not only public agendas.
     #       See AgendaManager.get_relevant_for_user(user)
     #       The is true for both read() and number_of_items() methods
-      
+
     fields = ('id', 'name', 'number_of_items')
     allowed_methods = ('GET',)
     model = Agenda
 
     def read(self, request, **kwargs):
         agendas = Agenda.objects.get_relevant_for_user(user=None)
-        
+
         # Handle API calls of type /agenda/[agenda_id]
         id = None
         if 'id' in kwargs:
-            id = kwargs['id']        
+            id = kwargs['id']
             if id is not None:
                 try:
                     return agendas.get(pk=id)
                 except Agenda.DoesNotExist:
                     return rc.NOT_FOUND
-        
+
         # Handle API calls of type /agenda/vote/[vote_id]
         # Used to return the agendas ascribed to a specific vote
         object_id = None
@@ -351,19 +373,49 @@ class AgendaHandler(BaseHandler):
                 pass
             if object_id and (ctype == 'vote'):
                 return agendas.filter(votes__id=object_id)
-        else:        
+        else:
             return agendas
 
     @classmethod
     def number_of_items(self, agenda):
         return agenda.agendavotes.count()
-    
-class CommitteeMeetingHandler(BaseHandler):
+
+class CommitteeHandler(BaseHandler, HandlerExtensions):
+    fields = ('id',
+              'url',
+              'name',
+              'members',
+              'recent_meetings',
+             )
+    allowed_methods = ('GET',)
+    model = Committee
+
+    @classmethod
+    def recent_meetings(cls, committee):
+        return [ { 'url': x.get_absolute_url(),
+                   'title': x.title(),
+                   'date': x.date }
+                for x in committee.recent_meetings() ]
+
+    @classmethod
+    def members(cls, committee):
+        return [ { 'url': x.get_absolute_url(),
+                   'name' : x.name,
+                   'presence' : x.meetings_count }
+                for x in committee.members_by_presence() ]
+
+class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):
     fields = ('committee_name', 'url', 'date', 'topics', 'protocol_text', 'src_url',
-              ('mks_attended' , ('name')),
+              'mks_attended',
               )
     allowed_methods = ('GET',)
     model = CommitteeMeeting
+
+    @classmethod
+    def mks_attended(cls, cm):
+        return [ { 'url': x.get_absolute_url(),
+                   'name': x.name }
+                for x in cm.mks_attended.all()]
 
     def read(self, request, **kwargs):
         ''' returns a meeting or a list of meetings '''
@@ -371,6 +423,5 @@ class CommitteeMeetingHandler(BaseHandler):
         if 'id' in kwargs:
             return r
         else:
-            return limit_by_request(r, request)
-
-
+            self.qs = r
+            return self.limit_by_request(request)

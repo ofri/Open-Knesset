@@ -33,13 +33,17 @@
         $(".general_discipline_control").toggleClass("discipline_hide_control");
     }
     $( function () {
-		    $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
-		    $(".general_discipline").click( function () { toggle_general_discipline(); } );
+            $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
+            $(".general_discipline").click( function () { toggle_general_discipline(); } );
        }
-	);
+    );
     </script>
 {% endblock %}
-{% block description %}{{ object.name }} - {% endblock %}
+{% block description %}
+    {% with object.name as name %}
+    {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.  {% endblocktrans %}
+    {% endwith %}
+{% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -67,310 +71,311 @@
     <div class="clear"></div>    
     <div class="details">
     
-		<table style="width:100%;border:none;">
-			<tbody>
-				<tr style="vertical-align:top;">
-					<td width="50%">
-				        <div>
-				            <table>
-				            	<tr>									
-									
-									<td>
-							            <h3> {% trans "Personal Information" %}</h3>
-							            <table id="member-info">
-							                <tr>
-							                    <td style="width:200px;">{% trans "age" %}</td>
-							                    <td>{{ object.date_of_birth|timesince }}</td>
-							                </tr>
-							                {% if object.year_of_aliyah %}
-								                <tr>
-								                    <td>{% trans "year of aliyah" %}</td>
-								                    <td>{{ object.year_of_aliyah }}</td>
-								                </tr>
-							                {% endif %}
-							                <tr>
-							                    <td>{% trans "family status" %}</td>
-							                    <td>{{ object.family_status }}</td>
-							                </tr>
-							                <tr>
-							                    <td>{% trans "place of birth" %}</td>
-							                    <td>{{ object.place_of_birth }}</td>
-							                </tr>
-							                <tr>
-							                    <td>{% trans "place of residence" %}</td>
-							                    <td>{{ object.place_of_residence }}</td>
-							                </tr>
-							                <tr> 
-							                    <td>{% trans "residence centrality" %}</td>
-							                    <td>{{ object.residence_centrality }}</td>
-							                </tr>
-							                <tr> 
-							                    <td>{% trans "residence economy" %}</td>
-							                    <td>{{ object.residence_economy }}</td>
-							                </tr>
-							
-							            </table>
-									</td>
-				            	</tr>
-				            </table>
-				        </div>
-						<br/>
-				        
-				        <div>
-				            <h3> {% trans "Contact Information" %}</h3>
-				            <table>
-				                <tr>
-				                    <td>{% trans "phone" %}</td>
-				                    <td>{{ object.phone }}</td>
-				                </tr>
-				                {% if object.fax %}
-				                    <tr>
-				                        <td>{% trans "fax" %}</td>
-				                        <td>{{ object.fax }}</td>
-				                    </tr>
-				                {% endif %}
-				                <tr>
-				                    <td>{% trans "e-mail address" %}</td>
-				                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
-				                </tr>
-				            </table>
-				        </div> <br/>
-
-				        <div>
-				            <h3>{% trans "Votes" %}</h3>
-				            <table>
-				                <tr>
-				                    <td style="width:140px;">{% trans "Number of votes" %}</td>
-				                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>				                    
-				                </tr>
+        <table style="width:100%;border:none;">
+            <tbody>
+                <tr style="vertical-align:top;">
+                    <td width="50%">
+                        <div>
+                            <table>
+                                <tr>                                    
+                                    
+                                    <td>
+                                        <h3> {% trans "Personal Information" %}</h3>
+                                        <table id="member-info">
+                                            <tr>
+                                                <td style="width:200px;">{% trans "age" %}</td>
+                                                <td>{{ object.date_of_birth|timesince }}</td>
+                                            </tr>
+                                            {% if object.year_of_aliyah %}
+                                                <tr>
+                                                    <td>{% trans "year of aliyah" %}</td>
+                                                    <td>{{ object.year_of_aliyah }}</td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td>{% trans "family status" %}</td>
+                                                <td>{{ object.family_status }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{% trans "place of birth" %}</td>
+                                                <td>{{ object.place_of_birth }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{% trans "place of residence" %}</td>
+                                                <td>{{ object.place_of_residence }}</td>
+                                            </tr>
+                                            <tr> 
+                                                <td>{% trans "residence centrality" %}</td>
+                                                <td>{{ object.residence_centrality }}</td>
+                                            </tr>
+                                            <tr> 
+                                                <td>{% trans "residence economy" %}</td>
+                                                <td>{{ object.residence_economy }}</td>
+                                            </tr>
+                            
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br/>
+                        
+                        {% if object.is_current %}
+                        <div>
+                            <h3> {% trans "Contact Information" %}</h3>
+                            <table>
+                                <tr>
+                                    <td>{% trans "phone" %}</td>
+                                    <td>{{ object.phone }}</td>
+                                </tr>
+                                {% if object.fax %}
+                                    <tr>
+                                        <td>{% trans "fax" %}</td>
+                                        <td>{{ object.fax }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>{% trans "e-mail address" %}</td>
+                                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
+                                </tr>
+                            </table>
+                        </div> <br/>
+                        {% endif %}
+                        <div>
+                            <h3>{% trans "Votes" %}</h3>
+                            <table>
+                                <tr>
+                                    <td style="width:140px;">{% trans "Number of votes" %}</td>
+                                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>                                    
+                                </tr>
                                 <tr>
                                     <td style="width:140px;">{% trans "Last 30 days" %}</td>
                                     <td style="width:102px;">{{ object|recent_votes_count }}</td>                                    
                                 </tr>
                                 <tr>
-				                    <td>{% if factional_discipline %}
-					                    	<a class="factional_discipline">
-				                    	{% endif %}
-				                    	{% trans "Factional discipline" %} 
-					                    {% if factional_discipline %}
-					                    	</a>
-					                    	<div class="factional_discipline factional_discipline_control expand_button"></div>
-					                    	<div class="factional_discipline factional_discipline_control collapse_button discipline_hide_control"></div>
-					                    {% endif %}
-				                    </td>
-				                    <td>{% if object.voting_statistics.discipline %}
-				                    		{{ object.voting_statistics.discipline }}%
-				                    	{% else %}
-				                    		{% trans 'Not enough data' %}
-				                    	{% endif %}
-                                    </td>				                    
-				                </tr>                                                                
-				                <tr>
-					                <td colspan="3" class="factional_discipline_row discipline_row">
+                                    <td>{% if factional_discipline %}
+                                            <a class="factional_discipline">
+                                        {% endif %}
+                                        {% trans "Factional discipline" %} 
+                                        {% if factional_discipline %}
+                                            </a>
+                                            <div class="factional_discipline factional_discipline_control expand_button"></div>
+                                            <div class="factional_discipline factional_discipline_control collapse_button discipline_hide_control"></div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if object.voting_statistics.discipline %}
+                                            {{ object.voting_statistics.discipline }}%
+                                        {% else %}
+                                            {% trans 'Not enough data' %}
+                                        {% endif %}
+                                    </td>                                   
+                                </tr>                                                                
+                                <tr>
+                                    <td colspan="3" class="factional_discipline_row discipline_row">
                                         <h4>{% trans 'factional discipline explained' %}</h4>
-		                                {% for voteaction in factional_discipline %}
+                                        {% for voteaction in factional_discipline %}
                                             <p class="factional_discipline_row discipline_row">    
-    				                		    {% if object.is_female %}
-        											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-        										{% else %}
-        											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-        										{% endif %}
-    						                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+                                                {% if object.is_female %}
+                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                {% else %}
+                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                {% endif %}
+                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
                                             </p>
-				                		{% endfor %}		                
-					                </td>
-				                </tr>
+                                        {% endfor %}                        
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_discipline }}%</td>
                                 </tr>
-				                <tr>
-				                    <td>
-					                    {% if general_discipline %}
-					                    	<a class="general_discipline">
-				                    	{% endif %}
-				                    	{% if object.current_party.is_coalition %}
-				                    		{% trans "Coalition discipline" %}
-				                    	{% else %}
-				                    		{% trans 'Opposition discipline' %}
-				                    	{% endif %}
-					                    {% if general_discipline %}
-					                    	</a>
-					                    	<div class="general_discipline general_discipline_control expand_button"></div>
-					                    	<div class="general_discipline general_discipline_control collapse_button discipline_hide_control"></div>
-					                    {% endif %}
-				                    </td>
-				                    <td>{% if object.voting_statistics.coalition_discipline %}
-				                    		{{ object.voting_statistics.coalition_discipline }}%				                    		
-				                    	{% else %}{% trans 'Not enough data' %}{% endif %}
-                                    </td>				                    
-				                </tr>
-				                <tr>
-					                <td colspan="3" class="general_discipline_row discipline_row">
+                                <tr>
+                                    <td>
+                                        {% if general_discipline %}
+                                            <a class="general_discipline">
+                                        {% endif %}
+                                        {% if object.current_party.is_coalition %}
+                                            {% trans "Coalition discipline" %}
+                                        {% else %}
+                                            {% trans 'Opposition discipline' %}
+                                        {% endif %}
+                                        {% if general_discipline %}
+                                            </a>
+                                            <div class="general_discipline general_discipline_control expand_button"></div>
+                                            <div class="general_discipline general_discipline_control collapse_button discipline_hide_control"></div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if object.voting_statistics.coalition_discipline %}
+                                            {{ object.voting_statistics.coalition_discipline }}%                                            
+                                        {% else %}{% trans 'Not enough data' %}{% endif %}
+                                    </td>                                   
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="general_discipline_row discipline_row">
                                         {% if object.current_party.is_coalition %}
                                             <h4>{% trans "general discipline explained coalition" %}</h4>
                                         {% else %}
                                             <h4>{% trans 'general discipline explained opposition' %}</h4>
                                         {% endif %}
-					                	
-		                                {% for voteaction in general_discipline %}
-						                	<p class="general_discipline_row discipline_row">							                		
-					                		    {% if object.is_female %}
-	    											<span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-	    										{% else %}
-	    											<span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
-	    										{% endif %}
-							                	<a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
-						                	</p>
-				                		{% endfor %}					                	
-					                </td>
-				                </tr>
+                                        
+                                        {% for voteaction in general_discipline %}
+                                            <p class="general_discipline_row discipline_row">                                                   
+                                                {% if object.is_female %}
+                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                {% else %}
+                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span> 
+                                                {% endif %}
+                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a> 
+                                            </p>
+                                        {% endfor %}                                        
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_coalition_discipline }}%</td>
                                 </tr>
-				            </table>
-				            <br/>
-				            <h3>{% trans "Attendance" %}</h3>
-				            <table>   
-				                <tr>
-				                    <td style="width:140px;">{% trans "Knesset presence" %}</td>
-				                    <td style="width:200px;">
-										{{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %}
-				                    </td>
-				                    <td>{% if presence.average_weekly_presence_hours %}
-						                    <div id="weekly_percentile" class="percentile"></div>
-											<script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
-				                    	{% else %}
-				                    		{% trans 'Not enough data' %}
-				                    	{% endif %}
-				                    </td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "Committee presence" %}</td>
-				                    <td>{{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %}</td>
-				                    <td>
-					                    <div id="monthly_percentile" class="percentile"></div>
-										<script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
-				                    </td>
-				                </tr>
-							</table>
-							<br/>
-				            <h3>{% trans "Bills" %}</h3>
-				            <table>
-				            	<tr>
-				                    <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
-				                    <td style="width:200px;"><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
-				                    <td>
-					                    <div id="proposed_percentile" class="percentile"></div>
-					                    <script>set_percentile('proposed',{{ bills_statistics.proposed_percentile }});</script>
-				                    </td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "Bills passed pre-vote" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</td>
-				                    <td>
-					                    <div id="pre_percentile" class="percentile"></div>
-										<script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
-				                    </td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "Bills passed first vote" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
-				                    <td>
-					                    <div id="first_percentile" class="percentile"></div>
-										<script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
-				                    </td>
-				                </tr>
-				                <tr>
-				                    <td>{% trans "Bills approved" %}</td>
-				                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
-				                    <td>
-					                    <div id="approved_percentile" class="percentile"></div>
-										<script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
-				                    </td>
-				                </tr>       
-				
-				            </table>
-				        </div>
-						<br/>
-			
-				        
-					</td>
+                            </table>
+                            <br/>
+                            <h3>{% trans "Attendance" %}</h3>
+                            <table>   
+                                <tr>
+                                    <td style="width:140px;">{% trans "Knesset presence" %}</td>
+                                    <td style="width:200px;">
+                                        {{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %}
+                                    </td>
+                                    <td>{% if presence.average_weekly_presence_hours %}
+                                            <div id="weekly_percentile" class="percentile"></div>
+                                            <script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
+                                        {% else %}
+                                            {% trans 'Not enough data' %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Committee presence" %}</td>
+                                    <td>{{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %}</td>
+                                    <td>
+                                        <div id="monthly_percentile" class="percentile"></div>
+                                        <script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br/>
+                            <h3>{% trans "Bills" %}</h3>
+                            <table>
+                                <tr>
+                                    <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
+                                    <td style="width:200px;"><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
+                                    <td>
+                                        <div id="proposed_percentile" class="percentile"></div>
+                                        <script>set_percentile('proposed',{{ bills_statistics.proposed_percentile }});</script>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Bills passed pre-vote" %}</td>
+                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</td>
+                                    <td>
+                                        <div id="pre_percentile" class="percentile"></div>
+                                        <script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Bills passed first vote" %}</td>
+                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
+                                    <td>
+                                        <div id="first_percentile" class="percentile"></div>
+                                        <script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Bills approved" %}</td>
+                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
+                                    <td>
+                                        <div id="approved_percentile" class="percentile"></div>
+                                        <script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
+                                    </td>
+                                </tr>       
+                
+                            </table>
+                        </div>
+                        <br/>
+            
+                        
+                    </td>
 
-					<td style="width:45%;vertical-align:top;">
+                    <td style="width:45%;vertical-align:top;">
 
-				        <div>
-				            <h3>{% trans "Links" %}</h3>
-				                {% object_links object %}
-				        </div> <br/>
+                        <div>
+                            <h3>{% trans "Links" %}</h3>
+                                {% object_links object %}
+                        </div> <br/>
 
-				        <div>
-				            <h3>{% trans "Proposed bills topics" %}</h3>
-			                <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
-				        </div>  <br/>									
+                        <div>
+                            <h3>{% trans "Proposed bills topics" %}</h3>
+                            <div class="tags cloud" style="max-width:25em">{% for tag in bills_tags %}<a href="{% url bill-tag tag=tag %}?member={{object.id}}" class="level{{ tag.font_size }}">{{ tag }}</a> {% endfor %}</div>
+                        </div>  <br/>                                   
 
 {% endcache %}
-						<div>
-							<h3>{% trans "Agendas" %}</h3>
-							<div class="list-wrap">
-								<table>
-								{% for agenda in agendas %}
-									<tr style="height:4em;">
-										<td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-										<td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
-										<td class="numeric">{{agenda.score|floatformat:"0"}}%</td> 
-										<td>
-											<div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
-											<script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
-											
-										</td>
-										<td>
-										<a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
-										</td>
-									</tr>
-								{% endfor %}
-								</table>
-							</div>
-						</div>					
-					
-					</td>
-				</tr>
-			</tbody>
-		</table>
-    	   	
-    	<br/>
+                        <div>
+                            <h3>{% trans "Agendas" %}</h3>
+                            <div class="list-wrap">
+                                <table>
+                                {% for agenda in agendas %}
+                                    <tr style="height:4em;">
+                                        <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
+                                        <td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
+                                        <td class="numeric">{{agenda.score|floatformat:"0"}}%</td> 
+                                        <td>
+                                            <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
+                                            <script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>
+                                            
+                                        </td>
+                                        <td>
+                                        <a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </table>
+                            </div>
+                        </div>                  
+                    
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            
+        <br/>
 
 {% cache 600 mks_detail_activities object.id request.page request.get_full_path %}
-    	
-		<div class="activities">  
-		    <form class="select" method="get" action=".">
-		        <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
-		        {{verbs_form}}
-		    </form>
-	        <div style="clear:both;"></div>
-		    {% autopaginate actions %}
-			    {% for action in actions %}
-			        {% with action.timestamp|timesince as since %}
-				        {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
-			        {% endwith %}
-			        <p>
-			            {% display_action action %}
-			        </p>
-			    {% empty %}
-			        <p>
-			        {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
-			        </p>
-			    {% endfor %}
-		    {% paginate %}
-	    </div>
-    	
+        
+        <div class="activities">  
+            <form class="select" method="get" action=".">
+                <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
+                {{verbs_form}}
+            </form>
+            <div style="clear:both;"></div>
+            {% autopaginate actions %}
+                {% for action in actions %}
+                    {% with action.timestamp|timesince as since %}
+                        {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
+                    {% endwith %}
+                    <p>
+                        {% display_action action %}
+                    </p>
+                {% empty %}
+                    <p>
+                    {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
+                    </p>
+                {% endfor %}
+            {% paginate %}
+        </div>
+        
         
     </div>
 
-	<br/>
-	{% if object.backlinks_enabled %}
-    	<div style="clear:both;">
+    <br/>
+    {% if object.backlinks_enabled %}
+        <div style="clear:both;">
         {% backlinks_for_model object as entry_pings %}
-    	{% with entry_pings.count as num_pings %}
+        {% with entry_pings.count as num_pings %}
             {% if num_pings %}
                 <p>
                 {% blocktrans count counter=num_pings %}
@@ -397,9 +402,9 @@
             {% endif %}
         {% endwith %}
         <p>{% trans "TrackBack:" %} <span style="direction:ltr; unicode-bidi:embed;">{% absurl member-trackback object_id=object.id %}</span> </p>
-    	</div>
-	{% endif %} 
-	<br />
+        </div>
+    {% endif %} 
+    <br />
     <div style="clear:both;"></div>
 {% endcache %}
 
