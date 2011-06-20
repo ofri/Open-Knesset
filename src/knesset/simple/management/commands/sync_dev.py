@@ -110,6 +110,9 @@ class Command(NoArgsCommand):
                 obj.last_name = uid
                 obj.email = '%s@example.com' % uid
 
+            if name_pair == ['user', 'userprofile']:
+                obj.description = u''
+
             obj.save(using=self.DB)
             counted += 1
             total += 1
