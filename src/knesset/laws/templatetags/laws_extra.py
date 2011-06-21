@@ -27,7 +27,11 @@ def user_votes(user, vote, tag):
 def recent_discipline(m):
     d = date.today() - timedelta(30)
     try:
-        return m.voting_statistics.discipline(d) or _('Not enough data')
+        value = m.voting_statistics.discipline(d)
+        if value:
+            return "%d%%" % value
+        else:
+            return _('Not enough data')
     except MemberVotingStatistics.DoesNotExist:
         logger.error('%d is missing voting statistics' % m.id)
         return _('Not enough data')
@@ -36,7 +40,11 @@ def recent_discipline(m):
 def recent_coalition_discipline(m):
     d = date.today() - timedelta(30)
     try:
-        return m.voting_statistics.coalition_discipline(d) or _('Not enough data')
+        value = m.voting_statistics.coalition_discipline(d)
+        if value:
+            return "%d%%" % value
+        else:
+            return _('Not enough data')
     except MemberVotingStatistics.DoesNotExist:
         logger.error('%d is missing voting statistics' % m.id)
         return _('Not enough data')
