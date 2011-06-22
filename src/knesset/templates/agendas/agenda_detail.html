@@ -9,7 +9,7 @@
 {% load hitcount_tags %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
-{% block description %}{{ object.title }} - {% endblock %}
+{% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>

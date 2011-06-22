@@ -6,7 +6,7 @@
 {% load agendas %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
-{% block description %}{{ vote.title }} - {% endblock %}
+{% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
 {% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
 {% block extrahead %}
