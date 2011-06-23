@@ -3,7 +3,7 @@
 {% load laws_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block subnav %}        
         {% trans 'stage' %}: {% for link in friend_pages %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
