@@ -240,26 +240,29 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
     @classmethod
     def votes(self, bill):
-        pre_votes =   [ x.id for x in bill.pre_votes.all() ]
+        pre_votes =   [ {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))} for x in bill.pre_votes.all()]
         first_vote = None
         if bill.first_vote != None:
-            first_vote = bill.first_vote.id
+            x = bill.first_vote
+            first_vote = {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))}
         approval_vote = None
         if bill.approval_vote != None:
-            approval_vote = bill.approval_vote.id
-        all = set(pre_votes+[first_vote, approval_vote])
+            x = bill.approval_vote
+            approval_vote = {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))}
+        all = pre_votes + [first_vote, approval_vote]
         return { 'pre' : pre_votes, 'first' : first_vote, 'approval' : approval_vote, 'all':list(all)}
 
     @classmethod
     def committee_meetings(self, bill):
-        first_committee =   [ x.id for x in bill.first_committee_meetings.all() ]
-        second_committee = [ x.id for x in bill.second_committee_meetings.all() ]
-        all=set(first_committee+second_committee)
+        first_committee =   [ {'id': x.id, 'date': x.date, 'description': x.__unicode__()} for x in bill.first_committee_meetings.all() ]
+        second_committee = [ {'id': x.id, 'date': x.date, 'description': x.__unicode__()} for x in bill.second_committee_meetings.all() ]
+        all = first_committee + second_committee
+        #all=set(first_committee+second_committee)
         return { 'first' : first_committee, 'second' : second_committee, 'all':list(all) }
 
     @classmethod
     def proposing_mks(self, bill):
-        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name } for x in bill.proposers.all() ]
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name, 'img_url' : x.img_url } for x in bill.proposers.all() ]
 
     @classmethod
     def tags(self,bill):
