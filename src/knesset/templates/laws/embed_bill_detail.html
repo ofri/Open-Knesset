@@ -66,7 +66,10 @@ stream example:
 		
 		var phasesArr = ['was-proposed', 'was-pre-voted', 'was-discussed-1', 'was-first-voted', 'was-discussed-2', 'was-approval-voted'];
 		
-		
+        function showExplanation() {
+            // TODO: show a popup with the explanation from `Proposal.get_explanation`
+            return "";
+        }
 		
 		function showLog() {
 			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
@@ -190,6 +193,7 @@ stream example:
 						$('ul#steps li#initiated .date').html(dateHtml);
 						proposedDate = day + "/" + month + "/" + year;
      					stagePassed = true;
+                        $('#initiated .stage-click').click(showExplanation);
 						break;
 					case 'was-discussed-1':
 						// there cannot be a failure in a committee discussion, only success
@@ -313,6 +317,7 @@ stream example:
 		</div>
 		<ul id="steps">
 			<li id="initiated" class="odd first">
+                <a href="#" class="stage-link">
                 {% comment %} Note that the stage names in the url must remain in sync with bill_detail.html {% endcomment %} 
 				<div class="step">
 				    {% if bill.proposals.count > 0 %}
@@ -323,6 +328,7 @@ stream example:
 					<div class="tooltip"><span>יזום ההצעה</span></div>
 					<span class="date">?</span>
 				</div>
+            </a>
 			</li>
 			<li id="pre-vote" class="">
 				<div class="step">
