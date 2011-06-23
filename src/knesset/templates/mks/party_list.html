@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block subnav %}
         {% for link in friend_pages %}
