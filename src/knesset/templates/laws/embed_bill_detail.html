@@ -37,17 +37,17 @@ stream example:
  * √ 3. bill title - bill.law.title VS. bill.title
  * √ 4. status
  *   6. dates - done for votes. what about future estimations?
- *   7. phase backgrounds
+ * √ 7. phase backgrounds
  *   8. active phase
  *   9. link "?" - try to do the expand if possible
  *  10. scale for votes - where to get the data? 
  * √11. what about DUPLICATIONS? go chronologically from the end. all the rest is history
- *  12. expand with jQuery UI on click on little arrow in pull DIV
+ * √12. expand with jQuery UI on click on little arrow in pull DIV
  */ 
  
  /*
   * 
-  * <li id="vote-1" class="passed/failed/pending voted odd current">
+  * <li id="vote-1" class="passed/failed/pending voted odd current first/last">
   */
 			
 		var expanded;
@@ -69,10 +69,9 @@ stream example:
 		
 		
 		function showLog() {
-			//alert(JSON.stringify(stream));
-			var log = $("#log");
+			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
 			for (var a in stream) {
-				var inner = $("<p></p>").appendTo(log);//.text(JSON.stringify(stream[a])));
+				var inner = $("<p></p>").appendTo(log);
 				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
 				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
 				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
@@ -105,12 +104,13 @@ stream example:
 		  return result.substring(0, result.length - 2);
 		}
 
-		stageResolver.stepsStartingFromVerb = function(verb) {
+		stageResolver.stepsStartingFromVerb = function(verb, exclude) {
 		  var result = 'ul#steps ';
 		  var verbFound = false;
 		  for (var currentVerb in this.verbsToStages) {
 		      if (verb == currentVerb) {
 		          verbFound = true;
+		          if (exclude) continue;
 		      }
 		      if (!verbFound) {
 		          continue;
@@ -123,7 +123,8 @@ stream example:
 		}
 		
 		$(function() {
-			showLog();
+			//showLog();
+			$("head").append($("<title>{{bill.law.title}}: {{bill.title}}</title>"));
 			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
 			for (var a in stream) {
 				// determine date
@@ -150,30 +151,37 @@ stream example:
 						finalDate = day + "/" + month + "/" + year;
 						break;
 					case 'was-first-voted':
+						{% if bill.first_vote %}
+					    	$('ul#steps li#vote-1 .step .tooltip-score .balance').text('{{bill.first_vote.for_votes_count}}/' +
+					    	        '{{bill.first_vote.against_votes_count}}');
+                        {% else %}
+                            $('ul#steps li#pre-vote .step .tooltip-score').hide();
+                        {% endif %}
 						$('ul#steps li#vote-1 .date').html(dateHtml);
+						$('ul#steps li#vote-1').addClass('voted');
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#vote-1').addClass('passed');
 							stagePassed = true;
 						} else {
-							$('ul#steps li#vote-1, ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3, ul#steps li#committee-2, ul#steps li#summoned-2').addClass('failed');
+							finalDate = day + "/" + month + "/" + year;
 							finalStatus = false;
 							stagePassed = false;
 						}
 						break;
 					case 'was-pre-voted':
                     	{% if bill.pre_votes.count > 0 %}
-					    	$('ul#steps li#pre-vote .step .score .balance').text('{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
+					    	$('ul#steps li#pre-vote .step .tooltip-score .balance').text('{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
 					    	        '{{bill.pre_votes.all.iterator.next.against_votes_count}}');
                         {% else %}
-                            $('ul#steps li#pre-vote .step .score').hide();
+                            $('ul#steps li#pre-vote .step .tooltip-score').hide();
                         {% endif %}
-						
+						$('ul#steps li#pre-vote').addClass('voted');
 						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
 							stagePassed = true;
 						} else {
-							$('ul#steps li#pre-vote').addClass('failed');
+							finalDate = day + "/" + month + "/" + year;
 							finalStatus = false;
 							stagePassed = false;
 						}
@@ -208,10 +216,13 @@ stream example:
 			}
 
 			if (finalStatus) {
-			    $('.finalStatus').addClass('passed').text('אושרה');
+			    $('.status').addClass('passed').text('אושרה');
 			} else if(finalStatus==false) {
 			    $(stageResolver.stepsStartingFromVerb(verb)).addClass('failed');
-			    $('.finalStatus').addClass('failed').text('נדחתה');
+			    $('.status').addClass('failed').text('נדחתה');
+			} else {
+				$('.status').hide();
+				$(stageResolver.stepsStartingFromVerb(verb, true)).addClass('pending');
 			}
 			
 			// check if first vote is just about to happen
@@ -249,7 +260,12 @@ stream example:
 			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
 			if (!expanded) $('#header').addClass('header-hover');		
 			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
-				if (!expanded) $('#header').removeClass('header-hover');
+				if (!expanded) {
+					$('#header').removeClass('header-hover');
+					$(".pull .arrow").removeClass("up").addClass("down");
+				} else {
+					$(".pull .arrow").removeClass("down").addClass("up");	
+				}
 			});
 			expanded = !expanded;
 		}
@@ -284,7 +300,7 @@ stream example:
 			</ul>
 			<a href="#" class="more"></a>
 		</div>
-		<a class="pull" href="#">pull</a>
+		<div class="pull"><div class="arrow down"></div></div>
 	</div>
 	<div id="graph">
 		<span class="status"></span>
@@ -308,18 +324,18 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="pre-vote" class="voted">
+			<li id="pre-vote" class="">
 				<div class="step">
 				    {% if bill.pre_votes.count > 0 %}
 					    <a href="{% url bill-detail bill.id %}#bill-pre-vote" class="link" target="_blank">קישור</a>
 					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">32/28</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
 						<div class="scale" style="width:60px">
-							<span class="against" style="width:28px; background-position: -62px bottom;">28 against</span>
-							<span class="for">32 for</span>
+							<span class="against" style="width:28px; background-position: -62px bottom;"></span>
+							<span class="for"></span>
 						</div>
 					</div>
 					<div class="tooltip"><span>קריאה טרומית</span></div>
@@ -356,11 +372,11 @@ stream example:
 					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">28/53</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
 						<div class="scale" style="width:80px">
-							<span class="against" style="background-position: -47px bottom; width:53px">40 against</span>
-							<span class="for">28 for</span>
+							<span class="against" style="background-position: -47px bottom; width:53px"></span>
+							<span class="for"></span>
 						</div>
 					</div>
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
@@ -390,7 +406,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-2" class="pending">
+			<li id="vote-2" class="">
 				<div class="step">
 				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
 				    {% if bill.approval_vote != null %}
@@ -402,7 +418,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-3" class="odd pending">
+			<li id="vote-3" class="odd">
 				<div class="step">
 				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
 				    {% if bill.approval_vote != null %}
@@ -414,7 +430,7 @@ stream example:
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="passed" class="pending last">
+			<li id="passed" class="last">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -432,7 +448,6 @@ stream example:
 			<a href="#" class="link">קישור</a>
 		</div>
 	</div>
-	<div id="log" style="position:absolute; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>
 </body>
 </html>
 

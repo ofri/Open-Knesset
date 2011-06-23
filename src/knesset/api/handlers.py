@@ -280,18 +280,18 @@ class BillHandler(BaseHandler, HandlerExtensions):
             gov_proposal = {'source_url': bill.gov_proposal.source_url, 'date': bill.gov_proposal.date}
         except GovProposal.DoesNotExist:
             pass
-        
+
         knesset_proposal = {}
 
         try:
             knesset_proposal = {'source_url': bill.knesset_proposal.source_url, 'date': bill.knesset_proposal.date}
         except KnessetProposal.DoesNotExist:
             pass
-        
+
         return {'gov_proposal': gov_proposal,
-                'knesset_prop': knesset_proposal,
+                'knesset_proposal': knesset_proposal,
                 'private_proposals': [{'source_url': prop.source_url, 'date': prop.date} for prop in bill.proposals.all()]}
-        
+
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')

@@ -10,7 +10,7 @@
 
 {% block extratitle %}{{ object.topics|safe|truncatewords:10 }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block description %}{{ description }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extrahead %}
     <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />  

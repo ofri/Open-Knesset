@@ -6,7 +6,7 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 /* SETUP */
 
-body { margin:0; padding:0; background-color:#3e6c86; background-image:url(../img/background-blue.jpg); color:white; }
+body { margin:0; padding:0; background-color:#FFFFFF; color:black; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
 #container { width:80%; margin: 0 auto;}
 #homepage #container { max-width:100em; }
@@ -44,7 +44,7 @@ a:hover { text-decoration:underline;}
 #subnav { padding-top: 0.5em; }
 #subnav h4 { display: inline; }
 #subnav ul { display: inline; }
-#subnav>a.current { background-color:#7891ab; border: 1px solid #7777AA; color:#FFFFFF; padding: 1px 5px; 
+#subnav>a.current { background-color:#7891ab; border: 1px solid #7777AA; color:#FFFFFF; padding: 1px 5px;
     -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
 
 #subnav li { display:inline; list-style-type:none;
@@ -59,7 +59,7 @@ a:hover { text-decoration:underline;}
 
 /* ACCOUNTS */
 #accounts { margin-top:10px; float: left; }
-#accounts a { color: #fff; text-decoration: none; }
+#accounts a { color: #000; text-decoration: none; }
 #accounts a:hover { text-decoration: underline; }
 #login { display:inline;}
 #login a {
@@ -78,14 +78,14 @@ a:hover { text-decoration:underline;}
     min-height:414px;
     background:#dfe4e7;
     color:#311F1D;
-    padding: 0 1em 1em; 
+    padding: 0 1em 1em;
     position:relative;
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
     border-radius:1em;
-    -moz-box-shadow: 4px 4px 6px rgba(0,0,0,.9);
-    -webkit-box-shadow: 4px 4px 6px rgba(0,0,0,.9);
-    box-shadow: 4px 4px 6px rgba(0,0,0,.9);    
+    -moz-box-shadow: 0 2px 2px 1px rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 2px 2px 1px rgba(0,0,0,.5);
+    box-shadow: 0 2px 2px 1px rgba(0,0,0,.5);
 }
 #content-main>div { clear:both; padding-top:0.5em;}
 .sidebar { font-size:92%; }
@@ -460,7 +460,7 @@ input.bill_input {
 }
 
 /* Search */
-div #search { clear:left; float:left; margin-top:6px; 
+div #search { clear:left; float:left; margin-top:6px;
     height:32px; }
 .gsc-adBlockVertical { width: 0 !important; }
 .gsc-wrapper {width: 100% !important; }
@@ -642,8 +642,8 @@ div.mk-card>a { padding:0px; }
 #content-main .explanation-header { margin-top:1em; font-size:120%; font-weight:bold }
 #debug-warning { text-align:center; font-size:130%; background-color:red; line-height:2em;}
 .datelookup { float: left; }
-#content-main .watched { 
-    display:inline; 
+#content-main .watched {
+    display:inline;
 	background: url('/static/img/Search.png') no-repeat left 0;
     padding-left: 2.5em;
     padding-right: 3em;
@@ -690,10 +690,10 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 	margin-left:30px;
 }
 /* member summary */
-ul.summaries { text-align:center; } 
-ul.summaries>li { float:right; text-align:right; list-style-type: none;} 
+ul.summaries { text-align:center; }
+ul.summaries>li { float:right; text-align:right; list-style-type: none;}
 ul.member-summary ul { vertical-align: top; }
-.member-summary li { display: block; float: none; text-align:center; 
+.member-summary li { display: block; float: none; text-align:center;
                      list-style-type: none; }
 .member-summary h4 {margin-top: 0.2em;}
 /* item-list */
@@ -722,38 +722,43 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 	margin-top:0.6em;
 }
 
-.factional_discipline_row td, 
+.factional_discipline_row td,
 .general_discipline_row td
 {
 	margin-top:0.4em;
 	vertical-align:top;
-} 
+}
 
-.factional_discipline_row.discipline_row, 
-.general_discipline_row.discipline_row 
+.votes_against_own_bills_row.discipline_row,
+.factional_discipline_row.discipline_row,
+.general_discipline_row.discipline_row
 {
 	display:none;
 }
 
+.votes_against_own_bills.discipline_hide_control,
 .factional_discipline_control.discipline_hide_control,
 .general_discipline_control.discipline_hide_control
  {
 	display:none;
 }
 
-div.factional_discipline_control, 
+div.votes_against_own_bills_control,
+div.factional_discipline_control,
 div.general_discipline_control {
 	height:16px;
 	width:16px;
 	display:inline-block;
 }
 
-.factional_discipline_control.expand_button, 
+.votes_against_own_bills.expand_button,
+.factional_discipline_control.expand_button,
 .general_discipline_control.expand_button{
 	background:url(/static/img/bullet_toggle_plus.png) no-repeat 4px 4px;
 }
 
-.factional_discipline_control.collapse_button, 
+.votes_against_own_bills.collapse_button,
+.factional_discipline_control.collapse_button,
 .general_discipline_control.collapse_button{
 	background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
 }

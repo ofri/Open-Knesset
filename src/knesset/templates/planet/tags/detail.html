@@ -2,10 +2,8 @@
 {% load i18n pagination_tags tagging_tags planet_tags %}
 
 {% block extratitle %}{{ tag }} - {% trans 'Posts' %}{% endblock %}
-{% block extrameta %}
-    <meta name="DC.title" content="{{ tag }} {% trans 'tag in' %} {{ site.name }}" />
-    <meta name="description" content="{{ tag }} - {% trans 'Posts in' %} {{ site.name }}" />
-{% endblock %}
+{% block keywords %}{{ tag }} {% trans 'Posts' %}{% endblock %}
+{% block description %}{% blocktrans %}Posts tagged {{ tag }} published by MKs{% endblocktrans %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block head_feeds %}
     <link rel="alternate" type="application/rss+xml" title="{% trans 'tag' %} {{ tag }} {% trans 'in' %} {{ site.name }} - RSS 2.0 Feed" href="{% url tag_rss_feed tag %}" />
