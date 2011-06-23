@@ -1,4 +1,5 @@
 #encoding: utf-8
+import re
 import itertools
 import logging
 from datetime import date, timedelta
@@ -366,6 +367,11 @@ class BillProposal(models.Model):
             return self.bill.get_absolute_url()
         else:
             return ""
+
+    def get_explanation(self):
+        r = re.search(r"דברי הסבר.*?(<p>.*?)<p>-+".decode('utf8'), self.content_html, re.M|re.DOTALL)
+        print r
+        return r.group(1) if r else self.content_html
 
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
