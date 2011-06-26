@@ -72,14 +72,15 @@ class MemberViewsTest(TestCase):
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), 
                          [ self.mk_1.id, self.mk_2.id, ])
-    
+
     def testMemberDetail(self):
-        res = self.client.get(reverse('member-detail', 
+
+        res = self.client.get(reverse('member-detail',
                                       args=[self.mk_1.id]))
         self.assertTemplateUsed(res,
                                 'mks/member_detail.html')
         self.assertEqual(res.context['object'].id, self.mk_1.id)
-    
+
     def testMemberSearch(self):
         res = self.client.get(reverse('member-handler'),
                                       {'q': 'mk_'},
