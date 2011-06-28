@@ -41,7 +41,7 @@ a:hover { text-decoration:underline;}
 #homepage #nav-homepage a, #overview #nav-overview a, #download #nav-download a, #documentation #nav-documentation a, #weblog #nav-weblog a, #community #nav-community a, #blogroll #nav-blogroll a, #code #nav-code a { color:white; background:#092e20 url(../img/site/nav_bg.gif) bottom repeat-x; }
 
 /* navigation */
-#subnav { padding-top: 0.5em; }
+#subnav { padding-top: 0.5em; line-height: 1.7em;}
 #subnav h4 { display: inline; }
 #subnav ul { display: inline; }
 #subnav>a.current { background-color:#7891ab; border: 1px solid #7777AA; color:#FFFFFF; padding: 1px 5px;
@@ -321,7 +321,7 @@ th label { display: block; float:right; margin-left:1em;}
 }*/
 
 #content-main .column-bar {
-	width: 10em;
+    width: 10em;
 }
 
 #content-main div.against {
@@ -644,7 +644,7 @@ div.mk-card>a { padding:0px; }
 .datelookup { float: left; }
 #content-main .watched {
     display:inline;
-	background: url('/static/img/Search.png') no-repeat left 0;
+    background: url('/static/img/Search.png') no-repeat left 0;
     padding-left: 2.5em;
     padding-right: 3em;
     padding-bottom:1em;
@@ -658,36 +658,36 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 
 /*** percentile ***/
 .percentile  {
-	border:1px solid #ccccff;
-	text-align:center;
-	white-space: nowrap;
-	width:100px;
-	height:16px;
-	background:url(/static/img/bar.png) no-repeat;
-	background-color:#E6F1F7;
+    border:1px solid #ccccff;
+    text-align:center;
+    white-space: nowrap;
+    width:100px;
+    height:16px;
+    background:url(/static/img/bar.png) no-repeat;
+    background-color:#E6F1F7;
 }
 
 .percentile_against {
-	background:url(/static/img/bar-against.png) no-repeat;
-	background-color:#E6F1F7;
+    background:url(/static/img/bar-against.png) no-repeat;
+    background-color:#E6F1F7;
 }
 
 .percent {
-	display:inline-block;
-	border:1px solid #ccccff;
-	text-align:center;
-	width:100px;
-	height:16px;
-	background:url(/static/img/bar.png) no-repeat;
-	background-color:#E6F1F7;
+    display:inline-block;
+    border:1px solid #ccccff;
+    text-align:center;
+    width:100px;
+    height:16px;
+    background:url(/static/img/bar.png) no-repeat;
+    background-color:#E6F1F7;
 }
 
 .numeric { direction: ltr }
 
 .comittee_member_detail {
-	display:inline-block;
-	text-align:center;
-	margin-left:30px;
+    display:inline-block;
+    text-align:center;
+    margin-left:30px;
 }
 /* member summary */
 ul.summaries { text-align:center; }
@@ -719,48 +719,48 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 #content-main p.general_discipline_row,
 #content-main p.factional_discipline_row
  {
-	margin-top:0.6em;
+    margin-top:0.6em;
 }
 
 .factional_discipline_row td,
 .general_discipline_row td
 {
-	margin-top:0.4em;
-	vertical-align:top;
+    margin-top:0.4em;
+    vertical-align:top;
 }
 
 .votes_against_own_bills_row.discipline_row,
 .factional_discipline_row.discipline_row,
 .general_discipline_row.discipline_row
 {
-	display:none;
+    display:none;
 }
 
 .votes_against_own_bills.discipline_hide_control,
 .factional_discipline_control.discipline_hide_control,
 .general_discipline_control.discipline_hide_control
  {
-	display:none;
+    display:none;
 }
 
 div.votes_against_own_bills_control,
 div.factional_discipline_control,
 div.general_discipline_control {
-	height:16px;
-	width:16px;
-	display:inline-block;
+    height:16px;
+    width:16px;
+    display:inline-block;
 }
 
 .votes_against_own_bills.expand_button,
 .factional_discipline_control.expand_button,
 .general_discipline_control.expand_button{
-	background:url(/static/img/bullet_toggle_plus.png) no-repeat 4px 4px;
+    background:url(/static/img/bullet_toggle_plus.png) no-repeat 4px 4px;
 }
 
 .votes_against_own_bills.collapse_button,
 .factional_discipline_control.collapse_button,
 .general_discipline_control.collapse_button{
-	background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
+    background:url(/static/img/bullet_toggle_minus.png) no-repeat 4px 4px;
 }
 
 #cse-search-results iframe { padding-right: 4em; width:90%; direction:rtl; }
