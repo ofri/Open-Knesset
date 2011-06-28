@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-23 01:55+0300\n"
-"PO-Revision-Date: 2011-06-23 01:59+0200\n"
+"POT-Creation-Date: 2011-06-28 22:36+0300\n"
+"PO-Revision-Date: 2011-06-28 22:37+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -34,7 +34,6 @@ msgstr ""
 #: templates/mks/member_list.html.py:5
 #: templates/mks/member_list.html:6
 #: templates/mks/member_list_with_bars.html:5
-#: templates/mks/member_list_with_bars.html:6
 msgid "Members"
 msgstr "ח\"כים"
 
@@ -1016,6 +1015,7 @@ msgstr "אודות"
 #: templates/laws/vote_list_by_tag.html:6
 #: templates/laws/vote_tags_cloud.html:5
 #: templates/mks/member_list.html:6
+#: templates/mks/member_list_with_bars.html:6
 #: templates/mks/party_detail.html:11
 #: templates/mks/party_list.html:5
 #: templates/planet/posts/list.html:5
@@ -1967,7 +1967,7 @@ msgstr "הצבעות מוצעות"
 #: templates/laws/bill_list.html:10
 #: templates/laws/vote_list.html:14
 msgid "Choose by tag"
-msgstr "חיפש לפי נושא"
+msgstr "חיפוש לפי נושא"
 
 #: templates/laws/bill_list.html:14
 #, python-format
