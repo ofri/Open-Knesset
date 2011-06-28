@@ -9,7 +9,7 @@ def parse_presence(filename=None):
        Will throw an IOError if the file is not found, or can't be read
        Returns a tuple (member_totals, not_enough_data)
        member_totals is a dict with member ids as keys, and a list of (week_timestamp, weekly hours) for this member as values
-       not_enough_data is a list of week timestamps in which we didn't have enough data to compute weekly hours
+       enough_data is a list of week timestamps in which we had enough data to compute weekly hours
        a timestamp is a tuple (year, iso week number)
     """
     if filename==None:
