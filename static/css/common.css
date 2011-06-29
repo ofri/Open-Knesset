@@ -96,7 +96,7 @@ a:hover { text-decoration:underline;}
 #content-secondary { clear:both; background:#487858; margin-left:0; margin-right:0; margin-top:15px; margin-bottom:-10px; padding:10px 24px; color:white; }
 .subcol-primary, .subcol-secondary { width:40%; float:left; padding-bottom:1.2em; }
 .subcol-primary { margin-right:1%; }
-.content-footer {clear: both; border:0px;vertical-align:middle;margin:2em auto;}
+.content-footer {clear: both; border:0px;margin:2em auto 0.5em;}
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }

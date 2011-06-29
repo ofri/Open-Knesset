@@ -121,18 +121,28 @@
                 <div id="content-main" class="main">
                     {% block content-main %}{% endblock %}
                     <div class="clear"></div>
-                    {% block social %}{% if not debug %}
-                    <table class="content-footer">
-                        <tr>
-                        <td>
-                            <a title="Post to Google Buzz" class="google-buzz-button" href="http://www.google.com/buzz/post" data-button-style="normal-count" data-locale="iw"></a>
-                            <script type="text/javascript" src="http://www.google.com/buzz/api/button.js"></script>
-                        </td>
-                        <td>
-                        <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Foknesset.org{{ request.path|iriencode }}&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
-                        </td>
-                        </tr>
-                    </table> {% endif %}
+                    {% block social %}
+                    <div class="content-footer">
+                        {% if not debug %}
+                            <!-- AddToAny BEGIN -->
+                            <div class="a2a_kit a2a_default_style">
+                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">שתף</a>
+                            <span class="a2a_divider"></span>
+                            <a class="a2a_button_email"></a>
+                            <a class="a2a_button_facebook"></a>
+                            <a class="a2a_button_twitter"></a>
+                            <a class="a2a_button_google_buzz"></a>
+                            <a class="a2a_button_delicious"></a>
+                            <a class="a2a_button_digg"></a>
+                            </div>
+                            <script type="text/javascript">
+                            var a2a_config = a2a_config || {};
+                            a2a_config.locale = "he";
+                            </script>
+                            <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+                            <!-- AddToAny END -->
+                        {% endif %}
+                    </div>
                     {% endblock %}
                 </div>
                 <!-- END #content-main -->
