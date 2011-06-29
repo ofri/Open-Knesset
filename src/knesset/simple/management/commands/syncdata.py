@@ -985,9 +985,9 @@ class Command(NoArgsCommand):
                     else:
                         hours = 0.0                                # not present at all this week = 0 hours
                     date = iso_to_gregorian(*current_timestamp, iso_day=0) # get real date of the week's monday
-                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date, hours=hours)
-                    if created:
-                        wp.save()
+                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date,
+                                                                        defaults={'hours':hours})
+                    wp.save()
                 else:
                     date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
