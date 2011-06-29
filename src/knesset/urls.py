@@ -59,6 +59,7 @@ urlpatterns = patterns('',
      (r'^avatar/', include('avatar.urls')),
      url(r'^pingback/', default_server, name='pingback-server'),
      url(r'^trackback/member/(?P<object_id>\d+)/$', TrackBackServer(get_mk_entry, mk_is_backlinkable),name='member-trackback'),
+     (r'^act/', include('actstream.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

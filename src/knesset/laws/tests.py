@@ -1,3 +1,4 @@
+# encoding: utf-8
 from datetime import date,datetime
 from django.test import TestCase
 from django.conf import settings
@@ -303,5 +304,26 @@ class BillStreamTest(TestCase):
         self.kp_1.delete()
         self.bill.delete()
 
+class ProposalModelTest(TestCase):
+    def setUp(self):
+        self.bill = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
+        self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
+                                                   bill=self.bill, 
+                                                   date=datetime(2005, 1, 22),
+                                                )
+
+    def testContent(self):
+        self.assertEqual(self.kp_1.get_explanation(), '')
+        self.kp_1.content_html = 'yippee!'
+        self.assertEqual(self.kp_1.get_explanation(), 'yippee!')
+        self.kp_1.content_html = '''
+<p>דברי הסבר</p>
+<p>מטרת</p><p>---------------------------------</p>
+                               '''.decode('utf8')
+        self.assertEqual(self.kp_1.get_explanation(), u'<p>מטרת</p>')
+
+    def tearDown(self):
+        self.kp_1.delete()
+        self.bill.delete()
 
 # TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views
