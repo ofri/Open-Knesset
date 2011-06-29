@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load links %}
 {% load mks %}
 {% block extrahead %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
@@ -65,7 +66,12 @@
 				</table>
 			</div>
         </div>
-        
+
+        <div>
+            <h3>{% trans "Links" %}</h3>
+            {% object_links object %}
+        </div> <br/>
+
     </div>
     <script>
     var g_member_residences = [];
