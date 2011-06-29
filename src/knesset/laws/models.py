@@ -370,7 +370,6 @@ class BillProposal(models.Model):
 
     def get_explanation(self):
         r = re.search(r"דברי הסבר.*?(<p>.*?)<p>-+".decode('utf8'), self.content_html, re.M|re.DOTALL)
-        print r
         return r.group(1) if r else self.content_html
 
 class PrivateProposal(BillProposal):
