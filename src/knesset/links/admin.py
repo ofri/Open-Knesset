@@ -11,13 +11,13 @@ class LinksAdmin(admin.ModelAdmin):
            {'fields': ('content_type', 'object_pk')}
         ),
         (_('Content'),
-           {'fields': ('url', 'title', 'link_type') }
+           {'fields': ('url', 'title', 'link_type', 'active') }
         ),
      )
 
     list_display = ('title', 'link_type', 'content_type', 'object_pk')
     search_fields = ('title',)
-    list_filter = ('link_type', )
+    list_filter = ('link_type','active' )
 
 
 admin.site.register(Link, LinksAdmin)
