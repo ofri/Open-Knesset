@@ -16,6 +16,11 @@ class Migration(SchemaMigration):
             l.active = True
             l.save()
 
+        # set links to 'parlament.co.il' inactive
+        for l in orm.Link.objects.filter(url__contains='parlament.co.il'):
+            l.active = False
+            l.save()
+
     def backwards(self, orm):
         
         # Deleting field 'Link.active'
