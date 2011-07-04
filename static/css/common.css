@@ -652,9 +652,7 @@ div.mk-card>a { padding:0px; }
 #content-main .watched {
     display:inline;
     background: url('/static/img/Search.png') no-repeat left 0;
-    padding-left: 2.5em;
-    padding-right: 3em;
-    padding-bottom:1em;
+    padding: 0.5em 3em 0.5em 2.5em;
 }
 #content-main .person-link { font-weight:normal }
 #content-main .person-name { font-weight:bold; font-size:110% }
