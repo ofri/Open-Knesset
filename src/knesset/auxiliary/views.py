@@ -21,13 +21,13 @@ def main(request):
     if not context:
         context = {}
         context['title'] = _('Home')
-        context['member'] = Member.objects.all()[random.randrange(Member.objects.count())]
+        context['member'] = Member.objects.order_by('?')[0]
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
-        context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
+        context['bill'] = Bill.objects.order_by('?')[0]
         tags = Tag.objects.cloud_for_model(Bill)
         context['tag'] = random.choice(tags) if tags else None
-        context['annotations'] = Annotation.objects.all().order_by('timestamp').reverse()
+        context['annotations'] = Annotation.objects.all().order_by('-timestamp')
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')    
     return render_to_response(template_name, context, context_instance=RequestContext(request))
