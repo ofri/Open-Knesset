@@ -21,10 +21,10 @@ def main(request):
     if not context:
         context = {}
         context['title'] = _('Home')
-        context['member'] = Member.objects.order_by('?')[0]
+        context['member'] = Member.objects.all()[random.randrange(Member.objects.count())]
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
-        context['bill'] = Bill.objects.order_by('?')[0]
+        context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
         tags = Tag.objects.cloud_for_model(Bill)
         context['tag'] = random.choice(tags) if tags else None
         context['annotations'] = Annotation.objects.all().order_by('-timestamp')
