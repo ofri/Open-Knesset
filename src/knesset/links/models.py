@@ -38,7 +38,7 @@ class Link(models.Model):
     object_pk      = models.TextField(_('object ID'))
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
     link_type = models.ForeignKey(LinkType, default=get_default_linktype, null=True, blank=True)
-
+    active = models.BooleanField(default=True)
     objects = LinksManager()
 
     class Meta:
