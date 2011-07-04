@@ -2,8 +2,7 @@ from functools import wraps, update_wrapper
 from base import View
 from list import ListView
 from detail import DetailView
-from edit import (FormView, CreateView, UpdateView,
-                                    DeleteView)
+
 def method_decorator(decorator):
     """
     Converts a view function decorator into a method decorator.
