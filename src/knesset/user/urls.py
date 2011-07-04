@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from views import PublicUserProfile, ProfileListView
 
-profile_list = ProfileListView()
+profile_list = ProfileListView.as_view()
 user_public_profile = PublicUserProfile.as_view(template_name='user/public_profile.html')
 user_tagged_items = PublicUserProfile.as_view(template_name='user/tagged_items.html')
 user_annotated_items = PublicUserProfile.as_view(template_name='user/annotated_items.html')
