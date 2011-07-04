@@ -22,8 +22,15 @@ a:hover { text-decoration:underline;}
 
 /* NAV */
 
-#nav-global { margin:0; padding-right:2em;
-              font-family:"Trebuchet MS",sans-serif; white-space:nowrap; }
+#main-logo {
+    float:right; margin:10px 10px 0 0;  height:100px; width:123px; overflow:hidden;
+    background: url(../img/oknesset-logo-small.png) no-repeat; line-height:500px;
+}
+#nav-global { margin:0; padding-right:160px;
+      font-family:"Trebuchet MS",sans-serif; white-space:nowrap;
+      padding-top: 75px;
+}
+
 #nav-global li { display:block; float:left; list-style-type:none;
                  margin-left: 0.1em 0; padding:0;
                  background: #0d204a;
