@@ -24,7 +24,6 @@ from knesset.utils import limit_by_request, notify_responsible_adult
 from knesset.laws.models import *
 from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
-from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import DetailView, ListView
 from knesset.agendas.models import Agenda
 
