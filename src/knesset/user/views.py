@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-
+from django.views.generic.detail import DetailView
 
 
 from annotatetext.models import Annotation
@@ -20,7 +20,7 @@ from knesset.accounts.models import EmailValidation
 from knesset.mks.models import Member
 from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
-from knesset.hashnav import DetailView, ListView
+from knesset.hashnav import ListView
 from knesset.tagvotes.models import TagVote
 from knesset.committees.models import CommitteeMeeting
 
