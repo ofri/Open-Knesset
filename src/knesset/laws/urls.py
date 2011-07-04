@@ -2,7 +2,6 @@
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
 from django.views.generic.simple import redirect_to
-from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import ListView
 from models import *
 from views import *
