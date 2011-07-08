@@ -23,10 +23,10 @@ a:hover { text-decoration:underline;}
 /* NAV */
 
 #main-logo {
-    float:right; margin:10px 10px 0 0;  height:100px; width:123px; overflow:hidden;
-    background: url(../img/oknesset-logo-small.png) no-repeat; line-height:500px;
+    float:right; margin:10px 10px 0 0;  height:100px; width:130px; overflow:hidden;
+    line-height:10px;
 }
-#nav-global { margin:0; padding-right:160px;
+#nav-global { margin:0; padding-right:165px;
       font-family:"Trebuchet MS",sans-serif; white-space:nowrap;
       padding-top: 75px;
 }
