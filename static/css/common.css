@@ -466,6 +466,14 @@ input.bill_input {
     width:400px;
 }
 
+form.unbind-form {
+    display:inline;
+}
+
+form.unbind-form label{
+    vertical-align:top;
+}
+
 /* Search */
 div #search { clear:left; float:left; margin-top:6px;
     height:32px; }
