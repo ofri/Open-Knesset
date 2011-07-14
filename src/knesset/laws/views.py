@@ -239,9 +239,13 @@ def bill_unbind_vote(request, object_id, vote_id):
         raise Http404
     if request.method == 'POST': # actually unbind
         explanation = request.POST.get('explanation','')
-        msg = '%s is unbinding vote %s from bill %s. explanation: %s' % \
-                (request.user, vote_id, object_id, explanation)
+        msg = u'%s is unbinding vote %s from bill %s. explanation: %s' % \
+                (str(request.user).decode('utf8'),
+                 vote_id,
+                 object_id,
+                 explanation)
         notify_responsible_adult(msg)
+
         logger.info(msg)
         if vote in bill.pre_votes.all():
             bill.pre_votes.remove(vote)
