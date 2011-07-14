@@ -289,6 +289,9 @@
     <div id="bill-first-vote" class="bill-stage">
     <h2>{% trans 'First Vote' %}</h2>
     {% if object.first_vote %}
+        {% if user.is_authenticated %}
+            <a href="{% url bill-unbind-vote object.id object.first_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+        {% endif %}
         <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
     {% else %}
         {% trans 'No Info' %}<br>
@@ -338,6 +341,9 @@
     <div id="bill-approval" class="bill-stage">
     <h2>{% trans 'Bill Approval' %}</h2>
     {% if object.approval_vote %}
+        {% if user.is_authenticated %}
+            <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+        {% endif %}
         <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
     {% else %}
         {% trans 'No Info' %}<br>

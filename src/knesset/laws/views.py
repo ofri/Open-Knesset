@@ -253,7 +253,7 @@ def bill_unbind_vote(request, object_id, vote_id):
             bill.first_vote = None
         if vote == bill.approval_vote:
             bill.approval_vote = None
-        bill.update_stage()
+        bill.update_stage(force_update=True)
         return HttpResponseRedirect(reverse('bill-detail', args=[object_id]))
     else: # approve unbind
         context = RequestContext (request,
