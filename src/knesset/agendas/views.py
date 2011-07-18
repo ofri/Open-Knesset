@@ -72,7 +72,8 @@ class AgendaDetailView (DetailView):
 
         context.update({'watched_object': watched})
 
-        if self.request.GET.get('all_mks',False):
+        all_mks = 'all_mks' in self.request.GET.keys()
+        if all_mks:
             mks = agenda.selected_instances(Member, top=200, bottom=0)
             context.update({'selected_mks':mks['top'],'all_mks':True})
         else:
