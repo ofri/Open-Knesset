@@ -116,6 +116,7 @@
 				        </div>
 						<br/>
 				        
+                        {% if object.is_current %}
 				        <div>
 				            <h3> {% trans "Contact Information" %}</h3>
 				            <table>
@@ -135,7 +136,7 @@
 				                </tr>
 				            </table>
 				        </div> <br/>
-
+                        {% endif %}
 				        <div>
 				            <h3>{% trans "Votes" %}</h3>
 				            <table>

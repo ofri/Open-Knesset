@@ -37,17 +37,17 @@ stream example:
  * √ 3. bill title - bill.law.title VS. bill.title
  * √ 4. status
  *   6. dates - done for votes. what about future estimations?
- *   7. phase backgrounds
+ * √ 7. phase backgrounds
  *   8. active phase
  *   9. link "?" - try to do the expand if possible
  *  10. scale for votes - where to get the data? 
  * √11. what about DUPLICATIONS? go chronologically from the end. all the rest is history
- *  12. expand with jQuery UI on click on little arrow in pull DIV
+ * √12. expand with jQuery UI on click on little arrow in pull DIV
  */ 
  
  /*
   * 
-  * <li id="vote-1" class="passed/failed/pending voted odd current">
+  * <li id="vote-1" class="passed/failed/pending voted odd current first/last">
   */
 			
 		var expanded;
@@ -69,20 +69,63 @@ stream example:
 		
 		
 		function showLog() {
-			//alert(JSON.stringify(stream));
-			var log = $("#log");
+			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
 			for (var a in stream) {
-				var inner = $("<p></p>").appendTo(log);//.text(JSON.stringify(stream[a])));
+				var inner = $("<p></p>").appendTo(log);
 				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
 				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
 				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
 				inner.append($("<span style='color:red;'>target: </span>")).append($("<span>" + stream[a].target + "</span><br>"));
 			}
 		}
+
+		var stageResolver = {};
+		// stages is a map from verbs in the feed to the steps representing it in the diagram..
+		stageResolver.verbsToStages = {
+		    'was-proposed' : ['initiated'],
+		    'was-pre-voted' : ['pre-vote'],
+		    'was-discussed-1' : ['summoned-1', 'committee-1'],
+		    'was-knesset-proposed' : [],
+		    'was-first-voted' : ['vote-1'],
+		    'was-discussed-2' : ['summoned-2', 'committee-2'],
+		    'was-approval-voted' : ['vote-2', 'vote-3', 'passed'] 
+		};
+
+		stageResolver.stepsUpToVerb = function(verb) {
+		  var result = 'ul#steps ';
+		  for (var currentVerb in this.verbsToStages) {
+		      this.verbsToStages[currentVerb].forEach(function(stage) {
+		          result += 'li#' + stage + ', '; 
+		      });
+		      if (verb == currentVerb) {
+		      	break;
+		      }
+		  }
+		  return result.substring(0, result.length - 2);
+		}
+
+		stageResolver.stepsStartingFromVerb = function(verb, exclude) {
+		  var result = 'ul#steps ';
+		  var verbFound = false;
+		  for (var currentVerb in this.verbsToStages) {
+		      if (verb == currentVerb) {
+		          verbFound = true;
+		          if (exclude) continue;
+		      }
+		      if (!verbFound) {
+		          continue;
+		      }
+		      this.verbsToStages[currentVerb].forEach(function(stage) {
+		          result += 'li#' + stage + ', '; 
+		      });
+		  }
+		  return result.substring(0, result.length - 2);
+		}
 		
 		$(function() {
-			showLog();
-			var status, phase = -1, committees = [], proposedDate, finalDate;
+			//showLog();
+			$("head").append($("<title>{{bill.law.title}}: {{bill.title}}</title>"));
+			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
 			for (var a in stream) {
 				// determine date
 				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth()+1, year = d.getFullYear(),
@@ -91,75 +134,96 @@ stream example:
 				
 				if (curPhase > phase) phase = curPhase;
 				
+				var currentStagePassed = true;
+                
+                var stagePassed = false;
 				switch (verb) {
 					case 'was-approval-voted':
 						$('ul#steps li#vote-2 .date, ul#steps li#vote-3 .date').html(dateHtml);
-						$('ul#steps li#committee-2, li#summoned-2, li#vote-1, li#summoned-1, li#committee-1, li#pre-vote, li#initiated').addClass('passed');
 						if (stream[a]['note'] == 'True') {
-							status = true;
+							finalStatus = true;
 							$('ul#steps li#passed .date').html(dateHtml);
-							$('ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3').addClass("passed");
+							stagePassed = true;
 						} else {
-							status = false;
-							$('ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3').addClass("failed");
+							stagePassed = false;
+							finalStatus = false;
 						}
 						finalDate = day + "/" + month + "/" + year;
 						break;
 					case 'was-first-voted':
+						{% if bill.first_vote %}
+					    	$('ul#steps li#vote-1 .step .tooltip-score .balance').text('{{bill.first_vote.for_votes_count}}/' +
+					    	        '{{bill.first_vote.against_votes_count}}');
+                        {% else %}
+                            $('ul#steps li#pre-vote .step .tooltip-score').hide();
+                        {% endif %}
 						$('ul#steps li#vote-1 .date').html(dateHtml);
-						$('ul#steps li#committee-1, li#summoned-1, li#pre-vote, li#initiated').addClass('passed');
+						$('ul#steps li#vote-1').addClass('voted');
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#vote-1').addClass('passed');
+							stagePassed = true;
 						} else {
-							$('ul#steps li#vote-1, ul#steps li#passed, ul#steps li#vote-2, ul#steps li#vote-3, ul#steps li#committee-2, ul#steps li#summoned-2').addClass('failed');
-							status = false;
+							finalDate = day + "/" + month + "/" + year;
+							finalStatus = false;
+							stagePassed = false;
 						}
 						break;
 					case 'was-pre-voted':
                     	{% if bill.pre_votes.count > 0 %}
-					    	$('ul#steps li#pre-vote .step .score .balance').text('{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
+					    	$('ul#steps li#pre-vote .step .tooltip-score .balance').text('{{bill.pre_votes.all.iterator.next.for_votes_count}}/' +
 					    	        '{{bill.pre_votes.all.iterator.next.against_votes_count}}');
                         {% else %}
-                            $('ul#steps li#pre-vote .step .score').hide();
+                            $('ul#steps li#pre-vote .step .tooltip-score').hide();
                         {% endif %}
-						
-						$("ul#steps li#initiated").addClass("passed");
+						$('ul#steps li#pre-vote').addClass('voted');
 						$('ul#steps li#pre-vote .date').html(dateHtml);
 						if (stream[a]['note'] == 'True') {
 							$('ul#steps li#pre-vote').addClass('passed');
+							stagePassed = true;
 						} else {
-							$('ul#steps li#pre-vote').addClass('failed');
-							status = false;
+							finalDate = day + "/" + month + "/" + year;
+							finalStatus = false;
+							stagePassed = false;
 						}
 						break;
 					case 'was-proposed':
 						$('ul#steps li#initiated .date').html(dateHtml);
-						$('ul#steps li#initiated').addClass('passed');
 						proposedDate = day + "/" + month + "/" + year;
+     					stagePassed = true;
 						break;
 					case 'was-discussed-1':
 						// there cannot be a failure in a committee discussion, only success
 						$("ul#steps li#committee-1, li#summoned-1").addClass('passed');
 						$("ul#steps li#committee-1 .date").html(dateHtml);
 						committees.push(stream[a]['note']);
+						stagePassed = true;
 						break;
 					case 'was-discussed-2':
 						// there cannot be a failure in a committee discussion, only success
-						$("ul#steps li#committee-2, li#summoned-2, li#vote-1, li#committee-1, li#summoned-1, li#pre-vote, li#initiated").addClass('passed');
 						$("ul#steps li#committee-2 .date").html(dateHtml);
 						committees.push(stream[a]['note']);
+						stagePassed = true;
 						break;
 					case 'was-knesset-proposed':
-						$("ul#steps li#committee-1, li#summoned-1, li#pre-vote, li#initiated").addClass('passed');
+						stagePassed = true;
+					    break;
 					default:
 						break;
 				}
-				
-				
+				if (stagePassed) {
+                    $(stageResolver.stepsUpToVerb(verb)).addClass('passed');
+                }
 			}
 
-			if (status) $('.status').addClass('passed').text('אושרה');
-			else if(status==false) $('.status').addClass('failed').text('נדחתה');
+			if (finalStatus) {
+			    $('.status').addClass('passed').text('אושרה');
+			} else if(finalStatus==false) {
+			    $(stageResolver.stepsStartingFromVerb(verb)).addClass('failed');
+			    $('.status').addClass('failed').text('נדחתה');
+			} else {
+				$('.status').hide();
+				$(stageResolver.stepsStartingFromVerb(verb, true)).addClass('pending');
+			}
 			
 			// check if first vote is just about to happen
 			if (phases[phase] == 'was-knesset-proposed') {
@@ -179,7 +243,7 @@ stream example:
 			} else excerpt += ". ";
 			
 			if (finalDate) {
-				var outcome = status ? "אושרה" : "נדחתה";
+				var outcome = finalStatus ? "אושרה" : "נדחתה";
 				excerpt += outcome + " בתאריך " + finalDate + ".";
 			}
 
@@ -196,7 +260,12 @@ stream example:
 			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
 			if (!expanded) $('#header').addClass('header-hover');		
 			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
-				if (!expanded) $('#header').removeClass('header-hover');
+				if (!expanded) {
+					$('#header').removeClass('header-hover');
+					$(".pull .arrow").removeClass("up").addClass("down");
+				} else {
+					$(".pull .arrow").removeClass("down").addClass("up");	
+				}
 			});
 			expanded = !expanded;
 		}
@@ -231,7 +300,7 @@ stream example:
 			</ul>
 			<a href="#" class="more"></a>
 		</div>
-		<a class="pull" href="#">pull</a>
+		<div class="pull"><div class="arrow down"></div></div>
 	</div>
 	<div id="graph">
 		<span class="status"></span>
@@ -244,24 +313,29 @@ stream example:
 		</div>
 		<ul id="steps">
 			<li id="initiated" class="odd first">
+                {% comment %} Note that the stage names in the url must remain in sync with bill_detail.html {% endcomment %} 
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.proposals.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-initiation" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>יזום ההצעה</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="pre-vote" class="voted">
+			<li id="pre-vote" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.pre_votes.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-pre-vote" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">32/28</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
 						<div class="scale" style="width:60px">
-							<span class="against" style="width:28px; background-position: -62px bottom;">28 against</span>
-							<span class="for">32 for</span>
+							<span class="against" style="width:28px; background-position: -62px bottom;"></span>
+							<span class="for"></span>
 						</div>
 					</div>
 					<div class="tooltip"><span>קריאה טרומית</span></div>
@@ -270,7 +344,10 @@ stream example:
 			</li>
 			<li id="summoned-1" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - need to replace with planned events, as soon as we have them {% endcomment %} 
+				    {% if bill.first_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
@@ -279,7 +356,9 @@ stream example:
 			</li>
 			<li id="committee-1" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.first_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
@@ -288,14 +367,16 @@ stream example:
 			</li>
 			<li id="vote-1" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.first_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-first-vote" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
-					<div class="tooltip score">
-						<span class="balance">28/53</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
 						<div class="scale" style="width:80px">
-							<span class="against" style="background-position: -47px bottom; width:53px">40 against</span>
-							<span class="for">28 for</span>
+							<span class="against" style="background-position: -47px bottom; width:53px"></span>
+							<span class="for"></span>
 						</div>
 					</div>
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
@@ -304,7 +385,10 @@ stream example:
 			</li>
 			<li id="summoned-2" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - need to replace with planned events, as soon as we have them {% endcomment %} 
+				    {% if bill.second_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
@@ -313,32 +397,40 @@ stream example:
 			</li>
 			<li id="committee-2" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% if bill.second_committee.meetings.count > 0 %}
+					    <a href="{% url bill-detail bill.id %}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-2" class="pending">
+			<li id="vote-2" class="">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
+				    {% if bill.approval_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-approval" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שניה</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="vote-3" class="odd pending">
+			<li id="vote-3" class="odd">
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+				    {% comment %} this is not perfect - doesnt distinguish between 2nd and 3rd vote {% endcomment %} 
+				    {% if bill.approval_vote != null %}
+					    <a href="{% url bill-detail bill.id %}#bill-approval" class="link" target="_blank">קישור</a>
+					{% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שלישית</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="passed" class="pending last">
+			<li id="passed" class="last">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -356,7 +448,6 @@ stream example:
 			<a href="#" class="link">קישור</a>
 		</div>
 	</div>
-	<div id="log" style="position:absolute; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>
 </body>
 </html>
 
