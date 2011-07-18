@@ -46,6 +46,10 @@ def parse_pdf_text(filename=None, url=None):
     d = None
     result = []
     m = re.search('עמוד(.*?)מתפרסמת בזה',content, re.UNICODE | re.DOTALL)
+    if not m: # couldn't read this file
+        logger.warn("can't read this file")
+        return None
+
     m = clean_string(m.group(1).decode('utf8'))
     m2 = re.findall('^(הצעת חוק.*?) . '.decode('utf8'), m, re.UNICODE | re.DOTALL | re.MULTILINE)
     m3 = re.findall('^(חוק.*?) . '.decode('utf8'),m, re.UNICODE | re.DOTALL | re.MULTILINE)

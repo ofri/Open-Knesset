@@ -195,7 +195,7 @@ class ParseKnessetLaws(ParseLaws):
             booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
             if int(booklet) <= self.min_booklet:
                 return False
-            pdf_data = self.parse_pdf(pdf_link)
+            pdf_data = self.parse_pdf(pdf_link) or []
             for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
                 title = pdf_data[j]['title']
                 m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
