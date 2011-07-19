@@ -1,0 +1,24 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block extratitle %}{% trans "Unbind vote" %}{% endblock %}
+
+{% block divcontent %}
+<h1>{% trans "Really unbind this relation?" %}</h1>
+    <h3>{% trans 'Bill' %}</h3>
+    <p>{{ object }}</p>
+    <h3>{% trans 'Vote' %}</h3>
+    <p>{{ vote }}</p>
+    <br>
+    <form action="." method="post" class="unbind-form">{% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}" id="next" />{% endif %}
+        <label>{% trans 'Please explain this unbinding' %}:</label>
+        <textarea name="explanation" rows="3"></textarea>
+        <p class="submit">
+            <input type="submit" name="submit" value="{% trans 'Unbind' %}" /> {% trans 'or' %} <a href="{{ object.get_absolute_url }}">{% trans 'Cancel' %}</a>
+        </p>
+    </form>
+{% endblock %}
+
+
+
