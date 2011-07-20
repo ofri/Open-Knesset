@@ -88,7 +88,7 @@ stream example:
 	    renderProp = function(prop){
 	    
 	    if (prop.explanation) {
-	    
+
 	    dlg.append($('<p>\u05de\u05ea\u05d5\u05da\u0020 <a href="' + prop.source_url+ '" class="oknesset-resource">' + '\u05d4\u05e0\u05d5\u05e1\u05d7\u0020\u05d4\u05de\u05dc\u05d0 (' + prop.date + ') :</a></p>'))
 	    
 	    dlg.append($('<div>' + prop.explanation + '</div><p>---</p>'));
@@ -99,8 +99,8 @@ stream example:
 	    data.proposals.private_proposals.forEach(renderProp);
  	    renderProp(data.proposals.knesset_proposal);
 	    renderProp(data.proposals.gov_proposal);
-	    
-	    dlg.dialog({modal: true, title: '\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8', position: ['right', 'top'], resizable: false, width: $('#steps').width()});
+//	    console.log($('#steps').height());
+	    dlg.dialog({modal: true, title: '\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8', position: ['right', $('#header').height() - 10], height: $('#steps').height(), resizable: false, width: $('#steps').width() - 10});
 	    }); 
             
             return "";
@@ -166,7 +166,9 @@ stream example:
 		}
 		
 		$(function() {
-	    $('#title h1').click(showExplanation);
+
+	    $('#explanation').text('\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8');
+	    $('#explanation').click(showExplanation);
 			//showLog();
 			$("head").append($("<title>{{bill.law.title}}: {{bill.title}}</title>"));
 			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
@@ -303,7 +305,7 @@ stream example:
 		});
 		
 		function onPull() {
-			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
+			var height = expanded ? 90 : $('#excerpt>p').height() + 190;
 			if (!expanded) $('#header').addClass('header-hover');		
 			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
 				if (!expanded) {
@@ -324,6 +326,8 @@ stream example:
 			<div id="title">
 				<span class="label">שם ההצעה:</span>
 				<h1>{{bill.law.title}}: {{bill.title}}</h1>
+				<a href='#null' id='explanation'></a>
+				<div class="clear"></div>
 			</div>
 			<div id="excerpt">
 				<span class="label">תקציר:</span>
