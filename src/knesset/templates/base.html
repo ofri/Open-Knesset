@@ -96,7 +96,7 @@
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
-        <h1 id="main-logo">{% trans "Open Knesset" %}</h1>
+        <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
         <div id="search">{% search_form "search_page" %}</div>
         <div id="header">
             <ul id="nav-global">
