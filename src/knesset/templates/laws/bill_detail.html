@@ -24,7 +24,7 @@
     <ul class="actions">
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
-    <h1>{{ object.law.title }} {{ object.title }}</h1>
+    <h1>{{ object.law.title }} {{ title }}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
