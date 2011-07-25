@@ -130,8 +130,8 @@
             {% for agendavote in object.agendavotes.all %}
                 <tr>
                     <td>
-                        <div class="agenda-score numeric">
-                            {{ agendavote.score }}
+                        <div class="agenda-score{% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">
+                            {{ agendavote.get_score_display }}
                         </div>
                     </td>
                     <td>
