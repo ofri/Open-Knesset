@@ -37,7 +37,7 @@
                             <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
                                 {{ agendavote.vote.title }}<br/>
                             </a>
-                            <span class="agenda-mk-vote {% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">{{ member.name }} {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}</span>
+                            <span class="agenda-mk-vote {% if agendavote.voteaction.type == 'for' %} positive{% endif %}{% if agendavote.voteaction.type = 'against' %} negative{% endif %}">{{ member.name }} {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}</span>
 
                         </div>
                     </td>
