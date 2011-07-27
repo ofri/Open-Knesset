@@ -90,4 +90,6 @@ class CommentsView(ListView):
     """Comments index view"""
 
     model = Comment
+    queryset = Comment.objects.order_by("-submit_date")
+
     paginate_by = 20
