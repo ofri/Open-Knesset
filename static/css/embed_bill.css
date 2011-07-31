@@ -12,26 +12,29 @@ a{
 	color: #0080ff;
 }
 
+#title a {
+    text-decoration: none;
+}
+
 #header,
 #graph,
 #footer{
-	max-width: 500px;
+    max-width: 500px;
     width: 100%;
 }
 #header{
     background: #FAFAFC;
-    height: 90px;
     overflow: hidden;
     position: absolute;
     z-index: 20;
-	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
-	top:0;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+    top:0;
 }
 
 #explanation {
-    float: right;
     font-size: 12px;
-    margin-top: 8px;
+    overflow: auto;
+    max-height: 140px;
 }
 
 .clear {
@@ -39,7 +42,11 @@ a{
 }
 
 .header-hover{
-	height: 330px;
+    height: 330px;
+}
+
+.header-small {
+    height: 70px;
 }
 
 	#details{
@@ -48,7 +55,7 @@ a{
 		border-left: 1px dotted #cccccc;
 		position: relative;
 	}
-		.label{
+	.label{
 			font-size: 11px;
 			color: #808080;
 			display: block;
@@ -69,6 +76,12 @@ a{
 		}
 			#excerpt p{
 				margin: 0 0 10px;
+			}
+			.tglelps {
+			    margin-bottom: 4px;
+			}
+			.elpsd {
+			    display: none;
 			}
 			#external-links a{
 				display: block;
