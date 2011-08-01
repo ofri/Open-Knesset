@@ -360,9 +360,10 @@ th label { display: block; float:right; margin-left:1em;}
 
 .item-list { position: relative; line-}
 .item-list .item { 
-    border-top: 1px solid #888; clear:both; padding:5px 0 !important;
+    clear:both; padding:5px 0 !important;
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
+.item-list .item.alt { background:#E4F4E4 }
 .item .date-item {
     float:right;
     background-color: #7891AB;
@@ -375,7 +376,7 @@ th label { display: block; float:right; margin-left:1em;}
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 .item-metadata a {font-weight:normal}
-.item-metadata { font-size:90%; margin-top:4pt}
+.item-metadata { font-size:90%; margin-top:3pt}
 .date-item span { 
     display:block; background:white; text-align:center; color: #7891AB;
     border-radius: 3px;
@@ -411,7 +412,10 @@ th label { display: block; float:right; margin-left:1em;}
 #content-main .selected {
     border:1px solid #FF3300;
 }
-.stage { border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt; }
+.stage { 
+    border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt; 
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
 .stage_1 { background-color: #aaaaaa; }
 .stage_-2 { background-color: #eeaaaa; }
 .stage_-21 { background-color: #ccbbbb; }
