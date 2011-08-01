@@ -22,7 +22,7 @@
 	<div class="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }} {% if o.popular_name%} ({{o.popular_name}}) {% endif %}</a> {% trans o.get_stage_display %} ({{ o.stage_date }})<br/>
+                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }} {% if o.popular_name%} ({{o.popular_name}}) {% endif %}</a> <span class="stage stage_{{o.stage|slugify}}">{% trans o.get_stage_display %}</span> ({{ o.stage_date }})<br/>
             </div>
 			{% empty %}
             {% trans "No results found" %}
