@@ -7,8 +7,7 @@
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
+{% block nav-votes %}class="selected"{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
