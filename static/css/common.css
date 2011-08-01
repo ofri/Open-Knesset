@@ -359,7 +359,22 @@ th label { display: block; float:right; margin-left:1em;}
 }
 
 .item-list { position: relative; }
-.item-list .item { border-top: 1px solid #888; }
+.item-list .item { border-top: 1px solid #888; clear:both;}
+.item .date-item {
+    float:right;
+    background-color: #7891AB;
+    border: 1px solid #7777AA;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    padding: 1px 3px 3px 3px;
+    font-size:80%;
+    margin: 5px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+.date-item span { 
+    display:block; background:white; text-align:center; color: #7891AB;
+    border-radius: 3px;
+}
 #content-main .item {
     list-style-type:none;
     padding:0.1em;
