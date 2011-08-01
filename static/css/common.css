@@ -480,6 +480,13 @@ th label { display: block; float:right; margin-left:1em;}
 
 #content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
+#main-help { float:left; line-height:150%; text-align:center }
+#main-help .awesome-button { margin-top:10px}
+#main-help a { color:white; }
+#main-about { margin-left:35%; text-align:justify }
+
+#main-about + h2 { margin-top:40px }
+
 #display_note_outer {
     -moz-border-radius:1em 1em 1em 1em;
     -webkit-border-radius:1em 1em 1em 1em;
@@ -487,6 +494,7 @@ th label { display: block; float:right; margin-left:1em;}
     overflow: hidden; width:100%;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
+#display_note_outer + p { margin-top:15px; text-align:center }
 
 #content-main .display_note {
     background:#e6eee6;
@@ -509,7 +517,7 @@ th label { display: block; float:right; margin-left:1em;}
 input.vote_input {
     width:600px;
 }
-#content-main .display_note p { margin:10px }
+#content-main .display_note p, #content-main .display_note > div  { margin:10px }
 
 input.bill_input {
     width:400px;

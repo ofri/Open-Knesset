@@ -7,12 +7,16 @@
 {% block divcontent %}
 <!-- add this to sidebar: <iframe src="http://www.facebook.com/plugins/likebox.php?id=114171195283394&amp;width=200&amp;connections=10&amp;stream=false&amp;header=true&amp;height=287" scrolling="no" frameborder="0" style="border:none; overflow:auto; width:200px; height:210px; position:absolute; left:10px;" allowTransparency="true"></iframe>
 -->
+<div id="main-help">
+    רוצים לדעת איך זה עובד או להצטרף ולעזור?<br/>
+    <span class="awesome-button"><a href="{% url about %}">קראו עוד אודות הפרויקט</a></span>
+</div>
+<div id="main-about">
 האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
 אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
-המשתמש. 
-האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
-רוצים לדעת איך זה עובד או להצטרף ולעזור? <a href="{% url about %}">קראו עוד אודות הפרויקט</a>.
-
+המשתמש.
+    האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+</div>
 
 <h2>מה אפשר לעשות באתר?</h2>
 <div id="display_note_outer">
@@ -37,7 +41,7 @@
     </div>
     <div class="display_note"><h3>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3>
         <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
-        <p>לדוגמה, הדף של {% mk_card member %}</p>
+        <div>לדוגמה, הדף של {% mk_card member %}</div>
     </div>
     <div class="display_note alt">
         <h3>לקרוא את הפרוטוקולים</h3>
@@ -45,7 +49,7 @@
         <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
     </div>
 </div>
-    ואנחנו כל הזמן עובדים על עוד...
+    <p>ואנחנו כל הזמן עובדים על עוד...</p>
     <div>
         <h2>{% trans "Latest Annotations" %}</h2>
         {% for a in annotations|slice:":10" %}
