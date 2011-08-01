@@ -477,6 +477,17 @@ form.unbind-form label{
 /* Search */
 div #search { clear:left; float:left; margin-top:6px;
     height:32px; }
+#id_search_page_q {
+    border: 2px solid #0d204a;
+    border-radius: 5px;
+    box-shadow:inset -4px 4px 4px -4px blue;
+    padding-right:2px;
+}
+.submit.awesome-button {
+    font-weight:bold;
+    font-size:13px;
+    padding: 2px 5px;
+}
 .gsc-adBlockVertical { width: 0 !important; }
 .gsc-wrapper {width: 100% !important; }
 
