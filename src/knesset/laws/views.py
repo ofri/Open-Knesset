@@ -13,6 +13,7 @@ from django.db import IntegrityError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 
 from tagging.models import Tag, TaggedItem
@@ -228,6 +229,37 @@ class BillDetailView (DetailView):
         return HttpResponseRedirect(".")
 
 _('added-vote-to-bill')
+
+@login_required
+def bill_unbind_vote(request, object_id, vote_id):
+    try:
+        bill = Bill.objects.get(pk=object_id)
+        vote = Vote.objects.get(pk=vote_id)
+    except ObjectDoesNotExist:
+        raise Http404
+    if request.method == 'POST': # actually unbind
+        explanation = request.POST.get('explanation','')
+        msg = u'%s is unbinding vote %s from bill %s. explanation: %s' % \
+                (str(request.user).decode('utf8'),
+                 vote_id,
+                 object_id,
+                 explanation)
+        notify_responsible_adult(msg)
+
+        logger.info(msg)
+        if vote in bill.pre_votes.all():
+            bill.pre_votes.remove(vote)
+        if vote == bill.first_vote:
+            bill.first_vote = None
+        if vote == bill.approval_vote:
+            bill.approval_vote = None
+        bill.update_stage(force_update=True)
+        return HttpResponseRedirect(reverse('bill-detail', args=[object_id]))
+    else: # approve unbind
+        context = RequestContext (request,
+                                  {'object': bill, 'vote':vote})
+        return render_to_response("laws/bill_unbind_vote.html", context)
+
 
 class BillListView (ListView):
     friend_pages = [

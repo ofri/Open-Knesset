@@ -530,9 +530,14 @@ class Bill(models.Model):
         self.update_stage()
 
 
-    def update_stage(self):
+    def update_stage(self, force_update=False):
         """Updates the stage for this bill according to all current data
+           force_update - assume current stage is wrong, and force
+           recalculation. default is False, so we assume current status is OK,
+           and only look for updates.
         """
+        if not self.stage_date or force_update: # might be empty if bill is new
+            self.stage_date = date(1948, 5, 13)
         if self.approval_vote:
             if self.approval_vote.for_votes_count() > self.approval_vote.against_votes_count():
                 self.stage = '6'
@@ -663,7 +668,7 @@ class GovLegislationCommitteeDecision(models.Model):
     number = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return u"%s" % (self.title)
-    
+
     def get_absolute_url(self):
         return self.bill.get_absolute_url()
 
