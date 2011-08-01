@@ -21,7 +21,15 @@
         <p>וההתקדמות שלהן בתהליך החקיקה.</p>
         <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
     </div>
-    <div class="display_note"><h3>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a></h3> למשל <a href="{% url bill-tag tag %}">{{ tag }}</a>.</div>
+    <div class="display_note">
+        <h3>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a></h3>
+        <p>למשל:</p>
+        <ul>
+            {% for tag in tags %}
+            <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
     <div class="display_note alt">
         <h3>מעקב הצבעות חבר כנסת</h3>
         <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
