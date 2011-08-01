@@ -358,8 +358,11 @@ th label { display: block; float:right; margin-left:1em;}
 
 }
 
-.item-list { position: relative; }
-.item-list .item { border-top: 1px solid #888; clear:both;}
+.item-list { position: relative; line-}
+.item-list .item { 
+    border-top: 1px solid #888; clear:both; padding:5px 0 !important;
+    overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
+}
 .item .date-item {
     float:right;
     background-color: #7891AB;
@@ -368,9 +371,11 @@ th label { display: block; float:right; margin-left:1em;}
     color: #FFFFFF;
     padding: 1px 3px 3px 3px;
     font-size:80%;
-    margin: 5px;
+    margin: 5px 5px 5px 10px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
+.item-metadata a {font-weight:normal}
+.item-metadata { font-size:90%; margin-top:4pt}
 .date-item span { 
     display:block; background:white; text-align:center; color: #7891AB;
     border-radius: 3px;
@@ -406,7 +411,7 @@ th label { display: block; float:right; margin-left:1em;}
 #content-main .selected {
     border:1px solid #FF3300;
 }
-.stage { border-radius:3px; border:1px dotted black; }
+.stage { border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt; }
 .stage_1 { background-color: #aaaaaa; }
 .stage_-2 { background-color: #eeaaaa; }
 .stage_-21 { background-color: #ccbbbb; }
