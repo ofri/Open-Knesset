@@ -17,7 +17,8 @@
     <div class="item-list">
 
     {% for o in object_list %}
-<div class="item">
+<div class="item {% cycle "alt" "normal" %}">
+    <div class="date-item">{{ o.time|date:"d/m" }}<span>{{o.time|date:"Y"}}</span>{{o.time|date:"H:i"}}</div>
     <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">
     {{ o.title }}<br/>
     <div class="info">
@@ -33,7 +34,6 @@
                 <td class="column-bar">{% bar o.against_votes_count "against" %}</td>
             </tr>
         </table>
-        <p class="date">{{ o.time_string }}</p> &nbsp;
             {% if o.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
             {% if o.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}
             {% if o.against_party_votes_count %}<p><img src="/static/img/Warning.png" />

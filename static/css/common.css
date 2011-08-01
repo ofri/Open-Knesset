@@ -375,6 +375,7 @@ th label { display: block; float:right; margin-left:1em;}
     margin: 5px 5px 5px 10px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
+.item .item-inner { margin-right:60px }
 .item-metadata a {font-weight:normal}
 .item-metadata { font-size:90%; margin-top:3pt}
 .date-item span { 
