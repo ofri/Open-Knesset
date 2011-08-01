@@ -24,7 +24,7 @@
             <div class="item">
                 <div class="date-item">{{ o.stage_date|date:"d/m"}}<span>{{o.stage_date|date:"Y"}}</span></div>
                 <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }} {% if o.popular_name%} ({{o.popular_name}}) {% endif %}</a>
-                <div>{% trans o.get_stage_display %}</div>
+                <div><span class="stage stage_{{o.stage|slugify}}">{% trans o.get_stage_display %}</span></div>
             </div>
 			{% empty %}
             {% trans "No results found" %}

@@ -406,6 +406,15 @@ th label { display: block; float:right; margin-left:1em;}
 #content-main .selected {
     border:1px solid #FF3300;
 }
+.stage { border-radius:3px; border:1px dotted black; }
+.stage_1 { background-color: #aaaaaa; }
+.stage_-2 { background-color: #eeaaaa; }
+.stage_-21 { background-color: #ccbbbb; }
+.stage_2 { background-color: #aaeeaa; }
+.stage_3 { background-color: #ffffaa; }
+.stage_4 { background-color: #99ff99; }
+.stage_5 { background-color: #ffffaa; }
+.stage_6 { background-color: #66ff66; }
 
 #content-main div.comment {
     background-color:#E3C0A0;
