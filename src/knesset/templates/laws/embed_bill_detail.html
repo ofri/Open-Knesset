@@ -92,13 +92,13 @@ function showExplanation() {
 	$.get('/api/bill/' + {{ bill.id }}, function(data){
 
 	    if (data.votes.first) {
-	    $('#vote-1 .scale .against').css('backgroundPosition', (data.votes.first.count_for_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) + 'px');
-	    $('#vote-1 .scale .against').css('width', ((data.votes.first.count_for_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) - 120) + ' bottom');
+	    $('#vote-1 .scale .against').css('backgroundPosition', (data.votes.first.count_for_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) + ' bottom');
+	    $('#vote-1 .scale .against').css('width', ((data.votes.first.count_for_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) - 120) + 'px');
 	    }
 	    if (data.votes.pre && data.votes.pre.length > 0) {
 	    var lastpre = data.votes.pre[data.votes.pre.length - 1];
-	    $('#pre-vote .scale .against').css('backgroundPosition', (lastpre.count_for_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) + 'px');
-	    $('#pre-vote .scale .against').css('width', ((lastpre.count_for_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) - 120) + ' bottom');
+	    $('#pre-vote .scale .against').css('backgroundPosition', (lastpre.count_for_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) + ' bottom');
+	    $('#pre-vote .scale .against').css('width', ((lastpre.count_for_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) - 120) + 'px');
 	    }
 	    if (data.popular_name){
 	    $('#title h1').text(data.popular_name + ' - ' + $('#title h1').text())
