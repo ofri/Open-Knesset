@@ -199,7 +199,7 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
-    fields = ('url', 'bill_title',
+    fields = ('url', 'bill_title', 'popular_name',
               'stage_text', 'stage_date',
               'votes',
               'committee_meetings',
