@@ -168,13 +168,8 @@ class BillDetailView (DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context_data(*args, **kwargs)
         bill = context['object']
-        try:
-            context['title'] = "%s,%s" % (bill.law.title, bill.title)
-        except AttributeError:
-            context['title'] = bill.title
         if bill.popular_name:
             context["keywords"] = bill.popular_name
-            context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             context['watched'] = bill in p.bills
