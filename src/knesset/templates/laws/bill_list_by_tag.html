@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
+{% load bills_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -16,8 +17,19 @@
     <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div class="item-list">
         {% for o in object_list %}
-            <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }}</a> {% trans o.get_stage_display %} ({{ o.stage_date }})<br/>
+            <div class="item {% cycle "normal" "alt" %}">
+                <div class="date-item">{{ o.stage_date|date:"d/m"}}<span>{{o.stage_date|date:"Y"}}</span></div>
+                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{% bill_full_name o %}</a>
+                <div class="item-metadata">
+                    <span class="stage stage_{{o.stage|slugify}}">{% trans o.get_stage_display %}</span>
+                    <span class="item-tags">
+                    {% trans "Tags" %}:
+                    {% for tag in o.tags %}
+                        {% if not forloop.first %} | {% endif %}
+                        <a href="{% url bill-tag tag=tag %}">{{ tag.name }}</a>
+                        {% endfor %}
+                    </span>
+                </div>
             </div>
         {% empty %}
             {% trans "No results found" %}
