@@ -136,9 +136,7 @@
                     </td>
                     <td>
                         <div class="item">
-                            <a class="hashnav" id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
-                                {{ agendavote.vote.title }}<br/>
-                            </a>
+                            {% vote_list_item agendavote.vote watched_members %}
                             <span class="reasoning">
                                 {{ agendavote.reasoning }}
                             </span>
