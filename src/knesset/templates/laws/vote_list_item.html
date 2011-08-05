@@ -2,7 +2,7 @@
 {% load common_visual_elements %}
 {% load laws_extra %}
 
-<div class="item {% cycle "alt" "normal" %}">
+<div>
     <div class="date-item">{{ vote.time|date:"d/m" }}<span>{{vote.time|date:"Y"}}</span>{{vote.time|date:"H:i"}}</div>
     <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
     {{ vote.title }}<br/>
@@ -51,7 +51,7 @@
             {% endif %}
     </div>
     </a>
-    <div>
+    <div class="item-metadata">
         {% if vote.tags %}
             <!--{% trans 'Tags' %}:-->
             {% for t in vote.tags %}

@@ -9,3 +9,7 @@ def bill_full_name(bill):
 @register.inclusion_tag('laws/bill_list_item.html')
 def bill_list_item(bill):
     return { 'bill': bill }
+
+@register.inclusion_tag('laws/item_tags.html')
+def item_tags(tags):
+    return { 'tags': tags }

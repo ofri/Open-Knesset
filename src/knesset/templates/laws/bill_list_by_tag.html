@@ -17,7 +17,9 @@
     <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div class="item-list">
         {% for o in object_list %}
-            {% bill_list_item o %}
+            <div class="item {% cycle "normal" "alt" %}">
+                {% bill_list_item o %}
+            </div>
         {% empty %}
             {% trans "No results found" %}
         {% endfor %}
