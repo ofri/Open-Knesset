@@ -435,7 +435,10 @@ class Bill(models.Model):
     def save(self,**kwargs):
         self.slug = slugify_name(self.title)
         self.popular_name_slug = slugify_name(self.popular_name)
-        self.full_title = "%s %s" % (self.law.title, self.title)
+        if self.law:
+            self.full_title = "%s %s" % (self.law.title, self.title)
+        else:
+            self.full_title = self.title
         super(Bill,self).save(**kwargs)
         for mk in self.proposers.all():
             mk.recalc_bill_statistics()
