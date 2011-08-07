@@ -31,7 +31,14 @@ class HandlerExtensions():
         return self.qs[page*num:(page+1)*num]
 
 class MemberHandler(BaseHandler, HandlerExtensions):
-    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
+    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count',
+              'votes_per_month', 'service_time',
+              'discipline','average_weekly_presence',
+              'committee_meetings_per_month','bills',
+              'bills_proposed','bills_passed_pre_vote',
+              'bills_passed_first_vote','bills_approved', 
+              'roles', 'average_weekly_presence_rank', 'committees', 
+              'is_current', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -63,6 +70,15 @@ class MemberHandler(BaseHandler, HandlerExtensions):
             return round(x,2)
         else:
             return None
+
+    @classmethod
+    def bills(cls, member):
+        d = [{'title':b.full_title,
+              'url':b.get_absolute_url(),
+              'stage':b.stage,
+              'stage_text':b.get_stage_display(),}
+            for b in member.bills.all()]
+        return d
 
     @classmethod
     def bills_proposed(self, member):
