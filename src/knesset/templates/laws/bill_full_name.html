@@ -1,1 +1,1 @@
-{% if bill.law %}{{ bill.law.title }}, {% endif %}{{ bill.title }} {% if bill.popular_name%} ({{bill.popular_name}}) {% endif %}
+{{ bill.full_title }} {% if bill.popular_name%} ({{bill.popular_name}}) {% endif %}
