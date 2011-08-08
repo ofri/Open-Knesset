@@ -12,17 +12,6 @@ logger = logging.getLogger("open-knesset.laws.templatetags")
 
 register = template.Library()
 
-@register.inclusion_tag('laws/_tag_vote.html')
-def user_votes(user, vote, tag):
-    ti = TaggedItem.objects.filter(tag=tag).filter(object_id=vote.id)[0]
-    try:
-        tv = TagVote.objects.filter(tagged_item=ti, user=user)[0]
-        cv = tv.vote
-    except Exception:
-        cv = 0
-    vote.ctype = ContentType.objects.get_for_model(vote).name
-    return {'user': user, 'vote':vote, 'tag':tag, 'current_vote_up':cv==1, 'current_vote_down':cv==-1}
-
 @register.filter
 def recent_discipline(m):
     d = date.today() - timedelta(30)

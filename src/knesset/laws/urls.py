@@ -35,7 +35,6 @@ lawsurlpatterns = patterns ('',
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
     url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
     url(r'^vote/(?P<object_id>\d+)/$', vote_view, name='vote-detail'),
-    url(r'^votes/tagged/(?P<tag>.*)/$', tagged, name='tagged-votes'),
     # TODO:the next url is hardcoded in a js file
     url(r'^vote/auto_complete/$', vote_auto_complete, name='vote-auto-complete'),
 )
