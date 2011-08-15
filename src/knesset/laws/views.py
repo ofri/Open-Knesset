@@ -511,6 +511,8 @@ def vote_auto_complete(request):
     return HttpResponse(json.dumps(result), mimetype='application/json')
 
 def embed_bill_details(request, object_id):
+    # TODO(shmichael): Only use the last stream item of each type, and if we find
+    # contradictions, send to human operator for sanitizing.
     bill = get_object_or_404(Bill, pk=object_id)
     out_stream = []
     in_stream = Action.objects.stream_for_actor(bill)
