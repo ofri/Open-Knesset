@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
+{% load bills_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -16,8 +17,8 @@
     <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
 	<div class="item-list">
         {% for o in object_list %}
-            <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }}</a> {% trans o.get_stage_display %} ({{ o.stage_date }})<br/>
+            <div class="item {% cycle "normal" "alt" %}">
+                {% bill_list_item o %}
             </div>
         {% empty %}
             {% trans "No results found" %}

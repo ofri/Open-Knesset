@@ -326,4 +326,3 @@ class ProposalModelTest(TestCase):
         self.kp_1.delete()
         self.bill.delete()
 
-# TODO: add testing for suggest_tag, vote_on_tag and tagged-votes views

@@ -148,6 +148,12 @@ def vote_tag(request, tag):
         mks = [mk for mk in mks if mk.count>=average]
         mks = tagging.utils.calculate_cloud(mks)
         extra_context['members'] = mks
+    if request.user.is_authenticated():
+        extra_context['watched_members'] = \
+            request.user.get_profile().members
+    else:
+        extra_context['watched_members'] = False
+
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
@@ -168,13 +174,8 @@ class BillDetailView (DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context_data(*args, **kwargs)
         bill = context['object']
-        try:
-            context['title'] = "%s,%s" % (bill.law.title, bill.title)
-        except AttributeError:
-            context['title'] = bill.title
         if bill.popular_name:
             context["keywords"] = bill.popular_name
-            context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             context['watched'] = bill in p.bills

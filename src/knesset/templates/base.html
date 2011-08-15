@@ -19,7 +19,7 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=1" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
@@ -87,17 +87,17 @@
     <div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>
     {% endif %}
     <div id="container">
+        <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
+        <div id="search">{% search_form "search_page" %}</div>
         <div id="accounts">
             {% if user.is_authenticated %}
-                <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a><br>
-                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a><br>
+                <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a> |
+                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> |
                 <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
             {% else %}
                 <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
             {% endif %}
         </div>
-        <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
-        <div id="search">{% search_form "search_page" %}</div>
         <div id="header">
             <ul id="nav-global">
 

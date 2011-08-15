@@ -12,24 +12,40 @@ a{
 	color: #0080ff;
 }
 
+#title a {
+    text-decoration: none;
+}
+
 #header,
 #graph,
 #footer{
-	max-width: 500px;
+    max-width: 500px;
     width: 100%;
 }
 #header{
     background: #FAFAFC;
-    height: 70px;
     overflow: hidden;
     position: absolute;
     z-index: 20;
-	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
-	top:0;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+    top:0;
+}
+
+#explanation {
+    overflow: auto;
+    max-height: 140px;
+}
+
+.clear {
+    clear: both;
 }
 
 .header-hover{
-	height: 330px;
+    height: 330px;
+}
+
+.header-small {
+    height: 70px;
 }
 
 	#details{
@@ -38,7 +54,7 @@ a{
 		border-left: 1px dotted #cccccc;
 		position: relative;
 	}
-		.label{
+	.label{
 			font-size: 11px;
 			color: #808080;
 			display: block;
@@ -49,8 +65,6 @@ a{
 		    font-weight: bold;
 		    height: 1.35em;
 		    margin-top: 0;
-		    overflow: hidden;
-		    cursor: pointer;
 		}
 		.header-hover h1{
 			height: auto;
@@ -61,6 +75,12 @@ a{
 		}
 			#excerpt p{
 				margin: 0 0 10px;
+			}
+			.tglelps {
+			    margin-bottom: 4px;
+			}
+			.elpsd {
+			    display: none;
 			}
 			#external-links a{
 				display: block;
@@ -85,7 +105,7 @@ a{
 		    position: absolute;
 		    text-indent: -9999px;
 		    top: 70px;
-		    width: 80px;
+		    width: 70px;
 		    z-index: 10;
 		}
 		
@@ -234,15 +254,15 @@ a{
 			ul#steps li.failed.current div.step{
 				background: url(../img/embed_line_failed.png) bottom right no-repeat;
 			}
-				ul#steps li a{
-					display: none;
-					width: 20px;
-					height: 20px;
-					margin: 0 auto 8px;
-					text-indent: -30000px;
-					text-decoration: none;
-				}
-				ul#steps li:hover a{
+			ul#steps li a{
+			    display: none;
+			    width: 20px;
+			    height: 20px;
+			    margin: 0 auto 8px;
+			    text-indent: -30000px;
+			    text-decoration: none;
+			}
+			ul#steps li:hover a{
 					display: block;
 				}
 				ul#steps li a.link{
@@ -447,7 +467,7 @@ a{
 .ui-dialog{
     background: #EEEFF5; 
     border: 1px dotted #cccccc;
-    opacity: 0.92;
+    opacity: 0.86;
 }
 
 .ui-widget-header{
@@ -469,6 +489,7 @@ a{
 }
 
 .ui-dialog-content {
+  color: black;
   float: right !important;
   overflow: auto !important;
 }
