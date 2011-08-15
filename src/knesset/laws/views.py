@@ -35,6 +35,8 @@ import logging
 import datetime
 from time import mktime
 
+from forms import VoteSelectForm
+
 logger = logging.getLogger("open-knesset.laws.views")
 
 def bill_tags_cloud(request, min_posts_count=1):
@@ -333,71 +335,31 @@ class BillListView (ListView):
 
 class VoteListView(ListView):
 
-    session_votes_key = 'selected_votes'
-
-    friend_pages = [
-            ('type','all',_('All votes')),
-            ('type','law-approve', _('Law Approvals')),
-            ('type','second-call', _('Second Call')),
-            ('type','demurrer', _('Demurrer')),
-            ('type','no-confidence', _('Motion of no confidence')),
-            ('type','pass-to-committee', _('Pass to committee')),
-            ('type','continuation', _('Continuation')),
-            ('tagged','all',_('All')),
-            ('tagged','false',_('Untagged Votes')),
-            ('tagged','true',_('Tagged Votes')),
-            ('since','7',_('Last Week')),
-            ('since','30',_('Last Month')),
-            ('since','all',_('All times')),
-            ('order','time',_('Time')),
-            ('order','controversy', _('Controversy')),
-            ('order','against-party',_('Against Party')),
-            ('order','votes',_('Number of votes')),
-
-        ]
-
     def get_queryset(self, **kwargs):
-        saved_selection = self.request.session.get(self.session_votes_key, dict())
-        self.options = {}
-        for key in ['type', 'tagged', 'since', 'order']:
-            self.options[key] = self.request.GET.get(key,
-                                         saved_selection.get(key, None))
+        form = self._get_filter_form()
 
-        return Vote.objects.filter_and_order(**self.options)
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
+
+    def _get_filter_form(self):
+        form = VoteSelectForm(self.request.GET) if self.request.GET \
+                else VoteSelectForm()
+        return form
 
     def get_context(self):
         context = super(VoteListView, self).get_context()
-        friend_page = {}
-        for key in ['type', 'tagged', 'since', 'order']:
-            if self.options[key]:
-                friend_page[key] = urllib.quote(self.options[key].encode('utf8'))
-            else:
-                friend_page[key] = 'all' if key!='order' else 'time'
-        self.request.session[self.session_votes_key] = friend_page
 
-        r = {}
-
-        for key, value, name in self.friend_pages:
-            page = friend_page.copy()
-            current = False
-            if page[key]==value:
-                current = True
-                if key=='type':
-                    context['title'] = name
-            else:
-                page[key] = value
-            url =  "./?%s" % urllib.urlencode(page)
-            if key not in r:
-                r[key] = []
-            r[key].append((url, name, current))
-
-        context['friend_pages'] = r
         if self.request.user.is_authenticated():
             context['watched_members'] = \
                 self.request.user.get_profile().members
         else:
             context['watched_members'] = False
 
+        context['form'] = self._get_filter_form()
         return context
 
 class VoteDetailView(DetailView):
