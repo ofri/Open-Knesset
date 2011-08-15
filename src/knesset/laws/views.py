@@ -423,6 +423,34 @@ class VoteDetailView(DetailView):
 
         return context
 
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        object_id = kwargs['pk']
+        if not object_id:
+            return HttpResponseBadRequest()
+        user_input_type = request.POST.get('user_input_type',None)
+        vote = get_object_or_404(Vote, pk=object_id)
+        mk_names = Member.objects.values_list('name',flat=True)
+        mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
+        mk = Member.objects.get(name=mk_name)
+        stand = None
+        if user_input_type == 'mk-for':
+            stand = 'for'
+        if user_input_type == 'mk-against':
+            stand = 'against'
+        if stand:
+            va = VoteAction.objects.filter(member=mk, vote=vote)
+            if va:
+                va = va[0]
+                va.type=stand
+                va.save()
+            else:
+                va = VoteAction(member=mk, vote=vote, type=stand)
+                va.save()
+            vote.update_vote_properties()
+
+        return HttpResponseRedirect('.')
+
 
 def _add_tag_to_object(user, object_type, object_id, tag):
     ctype = get_object_or_404(ContentType,model=object_type)

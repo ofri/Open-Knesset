@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -317,6 +318,69 @@ class Vote(models.Model):
         tf.tags = self.tags
         tf.initial = {'tags':', '.join([str(t) for t in self.tags])}
         return tf
+
+    def update_vote_properties(self):
+        party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
+        party_ids = [x[0] for x in party_id_member_count_coalition]
+        party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
+
+        for_party_ids = [va.member.current_party.id for va in self.for_votes()]
+        party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
+
+        against_party_ids = [va.member.current_party.id for va in self.against_votes()]
+        party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
+
+        party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+        party_stands_against = [float(av)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+
+        party_stands_for = dict(zip(party_ids, party_stands_for))
+        party_stands_against = dict(zip(party_ids, party_stands_against))
+
+        coalition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if party_is_coalition[y]])
+        coalition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if party_is_coalition[y]])
+        opposition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if not party_is_coalition[y]])
+        opposition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if not party_is_coalition[y]])
+
+        coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes))
+        coalition_stands_against = float(coalition_against_votes)>0.66*(coalition_for_votes+coalition_against_votes)
+        opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+        opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+
+        # a set of all MKs that proposed bills this vote is about.
+        proposers = [set(b.proposers.all()) for b in self.bills()]
+        if proposers:
+            proposers = reduce(lambda x,y: set.union(x,y), proposers)
+
+        against_party_count = 0
+        for va in VoteAction.objects.filter(vote=self):
+            dirt = False
+            if party_stands_for[va.member.current_party.id] and va.type=='against':
+                va.against_party = True
+                against_party_count += 1
+                dirt = True
+            if party_stands_against[va.member.current_party.id] and va.type=='for':
+                va.against_party = True
+                dirt = True
+            if va.member.current_party.is_coalition:
+                if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
+                    va.against_coalition = True
+                    dirt = True
+            else:
+                if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
+                    va.against_opposition = True
+                    dirt = True
+
+            if va.member in proposers and va.type=='against':
+                va.against_own_bill = True
+                dirt = True
+
+            if dirt:
+                va.save()
+
+        self.controversy = min(self.for_votes_count(), self.against_votes_count())
+        self.against_party = against_party_count
+        self.votes_count = VoteAction.objects.filter(vote=self).count()
+        self.save()
 
 class TagForm(forms.Form):
     tags = TagField()

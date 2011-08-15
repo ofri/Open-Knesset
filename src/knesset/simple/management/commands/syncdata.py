@@ -140,6 +140,65 @@ class Command(NoArgsCommand):
                 self.get_full_text(v)
         logger.debug("finished updating laws data")
 
+    def update_vote_from_page(self, vote_id, vote_src_url, page):
+        (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
+        logger.debug("downloaded data with vote id %d" % vote_id)
+        vote_time_string = date.replace('&nbsp;',' ')
+        for i in self.heb_months:
+            if i in vote_time_string:
+                month = self.heb_months.index(i)+1
+        day = re.search("""(\d\d?)""", vote_time_string).group(1)
+        year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
+        vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
+        vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
+        #vote_label_for_search = self.get_search_string(vote_label)
+
+        try:
+            v = Vote.objects.get(src_id=vote_id)
+            created = False
+        except:
+            v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
+            try:
+                vote_meeting_num = int(vote_meeting_num)
+                v.meeting_number = vote_meeting_num
+            except:
+                pass
+            try:
+                vote_num = int(vote_num)
+                v.vote_number = vote_num
+            except:
+                pass
+            v.src_url = vote_src_url
+            v.save()
+            if v.full_text_url != None:
+                l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
+                l.save()
+
+        results = self.read_member_votes(page, return_ids=True)
+        for (voter_id,voter_party,vote) in results:
+            #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))
+
+            # transform party names to canonical form
+            if(voter_party in self.party_aliases):
+                voter_party = self.party_aliases[voter_party]
+
+            # get the member voting
+            try:
+                m = Member.objects.get(pk=int(voter_id))
+            except:
+                exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), str(voter_id))
+                continue
+
+            # add the current member's vote
+            va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+            if created:
+                va.save()
+
+        v.update_vote_properties()
+        v = Vote.objects.get(src_id=vote_id)
+        self.find_synced_protocol(v)
+
 
     def update_votes(self, start_from_id=None, force_download=False):
         """Update votes data online, without saving to files.
@@ -147,8 +206,6 @@ class Command(NoArgsCommand):
            force_download - force downloading vote data, even if we have this
                             record. used to re-scan after MKs have been added.
         """
-
-
         logger.info("update votes")
         current_max_src_id = Vote.objects.aggregate(Max('src_id'))['src_id__max']
         if current_max_src_id == None: # the db contains no votes, meaning its empty
@@ -168,67 +225,7 @@ class Command(NoArgsCommand):
                 logger.debug("no vote found at id %d" % vote_id)
             else:
                 limit_src_id = vote_id + 100 # results found, so we'll look for at least 100 more votes
-                (vote_label, vote_meeting_num, vote_num, date) = self.get_vote_data(page)
-
-        #(vote_id, vote_src_url, vote_label, vote_meeting_num, vote_num, vote_time_string, count_for, count_against, count_abstain, count_no_vote) = line.split('\t')
-        #f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date))
-                logger.debug("downloaded data with vote id %d" % vote_id)
-                vote_time_string = date.replace('&nbsp;',' ')
-                for i in self.heb_months:
-                    if i in vote_time_string:
-                        month = self.heb_months.index(i)+1
-                day = re.search("""(\d\d?)""", vote_time_string).group(1)
-                year = re.search("""(\d\d\d\d)""", vote_time_string).group(1)
-                vote_hm = datetime.datetime.strptime ( vote_time_string.split(' ')[-1], "%H:%M" )
-                vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
-                #vote_label_for_search = self.get_search_string(vote_label)
-
-                try:
-                    v = Vote.objects.get(src_id=vote_id)
-                    created = False
-                except:
-                    v = Vote(title=vote_label, time_string=vote_time_string, importance=1, src_id=vote_id, time=vote_time)
-                    try:
-                        vote_meeting_num = int(vote_meeting_num)
-                        v.meeting_number = vote_meeting_num
-                    except:
-                        pass
-                    try:
-                        vote_num = int(vote_num)
-                        v.vote_number = vote_num
-                    except:
-                        pass
-                    v.src_url = vote_src_url
-                    v.save()
-                    if v.full_text_url != None:
-                        l = Link(title=u'מסמך הצעת החוק באתר הכנסת', url=v.full_text_url, content_type=ContentType.objects.get_for_model(v), object_pk=str(v.id))
-                        l.save()
-
-                results = self.read_member_votes(page, return_ids=True)
-                for (voter_id,voter_party,vote) in results:
-                    #f.write("%d\t%s\t%s\t%s\n" % (id,voter,party,vote))
-
-                    # transform party names to canonical form
-                    if(voter_party in self.party_aliases):
-                        voter_party = self.party_aliases[voter_party]
-
-                    # get the member voting
-                    try:
-                        m = Member.objects.get(pk=int(voter_id))
-                    except:
-                        exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                        logger.error("%svoter_id = %s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), str(voter_id))
-                        continue
-
-                    # add the current member's vote
-                    va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
-                    if created:
-                        va.save()
-
-
-                update_vote_properties(v)
-                v = Vote.objects.get(src_id=vote_id)
-                self.find_synced_protocol(v)
+                self.update_vote_from_page(vote_id, vote_src_url, page)
 
             vote_id += 1
 
@@ -1464,68 +1461,6 @@ class Command(NoArgsCommand):
             self.correct_votes_matching()
             logger.debug('finished update')
 
-def update_vote_properties(v):
-    party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
-    party_ids = [x[0] for x in party_id_member_count_coalition]
-    party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
-
-    for_party_ids = [va.member.current_party.id for va in v.for_votes()]
-    party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
-
-    against_party_ids = [va.member.current_party.id for va in v.against_votes()]
-    party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
-
-    party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
-    party_stands_against = [float(av)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
-
-    party_stands_for = dict(zip(party_ids, party_stands_for))
-    party_stands_against = dict(zip(party_ids, party_stands_against))
-
-    coalition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if party_is_coalition[y]])
-    coalition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if party_is_coalition[y]])
-    opposition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if not party_is_coalition[y]])
-    opposition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if not party_is_coalition[y]])
-
-    coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes))
-    coalition_stands_against = float(coalition_against_votes)>0.66*(coalition_for_votes+coalition_against_votes)
-    opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
-    opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
-
-    # a set of all MKs that proposed bills this vote is about.
-    proposers = [set(b.proposers.all()) for b in v.bills()]
-    if proposers:
-        proposers = reduce(lambda x,y: set.union(x,y), proposers)
-
-    against_party_count = 0
-    for va in VoteAction.objects.filter(vote=v):
-        dirt = False
-        if party_stands_for[va.member.current_party.id] and va.type=='against':
-            va.against_party = True
-            against_party_count += 1
-            dirt = True
-        if party_stands_against[va.member.current_party.id] and va.type=='for':
-            va.against_party = True
-            dirt = True
-        if va.member.current_party.is_coalition:
-            if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
-                va.against_coalition = True
-                dirt = True
-        else:
-            if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
-                va.against_opposition = True
-                dirt = True
-
-        if va.member in proposers and va.type=='against':
-            va.against_own_bill = True
-            dirt = True
-
-        if dirt:
-            va.save()
-
-    v.controversy = min(v.for_votes_count(), v.against_votes_count())
-    v.against_party = against_party_count
-    v.votes_count = VoteAction.objects.filter(vote=v).count()
-    v.save()
 
 def iso_year_start(iso_year):
     "The gregorian calendar date of the first day of the given ISO year"
