@@ -3,10 +3,7 @@
    found in http://www.knesset.gov.il/laws/heb/template.asp?Type=3
 """
 
-import re
-import urllib2
-import subprocess
-import logging
+import re,urllib2,subprocess,logging,sys,traceback
 from datetime import date
 from knesset.utils import clean_string
 
@@ -24,21 +21,24 @@ def parse(url):
 
 
 def pdftotext():
-    rc = subprocess.call(['pdftotext', '-enc', 'UTF-8', 'tmp.pdf', 'tmp.txt'])   
+    rc = subprocess.call(['pdftotext', '-enc', 'UTF-8', 'tmp.pdf', 'tmp.txt'])
     if rc:
         logger.error('pdftotext returned error code %d' % rc)
 
 
 def download_pdf(url,filename=None):
+    logger.debug('downloading url %s' % url)
     if not filename:
         filename = 'tmp.pdf'
     f = open(filename,'wb')
     d = urllib2.urlopen(url)
     f.write(d.read())
-    f.close()    
+    f.close()
 
 
 def parse_pdf_text(filename=None, url=None):
+    logger.debug('parse_pdf_text filename=%s url=%s' % (str(filename),
+                                                        str(url)))
     if not filename:
         filename = 'tmp.txt'
     f = open(filename,'rt')
@@ -46,6 +46,10 @@ def parse_pdf_text(filename=None, url=None):
     d = None
     result = []
     m = re.search('עמוד(.*?)מתפרסמת בזה',content, re.UNICODE | re.DOTALL)
+    if not m: # couldn't read this file
+        logger.warn("can't read this file")
+        return None
+
     m = clean_string(m.group(1).decode('utf8'))
     m2 = re.findall('^(הצעת חוק.*?) . '.decode('utf8'), m, re.UNICODE | re.DOTALL | re.MULTILINE)
     m3 = re.findall('^(חוק.*?) . '.decode('utf8'),m, re.UNICODE | re.DOTALL | re.MULTILINE)
@@ -66,16 +70,22 @@ def parse_pdf_text(filename=None, url=None):
         m = re.search('(\d{4,4})[\.|\s](\d+)[\.|\s](\d+)', line)
         if m:
             d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
-        
+
         m = re.search('הצעת חוק מס.*?\w+/\d+/\d+.*?[הועברה|הועברו]'.decode('utf8'), line.decode('utf8'), re.UNICODE)
         if m:
-            result[count]['references'] = line
-            m2 = re.findall('\w+/\d+/\d+',line.decode('utf8'), re.UNICODE) # find IDs of original proposals
-            result[count]['original_ids'] = [a[-1:0:-1]+a[0] for a in m2] # reverse                
-            count += 1
+            try:
+                result[count]['references'] = line
+                m2 = re.findall('\w+/\d+/\d+',line.decode('utf8'), re.UNICODE) # find IDs of original proposals
+                result[count]['original_ids'] = [a[-1:0:-1]+a[0] for a in m2] # reverse
+                count += 1
+            except IndexError:
+                exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
+                logger.error('count=%d, len(result)=%d, content = \n%s\n--- end of content' % \
+                             (count, len(result), content.decode('utf8')))
     for l in result:
         l['date'] = d
-    return result            
+    return result
 
 def parse_pdftxt(filename=None, url=None):
     if not filename:
@@ -86,12 +96,12 @@ def parse_pdftxt(filename=None, url=None):
     d = None
     result = []
     law = {}
-    
+
     for (i,line) in enumerate(lines):
         m = re.search('(\d{4,4})[\.|\s](\d+)[\.|\s](\d+)', line)
         if m:
             d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
-            
+
         if line.find('*')>=0 and line.find('**')==-1:
             if state==0:
                 title = lines[i+2].decode('utf8').replace(u'\u202b','')
@@ -108,7 +118,7 @@ def parse_pdftxt(filename=None, url=None):
                 law['title'] = title
                 state = 1
                 continue
-            if state==1:                
+            if state==1:
                 for j in range(-2,3):
                     x = lines[i+j].decode('utf8')
                     if re.search('\w+/\d+/\d+', x, re.UNICODE):
@@ -117,7 +127,7 @@ def parse_pdftxt(filename=None, url=None):
                     logger.warn("Can't find expected string \w+\d+\d+ in url %s" % url)
                 law['references'] = x
                 m = re.findall('\w+/\d+/\d+',x, re.UNICODE) # find IDs of original proposals
-                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # reverse                                   
+                law['original_ids'] = [a[-1:0:-1]+a[0] for a in m] # reverse
                 result.append(law)
                 law = {}
                 state = 0

@@ -10,7 +10,7 @@
 {% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }},{{ keywords }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -24,7 +24,7 @@
     <ul class="actions">
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
-    <h1>{{ object.law.title }} {{ object.title }}</h1>
+    <h1>{{ title }}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}
@@ -34,8 +34,7 @@
     </div>
 
     <script type="text/javascript">
-        function connect_el_to_div( el, div ) {
-            el.click( function () {
+        function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
                 var options = {
                      serviceUrl:'/vote/auto_complete/',
@@ -58,6 +57,11 @@
                 });
 
                 return true;
+         }
+
+        function connect_el_to_div( el, div ) {
+            el.click( function () {
+                show_only_vote_stage_div(div);
             } );
         }
 
@@ -182,7 +186,7 @@
     );
     </script>
     </div>
-
+    {% comment %} Note that the stage names must remain in sync with embed_bill_detail.html {% endcomment %}
     <div id="bill-initiation" class="bill-stage">
     <h2>{% trans 'Bill initiation' %}</h2>
     {% if object.gov_proposal %}
@@ -216,6 +220,9 @@
     <div id="bill-pre-vote" class="bill-stage">
     <h2>{% trans 'Pre Vote' %}</h2>
     {% for v in object.pre_votes.all %}
+        {% if user.is_authenticated %}
+            <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+        {% endif %}
         <a class="item" href="{% url vote-detail v.id %}">{{ v.title }} {{ v.time }}</a>({% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }})<br>
     {% empty %}
         {% trans 'No Info' %}<br>
@@ -282,6 +289,9 @@
     <div id="bill-first-vote" class="bill-stage">
     <h2>{% trans 'First Vote' %}</h2>
     {% if object.first_vote %}
+        {% if user.is_authenticated %}
+            <a href="{% url bill-unbind-vote object.id object.first_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+        {% endif %}
         <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
     {% else %}
         {% trans 'No Info' %}<br>
@@ -331,6 +341,9 @@
     <div id="bill-approval" class="bill-stage">
     <h2>{% trans 'Bill Approval' %}</h2>
     {% if object.approval_vote %}
+        {% if user.is_authenticated %}
+            <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+        {% endif %}
         <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
     {% else %}
         {% trans 'No Info' %}<br>
@@ -433,6 +446,10 @@
             $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
                                                         return false;});
 
+            if (location.hash) {
+              // Can be '#' + one of the "bill-stage" class divs.
+              show_only_vote_stage_div(location.hash.substring(1));
+            }
 
             var object_id = {{object.id}};
             {% if watched %}
@@ -442,6 +459,7 @@
                 document.is_watched = false;
                 $('#watch').html("{% trans 'Watch' %}");
             {% endif %};
+
             $('#watch').click( function () {
                 if (document.is_watched) {
                     jQuery.ajax({
@@ -477,7 +495,8 @@
                     });
                 }
                 return (false);
-            })
+            }
+            )
     });
 
     --></script>

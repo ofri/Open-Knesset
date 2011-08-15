@@ -1,15 +1,15 @@
 from datetime import datetime, date
 import gzip
 
-WORKING_HOURS_PER_WEEK = 80.0
+WORKING_HOURS_PER_WEEK = 48.0
 
 def parse_presence(filename=None):
-    """Parse the presence reports text file. 
+    """Parse the presence reports text file.
        filename is the reports file to parse. defaults to 'presence.txt'
        Will throw an IOError if the file is not found, or can't be read
        Returns a tuple (member_totals, not_enough_data)
        member_totals is a dict with member ids as keys, and a list of (week_timestamp, weekly hours) for this member as values
-       not_enough_data is a list of week timestamps in which we didn't have enough data to compute weekly hours
+       enough_data is a list of week timestamps in which we had enough data to compute weekly hours
        a timestamp is a tuple (year, iso week number)
     """
     if filename==None:
@@ -18,19 +18,19 @@ def parse_presence(filename=None):
     totals = dict()
     total_time = 0.0
     f = gzip.open(filename,'r')
-    workdays = [6,0,1,2,3]
-    last_timestamp = None    
+    workdays = [0,1,2]
+    last_timestamp = None
     todays_timestamp = date.today().isocalendar()[:2]
     reports = []
     enough_data = []
     line = f.readline()
     data = line.split(',')
     time = datetime.strptime(data[0],'%Y-%m-%d %H:%M:%S')
-        
+
     for line in f:
         data = line.split(',')
         last_time = time
-        time = datetime.strptime(data[0],'%Y-%m-%d %H:%M:%S')    
+        time = datetime.strptime(data[0],'%Y-%m-%d %H:%M:%S')
         time_in_day = time.hour+time.minute/60.0
         current_timestamp = time.isocalendar()[:2]
         if time.weekday() not in workdays or (time_in_day < 6.0) or (time_in_day > 22.0):
@@ -62,7 +62,7 @@ def parse_presence(filename=None):
                 pass
             # delete the reports list
             reports = []
-            
+
             for m in totals:
                 d = last_timestamp
                 if m in member_totals:

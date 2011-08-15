@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
@@ -26,9 +27,9 @@ class AgendaListView (ListView):
             return Agenda.objects.get_relevant_for_user(user=None)
         else:
             return Agenda.objects.get_relevant_for_user(user=self.request.user)
-    
+
     def get_context(self, *args, **kwargs):
-        context = super(AgendaListView, self).get_context(*args, **kwargs)       
+        context = super(AgendaListView, self).get_context(*args, **kwargs)
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = p.agendas
@@ -36,28 +37,28 @@ class AgendaListView (ListView):
             watched = None
         context['watched'] = watched
         return context
-        
+
 class AgendaDetailView (DetailView):
     model = Agenda
     class ForbiddenAgenda(Exception):
         pass
-    
+
     def get(self, request, *arg, **kwargs):
         try:
             response = super(AgendaDetailView, self).get(request, *arg, **kwargs)
         except self.ForbiddenAgenda:
             return HttpResponseForbidden()
         return response
-        
+
     def get_object(self):
         obj = super(AgendaDetailView, self).get_object()
         if obj in Agenda.objects.get_relevant_for_user(user=self.request.user):
             return obj
         else:
             raise self.ForbiddenAgenda
-        
+
     def get_context_data(self, *args, **kwargs):
-        context = super(AgendaDetailView, self).get_context_data(*args, **kwargs)       
+        context = super(AgendaDetailView, self).get_context_data(*args, **kwargs)
         agenda = context['object']
         try:
             context['title'] = "%s" % agenda.name
@@ -72,10 +73,31 @@ class AgendaDetailView (DetailView):
 
         context.update({'watched_object': watched})
 
-        mks = agenda.selected_instances(Member, top=5,bottom=5)
-        selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-        context.update({'selected_mks_top': mks['top'], 'selected_mks_bottom': mks['bottom']})
-        context.update({'selected_parties': selected_parties })
+        all_mks = 'all_mks' in self.request.GET.keys()
+        if all_mks:
+            cached_context = cache.get('agenda_mks_%d_all_mks' % agenda.id)
+            if not cached_context:
+                mks = agenda.selected_instances(Member, top=200, bottom=0)
+                cached_context = {'selected_mks':mks['top'],'all_mks':True}
+                cache.set('agenda_mks_%d_all_mks' % agenda.id,
+                          cached_context, 900)
+            context.update(cached_context)
+        else:
+            cached_context = cache.get('agenda_mks_%d' % agenda.id)
+            if not cached_context:
+                mks = agenda.selected_instances(Member, top=5,bottom=5)
+                cached_context = {'selected_mks_top': mks['top'],
+                                  'selected_mks_bottom': mks['bottom'],
+                                  'all_mks':False}
+                cache.set('agenda_mks_%d' % agenda.id, cached_context, 900)
+            context.update(cached_context)
+
+        cached_context = cache.get('agenda_parties_%d' % agenda.id)
+        if not cached_context:
+            selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
+            cached_context = {'selected_parties': selected_parties }
+            cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
+        context.update(cached_context)
 
         return context
 
@@ -117,7 +139,8 @@ class AgendaDetailEditView (DetailView):
     template_name = 'agendas/agenda_detail_edit.html'
 
     def get(self, request, *args, **kwargs):
-        agenda = get_object_or_404(Agenda, pk=kwargs['object_id'])
+        object_id = kwargs.get('pk' , kwargs.get('object_id', None))
+        agenda = get_object_or_404(Agenda, pk=object_id)
         if request.user in agenda.editors.all():
             return super(AgendaDetailEditView, self).get(request, *args, **kwargs)
         else:
@@ -132,8 +155,8 @@ class AgendaDetailEditView (DetailView):
         context['form'] = form
         return context
 
-    def post(self, request, **kwargs):
-        object_id = kwargs.get('pk' , kwargs.get('object_id'), None)
+    def post(self, request, *args, **kwargs):
+        object_id = kwargs.get('pk' , kwargs.get('object_id', None))
         agenda = get_object_or_404(Agenda, pk=object_id)
         if request.user not in agenda.editors.all():
             return HttpResponseForbidden()
@@ -147,11 +170,11 @@ class AgendaDetailEditView (DetailView):
             return HttpResponseRedirect(agenda.get_absolute_url())
         else:
             self.form = form
-            return HttpResponse(self.render_html()) #, mimetype=self.get_mimetype())
+            return super(AgendaDetailEditView, self).get(request, *args, **kwargs)
 
 class MockApiCaller(Client):
     def get_vote_api(self,vote):
-        return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else? 
+        return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else?
 
     def request(self, **request):
         environ = {
@@ -174,10 +197,10 @@ mock_api = MockApiCaller()
 def agenda_add_view(request):
     allowed_methods = ['GET', 'POST']
     template_name = 'agendas/agenda_add.html'
-    
+
     if not request.user.is_superuser:
         return HttpResponseRedirect('/agenda/')
-    
+
     if request.method == 'POST':
         form = AddAgendaForm(request.POST)
         if form.is_valid():
@@ -235,11 +258,11 @@ def update_editors_agendas(request):
                 return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':vote_id}))
             else:
                 return HttpResponseRedirect(reverse('vote-list'))
-            
+
         else:
             # TODO: Error handling: what to do with illeal forms?
             print "invalid formset"
-            return HttpResponseRedirect(reverse('vote-list'))             
+            return HttpResponseRedirect(reverse('vote-list'))
 
     else:
         return HttpResponseNotAllowed(['POST'])

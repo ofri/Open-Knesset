@@ -3,7 +3,7 @@
 {% load laws_extra %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block subnav %}        
         {% trans 'stage' %}: {% for link in friend_pages %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
@@ -22,9 +22,9 @@
 	<div class="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }}</a> {% trans o.get_stage_display %} ({{ o.stage_date }})<br/>
+                <a id="detail-{{ o.id }}" href="{% url bill-detail o.id %}">{{ o.law.title }} {{ o.title }} {% if o.popular_name%} ({{o.popular_name}}) {% endif %}</a> <span class="stage stage_{{o.stage|slugify}}">{% trans o.get_stage_display %}</span> ({{ o.stage_date }})<br/>
             </div>
-        {% empty %}
+			{% empty %}
             {% trans "No results found" %}
         {% endfor %}
 	</div>

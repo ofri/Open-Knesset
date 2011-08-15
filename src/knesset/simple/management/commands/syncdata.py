@@ -87,7 +87,7 @@ class Command(NoArgsCommand):
                     exps.append('')
                     count += 1
             if re.search("""arrResume\[\d*\]""",line) != None:
-                r = re.search("""\"(.*)\"""",line)
+                r = re.search('"(.*)"',line)
                 if r != None:
                     try:
                         exps[count] += r.group(1).replace('\t',' ')
@@ -141,10 +141,11 @@ class Command(NoArgsCommand):
         logger.debug("finished updating laws data")
 
 
-    def update_votes(self, start_from_id=None):
+    def update_votes(self, start_from_id=None, force_download=False):
         """Update votes data online, without saving to files.
            start_from_id - to manually override the id from which we'll start looking.
-
+           force_download - force downloading vote data, even if we have this
+                            record. used to re-scan after MKs have been added.
         """
 
 
@@ -156,7 +157,7 @@ class Command(NoArgsCommand):
         vote_id = start_from_id or current_max_src_id+1 # first vote to look for is the max_src_id we have plus 1, if not manually set
         limit_src_id = current_max_src_id + 100 # look for next 100 votes. if results are found, this value will be incremented.
         while vote_id < limit_src_id:
-            if Vote.objects.filter(src_id=vote_id).count(): # we already have this vote
+            if not force_download and Vote.objects.filter(src_id=vote_id).count(): # we already have this vote
                 logger.debug('skipping reading vote with src_id %d, because we already have it' % vote_id)
                 vote_id = vote_id + 1
                 limit_src_id = current_max_src_id + 100 # look for next 100 votes.
@@ -838,7 +839,7 @@ class Command(NoArgsCommand):
             if updated_protocol:
                 cm.create_protocol_parts()
             try:
-                r = re.search("חברי הוועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+                r = re.search("חברי הו?ועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
 
                 s = r.split('\n')
                 #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
@@ -984,9 +985,9 @@ class Command(NoArgsCommand):
                     else:
                         hours = 0.0                                # not present at all this week = 0 hours
                     date = iso_to_gregorian(*current_timestamp, iso_day=0) # get real date of the week's monday
-                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date, hours=hours)
-                    if created:
-                        wp.save()
+                    (wp,created) = WeeklyPresence.objects.get_or_create(member=m, date=date,
+                                                                        defaults={'hours':hours})
+                    wp.save()
                 else:
                     date = iso_to_gregorian(*current_timestamp, iso_day=0)
                 current_timestamp = (date+datetime.timedelta(8)).isocalendar()[:2]
@@ -1097,7 +1098,7 @@ class Command(NoArgsCommand):
                 pl.save()
 
             if not pl.content_html:
-                update_private_proposal_content_html(pl)
+                self.update_private_proposal_content_html(pl)
 
         # knesset laws
         logger.debug('parsing knesset laws')
@@ -1490,6 +1491,10 @@ def update_vote_properties(v):
     opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
     opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
 
+    # a set of all MKs that proposed bills this vote is about.
+    proposers = [set(b.proposers.all()) for b in v.bills()]
+    if proposers:
+        proposers = reduce(lambda x,y: set.union(x,y), proposers)
 
     against_party_count = 0
     for va in VoteAction.objects.filter(vote=v):
@@ -1509,6 +1514,11 @@ def update_vote_properties(v):
             if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
                 va.against_opposition = True
                 dirt = True
+
+        if va.member in proposers and va.type=='against':
+            va.against_own_bill = True
+            dirt = True
+
         if dirt:
             va.save()
 

@@ -6,9 +6,8 @@
 {% load agendas %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
-{% block description %}{{ vote.title }} - {% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-votes %}{% if votes %}class="selected"{% endif %}{% endblock %}
+{% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-votes %}class="selected"{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
@@ -19,22 +18,22 @@
 {% block secondary %}
         <h3>{% trans "Links" %}</h3>
         {% object_links vote %}
-            
+
         <div id="tagging-container">
         {% if user.is_authenticated %}
             <h3>{% trans "Tags" %}</h3>
             <div id="tags">
                 {% if vote.tags %}
-                    
+
                     {% for t in vote.tags %}
-                        <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a> 
+                        <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                 {% else %}
-                    <span id="no-tags-yet">{% trans "No tags yet" %}</span>        
+                    <span id="no-tags-yet">{% trans "No tags yet" %}</span>
                 {% endif %}
-                </div>            
+                </div>
             <div id="add_tags">
-                <span>{% trans "Edit Tags" %}</span> 
+                <span>{% trans "Edit Tags" %}</span>
                 <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                 </span>
                 <div id="create_tag" style='display:none'>
@@ -46,8 +45,8 @@
                         </form>
                     {% else %}
                         {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                    {% endif %}                    
-                </div>                
+                    {% endif %}
+                </div>
             </div>
 
         {% else %}
@@ -114,6 +113,7 @@
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
+                    {% if m.against_own_bill %}<img src="/static/img/Error-grey.png"/ title="{% trans 'Voted against own bill' %}">{% endif %}
                 &nbsp;
                 {% endfor %}
                 </div>
@@ -126,14 +126,14 @@
         <ul class="items">
         {% for bill in bills %}
             <li><a href={% url bill-detail bill.id %}>{{ bill }}</a></li>
-        {% empty %}    
+        {% empty %}
             {% trans 'No bill is associated with this vote' %}
         {% endfor %}
         </ul>
-        
+
         {% if vote.committee_meetings.count %}
             <div>
-                <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>  
+                <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>
                 {% for cm in vote.committee_meetings.all %}
                     <a class="hashnav item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
                     {% if not forloop.last %} &bull; {% endif %}
@@ -141,7 +141,7 @@
             </div>
         {% endif %}
 
-        {% if vote.summary %}        
+        {% if vote.summary %}
             <h3>{% trans 'summary' %}</h3>
             {{ vote.summary|safe }}
             <br><br>

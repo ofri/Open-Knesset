@@ -2,10 +2,7 @@
 {% load i18n pagination_tags  %}
 
 {% block extratitle %}{% trans "Tags cloud" %}{% endblock %}
-{% block extrameta %}
-    <meta name="DC.title" content="{% trans 'Tags cloud' %} - {{ site.name }}" />
-    <meta name="description" content="{% trans 'Tags cloud' %} - {{ site.name }}" />
-{% endblock %}
+{% block description %}{% trans 'Tags cloud for posts published by MKs' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block content %}
 <div class="tags cloud">

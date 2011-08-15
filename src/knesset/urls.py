@@ -1,10 +1,5 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.views.generic.list_detail import object_list, object_detail
-from django.views.generic.simple import direct_to_template, redirect_to
-from django.views.decorators.cache import cache_page
-
-from django.contrib.comments.models import Comment
 from django.contrib import admin
 
 from planet import views as planet_views
@@ -17,20 +12,16 @@ from knesset.sitemap import sitemaps
 from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
-from knesset.hashnav.views import SimpleView
 from knesset.mks.views import get_mk_entry, mk_is_backlinkable
+
+from knesset.auxiliary.views import main, post_annotation, post_details, \
+    RobotsView, AboutView, CommentsView
 
 admin.autodiscover()
 
 js_info_dict = {
     'packages': ('knesset',),
-    }
-
-about_view = SimpleView(template='about.html')
-#comment_view = object_list(Comment.objects.all(), template_name='comments/comments.html')
-
-#main_view = SimpleView(template='main.html')
-from knesset.auxiliary.views import main, post_annotation, post_details
+}
 
 # monkey patching the planet app
 planet_views.post_detail = post_details
@@ -38,8 +29,8 @@ planet_views.post_detail = post_details
 urlpatterns = patterns('',
     
     url(r'^$', main, name='main'),
-    url(r'^about/$', about_view, name='about'),
-    (r'^robots\.txt$', direct_to_template,{'template': 'robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^about/$', AboutView.as_view(), name='about'),
+    (r'^robots\.txt$', RobotsView.as_view()),
     (r'^api/', include('knesset.api.urls')),
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),    
@@ -50,7 +41,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      (r'^admin/', include(admin.site.urls)),
-     (r'^comments/$', 'django.views.generic.list_detail.object_list', {'queryset': Comment.objects.all(),'paginate_by':20}), 
+     (r'^comments/$', CommentsView.as_view()), 
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
      url(r'^comments/post/','knesset.utils.comment_post_wrapper',name='comments-post-comment'),
      (r'^comments/', include('django.contrib.comments.urls')),
@@ -68,6 +59,7 @@ urlpatterns = patterns('',
      (r'^avatar/', include('avatar.urls')),
      url(r'^pingback/', default_server, name='pingback-server'),
      url(r'^trackback/member/(?P<object_id>\d+)/$', TrackBackServer(get_mk_entry, mk_is_backlinkable),name='member-trackback'),
+     (r'^act/', include('actstream.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

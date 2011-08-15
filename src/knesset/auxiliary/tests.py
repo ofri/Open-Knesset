@@ -20,7 +20,7 @@ class InternalLinksTest(TestCase):
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
         self.voteactions = []
-        self.num_mks = 4        
+        self.num_mks = 4
         for i in range(self.num_mks):
             mk = Member.objects.create(name='mk %d' % i, current_party=self.party_1)
             wp = WeeklyPresence(member=mk,date=datetime.date.today(),hours=float(i))
@@ -85,4 +85,3 @@ class InternalLinksTest(TestCase):
         #f = open('internal_links_tested.txt','wt')
         #f.write('\n'.join(visited_links))
         #f.close()
-        
