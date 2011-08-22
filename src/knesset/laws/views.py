@@ -4,9 +4,8 @@ from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.db.models import Count, Q
 from django.db import IntegrityError
@@ -413,66 +412,6 @@ class VoteDetailView(DetailView):
 
         return HttpResponseRedirect('.')
 
-
-def _add_tag_to_object(user, object_type, object_id, tag):
-    ctype = get_object_or_404(ContentType,model=object_type)
-    (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
-    action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
-    if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
-        url = reverse('bill-tag',args=[tag])
-    else:
-        url = reverse('vote-tag',args=[tag])
-    return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
-
-@login_required
-def add_tag_to_object(request, object_type, object_id):
-    """add a POSTed tag_id to object_type object_id by the current user"""
-
-    if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
-    return HttpResponseNotAllowed(['POST'])
-
-@login_required
-def remove_tag_from_object(request, object_type, object_id):
-    """remove a POSTed tag_id from object_type object_id"""
-    ctype = get_object_or_404(ContentType,model=object_type)
-    if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
-        ti = TaggedItem._default_manager.filter(tag=tag, content_type=ctype, object_id=object_id)
-        if len(ti)==1:
-            logger.debug('user %s is deleting tagged item %d' % (request.user.username, ti[0].id))
-            ti[0].delete()
-            action.send(request.user,verb='removed-tag', target=ti[0], description='%s' % (tag.name))
-        else:
-            logger.debug('user %s tried removing tag %d from object, but failed, because len(tagged_items)!=1' % (request.user.username, tag.id))
-    return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
-
-@permission_required('tagging.add_tag')
-def create_tag_and_add_to_item(request, object_type, object_id):
-    """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
-    if request.method == 'POST' and 'tag' in request.POST:
-        tag = request.POST['tag']
-        msg = "user %s is creating tag %s on object_type %s and object_id %s".encode('utf8') % (request.user.username, tag, object_type, object_id)
-        logger.info(msg)
-        notify_responsible_adult(msg)
-        if len(tag)<3:
-            return HttpResponseBadRequest()
-        tags = Tag.objects.filter(name=tag)
-        if not tags:
-            try:
-                tag = Tag.objects.create(name=tag)
-            except Exception:
-                logger.warn("can't create tag %s" % tag)
-                return HttpResponseBadRequest()
-        if len(tags)==1:
-            tag = tags[0]
-        if len(tags)>1:
-            logger.warn("More than 1 tag: %s" % tag)
-            return HttpResponseBadRequest()
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
-    else:
-        return HttpResponseNotAllowed(['POST'])
 
 def tagged(request,tag):
     title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
