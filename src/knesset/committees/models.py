@@ -8,6 +8,7 @@ from django.contrib.contenttypes import generic
 
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
+from tagging.models import Tag
 from annotatetext.models import Annotation
 from knesset.events.models import Event
 
@@ -94,6 +95,14 @@ class CommitteeMeeting(models.Model):
     def get_absolute_url(self):
         return ('committee-meeting', [str(self.id)])
 
+    def _get_tags(self):
+        tags = Tag.objects.get_for_object(self)
+        return tags
+
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
+
+    tags = property(_get_tags, _set_tags)
 
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)

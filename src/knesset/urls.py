@@ -28,21 +28,21 @@ js_info_dict = {
 planet_views.post_detail = post_details
 
 urlpatterns = patterns('',
-    
+
     url(r'^$', main, name='main'),
     url(r'^about/$', AboutView.as_view(), name='about'),
     (r'^robots\.txt$', RobotsView.as_view()),
     (r'^api/', include('knesset.api.urls')),
     (r'^agenda/', include('knesset.agendas.urls')),
-    (r'^users/', include('knesset.user.urls')),    
+    (r'^users/', include('knesset.user.urls')),
     (r'^badges/', include('knesset.badges.urls')),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
      (r'^admin/', include(admin.site.urls)),
-     (r'^comments/$', CommentsView.as_view()), 
+     (r'^comments/$', CommentsView.as_view()),
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
      url(r'^comments/post/','knesset.utils.comment_post_wrapper',name='comments-post-comment'),
      (r'^comments/', include('django.contrib.comments.urls')),
@@ -52,7 +52,7 @@ urlpatterns = patterns('',
      (r'^feeds/comments/$', feeds.Comments()),
      (r'^feeds/votes/$', feeds.Votes()),
      (r'^feeds/bills/$', feeds.Bills()),
-     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}), 
+     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
      (r'^planet/', include('planet.urls')),
      url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),

@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
 from knesset.hashnav import ListView, DetailView
 from models import *
-from views import MeetingsListView, MeetingDetailView, CommitteeDetailView, meeting_list_by_date
+from views import MeetingsListView, MeetingDetailView, CommitteeDetailView, \
+        meeting_list_by_date, meeting_tag
 
 committees_list = ListView(queryset = Committee.objects.all(),paginate_by=20)
 committee_detail = CommitteeDetailView.as_view()
@@ -18,5 +19,6 @@ committeesurlpatterns = patterns ('',
     url(r'^committee/(?P<committee_id>\d+)/date/(?P<date>[\d\-]+)/$', meeting_list_by_date, name='committee-meetings-by-date'),
     url(r'^committee/(?P<committee_id>\d+)/date/$', meeting_list_by_date, name='committee-meetings-by-date'),
     url(r'^committee/meeting/(?P<pk>\d+)/$', meeting_detail, name='committee-meeting'),
-
+    url(r'^committee/meeting/tag/(?P<tag>.*)/$', meeting_tag,
+        name='committeemeeting-tag'),
 )

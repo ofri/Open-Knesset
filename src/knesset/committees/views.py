@@ -1,14 +1,20 @@
+from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils import simplejson as json
+from django.views.generic.list_detail import object_list
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 import logging
-from django.contrib.contenttypes.models import ContentType
 import difflib
 import datetime
 import re
 import colorsys
+from tagging.models import TaggedItem
+from tagging.utils import get_tag
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
@@ -16,10 +22,8 @@ from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
 from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
-from django.utils import simplejson as json
 
 logger = logging.getLogger("open-knesset.committees.views")
-
 
 class CommitteeDetailView(DetailView):
 
@@ -153,3 +157,17 @@ def meeting_list_by_date(request, *args, **kwargs):
     context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
     return render_to_response("committees/committeemeeting_list.html",
         context, context_instance=RequestContext(request))
+
+def meeting_tag(request, tag):
+    tag_instance = get_tag(tag)
+    if tag_instance is None:
+        raise Http404(_('No Tag found matching "%s".') % tag)
+
+    extra_context = {'tag':tag_instance}
+    extra_context['tag_url'] = reverse('committeemeeting-tag',args=[tag_instance])
+    extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
+    qs = CommitteeMeeting
+    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+    return object_list(request, queryset,
+        template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
+

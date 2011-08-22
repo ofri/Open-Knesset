@@ -15,6 +15,11 @@ function get_tags_list_callback(data) {
           });
     current_object_type = window.location.pathname.split('/')[1];
     current_id = window.location.pathname.split('/')[2];
+    // currently committeemeeting urls have a unique structure. clean this up.
+    if (current_id == 'meeting') {
+        current_object_type = 'committeemeeting';
+        current_id = window.location.pathname.split('/')[3];
+    }
     var url = '/api/tag/'+current_object_type+'/'+current_id+'/';
     $.ajax({url: url, success: mark_selected_tags, cache: false});
     $('#create_tag').show();

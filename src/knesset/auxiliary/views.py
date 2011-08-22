@@ -108,8 +108,10 @@ def _add_tag_to_object(user, object_type, object_id, tag):
     action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
     if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
         url = reverse('bill-tag',args=[tag])
-    else:
+    elif object_type=='vote':
         url = reverse('vote-tag',args=[tag])
+    else:
+        url = reverse('committeemeeting-tag', args=[tag])
     return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
 
 @login_required
