@@ -858,3 +858,9 @@ div.general_discipline_control {
 #content-main div.about-page p { margin:1em 1em; }
 #content-main div.about-page h4 { margin-right:1em; }
 #content-main div.about-page h2 { margin-top:2em; }
+
+.filter-form {position:relative; margin:20px 0 10px;}
+.filter-form #id_from_date, .filter-form #id_to_date  { width:8em; direction:ltr; text-align:left}
+.filter-form p { display: inline-block; width:28%; margin:5px 0 }
+.filter-form label { width:6em; display:inline-block; text-align:left}
+.filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
