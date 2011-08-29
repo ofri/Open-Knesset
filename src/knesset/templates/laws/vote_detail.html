@@ -1,6 +1,7 @@
 {% extends "two_cols.html" %}
 {% load i18n %}
 {% load tagging_tags %}
+{% load bills_extra %}
 {% load links %}
 {% load mks %}
 {% load agendas %}
@@ -95,8 +96,11 @@
                 &nbsp;
                 {% endfor %}
                 </div>
-        {% else %}
+            {% else %}
                 {% trans 'none' %}
+            {% endif %}
+            {% if user.is_superuser %}
+                {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk-for"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
             {% endif %}
         </div>
         <div>
@@ -120,12 +124,15 @@
             {% else %}
                 {% trans 'none' %}
             {% endif %}
+            {% if user.is_superuser %}
+                {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk-against"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+            {% endif %}
         </div>
 
         <h3>{% trans 'Bill' %}</h3>
         <ul class="items">
         {% for bill in bills %}
-            <li><a href={% url bill-detail bill.id %}>{{ bill }}</a></li>
+            <li><a href={% url bill-detail bill.id %}>{% bill_full_name bill %}</a></li>
         {% empty %}
             {% trans 'No bill is associated with this vote' %}
         {% endfor %}

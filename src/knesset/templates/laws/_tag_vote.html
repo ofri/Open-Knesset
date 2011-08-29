@@ -1,6 +1,0 @@
-{% if vote.ctype == 'vote' %}
-<a href="{% url tagged-votes tag=tag %}" class="tag">{{ tag }}</a>
-{% else %}
-<a href="{% url bill-tag tag=tag %}" class="tag">{{ tag }}</a>
-{% endif %}
-

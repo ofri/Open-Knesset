@@ -14,15 +14,11 @@
         {% endif %}
     {% endwith %}
     <a href="{% url vote-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
-	<div id="item-list">
+	<div class="item-list">
         {% for o in object_list %}
-            <div class="item">
-                {% if member %}
-                    {% member_stand o member %}
-                {% endif %}
-                <a id="detail-{{ o.id }}" href="{% url vote-detail o.id %}">{{ o }}</a>                
-                <br/>
-            </div>
+        <div class="item {% cycle "alt" "normal" %}">
+            {% vote_list_item o watched_members %}
+        </div>		
         {% empty %}
             {% trans "No results found" %}
         {% endfor %}

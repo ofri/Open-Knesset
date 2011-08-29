@@ -1,0 +1,69 @@
+{% load i18n %}
+{% load common_visual_elements %}
+{% load laws_extra %}
+{% load bills_extra %}
+<div>
+    <div class="date-item">{{ vote.time|date:"d/m" }}<span>{{vote.time|date:"Y"}}</span>{{vote.time|date:"H:i"}}</div>
+    <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
+    {{ vote.title }}<br/>
+    <div class="info">
+        <table>
+            <tr>
+                <td>{% trans 'For' %}:</td>
+                <td>{{ vote.for_votes_count }}</td>
+                <td class="column-bar">{% bar vote.for_votes_count "for" %}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Against' %}:</td>
+                <td>{{ vote.against_votes_count }}</td>
+                <td class="column-bar">{% bar vote.against_votes_count "against" %}</td>
+            </tr>
+        </table>
+            {% if vote.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
+            {% if vote.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}
+            {% if vote.against_party_votes_count %}<p><img src="/static/img/Warning.png" />
+                {% blocktrans count vote.against_party_votes_count as counter %}
+                {{ counter }} MK voted differently than the majority of his party
+                {% plural %}
+                {{ counter }} MKs voted differently than the majority of their party
+                {% endblocktrans %}</p> &nbsp;
+            {% endif %}
+            {% if vote.against_coalition_votes_count %}<p><img src="/static/img/Error.png" />
+                {% blocktrans count vote.against_coalition_votes_count as counter %}
+                {{ counter }} member of the coalition voted differently than the majority of the coalition
+                {% plural %}
+                {{ counter }} member of the coalition voted differently than the majority of the coalition
+                {% endblocktrans %}</p> &nbsp;
+            {% endif %}
+            {% if vote.against_opposition_votes_count %}<p><img src="/static/img/Error.png" />
+                {% blocktrans count vote.against_opposition_votes_count as counter %}
+                {{ counter }} member of the opposition voted differently than the majority of the opposition
+                {% plural %}
+                {{ counter }} member of the opposition voted differently than the majority of the opposition
+                {% endblocktrans %}</p> &nbsp;
+            {% endif %}
+            {% if vote.against_own_bill_votes_count %}<p><img src="/static/img/Error-grey.png" />
+                {% blocktrans count vote.against_own_bill_votes_count as counter %}
+                {{ counter }} member voted against his/her own bill
+                {% plural %}
+                {{ counter }} members votes against their own bill
+                {% endblocktrans %}</p> &nbsp;
+            {% endif %}
+    </div>
+    </a>
+    <div class="item-metadata">
+        {% if vote.tags %}            
+            {% item_tags vote.tags %}
+        {% else %}
+            <!--{% trans 'No tags' %}-->
+        {% endif %}
+    </div>
+    {% if watched_members %}
+        {% for s in watched_members %}{% member_stand vote s %}{% endfor %}
+    {% else %} {% if forloop.first %}
+        <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
+        {% endif %}
+    {% endif %}
+
+
+</div>

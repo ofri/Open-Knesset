@@ -1,16 +1,16 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra %}
-{% load tagging_tags %}
+{% load bills_extra %}
 {% load mks %}
 {% block extrahead %}
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
 {% endblock %}
-{% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }},{{ keywords }}{% endblock %}
-{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extratitle %}{% bill_full_name object %}{% endblock %}
+{% block keywords %}{% bill_full_name object %},{{ keywords }}{% endblock %}
+{% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
 {% block messages %}
 <span id="message_login">
@@ -24,7 +24,7 @@
     <ul class="actions">
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
-    <h1>{{ title }}</h1>
+    <h1>{% bill_full_name object %}</h1>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}

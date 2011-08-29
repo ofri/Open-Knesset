@@ -4,9 +4,8 @@ from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
 from django.views.generic.list_detail import object_list, object_detail
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.db.models import Count, Q
 from django.db import IntegrityError
@@ -34,6 +33,8 @@ import difflib
 import logging
 import datetime
 from time import mktime
+
+from forms import VoteSelectForm
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -148,6 +149,12 @@ def vote_tag(request, tag):
         mks = [mk for mk in mks if mk.count>=average]
         mks = tagging.utils.calculate_cloud(mks)
         extra_context['members'] = mks
+    if request.user.is_authenticated():
+        extra_context['watched_members'] = \
+            request.user.get_profile().members
+    else:
+        extra_context['watched_members'] = False
+
     return object_list(request, queryset,
     #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
         template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
@@ -168,13 +175,8 @@ class BillDetailView (DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(BillDetailView, self).get_context_data(*args, **kwargs)
         bill = context['object']
-        try:
-            context['title'] = "%s,%s" % (bill.law.title, bill.title)
-        except AttributeError:
-            context['title'] = bill.title
         if bill.popular_name:
             context["keywords"] = bill.popular_name
-            context['title'] = "%s (%s)" % (context["title"], bill.popular_name)
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             context['watched'] = bill in p.bills
@@ -332,71 +334,31 @@ class BillListView (ListView):
 
 class VoteListView(ListView):
 
-    session_votes_key = 'selected_votes'
-
-    friend_pages = [
-            ('type','all',_('All votes')),
-            ('type','law-approve', _('Law Approvals')),
-            ('type','second-call', _('Second Call')),
-            ('type','demurrer', _('Demurrer')),
-            ('type','no-confidence', _('Motion of no confidence')),
-            ('type','pass-to-committee', _('Pass to committee')),
-            ('type','continuation', _('Continuation')),
-            ('tagged','all',_('All')),
-            ('tagged','false',_('Untagged Votes')),
-            ('tagged','true',_('Tagged Votes')),
-            ('since','7',_('Last Week')),
-            ('since','30',_('Last Month')),
-            ('since','all',_('All times')),
-            ('order','time',_('Time')),
-            ('order','controversy', _('Controversy')),
-            ('order','against-party',_('Against Party')),
-            ('order','votes',_('Number of votes')),
-
-        ]
-
     def get_queryset(self, **kwargs):
-        saved_selection = self.request.session.get(self.session_votes_key, dict())
-        self.options = {}
-        for key in ['type', 'tagged', 'since', 'order']:
-            self.options[key] = self.request.GET.get(key,
-                                         saved_selection.get(key, None))
+        form = self._get_filter_form()
 
-        return Vote.objects.filter_and_order(**self.options)
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
+
+    def _get_filter_form(self):
+        form = VoteSelectForm(self.request.GET) if self.request.GET \
+                else VoteSelectForm()
+        return form
 
     def get_context(self):
         context = super(VoteListView, self).get_context()
-        friend_page = {}
-        for key in ['type', 'tagged', 'since', 'order']:
-            if self.options[key]:
-                friend_page[key] = urllib.quote(self.options[key].encode('utf8'))
-            else:
-                friend_page[key] = 'all' if key!='order' else 'time'
-        self.request.session[self.session_votes_key] = friend_page
 
-        r = {}
-
-        for key, value, name in self.friend_pages:
-            page = friend_page.copy()
-            current = False
-            if page[key]==value:
-                current = True
-                if key=='type':
-                    context['title'] = name
-            else:
-                page[key] = value
-            url =  "./?%s" % urllib.urlencode(page)
-            if key not in r:
-                r[key] = []
-            r[key].append((url, name, current))
-
-        context['friend_pages'] = r
         if self.request.user.is_authenticated():
             context['watched_members'] = \
                 self.request.user.get_profile().members
         else:
             context['watched_members'] = False
 
+        context['form'] = self._get_filter_form()
         return context
 
 class VoteDetailView(DetailView):
@@ -422,66 +384,34 @@ class VoteDetailView(DetailView):
 
         return context
 
-
-def _add_tag_to_object(user, object_type, object_id, tag):
-    ctype = get_object_or_404(ContentType,model=object_type)
-    (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
-    action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
-    if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
-        url = reverse('bill-tag',args=[tag])
-    else:
-        url = reverse('vote-tag',args=[tag])
-    return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
-
-@login_required
-def add_tag_to_object(request, object_type, object_id):
-    """add a POSTed tag_id to object_type object_id by the current user"""
-
-    if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
-    return HttpResponseNotAllowed(['POST'])
-
-@login_required
-def remove_tag_from_object(request, object_type, object_id):
-    """remove a POSTed tag_id from object_type object_id"""
-    ctype = get_object_or_404(ContentType,model=object_type)
-    if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
-        tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
-        ti = TaggedItem._default_manager.filter(tag=tag, content_type=ctype, object_id=object_id)
-        if len(ti)==1:
-            logger.debug('user %s is deleting tagged item %d' % (request.user.username, ti[0].id))
-            ti[0].delete()
-            action.send(request.user,verb='removed-tag', target=ti[0], description='%s' % (tag.name))
-        else:
-            logger.debug('user %s tried removing tag %d from object, but failed, because len(tagged_items)!=1' % (request.user.username, tag.id))
-    return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
-
-@permission_required('tagging.add_tag')
-def create_tag_and_add_to_item(request, object_type, object_id):
-    """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
-    if request.method == 'POST' and 'tag' in request.POST:
-        tag = request.POST['tag']
-        msg = "user %s is creating tag %s on object_type %s and object_id %s".encode('utf8') % (request.user.username, tag, object_type, object_id)
-        logger.info(msg)
-        notify_responsible_adult(msg)
-        if len(tag)<3:
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        object_id = kwargs['pk']
+        if not object_id:
             return HttpResponseBadRequest()
-        tags = Tag.objects.filter(name=tag)
-        if not tags:
-            try:
-                tag = Tag.objects.create(name=tag)
-            except Exception:
-                logger.warn("can't create tag %s" % tag)
-                return HttpResponseBadRequest()
-        if len(tags)==1:
-            tag = tags[0]
-        if len(tags)>1:
-            logger.warn("More than 1 tag: %s" % tag)
-            return HttpResponseBadRequest()
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
-    else:
-        return HttpResponseNotAllowed(['POST'])
+        user_input_type = request.POST.get('user_input_type',None)
+        vote = get_object_or_404(Vote, pk=object_id)
+        mk_names = Member.objects.values_list('name',flat=True)
+        mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
+        mk = Member.objects.get(name=mk_name)
+        stand = None
+        if user_input_type == 'mk-for':
+            stand = 'for'
+        if user_input_type == 'mk-against':
+            stand = 'against'
+        if stand:
+            va = VoteAction.objects.filter(member=mk, vote=vote)
+            if va:
+                va = va[0]
+                va.type=stand
+                va.save()
+            else:
+                va = VoteAction(member=mk, vote=vote, type=stand)
+                va.save()
+            vote.update_vote_properties()
+
+        return HttpResponseRedirect('.')
+
 
 def tagged(request,tag):
     title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}

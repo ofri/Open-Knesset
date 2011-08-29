@@ -28,7 +28,7 @@ a:hover { text-decoration:underline;}
 }
 #nav-global { margin:0; padding-right:165px;
       font-family:"Trebuchet MS",sans-serif; white-space:nowrap;
-      padding-top: 75px;
+      padding-top: 55px;
 }
 
 #nav-global li { display:block; float:left; list-style-type:none;
@@ -65,8 +65,8 @@ a:hover { text-decoration:underline;}
 
 
 /* ACCOUNTS */
-#accounts { margin-top:10px; float: left; }
-#accounts a { color: #000; text-decoration: none; }
+#accounts { margin-top:10px; text-align:center; height:20px;  color:#e6eee6}
+#accounts a { text-decoration: none; }
 #accounts a:hover { text-decoration: underline; }
 #login { display:inline;}
 #login a {
@@ -358,8 +358,30 @@ th label { display: block; float:right; margin-left:1em;}
 
 }
 
-.item-list { position: relative; }
-.item-list .item { border-top: 1px solid #888; }
+.item-list { position: relative; line-}
+.item-list .item { 
+    clear:both; padding:5px 0 !important;
+    overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
+}
+.item-list .item.alt { background:#E4F4E4 }
+.item .date-item {
+    float:right;
+    background-color: #7891AB;
+    border: 1px solid #7777AA;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    padding: 1px 3px 3px 3px;
+    font-size:80%;
+    margin: 5px 5px 5px 10px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+.item .item-inner { margin-right:60px }
+.item-metadata a {font-weight:normal}
+.item-metadata { font-size:90%; margin-top:3pt}
+.date-item span { 
+    display:block; background:white; text-align:center; color: #7891AB;
+    border-radius: 3px;
+}
 #content-main .item {
     list-style-type:none;
     padding:0.1em;
@@ -391,7 +413,10 @@ th label { display: block; float:right; margin-left:1em;}
 #content-main .selected {
     border:1px solid #FF3300;
 }
-.stage { border-radius:3px; border:1px dotted black; }
+.stage { 
+    border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt; 
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
 .stage_1 { background-color: #aaaaaa; }
 .stage_-2 { background-color: #eeaaaa; }
 .stage_-21 { background-color: #ccbbbb; }
@@ -455,21 +480,44 @@ th label { display: block; float:right; margin-left:1em;}
 
 #content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
+#main-help { float:left; line-height:150%; text-align:center }
+#main-help .awesome-button { margin-top:10px}
+#main-help a { color:white; }
+#main-about { margin-left:35%; text-align:justify }
+
+#main-about + h2 { margin-top:40px }
+
+#display_note_outer {
+    -moz-border-radius:1em 1em 1em 1em;
+    -webkit-border-radius:1em 1em 1em 1em;
+    border-radius: 1em 1em 1em 1em;
+    overflow: hidden; width:100%;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+#display_note_outer + p { margin-top:15px; text-align:center }
+
 #content-main .display_note {
-    -moz-border-radius:0.6em 0.6em 0.6em 0.6em;
-    -webkit-border-radius:0.6em 0.6em 0.6em 0.6em;
-    background:none repeat scroll 0 0 #E4F4E4;
-    border:1px solid #000000;
-    display:inline-block;
+    background:#e6eee6;
+    display:block;
     vertical-align: top;
-    margin:0.2em;
-    max-width:15em;
-    padding:0.2em;
+    width:20%;
+    height:220px;
+    float:right;
 }
 
+#content-main .display_note.alt { background: #D6E3D6; }
+.display_note h3 {
+    font-size:14px; height:3ex; margin:0; padding:3px;
+    font-weight:normal;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: block;
+}
+.display_note a { padding:0; font-weight:normal}
 input.vote_input {
     width:600px;
 }
+#content-main .display_note p, #content-main .display_note > div  { margin:10px }
 
 input.bill_input {
     width:400px;
@@ -484,8 +532,7 @@ form.unbind-form label{
 }
 
 /* Search */
-div #search { clear:left; float:left; margin-top:6px;
-    height:32px; }
+div #search { clear:left; float:left; height:32px; }
 #id_search_page_q {
     border: 2px solid #0d204a;
     border-radius: 5px;
@@ -811,3 +858,9 @@ div.general_discipline_control {
 #content-main div.about-page p { margin:1em 1em; }
 #content-main div.about-page h4 { margin-right:1em; }
 #content-main div.about-page h2 { margin-top:2em; }
+
+.filter-form {position:relative; margin:20px 0 10px;}
+.filter-form #id_from_date, .filter-form #id_to_date  { width:8em; direction:ltr; text-align:left}
+.filter-form p { display: inline-block; width:28%; margin:5px 0 }
+.filter-form label { width:6em; display:inline-block; text-align:left}
+.filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
