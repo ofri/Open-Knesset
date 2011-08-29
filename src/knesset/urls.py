@@ -36,11 +36,7 @@ urlpatterns = patterns('',
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),
     (r'^badges/', include('knesset.badges.urls')),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
+    (r'^topics/', include('knesset.topics.urls')),
      (r'^admin/', include(admin.site.urls)),
      (r'^comments/$', CommentsView.as_view()),
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
