@@ -763,10 +763,11 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 }
 
 .numeric { direction: ltr }
+/* agendas */
 .agenda-score, .agenda-mk-vote { border: 1px solid gray; border-radius:3px; text-align:center}
 .agenda-score.positive, .agenda-mk-vote.positive { background-color:#99EE99; }
 .agenda-score.negative, .agenda-mk-vote.negative { background-color:#EE9999; }
-
+.highlight { border-radius:3px; background-color:#FFFFFF };
 
 .comittee_member_detail {
     display:inline-block;

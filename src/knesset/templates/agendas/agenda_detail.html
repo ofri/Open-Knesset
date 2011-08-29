@@ -66,7 +66,7 @@
                     </tr>
                     {% for selected_mk in selected_mks %}
                         <tr>
-                            <td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
@@ -80,7 +80,7 @@
                     </tr>
                     {% for selected_mk in selected_mks_top %}
                         <tr>
-                            <td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
@@ -93,7 +93,7 @@
                     </tr>
                     {% for selected_mk in selected_mks_bottom %}
                         <tr>
-                            <td><a class="hashnav item dontwrap" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
@@ -107,15 +107,23 @@
         </div>
         <div style="display:inline-block; margin-right:4em;">
             <h3>{% trans "Parties" %}</h3>
+            <p>{% trans 'Click the # to highlight MKs from this party' %}</p>
             <div class="list-wrap">
                 <table>
                 {% for selected_party in selected_parties %}
                     <tr>
-                        <td><a class="hashnav item dontwrap" id="detail-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
+                        <td><a id="party-highlight-{{selected_party.id}}" href="#">#</a><a class="hashnav item dontwrap" id="party-link-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
                         <td class="numeric">{{selected_party.score|floatformat:"0"}}%</td>
                         <td>
                             <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party.score < 0 %}percentile_against{% endif %}"></div>
-                            <script>set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);</script>
+                            <script>
+                                set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);
+                                $('#party-highlight-{{selected_party.id}}').click(function(){
+                                    $('.party-{{selected_party.id}}').toggleClass('highlight');
+                                    $('#party-highlight-{{selected_party.id}}').toggleClass('highlight');
+                                    return false;
+                                });
+                            </script>
                         </td>
                         </tr>
                 {% endfor %}
