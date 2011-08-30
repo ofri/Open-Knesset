@@ -767,7 +767,26 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 .agenda-score, .agenda-mk-vote { border: 1px solid gray; border-radius:3px; text-align:center}
 .agenda-score.positive, .agenda-mk-vote.positive { background-color:#99EE99; }
 .agenda-score.negative, .agenda-mk-vote.negative { background-color:#EE9999; }
-.highlight { border-radius:3px; background-color:#FFFFFF };
+.highlight { border-radius:3px; background-color:#FFFFFF }
+
+.item .agenda-counts {
+    float:right;
+    background-color: #7891AB;
+    border: 1px solid #7777AA;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    padding: 1px 3px 3px 3px;
+    font-size:80%;
+    margin: 5px 5px 5px 10px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+.agenda-counts span {
+    display:block; background:white; text-align:center; color: #7891AB;
+    border-radius: 3px;
+}
+.item-list a span.public-owner-name {
+    font-weight:normal;
+}
 
 .comittee_member_detail {
     display:inline-block;

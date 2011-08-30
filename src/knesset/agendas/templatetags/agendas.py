@@ -29,3 +29,8 @@ def agendas_for(user, vote):
     return { 'formset': editable and VoteLinkingFormSet(initial = editable),
              'agendavotes': AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),vote=vote).distinct(),
            }
+
+@register.inclusion_tag('agendas/agenda_list_item.html')
+def agenda_list_item(agenda, watched_agendas=None):
+    return {'agenda': agenda, 'watched_agendas': watched_agendas}
+

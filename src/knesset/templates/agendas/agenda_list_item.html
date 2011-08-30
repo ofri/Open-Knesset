@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load user %}
+{% load bills_extra %}
+{% load common_text_handling %}
+
+<div class="agenda-counts">
+    {{ agenda.votes.count }} {% trans 'votes' %}<br>
+    {{ agenda.number_of_followers }} {% trans 'followers' %}
+    {% if agenda in watched_agendas %}<span>{% trans 'Including you' %}</span>{% endif %}
+</div>
+<a id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}
+<span class="public-owner-name"> {% trans 'by' %} {{ agenda.public_owner_name }}</span></a>
+<div class="item-metadata">
+    <span class="editors">
+        {% trans "Editors:" %}
+        {% for editor in agenda.editors.all %}
+            {% if not forloop.first %} | {% endif %}
+            {% user editor %}
+        {% endfor %}
+    </span><br>
+    <span class="description">{{ agenda.description|pretty_crop:100|urlize }}</span>
+</div>

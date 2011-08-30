@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-29 23:41+0300\n"
-"PO-Revision-Date: 2011-08-29 23:58+0200\n"
+"POT-Creation-Date: 2011-08-30 04:02+0300\n"
+"PO-Revision-Date: 2011-08-30 04:03+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -221,9 +221,9 @@ msgstr "אג'נדה"
 #: agendas/models.py:97
 #: agendas/urls.py:7
 #: templates/base.html:111
-#: templates/agendas/agenda_list.html:6
 #: templates/agendas/agenda_list.html:7
 #: templates/agendas/agenda_list.html:8
+#: templates/agendas/agenda_list.html:9
 #: templates/mks/member_detail.html:364
 #: templates/mks/party_detail.html:52
 msgid "Agendas"
@@ -1019,7 +1019,7 @@ msgstr "אודות"
 #: templates/agendas/agenda_add.html:9
 #: templates/agendas/agenda_detail.html:12
 #: templates/agendas/agenda_detail_edit.html:9
-#: templates/agendas/agenda_list.html:8
+#: templates/agendas/agenda_list.html:9
 #: templates/agendas/mk_agenda_detail.html:12
 #: templates/committees/committee_detail.html:7
 #: templates/committees/committee_list.html:5
@@ -1374,7 +1374,7 @@ msgid "Unwatch"
 msgstr "הפסק מעקב"
 
 #: templates/agendas/agenda_detail.html:28
-#: templates/agendas/agenda_list.html:57
+#: templates/agendas/agenda_list.html:59
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
@@ -1456,45 +1456,57 @@ msgstr "לא נמצאו תוצאות"
 msgid "Edit agenda"
 msgstr "עריכת אג'נדה"
 
-#: templates/agendas/agenda_list.html:13
+#: templates/agendas/agenda_list.html:14
 msgid "Your Agendas"
 msgstr "האג'נדות שלך"
 
-#: templates/agendas/agenda_list.html:15
+#: templates/agendas/agenda_list.html:16
 msgid "Please login to see agendas you can edit"
 msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
 
-#: templates/agendas/agenda_list.html:23
-#: templates/agendas/agenda_list.html:69
+#: templates/agendas/agenda_list.html:24
+#: templates/agendas/agenda_list_item.html:15
 msgid "Editors:"
 msgstr "עורכים"
 
-#: templates/agendas/agenda_list.html:31
-#: templates/agendas/agenda_list.html:77
+#: templates/agendas/agenda_list.html:33
 msgid "Description:"
 msgstr "תאור"
 
-#: templates/agendas/agenda_list.html:35
-#: templates/agendas/agenda_list.html:81
+#: templates/agendas/agenda_list.html:37
 msgid "Number of followers"
 msgstr "מספר עוקבים"
 
-#: templates/agendas/agenda_list.html:39
-#: templates/agendas/agenda_list.html:85
+#: templates/agendas/agenda_list.html:41
 msgid "Number of ascribed votes"
 msgstr "מספר הצבעות משויכות"
 
-#: templates/agendas/agenda_list.html:45
+#: templates/agendas/agenda_list.html:47
 msgid "You are not editing any agenda"
 msgstr "אין אג'נדות בעריכתך"
 
-#: templates/agendas/agenda_list.html:50
+#: templates/agendas/agenda_list.html:52
 msgid "Add"
 msgstr "הוספה"
 
-#: templates/agendas/agenda_list.html:64
-msgid "You are following"
-msgstr "ברשימת המעקב שלך"
+#: templates/agendas/agenda_list_item.html:7
+msgid "votes"
+msgstr "הצבעות"
+
+#: templates/agendas/agenda_list_item.html:8
+msgid "followers"
+msgstr "עוקבים"
+
+#: templates/agendas/agenda_list_item.html:9
+msgid "Including you"
+msgstr "כולל אותך"
+
+#: templates/agendas/agenda_list_item.html:12
+#: templates/annotatetext/_annotation.html:5
+#: templates/laws/knessetproposal_detail.html:14
+#: templates/laws/knessetproposal_list.html:17
+msgid "by"
+msgstr "על ידי"
 
 #: templates/agendas/agendasfor.html:3
 msgid "Ascribed agendas"
@@ -1520,12 +1532,6 @@ msgstr "מדד ההתאמה לאג'נדה"
 #: templates/agendas/mk_agenda_detail.html:25
 msgid "Score details"
 msgstr "פירוט ההצבעות"
-
-#: templates/annotatetext/_annotation.html:5
-#: templates/laws/knessetproposal_detail.html:14
-#: templates/laws/knessetproposal_list.html:17
-msgid "by"
-msgstr "על ידי"
 
 #: templates/avatar/change.html:3
 #: templates/user/editprofile.html:14
@@ -2892,6 +2898,9 @@ msgstr "יומי"
 #: user/models.py:21
 msgid "Weekly"
 msgstr "שבועי"
+
+#~ msgid "You are following"
+#~ msgstr "ברשימת המעקב שלך"
 
 #~ msgid "Tagged Votes"
 #~ msgstr "הצבעות מתויגות"
