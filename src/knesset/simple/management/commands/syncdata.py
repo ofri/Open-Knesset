@@ -1009,10 +1009,11 @@ class Command(NoArgsCommand):
             pp.content_html = html
             pp.save()
 
-    def parse_laws(self, private_proposals_days=None):
+    def parse_laws(self, private_proposals_days=None, last_booklet=None):
         """parse private proposal, knesset proposals and gov proposals
            private_proposals_days - override default "days-back" to look for in private proposals.
                                     should be the number of days back to look
+           last_booklet - last knesset proposal booklet that you already have.
         """
         mks = Member.objects.values('id','name')
         for mk in mks:
@@ -1050,7 +1051,7 @@ class Command(NoArgsCommand):
             if proposal['correction']:
                 title = proposal['correction']
             else:
-                title = "חוק חדש"
+                title = "חוק חדש".decode('utf8')
 
             (pl,created) = PrivateProposal.objects.get_or_create(proposal_id=proposal['law_id'], knesset_id=proposal['knesset_id'],
                                                                  date=proposal['proposal_date'], source_url=proposal['text_link'],
@@ -1099,7 +1100,8 @@ class Command(NoArgsCommand):
 
         # knesset laws
         logger.debug('parsing knesset laws')
-        last_booklet = KnessetProposal.objects.aggregate(Max('booklet_number')).values()[0]
+        if not last_booklet:
+            last_booklet = KnessetProposal.objects.aggregate(Max('booklet_number')).values()[0]
         if not last_booklet: # there were no KPs in the DB
             last_booklet = 200
         proposals = parse_laws.ParseKnessetLaws(last_booklet)
