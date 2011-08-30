@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
+from django.contrib.auth.models import User
 
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
@@ -16,6 +17,7 @@ COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
 logger = logging.getLogger("open-knesset.committees.models")
 
+    
 class Committee(models.Model):
     name = models.CharField(max_length=256)
     members = models.ManyToManyField('mks.Member', related_name='committees')
@@ -23,6 +25,7 @@ class Committee(models.Model):
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
+    agenda_topics = models.ManyToManyField('topics.Topic', related_name='committees', through="AgendaTopic")
 
     def __unicode__(self):
         return "%s" % self.name
@@ -189,5 +192,32 @@ class ProtocolPart(models.Model):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
                               self.header)
 
+AGENDA_TOPIC_STATUS = (
+    (1, 'published'),
+    (2, 'flagged'),
+    (3, 'rejacted'),
+    (4, 'accepted'),
+    (5, 'requested'),
+)
+
+class AgendaTopic(models.Model):
+    '''
+        AgendaTopic is used to hold the latest event about a topic and a committee
+
+        Fields:
+            created - the time a topic was first connected to a committee
+            modified - last time the status or the message was updated
+            editor - the user that entered the data
+            status - the current status
+            message - a message explaining the status change
+    '''
+
+    topic = models.ForeignKey('topics.Topic')
+    committee = models.ForeignKey(Committee)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    editor = models.ForeignKey(User)
+    status = models.IntegerField(choices = AGENDA_TOPIC_STATUS)
+    message = models.TextField()
 
 from listeners import *
