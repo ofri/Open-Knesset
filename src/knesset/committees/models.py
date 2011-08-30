@@ -217,7 +217,7 @@ class AgendaTopic(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     editor = models.ForeignKey(User)
-    status = models.IntegerField(choices = AGENDA_TOPIC_STATUS)
-    message = models.TextField()
+    status = models.IntegerField(choices = AGENDA_TOPIC_STATUS, default=1)
+    message = models.TextField(default="")
 
 from listeners import *
