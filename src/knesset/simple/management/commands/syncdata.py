@@ -1108,7 +1108,8 @@ class Command(NoArgsCommand):
         for proposal in proposals.laws_data:
             if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
                 continue
-            law_name = proposal['law']
+            law_name = proposal['law'][:200] # protect against parsing errors that
+                                             # create very long (and erroneous) law names
             (law, created) = Law.objects.get_or_create(title=law_name)
             if created:
                 law.save()
