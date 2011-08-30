@@ -1,5 +1,6 @@
 {% extends 'site_base.html' %}
 {% load i18n %}
+{% load links %}
 
 {% block extratitle %}{% trans 'topic' %}{% endblock %}
 {% block content %}
@@ -10,9 +11,24 @@
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
 
-    <h1>{{topic.title}}</h1>
-    <h3>{% trans "by" %}: {{topic.creator}}</h3>
+    <h1>{% trans "Suggested Topic for a committee meeting" %}</h1>
+    <h2>{{topic.title}}</h2>
+    <h4>{% trans "by" %}: <a href="{% url public-profile topic.creator.id %}">{{topic.creator}}</a></h4>
+    <h4>{% trans "committee" %}: 
+        {% if committee %}
+            <a href="{% url committee-detail committee %}">{{committee}}</a>
+        {% else %}
+            {% trans "unasigned" %}
+        {% endif %}
+    </h4>
     <p>{{topic.description}}</p>
+    <br/>
+    <div>
+        <h3>{% trans "Links" %}</h3>
+        {% object_links topic %}
+    </div>
+    <h3>{% trans "comments" %}</h3>
+    {% include 'comments/object_comment_list.html' %}
     <script>
         $(document).ready(function() {
             var id = {{object.id}};
