@@ -1,0 +1,65 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+
+{% block extratitle %}{% trans 'topic' %}{% endblock %}
+{% block content %}
+    <ul class="actions">
+        {% if user == topic.creator %}
+            <li><a href="#">{% trans "Edit" %}</a></li>
+        {% endif %}
+        <li><span id="watch" class="awesome-button medium"></span></li>
+    </ul>
+
+    <h1>{{topic.title}}</h1>
+    <h3>{% trans "by" %}: {{topic.creator}}</h3>
+    <p>{{topic.description}}</p>
+    <script>
+        $(document).ready(function() {
+            var id = {{object.id}};
+            {% if watched %}
+                document.is_watched = true;
+                $('#watch').html("{% trans 'Unwatch' %}");
+            {%else%}
+                document.is_watched = false;
+                $('#watch').html("{% trans 'Watch' %}");
+            {% endif %};
+            $('#watch').click( function () {
+                if (document.is_watched) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{{follow_url}}',
+                        data: {unwatch: id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = false;
+                            this.html("{% trans 'Watch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_unknown").html()
+                            $.jGrowl(msg, {life: 5000});
+                            $('#message_login').show();
+                        }
+                    });
+                }
+                else {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '{{follow_url}}',
+                        data: {watch: id},
+                        context: $('#watch'),
+                        success: function () {
+                            document.is_watched = true;
+                            this.html("{% trans 'Unwatch' %}");
+                        },
+                        error:  function(request, textStatus, error) {
+                            var msg = $("#message_login").html()
+                            $.jGrowl(msg, {sticky: true});
+                        }
+                    });
+                }
+                return (false);
+            })
+        })
+    </script>
+{% endblock %}
+
