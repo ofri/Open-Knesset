@@ -4,7 +4,7 @@ from django.utils.translation import ugettext
 from models import *
 from views import *
 
-agenda_list_view            = AgendaListView(queryset = Agenda.objects.all(),paginate_by=20, extra_context={'title':ugettext('Agendas')})
+agenda_list_view            = AgendaListView(queryset = Agenda.objects.all(),paginate_by=0, extra_context={'title':ugettext('Agendas')})
 agenda_detail_view          = AgendaDetailView.as_view()
 agenda_mk_detail_view       = AgendaMkDetailView.as_view()
 agenda_detail_edit_view     = AgendaDetailEditView.as_view()
