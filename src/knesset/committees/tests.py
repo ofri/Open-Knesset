@@ -149,3 +149,33 @@ I have a deadline''')
         self.bill_1.delete()
         self.mk_1.delete()
         
+class AgendaTopicsTest(TestCase):
+
+    def setUp(self):
+        self.committee_1 = Committee.objects.create(name='c1')
+        self.committee_2 = Committee.objects.create(name='c2')
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.now(),
+                                 protocol_text='''jacob:
+I am a perfectionist
+adrian:
+I have a deadline''')
+        self.meeting_1.create_protocol_parts()
+        self.meeting_2 = self.committee_1.meetings.create(date=datetime.now(),
+                                                         protocol_text='m2')
+        self.meeting_2.create_protocol_parts()
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.ofri = User.objects.create_user('ofri', 'ofri@example.com',
+                                              'ofri')
+        (self.group, created) = Group.objects.get_or_create(name='Valid Email')
+        if created:
+            self.group.save()
+        self.group.permissions.add(Permission.objects.get(name='Can add topic'))
+        self.jacob.groups.add(self.group)
+        self.mk_1 = Member.objects.create(name='mk 1')
+
+    def testBasic(self):
+        agenda_topics = self.committee_1.agenda_topics.create(title="topic 1", description="this is the first topic")
+        self.assertEqual(self.committee_1.get_topics(), [topic])
+        t.set_topic_status(topic, status="rejected", reason="just")
+        self.assertEmpty(self.committee_1.get_topics())
