@@ -8,6 +8,7 @@ from annotatetext.models import Annotation
 from actstream.models import Action
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
+from knesset.topics.models import Topic
 from models import *
 
 just_id = lambda x: x.id
@@ -173,9 +174,11 @@ I have a deadline''')
         self.group.permissions.add(Permission.objects.get(name='Can add topic'))
         self.jacob.groups.add(self.group)
         self.mk_1 = Member.objects.create(name='mk 1')
+        self.topic_1 = Topic.objects.create(creator=self.ofri, title="hello", description="hello world")
 
     def testBasic(self):
-        agenda_topics = self.committee_1.agenda_topics.create(title="topic 1", description="this is the first topic")
-        self.assertEqual(self.committee_1.get_topics(), [topic])
-        t.set_topic_status(topic, status="rejected", reason="just")
-        self.assertEmpty(self.committee_1.get_topics())
+        agenda_topic = AgendaTopic.objects.create(
+            editor=self.jacob, topic=self.topic_1, committee=self.committee_1)
+        self.assertEqual(self.committee_1.get_public_topics(), [topic])
+        agenda_topic.set_status(topic, "rejected", "because I feel like it")
+        self.assertEmpty(self.committee_1.get_topics_topics())
