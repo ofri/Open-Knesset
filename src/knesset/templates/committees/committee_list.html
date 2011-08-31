@@ -5,16 +5,15 @@
 {% block description %}{% trans "Committees" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
-<div>
-    <div style="float:left; width:35%">
-        {% include "committees/_agenda_topics_summary.html" %}
-    </div>
-
-    </div>
-	<div id="list-wrap">
+    <h2>{% trans "Committees" %}</h2>
+  <div class="main-column">
         {% for o in committees %}
             <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >{{ o.name }}</a>&nbsp;<br/>
         {% endfor %}
 	</div>
+  <div class="secondary-column">
+      {% include "committees/_agenda_topics_summary.html" %}
+  </div>
+
 </div>
 {% endblock %}

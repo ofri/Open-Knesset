@@ -2,7 +2,7 @@
 
 <h3>{% trans "Suggested Agenda Topics" %}</h3>
 {% for ai in agenda_topics %}
-    <div class="{% cycle odd, even %}">
+    <div class="item {% cycle "normal" "alt" %}">
         <a href="{{ ai.topic.get_absolute_url }}">{{ ai.topic }}</a>
         <div>
             <div style="float:left">
@@ -14,5 +14,4 @@
     </div>
 {% endfor %}
 <a href="./topic/">{% trans "more" %}</a>
-
-
+<br/>
