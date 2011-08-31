@@ -37,7 +37,7 @@ I have a deadline''')
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
         self.topic_1 = Topic.objects.create(creator=self.jacob, title="hello", description="hello world")
-        agenda_topic = AgendaTopic.objects.create(editor=self.jacob, topic=self.topic_1)
+        self.agenda_topic = AgendaTopic.objects.create(editor=self.jacob, topic=self.topic_1)
 
     def testProtocolPart(self):
         parts_list = self.meeting_1.parts.list()
@@ -153,6 +153,8 @@ I have a deadline''')
         self.group.delete()
         self.bill_1.delete()
         self.mk_1.delete()
+        self.topic_1.delete()
+        self.agenda_topic.delete()
         
 class AgendaTopicsTest(TestCase):
 
@@ -179,12 +181,23 @@ I have a deadline''')
         self.jacob.groups.add(self.group)
         self.mk_1 = Member.objects.create(name='mk 1')
         self.topic_1 = Topic.objects.create(creator=self.ofri, title="hello", description="hello world")
+        self.agenda_topic = AgendaTopic.objects.create(
+            editor=self.jacob, topic=self.topic_1, committee=self.committee_1)
 
     def testBasic(self):
-        agenda_topic = AgendaTopic.objects.create(
-            editor=self.jacob, topic=self.topic_1, committee=self.committee_1)
         self.assertEqual(self.committee_1.get_public_topics().count(), 1)
         self.assertEqual(AgendaTopic.objects.get_public_topics().count(), 1)
         
-        agenda_topic.set_status(AGENDA_ITEM_REJECTED, "because I feel like it")
+        self.agenda_topic.set_status(AGENDA_ITEM_REJECTED, "because I feel like it")
         self.assertEqual(self.committee_1.get_public_topics().count(), 0)
+
+    def tearDown(self):
+        self.meeting_1.delete()
+        self.meeting_2.delete()
+        self.committee_1.delete()
+        self.committee_2.delete()
+        self.jacob.delete()
+        self.group.delete()
+        self.mk_1.delete()
+        self.topic_1.delete()
+        self.agenda_topic.delete()
