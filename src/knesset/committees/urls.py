@@ -16,4 +16,6 @@ committeesurlpatterns = patterns ('',
     url(r'^committee/meeting/(?P<pk>\d+)/$', MeetingDetailView.as_view(), name='committee-meeting'),
     url(r'^committee/meeting/tag/(?P<tag>.*)/$', meeting_tag,
         name='committeemeeting-tag'),
+    url(r'^committee/topics/$', AgendaTopicListView.as_view(), name='topic-list'),
+    url(r'^committee/topics/(?P<committee_id>\d+)/$', AgendaTopicListView.as_view(), name ='committee-topic-list'),
 )

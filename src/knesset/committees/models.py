@@ -200,7 +200,7 @@ AGENDA_ITEM_ACCEPTED, AGENDA_ITEM_APPEAL = range(5)
 PUBLIC_AGENDA_ITEM_STATUS = ( AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_ACCEPTED)
 
 class AgendaItemManager(models.Manager):
-    def get_public_topics(self):
+    def get_public(self):
         return self.filter(status__in=PUBLIC_AGENDA_ITEM_STATUS)
 
 class AgendaTopic(models.Model):

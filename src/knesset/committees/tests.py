@@ -186,10 +186,18 @@ I have a deadline''')
 
     def testBasic(self):
         self.assertEqual(self.committee_1.get_public_topics().count(), 1)
-        self.assertEqual(AgendaTopic.objects.get_public_topics().count(), 1)
-        
+        self.assertEqual(AgendaTopic.objects.get_public().count(), 1)
         self.agenda_topic.set_status(AGENDA_ITEM_REJECTED, "because I feel like it")
         self.assertEqual(self.committee_1.get_public_topics().count(), 0)
+
+    def testListView (self):
+        res = self.client.get(reverse('topic-list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'committees/agendatopic_list.html')
+        self.assertQuerysetEqual(res.context['topics'],
+                                 ["<AgendaTopic: published: hello>"])
+
+
 
     def tearDown(self):
         self.meeting_1.delete()

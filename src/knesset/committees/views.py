@@ -34,7 +34,7 @@ class CommitteeListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
-        context["agenda_topics"] = AgendaTopic.objects.get_public_topics()[:10]
+        context["agenda_topics"] = AgendaTopic.objects.get_public()[:10]
         print context
         return context
 
@@ -136,6 +136,17 @@ class MeetingDetailView(DetailView):
         return HttpResponseRedirect(".")
 _('added-bill-to-cm')
 _('added-mk-to-cm')
+
+class AgendaTopicListView(generic.ListView):
+    model = AgendaTopic
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        qs = AgendaTopic.objects.get_public()
+        if "committee_id" in self.kwargs:
+            qs = qs.filter(committee__id=self.kwargs["committee_id"])
+        return qs
+
 
 class MeetingsListView(ListView):
 
