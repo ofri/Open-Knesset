@@ -1,0 +1,23 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% block extratitle %}{% trans "Topics" %}{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    {% autopaginate topics %}
+    <table>
+    <tr><th>{% trans "title" %}</th><th>{% trans "by" %}</th><th>{% trans "committee" %}</th></tr>
+    {% for t in topics %}
+    <tr>
+        <td><a href="{{ t.get_absolute_url }}">{{t}}</a></td>
+        <td>{% trans "by" %}: <a href="{% url public-profile t.topic.creator.id %}">{{t.topic.creator}}</a></td>
+        <td>
+            <a href="{% url committee-detail t.committee.id %}">{{t.committee}}</a>
+        </td>   
+    </tr>
+    {% endfor %}
+    </table>
+    {% paginate %}
+<br/>
+{% endblock %}
