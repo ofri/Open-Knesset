@@ -65,8 +65,7 @@ class Committee(models.Model):
         return self.meetings.all().order_by('-date')[:10]
 
     def get_public_topics(self):
-        return AgendaTopic.objects.filter(committee=self, status__in=(AGENDA_ITEM_PUBLISHED,
-                                                    AGENDA_ITEM_ACCEPTED))
+        return AgendaTopic.objects.filter(committee=self, status__in=(PUBLIC_AGENDA_ITEM_STATUS))
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -198,6 +197,11 @@ class ProtocolPart(models.Model):
 
 AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_FLAGGED, AGENDA_ITEM_REJECTED,\
 AGENDA_ITEM_ACCEPTED, AGENDA_ITEM_APPEAL = range(5)
+PUBLIC_AGENDA_ITEM_STATUS = ( AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_ACCEPTED)
+
+class AgendaItemManager(models.Manager):
+    def get_public_topics(self):
+        return self.filter(status__in=PUBLIC_AGENDA_ITEM_STATUS)
 
 class AgendaTopic(models.Model):
     '''
@@ -212,7 +216,7 @@ class AgendaTopic(models.Model):
     '''
 
     topic = models.ForeignKey('topics.Topic')
-    committee = models.ForeignKey(Committee)
+    committee = models.ForeignKey(Committee, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     editor = models.ForeignKey(User)
@@ -223,14 +227,16 @@ class AgendaTopic(models.Model):
         (AGENDA_ITEM_ACCEPTED, _('accepted')),
         (AGENDA_ITEM_APPEAL, _('appeal')),
             ), default=AGENDA_ITEM_PUBLISHED)
-
-
     message = models.TextField(default="")
+
+    objects = AgendaItemManager()
 
     def set_status(self, status, message=''):
        self.status = status
        self.message = message
        self.save()
 
+    def __unicode__(self):
+        return "%s: %s" % (self.get_status_display(), unicode(self.topic))
 
 from listeners import *

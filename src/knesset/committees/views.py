@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
-from django.views.generic.list_detail import object_list
+from django.views import generic
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
@@ -21,9 +21,22 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
-from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+from models import Committee, CommitteeMeeting, AgendaTopic, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 logger = logging.getLogger("open-knesset.committees.views")
+
+committees_list = ListView(queryset = Committee.objects.all(), paginate_by=20)
+
+class CommitteeListView(generic.ListView):
+    context_object_name = 'committees'
+    model = Committee
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super(CommitteeListView, self).get_context_data(**kwargs)
+        context["agenda_topics"] = AgendaTopic.objects.get_public_topics()[:10]
+        print context
+        return context
 
 class CommitteeDetailView(DetailView):
 
@@ -168,6 +181,6 @@ def meeting_tag(request, tag):
     extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
     qs = CommitteeMeeting
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    return object_list(request, queryset,
+    return generic.list_view.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
 

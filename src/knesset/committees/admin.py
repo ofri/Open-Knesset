@@ -9,3 +9,7 @@ admin.site.register(Committee, CommitteeAdmin)
 class CommitteeMeetingAdmin(admin.ModelAdmin):
     ordering = ('-date',)
 admin.site.register(CommitteeMeeting, CommitteeMeetingAdmin)
+
+class AgendaTopicAdmin(admin.ModelAdmin):
+    ordering = ('-created',)
+admin.site.register(AgendaTopic, AgendaTopicAdmin)

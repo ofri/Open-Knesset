@@ -5,9 +5,24 @@
 {% block description %}{% trans "Committees" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
+<div>
+    <div style="float:left; width:45%">
+        <h3>{% trans "Suggested Agenda Items" %}</h3>
+        {% for ai in agenda_topics %}
+            <div class="{% cycle odd, even %}">
+                <a href="{{ ai.topic.get_absolute_url }}">{{ ai }}</a>
+                <div class="float:left">
+                    <a href="{{ ai.committee.get_absolute_url }}">{{ ai.committee.name }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    </div>
 	<div id="list-wrap">
-        {% for o in object_list %}
+        {% for o in committees %}
             <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >{{ o.name }}</a>&nbsp;<br/>
         {% endfor %}
 	</div>
+</div>
 {% endblock %}
