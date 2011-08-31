@@ -7,20 +7,7 @@
 {% block divcontent %}
 <div>
     <div style="float:left; width:35%">
-        <h3>{% trans "Suggested Agenda Items" %}</h3>
-        {% for ai in agenda_topics %}
-            <div class="{% cycle odd, even %}">
-                <a href="{{ ai.topic.get_absolute_url }}">{{ ai.topic }}</a>
-                <div>
-                    <div style="float:left">
-                        {{ ai.get_status_display }}
-                    </div>
-                    <a href="{{ ai.committee.get_absolute_url }}">{{ ai.committee.name }}</a>
-                </div>
-
-            </div>
-        {% endfor %}
-        <a href="{% url topic-list %}">{% trans "more" %}</a>
+        {% include "committees/_agenda_topics_summary.html" %}
     </div>
 
     </div>

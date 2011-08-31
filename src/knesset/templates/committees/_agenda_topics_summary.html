@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<h3>{% trans "Suggested Agenda Topics" %}</h3>
+{% for ai in agenda_topics %}
+    <div class="{% cycle odd, even %}">
+        <a href="{{ ai.topic.get_absolute_url }}">{{ ai.topic }}</a>
+        <div>
+            <div style="float:left">
+                {{ ai.get_status_display }}
+            </div>
+            <a href="{{ ai.committee.get_absolute_url }}">{{ ai.committee.name }}</a>
+        </div>
+
+    </div>
+{% endfor %}
+<a href="./topic/">{% trans "more" %}</a>
+
+
