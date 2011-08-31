@@ -65,7 +65,8 @@ class Committee(models.Model):
         return self.meetings.all().order_by('-date')[:10]
 
     def get_public_topics(self):
-        return AgendaTopic.objects.filter(committee=self, status__in=(1,3,4))
+        return AgendaTopic.objects.filter(committee=self, status__in=(AGENDA_ITEM_PUBLISHED,
+                                                    AGENDA_ITEM_ACCEPTED))
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -221,7 +222,7 @@ class AgendaTopic(models.Model):
         (AGENDA_ITEM_REJECTED, _('rejected')),
         (AGENDA_ITEM_ACCEPTED, _('accepted')),
         (AGENDA_ITEM_APPEAL, _('appeal')),
-            ), default=AGENDA_ITEM_PUBLISHED
+            ), default=AGENDA_ITEM_PUBLISHED)
 
 
     message = models.TextField(default="")
