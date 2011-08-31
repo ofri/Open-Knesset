@@ -64,6 +64,9 @@ class Committee(models.Model):
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
 
+    def get_public_topics(self):
+        return AgendaTopic.objects.filter(committee=self, status__in=(1,3,4))
+
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
     """Retunrs true if 'line' looks like something should should be a protocol part header"""
@@ -192,13 +195,8 @@ class ProtocolPart(models.Model):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
                               self.header)
 
-AGENDA_TOPIC_STATUS = (
-    (1, 'published'),
-    (2, 'flagged'),
-    (3, 'rejacted'),
-    (4, 'accepted'),
-    (5, 'requested'),
-)
+AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_FLAGGED, AGENDA_ITEM_REJECTED,\
+AGENDA_ITEM_ACCEPTED, AGENDA_ITEM_APPEAL = range(5)
 
 class AgendaTopic(models.Model):
     '''
@@ -217,7 +215,21 @@ class AgendaTopic(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     editor = models.ForeignKey(User)
-    status = models.IntegerField(choices = AGENDA_TOPIC_STATUS, default=1)
+    status = models.IntegerField(choices = (
+        (AGENDA_ITEM_PUBLISHED, _('published')),
+        (AGENDA_ITEM_FLAGGED, _('flagged')),
+        (AGENDA_ITEM_REJECTED, _('rejected')),
+        (AGENDA_ITEM_ACCEPTED, _('accepted')),
+        (AGENDA_ITEM_APPEAL, _('appeal')),
+            ), default=AGENDA_ITEM_PUBLISHED
+
+
     message = models.TextField(default="")
+
+    def set_status(self, status, message=''):
+       self.status = status
+       self.message = message
+       self.save()
+
 
 from listeners import *

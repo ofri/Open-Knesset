@@ -179,6 +179,6 @@ I have a deadline''')
     def testBasic(self):
         agenda_topic = AgendaTopic.objects.create(
             editor=self.jacob, topic=self.topic_1, committee=self.committee_1)
-        self.assertEqual(self.committee_1.get_public_topics(), [topic])
-        agenda_topic.set_status(topic, "rejected", "because I feel like it")
-        self.assertEmpty(self.committee_1.get_topics_topics())
+        self.assertEqual(self.committee_1.get_public_topics().count(), 1)
+        agenda_topic.set_status(AGENDA_ITEM_REJECTED, "because I feel like it")
+        self.assertEqual(self.committee_1.get_public_topics().count(), 0)
