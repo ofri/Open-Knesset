@@ -4,20 +4,20 @@
 {% block extratitle %}{% trans "Topics" %}{% endblock %}
 {% block header %}
 {% endblock %}
-{% block content %}
+{% block divcontent %}
+<h1>{% trans "Suggested Agenda Topics" %}{% if committee %} {% trans "for" %} {{committee}}{% endif %}</h1>
     {% autopaginate topics %}
-    <table>
-    <tr><th>{% trans "title" %}</th><th>{% trans "by" %}</th><th>{% trans "committee" %}</th></tr>
+    <div class="item-list">
     {% for t in topics %}
-    <tr>
-        <td><a href="{{ t.get_absolute_url }}">{{t}}</a></td>
-        <td>{% trans "by" %}: <a href="{% url public-profile t.topic.creator.id %}">{{t.topic.creator}}</a></td>
-        <td>
-            <a href="{% url committee-detail t.committee.id %}">{{t.committee}}</a>
-        </td>   
-    </tr>
+        <div class="item {% cycle "alt" "normal" %}">
+            <a href="{{ t.topic.get_absolute_url }}">{{t}}</a>
+            {% trans "by" %}: <a href="{% url public-profile t.topic.creator.id %}">{{t.topic.creator}}</a>
+            {% if not committee %}
+                <a href="{% url committee-detail t.committee.id %}">{{t.committee}}</a>
+            {% endif %}
+        </div>   
     {% endfor %}
-    </table>
+    </div>
     {% paginate %}
 <br/>
 {% endblock %}

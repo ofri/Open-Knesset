@@ -58,6 +58,7 @@ class CommitteeDetailView(DetailView):
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
         context['annotations'] = cm.annotations.order_by('-timestamp')
+        context['agenda_topics'] = AgendaTopic.objects.get_public().filter(committee=cm)
         return context
 
 class MeetingDetailView(DetailView):
@@ -147,6 +148,11 @@ class AgendaTopicListView(generic.ListView):
             qs = qs.filter(committee__id=self.kwargs["committee_id"])
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super(AgendaTopicListView, self).get_context_data(**kwargs)
+        committee_id = self.kwargs.get("committee_id", False)
+        context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
+        return context
 
 class MeetingsListView(ListView):
 

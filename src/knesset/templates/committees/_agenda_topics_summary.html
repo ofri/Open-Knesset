@@ -8,10 +8,14 @@
             <div style="float:left">
                 {{ ai.get_status_display }}
             </div>
-            <a href="{{ ai.committee.get_absolute_url }}">{{ ai.committee.name }}</a>
+            {% if not object %}
+                <a href="{{ ai.committee.get_absolute_url }}">{{ ai.committee.name }}</a>
+            {% endif %}
         </div>
 
     </div>
 {% endfor %}
-<a href="./topic/">{% trans "more" %}</a>
+<p>
+    <a class="more" href="./topic/">{% trans 'more...'%}</a>
+</p>
 <br/>
