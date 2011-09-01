@@ -35,7 +35,6 @@ class CommitteeListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
         context["agenda_topics"] = AgendaTopic.objects.get_public()[:10]
-        print context
         return context
 
 class CommitteeDetailView(DetailView):
