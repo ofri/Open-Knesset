@@ -70,7 +70,7 @@
                 {% else %}
                     <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a>:</h4>
                     <p>{{a.comment|linebreaksbr}}</a></p>
-                    <p style="text-align:center">
+                    <p class="triangle-border top" style="text-align:center; width:530px">
         <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
                     </p>
                 {% endif %}
