@@ -54,18 +54,25 @@
         <h2>{% trans "Latest Annotations and comments" %}</h2>
         {% for a in annotations %}
             <div class="item {% cycle "alt" "normal" %}">
-                <div class="date-item">{{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}</div>
+                <a href="{{a.get_absolute_url }}">
+                    <div class="date-item">{{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}</div>
+                </a>
                 {% if a.timestamp %}
-                    <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'annotated' %} <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
                     <div style="padding-right:4em">
-                         {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
-                         <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                        <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a>: {{a.flag_value}}</h4>
+                        <p>{{a.comment|linebreaksbr}}</p>
+                        <p class="triangle-border top">
+                            "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
+                            <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+                            </a>
+                        </p>
                     </div>
                 {% else %}
-                <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'commented' %} <a href="{{a.content_object.get_absolute_url }}">{{ a.content_object }}</a></h4>
-                    <div style="padding-right:4em">
-                         <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.comment|linebreaksbr}}</a>
-                    </div>
+                    <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a>:</h4>
+                    <p>{{a.comment|linebreaksbr}}</a></p>
+                    <p style="text-align:center">
+        <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
+                    </p>
                 {% endif %}
             </div>
         {% empty %}
