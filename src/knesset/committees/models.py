@@ -1,6 +1,7 @@
 # encoding: utf-8
 import re
 import logging
+from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
@@ -12,12 +13,12 @@ from django.contrib.contenttypes.models import ContentType
 from tagging.models import Tag
 from annotatetext.models import Annotation
 from knesset.events.models import Event
+from knesset.links.models import Link
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
 logger = logging.getLogger("open-knesset.committees.models")
 
-    
 class Committee(models.Model):
     name = models.CharField(max_length=256)
     members = models.ManyToManyField('mks.Member', related_name='committees')
@@ -25,7 +26,7 @@ class Committee(models.Model):
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
-    agenda_topics = models.ManyToManyField('topics.Topic', related_name='committees', through="AgendaTopic")
+    topics = models.ManyToManyField('Topic', related_name='committees')
 
     def __unicode__(self):
         return "%s" % self.name
@@ -65,7 +66,7 @@ class Committee(models.Model):
         return self.meetings.all().order_by('-date')[:10]
 
     def get_public_topics(self):
-        return AgendaTopic.objects.filter(committee=self, status__in=(PUBLIC_AGENDA_ITEM_STATUS))
+        return self.topics.filter(status__in=(PUBLIC_TOPIC_STATUS))
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -195,48 +196,64 @@ class ProtocolPart(models.Model):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
                               self.header)
 
-AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_FLAGGED, AGENDA_ITEM_REJECTED,\
-AGENDA_ITEM_ACCEPTED, AGENDA_ITEM_APPEAL = range(5)
-PUBLIC_AGENDA_ITEM_STATUS = ( AGENDA_ITEM_PUBLISHED, AGENDA_ITEM_ACCEPTED)
+TOPIC_PUBLISHED, TOPIC_FLAGGED, TOPIC_REJECTED,\
+TOPIC_ACCEPTED, TOPIC_APPEAL = range(5)
+PUBLIC_TOPIC_STATUS = ( TOPIC_PUBLISHED, TOPIC_ACCEPTED)
 
-class AgendaItemManager(models.Manager):
+class TopicManager(models.Manager):
     def get_public(self):
-        return self.filter(status__in=PUBLIC_AGENDA_ITEM_STATUS)
+        return self.filter(status__in=PUBLIC_TOPIC_STATUS)
 
-class AgendaTopic(models.Model):
+class Topic(models.Model):
     '''
-        AgendaTopic is used to hold the latest event about a topic and a committee
+        Topic is used to hold the latest event about a topic and a committee
 
         Fields:
+            title - the title
+            description - its description
             created - the time a topic was first connected to a committee
             modified - last time the status or the message was updated
             editor - the user that entered the data
             status - the current status
-            message - a message explaining the status change
+            log - a text log that keeps text messages for status changes
+            committees - defined using a many to many from `Committee`
     '''
 
-    topic = models.ForeignKey('topics.Topic')
-    committee = models.ForeignKey(Committee, null=True, blank=True)
+    creator = models.ForeignKey(User)
+    editors = models.ManyToManyField(User, related_name='editing_topics')
+    title = models.CharField(max_length=256)
+    description = models.TextField(null=True,blank=True)
+    status = models.IntegerField(choices = (
+        (TOPIC_PUBLISHED, _('published')),
+        (TOPIC_FLAGGED, _('flagged')),
+        (TOPIC_REJECTED, _('rejected')),
+        (TOPIC_ACCEPTED, _('accepted')),
+        (TOPIC_APPEAL, _('appeal')),
+            ), default=TOPIC_PUBLISHED)
+    links = generic.GenericRelation(Link, content_type_field="content_type",
+       object_id_field="object_pk")
+    events = generic.GenericRelation(Event, content_type_field="which_type",
+       object_id_field="which_pk")
+    meetings = models.ManyToManyField(CommitteeMeeting) # no related name as `topics` is already defined
+
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    editor = models.ForeignKey(User)
-    status = models.IntegerField(choices = (
-        (AGENDA_ITEM_PUBLISHED, _('published')),
-        (AGENDA_ITEM_FLAGGED, _('flagged')),
-        (AGENDA_ITEM_REJECTED, _('rejected')),
-        (AGENDA_ITEM_ACCEPTED, _('accepted')),
-        (AGENDA_ITEM_APPEAL, _('appeal')),
-            ), default=AGENDA_ITEM_PUBLISHED)
-    message = models.TextField(default="")
+    log = models.TextField(default="")
+    @models.permalink
+    def get_absolute_url(self):
+        return ('topic-detail', [str(self.id)])
 
-    objects = AgendaItemManager()
+    def __unicode__(self):
+        return "%s" % self.title
+
+    objects = TopicManager()
 
     def set_status(self, status, message=''):
        self.status = status
-       self.message = message
+       self.log = '\n'.join((u'%s: %s' % (self.get_status_display(), datetime.now()),
+                            u'\t%s' % message,
+                            self.log,)
+                           )
        self.save()
-
-    def __unicode__(self):
-        return "%s: %s" % (self.get_status_display(), unicode(self.topic))
 
 from listeners import *

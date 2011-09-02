@@ -36,8 +36,8 @@ I have a deadline''')
         self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
-        self.topic_1 = Topic.objects.create(creator=self.jacob, title="hello", description="hello world")
-        self.agenda_topic = AgendaTopic.objects.create(editor=self.jacob, topic=self.topic_1)
+        self.topic = self.committee_1.topics.create(creator=self.jacob,
+                                                title="hello", description="hello world")
 
     def testProtocolPart(self):
         parts_list = self.meeting_1.parts.list()
@@ -102,8 +102,8 @@ I have a deadline''')
         committees = res.context['committees']
         self.assertEqual(map(just_id, committees),
                          [ self.committee_1.id, self.committee_2.id, ])
-        self.assertQuerysetEqual(res.context['agenda_topics'], 
-                                 ["<AgendaTopic: published: hello>"])
+        self.assertQuerysetEqual(res.context['topics'],
+                                 ["<Topic: hello>"])
 
     def testCommitteeMeetings(self):
         res = self.client.get(self.committee_1.get_absolute_url())
@@ -153,10 +153,9 @@ I have a deadline''')
         self.group.delete()
         self.bill_1.delete()
         self.mk_1.delete()
-        self.topic_1.delete()
-        self.agenda_topic.delete()
-        
-class AgendaTopicsTest(TestCase):
+        self.topic.delete()
+
+class TopicsTest(TestCase):
 
     def setUp(self):
         self.committee_1 = Committee.objects.create(name='c1')
@@ -180,22 +179,22 @@ I have a deadline''')
         self.group.permissions.add(Permission.objects.get(name='Can add topic'))
         self.jacob.groups.add(self.group)
         self.mk_1 = Member.objects.create(name='mk 1')
-        self.topic_1 = Topic.objects.create(creator=self.ofri, title="hello", description="hello world")
-        self.agenda_topic = AgendaTopic.objects.create(
-            editor=self.jacob, topic=self.topic_1, committee=self.committee_1)
+        self.topic = self.committee_1.topics.create(creator=self.jacob,
+                                                title="hello", description="hello world")
+
 
     def testBasic(self):
         self.assertEqual(self.committee_1.get_public_topics().count(), 1)
-        self.assertEqual(AgendaTopic.objects.get_public().count(), 1)
-        self.agenda_topic.set_status(AGENDA_ITEM_REJECTED, "because I feel like it")
+        self.assertEqual(Topic.objects.get_public().count(), 1)
+        self.topic.set_status(TOPIC_REJECTED, "because I feel like it")
         self.assertEqual(self.committee_1.get_public_topics().count(), 0)
 
     def testListView (self):
         res = self.client.get(reverse('topic-list'))
         self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'committees/agendatopic_list.html')
+        self.assertTemplateUsed(res, 'committees/topic_list.html')
         self.assertQuerysetEqual(res.context['topics'],
-                                 ["<AgendaTopic: published: hello>"])
+                                 ["<Topic: hello>"])
 
 
 
@@ -207,5 +206,4 @@ I have a deadline''')
         self.jacob.delete()
         self.group.delete()
         self.mk_1.delete()
-        self.topic_1.delete()
-        self.agenda_topic.delete()
+        self.topic.delete()

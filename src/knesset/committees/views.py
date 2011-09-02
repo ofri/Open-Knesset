@@ -21,7 +21,7 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
-from models import Committee, CommitteeMeeting, AgendaTopic, COMMITTEE_PROTOCOL_PAGINATE_BY
+from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 logger = logging.getLogger("open-knesset.committees.views")
 
@@ -34,7 +34,7 @@ class CommitteeListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
-        context["agenda_topics"] = AgendaTopic.objects.get_public()[:10]
+        context["topics"] = Topic.objects.get_public()[:10]
         return context
 
 class CommitteeDetailView(DetailView):
@@ -57,7 +57,7 @@ class CommitteeDetailView(DetailView):
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
         context['annotations'] = cm.annotations.order_by('-timestamp')
-        context['agenda_topics'] = AgendaTopic.objects.get_public().filter(committee=cm)
+        context['topics'] = cm.get_public_topics()
         return context
 
 class MeetingDetailView(DetailView):
@@ -137,18 +137,18 @@ class MeetingDetailView(DetailView):
 _('added-bill-to-cm')
 _('added-mk-to-cm')
 
-class AgendaTopicListView(generic.ListView):
-    model = AgendaTopic
+class TopicListView(generic.ListView):
+    model = Topic
     context_object_name = 'topics'
 
     def get_queryset(self):
-        qs = AgendaTopic.objects.get_public()
+        qs = Topic.objects.get_public()
         if "committee_id" in self.kwargs:
             qs = qs.filter(committee__id=self.kwargs["committee_id"])
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(AgendaTopicListView, self).get_context_data(**kwargs)
+        context = super(TopicListView, self).get_context_data(**kwargs)
         committee_id = self.kwargs.get("committee_id", False)
         context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
         return context

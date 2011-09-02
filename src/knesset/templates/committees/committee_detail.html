@@ -56,7 +56,7 @@
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
   </div>
   <div class="secondary-column">
-    {% include "committees/_agenda_topics_summary.html" %}
+    {% include "committees/_topics_summary.html" %}
     <h3>{% trans "Latest Annotations" %}</h3>
     <ul class="annotations">
     {% for a in annotations|slice:":5" %}
