@@ -56,9 +56,10 @@
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
   </div>
   <div class="secondary-column">
+    {% include "committees/_topics_summary.html" %}
     <h3>{% trans "Latest Annotations" %}</h3>
     <ul class="annotations">
-    {% for a in annotations|slice:":10" %}
+    {% for a in annotations|slice:":5" %}
         <li {% if forloop.last %}class="last"{% endif %}>
             <a href="{{a.get_absolute_url }}" title="{{a.flag_value}} - {{a.comment|escape}}">
             "...{{a.selection}}..." ({{a.content_object.header}})</a></li>

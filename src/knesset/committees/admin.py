@@ -1,6 +1,5 @@
 from knesset.committees.models import *
 
-from django import forms
 from django.contrib import admin
 
 class CommitteeAdmin(admin.ModelAdmin):
@@ -11,3 +10,6 @@ class CommitteeMeetingAdmin(admin.ModelAdmin):
     ordering = ('-date',)
 admin.site.register(CommitteeMeeting, CommitteeMeetingAdmin)
 
+class TopicAdmin(admin.ModelAdmin):
+    ordering = ('-created',)
+admin.site.register(Topic, TopicAdmin)

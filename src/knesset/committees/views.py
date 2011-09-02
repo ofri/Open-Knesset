@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
-from django.views.generic.list_detail import object_list
+from django.views import generic
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
@@ -21,9 +21,21 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
-from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
 
 logger = logging.getLogger("open-knesset.committees.views")
+
+committees_list = ListView(queryset = Committee.objects.all(), paginate_by=20)
+
+class CommitteeListView(generic.ListView):
+    context_object_name = 'committees'
+    model = Committee
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super(CommitteeListView, self).get_context_data(**kwargs)
+        context["topics"] = Topic.objects.get_public()[:10]
+        return context
 
 class CommitteeDetailView(DetailView):
 
@@ -45,6 +57,7 @@ class CommitteeDetailView(DetailView):
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
         context['annotations'] = cm.annotations.order_by('-timestamp')
+        context['topics'] = cm.get_public_topics()
         return context
 
 class MeetingDetailView(DetailView):
@@ -124,6 +137,22 @@ class MeetingDetailView(DetailView):
 _('added-bill-to-cm')
 _('added-mk-to-cm')
 
+class TopicListView(generic.ListView):
+    model = Topic
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        qs = Topic.objects.get_public()
+        if "committee_id" in self.kwargs:
+            qs = qs.filter(committee__id=self.kwargs["committee_id"])
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicListView, self).get_context_data(**kwargs)
+        committee_id = self.kwargs.get("committee_id", False)
+        context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
+        return context
+
 class MeetingsListView(ListView):
 
     def get_context(self):
@@ -168,6 +197,6 @@ def meeting_tag(request, tag):
     extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
     qs = CommitteeMeeting
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    return object_list(request, queryset,
+    return generic.list_view.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
 

@@ -8,6 +8,7 @@ from annotatetext.models import Annotation
 from actstream.models import Action
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
+from knesset.topics.models import Topic
 from models import *
 
 just_id = lambda x: x.id
@@ -35,6 +36,8 @@ I have a deadline''')
         self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
+        self.topic = self.committee_1.topics.create(creator=self.jacob,
+                                                title="hello", description="hello world")
 
     def testProtocolPart(self):
         parts_list = self.meeting_1.parts.list()
@@ -96,9 +99,11 @@ I have a deadline''')
         res = self.client.get(reverse('committee-list'))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'committees/committee_list.html')
-        object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        committees = res.context['committees']
+        self.assertEqual(map(just_id, committees),
                          [ self.committee_1.id, self.committee_2.id, ])
+        self.assertQuerysetEqual(res.context['topics'],
+                                 ["<Topic: hello>"])
 
     def testCommitteeMeetings(self):
         res = self.client.get(self.committee_1.get_absolute_url())
@@ -148,4 +153,57 @@ I have a deadline''')
         self.group.delete()
         self.bill_1.delete()
         self.mk_1.delete()
-        
+        self.topic.delete()
+
+class TopicsTest(TestCase):
+
+    def setUp(self):
+        self.committee_1 = Committee.objects.create(name='c1')
+        self.committee_2 = Committee.objects.create(name='c2')
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.now(),
+                                 protocol_text='''jacob:
+I am a perfectionist
+adrian:
+I have a deadline''')
+        self.meeting_1.create_protocol_parts()
+        self.meeting_2 = self.committee_1.meetings.create(date=datetime.now(),
+                                                         protocol_text='m2')
+        self.meeting_2.create_protocol_parts()
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.ofri = User.objects.create_user('ofri', 'ofri@example.com',
+                                              'ofri')
+        (self.group, created) = Group.objects.get_or_create(name='Valid Email')
+        if created:
+            self.group.save()
+        self.group.permissions.add(Permission.objects.get(name='Can add topic'))
+        self.jacob.groups.add(self.group)
+        self.mk_1 = Member.objects.create(name='mk 1')
+        self.topic = self.committee_1.topics.create(creator=self.jacob,
+                                                title="hello", description="hello world")
+
+
+    def testBasic(self):
+        self.assertEqual(self.committee_1.get_public_topics().count(), 1)
+        self.assertEqual(Topic.objects.get_public().count(), 1)
+        self.topic.set_status(TOPIC_REJECTED, "because I feel like it")
+        self.assertEqual(self.committee_1.get_public_topics().count(), 0)
+
+    def testListView (self):
+        res = self.client.get(reverse('topic-list'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'committees/topic_list.html')
+        self.assertQuerysetEqual(res.context['topics'],
+                                 ["<Topic: hello>"])
+
+
+
+    def tearDown(self):
+        self.meeting_1.delete()
+        self.meeting_2.delete()
+        self.committee_1.delete()
+        self.committee_2.delete()
+        self.jacob.delete()
+        self.group.delete()
+        self.mk_1.delete()
+        self.topic.delete()
