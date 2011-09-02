@@ -74,7 +74,7 @@ class AgendaDetailView (DetailView):
             watched_members = False
         context.update({'watched_object': watched})
         context['watched_members'] = watched_members
-		
+
         all_mks = 'all_mks' in self.request.GET.keys()
         if all_mks:
             cached_context = cache.get('agenda_mks_%d_all_mks' % agenda.id)
