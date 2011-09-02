@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude mks %}
+{% load avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
@@ -54,23 +55,27 @@
         <h2>{% trans "Latest Annotations and comments" %}</h2>
         {% for a in annotations %}
             <div class="item {% cycle "alt" "normal" %}">
-                <a href="{{a.get_absolute_url }}">
-                    <div class="date-item">{{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}</div>
+                <div class="item-header">
+                    <div class="avatar-item">
+                        <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
+                    </div>
+                <a style="float:left;href="{{a.get_absolute_url }}" style="float:right;">
+                    <div class="date-item">
+                        {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
+                    </div>
                 </a>
                 {% if a.timestamp %}
-                    <div style="padding-right:4em">
-                        <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a>: {{a.flag_value}}</h4>
-                        <p>{{a.comment|linebreaksbr}}</p>
-                        <p class="triangle-border top">
-                            "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
-                            <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
-                            </a>
-                        </p>
-                    </div>
+                    <p>{{a.comment|linebreaksbr}}</p>
+                </div>
+                    <p class="triangle-border top" style="clear:both;">
+                        "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
+                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+                        </a>
+                    </p>
                 {% else %}
-                    <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a>:</h4>
                     <p>{{a.comment|linebreaksbr}}</a></p>
-                    <p class="triangle-border top" style="text-align:center; width:530px">
+            </div>
+                    <p class="triangle-border top" style="clear:both;text-align:center; width:530px">
         <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
                     </p>
                 {% endif %}
