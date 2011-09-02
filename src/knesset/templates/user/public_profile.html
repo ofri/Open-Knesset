@@ -45,7 +45,8 @@
                 {% endifchanged %}
                 <div style="padding: 0 1em 0.5em;">
                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."<br/>
-                     <a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                    <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                    </p>
                 </div>
             {% empty %}
                 <li>{% trans "No annotations yet..." %}

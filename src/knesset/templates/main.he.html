@@ -50,13 +50,13 @@
     </div>
 </div>
     <p>ואנחנו כל הזמן עובדים על עוד...</p>
-    <div>
+    <div class="annotations">
         <h2>{% trans "Latest Annotations" %}</h2>
         {% for a in annotations|slice:":10" %}
             <h4><a href="{% url public-profile a.user.username %}">{{ a.user }}</a> {% trans 'annotated' %} <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
             <div style="padding-right:1em">
                  {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."
-                 <p><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
+                 <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}
