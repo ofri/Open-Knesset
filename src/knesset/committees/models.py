@@ -26,7 +26,6 @@ class Committee(models.Model):
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
-    topics = models.ManyToManyField('Topic', related_name='committees')
 
     def __unicode__(self):
         return "%s" % self.name
@@ -66,7 +65,7 @@ class Committee(models.Model):
         return self.meetings.all().order_by('-date')[:10]
 
     def get_public_topics(self):
-        return self.topics.filter(status__in=(PUBLIC_TOPIC_STATUS))
+        return self.topic_set.filter(status__in=(PUBLIC_TOPIC_STATUS))
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -220,9 +219,9 @@ class Topic(models.Model):
     '''
 
     creator = models.ForeignKey(User)
-    editors = models.ManyToManyField(User, related_name='editing_topics')
+    editors = models.ManyToManyField(User, related_name='editing_topics', null=True, blank=True)
     title = models.CharField(max_length=256)
-    description = models.TextField(null=True,blank=True)
+    description = models.TextField(blank=True)
     status = models.IntegerField(choices = (
         (TOPIC_PUBLISHED, _('published')),
         (TOPIC_FLAGGED, _('flagged')),
@@ -234,11 +233,14 @@ class Topic(models.Model):
        object_id_field="object_pk")
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
-    meetings = models.ManyToManyField(CommitteeMeeting) # no related name as `topics` is already defined
+    # no related name as `topics` is already defined in CommitteeMeeting as text
+    committees = models.ManyToManyField(Committee)
+    meetings = models.ManyToManyField(CommitteeMeeting, null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    log = models.TextField(default="")
+    log = models.TextField(default="", blank=True)
+
     @models.permalink
     def get_absolute_url(self):
         return ('topic-detail', [str(self.id)])
@@ -255,5 +257,9 @@ class Topic(models.Model):
                             self.log,)
                            )
        self.save()
+
+    def can_edit(self, user):
+        return user==self.creator or user in self.editors.all()
+
 
 from listeners import *

@@ -8,7 +8,6 @@ from annotatetext.models import Annotation
 from actstream.models import Action
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
-from knesset.topics.models import Topic
 from models import *
 
 just_id = lambda x: x.id
@@ -36,7 +35,7 @@ I have a deadline''')
         self.jacob.groups.add(self.group)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
-        self.topic = self.committee_1.topics.create(creator=self.jacob,
+        self.topic = self.committee_1.topic_set.create(creator=self.jacob,
                                                 title="hello", description="hello world")
 
     def testProtocolPart(self):
@@ -111,8 +110,8 @@ I have a deadline''')
         self.assertTemplateUsed(res,
                                 'committees/committee_detail.html')
         object_list = res.context['meetings_list']
-        self.assertEqual(map(just_id, object_list), 
-                         [self.meeting_1.id, self.meeting_2.id, ], 
+        self.assertEqual(map(just_id, object_list),
+                         [self.meeting_1.id, self.meeting_2.id, ],
                          'object_list has wrong objects: %s' % object_list)
 
     def testLoginRequired(self):
@@ -179,7 +178,7 @@ I have a deadline''')
         self.group.permissions.add(Permission.objects.get(name='Can add topic'))
         self.jacob.groups.add(self.group)
         self.mk_1 = Member.objects.create(name='mk 1')
-        self.topic = self.committee_1.topics.create(creator=self.jacob,
+        self.topic = self.committee_1.topic_set.create(creator=self.jacob,
                                                 title="hello", description="hello world")
 
 
@@ -188,6 +187,13 @@ I have a deadline''')
         self.assertEqual(Topic.objects.get_public().count(), 1)
         self.topic.set_status(TOPIC_REJECTED, "because I feel like it")
         self.assertEqual(self.committee_1.get_public_topics().count(), 0)
+
+    def testPermissions(self):
+        self.assertTrue(self.topic.can_edit(self.jacob))
+        self.assertFalse(self.topic.can_edit(self.ofri))
+        self.topic.editors.add(self.ofri)
+        self.assertTrue(self.topic.can_edit(self.ofri))
+
 
     def testListView (self):
         res = self.client.get(reverse('topic-list'))

@@ -6,6 +6,11 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('links', '0001_initial'),
+        ('events', '0001_initial'),
+    )
+
     def forwards(self, orm):
         
         # Adding model 'Topic'
@@ -13,11 +18,11 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('log', self.gf('django.db.models.fields.TextField')(default='')),
+            ('log', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
         ))
         db.send_create_signal('committees', ['Topic'])
 
@@ -29,6 +34,14 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('committees_topic_editors', ['topic_id', 'user_id'])
 
+        # Adding M2M table for field committees on 'Topic'
+        db.create_table('committees_topic_committees', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('topic', models.ForeignKey(orm['committees.topic'], null=False)),
+            ('committee', models.ForeignKey(orm['committees.committee'], null=False))
+        ))
+        db.create_unique('committees_topic_committees', ['topic_id', 'committee_id'])
+
         # Adding M2M table for field meetings on 'Topic'
         db.create_table('committees_topic_meetings', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
@@ -36,14 +49,6 @@ class Migration(SchemaMigration):
             ('committeemeeting', models.ForeignKey(orm['committees.committeemeeting'], null=False))
         ))
         db.create_unique('committees_topic_meetings', ['topic_id', 'committeemeeting_id'])
-
-        # Adding M2M table for field topics on 'Committee'
-        db.create_table('committees_committee_topics', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('committee', models.ForeignKey(orm['committees.committee'], null=False)),
-            ('topic', models.ForeignKey(orm['committees.topic'], null=False))
-        ))
-        db.create_unique('committees_committee_topics', ['committee_id', 'topic_id'])
 
 
     def backwards(self, orm):
@@ -54,11 +59,11 @@ class Migration(SchemaMigration):
         # Removing M2M table for field editors on 'Topic'
         db.delete_table('committees_topic_editors')
 
+        # Removing M2M table for field committees on 'Topic'
+        db.delete_table('committees_topic_committees')
+
         # Removing M2M table for field meetings on 'Topic'
         db.delete_table('committees_topic_meetings')
-
-        # Removing M2M table for field topics on 'Committee'
-        db.delete_table('committees_committee_topics')
 
 
     models = {
@@ -97,8 +102,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'replacements': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'replacing_in_committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
-            'topics': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'committees'", 'symmetrical': 'False', 'to': "orm['committees.Topic']"})
+            'replacements': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'replacing_in_committees'", 'symmetrical': 'False', 'to': "orm['mks.Member']"})
         },
         'committees.committeemeeting': {
             'Meta': {'ordering': "('-date',)", 'object_name': 'CommitteeMeeting'},
@@ -123,13 +127,14 @@ class Migration(SchemaMigration):
         },
         'committees.topic': {
             'Meta': {'object_name': 'Topic'},
+            'committees': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'topics'", 'symmetrical': 'False', 'to': "orm['committees.Committee']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'editors': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'editing_topics'", 'symmetrical': 'False', 'to': "orm['auth.User']"}),
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'editors': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'editing_topics'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.User']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'log': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            'meetings': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['committees.CommitteeMeeting']", 'symmetrical': 'False'}),
+            'log': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'meetings': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']", 'null': 'True', 'blank': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '256'})

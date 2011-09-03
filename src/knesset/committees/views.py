@@ -144,7 +144,7 @@ class TopicListView(generic.ListView):
     def get_queryset(self):
         qs = Topic.objects.get_public()
         if "committee_id" in self.kwargs:
-            qs = qs.filter(committee__id=self.kwargs["committee_id"])
+            qs = qs.filter(committees__id=self.kwargs["committee_id"])
         return qs
 
     def get_context_data(self, **kwargs):
