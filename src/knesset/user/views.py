@@ -22,13 +22,13 @@ from knesset.mks.models import Member
 from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
 from knesset.tagvotes.models import TagVote
-from knesset.committees.models import CommitteeMeeting
+from knesset.committees.models import CommitteeMeeting,Topic
 
 from forms import RegistrationForm, EditProfileForm
 
 class PublicUserProfile(DetailView):
     model = User
-    template_resource_name = 'viewed_user' # can't be 'user' because that name is 
+    template_resource_name = 'viewed_user' # can't be 'user' because that name is
                                            # overriden by request context processor!
     slug_field='username'
     context_object_name = 'viewed_user'
@@ -55,7 +55,7 @@ class AggregatedAction:
         self.verb = verb
         self.targets = {}
         self.timestamp = datetime.now()
-    
+
     def __str__(self):
         return self.actor.__str__()+" "+self.verb.__str__()+" "+self.targets.__str__()
 
@@ -63,7 +63,7 @@ AGGREGATION_BREAK_PERIOD = timedelta(0, 15*60) #15 minutes
 
 def aggregate_stream(actions):
     aggr_stream = []
-    
+
     aggr_action = None
     for action in actions:
         if aggr_action is None: # first item in the action list
@@ -77,16 +77,16 @@ def aggregate_stream(actions):
         else:
             aggr_action.targets[action.target] = 1;
             continue
-        
+
         # create a new aggregated action based on the current action
         aggr_action = AggregatedAction(action.actor, action.verb)
         aggr_action.targets[action.target] = 1
         aggr_action.timestamp = action.timestamp
-  
+
     # add the last aggregated action to the stream
     if aggr_action is not None:
         aggr_stream.append(aggr_action)
-            
+
     return aggr_stream
 
 def create_user(request):
@@ -94,7 +94,7 @@ def create_user(request):
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
             form.save()
-            user = authenticate(username=form.cleaned_data['username'], 
+            user = authenticate(username=form.cleaned_data['username'],
                                 password=form.cleaned_data['password1'])
             login(request, user)
             EmailValidation.objects.send(user=user)
@@ -120,7 +120,7 @@ def edit_profile(request):
             return HttpResponseRedirect('.')
 
     if request.method == 'GET':
-        edit_form = EditProfileForm(user = request.user)    
+        edit_form = EditProfileForm(user = request.user)
     return render_to_response('user/editprofile.html',
         context_instance=RequestContext(request,
             {'edit_form': edit_form,
@@ -131,20 +131,51 @@ def user_unfollows(request):
         return HttpResponseForbidden(reverse('login'))
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    unwatch_id = request.POST.get('unwatch', None)
+    unwatch_id = request.POST.get('id', None)
     if not unwatch_id:
-        return HttpResponseBadRequest('need an unwatch parameter')
+        return HttpResponseBadRequest('need an id of an object to unwatch')
     what = request.POST.get('what', None)
     what_types = {
-        'member': ContentType.objects.get_for_model(Member),
-        'meeting': ContentType.objects.get_for_model(CommitteeMeeting),
-        'agenda': ContentType.objects.get_for_model(Agenda),
-        'bill': ContentType.objects.get_for_model(Bill),
+        'member': Member,
+        'meeting': CommitteeMeeting,
+        'agenda': Agenda,
+        'bill': Bill,
+        'topic': Topic,
     }
     if what not in what_types:
-        return HttpResponseBadRequest('what parameter has to be one of: member, meeting,agenda')
+        return HttpResponseBadRequest(
+            'what parameter has to be one of: %s' % ','.join(what_types.keys()))
+    content_type = ContentType.objects.get_for_model(what_types[what])
+    Follow.objects.get(user=request.user,
+        content_type=content_type, object_id=unwatch_id).delete()
+    return HttpResponse('OK')
 
-    Follow.objects.get(user=request.user, 
+def user_follows(request):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden(reverse('login'))
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    watch_id = request.POST.get('id', None)
+    if not watch_id:
+        return HttpResponseBadRequest('need an id of an object to watch')
+    what = request.POST.get('what', None)
+    what_types = {
+        'member': Member,
+        'meeting': CommitteeMeeting,
+        'agenda': Agenda,
+        'bill': Bill,
+        'topic': Topic,
+    }
+    if what not in what_types:
+        return HttpResponseBadRequest(
+            'what parameter has to be one of: %s' % ','.join(what_types.keys()))
+    try:
+        obj = get_object_or_404(Member, pk=watch_id)
+        follow(request.user, obj)
+    except:
+        return HttpResponseBadRequest('object not found')
+
+    Follow.objects.get(user=request.user,
         content_type=what_types[what], object_id=unwatch_id).delete()
     return HttpResponse('OK')
 

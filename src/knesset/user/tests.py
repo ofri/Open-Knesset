@@ -1,4 +1,4 @@
-import datetime 
+import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -14,10 +14,10 @@ class TestPublicProfile(TestCase):
                                               'JKM')
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
                                               'adrian')
-        profile = self.adrian.get_profile()       
+        profile = self.adrian.get_profile()
         profile.public_profile = False
         profile.save()
-        
+
     def testPublicProfile(self):
         res = self.client.get(reverse('public-profile',
                                  kwargs={'pk': self.jacob.id}))
@@ -58,7 +58,7 @@ class TestFollowing(TestCase):
         action.send(self.jacob, verb='farted', target=self.david)
         action.send(self.jacob, verb='hit', target=self.yosef)
         action.send(self.jacob, verb='hit', target=self.moshe)
-        
+
 
     def testUnfollowMeeting(self):
         follow(self.jacob, self.meeting_1)
@@ -66,8 +66,8 @@ class TestFollowing(TestCase):
         self.assertEquals(len(p.meetings), 1)
         loggedin = self.client.login(username='jacob', password='JKM')
         self.assertTrue(loggedin)
-        response = self.client.post(reverse('user-unfollows'), 
-            {'what': 'meeting', 'unwatch': self.meeting_1.id})
+        response = self.client.post(reverse('user-unfollows'),
+            {'what': 'meeting', 'id': self.meeting_1.id})
         self.assertEquals(len(p.members), 0)
 
     def testFollowingMembers(self):
@@ -81,8 +81,8 @@ class TestFollowing(TestCase):
         response = self.client.post(reverse('follow-members'), {'unwatch': self.david.id})
         self.assertEquals(len(p.members), 1)
         self.assertEquals(p.members[0], self.yosef)
-        response = self.client.post(reverse('user-unfollows'), 
-            {'what': 'member', 'unwatch': self.yosef.id})
+        response = self.client.post(reverse('user-unfollows'),
+            {'what': 'member', 'id': self.yosef.id})
         self.assertEquals(len(p.members), 0)
 
         self.client.logout()

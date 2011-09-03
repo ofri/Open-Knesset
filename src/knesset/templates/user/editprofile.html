@@ -80,7 +80,7 @@
             jQuery.ajax({
                 type: 'POST',
                 url: '{% url user-unfollows %}',
-                data: {what: what, unwatch: object_id},
+                data: {what: what, id: object_id},
                 context: $('#following-' + what + '-' + object_id),
                 success: function () {
                     this.remove();
