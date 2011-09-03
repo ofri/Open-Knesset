@@ -364,8 +364,14 @@ th label { display: block; float:right; margin-left:1em;}
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
 .item-list .item.alt { background:#E4F4E4 }
-.item .date-item {
+.avatar-item { 
     float:right;
+    margin: 5px 5px 5px 10px;
+    height: 48px;
+    border: 1px solid #7777AA;
+    border-radius: 3px;
+}
+.item .date-item {
     background-color: #7891AB;
     border: 1px solid #7777AA;
     border-radius: 5px 5px 5px 5px;
@@ -820,7 +826,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 #content-main .triangle-border {
     position:relative;
     padding:15px;
-    margin:1.4em 0 3em;
+    margin:1.4em 1em;
     border:5px solid #6E9CA6;
     color:#333;
     background:#fff;

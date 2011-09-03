@@ -1,21 +1,29 @@
 {% load i18n %}
 
-<h3>{% trans "Suggested Agenda Topics" %}</h3>
 {% for t in topics %}
+    {% if forloop.first %}
+        <h3>{% trans "Suggested Agenda Topics" %}</h3>
+    {% endif %}
     <div class="item {% cycle "normal" "alt" %}">
-        <a href="{{ t.topic.get_absolute_url }}">{{ t.topic }}</a>
+        <a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a>
         <div>
+            <!-- not sure we want this
             <div style="float:left">
                 {{ t.get_status_display }}
             </div>
+            -->
+            {% if not object %}
             {% for c in t.committees.all %}
-                <a href="{% url committee-detail c.id %}">{{c}}</a>
+                <a href="{% url committee-detail c.id %}"><span style="font-size: 70%">{{c}}</span></a>
             {% endfor%}
+            {% endif %}
         </div>
 
     </div>
+    {% if forloop.last %}
+        <p>
+            <a class="more" href="./topic/">{% trans 'more...'%}</a>
+        </p>
+    {% endif %}
 {% endfor %}
-<p>
-    <a class="more" href="./topic/">{% trans 'more...'%}</a>
-</p>
 <br/>

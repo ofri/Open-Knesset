@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-30 04:02+0300\n"
-"PO-Revision-Date: 2011-08-30 04:03+0200\n"
+"POT-Creation-Date: 2011-09-02 17:36+0300\n"
+"PO-Revision-Date: 2011-09-02 17:36+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -253,7 +253,7 @@ msgstr "ניתוח ההצבעות של %(member)s לפי אג'נדה %(agenda)s"
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:47
+#: auxiliary/views.py:53
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -1098,24 +1098,27 @@ msgid "Non partisan, non commercial site that brings you relevant, detailed and 
 msgstr "אתר לא מפלגתי, לא מסחרי שמביא לכם תוכן רלוונטי, מפורט ועדכני על אודות הכנסת"
 
 #: templates/main.he.html:54
-#: templates/committees/committee_detail.html:59
-msgid "Latest Annotations"
-msgstr "הארות אחרונות"
+msgid "Latest Annotations and comments"
+msgstr "הארות ותגובות אחרונות"
 
-#: templates/main.he.html:56
+#: templates/main.he.html:57
 msgid "annotated"
 msgstr "האיר/ה על"
 
-#: templates/main.he.html:58
+#: templates/main.he.html:59
 #: templates/user/annotated_items.html:16
 #: templates/user/public_profile.html:47
 msgid "On the words of"
 msgstr "בנוגע לדברים של"
 
-#: templates/main.he.html:62
+#: templates/main.he.html:63
+msgid "commented"
+msgstr "הגיב/ה על"
+
+#: templates/main.he.html:69
 #: templates/committees/committee_detail.html:73
 #: templates/user/annotated_items.html:20
-#: templates/user/public_profile.html:51
+#: templates/user/public_profile.html:52
 msgid "No annotations yet..."
 msgstr "אין עדיין הארות"
 
@@ -1374,7 +1377,7 @@ msgid "Unwatch"
 msgstr "הפסק מעקב"
 
 #: templates/agendas/agenda_detail.html:28
-#: templates/agendas/agenda_list.html:59
+#: templates/agendas/agenda_list.html:35
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
@@ -1465,27 +1468,10 @@ msgid "Please login to see agendas you can edit"
 msgstr "יש להכנס לחשבון כדי לראות אג'נדות שלך"
 
 #: templates/agendas/agenda_list.html:24
-#: templates/agendas/agenda_list_item.html:15
-msgid "Editors:"
-msgstr "עורכים"
-
-#: templates/agendas/agenda_list.html:33
-msgid "Description:"
-msgstr "תאור"
-
-#: templates/agendas/agenda_list.html:37
-msgid "Number of followers"
-msgstr "מספר עוקבים"
-
-#: templates/agendas/agenda_list.html:41
-msgid "Number of ascribed votes"
-msgstr "מספר הצבעות משויכות"
-
-#: templates/agendas/agenda_list.html:47
 msgid "You are not editing any agenda"
 msgstr "אין אג'נדות בעריכתך"
 
-#: templates/agendas/agenda_list.html:52
+#: templates/agendas/agenda_list.html:29
 msgid "Add"
 msgstr "הוספה"
 
@@ -1507,6 +1493,10 @@ msgstr "כולל אותך"
 #: templates/laws/knessetproposal_list.html:17
 msgid "by"
 msgstr "על ידי"
+
+#: templates/agendas/agenda_list_item.html:15
+msgid "Editors:"
+msgstr "עורכים"
 
 #: templates/agendas/agendasfor.html:3
 msgid "Ascribed agendas"
@@ -1668,10 +1658,14 @@ msgid "Last Meetings"
 msgstr "ישיבות אחרונות"
 
 #: templates/committees/committee_detail.html:56
-#: templates/user/public_profile.html:55
-#: templates/user/public_profile.html:73
+#: templates/user/public_profile.html:56
+#: templates/user/public_profile.html:74
 msgid "more..."
 msgstr "עוד..."
+
+#: templates/committees/committee_detail.html:59
+msgid "Latest Annotations"
+msgstr "הארות אחרונות"
 
 #: templates/committees/committeemeeting_detail.html:25
 msgid "Please validate your email to annotate"
@@ -2681,7 +2675,7 @@ msgid "Annotations by"
 msgstr "הארות על ידי "
 
 #: templates/user/annotated_items.html:27
-#: templates/user/public_profile.html:83
+#: templates/user/public_profile.html:82
 #: templates/user/tagged_items.html:35
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
@@ -2825,11 +2819,11 @@ msgstr "אג'נדות במעקב"
 msgid "Not following any agendas."
 msgstr "אין אג'נדות במעקב"
 
-#: templates/user/public_profile.html:59
+#: templates/user/public_profile.html:60
 msgid "Tagged Items"
 msgstr "ענינים מתויגים"
 
-#: templates/user/public_profile.html:76
+#: templates/user/public_profile.html:77
 #: templates/user/tagged_items.html:31
 msgid "No tagged items yet..."
 msgstr " עדיין אין ענינים מתויגים"
@@ -2898,6 +2892,15 @@ msgstr "יומי"
 #: user/models.py:21
 msgid "Weekly"
 msgstr "שבועי"
+
+#~ msgid "Description:"
+#~ msgstr "תאור"
+
+#~ msgid "Number of followers"
+#~ msgstr "מספר עוקבים"
+
+#~ msgid "Number of ascribed votes"
+#~ msgstr "מספר הצבעות משויכות"
 
 #~ msgid "You are following"
 #~ msgstr "ברשימת המעקב שלך"
@@ -4412,9 +4415,6 @@ msgstr "שבועי"
 
 #~ msgid "user's URL"
 #~ msgstr "אתר המשתמש"
-
-#~ msgid "comment"
-#~ msgstr "תגובה"
 
 #~ msgid "date/time submitted"
 #~ msgstr "תאריך/שעת הגשה"
