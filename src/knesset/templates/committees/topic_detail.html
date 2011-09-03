@@ -13,14 +13,15 @@
     <h1>{% trans "Suggested Topic for a committee meeting" %}</h1>
     <h2>{{topic.title}}</h2>
     <h4>{% trans "by" %}: <a href="{% url public-profile topic.creator.id %}">{{topic.creator}}</a></h4>
-    <h4>{% trans "committee" %}: 
-        {% if committee %}
-            <a href="{% url committee-detail committee %}">{{committee}}</a>
-        {% else %}
+    <h4>{% trans "committee" %}:
+        {% for c in topic.committees.all %}
+            {% if not forloop.first %} | {% endif %}
+            <a href="{% url committee-detail c.id %}">{{c}}</a>
+        {% empty %}
             {% trans "unasigned" %}
-        {% endif %}
+        {% endfor %}
     </h4>
-    <p>{{topic.description}}</p>
+    <p>{{topic.description|linebreaksbr}}</p>
     <br/>
     <div>
         <h3>{% trans "Links" %}</h3>
