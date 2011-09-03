@@ -2,8 +2,9 @@ import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from knesset.mks.models import Member
 from actstream import action, follow
+from knesset.mks.models import Member
+from knesset.laws.models import Bill
 from knesset.committees.models import Committee
 from knesset.agendas.models import Agenda
 
@@ -29,7 +30,6 @@ class TestPublicProfile(TestCase):
                                  kwargs={'pk': self.adrian.id}))
         self.assertEqual(res.status_code, 200)
         self.assertFalse('details' in res.content)
-
 
     def testProfileList(self):
         res = self.client.get(reverse('profile-list'))
@@ -58,7 +58,7 @@ class TestFollowing(TestCase):
         action.send(self.jacob, verb='farted', target=self.david)
         action.send(self.jacob, verb='hit', target=self.yosef)
         action.send(self.jacob, verb='hit', target=self.moshe)
-
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
 
     def testUnfollowMeeting(self):
         follow(self.jacob, self.meeting_1)
@@ -66,26 +66,11 @@ class TestFollowing(TestCase):
         self.assertEquals(len(p.meetings), 1)
         loggedin = self.client.login(username='jacob', password='JKM')
         self.assertTrue(loggedin)
-        response = self.client.post(reverse('user-unfollows'),
-            {'what': 'meeting', 'id': self.meeting_1.id})
+        response = self.client.post(reverse('user-follow-unfollow'),
+                                    {'what': 'meeting',
+                                     'id': self.meeting_1.id,
+                                     'verb':'unfollow'})
         self.assertEquals(len(p.members), 0)
-
-    def testFollowingMembers(self):
-        p = self.jacob.get_profile()
-        loggedin = self.client.login(username='jacob', password='JKM')
-        self.assertTrue(loggedin)
-        response = self.client.post(reverse('follow-members'), {'watch': self.david.id})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(p.members[0], self.david)
-        response = self.client.post(reverse('follow-members'), {'watch': self.yosef.id})
-        response = self.client.post(reverse('follow-members'), {'unwatch': self.david.id})
-        self.assertEquals(len(p.members), 1)
-        self.assertEquals(p.members[0], self.yosef)
-        response = self.client.post(reverse('user-unfollows'),
-            {'what': 'member', 'id': self.yosef.id})
-        self.assertEquals(len(p.members), 0)
-
-        self.client.logout()
 
     def test_following_members(self):
         """Test the following and unfollowing members using the
@@ -94,23 +79,48 @@ class TestFollowing(TestCase):
         p = self.jacob.get_profile()
         loggedin = self.client.login(username='jacob', password='JKM')
         self.assertTrue(loggedin)
-        response = self.client.post(reverse('user-follows'),
+        response = self.client.post(reverse('user-follow-unfollow'),
                                     {'id': self.david.id,
-                                     'what': 'member'})
+                                     'what': 'member',
+                                     'verb': 'follow'})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(p.members[0], self.david)
-        response = self.client.post(reverse('user-follows'),
+        response = self.client.post(reverse('user-follow-unfollow'),
                                     {'id': self.yosef.id,
-                                     'what': 'member'})
-        response = self.client.post(reverse('user-unfollows'),
+                                     'what': 'member',
+                                     'verb': 'follow'})
+        self.assertEquals(len(p.members), 2)
+        response = self.client.post(reverse('user-follow-unfollow'),
                                     {'id': self.david.id,
-                                     'what':'member'})
+                                     'what':'member',
+                                     'verb':'unfollow'})
         self.assertEquals(len(p.members), 1)
         self.assertEquals(p.members[0], self.yosef)
-        response = self.client.post(reverse('user-unfollows'),
+        response = self.client.post(reverse('user-follow-unfollow'),
                                     {'id': self.yosef.id,
-                                     'what': 'member'})
+                                     'what': 'member',
+                                     'verb': 'unfollow'})
         self.assertEquals(len(p.members), 0)
+        self.client.logout()
+
+    def test_following_bills(self):
+        """Test the following and unfollowing a bill using the
+           generic follow method.
+        """
+        p = self.jacob.get_profile()
+        loggedin = self.client.login(username='jacob', password='JKM')
+        self.assertTrue(loggedin)
+        response = self.client.post(reverse('user-follow-unfollow'),
+                                    {'id': self.bill_1.id,
+                                     'what': 'bill',
+                                     'verb': 'follow'})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(p.bills[0], self.bill_1)
+        response = self.client.post(reverse('user-follow-unfollow'),
+                                    {'id': self.bill_1.id,
+                                     'what': 'bill',
+                                     'verb': 'unfollow'})
+        self.assertEquals(len(p.bills), 0)
         self.client.logout()
 
     def tearDown(self):
@@ -118,4 +128,8 @@ class TestFollowing(TestCase):
         self.david.delete()
         self.yosef.delete()
         self.moshe.delete()
+        self.bill_1.delete()
+        self.agenda_1.delete()
+        self.committee_1.delete()
+        self.meeting_1.delete()
 

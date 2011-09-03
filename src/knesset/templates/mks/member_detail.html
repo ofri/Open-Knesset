@@ -13,6 +13,12 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+                register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
+        });
+    </script>
 {% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
 {% if object.backlinks_enabled %}
     {% url member-trackback object_id=object.id as trackback_url %}
@@ -453,57 +459,6 @@
     <br />
     <div style="clear:both;"></div>
 {% endcache %}
-
-    <script>
-        $(document).ready(function() {
-            var member_id = {{object.id}};
-            {% if watched_member %}
-                document.is_watched = true;
-                $('#watch').html("{% trans 'Unwatch' %}");
-            {%else%}
-                document.is_watched = false;
-                $('#watch').html("{% trans 'Watch' %}");
-            {% endif %};
-            $('#watch').click( function () {
-                if (document.is_watched) {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{% url follow-members %}',
-                        data: {unwatch: member_id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = false;
-                            this.html("{% trans 'Watch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_unknown").html()
-                            $.jGrowl(msg, {life: 5000});
-                            $('#message_login').show();
-                        }
-                    });
-                }
-                else {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{% url follow-members %}',
-                        data: {watch: member_id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = true;
-                            this.html("{% trans 'Unwatch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_login").html()
-                            $.jGrowl(msg, {sticky: true});
-                        }
-                    });
-                }
-                return (false);
-            })
-        })
-    </script>
-
-
 
 {% endblock %}
 

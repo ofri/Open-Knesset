@@ -9,12 +9,8 @@ user_annotated_items = PublicUserProfile.as_view(template_name='user/annotated_i
 # views coded in this app
 urlpatterns = patterns('knesset.user.views',
     url(r'^create/$', 'create_user', name ='register'),
-    url(r'^members/$', 'follow_members', name ='follow-members'),
-    url(r'^bills/$', 'follow_bills', name='follow-bills'),
-    url(r'^agendas/$', 'follow_agendas', name ='follow-agendas'),
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
-    url(r'^follow/$', 'user_follows', name='user-follows'),
-    url(r'^unfollow/$', 'user_unfollows', name='user-unfollows'),
+    url(r'^follow/$', 'user_follow_unfollow', name='user-follow-unfollow'),
     )
 
 # auth views

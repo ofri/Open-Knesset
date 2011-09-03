@@ -17,8 +17,7 @@
     <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            /*watch(object_id={{object.id}}, watch_text="{% trans 'Watch' %}", unwatch_text="{% trans 'Unwatch' %}", watched_object={{watched_member}}, follow_url="{% url follow-members %}")*/
-            register_watch({{object.id}}, "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url follow-agendas %}");
+                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
         });
     </script>
 {% endblock %}
