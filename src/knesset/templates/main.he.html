@@ -64,17 +64,19 @@
                         {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
                     </div>
                 </a>
-                {% if a.timestamp %}
-                    <p>{{a.comment|linebreaksbr}}</p>
+                    <p>
+                        <a href="{% url public-profile a.user.username %}">{{a.user}}</a>
+                        <br/>
+                        {{a.comment|linebreaksbr}}
+                    </p>
                 </div>
+                {% if a.timestamp %}
                     <p class="triangle-border top" style="clear:both;">
                         "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
                         <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
                         </a>
                     </p>
                 {% else %}
-                    <p>{{a.comment|linebreaksbr}}</a></p>
-            </div>
                     <p class="triangle-border top" style="clear:both;text-align:center; width:530px">
         <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
                     </p>
