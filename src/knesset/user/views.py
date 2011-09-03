@@ -170,13 +170,11 @@ def user_follows(request):
         return HttpResponseBadRequest(
             'what parameter has to be one of: %s' % ','.join(what_types.keys()))
     try:
-        obj = get_object_or_404(Member, pk=watch_id)
+        obj = get_object_or_404(what_types[what], pk=watch_id)
         follow(request.user, obj)
     except:
         return HttpResponseBadRequest('object not found')
 
-    Follow.objects.get(user=request.user,
-        content_type=what_types[what], object_id=unwatch_id).delete()
     return HttpResponse('OK')
 
 def follow_members(request):

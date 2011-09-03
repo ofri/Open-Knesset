@@ -13,6 +13,7 @@ urlpatterns = patterns('knesset.user.views',
     url(r'^bills/$', 'follow_bills', name='follow-bills'),
     url(r'^agendas/$', 'follow_agendas', name ='follow-agendas'),
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
+    url(r'^follow/$', 'user_follows', name='user-follows'),
     url(r'^unfollow/$', 'user_unfollows', name='user-unfollows'),
     )
 

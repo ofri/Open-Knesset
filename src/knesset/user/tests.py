@@ -87,6 +87,32 @@ class TestFollowing(TestCase):
 
         self.client.logout()
 
+    def test_following_members(self):
+        """Test the following and unfollowing members using the
+           generic follow method.
+        """
+        p = self.jacob.get_profile()
+        loggedin = self.client.login(username='jacob', password='JKM')
+        self.assertTrue(loggedin)
+        response = self.client.post(reverse('user-follows'),
+                                    {'id': self.david.id,
+                                     'what': 'member'})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(p.members[0], self.david)
+        response = self.client.post(reverse('user-follows'),
+                                    {'id': self.yosef.id,
+                                     'what': 'member'})
+        response = self.client.post(reverse('user-unfollows'),
+                                    {'id': self.david.id,
+                                     'what':'member'})
+        self.assertEquals(len(p.members), 1)
+        self.assertEquals(p.members[0], self.yosef)
+        response = self.client.post(reverse('user-unfollows'),
+                                    {'id': self.yosef.id,
+                                     'what': 'member'})
+        self.assertEquals(len(p.members), 0)
+        self.client.logout()
+
     def tearDown(self):
         self.jacob.delete()
         self.david.delete()
