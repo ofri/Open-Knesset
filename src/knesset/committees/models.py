@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import Tag
+from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from knesset.events.models import Event
 from knesset.links.models import Link
@@ -229,6 +230,7 @@ class Topic(models.Model):
         (TOPIC_ACCEPTED, _('accepted')),
         (TOPIC_APPEAL, _('appeal')),
             ), default=TOPIC_PUBLISHED)
+    rating = RatingField(range=7, can_change_vote=True, allow_delete=True)
     links = generic.GenericRelation(Link, content_type_field="content_type",
        object_id_field="object_pk")
     events = generic.GenericRelation(Event, content_type_field="which_type",

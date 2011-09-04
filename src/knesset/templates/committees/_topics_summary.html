@@ -1,4 +1,5 @@
 {% load i18n %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
 
 {% for t in topics %}
     {% if forloop.first %}
@@ -12,11 +13,18 @@
                 {{ t.get_status_display }}
             </div>
             -->
+            <div>
+                <div style="float:left;">
+                    <div id="rating_{{t.id}}" style="float:left;"></div>
+                    <!-- ({{t.rating_votes}}) -->
+                </div>
             {% if not object %}
             {% for c in t.committees.all %}
                 <a href="{% url committee-detail c.id %}"><span style="font-size: 70%">{{c}}</span></a>
             {% endfor%}
             {% endif %}
+            </div>
+            <div class="clear"></div>
         </div>
 
     </div>
@@ -27,3 +35,17 @@
     {% endif %}
 {% endfor %}
 <br/>
+<script>
+    $(document).ready(function () {
+        {% for t in topics %}
+            $('#rating_{{t.id}}').raty({
+                number: 7,
+                start: {{t.rating_score}},
+                readOnly: true,
+                path: '{{ MEDIA_URL }}/img',
+                });
+        {% endfor %}
+    });
+</script>
+
+

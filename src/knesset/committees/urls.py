@@ -1,6 +1,8 @@
 #encoding: UTF-8
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
+from djangoratings.views import AddRatingFromModel
+
 from knesset.hashnav import DetailView
 from models import *
 from views import *
@@ -21,4 +23,11 @@ committeesurlpatterns = patterns ('',
     url(r'^committee/topic/$', TopicListView.as_view(), name='topic-list'),
     url(r'^committee/topic/(?P<pk>\d+)/$', DetailView.as_view(
         model=Topic, context_object_name = 'topic'), name='topic-detail'),
+    url(r'^committee/topic/(?P<object_id>\d+)/(?P<score>\d+)/$', AddRatingFromModel(), {
+                   'app_label': 'committees',
+                   'model': 'topic',
+                   'field_name': 'rating',
+               }, name='rate-topic'),
+    url(r'^committee/topic/(?P<object_id>\d+)/null/$', delete_topic_rating,
+               name='delete-topic-rating'),
 )

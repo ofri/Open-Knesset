@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'backlinks.pingback',
     'backlinks.trackback',
     'django_nose',
+    'djangoratings',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
