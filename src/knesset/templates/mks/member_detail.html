@@ -53,14 +53,6 @@
 {% endblock %}
 {% block description %} {% with object.name as name %} {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.   Information about {{ name }} for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public. {% endblocktrans %} {% endwith %} {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
-{% block messages %}
-<span id="message_login">
-    {% trans "You have to be logged in to enable the watch feature." %}<br>
-    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
-    {% trans "or" %}
-    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
-</span>
-{% endblock %}
 
 {% block divcontent %}
 {% cache 600 mks_detail object.id request.page request.get_full_path %}

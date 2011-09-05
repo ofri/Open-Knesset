@@ -24,11 +24,6 @@
 <span id="message_permission">
     <a href="{% url edit-profile %}">{% trans "Please validate your email to annotate" %}</a>
 </span>
-<span id="message_login">
-    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
-    {% trans "or" %}
-    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
-</span>
 <span id="message_staff">
     {% trans "Sorry, only editor can delete annotations." %}
     <a href="mailto:editor@oknesset.org">{% trans "Please email editors if an annotation should be deleted" %}</a>

@@ -18,14 +18,6 @@
 {% block keywords %}{% bill_full_name object %},{{ keywords }}{% endblock %}
 {% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
-{% block messages %}
-<span id="message_login">
-    {% trans "You have to be logged in to enable the watch feature." %}<br>
-    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
-    {% trans "or" %}
-    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
-</span>
-{% endblock %}
 {% block divcontent %}
     <ul class="actions">
         <li><span id="watch" class="awesome-button medium"></span></li>
