@@ -1,6 +1,7 @@
 {% extends 'site_base.html' %}
 {% load i18n %}
 {% load links %}
+{% load ratings %}
 {% block extratitle %}{{ topic.title }}{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
@@ -31,7 +32,7 @@
     <p>{{topic.description}}</p>
     <br/>
     <h3> {% trans "rating" %}: </h3>
-   <div style="display:inline;" id="rating"></div> 
+   <div style="display:inline;" id="rating"></div>
    <div class="clear"></div>
     <div>
         <h3>{% trans "Links" %}:</h3>
@@ -41,12 +42,13 @@
 
     <h3>{% trans "comments" %}</h3>
     {% include 'comments/object_comment_list.html' %}
+    {% rating_by_user user on topic.rating as vote %}
     <script>
         $(document).ready(function() {
             $('#rating').raty({
                 cancel: true,
                 number: 7,
-                start: {{object.rating_score}},
+                start: {% if vote %}{{vote}}{% else %}0{%endif%},
                 path: '{{ MEDIA_URL }}/img',
                 click: function(score, evt) {
                     $.post('/committee/topic/{{object.id}}/'+score+'/')
