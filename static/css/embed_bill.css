@@ -495,9 +495,8 @@ a{
 
 .ui-dialog-titlebar {
   background-color: #D8DFEA !important;
-  opactity: 0.6;
+  opacity: 0.6;
   direction: rtl;
-
 }
 
 .ui-dialog-title {
@@ -514,5 +513,3 @@ a{
 .ui-dialog-content a {
     color: blue !important;
 }
-
->>>>>>> b2e749472af124d0c3fc8f9f883fd47542fadbc2
