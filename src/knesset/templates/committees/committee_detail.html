@@ -56,6 +56,7 @@
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
   </div>
   <div class="secondary-column">
+    <h3>{% trans "Suggested Agenda Topics" %}</h3>
     {% include "committees/_topics_summary.html" %}
     <div class="add">
         <a class="awesome-button medium" href="{% url edit-committee-topic object.id %}">{% trans "Add" %}</a>

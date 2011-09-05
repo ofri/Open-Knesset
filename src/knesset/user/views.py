@@ -39,7 +39,8 @@ class PublicUserProfile(DetailView):
         context.update({
             'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
             'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
-            'agendas': [a for a in user.get_profile().agendas if a.is_public]
+            'agendas': [a for a in user.get_profile().agendas if a.is_public],
+            'topics': Topic.objects.get_public().filter(creator=user),
         })
         return context
 
