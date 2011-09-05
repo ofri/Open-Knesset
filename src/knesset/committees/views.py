@@ -174,7 +174,9 @@ def edit_topic(request, committee_id):
     if request.method == 'POST':
         edit_form = EditTopicForm(data=request.POST)
         if edit_form.is_valid():
-            edit_form.save()
+            topic = edit_form.save()
+            topic.creator = request.user
+            topic.save()
             m = request.user.message_set.create()
             m.message = 'Topic has been updated.'
             m.save()
