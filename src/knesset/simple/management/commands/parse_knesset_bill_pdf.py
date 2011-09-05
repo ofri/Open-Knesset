@@ -6,6 +6,7 @@
 import re,urllib2,subprocess,logging,sys,traceback
 from datetime import date
 from knesset.utils import clean_string
+from knesset.simple.management.commands.parse_government_bill_pdf import pdftools
 
 logger = logging.getLogger("open-knesset.parse_knesset_bill_pdf")
 
@@ -21,7 +22,7 @@ def parse(url):
 
 
 def pdftotext():
-    rc = subprocess.call(['pdftotext', '-enc', 'UTF-8', 'tmp.pdf', 'tmp.txt'])
+    rc = subprocess.call([pdftools.PDFTOTEXT, '-enc', 'UTF-8', 'tmp.pdf', 'tmp.txt'])
     if rc:
         logger.error('pdftotext returned error code %d' % rc)
 

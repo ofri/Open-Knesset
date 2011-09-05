@@ -5,7 +5,7 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-from actstream.models import Follow 
+from actstream.models import Follow
 from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
 
@@ -25,12 +25,12 @@ class AgendaVote(models.Model):
 
     class Meta:
         unique_together= ('agenda', 'vote')
-    
+
 def get_top_bottom(lst, top, bottom):
     """
     Returns a cropped list, keeping some of the list's top and bottom.
     Edge conditions are handled gracefuly.
-    Input list should be ascending so that top is at the end. 
+    Input list should be ascending so that top is at the end.
     """
     if len(lst) < top+bottom:
         delta = top+bottom - len(lst)
@@ -51,10 +51,10 @@ def get_top_bottom(lst, top, bottom):
     else:
         top_lst = []
         bottom_lst = []
-        
+
     return {'top':top_lst,
             'bottom':bottom_lst}
-    
+
 
 class AgendaManager(models.Manager):
     def get_selected_for_instance(self, instance, user=None, top=3, bottom=3):
@@ -68,18 +68,18 @@ class AgendaManager(models.Manager):
         agendas['top'].sort(key=attrgetter('score'), reverse=True)
         agendas['bottom'].sort(key=attrgetter('score'), reverse=True)
         return agendas
-    
+
     def get_relevant_for_mk(self, mk, agendaId):
         agendas = AgendaVote.objects.filter(agenda__id=agendaId,vote__votes__id=mk).distinct()
         return agendas
-    
+
     def get_relevant_for_user(self, user):
         if user == None or not user.is_authenticated():
-            agendas = self.filter(is_public=True)
+            agendas = Agenda.objects.filter(is_public=True)
         elif user.is_superuser:
-            agendas = self.all()
+            agendas = Agenda.objects.all()
         else:
-            agendas = self.filter(Q(is_public=True) | Q(editors=user)).distinct()
+            agendas = Agenda.objects.filter(Q(is_public=True) | Q(editors=user)).distinct()
         return agendas
 
 class Agenda(models.Model):
@@ -89,9 +89,9 @@ class Agenda(models.Model):
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
-    
+
     objects = AgendaManager()
-    
+
     class Meta:
         verbose_name = _('Agenda')
         verbose_name_plural = _('Agendas')
@@ -99,7 +99,7 @@ class Agenda(models.Model):
 
     def __unicode__(self):
         return "%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('agenda-detail', [str(self.id)])
@@ -107,7 +107,7 @@ class Agenda(models.Model):
     @models.permalink
     def get_edit_absolute_url(self):
         return ('agenda-detail-edit', [str(self.id)])
-    
+
     def member_score(self, member):
         # Find all votes that
         #   1) This agenda is ascribed to
@@ -119,7 +119,7 @@ class Agenda(models.Model):
             return (for_score - against_score) / max_score * 100
         else:
             return 0.0
-    
+
     def party_score(self, party):
         # party_members_ids = party.members.all().values_list('id',flat=True)
         for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum'] or 0
@@ -132,7 +132,7 @@ class Agenda(models.Model):
 
     def number_of_followers(self):
         return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
-    
+
     def related_mk_votes(self,member):
         # Find all votes that
         #   1) This agenda is ascribed to
@@ -148,10 +148,10 @@ class Agenda(models.Model):
                 if (vote_action.vote == member_vote.vote):
                     member_votes.insert(0,member_vote)
                     member_votes[0].voteaction = vote_action
-         
+
         return member_votes
         #return AgendaVote.objects.filter(agenda=self,vote__voteaction__member=mk).distinct()
-    
+
     def selected_instances(self, cls, top=3, bottom=3):
         instances = list(cls.objects.all())
         for instance in instances:
@@ -161,5 +161,5 @@ class Agenda(models.Model):
         instances['top'].sort(key=attrgetter('score'), reverse=True)
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
-        
+
 from listeners import *

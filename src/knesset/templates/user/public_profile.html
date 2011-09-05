@@ -23,11 +23,11 @@
             {% endfor %}
             </ul>
         </div>
-        
+
         <div>
             <h3>{% trans 'Following Agendas' %}:</h3>
             <ul class='favorites-list'>
-            {% for agenda in viewed_user.get_profile.agendas %}
+            {% for agenda in agendas %}
                 <li><a href="{{ agenda.get_absolute_url }}">{{ agenda }}</a></li>
             {% empty %}
                 <li>{% trans 'Not following any agendas.' %}</li>
@@ -45,7 +45,8 @@
                 {% endifchanged %}
                 <div style="padding: 0 1em 0.5em;">
                     {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."<br/>
-                     <a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                    <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                    </p>
                 </div>
             {% empty %}
                 <li>{% trans "No annotations yet..." %}
@@ -60,7 +61,7 @@
             {% if tagged_items %}
             <table>
             {% for t in tagged_items|slice:":10" %}
-                {% ifchanged %}                
+                {% ifchanged %}
                 <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
                         <td>
                 {% endifchanged %}
@@ -77,8 +78,6 @@
             {% endif %}
         </div>
         </div>
-
-            
     {% else %}
         {% trans "Sorry, this user has selected not to share his profile" %}
     {% endif %}
