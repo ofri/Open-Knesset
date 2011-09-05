@@ -22,6 +22,7 @@ from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
 from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
+from forms import EditTopicForm
 
 logger = logging.getLogger("open-knesset.committees.views")
 
@@ -167,6 +168,26 @@ class TopicDetailView(DetailView):
             watched = False
         context['watched_object'] = watched
         return context
+
+@login_required
+def edit_topic(request, committee_id):
+    if request.method == 'POST':
+        edit_form = EditTopicForm(data=request.POST)
+        if edit_form.is_valid():
+            edit_form.save()
+            m = request.user.message_set.create()
+            m.message = 'Topic has been updated.'
+            m.save()
+            return HttpResponseRedirect(
+                reverse('committee-detail',args=[committee_id]))
+
+    if request.method == 'GET':
+        c = Committee.objects.get(pk=committee_id)
+        edit_form = EditTopicForm(initial={'committees':[c]})
+    return render_to_response('committees/edit_topic.html',
+        context_instance=RequestContext(request,
+            {'edit_form': edit_form,
+            }))
 
 
 

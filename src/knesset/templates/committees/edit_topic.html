@@ -1,0 +1,12 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load mks %}
+{% load avatar_tags %}
+{% block extratitle %}{% trans 'Edit Topic' %}{% endblock %}
+{% block header %}<h1>{% trans 'Edit Topic' %}</h1>{% endblock %}
+{% block content %}
+<form action="." method="post">{% csrf_token %}
+    {{ edit_form.as_p }}
+    <input type="submit">{% trans 'Submit' %}</input>
+</form>
+{% endblock %}
