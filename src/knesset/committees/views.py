@@ -154,6 +154,22 @@ class TopicListView(generic.ListView):
         context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
         return context
 
+class TopicDetailView(DetailView):
+    model = Topic
+    context_object_name = 'topic'
+    def get_context_data(self, **kwargs):
+        context = super(TopicDetailView, self).get_context_data(**kwargs)
+        topic = context['object']
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = topic in p.topics
+        else:
+            watched = False
+        context['watched_object'] = watched
+        return context
+
+
+
 class MeetingsListView(ListView):
 
     def get_context(self):
