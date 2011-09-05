@@ -12,6 +12,19 @@
     </script>
 
 {% endblock %}
+{% block nav-committees %}class="selected"{% endblock %}
+{% block header %}
+    <ul id="breadcrumbs"> 
+        <li class="first"><a href="{% url committee-list %}"> {% trans "Committees" %}</a></li>
+        <li>
+        {% for c in object.committees.all %}
+            {% if not forloop.first %} | {% endif %}
+            <a href="{% url committee-detail c.id %}">{{c}}</a>
+        {% endfor%}
+        </li>
+        <li>{% trans "Suggested Topic for a committee meeting" %}</li>
+    </ul>
+{% endblock %}
 {% block subnav %}
     <ul class="actions">
         {% if user == topic.creator %}
@@ -23,12 +36,8 @@
 
 {% block content %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
-    <h1>{% trans "Suggested Topic for a committee meeting" %}</h1>
     <h2>{{topic.title}}</h2>
     <h4>{% trans "by" %}: <a href="{% url public-profile topic.creator.id %}">{{topic.creator}}</a></h4>
-    {% for c in object.committees.all %}
-        <a href="{% url committee-detail c.id %}"><span style="font-size: 70%">{{c}}</span></a>
-    {% endfor%}
     <p>{{topic.description}}</p>
     <br/>
     <h3> {% trans "average rating" %}: </h3>

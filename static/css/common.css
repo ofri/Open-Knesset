@@ -56,7 +56,16 @@ a:hover { text-decoration:underline;}
 
 #subnav li { display:inline; list-style-type:none;
             font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
+#breadcrumbs { padding:0 }
 
+#breadcrumbs .first:before { content:""; }
+#breadcrumbs li:before {
+    content: "\00BB \0020";
+        }
+#breadcrumbs li { float:right;  font-size: 120%; list-style-type: none;
+            font-weight: bold; margin-left: .5em; padding:0.5em 0; }
+#breadcrumbs li.first { list-style-type: none; }
+#breadcrumbs a { padding: 0; }
 /* toolbar */
 .actions li { display:inline; list-style-type:none;
             font-weight: bold; padding:0 0.2em; }
