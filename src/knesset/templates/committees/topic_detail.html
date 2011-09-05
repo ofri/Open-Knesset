@@ -1,6 +1,7 @@
 {% extends 'site_base.html' %}
 {% load i18n %}
 {% load links %}
+{% load ratings %}
 {% block extratitle %}{{ topic.title }}{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
@@ -30,28 +31,39 @@
     {% endfor%}
     <p>{{topic.description}}</p>
     <br/>
-    <h3> {% trans "rating" %}: </h3>
-   <div style="display:inline;" id="rating"></div> 
-   <div class="clear"></div>
+    <h3> {% trans "average rating" %}: </h3>
+    <div style="display:inline;" id="average_rating"></div>
+    <div class="clear"></div>
+    <h3> {% trans "your rating" %}: </h3>
+    <div style="display:inline;" id="your_rating">{% if not user.is_authenticated %}{% trans 'Login to rank this topic' %}{% endif %}</div>
+    <div class="clear"></div>
     <div>
         <h3>{% trans "Links" %}:</h3>
         {% object_links topic %}
     </div>
    <div class="clear"></div>
 
-    <h3>{% trans "comments" %}</h3>
     {% include 'comments/object_comment_list.html' %}
     <script>
         $(document).ready(function() {
-            $('#rating').raty({
+            $('#average_rating').raty({
+                number: 7,
+                start: {{topic.rating.get_rating}},
+                readOnly: true,
+                path: '{{ MEDIA_URL }}/img',
+            });
+            {% if user.is_authenticated %}
+            {% rating_by_user user on topic.rating as vote %}
+            $('#your_rating').raty({
                 cancel: true,
                 number: 7,
-                start: {{object.rating_score}},
+                start: {% if vote %}{{vote}}{% else %}0{%endif%},
                 path: '{{ MEDIA_URL }}/img',
                 click: function(score, evt) {
                     $.post('/committee/topic/{{object.id}}/'+score+'/')
                 }
             });
+            {% endif %}
         })
     </script>
 {% endblock %}
