@@ -419,6 +419,9 @@ a{
 				    z-index: 20;
 				    padding-top:3px;
 				}
+		ul#steps li.focused{
+			width: 80%;
+		}
 				
 #footer{
 	position: relative;
