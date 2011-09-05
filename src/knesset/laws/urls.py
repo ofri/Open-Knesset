@@ -2,7 +2,6 @@
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
 from django.views.generic.simple import redirect_to
-from knesset.hashnav.views import ListDetailView
 from knesset.hashnav import ListView
 from models import *
 from views import *
@@ -23,6 +22,8 @@ lawsurlpatterns = patterns ('',
         {'url': '/bill/?booklet=%(booklet_num)s', 'premanent': True }),
     url(r'^bill/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail'),
     url(r'^bill/(?P<object_id>\d+)/embed/$', embed_bill_details, name='embed-bill-details'),
+    url(r'^bill/(?P<object_id>\d+)/unbind-vote/(?P<vote_id>\d+)/$',
+        bill_unbind_vote, name='bill-unbind-vote'),
     url(r'^bill/auto_complete/$', bill_auto_complete, name='bill-auto-complete'),
     url(r'^bill/(?P<slug>[\w\-\"]+)/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail-with-slug'),
     url(r'^vote/$', vote_list_view, name='vote-list'),
@@ -30,11 +31,7 @@ lawsurlpatterns = patterns ('',
     url(r'^vote/rss/$', feeds.Votes(), name='votes-feed'),
     url(r'^vote/tag/(?P<tag>.*)/$', vote_tag, name='vote-tag'),
     url(r'^vote/(?P<pk>\d+)/$', vote_detail_view, name='vote-detail'),
-    url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
-    url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
-    url(r'^(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
     url(r'^vote/(?P<object_id>\d+)/$', vote_view, name='vote-detail'),
-    url(r'^votes/tagged/(?P<tag>.*)/$', tagged, name='tagged-votes'),    
     # TODO:the next url is hardcoded in a js file
     url(r'^vote/auto_complete/$', vote_auto_complete, name='vote-auto-complete'),
 )

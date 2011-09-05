@@ -3,7 +3,7 @@
 {% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{% trans 'Members' %}{% endblock %}
-{% block description %}{% trans 'Members' %} - {% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
 {% block subnav %}
         {% for link in friend_pages %}

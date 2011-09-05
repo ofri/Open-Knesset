@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 
 from knesset.hashnav import DetailView, ListView, method_decorator
 from knesset.laws.models import Vote
@@ -67,24 +68,38 @@ class AgendaDetailView (DetailView):
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = agenda in p.agendas
+            watched_members = self.request.user.get_profile().members
         else:
             watched = False
-
+            watched_members = False
         context.update({'watched_object': watched})
+        context['watched_members'] = watched_members
 
-        if self.request.GET.get('all_mks',False):
-            mks = agenda.selected_instances(Member, top=200, bottom=0)
-            context.update({'selected_mks':mks['top'],'all_mks':True})
+        all_mks = 'all_mks' in self.request.GET.keys()
+        if all_mks:
+            cached_context = cache.get('agenda_mks_%d_all_mks' % agenda.id)
+            if not cached_context:
+                mks = agenda.selected_instances(Member, top=200, bottom=0)
+                cached_context = {'selected_mks':mks['top'],'all_mks':True}
+                cache.set('agenda_mks_%d_all_mks' % agenda.id,
+                          cached_context, 900)
+            context.update(cached_context)
         else:
-            mks = agenda.selected_instances(Member, top=5,bottom=5)
-            context.update({'selected_mks_top': mks['top'],
-                            'selected_mks_bottom': mks['bottom'],
-                            'all_mks':False})
+            cached_context = cache.get('agenda_mks_%d' % agenda.id)
+            if not cached_context:
+                mks = agenda.selected_instances(Member, top=5,bottom=5)
+                cached_context = {'selected_mks_top': mks['top'],
+                                  'selected_mks_bottom': mks['bottom'],
+                                  'all_mks':False}
+                cache.set('agenda_mks_%d' % agenda.id, cached_context, 900)
+            context.update(cached_context)
 
-
-
-        selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-        context.update({'selected_parties': selected_parties })
+        cached_context = cache.get('agenda_parties_%d' % agenda.id)
+        if not cached_context:
+            selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
+            cached_context = {'selected_parties': selected_parties }
+            cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
+        context.update(cached_context)
 
         return context
 

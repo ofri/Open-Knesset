@@ -30,7 +30,7 @@ urlpatterns = patterns('',
       url(r'^agenda/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$', agenda_handler, name='agenda-handler'),
       url(r'^committee/$', committee_handler, name='committe-handler'),
       url(r'^committee/(?P<id>[0-9]+)/$', committee_handler, name='committe-handler'),
-      url(r'^committee_meeting/$', committee_meeting_handler, name='committee-meeting-handler'),
-      url(r'^committee_meeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
+      url(r'^committeemeeting/$', committee_meeting_handler, name='committee-meeting-handler'),
+      url(r'^committeemeeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
       )
 

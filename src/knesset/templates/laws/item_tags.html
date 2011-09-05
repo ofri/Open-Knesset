@@ -1,0 +1,8 @@
+{% load i18n %}
+<span class="item-tags">
+    {% trans "Tags" %}:
+    {% for tag in tags %}
+        {% if not forloop.first %} | {% endif %}
+        <a href="{% url bill-tag tag=tag %}">{{ tag.name }}</a>
+    {% endfor %}
+</span>

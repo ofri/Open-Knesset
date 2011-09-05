@@ -1,4 +1,5 @@
 #encoding: utf-8
+import re
 import itertools
 import logging
 from datetime import date, timedelta
@@ -8,6 +9,7 @@ from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -157,28 +159,32 @@ class VoteManager(models.Manager):
     def filter_and_order(self, *args, **kwargs):
         qs = self.all()
         filter_kwargs = {}
-        if 'type' in kwargs and kwargs['type'] and kwargs['type'] != 'all':
-            filter_kwargs['title__startswith'] = self.VOTE_TYPES[kwargs['type']]
-        if 'since' in kwargs and kwargs['since'] and kwargs['since'] != 'all':
-            filter_kwargs['time__gt'] = date.today()-timedelta(int(kwargs['since']))
+        if kwargs.get('vtype', None) and kwargs['vtype'] != 'all':
+            filter_kwargs['title__startswith'] = self.VOTE_TYPES[kwargs['vtype']]
 
-        qs = qs.filter(**filter_kwargs) if filter_kwargs else qs
+        if filter_kwargs:
+            qs = qs.filter(**filter_kwargs)
 
         # In dealing with 'tagged' we use an ugly workaround for the fact that generic relations
         # don't work as expected with annotations.
         # please read http://code.djangoproject.com/ticket/10461 before trying to change this code
-        if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'false':
-            qs = qs.exclude(tagged_items__isnull=False)
-        if 'tagged' in kwargs and kwargs['tagged'] and kwargs['tagged'] == 'true':
-            untagged_ids = Vote.objects.exclude(tagged_items__isnull=False).values_list('id',flat=True)
-            qs = qs.exclude(id__in=untagged_ids)
+        if kwargs.get('tagged', None):
+            if kwargs['tagged'] == 'false':
+                qs = qs.exclude(tagged_items__isnull=False)
+            elif kwargs['tagged'] != 'all':
+                qs = qs.filter(tagged_items__tag__name=kwargs['tagged'])
 
+        if kwargs.get('to_date', None):
+            qs = qs.filter(time__lte=kwargs['to_date']+timedelta(days=1))
+
+        if kwargs.get('from_date', None):
+            qs = qs.filter(time__gte=kwargs['from_date'])
 
         if 'order' in kwargs:
             if kwargs['order']=='controversy':
-                qs = qs.filter(controversy__gt=0).order_by('-controversy')
+                qs = qs.order_by('-controversy')
             if kwargs['order']=='against-party':
-                qs = qs.filter(against_party__gt=0).order_by('-against_party')
+                qs = qs.order_by('-against_party')
             if kwargs['order']=='votes':
                 qs = qs.order_by('-votes_count')
         return qs
@@ -250,6 +256,12 @@ class Vote(models.Model):
     def against_opposition_votes_count(self):
         return VoteAction.objects.filter(vote=self, against_opposition=True).count()
 
+    def against_own_bill_votes(self):
+        return self.votes.filter(voteaction__against_own_bill=True)
+
+    def against_own_bill_votes_count(self):
+        return self.against_own_bill_votes().count()
+
     def short_summary(self):
         if self.summary==None:
             return ''
@@ -278,12 +290,6 @@ class Vote(models.Model):
 
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)
-        for t in tags:
-            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
-            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
-            t.score_positive = t.score > 0
-        tags = [t for t in tags]
-        tags.sort(key=lambda x:-x.score)
         return tags
 
     def _set_tags(self, tag_list):
@@ -310,6 +316,69 @@ class Vote(models.Model):
         tf.tags = self.tags
         tf.initial = {'tags':', '.join([str(t) for t in self.tags])}
         return tf
+
+    def update_vote_properties(self):
+        party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
+        party_ids = [x[0] for x in party_id_member_count_coalition]
+        party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
+
+        for_party_ids = [va.member.current_party.id for va in self.for_votes()]
+        party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
+
+        against_party_ids = [va.member.current_party.id for va in self.against_votes()]
+        party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
+
+        party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+        party_stands_against = [float(av)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
+
+        party_stands_for = dict(zip(party_ids, party_stands_for))
+        party_stands_against = dict(zip(party_ids, party_stands_against))
+
+        coalition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if party_is_coalition[y]])
+        coalition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if party_is_coalition[y]])
+        opposition_for_votes = sum([x for (x,y) in zip(party_for_votes,party_ids) if not party_is_coalition[y]])
+        opposition_against_votes = sum([x for (x,y) in zip(party_against_votes,party_ids) if not party_is_coalition[y]])
+
+        coalition_stands_for = (float(coalition_for_votes)>0.66*(coalition_for_votes+coalition_against_votes))
+        coalition_stands_against = float(coalition_against_votes)>0.66*(coalition_for_votes+coalition_against_votes)
+        opposition_stands_for = float(opposition_for_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+        opposition_stands_against = float(opposition_against_votes)>0.66*(opposition_for_votes+opposition_against_votes)
+
+        # a set of all MKs that proposed bills this vote is about.
+        proposers = [set(b.proposers.all()) for b in self.bills()]
+        if proposers:
+            proposers = reduce(lambda x,y: set.union(x,y), proposers)
+
+        against_party_count = 0
+        for va in VoteAction.objects.filter(vote=self):
+            dirt = False
+            if party_stands_for[va.member.current_party.id] and va.type=='against':
+                va.against_party = True
+                against_party_count += 1
+                dirt = True
+            if party_stands_against[va.member.current_party.id] and va.type=='for':
+                va.against_party = True
+                dirt = True
+            if va.member.current_party.is_coalition:
+                if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
+                    va.against_coalition = True
+                    dirt = True
+            else:
+                if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
+                    va.against_opposition = True
+                    dirt = True
+
+            if va.member in proposers and va.type=='against':
+                va.against_own_bill = True
+                dirt = True
+
+            if dirt:
+                va.save()
+
+        self.controversy = min(self.for_votes_count(), self.against_votes_count())
+        self.against_party = against_party_count
+        self.votes_count = VoteAction.objects.filter(vote=self).count()
+        self.save()
 
 class TagForm(forms.Form):
     tags = TagField()
@@ -360,6 +429,10 @@ class BillProposal(models.Model):
             return self.bill.get_absolute_url()
         else:
             return ""
+
+    def get_explanation(self):
+        r = re.search(r"דברי הסבר.*?(<p>.*?)<p>-+".decode('utf8'), self.content_html, re.M|re.DOTALL)
+        return r.group(1) if r else self.content_html
 
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
@@ -424,6 +497,10 @@ class Bill(models.Model):
     def save(self,**kwargs):
         self.slug = slugify_name(self.title)
         self.popular_name_slug = slugify_name(self.popular_name)
+        if self.law:
+            self.full_title = "%s %s" % (self.law.title, self.title)
+        else:
+            self.full_title = self.title
         super(Bill,self).save(**kwargs)
         for mk in self.proposers.all():
             mk.recalc_bill_statistics()
@@ -519,9 +596,14 @@ class Bill(models.Model):
         self.update_stage()
 
 
-    def update_stage(self):
+    def update_stage(self, force_update=False):
         """Updates the stage for this bill according to all current data
+           force_update - assume current stage is wrong, and force
+           recalculation. default is False, so we assume current status is OK,
+           and only look for updates.
         """
+        if not self.stage_date or force_update: # might be empty if bill is new
+            self.stage_date = date(1948, 5, 13)
         if self.approval_vote:
             if self.approval_vote.for_votes_count() > self.approval_vote.against_votes_count():
                 self.stage = '6'
@@ -652,7 +734,7 @@ class GovLegislationCommitteeDecision(models.Model):
     number = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return u"%s" % (self.title)
-    
+
     def get_absolute_url(self):
         return self.bill.get_absolute_url()
 

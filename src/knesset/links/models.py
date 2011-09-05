@@ -38,7 +38,7 @@ class Link(models.Model):
     object_pk      = models.TextField(_('object ID'))
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
     link_type = models.ForeignKey(LinkType, default=get_default_linktype, null=True, blank=True)
-
+    active = models.BooleanField(default=True)
     objects = LinksManager()
 
     class Meta:
@@ -49,7 +49,7 @@ class Link(models.Model):
         return "%s: %s" % (self.title, self.url)
 
 class LinkedFile(models.Model):
-    link = models.ForeignKey(Link)
+    link = models.ForeignKey(Link, null=True, blank=True, default=None)
     sha1 = models.CharField(max_length=1000, null=True)
     last_updated = models.DateTimeField(auto_now=True, null=True)
     link_file = models.FileField(storage=link_file_storage, upload_to='link_files')

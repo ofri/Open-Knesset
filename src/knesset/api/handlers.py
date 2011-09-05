@@ -9,7 +9,7 @@ from django.db.models import Count
 from piston.handler import BaseHandler
 from piston.utils import rc
 from knesset.mks.models import Member, Party, Membership
-from knesset.laws.models import Vote, VoteAction, Bill
+from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
 from tagging.models import Tag, TaggedItem
@@ -31,7 +31,14 @@ class HandlerExtensions():
         return self.qs[page*num:(page+1)*num]
 
 class MemberHandler(BaseHandler, HandlerExtensions):
-    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count', 'votes_per_month', 'service_time', 'discipline','average_weekly_presence', 'committee_meetings_per_month','bills_proposed','bills_passed_pre_vote','bills_passed_first_vote','bills_approved', 'roles', 'average_weekly_presence_rank', 'committees', 'is_current', )
+    fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count',
+              'votes_per_month', 'service_time',
+              'discipline','average_weekly_presence',
+              'committee_meetings_per_month','bills',
+              'bills_proposed','bills_passed_pre_vote',
+              'bills_passed_first_vote','bills_approved', 
+              'roles', 'average_weekly_presence_rank', 'committees', 
+              'is_current', )
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -63,6 +70,15 @@ class MemberHandler(BaseHandler, HandlerExtensions):
             return round(x,2)
         else:
             return None
+
+    @classmethod
+    def bills(cls, member):
+        d = [{'title':b.full_title,
+              'url':b.get_absolute_url(),
+              'stage':b.stage,
+              'stage_text':b.get_stage_display(),}
+            for b in member.bills.all()]
+        return d
 
     @classmethod
     def bills_proposed(self, member):
@@ -199,12 +215,13 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
-    fields = ('url', 'bill_title',
+    fields = ('url', 'bill_title', 'popular_name',
               'stage_text', 'stage_date',
               'votes',
               'committee_meetings',
               'proposing_mks',
-              'tags'
+              'tags',
+              'proposals',
              )
 
     exclude = ('member')
@@ -239,26 +256,29 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
     @classmethod
     def votes(self, bill):
-        pre_votes =   [ x.id for x in bill.pre_votes.all() ]
+        pre_votes =   [ {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))} for x in bill.pre_votes.all()]
         first_vote = None
         if bill.first_vote != None:
-            first_vote = bill.first_vote.id
+            x = bill.first_vote
+            first_vote = {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))}
         approval_vote = None
         if bill.approval_vote != None:
-            approval_vote = bill.approval_vote.id
-        all = set(pre_votes+[first_vote, approval_vote])
+            x = bill.approval_vote
+            approval_vote = {'id': x.id, 'date': x.time, 'description': x.__unicode__(), 'count_for_votes': len(x.get_voters_id('for')), 'count_against_votes': len(x.get_voters_id('against')), 'count_didnt_votes': len(x.get_voters_id('no-vote'))}
+        all = pre_votes + [first_vote, approval_vote]
         return { 'pre' : pre_votes, 'first' : first_vote, 'approval' : approval_vote, 'all':list(all)}
 
     @classmethod
     def committee_meetings(self, bill):
-        first_committee =   [ x.id for x in bill.first_committee_meetings.all() ]
-        second_committee = [ x.id for x in bill.second_committee_meetings.all() ]
-        all=set(first_committee+second_committee)
+        first_committee =   [ {'id': x.id, 'date': x.date, 'description': x.__unicode__()} for x in bill.first_committee_meetings.all() ]
+        second_committee = [ {'id': x.id, 'date': x.date, 'description': x.__unicode__()} for x in bill.second_committee_meetings.all() ]
+        all = first_committee + second_committee
+        #all=set(first_committee+second_committee)
         return { 'first' : first_committee, 'second' : second_committee, 'all':list(all) }
 
     @classmethod
     def proposing_mks(self, bill):
-        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name } for x in bill.proposers.all() ]
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name, 'img_url' : x.img_url } for x in bill.proposers.all() ]
 
     @classmethod
     def tags(self,bill):
@@ -267,6 +287,28 @@ class BillHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def bill_title(self,bill):
         return u"%s, %s" % (bill.law.title, bill.title)
+
+    @classmethod
+    def proposals(self, bill):
+        gov_proposal = {}
+
+        try:
+            gov_proposal = {'id': bill.gov_proposal.id, 'source_url': bill.gov_proposal.source_url, 'date': bill.gov_proposal.date, 'explanation': bill.gov_proposal.get_explanation()}
+        except GovProposal.DoesNotExist:
+            pass
+
+        knesset_proposal = {}
+
+        try:
+            knesset_proposal = {'id': bill.knesset_proposal.id, 'source_url': bill.knesset_proposal.source_url, 'date': bill.knesset_proposal.date, 'explanation': bill.knesset_proposal.get_explanation()}
+        except KnessetProposal.DoesNotExist:
+            pass
+
+        return {'gov_proposal': gov_proposal,
+                'knesset_proposal': knesset_proposal,
+                'private_proposals': [{'id': prop.id, 'source_url': prop.source_url, 'date': prop.date, 'explanation': prop.get_explanation()} for prop in bill.proposals.all()]}
+
+
 
 class PartyHandler(BaseHandler):
     fields = ('id', 'name', 'start_date', 'end_date')

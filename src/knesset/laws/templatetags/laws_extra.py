@@ -12,22 +12,15 @@ logger = logging.getLogger("open-knesset.laws.templatetags")
 
 register = template.Library()
 
-@register.inclusion_tag('laws/_tag_vote.html')
-def user_votes(user, vote, tag):
-    ti = TaggedItem.objects.filter(tag=tag).filter(object_id=vote.id)[0]
-    try:
-        tv = TagVote.objects.filter(tagged_item=ti, user=user)[0]
-        cv = tv.vote
-    except Exception:
-        cv = 0
-    vote.ctype = ContentType.objects.get_for_model(vote).name
-    return {'user': user, 'vote':vote, 'tag':tag, 'current_vote_up':cv==1, 'current_vote_down':cv==-1}
-
 @register.filter
 def recent_discipline(m):
     d = date.today() - timedelta(30)
     try:
-        return m.voting_statistics.discipline(d) or _('Not enough data')
+        value = m.voting_statistics.discipline(d)
+        if value:
+            return "%d%%" % value
+        else:
+            return _('Not enough data')
     except MemberVotingStatistics.DoesNotExist:
         logger.error('%d is missing voting statistics' % m.id)
         return _('Not enough data')
@@ -36,7 +29,11 @@ def recent_discipline(m):
 def recent_coalition_discipline(m):
     d = date.today() - timedelta(30)
     try:
-        return m.voting_statistics.coalition_discipline(d) or _('Not enough data')
+        value = m.voting_statistics.coalition_discipline(d)
+        if value:
+            return "%d%%" % value
+        else:
+            return _('Not enough data')
     except MemberVotingStatistics.DoesNotExist:
         logger.error('%d is missing voting statistics' % m.id)
         return _('Not enough data')
@@ -94,3 +91,7 @@ def pagination(page_obj, paginator, request):
                 i[2] = True
 
     return locals()
+
+@register.inclusion_tag('laws/vote_list_item.html')
+def vote_list_item(vote, watched_members=[]):
+    return {'vote': vote, 'watched_members': watched_members}

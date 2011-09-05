@@ -2,17 +2,19 @@
 {% if links %}
     <ul class="links">
     {% for link in links %}
-    <li><a href="{{ link.url|safe }}">
-        {% if link.link_type %}
-            &nbsp;
-            {% if link.link_type.image %}
-                <img src="{{MEDIA_URL}}{{link.link_type.image}}" alt="{% trans link.link_type.title %}">
-            {% else %}
-                ({% trans link.link_type.title %})
+        {% if link.active %}
+        <li><a href="{{ link.url|safe }}">
+            {% if link.link_type %}
+                &nbsp;
+                {% if link.link_type.image %}
+                    <img src="{{MEDIA_URL}}{{link.link_type.image}}" alt="{% trans link.link_type.title %}">
+                {% else %}
+                    ({% trans link.link_type.title %})
+                {% endif %}
             {% endif %}
+            {{ link.title }}
+        </a></li>
         {% endif %}
-        {{ link.title }}
-    </a></li>
     {% endfor %}
     </ul>
 {% else %}

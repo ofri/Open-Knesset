@@ -10,10 +10,11 @@
 
 {% block extratitle %}{{ object.topics|safe|truncatewords:10 }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ description }} - {% endblock %}
+{% block description %}{{ description }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extrahead %}
     <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />  
+    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
@@ -40,10 +41,10 @@
     <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{% mk_card m %}{% endfor %}<br>
     {% if user.is_authenticated %}
         {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
-    {% endif %}                
-    
+    {% endif %}
+
     <h2>{% trans 'Bills' %}</h2> {% for b in object.bills_first.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
-                                 {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}                                 
+                                 {% for b in object.bills_second.all %}<a class="hashnav item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
     <br>
     {% if user.is_authenticated %}
     {% trans 'Suggest a matching bill' %}
@@ -53,7 +54,53 @@
         <input type="hidden" name="bill_id"></input>
         <input type="submit" value="{% trans 'Submit' %}"></input>
     </form>
-    {% endif %}                
+    {% endif %}
+
+    <div id="tagging-container">
+    {% if user.is_authenticated %}
+        <h2>{% trans "Tags" %}</h2>
+        <div id="tags">
+            {% if object.tags %}
+                {% for t in object.tags %}
+                    <a id="tag_{{t.id}}" href="{% url committeemeeting-tag tag=t %}" class="tag">{{ t }}</a>
+                {% endfor %}
+            {% else %}
+                <span id="no-tags-yet">{% trans "No tags yet" %}</span>
+            {% endif %}
+        </div>
+        <div id="add_tags">
+            <span>{% trans "Edit Tags" %}</span>
+            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+            </span>
+            <div id="create_tag" style='display:none'>
+                {% if perms.tagging.add_tag %}
+                    <form id="create_tag_form" action="#">{% csrf_token %}
+                        <label for="tag">{% trans 'Create new tag' %}: </label>
+                        <input type="text" name="tag" id="tag">
+                        <input type="submit" value="{% trans 'Send' %}">
+                    </form>
+                {% else %}
+                    {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
+                {% endif %}
+            </div>
+        </div>
+
+    {% else %}
+        <h3>{% trans "Tags" %}</h3>
+        {% if object.tags %}
+            <div id="tags">
+            {% for t in object.tags %}
+               <a href="{% url committeemeeting-tag tag=t %}" class="tag">{{ t }}</a>
+            {% endfor %}
+            </div>
+        {% else %}
+            {% trans "No tags yet" %}<br />
+        {% endif %}
+
+        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+    {% endif %}
+    </div>
+
 
   {% with object.parts.list as parts %}
     {% get_annotations_for parts as annotation_dict %}
@@ -137,7 +184,7 @@
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script> 
+<script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script>
 <script>
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
     window.permission = {% if perms.annotatetext.add_annotation %}true{% else %}false{% endif %};

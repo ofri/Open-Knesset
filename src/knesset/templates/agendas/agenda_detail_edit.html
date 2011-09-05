@@ -4,11 +4,10 @@
 {% load laws_extra %}
 {% load links %}
 {% load comments %}
-{% block extratitle %}{{ object.name }}{% endblock %}
+{% block extratitle %}{% trans 'Edit agenda' %} {{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
-{% block description %}{{ object.title }} - {% endblock %}
-{% block nav-law-approve %}{% if law_approve %}class="selected"{% endif %}{% endblock %}
-{% block nav-agendas %}{% if agendas %}class="selected"{% endif %}{% endblock %}
+{% block description %}{% trans 'Edit agenda' %} {{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %} <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script> {% endblock %}
 {% block header %}<h1>{% trans 'Edit agenda' %}</h1>{% endblock %}
 {% block divcontent %}

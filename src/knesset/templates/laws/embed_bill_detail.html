@@ -5,10 +5,21 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
 	<meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
 	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" type="text/css"/>
 	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
+
 	
 	<script type="text/javascript">
+	  var log;
+	  
+	  if (window.console && typeof console.log === "function"){
+	  // use apply to preserve context and invocations with multiple arguments
+	  log = function () { console.log.apply(console, arguments); };
+	  } else {
+	  log = function(){ return; }
+	  }
+
 /*
 states:
 	1. initiated ("was-proposed")
@@ -50,7 +61,7 @@ stream example:
   * <li id="vote-1" class="passed/failed/pending voted odd current first/last">
   */
 			
-		var expanded;
+		var expanded = false;
 		var stream = {{stream|safe}};
 		var phases = {
 			'was-proposed'         : 0,
@@ -66,7 +77,116 @@ stream example:
 		
 		var phasesArr = ['was-proposed', 'was-pre-voted', 'was-discussed-1', 'was-first-voted', 'was-discussed-2', 'was-approval-voted'];
 		
-		
+	    formatDate = function(d) {
+
+	    var curr_date = d.getDate();
+	    var curr_month = d.getMonth() + 1; //months are zero based
+	    var curr_year = d.getFullYear();
+	    return curr_date + "/" + curr_month + "/" + curr_year
+	    };
+
+//adds explanation from 'Proposal.get_explanation' to header
+function showExplanation() {
+
+    try {
+	$.get('/api/bill/' + {{ bill.id }}, function(data){
+
+	    if (data.votes.first) {
+	    $('#vote-1 .scale .against').css('width', (data.votes.first.count_against_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) + 'px');
+	    $('#vote-1 .scale .against').css('backgroundPosition', ((data.votes.first.count_against_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) - 120) + 'px bottom');
+	    }
+	    if (data.votes.pre && data.votes.pre.length > 0) {
+	    var lastpre = data.votes.pre[data.votes.pre.length - 1];
+	    $('#pre-vote .scale .against').css('width', (lastpre.count_against_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) + 'px');
+	    $('#pre-vote .scale .against').css('backgroundPosition', ((lastpre.count_against_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) - 120) + 'px bottom');
+	    }
+	    if (data.popular_name){
+	    $('#title h1').text(data.popular_name + ' - ' + $('#title h1').text())
+	    }
+
+
+
+		  var dlg = $('#explanation');
+		  var rendered = false;
+		  renderProp = function(prop){
+		      
+		      if (prop.explanation) {
+
+			  var propdiv = $('<div class="clear"></div>');
+			  //propdiv.append($('<p>\u05de\u05ea\u05d5\u05da\u0020 <a href="' + prop.source_url+ '" class="oknesset-resource">' + '\u05d4\u05e0\u05d5\u05e1\u05d7\u0020\u05d4\u05de\u05dc\u05d0 (' + prop.date + ') :</a></p>'))
+			  var extension = (/[.]/.exec(prop.source_url)) ? /[^.]+$/.exec(prop.source_url) : '';
+			  var dtprts = prop.date.split('-');
+			  $('#external-links').append("<a href='" +
+						      prop.source_url + 
+						      "' class='knesset-resource' target='_blank'>" +
+						      '\u05d4\u05e0\u05d5\u05e1\u05d7\u0020\u05d4\u05de\u05dc\u05d0, ' + formatDate(new Date(dtprts[0], dtprts[1] - 1, dtprts[2]))+ ', (' +
+						      extension + ") </a>");
+
+			  propdiv.append($('<div class="prop">' + prop.explanation + '</div>'));
+			  //only one proposal explanation is rendered - mushon said.
+			  if (!rendered) 
+			      dlg.append(propdiv);
+			  rendered = true;
+		      }
+		  };
+		  
+ 		  renderProp(data.proposals.knesset_proposal);
+		  data.proposals.private_proposals.forEach(renderProp);
+		  renderProp(data.proposals.gov_proposal);
+
+		  /*	    dlg.dialog({modal: true, title: '\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8', position: ['right', $('#header').height() - 10], height: $('#steps').height(), resizable: false, width: $('#steps').width() - 10});*/
+
+		  // handling ellipsis for long explanation
+
+		  var lines = 0;
+		  var ellipsing = false;
+		  $('.prop').each(function(i, prp) {
+				      var pheight = 0;
+
+				      //				      $(prp).after("<a href='#null'><div class='tglelps'>\u05d4\u05de\u05e9\u05da ...</div></a>");      
+				      
+				      $(prp).children().each(function(i, p) {
+
+								 lines += 1;
+
+								 pheight = $(p).position().top + $(p).height();
+								 if (pheight > 160) {
+								     if (!ellipsing) {
+
+									 $(p).before('<span>' + $(p).text().substr(0,300) + "<a href='#null'><span class='tglelps'> \u05d4\u05de\u05e9\u05da...</span></a></span>");
+									 $(p).before($('<span>').text($(p).text().substr(300)).addClass('elpsd')).remove();
+
+								     }
+								     else {
+									 $(p).addClass('elpsd');   
+								     }
+								     ellipsing = true;
+								 }
+							     });
+				      
+
+				  });
+
+		  $('.tglelps').click(function() {
+					  $('.elpsd').removeClass('elpsd');
+					  $('.tglelps').hide();
+				      });
+
+
+   	      });  
+
+
+
+	/////////////// -- end of ellispsis handling
+        
+        return "";
+    }
+    catch (err) {
+	log(err);
+    }
+}
+
+	      
 		
 		function showLog() {
 			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
@@ -123,8 +243,13 @@ stream example:
 		}
 		
 		$(function() {
+	    showExplanation();
+
+
+//	    $('#explanation').text('\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8');
+//	    $('#explanation').click(showExplanation);
 			//showLog();
-			$("head").append($("<title>{{bill.law.title}}: {{bill.title}}</title>"));
+			$("head").append($("<a href='{% url bill-detail bill.id %}' target='_blank'><title>{{bill.law.title}}: {{bill.title}}</title></a>"));
 			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
 			for (var a in stream) {
 				// determine date
@@ -154,6 +279,7 @@ stream example:
 						{% if bill.first_vote %}
 					    	$('ul#steps li#vote-1 .step .tooltip-score .balance').text('{{bill.first_vote.for_votes_count}}/' +
 					    	        '{{bill.first_vote.against_votes_count}}');
+
                         {% else %}
                             $('ul#steps li#pre-vote .step .tooltip-score').hide();
                         {% endif %}
@@ -190,6 +316,8 @@ stream example:
 						$('ul#steps li#initiated .date').html(dateHtml);
 						proposedDate = day + "/" + month + "/" + year;
      					stagePassed = true;
+
+//                        $('#initiated').click(showExplanation);
 						break;
 					case 'was-discussed-1':
 						// there cannot be a failure in a committee discussion, only success
@@ -247,44 +375,57 @@ stream example:
 				excerpt += outcome + " בתאריך " + finalDate + ".";
 			}
 
-			$("#excerpt").append($("<p></p>").text(excerpt));
+//			$("#excerpt").append($("<p></p>").text(excerpt));
 
 			// proposers
 			var pCount = {{bill.proposers.count}};
 			if (pCount > 3) $('.more').text((pCount-3) + '+');
 			
 			$('.pull').bind('click', onPull);
+	      $('#header').hover(function(){expanded = false; onPull();}, function() {expanded=true; onPull();});
 		});
 		
 		function onPull() {
-			var height = expanded ? 70 : $('#excerpt>p').height() + 190;
-			if (!expanded) $('#header').addClass('header-hover');		
-			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
-				if (!expanded) {
-					$('#header').removeClass('header-hover');
+	      $('#header').stop(true, true);
+	      //			var height = expanded ? 90 : $('#excerpt>p').height() + 190;
+	      if (!expanded) {
+	      //	      $('#header').addClass('header-hover', 1000, function(){});	
+	      $('#header').addClass('header-hover').removeClass('header-small', 500, function(){});	
+	      
+	      }
+	      else {
+	      $('#header').addClass('header-small', 1000, function(){});
+
+
+	      }
+//			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
+	      if (expanded) {
 					$(".pull .arrow").removeClass("up").addClass("down");
 				} else {
 					$(".pull .arrow").removeClass("down").addClass("up");	
 				}
-			});
-			expanded = !expanded;
+//			});
+	
 		}
 	</script>
 </head>
 
 <body>
-	<div id="header">
+	<div id="header" class="header-small">
 		<div id="details">
 			<div id="title">
+			  <a href="{% url bill-detail bill.id %}" target="_blank">
 				<span class="label">שם ההצעה:</span>
 				<h1>{{bill.law.title}}: {{bill.title}}</h1>
+			  </a>
 			</div>
 			<div id="excerpt">
 				<span class="label">תקציר:</span>
+				<div id="explanation"></div>
 			</div>
 			<div id="external-links">
 				<span class="label">קישורים נוספים:</span>
-				<a href="{% url bill-detail bill.id %}" class="oknesset-resource">החוק באתר כנסת פתוחה</a>
+				<a href="{% url bill-detail bill.id %}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
 				<!--<a href="#" class="knesset-resource">החוק באתר הכנסת (pdf)</a>-->
 			</div>
 			<div>
@@ -333,8 +474,8 @@ stream example:
 					<span class="icon">icon</span>
 					<div class="tooltip-score">
 						<span class="balance"></span>
-						<div class="scale" style="width:60px">
-							<span class="against" style="width:28px; background-position: -62px bottom;"></span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
 							<span class="for"></span>
 						</div>
 					</div>
@@ -374,8 +515,8 @@ stream example:
 					<span class="icon">icon</span>
 					<div class="tooltip-score">
 						<span class="balance"></span>
-						<div class="scale" style="width:80px">
-							<span class="against" style="background-position: -47px bottom; width:53px"></span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
 							<span class="for"></span>
 						</div>
 					</div>
