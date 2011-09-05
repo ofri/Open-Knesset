@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
 from django.views import generic
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -35,6 +35,7 @@ class CommitteeListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
         context["topics"] = Topic.objects.get_public()[:10]
+        context["rating_range"] = range(7)
         return context
 
 class CommitteeDetailView(DetailView):
@@ -199,4 +200,12 @@ def meeting_tag(request, tag):
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
     return generic.list_view.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
+
+def delete_topic_rating(request, object_id):
+    if request.method=='POST':
+        topic= get_object_or_404(Topic, pk=object_id)
+        topic.rating.delete(request.user, request.META['REMOTE_ADDR'])
+        return HttpResponse('Vote deleted.')
+
+
 

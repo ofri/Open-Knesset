@@ -2,80 +2,56 @@
 {% load i18n %}
 {% load links %}
 {% block extratitle %}{{ topic.title }}{% endblock %}
-{% block content %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+                register_watch({{object.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
+        });
+    </script>
+
+{% endblock %}
+{% block subnav %}
     <ul class="actions">
         {% if user == topic.creator %}
             <li><a href="#">{% trans "Edit" %}</a></li>
         {% endif %}
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
+{% endblock %}
 
+{% block content %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
     <h1>{% trans "Suggested Topic for a committee meeting" %}</h1>
     <h2>{{topic.title}}</h2>
     <h4>{% trans "by" %}: <a href="{% url public-profile topic.creator.id %}">{{topic.creator}}</a></h4>
-    <h4>{% trans "committee" %}:
-        {% for c in topic.committees.all %}
-            {% if not forloop.first %} | {% endif %}
-            <a href="{% url committee-detail c.id %}">{{c}}</a>
-        {% empty %}
-            {% trans "unasigned" %}
-        {% endfor %}
-    </h4>
-    <p>{{topic.description|linebreaksbr}}</p>
+    {% for c in object.committees.all %}
+        <a href="{% url committee-detail c.id %}"><span style="font-size: 70%">{{c}}</span></a>
+    {% endfor%}
+    <p>{{topic.description}}</p>
     <br/>
+    <h3> {% trans "rating" %}: </h3>
+   <div style="display:inline;" id="rating"></div> 
+   <div class="clear"></div>
     <div>
-        <h3>{% trans "Links" %}</h3>
+        <h3>{% trans "Links" %}:</h3>
         {% object_links topic %}
     </div>
+   <div class="clear"></div>
+
     <h3>{% trans "comments" %}</h3>
     {% include 'comments/object_comment_list.html' %}
     <script>
         $(document).ready(function() {
-            var id = {{object.id}};
-            {% if watched %}
-                document.is_watched = true;
-                $('#watch').html("{% trans 'Unwatch' %}");
-            {%else%}
-                document.is_watched = false;
-                $('#watch').html("{% trans 'Watch' %}");
-            {% endif %};
-            $('#watch').click( function () {
-                if (document.is_watched) {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{{follow_url}}',
-                        data: {unwatch: id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = false;
-                            this.html("{% trans 'Watch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_unknown").html()
-                            $.jGrowl(msg, {life: 5000});
-                            $('#message_login').show();
-                        }
-                    });
+            $('#rating').raty({
+                cancel: true,
+                number: 7,
+                start: {{object.rating_score}},
+                path: '{{ MEDIA_URL }}/img',
+                click: function(score, evt) {
+                    $.post('/committee/topic/{{object.id}}/'+score+'/')
                 }
-                else {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{{follow_url}}',
-                        data: {watch: id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = true;
-                            this.html("{% trans 'Unwatch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_login").html()
-                            $.jGrowl(msg, {sticky: true});
-                        }
-                    });
-                }
-                return (false);
-            })
+            });
         })
     </script>
 {% endblock %}
-
