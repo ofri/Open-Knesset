@@ -20,7 +20,7 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=6" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=7" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
@@ -89,7 +89,9 @@
     {% endif %}
     <div id="container">
         <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
-        <div id="search">{% search_form "search_page" %}</div>
+        {% if not has_search %}
+            <div id="search">{% search_form "search_page" %}</div>
+        {% endif %}
         <div id="accounts">
             {% if user.is_authenticated %}
                 <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a> |
