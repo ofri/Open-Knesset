@@ -18,7 +18,7 @@
     <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
     <div id="agenda-info">
         <div class="item-list">
-        <h2>{% trans 'Overall score' %} <span class="numeric">{{score|floatformat:"0"}}%</span></h2>
+        <h2>{% trans 'Overall score' %} <span class="numeric" style="display:inline-block;font-weight:bold;">{{score|floatformat:"0"}}%</span></h2>
             <div id="member_percentile" class="percentile {% if score < 0 %}percentile_against{% endif %}"></div>
             <script>set_percentile('member',({{ score }}+100)/2);</script>
 
