@@ -4,7 +4,8 @@
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block subnav %}
-        <div id="search" style="text-align:center;float:none;clear:none;margin:1em">{% search_form "search_page" %}</div>
+        <div id="search" style="text-align:center;float:none;clear:none;"><p class="help-text">חיפוש חופשי באתר כנסת פתוחה</p>{% search_form "search_page" %}</div>
+        
 {% endblock %}
 {% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
 {% block divcontent %}
