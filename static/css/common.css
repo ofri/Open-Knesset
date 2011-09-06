@@ -538,8 +538,10 @@ div #search { clear:left; float:left; height:32px;padding-top:10px; }
     border: 2px solid #0d204a;
     border-radius: 5px;
     box-shadow:inset -4px 4px 4px -4px blue;
+    width:15em;
     padding:3px;
 }
+#search .help-text { padding-left:5em; font-size:90%; }
 .submit.awesome-button {
     font-weight:bold;
     font-size:13px;
