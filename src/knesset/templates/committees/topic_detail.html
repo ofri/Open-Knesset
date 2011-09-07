@@ -7,7 +7,7 @@
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-                register_watch({{object.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
+                register_watch({{topic.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
         });
     </script>
 
@@ -17,7 +17,7 @@
     <ul id="breadcrumbs"> 
         <li class="first"><a href="{% url committee-list %}"> {% trans "Committees" %}</a></li>
         <li>
-        {% for c in object.committees.all %}
+        {% for c in topic.committees.all %}
             {% if not forloop.first %} | {% endif %}
             <a href="{% url committee-detail c.id %}">{{c}}</a>
         {% endfor%}
@@ -28,7 +28,7 @@
 {% block subnav %}
     <ul class="actions">
         {% if user == topic.creator %}
-            <li><a href="#">{% trans "Edit" %}</a></li>
+        <li><a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a></li>
         {% endif %}
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>

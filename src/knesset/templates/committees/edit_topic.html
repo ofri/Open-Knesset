@@ -7,6 +7,6 @@
 {% block content %}
 <form action="." method="post">{% csrf_token %}
     {{ edit_form.as_p }}
-    <input type="submit">{% trans 'Submit' %}</input>
+    <input type="submit" name="save" value="{% trans 'save' %}" />
 </form>
 {% endblock %}

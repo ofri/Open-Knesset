@@ -170,13 +170,21 @@ class TopicDetailView(DetailView):
         return context
 
 @login_required
-def edit_topic(request, committee_id):
+def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'POST':
         edit_form = EditTopicForm(data=request.POST)
         if edit_form.is_valid():
-            topic = edit_form.save()
+            if topic_id:
+                t = Topic.objects.get(pk=topic_id)
+                if request.user != t.creator:
+                    return HttpResponseBadRequest()
+
+            topic = edit_form.save(commit=False)
             topic.creator = request.user
+            if topic_id:
+                topic.id = topic_id
             topic.save()
+            edit_form.save_m2m()
             m = request.user.message_set.create()
             m.message = 'Topic has been updated.'
             m.save()
@@ -184,8 +192,12 @@ def edit_topic(request, committee_id):
                 reverse('committee-detail',args=[committee_id]))
 
     if request.method == 'GET':
-        c = Committee.objects.get(pk=committee_id)
-        edit_form = EditTopicForm(initial={'committees':[c]})
+        if topic_id:
+            t = Topic.objects.get(pk=topic_id)
+            edit_form = EditTopicForm(instance=t)
+        else:
+            c = Committee.objects.get(pk=committee_id)
+            edit_form = EditTopicForm(initial={'committees':[c]})
     return render_to_response('committees/edit_topic.html',
         context_instance=RequestContext(request,
             {'edit_form': edit_form,

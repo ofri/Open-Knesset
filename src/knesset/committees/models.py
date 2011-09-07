@@ -221,8 +221,10 @@ class Topic(models.Model):
 
     creator = models.ForeignKey(User)
     editors = models.ManyToManyField(User, related_name='editing_topics', null=True, blank=True)
-    title = models.CharField(max_length=256)
-    description = models.TextField(blank=True)
+    title = models.CharField(max_length=256,
+                             verbose_name = _('Title'))
+    description = models.TextField(blank=True,
+                                   verbose_name = _('Description'))
     status = models.IntegerField(choices = (
         (TOPIC_PUBLISHED, _('published')),
         (TOPIC_FLAGGED, _('flagged')),
@@ -236,7 +238,8 @@ class Topic(models.Model):
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
     # no related name as `topics` is already defined in CommitteeMeeting as text
-    committees = models.ManyToManyField(Committee)
+    committees = models.ManyToManyField(Committee,
+                                        verbose_name = _('Committees'))
     meetings = models.ManyToManyField(CommitteeMeeting, null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
