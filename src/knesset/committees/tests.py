@@ -11,8 +11,9 @@ from knesset.mks.models import Member
 from models import *
 
 just_id = lambda x: x.id
+APP = 'committees'
 
-class ListViewTest(TestCase):
+class CommitteeMeetingDetailViewTest(TestCase):
 
     def setUp(self):
         self.committee_1 = Committee.objects.create(name='c1')
@@ -28,15 +29,22 @@ I have a deadline''')
         self.meeting_2.create_protocol_parts()
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'ADRIAN')
         (self.group, created) = Group.objects.get_or_create(name='Valid Email')
         if created:
             self.group.save()
         self.group.permissions.add(Permission.objects.get(name='Can add annotation'))
         self.jacob.groups.add(self.group)
+
+        ct = ContentType.objects.get_for_model(Tag)
+        self.adrian.user_permissions.add(Permission.objects.get(codename='add_tag', content_type=ct))
+
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
         self.mk_1 = Member.objects.create(name='mk 1')
         self.topic = self.committee_1.topic_set.create(creator=self.jacob,
                                                 title="hello", description="hello world")
+        self.tag_1 = Tag.objects.create(name='tag1')
 
     def testProtocolPart(self):
         parts_list = self.meeting_1.parts.list()
@@ -142,6 +150,37 @@ I have a deadline''')
         self.assertEqual(res.status_code, 302)
         self.assertTrue(self.bill_1 in self.meeting_1.bills_first.all())
         self.client.logout()
+
+    def test_add_tag_login_required(self):
+        url = reverse('add-tag-to-object',
+                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.meeting_1.id})
+        res = self.client.post(url, {'tag_id':self.tag_1})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_add_tag(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('add-tag-to-object',
+                                 kwargs={'app':APP, 'object_type':'committeemeeting','object_id': self.meeting_1.id})
+        res = self.client.post(url, {'tag_id':self.tag_1.id})
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(self.tag_1, self.meeting_1.tags)
+
+    def test_create_tag_permission_required(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('create-tag',
+                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.meeting_1.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_create_tag(self):
+        self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
+        url = reverse('create-tag',
+                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.bill_1.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertEqual(res.status_code, 200)
+        self.new_tag = Tag.objects.get(name='new tag')
+        self.assertIn(self.new_tag, self.meeting_1.tags)
+
 
     def tearDown(self):
         self.meeting_1.delete()

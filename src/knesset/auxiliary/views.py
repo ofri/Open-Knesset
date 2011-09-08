@@ -108,8 +108,8 @@ class CommentsView(ListView):
 
     paginate_by = 20
 
-def _add_tag_to_object(user, object_type, object_id, tag):
-    ctype = get_object_or_404(ContentType,model=object_type)
+def _add_tag_to_object(user, app, object_type, object_id, tag):
+    ctype = ContentType.objects.get_by_natural_key(app, object_type)
     (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
     action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
     if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
@@ -121,18 +121,18 @@ def _add_tag_to_object(user, object_type, object_id, tag):
     return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
 
 @login_required
-def add_tag_to_object(request, object_type, object_id):
+def add_tag_to_object(request, app, object_type, object_id):
     """add a POSTed tag_id to object_type object_id by the current user"""
-
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
         tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
+        return _add_tag_to_object(request.user, app, object_type, object_id, tag)
+
     return HttpResponseNotAllowed(['POST'])
 
 @login_required
-def remove_tag_from_object(request, object_type, object_id):
+def remove_tag_from_object(request, app, object_type, object_id):
     """remove a POSTed tag_id from object_type object_id"""
-    ctype = get_object_or_404(ContentType,model=object_type)
+    ctype = ContentType.objects.get_by_natural_key(app, object_type)
     if request.method == 'POST' and 'tag_id' in request.POST: # If the form has been submitted...
         tag = get_object_or_404(Tag,pk=request.POST['tag_id'])
         ti = TaggedItem._default_manager.filter(tag=tag, content_type=ctype, object_id=object_id)
@@ -145,7 +145,7 @@ def remove_tag_from_object(request, object_type, object_id):
     return HttpResponse("{'id':%d,'name':'%s'}" % (tag.id,tag.name))
 
 @permission_required('tagging.add_tag')
-def create_tag_and_add_to_item(request, object_type, object_id):
+def create_tag_and_add_to_item(request, app, object_type, object_id):
     """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
     if request.method == 'POST' and 'tag' in request.POST:
         tag = request.POST['tag']
@@ -166,7 +166,7 @@ def create_tag_and_add_to_item(request, object_type, object_id):
         if len(tags)>1:
             logger.warn("More than 1 tag: %s" % tag)
             return HttpResponseBadRequest()
-        return _add_tag_to_object(request.user, object_type, object_id, tag)
+        return _add_tag_to_object(request.user, app, object_type, object_id, tag)
     else:
         return HttpResponseNotAllowed(['POST'])
 

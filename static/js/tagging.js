@@ -1,6 +1,7 @@
 var selected_tags = {};
 var current_id = "";
 var current_object_type = "";
+var current_app = "";
 
 function get_tags_list() {
     $("#possible_tags").html('');
@@ -13,8 +14,9 @@ function get_tags_list_callback(data) {
             $('<a class="tag">').attr("id", "possible_tag_"+item.id).attr("href", href).html(item.name).appendTo("#possible_tags");
             $("#possible_tags").append(document.createTextNode(" "));
           });
-    current_object_type = window.location.pathname.split('/')[1];
-    current_id = window.location.pathname.split('/')[2];
+    current_app = $('input[name="app_label"]').val();
+    current_object_type = $('input[name="object_type"]').val();
+    current_id = $('input[name="id"]').val();
     // currently committeemeeting urls have a unique structure. clean this up.
     if (current_id == 'meeting') {
         current_object_type = 'committeemeeting';
@@ -26,7 +28,7 @@ function get_tags_list_callback(data) {
     $('#create_tag_form').submit(function(){
         var csrf = $('input[name="csrfmiddlewaretoken"]').val();
         var tag = $('#tag').val();
-        $.post("/tags/"+current_object_type+"/"+current_id+"/create-tag/",
+        $.post("/tags/"+current_app+"/"+current_object+"/"+current_id+"/create-tag/",
             { tag: tag, csrfmiddlewaretoken: csrf }, add_tag_callback );
         return false;
     });
@@ -42,12 +44,12 @@ function mark_selected_tags(data){
 function toggle_tag(tag_id) {
     var csrf = $('input[name="csrfmiddlewaretoken"]').val();
     if (tag_id in selected_tags){
-        $.post("/tags/"+current_object_type+"/"+current_id+"/remove-tag/",
+        $.post("/tags/"+current_app+"/"+current_object_type+"/"+current_id+"/remove-tag/",
                 { tag_id: tag_id, csrfmiddlewaretoken: csrf }, remove_tag_callback );
         $("#possible_tag_"+tag_id).removeClass("selected");
         delete selected_tags[tag_id];
     } else {
-        $.post("/tags/"+current_object_type+"/"+current_id+"/add-tag/",
+        $.post("/tags/"+current_app+"/"+current_object_type+"/"+current_id+"/add-tag/",
                 { tag_id: tag_id, csrfmiddlewaretoken: csrf }, add_tag_callback );
         $("#possible_tag_"+tag_id).addClass("selected");
         selected_tags[tag_id] = 1;
