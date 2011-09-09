@@ -42,6 +42,7 @@ def main(request):
         context['annotations'].extend(
                 Comment.objects.all().order_by('-submit_date')[:10])
         context['annotations'].sort(key=lambda x:x.submit_date,reverse=True)
+        context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))
@@ -63,6 +64,7 @@ def search(request, lang='he'):
     return render_to_response('search/search.html', RequestContext(request, {
         'query': request.GET.get('q'),
         'query_string': mutable_get.urlencode(),
+        'has_search': True,
         'lang' : lang,
         'cx': request.GET.get('cx')
     }))
