@@ -35,7 +35,7 @@ class CommitteeListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
-        context["topics"] = Topic.objects.get_public()[:10]
+        context["topics"] = Topic.objects.summary()[:10]
         context["rating_range"] = range(7)
         return context
 
@@ -59,7 +59,7 @@ class CommitteeDetailView(DetailView):
         context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
         context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
         context['annotations'] = cm.annotations.order_by('-timestamp')
-        context['topics'] = cm.get_public_topics()
+        context['topics'] = cm.topic_set.summary()
         return context
 
 class MeetingDetailView(DetailView):

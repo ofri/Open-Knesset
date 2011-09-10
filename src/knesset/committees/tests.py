@@ -219,13 +219,16 @@ I have a deadline''')
         self.mk_1 = Member.objects.create(name='mk 1')
         self.topic = self.committee_1.topic_set.create(creator=self.jacob,
                                                 title="hello", description="hello world")
+        self.topic2 = self.committee_1.topic_set.create(creator=self.ofri,
+                                                title="bye", description="goodbye")
 
 
     def testBasic(self):
-        self.assertEqual(self.committee_1.get_public_topics().count(), 1)
+        self.topic2.set_status(TOPIC_REJECTED, "just because")
+        self.assertEqual(self.committee_1.topic_set.get_public().count(), 1)
         self.assertEqual(Topic.objects.get_public().count(), 1)
         self.topic.set_status(TOPIC_REJECTED, "because I feel like it")
-        self.assertEqual(self.committee_1.get_public_topics().count(), 0)
+        self.assertEqual(self.committee_1.topic_set.get_public().count(), 0)
 
     def testPermissions(self):
         self.assertTrue(self.topic.can_edit(self.jacob))
@@ -239,9 +242,14 @@ I have a deadline''')
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'committees/topic_list.html')
         self.assertQuerysetEqual(res.context['topics'],
-                                 ["<Topic: hello>"])
+                                 ["<Topic: hello>", "<Topic: bye>"])
 
-
+    def testRanking(self):
+        self.assertQuerysetEqual(Topic.objects.all(),
+                                 ["<Topic: hello>", "<Topic: bye>"])
+        self.topic2.rating.add(score=4, user=self.ofri, ip_address="127.0.0.1")
+        self.assertQuerysetEqual(Topic.objects.by_rank(),
+                                 ["<Topic: bye>", "<Topic: hello>"])
 
     def tearDown(self):
         self.meeting_1.delete()

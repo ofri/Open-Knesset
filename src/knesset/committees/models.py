@@ -65,9 +65,6 @@ class Committee(models.Model):
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
 
-    def get_public_topics(self):
-        return self.topic_set.filter(status__in=(PUBLIC_TOPIC_STATUS))
-
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
     """Retunrs true if 'line' looks like something should should be a protocol part header"""
@@ -201,9 +198,21 @@ TOPIC_ACCEPTED, TOPIC_APPEAL = range(5)
 PUBLIC_TOPIC_STATUS = ( TOPIC_PUBLISHED, TOPIC_ACCEPTED)
 
 class TopicManager(models.Manager):
-    def get_public(self):
-        return self.filter(status__in=PUBLIC_TOPIC_STATUS)
+    ''' '''
+    get_public = lambda self: self.filter(status__in=PUBLIC_TOPIC_STATUS)
 
+    by_rank = lambda self: self.extra(select={
+            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            }).order_by('-rank')
+
+    def summary(self):
+        return self.filter(status__in=PUBLIC_TOPIC_STATUS).extra(select={
+            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            }).order_by('-rank')
+        #TODO: rinse it so this will work
+        return self.get_public().by_rank()
+
+        
 class Topic(models.Model):
     '''
         Topic is used to hold the latest event about a topic and a committee
