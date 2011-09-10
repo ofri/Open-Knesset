@@ -40,7 +40,7 @@ class BetterManager(models.Manager):
         possible_names = difflib.get_close_matches(name, names, cutoff=0.5, n=5)
         qs = self.filter(name__in=possible_names)
         # used to establish size, overwritten later
-        ret = range(qs.count()) 
+        ret = range(qs.count())
         for m in qs:
             if m.name == name:
                 return [m]
@@ -112,11 +112,11 @@ class Member(models.Model):
     current_party = models.ForeignKey(Party, related_name='members', blank=True, null=True)
     start_date  = models.DateField(blank=True, null=True)
     end_date    = models.DateField(blank=True, null=True)
-    img_url     = models.URLField(blank=True)
+    img_url     = models.URLField(blank=True, verify_exists=False)
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)
-    website     = models.URLField(blank=True, null=True)
+    website     = models.URLField(blank=True, null=True, verify_exists=False)
     family_status = models.CharField(blank=True, null=True,max_length=10)
     number_of_children = models.IntegerField(blank=True, null=True)
     date_of_birth  = models.DateField(blank=True, null=True)
@@ -135,14 +135,14 @@ class Member(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
 
-    bills_stats_proposed = models.IntegerField(default=0)    
+    bills_stats_proposed = models.IntegerField(default=0)
     bills_stats_pre      = models.IntegerField(default=0)
     bills_stats_first    = models.IntegerField(default=0)
     bills_stats_approved = models.IntegerField(default=0)
-    
+
     average_weekly_presence_hours = models.FloatField(null=True)
     average_monthly_committee_presence = models.FloatField(null=True)
-      
+
     backlinks_enabled = models.BooleanField(default=True)
 
     objects = BetterManager()
@@ -267,7 +267,7 @@ class Member(models.Model):
                     return ugettext('Coalition Member (male)')
                 else:
                     return ugettext('Opposition Member (male)')
-            
+
         if self.is_female():
             return ugettext('Past Member (female)')
         else:
@@ -286,7 +286,7 @@ class Member(models.Model):
 
     def recalc_average_monthly_committee_presence(self):
         self.average_monthly_committee_presence = self.committee_meetings_per_month()
-        
+
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
     date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
@@ -294,7 +294,7 @@ class WeeklyPresence(models.Model):
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
-    
+
     def save(self,**kwargs):
         super(WeeklyPresence,self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
