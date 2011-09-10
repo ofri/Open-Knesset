@@ -1,17 +1,30 @@
 {% load comments %}
 {% load i18n %}
+{% load avatar_tags %}
 
 {% get_comment_list for object as comment_list %}
 {% if comment_list %}
     <h3>{% trans 'User comments' %}</h3>
+    <div class="item-list">
     {% for comment in comment_list %}
         <a name="c{{ comment.id }}"></a>
-        {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
-        {% if user == comment.user or user.is_staff%}
-            <a href="{% url comments-delete-comment comment.id %}">{% trans 'delete comment' %}</a> 
-        {% endif %}
-        <div class="comment">{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</div>
+        <div class="item {% cycle "normal" "alt" %}">
+            <div class="item-header">
+                <div class="avatar-item">
+                    <a href="{% url public-profile comment.user.username %}" alt="{{comment.user}}">{% avatar comment.user 48 %}</a>
+                </div>
+            </div>
+            <p>{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</p>
+            <div class="item-footer">
+                {% if user == comment.user or user.is_staff%}
+                    <div style="float:left;"><a href="{% url comments-delete-comment comment.id %}">{% trans 'delete comment' %}</a> </div>
+                {% endif %}
+                {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} 
+                {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
+            </div>
+        </div>
     {% endfor %}
+    </div>
 {% else %}
     <h3>{% trans 'No comments yet' %}</h3>
 {% endif %}

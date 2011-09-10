@@ -402,6 +402,10 @@ form > p > select { width:250px; }
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 .item .item-inner { margin-right:60px }
+.item-footer {
+    clear:both;
+    font-size:80%;
+    }
 .item-metadata a {font-weight:normal}
 .item-metadata { font-size:90%; margin-top:3pt}
 .date-item span { 
