@@ -383,6 +383,13 @@ form > p > select { width:250px; }
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
+.big-avatar { 
+    float:right;
+    margin: 5px 5px 5px 10px;
+    height: 64px;
+    border: 1px solid #7777AA;
+    border-radius: 4px;
+}
 .item .date-item {
     float:right;
     background-color: #7891AB;

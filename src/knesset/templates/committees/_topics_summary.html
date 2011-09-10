@@ -1,8 +1,14 @@
 {% load i18n %}
+{% load avatar_tags %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
 <div class="item-list">
 {% for t in topics|slice:":5" %}
     <div class="item {% cycle "normal" "alt" %}">
+        <div class="item-header">
+            <div class="avatar-item">
+                <a href="{% url public-profile t.creator.username %}">{% avatar t.creator 48 %}</a>
+            </div>
+        </div>
         <a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a>
         <div>
             <!-- not sure we want this

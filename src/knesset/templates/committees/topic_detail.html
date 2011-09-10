@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load links %}
 {% load ratings %}
+{% load avatar_tags %}
 {% block extratitle %}{{ topic.title }}{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
@@ -27,8 +28,15 @@
 {% endblock %}
 {% block subnav %}
     <ul class="actions">
+        <li> {% trans "your rating" %}: 
+            <div style="display:inline;" id="your_rating">
+                {% if not user.is_authenticated %}{% trans 'Login to rank this topic' %}{% endif %}
+            </div>
+        </li>
         {% if user == topic.creator %}
-        <li><a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a></li>
+        <li>
+            <a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
+        </li>
         {% endif %}
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
@@ -37,22 +45,24 @@
 {% block content %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
     <h2>{{topic.title}}</h2>
-    <h4>{% trans "by" %}: <a href="{% url public-profile topic.creator.id %}">{{topic.creator}}</a></h4>
-    <p>{{topic.description}}</p>
-    <br/>
-    <h3> {% trans "average rating" %}: </h3>
-    <div style="display:inline;" id="average_rating"></div>
-    <div class="clear"></div>
-    <h3> {% trans "your rating" %}: </h3>
-    <div style="display:inline;" id="your_rating">{% if not user.is_authenticated %}{% trans 'Login to rank this topic' %}{% endif %}</div>
-    <div class="clear"></div>
-    <div>
-        <h3>{% trans "Links" %}:</h3>
-        {% object_links topic %}
+    <div class="main-column">
+        <div class="big-avatar">
+            <a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a>
+        </div>
+        <p>{{topic.description}}</p>
+        <div style="clear:both;"></div>
+        <div>
+            <h3>{% trans "Links" %}:</h3>
+            {% object_links topic %}
+        </div>
     </div>
-   <div class="clear"></div>
-
-    {% include 'comments/object_comment_list.html' %}
+    <div class="secondary-column">
+        <h3> {% trans "average rating" %}: </h3>
+        <div style="display:inline;" id="average_rating"></div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+        {% include 'comments/object_comment_list.html' %}
+    </div>
     <script>
         $(document).ready(function() {
             $('#average_rating').raty({
