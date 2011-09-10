@@ -1,5 +1,6 @@
 {% load i18n %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
+<div class="item-list">
 {% for t in topics|slice:":5" %}
     <div class="item {% cycle "normal" "alt" %}">
         <a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a>
@@ -27,11 +28,11 @@
     {% trans 'No topics suggested yet' %}
 {% endfor %}
     {% if topics.count > 5 %}
-        <p>
+        <p style="float:left;">
             <a class="more" href="./topic/">{% trans 'more...'%}</a>
         </p>
     {% endif %}
-<br/>
+</div>
 <script>
     $(document).ready(function () {
         {% for t in topics %}
