@@ -341,7 +341,7 @@ class TagHandler(BaseHandler):
         if 'object_id' in kwargs and 'object_type' in kwargs:
             object_id = kwargs['object_id']
             try:
-                ctype = ContentType.objects.get(model=kwargs['object_type'])
+                ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
             except ContentType.DoesNotExist:
                 pass
         if object_id and ctype:
@@ -381,17 +381,17 @@ class AgendaHandler(BaseHandler):
                 except Agenda.DoesNotExist:
                     return rc.NOT_FOUND
 
-        # Handle API calls of type /agenda/vote/[vote_id]
+        # Handle API calls of type /agenda/[app_label]/[vote_id]
         # Used to return the agendas ascribed to a specific vote
         object_id = None
         ctype = None
         if 'object_id' in kwargs and 'object_type' in kwargs:
             object_id = kwargs['object_id']
             try:
-                ctype = ContentType.objects.get(model=kwargs['object_type'])
+                ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
             except ContentType.DoesNotExist:
                 pass
-            if object_id and (ctype == 'vote'):
+            if object_id and (ctype.model == 'vote'):
                 return agendas.filter(votes__id=object_id)
         else:
             return agendas

@@ -99,7 +99,7 @@ class ApiViewsTest(TestCase):
 
     def test_api_tag_for_vote(self):
         res = self.client.get(reverse('tag-handler',
-                                      args=['vote',
+                                      args=['laws', 'vote',
                                             self.vote_1.id]))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)

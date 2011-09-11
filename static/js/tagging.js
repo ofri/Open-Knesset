@@ -22,13 +22,13 @@ function get_tags_list_callback(data) {
         current_object_type = 'committeemeeting';
         current_id = window.location.pathname.split('/')[3];
     }
-    var url = '/api/tag/'+current_object_type+'/'+current_id+'/';
+    var url = '/api/tag/'+current_app+'/'+current_object_type+'/'+current_id+'/';
     $.ajax({url: url, success: mark_selected_tags, cache: false});
     $('#create_tag').show();
     $('#create_tag_form').submit(function(){
         var csrf = $('input[name="csrfmiddlewaretoken"]').val();
         var tag = $('#tag').val();
-        $.post("/tags/"+current_app+"/"+current_object+"/"+current_id+"/create-tag/",
+        $.post("/tags/"+current_app+"/"+current_object_type+"/"+current_id+"/create-tag/",
             { tag: tag, csrfmiddlewaretoken: csrf }, add_tag_callback );
         return false;
     });
