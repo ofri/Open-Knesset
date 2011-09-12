@@ -203,9 +203,9 @@ a{
 		width: 100%;
 	}
 		ul#steps li{
-			background: #eeeff5 repeat-y;
-			max-width: 50px;
-			width: 10%;
+			background: #eeeff5;
+			/* max-width: 60px; */
+			width: 12.5%;
 			float: right;
 			height: 100%;
 			margin: 0;
@@ -317,34 +317,34 @@ a{
 					display: block;
 				}
 				ul#steps li#initiated .icon{
-					background-position: -450px center;
+					background-position: -443px center;
 				}
 				ul#steps li#pre-vote .icon{
-					background-position: -400px center;
+					background-position: -393px center;
 				}
 				ul#steps li#summoned-1 .icon{
-					background-position: -350px center;
+					background-position: -343px center;
 				}
 				ul#steps li#committee-1 .icon{
-					background-position: -300px 0;
+					background-position: -292px 0;
 				}
 				ul#steps li#vote-1 .icon{
-					background-position: -250px 0;
+					background-position: -243px 0;
 				}
 				ul#steps li#summoned-2 .icon{
-					background-position: -200px 0;
+					background-position: -193px 0;
 				}
 				ul#steps li#committee-2 .icon{
-					background-position: -150px 0;
+					background-position: -143px 0;
 				}
 				ul#steps li#vote-2 .icon{
-					background-position: -100px 0;
+					background-position: -93px 0;
 				}
 				ul#steps li#vote-3 .icon{
-					background-position: -50px 0;
+					background-position: -43px 0;
 				}
 				ul#steps li#passed .icon{
-					background-position: 0px 0;
+					background-position: 7px 0;
 				}
 				ul#steps li.passed .icon{
 					background-image: url(../img/embed_icons_passed.png);
