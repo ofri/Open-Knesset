@@ -21,8 +21,9 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
+from knesset.links.models import Link
 from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
-from forms import EditTopicForm
+from forms import EditTopicForm, LinksFormset
 
 logger = logging.getLogger("open-knesset.committees.views")
 
@@ -173,7 +174,8 @@ class TopicDetailView(DetailView):
 def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'POST':
         edit_form = EditTopicForm(data=request.POST)
-        if edit_form.is_valid():
+        links_formset = LinksFormset(request.POST)
+        if edit_form.is_valid() and links_formset.is_valid():
             if topic_id:
                 t = Topic.objects.get(pk=topic_id)
                 if request.user != t.creator:
@@ -185,22 +187,35 @@ def edit_topic(request, committee_id, topic_id=None):
                 topic.id = topic_id
             topic.save()
             edit_form.save_m2m()
+
+            links = links_formset.save(commit=False)
+            ct = ContentType.objects.get_for_model(topic)
+            for link in links:
+                link.content_type = ct
+                link.object_pk = topic.id
+                link.save()
+
             m = request.user.message_set.create()
             m.message = 'Topic has been updated.'
             m.save()
             return HttpResponseRedirect(
-                reverse('committee-detail',args=[committee_id]))
+                reverse('topic-detail',args=[topic.id]))
 
     if request.method == 'GET':
-        if topic_id:
+        if topic_id: # editing existing topic
             t = Topic.objects.get(pk=topic_id)
             edit_form = EditTopicForm(instance=t)
-        else:
+            ct = ContentType.objects.get_for_model(t)
+            links_formset = LinksFormset(queryset=Link.objects.filter(
+                content_type=ct, object_pk=t.id))
+        else: # create new topic for given committee
             c = Committee.objects.get(pk=committee_id)
             edit_form = EditTopicForm(initial={'committees':[c]})
+            links_formset = LinksFormset(queryset=Link.objects.none())
     return render_to_response('committees/edit_topic.html',
         context_instance=RequestContext(request,
             {'edit_form': edit_form,
+             'links_formset': links_formset,
             }))
 
 
