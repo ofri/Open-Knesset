@@ -23,7 +23,7 @@
             <a href="{% url committee-detail c.id %}">{{c}}</a>
         {% endfor%}
         </li>
-        <li>{% trans "Suggested Topic for a committee meeting" %}</li>
+        <li><a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a></li>
     </ul>
 {% endblock %}
 {% block subnav %}
