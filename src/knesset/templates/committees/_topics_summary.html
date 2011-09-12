@@ -9,6 +9,8 @@
                 <a href="{% url public-profile t.creator.username %}">{% avatar t.creator 48 %}</a>
             </div>
         </div>
+        <a href="{% url public-profile t.creator.username %}">{{t.creator}}</a>&nbsp; &nbsp;{{t.creator.get_full_name}}
+        <br/>
         <a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a>
         <div>
             <!-- not sure we want this
