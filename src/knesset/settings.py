@@ -172,6 +172,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+LONG_CACHE_TIME = 18000 # 5 hours
+
 ANNOTATETEXT_FLAGS = (gettext('Statement'),
                     gettext('Funny :-)'),
                     gettext('False fact'),
