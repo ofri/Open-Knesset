@@ -16,14 +16,16 @@ class Command(NoArgsCommand):
             csv_writer = csv.writer(f)
             header = []
             header.append('Vote id')
+            header.append('Vote title')
             header.append('Score')
             for mk in mks:
-                header.append(mk['id'])
+                header.append('%s %d' % (mk['name'].encode('utf8'), mk['id']))
             csv_writer.writerow(header)
 
             for agenda_vote in AgendaVote.objects.filter(agenda=agenda):
                 row = []
                 row.append(agenda_vote.vote.id)
+                row.append(agenda_vote.vote.title.encode('utf8'))
                 row.append(agenda_vote.score)
                 mks_for = agenda_vote.vote.get_voters_id('for')
                 mks_against = agenda_vote.vote.get_voters_id('against')

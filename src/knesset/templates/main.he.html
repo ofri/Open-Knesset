@@ -1,8 +1,12 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude mks %}
+{% load i18n i18ninclude mks search %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
+{% block subnav %}
+        <div id="search" style="text-align:center;float:none;clear:none;"><p class="help-text">חיפוש חופשי באתר כנסת פתוחה</p>{% search_form "search_page" %}</div>
+        
+{% endblock %}
 {% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
 {% block divcontent %}
 <!-- add this to sidebar: <iframe src="http://www.facebook.com/plugins/likebox.php?id=114171195283394&amp;width=200&amp;connections=10&amp;stream=false&amp;header=true&amp;height=287" scrolling="no" frameborder="0" style="border:none; overflow:auto; width:200px; height:210px; position:absolute; left:10px;" allowTransparency="true"></iframe>
