@@ -105,7 +105,7 @@ a{
 		    position: absolute;
 		    text-indent: -9999px;
 		    top: 70px;
-		    width: 70px;
+		    width: 80px;
 		    z-index: 10;
 		    overflow: hidden;
 		}
@@ -212,6 +212,10 @@ a{
 			min-height: 250px;
 			padding-top: 40px;
 			position: relative;
+		}
+		ul#steps li#summoned-1,
+		ul#steps li#summoned-2{
+		  display: none;
 		}
 		ul#steps li:hover{
 			background-image: url(../img/embed_hover.png);

@@ -1,0 +1,585 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+	<meta http-equiv="Content-Language" content="he">
+	<script type="text/javascript" src="http://oknesset.org/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" type="text/css"/>
+	<link rel="stylesheet" href="http://oknesset.org/static/css/embed_bill.css" type="text/css"/>
+
+	
+	<script type="text/javascript">
+	  var log;
+	  
+	  if (window.console && typeof console.log === "function"){
+	  // use apply to preserve context and invocations with multiple arguments
+	  log = function () { console.log.apply(console, arguments); };
+	  } else {
+	  log = function(){ return; }
+	  }
+
+/*
+states:
+	1. initiated ("was-proposed")
+	2. pre-vote ("pre-voted")
+	3. summoned-1 
+	4. commity-1
+	5. vote-1 ("first-voted")
+	6. summoned-2
+	7. commity-2
+	8. vote-2 ("second-voted")
+	9. vote-3 ("approval-voted")
+	10. passed ("approval-voted" == true)
+	
+stream example:
+  { "note": "True/False/..." 
+	"verb": "was-proposed/pre-voted/first-voted/approval-voted/was-discussed/was-voted-on-gov",
+	"target": "/vote/xxxx/",
+	"time": 1279717260 }
+		
+*/
+
+/*
+ * TODO (summary):
+ *   1. bill abstract
+ * √ 2. links
+ * √ 3. bill title - bill.law.title VS. bill.title
+ * √ 4. status
+ *   6. dates - done for votes. what about future estimations?
+ * √ 7. phase backgrounds
+ *   8. active phase
+ *   9. link "?" - try to do the expand if possible
+ *  10. scale for votes - where to get the data? 
+ * √11. what about DUPLICATIONS? go chronologically from the end. all the rest is history
+ * √12. expand with jQuery UI on click on little arrow in pull DIV
+ */ 
+ 
+ /*
+  * 
+  * <li id="vote-1" class="passed/failed/pending voted odd current first/last">
+  */
+			
+		var expanded = false;
+		var stream = [{"note": "\u05d7\u05d5\u05e7 \u05d7\u05d3\u05e9", "verb": "was-proposed", "target": "/bill/3260/", "time": 1265580000.0}, {"note": "True", "verb": "was-pre-voted", "target": "/vote/1034/", "time": 1266433440.0}, {"note": "\u05d5\u05e2\u05d3\u05ea \u05d4\u05d7\u05d5\u05e7\u05d4, \u05d7\u05d5\u05e7 \u05d5\u05de\u05e9\u05e4\u05d8", "verb": "was-discussed-1", "target": "/committee/meeting/2617/", "time": 1281906000.0}, {"note": "\u05d7\u05d5\u05e7 \u05d7\u05d3\u05e9", "verb": "was-knesset-proposed", "target": "/bill/3260/", "time": 1286748000.0}, {"note": "True", "verb": "was-pre-voted", "target": "/vote/1804/", "time": 1287423480.0}, {"note": "\u05d5\u05e2\u05d3\u05ea \u05d4\u05d7\u05d5\u05e7\u05d4, \u05d7\u05d5\u05e7 \u05d5\u05de\u05e9\u05e4\u05d8", "verb": "was-discussed-1", "target": "/committee/meeting/3673/", "time": 1296511200.0}, {"note": "True", "verb": "was-pre-voted", "target": "/vote/2620/", "time": 1298313840.0}, {"note": "False", "verb": "was-pre-voted", "target": "/vote/2621/", "time": 1298313900.0}, {"note": "True", "verb": "was-pre-voted", "target": "/vote/2622/", "time": 1298313960.0}, {"note": "True", "verb": "was-approval-voted", "target": "/vote/2623/", "time": 1298314020.0}];
+		var phases = {
+			'was-proposed'         : 0,
+			'was-pre-voted'        : 1,
+			'was-discussed-1'      : 2,
+			'was-knesset-proposed' : 3,
+			'was-first-voted'      : 4,
+			'was-discussed-2'      : 5,
+			'was-approval-voted'   : 6 
+		};
+		
+		for (var p in phases) phases[phases[p]] = p;
+		
+		var phasesArr = ['was-proposed', 'was-pre-voted', 'was-discussed-1', 'was-first-voted', 'was-discussed-2', 'was-approval-voted'];
+		
+	    formatDate = function(d) {
+
+	    var curr_date = d.getDate();
+	    var curr_month = d.getMonth() + 1; //months are zero based
+	    var curr_year = d.getFullYear();
+	    return curr_date + "/" + curr_month + "/" + curr_year
+	    };
+
+//adds explanation from 'Proposal.get_explanation' to header
+function showExplanation() {
+
+    try {
+	$.get('http://oknesset.org/api/bill/' + 3260, function(data){
+
+	    if (data.votes.first) {
+	    $('#vote-1 .scale .against').css('width', (data.votes.first.count_against_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) + 'px');
+	    $('#vote-1 .scale .against').css('backgroundPosition', ((data.votes.first.count_against_votes * 120) / (data.votes.first.count_for_votes + data.votes.first.count_against_votes) - 120) + 'px bottom');
+	    }
+	    if (data.votes.pre && data.votes.pre.length > 0) {
+	    var lastpre = data.votes.pre[data.votes.pre.length - 1];
+	    $('#pre-vote .scale .against').css('width', (lastpre.count_against_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) + 'px');
+	    $('#pre-vote .scale .against').css('backgroundPosition', ((lastpre.count_against_votes * 120) / (lastpre.count_for_votes + lastpre.count_against_votes) - 120) + 'px bottom');
+	    }
+	    if (data.popular_name){
+	    $('#title h1').text(data.popular_name + ' - ' + $('#title h1').text())
+	    }
+
+
+
+		  var dlg = $('#explanation');
+		  var rendered = false;
+		  renderProp = function(prop){
+		      
+		      if (prop.explanation) {
+
+			  var propdiv = $('<div class="clear"></div>');
+			  //propdiv.append($('<p>\u05de\u05ea\u05d5\u05da\u0020 <a href="' + prop.source_url+ '" class="oknesset-resource">' + '\u05d4\u05e0\u05d5\u05e1\u05d7\u0020\u05d4\u05de\u05dc\u05d0 (' + prop.date + ') :</a></p>'))
+			  var extension = (/[.]/.exec(prop.source_url)) ? /[^.]+$/.exec(prop.source_url) : '';
+			  var dtprts = prop.date.split('-');
+			  $('#external-links').append("<a href='" +
+						      prop.source_url + 
+						      "' class='knesset-resource' target='_blank'>" +
+						      '\u05d4\u05e0\u05d5\u05e1\u05d7\u0020\u05d4\u05de\u05dc\u05d0, ' + formatDate(new Date(dtprts[0], dtprts[1] - 1, dtprts[2]))+ ', (' +
+						      extension + ") </a>");
+
+			  propdiv.append($('<div class="prop">' + prop.explanation + '</div>'));
+			  //only one proposal explanation is rendered - mushon said.
+			  if (!rendered) 
+			      dlg.append(propdiv);
+			  rendered = true;
+		      }
+		  };
+		  
+ 		  renderProp(data.proposals.knesset_proposal);
+		  data.proposals.private_proposals.forEach(renderProp);
+		  renderProp(data.proposals.gov_proposal);
+
+		  /*	    dlg.dialog({modal: true, title: '\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8', position: ['right', $('#header').height() - 10], height: $('#steps').height(), resizable: false, width: $('#steps').width() - 10});*/
+
+		  // handling ellipsis for long explanation
+
+		  var lines = 0;
+		  var ellipsing = false;
+		  $('.prop').each(function(i, prp) {
+				      var pheight = 0;
+
+				      //				      $(prp).after("<a href='#null'><div class='tglelps'>\u05d4\u05de\u05e9\u05da ...</div></a>");      
+				      
+				      $(prp).children().each(function(i, p) {
+
+								 lines += 1;
+
+								 pheight = $(p).position().top + $(p).height();
+								 if (pheight > 160) {
+								     if (!ellipsing) {
+
+									 $(p).before('<span>' + $(p).text().substr(0,300) + "<a href='#null'><span class='tglelps'> \u05d4\u05de\u05e9\u05da...</span></a></span>");
+									 $(p).before($('<span>').text($(p).text().substr(300)).addClass('elpsd')).remove();
+
+								     }
+								     else {
+									 $(p).addClass('elpsd');   
+								     }
+								     ellipsing = true;
+								 }
+							     });
+				      
+
+				  });
+
+		  $('.tglelps').click(function() {
+					  $('.elpsd').removeClass('elpsd');
+					  $('.tglelps').hide();
+				      });
+
+
+   	      },"jsonp");  
+
+
+
+	/////////////// -- end of ellispsis handling
+        
+        return "";
+    }
+    catch (err) {
+	log(err);
+    }
+}
+
+	      
+		
+		function showLog() {
+			var log = $('<div id="log" style="direction:ltr; position:absolute; margin-left: 10px; left: 0; top:0; width: 400px; height:100%; text-align: left;"></div>').appendTo($('body'));
+			for (var a in stream) {
+				var inner = $("<p></p>").appendTo(log);
+				inner.append($("<span style='color:red;'>verb: </span>")).append($("<span>" + stream[a].verb + "</span><br>"));
+				inner.append($("<span style='color:red;'>note: </span>")).append($("<span>" + stream[a].note + "</span><br>"));
+				inner.append($("<span style='color:red;'>time: </span>")).append($("<span>" + new Date(stream[a].time*1000) + "</span><br>"));
+				inner.append($("<span style='color:red;'>target: </span>")).append($("<span>" + stream[a].target + "</span><br>"));
+			}
+		}
+
+		var stageResolver = {};
+		// stages is a map from verbs in the feed to the steps representing it in the diagram..
+		stageResolver.verbsToStages = {
+		    'was-proposed' : ['initiated'],
+		    'was-pre-voted' : ['pre-vote'],
+		    'was-discussed-1' : ['summoned-1', 'committee-1'],
+		    'was-knesset-proposed' : [],
+		    'was-first-voted' : ['vote-1'],
+		    'was-discussed-2' : ['summoned-2', 'committee-2'],
+		    'was-approval-voted' : ['vote-2', 'vote-3', 'passed'] 
+		};
+
+		stageResolver.stepsUpToVerb = function(verb) {
+		  var result = 'ul#steps ';
+		  for (var currentVerb in this.verbsToStages) {
+		      this.verbsToStages[currentVerb].forEach(function(stage) {
+		          result += 'li#' + stage + ', '; 
+		      });
+		      if (verb == currentVerb) {
+		      	break;
+		      }
+		  }
+		  return result.substring(0, result.length - 2);
+		}
+
+		stageResolver.stepsStartingFromVerb = function(verb, exclude) {
+		  var result = 'ul#steps ';
+		  var verbFound = false;
+		  for (var currentVerb in this.verbsToStages) {
+		      if (verb == currentVerb) {
+		          verbFound = true;
+		          if (exclude) continue;
+		      }
+		      if (!verbFound) {
+		          continue;
+		      }
+		      this.verbsToStages[currentVerb].forEach(function(stage) {
+		          result += 'li#' + stage + ', '; 
+		      });
+		  }
+		  return result.substring(0, result.length - 2);
+		}
+		
+		$(function() {
+	    showExplanation();
+
+
+//	    $('#explanation').text('\u05d3\u05d1\u05e8\u05d9\u0020\u05d4\u05e1\u05d1\u05e8');
+//	    $('#explanation').click(showExplanation);
+			//showLog();
+			$("head").append($("<a href='/bill/3260/' target='_blank'><title>חוק חובת גילוי לגבי מי שנתמך על ידי ישות מדינית זרה: חוק חדש</title></a>"));
+			var finalStatus, stagePassed, phase = -1, committees = [], proposedDate, finalDate;
+			for (var a in stream) {
+				// determine date
+				var d = new Date(stream[a]['time']*1000), day = d.getDate(), month = d.getMonth()+1, year = d.getFullYear(),
+				    dateHtml = day+'/'+month+'<br>'+year;
+				var verb = stream[a]['verb'], curPhase = phases[verb];
+				
+				if (curPhase > phase) phase = curPhase;
+				
+				var currentStagePassed = true;
+                
+                var stagePassed = false;
+				switch (verb) {
+					case 'was-approval-voted':
+						$('ul#steps li#vote-2 .date, ul#steps li#vote-3 .date').html(dateHtml);
+						if (stream[a]['note'] == 'True') {
+							finalStatus = true;
+							$('ul#steps li#passed .date').html(dateHtml);
+							stagePassed = true;
+						} else {
+							stagePassed = false;
+							finalStatus = false;
+						}
+						finalDate = day + "/" + month + "/" + year;
+						break;
+					case 'was-first-voted':
+						
+                            $('ul#steps li#pre-vote .step .tooltip-score').hide();
+                        
+						$('ul#steps li#vote-1 .date').html(dateHtml);
+						$('ul#steps li#vote-1').addClass('voted');
+						if (stream[a]['note'] == 'True') {
+							$('ul#steps li#vote-1').addClass('passed');
+							stagePassed = true;
+						} else {
+							finalDate = day + "/" + month + "/" + year;
+							finalStatus = false;
+							stagePassed = false;
+						}
+						break;
+					case 'was-pre-voted':
+                    	
+					    	$('ul#steps li#pre-vote .step .tooltip-score .balance').text('40/' +
+					    	        '34');
+                        
+						$('ul#steps li#pre-vote').addClass('voted');
+						$('ul#steps li#pre-vote .date').html(dateHtml);
+						if (stream[a]['note'] == 'True') {
+							$('ul#steps li#pre-vote').addClass('passed');
+							stagePassed = true;
+						} else {
+							finalDate = day + "/" + month + "/" + year;
+							finalStatus = false;
+							stagePassed = false;
+						}
+						break;
+					case 'was-proposed':
+						$('ul#steps li#initiated .date').html(dateHtml);
+						proposedDate = day + "/" + month + "/" + year;
+     					stagePassed = true;
+
+//                        $('#initiated').click(showExplanation);
+						break;
+					case 'was-discussed-1':
+						// there cannot be a failure in a committee discussion, only success
+						$("ul#steps li#committee-1, li#summoned-1").addClass('passed');
+						$("ul#steps li#committee-1 .date").html(dateHtml);
+						committees.push(stream[a]['note']);
+						stagePassed = true;
+						break;
+					case 'was-discussed-2':
+						// there cannot be a failure in a committee discussion, only success
+						$("ul#steps li#committee-2 .date").html(dateHtml);
+						committees.push(stream[a]['note']);
+						stagePassed = true;
+						break;
+					case 'was-knesset-proposed':
+						stagePassed = true;
+					    break;
+					default:
+						break;
+				}
+				if (stagePassed) {
+                    $(stageResolver.stepsUpToVerb(verb)).addClass('passed');
+                }
+			}
+
+			if (finalStatus) {
+			    $('.status').addClass('passed').text('אושרה');
+			} else if(finalStatus==false) {
+			    $(stageResolver.stepsStartingFromVerb(verb)).addClass('failed');
+			    $('.status').addClass('failed').text('נדחתה');
+			} else {
+				$('.status').hide();
+				$(stageResolver.stepsStartingFromVerb(verb, true)).addClass('pending');
+			}
+			
+			// check if first vote is just about to happen
+			if (phases[phase] == 'was-knesset-proposed') {
+				var b;
+				setInterval(function() {
+					if (b) $("ul#steps li#vote-1").animate({opacity: 1}, 500);
+					else $("ul#steps li#vote-1").animate({opacity: 0}, 500);
+					b=!b;}, 500);
+			}
+			
+			// generate excerpt
+			var excerpt = "הצעה שהוגשה בתאריך " + proposedDate;
+			if (committees.length) {
+				excerpt += " ונידונה ב";
+				for (var i=0; i < committees.length-1; i++) excerpt += committees[i] + ", ";
+				excerpt += "וב" + committees[committees.length-1] + ". ";
+			} else excerpt += ". ";
+			
+			if (finalDate) {
+				var outcome = finalStatus ? "אושרה" : "נדחתה";
+				excerpt += outcome + " בתאריך " + finalDate + ".";
+			}
+
+//			$("#excerpt").append($("<p></p>").text(excerpt));
+
+			// proposers
+			var pCount = 4;
+			if (pCount > 3) $('.more').text((pCount-3) + '+');
+			
+			$('.pull').bind('click', onPull);
+	      $('#header').hover(function(){expanded = false; onPull();}, function() {expanded=true; onPull();});
+		});
+		
+		function onPull() {
+	      $('#header').stop(true, true);
+	      //			var height = expanded ? 90 : $('#excerpt>p').height() + 190;
+	      if (!expanded) {
+	      //	      $('#header').addClass('header-hover', 1000, function(){});	
+	      $('#header').addClass('header-hover').removeClass('header-small', 500, function(){});	
+	      
+	      }
+	      else {
+	      $('#header').addClass('header-small', 1000, function(){});
+
+
+	      }
+//			$('#header').effect('size', {to: {height: height}, scale: 'box'}, 500, function() {
+	      if (expanded) {
+					$(".pull .arrow").removeClass("up").addClass("down");
+				} else {
+					$(".pull .arrow").removeClass("down").addClass("up");	
+				}
+//			});
+	
+		}
+	</script>
+</head>
+
+<body>
+	<div id="header" class="header-small">
+		<div id="details">
+			<div id="title">
+			  <a href="/bill/3260/" target="_blank">
+				<span class="label">שם ההצעה:</span>
+				<h1>חוק חובת גילוי לגבי מי שנתמך על ידי ישות מדינית זרה: חוק חדש</h1>
+			  </a>
+			</div>
+			<div id="excerpt">
+				<span class="label">תקציר:</span>
+				<div id="explanation"></div>
+			</div>
+			<div id="external-links">
+				<span class="label">קישורים נוספים:</span>
+				<a href="/bill/3260/" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
+				<!--<a href="#" class="knesset-resource">החוק באתר הכנסת (pdf)</a>-->
+			</div>
+			<div>
+				<span class="status"></span>
+			</div>
+		</div>
+		<div id="pms">
+			<div class="label">יזמו:</div>
+			<ul>
+				
+				<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a></li>
+				
+				<li><a href="/member/805/"><img src="http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg" alt="דוד רותם" title="דוד רותם"/></a></li>
+				
+				<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a></li>
+				
+				<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a></li>
+				
+			</ul>
+			<a href="#" class="more"></a>
+		</div>
+		<div class="pull"><div class="arrow down"></div></div>
+	</div>
+	<div id="graph">
+		<span class="status"></span>
+		<div id="gov-position">
+			<div class="step">
+				<span class="date">
+					(טרם פורסמה)
+				</span>
+			</div>
+		</div>
+		<ul id="steps">
+			<li id="initiated" class="odd first">
+                 
+				<div class="step">
+				    
+					    <a href="/bill/3260/#bill-initiation" class="link" target="_blank">קישור</a>
+					
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>יזום ההצעה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="pre-vote" class="">
+				<div class="step">
+				    
+					    <a href="/bill/3260/#bill-pre-vote" class="link" target="_blank">קישור</a>
+					
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
+							<span class="for"></span>
+						</div>
+					</div>
+					<div class="tooltip"><span>קריאה טרומית</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="summoned-1" class="odd">
+				<div class="step">
+				     
+				    
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="committee-1" class="">
+				<div class="step">
+				    
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ישיבות ועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-1" class="odd">
+				<div class="step">
+				    
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip-score">
+						<span class="balance"></span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
+							<span class="for"></span>
+						</div>
+					</div>
+					<div class="tooltip"><span>קריאה ראשונה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="summoned-2" class="">
+				<div class="step">
+				     
+				    
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>זימון ישיבה בועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="committee-2" class="odd">
+				<div class="step">
+				    
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ישיבות ועדה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-2" class="">
+				<div class="step">
+				     
+				    
+					    <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
+					
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>קריאה שניה</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="vote-3" class="odd">
+				<div class="step">
+				     
+				    
+					    <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
+					
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>קריאה שלישית</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+			<li id="passed" class="last">
+				<div class="step">
+					<a href="#" class="link">קישור</a>
+					<a href="#" class="info">מידע</a>
+					<span class="icon">icon</span>
+					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
+					<span class="date">?</span>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div id="footer">
+		<div id="credit">עובד והונגש ע"י <a href="http://oknesset.org">כנסת פתוחה</a> ו<a href="http://yeda.us">הסדנא לידע ציבורי</a></div>
+		<div id="share">
+			<a href="#" class="embed">הטמעה</a>
+			<a href="#" class="link">קישור</a>
+		</div>
+	</div>
+</body>
+</html>
+
+
