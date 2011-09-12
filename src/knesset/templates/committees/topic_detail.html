@@ -16,7 +16,7 @@
 {% block nav-committees %}class="selected"{% endblock %}
 {% block header %}
     <ul id="breadcrumbs"> 
-        <li class="first"><a href="{% url committee-list %}"> {% trans "Committees" %}</a></li>
+        <li class="first"><a href="{% url committee-list %}">{% trans "Committees" %}</a></li>
         <li>
         {% for c in topic.committees.all %}
             {% if not forloop.first %} | {% endif %}
