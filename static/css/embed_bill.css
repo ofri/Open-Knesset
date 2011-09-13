@@ -168,7 +168,26 @@ a{
 				#pms li img{
 					width: 20px;
 					height: auto;
-				}
+					}
+					#pms ul:hover{
+						overflow:visible;
+					}
+					#pms li:hover{
+						position:relative;
+						margin-left: 25px
+					}
+					#pms li:hover a{
+						width: 40px;
+						height: 58px;
+						top: -10px;
+						right: -10px;
+						position: absolute;
+					}
+					#pms li:hover img{
+						width: 40px;
+						height: auto;
+						z-index: 30000;
+					}
 	.pull{
 		clear: both;
 		width: 100%;
