@@ -113,6 +113,7 @@ a{
 		#header .status{
 			bottom: 10px;
 			top: auto;
+			left: -100px;
 		}
 		
 		.status.passed{
@@ -131,7 +132,7 @@ a{
 		width: 100px;
 	}
 		#pms ul{
-			height: 35px;
+			height: 22px;
 			overflow: hidden;
 			margin: 0;
     		padding: 0;
@@ -145,9 +146,9 @@ a{
 			#pms li,
 			#pms a.more{
 				float: right;
-			    height: 32px;
+			    height: 20px;
 			    list-style: none outside none;
-			    margin-bottom: 3px;
+			    margin-bottom: 5px;
 			    margin-left: 3px;
 			}
 			#pms a.more{
@@ -158,10 +159,15 @@ a{
 			.header-hover #pms a.more{
 				display: none;
 			}
+				#pms li a{
+				    border: 1px solid #1088FE;
+				    display: block;
+				    height: 20px;
+				    overflow: hidden;
+				}
 				#pms li img{
 					width: 20px;
 					height: auto;
-					border: 1px solid #1088fe;
 				}
 	.pull{
 		clear: both;
