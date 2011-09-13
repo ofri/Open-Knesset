@@ -311,46 +311,40 @@ a{
 					top: 100px;
 					width: 100%;
 					height: 50px;
-					background: url(../img/embed_icons_pending.png);
+					background: url(../img/embed_icons_initiated.png) top center;
 					text-indent: -999999px;
 					z-index: 1;
 					display: block;
 				}
 				ul#steps li#initiated .icon{
-					background-position: -443px center;
+					background-image: url(../img/embed_icons_initiated.png);
 				}
 				ul#steps li#pre-vote .icon{
-					background-position: -393px center;
-				}
-				ul#steps li#summoned-1 .icon{
-					background-position: -343px center;
+					background-image: url(../img/embed_icons_pre-vote.png);
 				}
 				ul#steps li#committee-1 .icon{
-					background-position: -292px 0;
+					background-image: url(../img/embed_icons_committee.png);
 				}
 				ul#steps li#vote-1 .icon{
-					background-position: -243px 0;
-				}
-				ul#steps li#summoned-2 .icon{
-					background-position: -193px 0;
+					background-image: url(../img/embed_icons_vote-1.png);
 				}
 				ul#steps li#committee-2 .icon{
-					background-position: -143px 0;
+					background-image: url(../img/embed_icons_committee.png);
 				}
 				ul#steps li#vote-2 .icon{
-					background-position: -93px 0;
+					background-image: url(../img/embed_icons_vote-2.png);
 				}
 				ul#steps li#vote-3 .icon{
-					background-position: -43px 0;
+					background-image: url(../img/embed_icons_vote-3.png);
 				}
 				ul#steps li#passed .icon{
-					background-position: 7px 0;
-				}
-				ul#steps li.passed .icon{
 					background-image: url(../img/embed_icons_passed.png);
 				}
+				ul#steps li.passed .icon{
+					background-position: center center;
+				}
 				ul#steps li.failed .icon{
-					background-image: url(../img/embed_icons_failed.png);
+					background-position: bottom center;
 				}
 				ul#steps li .tooltip{
 				    display: none;
