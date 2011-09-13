@@ -27,6 +27,7 @@ class Committee(models.Model):
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
+    description = models.TextField(null=True,blank=True)
 
     def __unicode__(self):
         return "%s" % self.name

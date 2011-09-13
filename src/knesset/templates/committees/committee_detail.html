@@ -19,6 +19,7 @@
 {% block divcontent %}
   <h2>{{object.name}}</h2>
   <div class="main-column">
+    <p style="padding-bottom:1em;">{{object.description|linebreaksbr}}</p>
     {% if members %}
         <h3>{% trans 'Committee Members' %}</h3>
         <div class="clear"></div>
