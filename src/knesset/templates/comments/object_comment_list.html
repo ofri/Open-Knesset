@@ -14,13 +14,14 @@
                     <a href="{% url public-profile comment.user.username %}" alt="{{comment.user}}">{% avatar comment.user 48 %}</a>
                 </div>
             </div>
+            <div class="item-credit">
+                <a href="{% url public-profile comment.user.username %}">{{comment.user}}</a>&nbsp; &nbsp;{{comment.user.get_full_name}}
+            </div>
             <p>{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</p>
             <div class="item-footer">
                 {% if user == comment.user or user.is_staff%}
                     <div style="float:left;"><a href="{% url comments-delete-comment comment.id %}">{% trans 'delete comment' %}</a> </div>
                 {% endif %}
-                {{ comment.user.username|escape }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}} 
-                {{ comment.submit_date|timesince }}{{ LANGUAGE_BIDI|yesno:"&rlm;,&lrm;"|safe}}: 
             </div>
         </div>
     {% endfor %}

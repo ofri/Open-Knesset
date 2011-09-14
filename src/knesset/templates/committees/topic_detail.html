@@ -46,15 +46,16 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
     <h2>{{topic.title}}</h2>
     <div class="main-column">
-        <div class="big-avatar">
+        <div class="item-header big-avatar">
             <a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a>
         </div>
-        <p>{{topic.description}}</p>
-        <div style="clear:both;"></div>
-        <div>
-            <h3>{% trans "Links" %}:</h3>
-            {% object_links topic %}
+        <div class="item-credit">
+            <a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a>{{topic.creator.get_full_name}}:
         </div>
+        <p>{{topic.description|linebreaksbr}}</p>
+        <div style="padding: 0.5em; clear:both;"></div>
+        <h3>{% trans "Links" %}:</h3>
+        {% object_links topic %}
     </div>
     <div class="secondary-column">
         <h3> {% trans "average rating" %}: </h3>
