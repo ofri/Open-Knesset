@@ -4,6 +4,15 @@
 {% load avatar_tags %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="{{MEDIA_URL}}js/tooltip.js"></script>
+<script>
+    function set_percent(id,value) {
+        $("#percent_"+id).css('background-position',((100-value))+"px 0px");
+        $("#percent_"+id).html(value+"%");
+    }
+</script>
+{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block header %}
