@@ -1,6 +1,4 @@
-
-function register_watch(object_id, watch_text, unwatch_text, watched_object, follow_url) {
-/*    var object_id = {{object.id}};*/
+function register_watch(object_id, object_type, watch_text, unwatch_text, watched_object, follow_url) {
      if (watched_object) {
         document.is_watched = true;
         $('#watch').html(unwatch_text);
@@ -13,7 +11,9 @@ function register_watch(object_id, watch_text, unwatch_text, watched_object, fol
             jQuery.ajax({
                 type: 'POST',
                 url: follow_url,
-                data: {unwatch: object_id},
+                data: {'verb': 'unfollow',
+                       'id': object_id,
+                       'what': object_type},
                 context: $('#watch'),
                 success: function () {
                     document.is_watched = false;
@@ -30,7 +30,9 @@ function register_watch(object_id, watch_text, unwatch_text, watched_object, fol
             jQuery.ajax({
                 type: 'POST',
                 url: follow_url,
-                data: {watch: object_id},
+                data: {'verb': 'follow',
+                       'id': object_id,
+                       'what': object_type},
                 context: $('#watch'),
                 success: function () {
                     document.is_watched = true;

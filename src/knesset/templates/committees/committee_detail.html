@@ -19,6 +19,7 @@
 {% block divcontent %}
   <h2>{{object.name}}</h2>
   <div class="main-column">
+    <p style="padding-bottom:1em;">{{object.description|linebreaksbr}}</p>
     {% if members %}
         <h3>{% trans 'Committee Members' %}</h3>
         <div class="clear"></div>
@@ -56,9 +57,14 @@
     <a class="more" href="all_meetings/">{% trans 'more...'%}</a>
   </div>
   <div class="secondary-column">
+    <h3>{% trans "Suggested Agenda Topics" %}</h3>
+    {% include "committees/_topics_summary.html" %}
+    <div class="add">
+        <a class="awesome-button medium" href="{% url edit-committee-topic object.id %}">{% trans "Add" %}</a>
+    </div>
     <h3>{% trans "Latest Annotations" %}</h3>
     <ul class="annotations">
-    {% for a in annotations|slice:":10" %}
+    {% for a in annotations|slice:":5" %}
         <li {% if forloop.last %}class="last"{% endif %}>
             <a href="{{a.get_absolute_url }}" title="{{a.flag_value}} - {{a.comment|escape}}">
             "...{{a.selection}}..." ({{a.content_object.header}})</a></li>

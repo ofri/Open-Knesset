@@ -1,6 +1,6 @@
+from django.contrib.contenttypes.generic import GenericTabularInline
 from knesset.committees.models import *
 
-from django import forms
 from django.contrib import admin
 
 class CommitteeAdmin(admin.ModelAdmin):
@@ -11,3 +11,21 @@ class CommitteeMeetingAdmin(admin.ModelAdmin):
     ordering = ('-date',)
 admin.site.register(CommitteeMeeting, CommitteeMeetingAdmin)
 
+class LinksTable(GenericTabularInline):
+    model = Link
+    ct_field='content_type'
+    ct_fk_field='object_pk'
+
+class EventsTable(GenericTabularInline):
+    model = Event
+    ct_field='which_type'
+    ct_fk_field='which_pk'
+
+class TopicAdmin(admin.ModelAdmin):
+    ordering = ('-created',)
+    inlines = [
+        LinksTable,
+        EventsTable,
+    ]
+
+admin.site.register(Topic, TopicAdmin)

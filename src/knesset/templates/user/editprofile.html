@@ -79,8 +79,8 @@
             var what = id_parts[1]
             jQuery.ajax({
                 type: 'POST',
-                url: '{% url user-unfollows %}',
-                data: {what: what, unwatch: object_id},
+                url: '{% url user-follow-unfollow %}',
+                data: {what: what, id: object_id, verb:'unfollow'},
                 context: $('#following-' + what + '-' + object_id),
                 success: function () {
                     this.remove();

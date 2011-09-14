@@ -56,7 +56,16 @@ a:hover { text-decoration:underline;}
 
 #subnav li { display:inline; list-style-type:none;
             font-weight: bold; margin-left: 0.1em 0; padding:0 0.5em; }
+#breadcrumbs { padding:0 }
 
+#breadcrumbs .first:before { content:""; }
+#breadcrumbs li:before {
+    content: "\00BB \0020";
+        }
+#breadcrumbs li { float:right;  font-size: 120%; list-style-type: none;
+            font-weight: bold; margin-left: .5em; padding:0.5em 0; }
+#breadcrumbs li.first { list-style-type: none; }
+#breadcrumbs a { padding: 0; }
 /* toolbar */
 .actions li { display:inline; list-style-type:none;
             font-weight: bold; padding:0 0.2em; }
@@ -268,7 +277,10 @@ a.disabled { color: #aaaaaa; }
 
 #content-main .bold-link { font-weight:bold; }
 th label { display: block; float:right; margin-left:1em;}
-
+form label { width:10em; display:inline-block; vertical-align:top;}
+form > p > input,
+form > p > textarea,
+form > p > select { width:250px; }
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
 #content-main #vote-tags { margin-right:2em; line-height:2.5em }
@@ -364,6 +376,20 @@ th label { display: block; float:right; margin-left:1em;}
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
 .item-list .item.alt { background:#E4F4E4 }
+.avatar-item { 
+    float:right;
+    margin: 5px 5px 5px 10px;
+    height: 48px;
+    border: 1px solid #7777AA;
+    border-radius: 3px;
+}
+.big-avatar { 
+    float:right;
+    margin: 5px 5px 5px 10px;
+    height: 64px;
+    border: 1px solid #7777AA;
+    border-radius: 4px;
+}
 .item .date-item {
     float:right;
     background-color: #7891AB;
@@ -376,6 +402,10 @@ th label { display: block; float:right; margin-left:1em;}
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 .item .item-inner { margin-right:60px }
+.item-footer {
+    clear:both;
+    font-size:80%;
+    }
 .item-metadata a {font-weight:normal}
 .item-metadata { font-size:90%; margin-top:3pt}
 .date-item span { 

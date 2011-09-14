@@ -12,7 +12,7 @@ from actstream.models import Follow
 from knesset.mks.models import Party, Member, GENDER_CHOICES
 from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
-from knesset.committees.models import CommitteeMeeting
+from knesset.committees.models import CommitteeMeeting,Topic
 
 
 NOTIFICATION_PERIOD_CHOICES = (
@@ -22,8 +22,8 @@ NOTIFICATION_PERIOD_CHOICES = (
 )
 
 class UserProfile(models.Model):
-    ''' 
-    This model is extending the builtin user model.  
+    '''
+    This model is extending the builtin user model.
     The extension includes a list of followed objects,
     such as parties, members and agendas.
 
@@ -47,30 +47,30 @@ class UserProfile(models.Model):
     public_profile = models.BooleanField(default=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     description = models.TextField(null=True,blank=True)
-    email_notification = models.CharField(max_length=1, choices=NOTIFICATION_PERIOD_CHOICES, blank=True, null=True) 
+    email_notification = models.CharField(max_length=1, choices=NOTIFICATION_PERIOD_CHOICES, blank=True, null=True)
 
     @property
     def members(self):
-        return map(lambda x: x.actor, 
-            Follow.objects.filter(user=self.user, 
+        return map(lambda x: x.actor,
+            Follow.objects.filter(user=self.user,
                 content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
-    
+
     @property
     def bills(self):
-        return map(lambda x: x.actor, 
-            Follow.objects.filter(user=self.user, 
+        return map(lambda x: x.actor,
+            Follow.objects.filter(user=self.user,
                 content_type=ContentType.objects.get_for_model(Bill)).select_related('actor'))
 
     @property
     def parties(self):
         #TODO: ther has to be a faster way
-        return map(lambda x: x.actor, 
+        return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user, content_type=ContentType.objects.get_for_model(Party)))
 
     @property
     def agendas(self):
-        return map(lambda x: x.actor, 
-            Follow.objects.filter(user=self.user, 
+        return map(lambda x: x.actor,
+            Follow.objects.filter(user=self.user,
                 content_type=ContentType.objects.get_for_model(Agenda)).select_related('actor'))
 
     @property
@@ -79,9 +79,16 @@ class UserProfile(models.Model):
             Follow.objects.filter(user=self.user,
                 content_type=ContentType.objects.get_for_model(CommitteeMeeting)).select_related('actor'))
 
+    @property
+    def topics(self):
+        return map(lambda x: x.actor,
+            Follow.objects.filter(user=self.user,
+                content_type=ContentType.objects.get_for_model(Topic)).select_related('actor'))
+
+
     def get_badges(self):
         return self.badges.all()
-        
+
     @models.permalink
     def get_absolute_url(self):
         return ('public-profile', (), {'pk': self.user.id})
@@ -91,7 +98,7 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.__unicode__()
-        
+
 def handle_user_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
         UserProfile.objects.create(user=instance)

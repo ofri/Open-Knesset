@@ -36,11 +36,6 @@ urlpatterns = patterns('',
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),
     (r'^badges/', include('knesset.badges.urls')),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
      (r'^admin/', include(admin.site.urls)),
      (r'^comments/$', CommentsView.as_view()),
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),
@@ -61,9 +56,9 @@ urlpatterns = patterns('',
      url(r'^pingback/', default_server, name='pingback-server'),
      url(r'^trackback/member/(?P<object_id>\d+)/$', TrackBackServer(get_mk_entry, mk_is_backlinkable),name='member-trackback'),
      (r'^act/', include('actstream.urls')),
-     url(r'^tags/(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
-     url(r'^tags/(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
-     url(r'^tags/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
+     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
+     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
+     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

@@ -1,16 +1,20 @@
 # encoding: utf-8
 import re
 import logging
+from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
+from django.contrib.auth.models import User
 
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import Tag
+from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from knesset.events.models import Event
+from knesset.links.models import Link
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 400
 
@@ -23,6 +27,7 @@ class Committee(models.Model):
     replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
+    description = models.TextField(null=True,blank=True)
 
     def __unicode__(self):
         return "%s" % self.name
@@ -188,6 +193,88 @@ class ProtocolPart(models.Model):
     def __unicode__(self):
         return "%s %s: %s" % (self.meeting.committee.name, self.header,
                               self.header)
+
+TOPIC_PUBLISHED, TOPIC_FLAGGED, TOPIC_REJECTED,\
+TOPIC_ACCEPTED, TOPIC_APPEAL = range(5)
+PUBLIC_TOPIC_STATUS = ( TOPIC_PUBLISHED, TOPIC_ACCEPTED)
+
+class TopicManager(models.Manager):
+    ''' '''
+    get_public = lambda self: self.filter(status__in=PUBLIC_TOPIC_STATUS)
+
+    by_rank = lambda self: self.extra(select={
+            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            }).order_by('-rank')
+
+    def summary(self):
+        return self.filter(status__in=PUBLIC_TOPIC_STATUS).extra(select={
+            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            }).order_by('-rank')
+        #TODO: rinse it so this will work
+        return self.get_public().by_rank()
+
+        
+class Topic(models.Model):
+    '''
+        Topic is used to hold the latest event about a topic and a committee
+
+        Fields:
+            title - the title
+            description - its description
+            created - the time a topic was first connected to a committee
+            modified - last time the status or the message was updated
+            editor - the user that entered the data
+            status - the current status
+            log - a text log that keeps text messages for status changes
+            committees - defined using a many to many from `Committee`
+    '''
+
+    creator = models.ForeignKey(User)
+    editors = models.ManyToManyField(User, related_name='editing_topics', null=True, blank=True)
+    title = models.CharField(max_length=256,
+                             verbose_name = _('Title'))
+    description = models.TextField(blank=True,
+                                   verbose_name = _('Description'))
+    status = models.IntegerField(choices = (
+        (TOPIC_PUBLISHED, _('published')),
+        (TOPIC_FLAGGED, _('flagged')),
+        (TOPIC_REJECTED, _('rejected')),
+        (TOPIC_ACCEPTED, _('accepted')),
+        (TOPIC_APPEAL, _('appeal')),
+            ), default=TOPIC_PUBLISHED)
+    rating = RatingField(range=7, can_change_vote=True, allow_delete=True)
+    links = generic.GenericRelation(Link, content_type_field="content_type",
+       object_id_field="object_pk")
+    events = generic.GenericRelation(Event, content_type_field="which_type",
+       object_id_field="which_pk")
+    # no related name as `topics` is already defined in CommitteeMeeting as text
+    committees = models.ManyToManyField(Committee,
+                                        verbose_name = _('Committees'))
+    meetings = models.ManyToManyField(CommitteeMeeting, null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    log = models.TextField(default="", blank=True)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('topic-detail', [str(self.id)])
+
+    def __unicode__(self):
+        return "%s" % self.title
+
+    objects = TopicManager()
+
+    def set_status(self, status, message=''):
+       self.status = status
+       self.log = '\n'.join((u'%s: %s' % (self.get_status_display(), datetime.now()),
+                            u'\t%s' % message,
+                            self.log,)
+                           )
+       self.save()
+
+    def can_edit(self, user):
+        return user==self.creator or user in self.editors.all()
 
 
 from listeners import *

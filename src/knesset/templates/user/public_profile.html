@@ -35,17 +35,27 @@
             </ul>
         </div>
 
+        <div>
+            <h3>{% trans 'Following Topics' %}:</h3>
+            {% include "committees/_topics_summary.html" %}
+        </div>
+
         <div class="clear"></div>
         <div>
             <h3>{% trans 'Annotations' %}</h3>
             <ul>
             {% for a in annotations|slice:":10" %}
                 {% ifchanged %}
-                    <li><h4> {{ a.content_object.meeting }} </h4>
+                    {% with meeting=a.content_object.meeting %}
+                    <li><h4><a href="{{ meeting.get_absolute_url}}">{{ meeting}}</a></h4>
+                    {% endwith %}
                 {% endifchanged %}
                 <div style="padding: 0 1em 0.5em;">
-                    {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."<br/>
-                    <p class="triangle-border top"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a>
+                    <p style="padding-right:2em; font-size:120%;">"{{a.comment|linebreaksbr}}"</p>
+                    <p class="triangle-border top">
+                        "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
+                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+                        </a>
                     </p>
                 </div>
             {% empty %}

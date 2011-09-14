@@ -2,8 +2,8 @@ import logging, difflib, datetime, re, colorsys
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
-from django.views.generic.list_detail import object_list
-from django.http import HttpResponseRedirect, Http404
+from django.views import generic
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -19,9 +19,24 @@ from knesset.laws.models import Bill, PrivateProposal
 from knesset.mks.models import Member
 from knesset.events.models import Event
 from knesset.utils import clean_string
-from models import Committee, CommitteeMeeting, COMMITTEE_PROTOCOL_PAGINATE_BY
+from knesset.links.models import Link
+from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
+from forms import EditTopicForm, LinksFormset
 
 logger = logging.getLogger("open-knesset.committees.views")
+
+committees_list = ListView(queryset = Committee.objects.all(), paginate_by=20)
+
+class CommitteeListView(generic.ListView):
+    context_object_name = 'committees'
+    model = Committee
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super(CommitteeListView, self).get_context_data(**kwargs)
+        context["topics"] = Topic.objects.summary()[:10]
+        context["rating_range"] = range(7)
+        return context
 
 class CommitteeDetailView(DetailView):
 
@@ -49,6 +64,7 @@ class CommitteeDetailView(DetailView):
                       settings.LONG_CACHE_TIME)
         context.update(cached_context)
         context['annotations'] = cm.annotations.order_by('-timestamp')
+        context['topics'] = cm.topic_set.summary()
         return context
 
 class MeetingDetailView(DetailView):
@@ -128,6 +144,86 @@ class MeetingDetailView(DetailView):
 _('added-bill-to-cm')
 _('added-mk-to-cm')
 
+class TopicListView(generic.ListView):
+    model = Topic
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        qs = Topic.objects.get_public()
+        if "committee_id" in self.kwargs:
+            qs = qs.filter(committees__id=self.kwargs["committee_id"])
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicListView, self).get_context_data(**kwargs)
+        committee_id = self.kwargs.get("committee_id", False)
+        context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
+        return context
+
+class TopicDetailView(DetailView):
+    model = Topic
+    context_object_name = 'topic'
+    def get_context_data(self, **kwargs):
+        context = super(TopicDetailView, self).get_context_data(**kwargs)
+        topic = context['object']
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched = topic in p.topics
+        else:
+            watched = False
+        context['watched_object'] = watched
+        return context
+
+@login_required
+def edit_topic(request, committee_id, topic_id=None):
+    if request.method == 'POST':
+        edit_form = EditTopicForm(data=request.POST)
+        links_formset = LinksFormset(request.POST)
+        if edit_form.is_valid() and links_formset.is_valid():
+            if topic_id:
+                t = Topic.objects.get(pk=topic_id)
+                if request.user != t.creator:
+                    return HttpResponseBadRequest()
+
+            topic = edit_form.save(commit=False)
+            topic.creator = request.user
+            if topic_id:
+                topic.id = topic_id
+            topic.save()
+            edit_form.save_m2m()
+
+            links = links_formset.save(commit=False)
+            ct = ContentType.objects.get_for_model(topic)
+            for link in links:
+                link.content_type = ct
+                link.object_pk = topic.id
+                link.save()
+
+            m = request.user.message_set.create()
+            m.message = 'Topic has been updated.'
+            m.save()
+            return HttpResponseRedirect(
+                reverse('topic-detail',args=[topic.id]))
+
+    if request.method == 'GET':
+        if topic_id: # editing existing topic
+            t = Topic.objects.get(pk=topic_id)
+            edit_form = EditTopicForm(instance=t)
+            ct = ContentType.objects.get_for_model(t)
+            links_formset = LinksFormset(queryset=Link.objects.filter(
+                content_type=ct, object_pk=t.id))
+        else: # create new topic for given committee
+            c = Committee.objects.get(pk=committee_id)
+            edit_form = EditTopicForm(initial={'committees':[c]})
+            links_formset = LinksFormset(queryset=Link.objects.none())
+    return render_to_response('committees/edit_topic.html',
+        context_instance=RequestContext(request,
+            {'edit_form': edit_form,
+             'links_formset': links_formset,
+            }))
+
+
+
 class MeetingsListView(ListView):
 
     def get_context(self):
@@ -172,6 +268,14 @@ def meeting_tag(request, tag):
     extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
     qs = CommitteeMeeting
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    return object_list(request, queryset,
+    return generic.list_view.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
+
+def delete_topic_rating(request, object_id):
+    if request.method=='POST':
+        topic= get_object_or_404(Topic, pk=object_id)
+        topic.rating.delete(request.user, request.META['REMOTE_ADDR'])
+        return HttpResponse('Vote deleted.')
+
+
 

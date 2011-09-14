@@ -1,0 +1,19 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load mks %}
+{% load avatar_tags %}
+{% block extratitle %}{% trans 'Edit Topic' %}{% endblock %}
+{% block header %}<h1>{% trans 'Edit Topic' %}</h1>{% endblock %}
+{% block content %}
+<form action="." method="post">{% csrf_token %}
+    {{ edit_form.as_p }}
+
+    <h2>{% trans 'Links to relevant material' %}</h2>
+    {{ links_formset.management_form }}
+    {% for form in links_formset %}
+        {{ form.as_p }}
+        <br>
+    {% endfor %}
+    <input type="submit" name="save" value="{% trans 'save' %}" />
+</form>
+{% endblock %}

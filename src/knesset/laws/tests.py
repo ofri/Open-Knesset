@@ -17,6 +17,7 @@ from knesset.mks.models import Member
 
 
 just_id = lambda x: x.id
+APP='laws'
 
 class BillViewsTest(TestCase):
 
@@ -27,6 +28,14 @@ class BillViewsTest(TestCase):
                                           title='vote 2')
         self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
                                               'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'ADRIAN')
+        g, created = Group.objects.get_or_create(name='Valid Email')
+        ct = ContentType.objects.get_for_model(Tag)
+        p = Permission.objects.get(codename='add_tag', content_type=ct)
+        g.permissions.add(p)
+
+        self.adrian.groups.add(g)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
         self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
@@ -34,6 +43,7 @@ class BillViewsTest(TestCase):
                                                    bill=self.bill_1,
                                                    date=date.today())
         self.mk_1 = Member.objects.create(name='mk 1')
+        self.tag_1 = Tag.objects.create(name='tag1')
 
     def testBillList(self):
         res = self.client.get(reverse('bill-list'))
@@ -173,6 +183,36 @@ class BillViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         ...use feedparser to analyze res
     '''
+    def test_add_tag_to_bill_login_required(self):
+        url = reverse('add-tag-to-object',
+                                 kwargs={'app':APP,'object_type':'bill','object_id': self.bill_1.id})
+        res = self.client.post(url, {'tag_id':self.tag_1})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_add_tag_to_bill(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('add-tag-to-object',
+                                 kwargs={'app':APP, 'object_type':'bill','object_id': self.bill_1.id})
+        res = self.client.post(url, {'tag_id':self.tag_1.id})
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(self.tag_1, self.bill_1.tags)
+
+    def test_create_tag_permission_required(self):
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        url = reverse('create-tag',
+                                 kwargs={'app':APP,'object_type':'bill','object_id': self.bill_1.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+
+    def test_create_tag(self):
+        self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
+        url = reverse('create-tag',
+                                 kwargs={'app':APP,'object_type':'bill','object_id': self.bill_1.id})
+        res = self.client.post(url, {'tag':'new tag'})
+        self.assertEqual(res.status_code, 200)
+        self.new_tag = Tag.objects.get(name='new tag')
+        self.assertIn(self.new_tag, self.bill_1.tags)
+
 
     def tearDown(self):
         self.vote_1.delete()
@@ -182,9 +222,7 @@ class BillViewsTest(TestCase):
         self.bill_3.delete()
         self.jacob.delete()
         self.mk_1.delete()
-
-
-
+        self.tag_1.delete()
 
 class VoteViewsTest(TestCase):
 
@@ -194,11 +232,12 @@ class VoteViewsTest(TestCase):
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
                                               'ADRIAN')
         g, created = Group.objects.get_or_create(name='Valid Email')
+        self.jacob.groups.add(g)
+
         ct = ContentType.objects.get_for_model(Tag)
         p = Permission.objects.get(codename='add_tag', content_type=ct)
-        g.permissions.add(p)
+        self.adrian.user_permissions.add(p)
 
-        self.adrian.groups.add(g)
         self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(),
@@ -231,34 +270,39 @@ class VoteViewsTest(TestCase):
 
     def test_add_tag_to_vote_login_required(self):
         url = reverse('add-tag-to-object',
-                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+                                 kwargs={'app':APP,'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag_id':self.tag_1})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
 
     def test_add_tag_to_vote(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('add-tag-to-object',
-                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+                                 kwargs={'app':APP, 'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag_id':self.tag_1.id})
         self.assertEqual(res.status_code, 200)
+        self.assertIn(self.tag_1, self.vote_2.tags)
 
     def test_create_tag_permission_required(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('create-tag',
-                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+                                 kwargs={'app':APP,'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
 
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
         url = reverse('create-tag',
-                                 kwargs={'object_type':'vote','object_id': self.vote_2.id})
+                                 kwargs={'app':APP,'object_type':'vote','object_id': self.vote_2.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertEqual(res.status_code, 200)
+        self.new_tag = Tag.objects.get(name='new tag')
+        self.assertIn(self.new_tag, self.vote_2.tags)
 
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
+        self.tag_1.delete()
+        self.ti.delete()
 
 class testVoteAPI(TestCase):
     def setUp(self):

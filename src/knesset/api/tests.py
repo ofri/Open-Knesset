@@ -13,14 +13,14 @@ class ApiViewsTest(TestCase):
     def setUp(self):
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
         self.party_1 = Party.objects.create(name='party 1')
-        self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())        
+        self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
         self.voteactions = []
-        self.num_mks = 30        
+        self.num_mks = 30
         for i in range(self.num_mks):
             mk = Member.objects.create(name='mk %d' % i,current_party=self.party_1)
             self.mks.append(mk)
-            self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))        
+            self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
         self.tags = []
         self.tags.append(Tag.objects.create(name = 'tag1'))
         self.tags.append(Tag.objects.create(name = 'tag2'))
@@ -35,7 +35,7 @@ class ApiViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json), self.num_mks)
-        
+
     def test_api_member(self):
         res = self.client.get(reverse('member-handler', args=[self.mks[0].id]))
         self.assertEqual(res.status_code, 200)
@@ -62,7 +62,7 @@ class ApiViewsTest(TestCase):
     def test_api_party_not_found(self):
         res = self.client.get(reverse('party-handler', args=[123456]))
         self.assertEqual(res.status_code, 404)
-        
+
     def test_api_vote_list(self):
         res = self.client.get(reverse('vote-handler'))
         self.assertEqual(res.status_code, 200)
@@ -96,7 +96,15 @@ class ApiViewsTest(TestCase):
     def test_api_tag_not_found(self):
         res = self.client.get(reverse('tag-handler', args=[123456]))
         self.assertEqual(res.status_code, 404)
-                
+
+    def test_api_tag_for_vote(self):
+        res = self.client.get(reverse('tag-handler',
+                                      args=['laws', 'vote',
+                                            self.vote_1.id]))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 2)
+
     def test_api_agenda_list(self):
         res = self.client.get(reverse('agenda-handler'))
         self.assertEqual(res.status_code, 200)
@@ -112,11 +120,11 @@ class ApiViewsTest(TestCase):
     def test_api_agenda_not_found(self):
         res = self.client.get(reverse('agenda-handler', args=[123456]))
         self.assertEqual(res.status_code, 404)
-        
+
     def test_api_agenda_private(self):
         res = self.client.get(reverse('agenda-handler', args=[self.private_agenda.id]))
         self.assertEqual(res.status_code, 404)
-        
+
 
     def tearDown(self):
         for i in range(self.num_mks):

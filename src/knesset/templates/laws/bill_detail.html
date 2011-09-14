@@ -7,19 +7,17 @@
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+                register_watch({{object.id}}, 'bill', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched|lower}}, "{% url user-follow-unfollow %}");
+        });
+    </script>
 {% endblock %}
 {% block extratitle %}{% bill_full_name object %}{% endblock %}
 {% block keywords %}{% bill_full_name object %},{{ keywords }}{% endblock %}
 {% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="selected"{% endblock %}
-{% block messages %}
-<span id="message_login">
-    {% trans "You have to be logged in to enable the watch feature." %}<br>
-    <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
-    {% trans "or" %}
-    <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
-</span>
-{% endblock %}
 {% block divcontent %}
     <ul class="actions">
         <li><span id="watch" class="awesome-button medium"></span></li>
@@ -403,6 +401,9 @@
                 {% if perms.tagging.add_tag %}
                     <form id="create_tag_form" action="#">{% csrf_token %}
                         <label for="tag">{% trans 'Create new tag' %}: </label>
+                        <input type="hidden" name="app_label" id="app_label" value="laws">
+                        <input type="hidden" name="object_type" value="bill">
+                        <input type="hidden" name="id" value="{{object.id}}">
                         <input type="text" name="tag" id="tag">
                         <input type="submit" value="{% trans 'Send' %}">
                     </form>
@@ -450,53 +451,6 @@
               // Can be '#' + one of the "bill-stage" class divs.
               show_only_vote_stage_div(location.hash.substring(1));
             }
-
-            var object_id = {{object.id}};
-            {% if watched %}
-                document.is_watched = true;
-                $('#watch').html("{% trans 'Unwatch' %}");
-            {% else %}
-                document.is_watched = false;
-                $('#watch').html("{% trans 'Watch' %}");
-            {% endif %};
-
-            $('#watch').click( function () {
-                if (document.is_watched) {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{% url follow-bills %}',
-                        data: {unwatch: object_id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = false;
-                            this.html("{% trans 'Watch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_unknown").html()
-                            $.jGrowl(msg, {life: 5000});
-                            $('#message_login').show();
-                        }
-                    });
-                }
-                else {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '{% url follow-bills %}',
-                        data: {watch: object_id},
-                        context: $('#watch'),
-                        success: function () {
-                            document.is_watched = true;
-                            this.html("{% trans 'Unwatch' %}");
-                        },
-                        error:  function(request, textStatus, error) {
-                            var msg = $("#message_login").html()
-                            $.jGrowl(msg, {sticky: true});
-                        }
-                    });
-                }
-                return (false);
-            }
-            )
     });
 
     --></script>
