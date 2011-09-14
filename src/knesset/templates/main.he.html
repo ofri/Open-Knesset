@@ -63,17 +63,16 @@
                     <div class="avatar-item">
                         <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
                     </div>
+                </div>
                 <a style="float:left;href="{{a.get_absolute_url }}" style="float:right;">
                     <div class="date-item">
                         {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
                     </div>
                 </a>
-                    <p>
-                        <a href="{% url public-profile a.user.username %}">{{a.user}}</a>
-                        <br/>
-                        {{a.comment|linebreaksbr}}
-                    </p>
+                <div class="item-credit">
+                    <a href="{% url public-profile a.user.username %}">{{a.user}}</a>&nbsp; &nbsp;{{a.user.get_full_name}}
                 </div>
+                <p>{{a.comment|linebreaksbr}}</p>
                 {% if a.timestamp %}
                     <p class="triangle-border top" style="clear:both;">
                         "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,

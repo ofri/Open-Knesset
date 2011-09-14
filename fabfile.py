@@ -32,6 +32,7 @@ def setup():
 def deploy(fork='ofri', branch='master'):
     """Deploy the latest version of the site to the server and restart apache"""
     update(fork, branch)
+    install_env()
     refresh_server()
 
 def clone_repo():
@@ -44,7 +45,6 @@ def update(fork, branch):
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
     with cd(env.path):
         run('git pull %s %s' % (fork, branch))
-    install_env()
     run('echo %s > %s/src/knesset/templates/last_build.txt' % (datetime.now(), env.path))
 
 def install_env():
