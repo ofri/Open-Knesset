@@ -1,71 +1,60 @@
 '''
 Open-Knesset fabfile. Usage:
 
-$ fab [staging|production] setup deploy # for the first time
-$ fab [staging|production] deploy # to run the latest version
+$ fab [dev|live] setup deploy # for the first time
+$ fab [dev|live] deploy # to run the latest version
 '''
 # Default release is 'current'
-config.release = 'current'
-config.repository = 'git://github.com/ofri/Open-Knesset.git'
+from __future__ import with_statement
+from fabric.api import *
+from fabric.contrib.console import confirm
+from datetime import datetime
 
-def staging():
+env.repository = 'git://github.com/daonb/Open-Knesset.git'
+
+def dev():
     """Staging server settings"""
-    config.settings = 'tuzig_staging'
-    config.path = '/home/daonb/sites/staging.Open-Knesset'
-    config.fab_hosts = ['staging.tzafim.org']
-    config.fab_user = 'daonb'
+    env.path = '/usr/local/src/dev.oknesset'
+    env.hosts = ['daonb@81.218.229.67:27628']
 
 def live():
     """Production server settings"""
-    config.settings = 'tuzig'
-    config.path = '/home/daonb/sites/Open-Knesset'
-    config.fab_hosts = ['tzafim.org']
-    config.fab_user = 'daonb'
+    env.path = '/usr/local/src/oknesset'
+    env.hosts = ['oknesset.org']
 
 def setup():
     """
     Setup a fresh env and install everything we need so it's ready to deploy to
     """
-    run('mkdir -p $(path); mkdir $(path)/releases')
+    run('mkdir -p %s' % env.path)
     clone_repo()
-    checkout_latest()
 
-def deploy():
+def deploy(fork='ofri', branch='master'):
     """Deploy the latest version of the site to the server and restart apache"""
-    checkout_latest()
-    symlink_current_release()
-    migrate()
+    update(fork, branch)
     refresh_server()
 
 def clone_repo():
     """Do initial clone of the git repo"""
-    run('cd $(path); git clone $(repository) repository')
-    run ('python bootstrap.py')
+    with cd(env.path):
+        run('git clone %(repository) .' % env)
+        run('python bootstrap.py')
 
-def checkout_latest():
+def update(fork, branch):
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
-    import time
-    config.release = time.strftime('%Y%m%d%H%M%S')
-    run('cd $(path)/repository; git pull;')
+    with cd(env.path):
+        run('git pull %s %s' % (fork, branch))
     install_env()
-    run('cp -R $(path)/repository $(path)/releases/$(release)')
-    run('rm -rf $(path)/releases/$(release)/.git*')
+    run('echo %s > %s/src/knesset/templates/last_build.txt' % (datetime.now(), env.path))
 
 def install_env():
     """Install the required packages using buildout"""
-    run('cd $(path)/repository; bin/buildout')
-
-def symlink_current_release():
-    """Symlink our current release, uploads and settings file"""
-    run('cd $(path); rm project; ln -s releases/current project; rm releases/current; ln -s $(release) releases/current')
-    run('cd $(path)/project/src/knesset; ln -s settings_$(settings).py runsettings.py', fail='ignore')
-
-def migrate():
-    """Run our migrations"""
-    run('cd $(path)/releases/current; bin/django syncdb --noinput')
-    run('cd $(path)/releases/current; bin/django update_index --noinput')
-    # for south: run('cd $(path)/project; bin/django syncdb --noinput --migrate')
+    with cd(env.path):
+        # build all the packages
+        run('bin/buildout')
+        # Run our migrations
+        run('bin/django syncdb --noinput --migrate')
 
 def refresh_server():
     """Restart the web server"""
-    sudo('touch $(path)/project/deploy/knesset_wsgi.py')
+    sudo('kill -HUP `cat /tmp/dev.oknesset.gunicorn.pid`')
