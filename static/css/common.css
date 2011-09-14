@@ -684,7 +684,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .large.awesome-button, .large.awesome-button:visited { font-size: 14px; padding: 8px 14px 9px; }
 .super.awesome-button, .super.awesome-button:visited { font-size: 34px; padding: 8px 14px 9px; }
 .awesome-button, .awesome-button:visited {background-color:#0d204a;}
-.awesome-button:hover {background-color:#0a1a3c;}
+.awesome-button:hover {text-decoration: none; background-color:#0a1a3c;}
 
 
 .speech-container { clear:both; }
