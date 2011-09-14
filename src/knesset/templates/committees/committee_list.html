@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load mks %}
 {% block extratitle %}{% trans "Committees" %}{% endblock %}
 {% block keywords %}{{% trans "Committees" %}{% endblock %}
 {% block description %}{% trans "Committees" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -7,10 +8,24 @@
 {% block divcontent %}
   <h2>{% trans "Committees" %}</h2>
   <div class="main-column">
+        <div class="item-list">
         {% for o in committees %}
-            <a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >{{ o.name }}</a>&nbsp;<br/>
+              <div class="item normal">
+              <a id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >
+                  <!-- TODO: fix mk-card
+                  <div class="item-header" style="width:60px; text-align: center; margin: 0 auto;">
+                  {% for cp in o.chairpersons.all %}
+                      {% mk_card cp %}
+                  {% endfor %}
+                  </div>
+                  -->
+                  <h4>{{ o.name }}</h4>
+                  <p>{{ o.description|linebreaksbr }}</p>
+              </a>
+              </div>
         {% endfor %}
-	</div>
+        </div>
+  </div>
   <div class="secondary-column">
       <h3>{% trans "Suggested Agenda Topics" %}</h3>
       {% include "committees/_topics_summary.html" %}

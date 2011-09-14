@@ -17,6 +17,7 @@ body, th, td { font:12px/1.4em Verdana,sans-serif; }
 img {border: none;}
 #content-secondary a:link, #content-secondary a:visited { color:#ffc757; text-decoration:none; }
 a { padding: 0 0.5em; text-decoration: none; font-weight: bold; color:#3E6C86; }
+a p {font-weight: normal; color: black; }
 a:hover { text-decoration:underline;}
 #content-secondary a:hover { color:#ffe761; background:none; }
 
@@ -376,15 +377,14 @@ form > p > select { width:250px; }
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
 .item-list .item.alt { background:#E4F4E4 }
+.item-header { float: right; }
 .avatar-item { 
-    float:right;
     margin: 5px 5px 5px 10px;
     height: 48px;
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
 .big-avatar { 
-    float:right;
     margin: 5px 5px 5px 10px;
     height: 64px;
     border: 1px solid #7777AA;
@@ -835,7 +835,7 @@ ul.member-summary ul { vertical-align: top; }
 .member-summary h4 {margin-top: 0.2em;}
 /* item-list */
 .item-list h3 { display:block; }
-.item-list h4 { margin-bottom:0.1em; }
+.item-list h4 { margin-bottom:0.1em; padding:0.5em; }
 .item-list .date { font-size:80%; }
 .item-list li {list-style:none; }
 .item-list li:hover { text-decoration: underline; }
