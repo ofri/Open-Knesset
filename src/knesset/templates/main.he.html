@@ -76,14 +76,23 @@
                 {% if a.timestamp %}
                     <p class="triangle-border top" style="clear:both;">
                         "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
-                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
+                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
                         </a>
                     </p>
-                {% else %}
+                {% else %}{% if a.content_type.name == "bill" %}
                     <p class="triangle-border top" style="clear:both;text-align:center; width:530px">
         <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
                     </p>
-                {% endif %}
+                {% else %}{% if a.content_type.name == "topic" %}
+                    <div class="triangle-border top" style="clear:both;">
+                        <div class="item-credit">
+                            <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>&nbsp; &nbsp;{{a.content_object.creator.get_full_name}}
+                        </div>
+                        <a href="{{a.content_object.get_absolute_url}}"><strong>{{a.content_object.title}}</strong>
+                        <p>{{ a.content_object.description|linebreaksbr }}</p>
+                        </a>
+                    </div>
+                {% endif %}{% endif %}{% endif %}
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}
