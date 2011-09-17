@@ -79,11 +79,13 @@
                         <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
                         </a>
                     </p>
-                {% else %}{% if a.content_type.name == "bill" %}
+                {% else %}{% if a.content_type.model == "bill" %}
                     <p class="triangle-border top" style="clear:both;text-align:center; width:530px">
-        <iframe frameborder="0" id="embed-widget" style="width:505px; height:375px" src="{% url embed-bill-details a.content_object.id %}"></iframe>
+                    {% with bill=a.content_object %}
+                        <a href="{{ bill.get_absolute_url }}">{{bill}}</a>
+                    {% endwith %}
                     </p>
-                {% else %}{% if a.content_type.name == "topic" %}
+                {% else %}{% if a.content_type.model == "topic" %}
                     <div class="triangle-border top" style="clear:both;">
                         <div class="item-credit">
                             <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>&nbsp; &nbsp;{{a.content_object.creator.get_full_name}}
@@ -92,7 +94,7 @@
                         <p>{{ a.content_object.description|linebreaksbr }}</p>
                         </a>
                     </div>
-                {% endif %}{% endif %}{% endif %}
+                {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}
