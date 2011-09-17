@@ -8,7 +8,6 @@ $ fab [dev|live] deploy # to run the latest version
 from __future__ import with_statement
 from fabric.api import *
 from fabric.contrib.console import confirm
-from datetime import datetime
 
 env.repository = 'git://github.com/daonb/Open-Knesset.git'
 
@@ -41,11 +40,11 @@ def clone_repo():
         run('git clone %(repository) .' % env)
         run('python bootstrap.py')
 
-def update(fork, branch):
+def update(fork='ofri', branch='master'):
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
     with cd(env.path):
         run('git pull %s %s' % (fork, branch))
-    run('echo %s > %s/src/knesset/templates/last_build.txt' % (datetime.now(), env.path))
+        run('date > src/knesset/templates/last_build.txt')
 
 def install_env():
     """Install the required packages using buildout"""
