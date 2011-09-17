@@ -28,18 +28,21 @@
 {% endblock %}
 {% block subnav %}
     <ul class="actions">
-        <li> {% trans "your rating" %}: 
-            <div style="display:inline;" id="your_rating">
-                {% if not user.is_authenticated %}{% trans 'Login to rank this topic' %}{% endif %}
-            </div>
-        </li>
-        {% if user == topic.creator %}
-        <li>
-            <a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
-        </li>
-        <li>
-            <a href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
-        </li>
+        {% if not user.is_authenticated %}
+            <li><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to rank this topic' %}</a></li>
+        {% else %}{% if user == topic.creator %}
+            <li>
+                <a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
+            </li>
+            <li>
+                <a href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
+            </li>
+        {% else %}
+            <li> {% trans "your rating" %}: 
+                <div style="display:inline;" id="your_rating">
+                </div>
+            </li>
+        {% endif %}
         {% endif %}
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
