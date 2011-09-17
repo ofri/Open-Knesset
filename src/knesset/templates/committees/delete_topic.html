@@ -1,0 +1,18 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block extratitle %}{% trans "Remove a topic" %} - {{ topic.title }}{% endblock %}
+
+{% block divcontent %}
+
+<h1>{% trans "Really remove this topic?" %}</h1>
+  <blockquote>{{ topic.title }}</blockquote>
+  <form action="." method="post">{% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}" id="next" />{% endif %}
+    <p class="submit">
+    <input type="submit" name="submit" value="{% trans "Remove" %}" /> {% trans 'or' %} <a href="{{ topic.get_absolute_url }}">{% trans 'Cancel' %}</a>
+    </p>
+  </form>
+{% endblock %}
+
+

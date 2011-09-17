@@ -195,7 +195,7 @@ class ProtocolPart(models.Model):
                               self.header)
 
 TOPIC_PUBLISHED, TOPIC_FLAGGED, TOPIC_REJECTED,\
-TOPIC_ACCEPTED, TOPIC_APPEAL = range(5)
+TOPIC_ACCEPTED, TOPIC_APPEAL, TOPIC_DELETED = range(6)
 PUBLIC_TOPIC_STATUS = ( TOPIC_PUBLISHED, TOPIC_ACCEPTED)
 
 class TopicManager(models.Manager):
@@ -241,6 +241,7 @@ class Topic(models.Model):
         (TOPIC_REJECTED, _('rejected')),
         (TOPIC_ACCEPTED, _('accepted')),
         (TOPIC_APPEAL, _('appeal')),
+        (TOPIC_DELETED, _('deleted')),
             ), default=TOPIC_PUBLISHED)
     rating = RatingField(range=7, can_change_vote=True, allow_delete=True)
     links = generic.GenericRelation(Link, content_type_field="content_type",

@@ -26,6 +26,8 @@ committeesurlpatterns = patterns ('',
     url(r'^committee/meeting/tag/(?P<tag>.*)/$', meeting_tag,
         name='committeemeeting-tag'),
     url(r'^committee/topic/$', TopicListView.as_view(), name='topic-list'),
+    url(r'^committee/topic/(?P<pk>\d+)/delete/$', delete_topic,
+        name='delete-committee-topic'),
     url(r'^committee/topic/(?P<pk>\d+)/$', TopicDetailView.as_view(), name='topic-detail'),
     url(r'^committee/topic/(?P<object_id>\d+)/(?P<score>\d+)/$', AddRatingFromModel(), {
                    'app_label': 'committees',

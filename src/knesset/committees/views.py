@@ -21,6 +21,7 @@ from knesset.events.models import Event
 from knesset.utils import clean_string
 from knesset.links.models import Link
 from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
+import models
 from forms import EditTopicForm, LinksFormset
 
 logger = logging.getLogger("open-knesset.committees.views")
@@ -222,6 +223,25 @@ def edit_topic(request, committee_id, topic_id=None):
              'links_formset': links_formset,
             }))
 
+@login_required
+def delete_topic(request, pk):
+    topic = get_object_or_404(Topic, pk=pk)
+    if request.user == topic.creator or request.user.is_staff:
+        # Delete on POST
+        if request.method == 'POST':
+            topic.status = models.TOPIC_DELETED
+            topic.save()
+            return HttpResponseRedirect(reverse('committee-detail',
+                                                args=[topic.committees.all()[0].id]))
+
+        # Render a form on GET
+        else:
+            return render_to_response('committees/delete_topic.html',
+                {'topic': topic},
+                RequestContext(request)
+            )
+    else:
+        raise Http404
 
 
 class MeetingsListView(ListView):

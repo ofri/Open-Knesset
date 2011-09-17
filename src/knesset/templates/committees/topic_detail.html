@@ -37,6 +37,9 @@
         <li>
             <a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
         </li>
+        <li>
+            <a href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
+        </li>
         {% endif %}
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
