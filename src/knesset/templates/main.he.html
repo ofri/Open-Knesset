@@ -23,8 +23,8 @@
     האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
 </div>
 
-<h2>מה אפשר לעשות באתר?</h2>
-<div id="display_note_outer">
+<h2>מה אפשר לעשות באתר? </h2>
+<div id="what" class="display_note_outer">
     <div class="display_note alt">
         <h3>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h3>
         <p>וההתקדמות שלהן בתהליך החקיקה.</p>
@@ -53,10 +53,16 @@
         <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
         <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
     </div>
+    <p style="clear:both; padding:1em;">ואנחנו כל הזמן עובדים על עוד...</p>
 </div>
-    <p>ואנחנו כל הזמן עובדים על עוד...</p>
+<div class="display_note_outer" style="margin-top:2em;">
+    <div class="display_note alt" style="width:50%; height: 100%;">
+        <h3>{% trans "Latest Suggested Topics" %}</h3>
+        {% include "committees/_topics_summary.html" %}
+    </div>
+    <div class="display_note " style="width:50%; height: 100%;">
+        <h3>{% trans "Latest Annotations and comments" %}</h3>
     <div class="annotations item-list">
-        <h2>{% trans "Latest Annotations and comments" %}</h2>
         {% for a in annotations %}
             <div class="item {% cycle "alt" "normal" %}">
                 <div class="item-header">
@@ -80,7 +86,7 @@
                         </a>
                     </p>
                 {% else %}{% if a.content_type.model == "bill" %}
-                    <p class="triangle-border top" style="clear:both;text-align:center; width:530px">
+                    <p class="triangle-border top" style="clear:both;text-align:center; ">
                     {% with bill=a.content_object %}
                         <a href="{{ bill.get_absolute_url }}">{{bill}}</a>
                     {% endwith %}
@@ -100,5 +106,8 @@
             <li>{% trans "No annotations yet..." %}
         {% endfor %}
     </div>
+    </div>
+    </div>
+        
 {% endblock %}
 

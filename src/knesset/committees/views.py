@@ -65,7 +65,7 @@ class CommitteeDetailView(DetailView):
                       settings.LONG_CACHE_TIME)
         context.update(cached_context)
         context['annotations'] = cm.annotations.order_by('-timestamp')
-        context['topics'] = cm.topic_set.summary()
+        context['topics'] = cm.topic_set.summary()[:5]
         return context
 
 class MeetingDetailView(DetailView):

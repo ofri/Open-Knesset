@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
+from django.views.generic.simple import redirect_to
 
 from planet import views as planet_views
 from hitcount.views import update_hit_count_ajax
@@ -30,6 +31,7 @@ planet_views.post_detail = post_details
 urlpatterns = patterns('',
 
     url(r'^$', main, name='main'),
+    (r'^topic/(?P<tail>(.*))', redirect_to, {'url': '/committee/topic/%(tail)s'}),
     url(r'^about/$', AboutView.as_view(), name='about'),
     (r'^robots\.txt$', RobotsView.as_view()),
     (r'^api/', include('knesset.api.urls')),

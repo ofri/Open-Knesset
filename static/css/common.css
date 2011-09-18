@@ -524,7 +524,7 @@ form > p > select { width:250px; }
 
 #main-about + h2 { margin-top:40px }
 
-#display_note_outer {
+.display_note_outer {
     -moz-border-radius:1em 1em 1em 1em;
     -webkit-border-radius:1em 1em 1em 1em;
     border-radius: 1em 1em 1em 1em;

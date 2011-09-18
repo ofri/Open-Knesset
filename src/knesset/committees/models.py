@@ -206,10 +206,10 @@ class TopicManager(models.Manager):
             'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
             }).order_by('-rank')
 
-    def summary(self):
+    def summary(self, order='-rank'):
         return self.filter(status__in=PUBLIC_TOPIC_STATUS).extra(select={
             'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
-            }).order_by('-rank')
+            }).order_by(order)
         #TODO: rinse it so this will work
         return self.get_public().by_rank()
 

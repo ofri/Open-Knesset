@@ -2,7 +2,7 @@
 {% load avatar_tags %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
 <div class="item-list">
-{% for t in topics|slice:":5" %}
+{% for t in topics %}
     <div class="item {% cycle "normal" "alt" %}">
         <div class="item-header">
             <div class="avatar-item">
