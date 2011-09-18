@@ -23,7 +23,18 @@
 {% endblock %}
 {% block subnav %}
     <ul class="actions">
-        <li> <a class="awesome-button medium" href="{% url edit-committee-topic object.id %}">{% trans "Suggest Topic" %}</a></li>
+    <li>
+{% if user.is_authenticated %}
+    {% if perms.comments.add_topic %}
+        <a class="awesome-button medium" href="{% url edit-committee-topic object.id %}">{% trans "Suggest Topic" %}</a>
+    {% else %}
+        {% trans 'to suggest a topic' %}, {% trans 'Please' %} 
+           r<a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a> 
+    {% endif %}
+{% else %}
+        <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to suggest a topic' %}</a>
+{% endif %}
+    </li>
     </ul>
 {% endblock %}
 
