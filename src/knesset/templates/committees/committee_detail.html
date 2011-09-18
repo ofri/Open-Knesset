@@ -25,7 +25,7 @@
     <ul class="actions">
     <li>
 {% if user.is_authenticated %}
-    {% if perms.comments.add_topic %}
+    {% if perms.committees.add_topic %}
         <a class="awesome-button medium" href="{% url edit-committee-topic object.id %}">{% trans "Suggest Topic" %}</a>
     {% else %}
         {% trans 'to suggest a topic' %}, {% trans 'Please' %} 
