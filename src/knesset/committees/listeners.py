@@ -1,4 +1,5 @@
 from django.db.models.signals import post_save,m2m_changed
+from django.contrib.comments.signals import comment_was_posted
 from django.contrib.contenttypes.models import ContentType
 from planet.models import Feed, Post
 from actstream import action, follow
@@ -6,7 +7,7 @@ from actstream.models import Action
 from annotatetext.models import Annotation
 from knesset.utils import disable_for_loaddata
 from knesset.mks.models import Member
-from models import CommitteeMeeting
+from models import CommitteeMeeting, Topic
 
 @disable_for_loaddata
 def handle_cm_save(sender, created, instance, **kwargs):
@@ -50,3 +51,11 @@ def handle_annotation_save(sender, created, instance, **kwargs):
         follow(instance.user, instance.content_object.meeting)
 post_save.connect(handle_annotation_save, sender=Annotation)
 
+@disable_for_loaddata
+def handle_comment_save(sender, comment, request, **kwargs):
+    if comment.content_type.model_class() ==  Topic:
+        action.send(comment.content_object, verb='comment-added', target=comment,
+                description=comment.comment)
+        follow(request.user, comment.content_object)
+
+comment_was_posted.connect(handle_comment_save)

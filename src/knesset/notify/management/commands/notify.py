@@ -19,13 +19,15 @@ from knesset.laws.models import Bill
 from knesset.agendas.models import Agenda
 from knesset.notify.models import LastSent
 from knesset.user.models import UserProfile
+from knesset.committees.models import Topic
+
 
 class Command(NoArgsCommand):
     help = "Send e-mail notification to users that requested it."
 
     requires_model_validation = False
 
-    update_models = [Member,Bill,Agenda,None]
+    update_models = [Member, Bill, Agenda, Topic, None]
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
     days_back = getattr(settings, 'DEFAULT_NOTIFICATION_DAYS_BACK', 10)
     lang = getattr(settings, 'LANGUAGE_CODE', 'he')
