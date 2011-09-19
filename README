@@ -34,7 +34,7 @@ TROUBLE?
 - Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed*
 - currently using MySQL as the database engine is not supported
 - on bin/buildout, problems with getting distribution for 'PIL' can be fixed 
-  by installing the python-dev package
+  by installing the python-dev package or commenting out 'pil' in setup.py
 
 Update - get your branch updated with the changes done by others
 ======

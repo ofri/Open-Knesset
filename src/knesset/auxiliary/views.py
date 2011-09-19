@@ -43,8 +43,8 @@ def main(request):
         context['annotations'].extend(
                 Comment.objects.all().order_by('-submit_date')[:10])
         context['annotations'].sort(key=lambda x:x.submit_date,reverse=True)
-        context['has_search'] = True # enable the base template search
         context['topics'] = Topic.objects.summary('-modified')[:20]
+        context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))

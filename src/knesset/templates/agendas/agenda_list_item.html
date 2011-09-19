@@ -20,3 +20,13 @@
     </span><br>
     <span class="description">{{ agenda.description|pretty_crop:100|urlize }}</span>
 </div>
+    <div id="visualization-{{ agenda.id }}" style="float: left; width: 500px; height: 150px;"></div>
+    <script type="text/javascript">
+      $(function () {
+        var ticks = {{ party_list|safe }};
+        var data = {{ party_scores|safe }}
+        $.plot($("#visualization-{{ agenda.id }}"),
+              [{data: data, bars: {show: true}, color: 1}],
+               { xaxis: { ticks: ticks }});
+        }); 
+    </script>
