@@ -57,4 +57,4 @@ def install_env():
 
 def refresh_server():
     """Restart the web server"""
-    sudo('kill -HUP `cat /tmp/dev.oknesset.gunicorn.pid`')
+    sudo('kill -HUP `head -n1 /tmp/dev.oknesset.gunicorn.pid`')

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-18 00:10+0300\n"
+"POT-Creation-Date: 2011-09-20 00:46+0300\n"
 "PO-Revision-Date: 2011-09-13 01:03+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -109,7 +109,7 @@ msgstr "המשתמש שינה את כתובת הדואר מאז שקוד זה נ
 msgid "This activation key has expired."
 msgstr "פג תוקפו של קוד אימות זה."
 
-#: accounts/models.py:81
+#: accounts/models.py:82
 msgid "Invalid activation key."
 msgstr "קוד האימות לא תקין"
 
@@ -205,11 +205,11 @@ msgstr "אין"
 msgid "Analysis of %(member)s votes by agenda %(agenda)s"
 msgstr "ניתוח ההצבעות של %(member)s לפי אג'נדה %(agenda)s"
 
-#: auxiliary/views.py:31 templates/main.he.html:5
+#: auxiliary/views.py:32 templates/main.he.html:5
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:54
+#: auxiliary/views.py:56
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -284,6 +284,15 @@ msgstr "נמחק"
 #: templates/committees/topic_detail.html:19
 msgid "Committees"
 msgstr "ועדות"
+
+#: committees/models.py:262
+msgid "Topic"
+msgstr "הצעה לסדר"
+
+#: committees/models.py:263 templates/committees/topic_list.html:4
+#: templates/user/followed_topics.html:4
+msgid "Topics"
+msgstr "הצעות לסדר"
 
 #: committees/views.py:84
 #, python-format
@@ -855,11 +864,12 @@ msgstr "מפלגות לפי ממוצע ישיבות וועדות בחודש"
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 
-#: notify/management/commands/notify.py:52
+#: notify/management/commands/notify.py:54
 msgid "Other Updates"
 msgstr "עדכונים שונים"
 
-#: notify/management/commands/notify.py:162 templates/notify/header.html:3
+#: notify/management/commands/notify.py:164 templates/notify/header.html:3
+#: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
 msgstr "עדכוני כנסת פתוחה"
 
@@ -1030,11 +1040,11 @@ msgid ""
 msgstr ""
 "אתר לא מפלגתי, לא מסחרי שמביא לכם תוכן רלוונטי, מפורט ועדכני על אודות הכנסת"
 
-#: templates/main.he.html:59
+#: templates/main.he.html:75
 msgid "Latest Annotations and comments"
 msgstr "הארות ותגובות אחרונות"
 
-#: templates/main.he.html:100 templates/committees/committee_detail.html:98
+#: templates/main.he.html:117 templates/committees/committee_detail.html:98
 #: templates/user/annotated_items.html:20
 #: templates/user/public_profile.html:62
 msgid "No annotations yet..."
@@ -1116,6 +1126,15 @@ msgstr ""
 msgid "read meeting protocol"
 msgstr "קריאת את פרוטוקול הישיבה"
 
+#: templates/activity/comment-added/action_email.html:2
+msgid ""
+"\n"
+"%(user)s commented <a href=\"http://%(domain)s%(url)s\">%(comment)s</a>\n"
+"<br>\n"
+msgstr ""
+"\n"
+"%(user)s העיר <a href=\"http://%(domain)s%(url)s\">%(comment)s</a><br>\n"
+
 #: templates/activity/posted/action.html:11
 #: templates/activity/posted/action_email.html:9
 #: templates/planet/posts/details.html:4
@@ -1138,6 +1157,7 @@ msgstr "של"
 
 #: templates/activity/voted/action.html:8
 #: templates/activity/voted/action_email.html:6
+#: templates/activity/voted/action_email.txt:2
 msgid "present and didn't vote"
 msgstr "נכח ולא הצביע"
 
@@ -1784,11 +1804,6 @@ msgstr "קישורים"
 msgid "average rating"
 msgstr "דירוג ממוצע"
 
-#: templates/committees/topic_list.html:4
-#: templates/user/followed_topics.html:4
-msgid "Topics"
-msgstr "נושאים"
-
 #: templates/committees/topic_list.html:8
 msgid "for"
 msgstr "בעד"
@@ -2394,12 +2409,16 @@ msgstr "קואליציה"
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: templates/notify/footer.html:3
+#: templates/notify/footer.html:3 templates/notify/footer.txt:3
 msgid "To stop receiving updates"
 msgstr "על מנת להפסיק את קבלת העדכונים"
 
 #: templates/notify/footer.html:4
 msgid "visit the site, and change your settings"
+msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
+
+#: templates/notify/footer.txt:3
+msgid "Visit the site, and change your settings"
 msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
 
 #: templates/notify/header.html:4
@@ -2411,7 +2430,17 @@ msgstr ""
 "שלום %(username)s,<br>\n"
 "הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
 
+#: templates/notify/header.txt:3
+#, python-format
+msgid ""
+"Hi %(username)s,\n"
+"Here's what happened lately in the knesset and on our site"
+msgstr ""
+"שלום %(username)s,\n"
+"הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+
 #: templates/notify/member_section.html:2
+#: templates/notify/member_section.txt:3
 msgid "followed MKs"
 msgstr "חברי כנסת במעקב"
 
@@ -2880,15 +2909,15 @@ msgstr "יומי"
 msgid "Weekly"
 msgstr "שבועי"
 
-#~ msgid "Visit the site, and change your settings"
-#~ msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
-
 #~ msgid ""
-#~ "Hi %(username)s,\n"
-#~ "Here's what happened lately in the knesset and on our site"
+#~ "\n"
+#~ "%(user)s commented <a href=\"http://%(domain)s%(url)s\">%(action.target."
+#~ "comment)s</a>\n"
+#~ "<br>\n"
 #~ msgstr ""
-#~ "שלום %(username)s,\n"
-#~ "הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+#~ "\n"
+#~ "%(user)s העיר <a href=\"http://%(domain)s%(url)s\">%(action.target."
+#~ "comment)s</a><br>\n"
 
 #~ msgid "annotated"
 #~ msgstr "האיר/ה על"
