@@ -257,6 +257,10 @@ class Topic(models.Model):
     modified = models.DateTimeField(auto_now=True)
     log = models.TextField(default="", blank=True)
 
+    class Meta:
+        ordering = ('-modified',)
+        verbose_name = _('Topic')
+        verbose_name_plural = _('Topics')
     @models.permalink
     def get_absolute_url(self):
         return ('topic-detail', [str(self.id)])
