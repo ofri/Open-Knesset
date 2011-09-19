@@ -5,7 +5,7 @@ from south.v2 import DataMigration
 from django.db import models
 from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
-from committees.models import Topic
+from knesset.committees.models import Topic
 
 class Migration(DataMigration):
 
@@ -14,6 +14,7 @@ class Migration(DataMigration):
     )
 
     def forwards(self, orm):
+        return
         (g,created) = Group.objects.get_or_create(name='Valid Email')
         if created:
             g.save()
