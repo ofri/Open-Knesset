@@ -33,6 +33,7 @@
     </div>
     <div id="list-wrap">
         <h2> {% trans "All Agendas" %} </h2>
+        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.flot.min.js"></script>
         <div class="item-list">
             {% for o in object_list %}
                 {% if user not in o.editors.all %}
