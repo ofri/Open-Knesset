@@ -1,3 +1,4 @@
+import logging, difflib, datetime, re, colorsys
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
@@ -7,12 +8,9 @@ from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from django.template import RequestContext
-import logging
-import difflib
-import datetime
-import re
-import colorsys
+from django.conf import settings
 from tagging.models import TaggedItem
 from tagging.utils import get_tag
 from actstream import action
@@ -32,18 +30,24 @@ class CommitteeDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(CommitteeDetailView, self).get_context_data(*args, **kwargs)
         cm = context['object']
-
-        context['chairpersons'] = cm.chairpersons.all()
-        context['replacements'] = cm.replacements.all()
-        context['members'] = cm.members_by_presence()
-        recent_meetings = cm.recent_meetings()
-        context['meetings_list'] = recent_meetings
-        ref_date = recent_meetings[0].date+datetime.timedelta(1) \
-                if recent_meetings.count() > 0 \
-                else datetime.datetime.now()
-        cur_date = datetime.datetime.now()
-        context['future_meetings_list'] = cm.events.filter(when__gt = cur_date)
-        context['protocol_not_yet_published_list'] = cm.events.filter(when__gt = ref_date, when__lte = cur_date)
+        cached_context = cache.get('committee_detail_%d' % cm.id, {})
+        if not cached_context:
+            cached_context['chairpersons'] = cm.chairpersons.all()
+            cached_context['replacements'] = cm.replacements.all()
+            cached_context['members'] = cm.members_by_presence()
+            recent_meetings = cm.recent_meetings()
+            cached_context['meetings_list'] = recent_meetings
+            ref_date = recent_meetings[0].date+datetime.timedelta(1) \
+                    if recent_meetings.count() > 0 \
+                    else datetime.datetime.now()
+            cur_date = datetime.datetime.now()
+            cached_context['future_meetings_list'] = \
+                    cm.events.filter(when__gt = cur_date)
+            cached_context['protocol_not_yet_published_list'] = \
+                    cm.events.filter(when__gt = ref_date, when__lte = cur_date)
+            cache.set('committee_detail_%d' % cm.id, cached_context,
+                      settings.LONG_CACHE_TIME)
+        context.update(cached_context)
         context['annotations'] = cm.annotations.order_by('-timestamp')
         return context
 
