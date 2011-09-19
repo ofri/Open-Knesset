@@ -258,7 +258,6 @@ class Topic(models.Model):
     log = models.TextField(default="", blank=True)
 
     class Meta:
-        ordering = ('-modified',)
         verbose_name = _('Topic')
         verbose_name_plural = _('Topics')
     @models.permalink

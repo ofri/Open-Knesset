@@ -214,7 +214,7 @@ I have a deadline''')
         (self.group, created) = Group.objects.get_or_create(name='Valid Email')
         if created:
             self.group.save()
-        self.group.permissions.add(Permission.objects.get(name='Can add topic'))
+        self.group.permissions.add(Permission.objects.get(name='Can add Topic'))
         self.jacob.groups.add(self.group)
         self.mk_1 = Member.objects.create(name='mk 1')
         self.topic = self.committee_1.topic_set.create(creator=self.jacob,

@@ -32,9 +32,9 @@ class EmailValidationManager(models.Manager):
                                    { 'site': current_site })
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        
+
         message = render_to_string('accounts/email_validation.html',
-                                   { 'activation_key': ev.activation_key,                                 
+                                   { 'activation_key': ev.activation_key,
                                      'site': current_site })
         try:
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [ev.email])
@@ -69,11 +69,11 @@ class EmailValidation(models.Model):
                 g = Group.objects.get(name='Valid Email')
             except Group.DoesNotExist:
                 logger.warn('Did not find "Valid Email" group. creating')
-                g = Group.objects.create(name='Valid Email')                
+                g = Group.objects.create(name='Valid Email')
                 g.permissions.add(Permission.objects.get(name='Can add comment'))
                 g.permissions.add(Permission.objects.get(name='Can add annotation'))
-                g.permissions.add(Permission.objects.get(name='Can add topic'))
-                
+                g.permissions.add(Permission.objects.get(name='Can add Topic'))
+
             ev.user.groups.add(g)
             ev.activation_key = ''
             ev.save()
@@ -84,4 +84,4 @@ class EmailValidation(models.Model):
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
             logger.error("%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)))
             return (False, "Something went wrong.")
-    
+
