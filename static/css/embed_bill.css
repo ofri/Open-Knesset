@@ -124,14 +124,14 @@ a{
 			background: url(../img/embed_failed.png) no-repeat;
 		}
 		
-	#pms{
+	#header .pms{
 		margin: 10px;
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100px;
 	}
-		#pms ul{
+		.pms ul{
 			height: 22px;
 			overflow: hidden;
 			margin: 0;
@@ -139,54 +139,65 @@ a{
     		float: right;
     		width: 75px;
 		}
-		.header-hover #pms ul{
+		.header-hover .pms ul{
 			height: auto;
     		width: 100px;
 		}
-			#pms li,
-			#pms a.more{
+			.pms li,
+			.pms a.more{
 				float: right;
 			    height: 20px;
 			    list-style: none outside none;
 			    margin-bottom: 5px;
 			    margin-left: 3px;
 			}
-			#pms a.more{
+			.pms a.more{
 				margin-left: 0;
 				text-decoration: none;
 				line-height: 1.5em;
 			}
-			.header-hover #pms a.more{
+			.header-hover .pms a.more{
 				display: none;
 			}
-				#pms li a{
+				.pms li a{
 				    border: 1px solid #1088FE;
 				    display: block;
 				    height: 20px;
 				    overflow: hidden;
+				    border-radius: 2px;
 				}
-				#pms li img{
+				.pms li img{
 					width: 20px;
 					height: auto;
+					margin-top: -8px;
 					}
-					#pms ul:hover{
+					.pms ul:hover{
 						overflow:visible;
 					}
-					#pms li:hover{
+					.pms li:hover{
 						position:relative;
-						margin-left: 25px
+						margin-left: 25px;
+						overflow: visible;
 					}
-					#pms li:hover a{
+					.pms li:hover a{
 						width: 40px;
 						height: 58px;
-						top: -10px;
+						top: -18px;
 						right: -10px;
 						position: absolute;
 					}
-					#pms li:hover img{
+					.pms li:hover img{
 						width: 40px;
 						height: auto;
 						z-index: 30000;
+						margin-top: 0px;
+					}
+					.pms ul li:hover .tooltip{
+						display: block;
+						top: 50px;
+						width: 100px;
+						margin-left: -60px;
+						/*background-color: #fff;*/
 					}
 	.pull{
 		clear: both;
@@ -220,6 +231,9 @@ a{
 	margin-top: 60px;
 	position: relative;
 }
+	#thedrill{
+		display: none;
+	}
 	ul#steps{
 		margin: 0;
 		padding: 0;
@@ -371,7 +385,7 @@ a{
 				ul#steps li.failed .icon{
 					background-position: bottom center;
 				}
-				ul#steps li .tooltip{
+				ul li .tooltip{
 				    display: none;
 				    height: 30px;
 				    position: absolute;
@@ -381,34 +395,33 @@ a{
 				    width: 400%;
 				    z-index: 200;
 				}
-				ul#steps li .tooltip span{
+				ul li .tooltip span{
 					background: url(../img/embed_tooltip_pending.png) center;
 					padding: 11px 4px 4px;
 					font-size: 13px;
 					height: 20px;
 				}
-				ul#steps li.first .tooltip{
+				ul li.first .tooltip{
 					left: -310%;
 					text-align: right;
 				}
-				ul#steps li.first .tooltip span{
+				ul li.first .tooltip span{
 					background-position: 40% 0;
 				}
-				ul#steps li.last .tooltip{
+				ul li.last .tooltip{
 					right: -310%;
 					text-align: left;
 				}
-				ul#steps li.last .tooltip span{
+				ul li.last .tooltip span{
 					background-position: 86% 0;
 				}
-				ul#steps li.passed .tooltip span{
+				ul li.passed .tooltip span{
 					background-image: url(../img/embed_tooltip_passed.png);
 				}
-				ul#steps li.failed .tooltip span{
+				ul li.failed .tooltip span{
 					background-image: url(../img/embed_tooltip_failed.png);
 				}
-				ul#steps li:hover .tooltip,
-				ul#steps li.hover .tooltip{
+				ul li:hover .tooltip{
 					display: block;
 				}
 				
@@ -504,6 +517,10 @@ a{
 		background-position: right -60px;
 	}
 
+/*
+ * UI-DIALOG
+ */
+
 .ui-dialog{
     background: #EEEFF5; 
     border: 1px dotted #cccccc;
@@ -536,3 +553,83 @@ a{
 .ui-dialog-content a {
     color: blue !important;
 }
+
+/*
+ * Drill down
+ */
+
+div#graph.drilling {
+	overflow: hidden;
+	width: 100%;
+}
+
+	div#graph.drilling #thedrill{
+		display: block;
+	}
+
+	div#graph.drilling .status,
+	div#graph.drilling ul#steps li .link,
+	div#graph.drilling ul#steps li .info,
+	div#graph.drilling ul#steps li.voted .tooltip-score,
+	div#graph.drilling ul#steps li .date {
+		display: none;
+	}
+
+	div#graph.drilling ul#steps{
+		width: 760%;
+		margin-right: -92.5%; /* this property sets the focus */
+	}
+	
+		div#graph.drilling ul#steps li.drilled {
+			background: url("../img/embed_hover.png") #E6EEE6; 
+		}
+	
+		div#graph.drilling ul#steps li .icon {
+			top:20px;
+			right: 10px;
+			width: 30px;
+		}
+	
+		div#graph.drilling ul#steps li div.step {
+		    height: 6px;
+		}
+	
+		div#graph.drilling ul#steps li div.tooltip {
+	        display: block;
+		    left: auto;
+		    right: 50px;
+		    text-align: right;
+		    top: 35px;
+		    width: 90%;
+		}
+			
+			div#graph.drilling ul#steps li div.tooltip span {
+		        background: url("../img/embed_hover.png") 0 -20px #E6EEE6;
+		        font-size: 14px;
+		        font-weight: bold;
+			}
+
+	#thedrill{
+	    margin: 0 5%;
+	    position: absolute;
+	    top: 50px;
+	    width: 90%;
+	    z-index: 100;
+	}
+		#thedrill-details{
+			width: 100%;
+		}
+		#thedrill-details .for,
+		#thedrill-details .against{
+			width: 50%;
+			float: right;
+			color: #2a5525;
+		}
+		#thedrill-details .against{
+			text-align: left;
+			color: #8a0505;
+		}
+		#thedrill .pms ul{
+			width: auto;
+			overflow: visible;
+		}

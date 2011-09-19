@@ -426,24 +426,59 @@ function showExplanation() {
 				<span class="status"></span>
 			</div>
 		</div>
-		<div id="pms">
+		<div class="pms">
 			<div class="label">יזמו:</div>
 			<ul>
 				
-				<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a></li>
+				<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a><span class="tooltip"><span>אברהם מיכאלי</span></span></li>
 				
-				<li><a href="/member/805/"><img src="http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg" alt="דוד רותם" title="דוד רותם"/></a></li>
+				<li><a href="/member/805/"><img src="http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg" alt="דוד רותם" title="דוד רותם"/></a><span class="tooltip"><span>דוד רותם</span></span></li>
 				
-				<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a></li>
+				<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
 				
-				<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a></li>
+				<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
 				
 			</ul>
 			<a href="#" class="more"></a>
 		</div>
 		<div class="pull"><div class="arrow down"></div></div>
 	</div>
-	<div id="graph">
+	<div id="graph" class="drilling-">
+		<div id="thedrill">
+			<ul id="drill-nav">
+				<li class="details-btn">פרטי ההצבעה</li>
+				<li class="meaning-btn">מה זה אומר?</li>
+				<li class="action-btn">מעורבות אזרחית</li>
+			</ul>
+			<div id="thedrill-details">
+				<div class="for">בעד:6</div>
+				<div class="against">נגד:2</div>
+				<div class="pms supporting" style="width:66%">
+					<ul name="קדימה">
+						<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a><span class="tooltip"><span>אברהם מיכאלי</span></span></li>
+						<li><a href="/member/805/"><img src="http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg" alt="דוד רותם" title="דוד רותם"/></a><span class="tooltip"><span>דוד רותם</span></span></li>
+						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
+						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
+					</ul>
+					<ul name="האיחוד הלאומי">
+						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
+						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
+					</ul>
+				</div>
+				<div class="pms opposing" style="width:34%">
+					<ul name="מרצ">
+						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
+						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
+					</ul>
+				</div>
+			</div>
+			<div id="meaning">
+				
+			</div>
+			<div id="action">
+				
+			</div>
+		</div>
 		<span class="status"></span>
 		<div id="gov-position">
 			<div class="step">
@@ -452,7 +487,7 @@ function showExplanation() {
 				</span>
 			</div>
 		</div>
-		<ul id="steps">
+		<ul id="steps" class="">
 			<li id="initiated" class="odd first">
                  
 				<div class="step">
@@ -465,7 +500,7 @@ function showExplanation() {
 					<span class="date">?</span>
 				</div>
 			</li>
-			<li id="pre-vote" class="">
+			<li id="pre-vote" class="drilled">
 				<div class="step">
 				    
 					    <a href="/bill/3260/#bill-pre-vote" class="link" target="_blank">קישור</a>
