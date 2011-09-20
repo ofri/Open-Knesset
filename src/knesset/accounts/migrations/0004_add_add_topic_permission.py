@@ -14,7 +14,6 @@ class Migration(DataMigration):
     )
 
     def forwards(self, orm):
-        return
         (g,created) = Group.objects.get_or_create(name='Valid Email')
         if created:
             g.save()
