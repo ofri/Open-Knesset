@@ -22,7 +22,7 @@
 המשתמש.
     האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
 </div>
-<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em;"> 
+<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em; background: url('/static/img/embed_hover.png') repeat-x;"> 
 <h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי" בשיתוף כנסת פתוחה</h3>
 <p style="padding:1em; font-size:120%;">
 ב-4-6 באוקטובר תארח "הכנסת הפתוחה"  3 ימי דיונים של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
@@ -102,16 +102,24 @@
                         <a href="{{ bill.get_absolute_url }}">{{bill}}</a>
                     {% endwith %}
                     </p>
+                {% else %}{% if a.content_type.model == "vote" %}
+                    <p class="triangle-border top" style="clear:both;text-align:center; ">
+                    {% with vote=a.content_object %}
+                        <a href="{{ vote.get_absolute_url }}">{{vote}}</a>
+                    {% endwith %}
+                    </p>
                 {% else %}{% if a.content_type.model == "topic" %}
                     <div class="triangle-border top" style="clear:both;">
                         <div class="item-credit">
-                            <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>&nbsp; &nbsp;{{a.content_object.creator.get_full_name}}
+                            {% if a.content_object.creator %}
+                            <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>
+                            {% endif %}&nbsp; &nbsp;{{a.content_object.creator.get_full_name}}
                         </div>
                         <a href="{{a.content_object.get_absolute_url}}"><strong>{{a.content_object.title}}</strong>
                         <p>{{ a.content_object.description|linebreaksbr }}</p>
                         </a>
                     </div>
-                {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}
+                {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}

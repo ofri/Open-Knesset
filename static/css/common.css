@@ -380,11 +380,6 @@ form > p > select { width:250px; }
 .item-header { float: right; }
 .item-header a { margin:0; padding:0;}
 .item-credit {font-size:80%;}
-.item-credit:after {
-    content: ":";
-    display: block;
-    height: 0;
-}
 .avatar-item { 
     margin: 5px 0px 5px 10px;
     height: 48px;
