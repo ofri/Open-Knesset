@@ -288,7 +288,7 @@ def meeting_tag(request, tag):
     extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
     qs = CommitteeMeeting
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    return generic.list_view.object_list(request, queryset,
+    return generic.list_detail.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
 
 def delete_topic_rating(request, object_id):

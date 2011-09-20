@@ -6,6 +6,7 @@ from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
 from actstream.models import Action
+from tagging.models import Tag, TaggedItem
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
 from models import *
@@ -153,14 +154,19 @@ I have a deadline''')
 
     def test_add_tag_login_required(self):
         url = reverse('add-tag-to-object',
-                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.meeting_1.id})
+                                 kwargs={'app':APP,
+                                         'object_type':'committeemeeting',
+                                         'object_id': self.meeting_1.id})
         res = self.client.post(url, {'tag_id':self.tag_1})
-        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url),
+                             status_code=302)
 
     def test_add_tag(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('add-tag-to-object',
-                                 kwargs={'app':APP, 'object_type':'committeemeeting','object_id': self.meeting_1.id})
+                                 kwargs={'app':APP,
+                                         'object_type': 'committeemeeting',
+                                         'object_id': self.meeting_1.id})
         res = self.client.post(url, {'tag_id':self.tag_1.id})
         self.assertEqual(res.status_code, 200)
         self.assertIn(self.tag_1, self.meeting_1.tags)
@@ -168,19 +174,39 @@ I have a deadline''')
     def test_create_tag_permission_required(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('create-tag',
-                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.meeting_1.id})
+                                 kwargs={'app':APP,
+                                         'object_type': 'committeemeeting',
+                                         'object_id': self.meeting_1.id})
         res = self.client.post(url, {'tag':'new tag'})
-        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url),
+                             status_code=302)
 
     def test_create_tag(self):
-        self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
+        self.assertTrue(self.client.login(username='adrian',
+                                          password='ADRIAN'))
         url = reverse('create-tag',
-                                 kwargs={'app':APP,'object_type':'committeemeeting','object_id': self.bill_1.id})
+                                 kwargs={'app':APP,
+                                         'object_type': 'committeemeeting',
+                                         'object_id': self.meeting_1.id})
         res = self.client.post(url, {'tag':'new tag'})
         self.assertEqual(res.status_code, 200)
         self.new_tag = Tag.objects.get(name='new tag')
         self.assertIn(self.new_tag, self.meeting_1.tags)
 
+    def test_committeemeeting_by_tag(self):
+        self.ti = TaggedItem._default_manager.create(
+            tag=self.tag_1,
+            content_type=ContentType.objects.get_for_model(CommitteeMeeting),
+            object_id=self.meeting_1.id)
+        res = self.client.get(reverse('committeemeeting-tag', args=[self.tag_1.name]))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'committees/committeemeeting_list_by_tag.html')
+        tag = res.context['tag']
+        self.assertEqual(tag, self.tag_1)
+        self.assertQuerysetEqual(res.context['object_list'],
+                                 ['<CommitteeMeeting: c1 - None>'])
+        # cleanup
+        self.ti.delete()
 
     def tearDown(self):
         self.meeting_1.delete()
