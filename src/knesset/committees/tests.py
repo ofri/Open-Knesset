@@ -9,6 +9,7 @@ from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 from knesset.laws.models import Bill
 from knesset.mks.models import Member
+from knesset.links.models import LinkType
 from models import *
 
 just_id = lambda x: x.id
@@ -247,6 +248,7 @@ I have a deadline''')
                                                 title="hello", description="hello world")
         self.topic2 = self.committee_1.topic_set.create(creator=self.ofri,
                                                 title="bye", description="goodbye")
+        self.linktype = LinkType.objects.create(title='default')
 
 
     def testBasic(self):
@@ -261,7 +263,81 @@ I have a deadline''')
         self.assertFalse(self.topic.can_edit(self.ofri))
         self.topic.editors.add(self.ofri)
         self.assertTrue(self.topic.can_edit(self.ofri))
+        self.topic.editors.remove(self.ofri)
 
+
+    def test_edit_topic_form(self):
+        res = self.client.get(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id,
+                                         'topic_id': self.topic.id}))
+        self.assertEqual(res.status_code, 302) # login required
+        self.assertTrue(self.client.login(username='ofri',
+                                          password='ofri'))
+        res = self.client.get(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id,
+                                         'topic_id': self.topic.id}))
+        self.assertEqual(res.status_code, 403) # user is not an editor
+        self.assertTrue(self.client.login(username='jacob',
+                                          password='JKM'))
+        res = self.client.get(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id,
+                                         'topic_id': self.topic.id}))
+        self.assertEqual(res.status_code, 200) # user is an editor
+        self.assertTemplateUsed(res, 'committees/edit_topic.html')
+
+    def test_edit_topic_logged_required(self):
+        res = self.client.post(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id,
+                                         'topic_id': self.topic.id}),
+                               {'title':'test topic title',
+                                'description': 'test topic description',
+                                'committees':self.committee_1.id,
+                                'form-INITIAL_FORMS':0,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':3})
+        self.assertEqual(res.status_code, 302) # redirect to login
+        self.assertTrue(res['location'].startswith('%s%s'  %
+                                       ('http://testserver', settings.LOGIN_URL)))
+
+    def test_edit_topic(self):
+        self.assertTrue(self.client.login(username='jacob',
+                                          password='JKM'))
+        res = self.client.post(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id,
+                                         'topic_id': self.topic.id}),
+                               {'title':'test topic title',
+                                'description': 'test topic description',
+                                'committees':self.committee_1.id,
+                                'form-INITIAL_FORMS':0,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':3})
+        self.assertEqual(res.status_code, 302) # redirect after POST
+        t = Topic.objects.get(pk=self.topic.id)
+        self.assertEqual(t.title, 'test topic title')
+        self.assertEqual(t.description, 'test topic description')
+        self.assertEqual(Topic.objects.count(), 2) # make sure we didn't create
+                                                   # a new topic
+
+    def test_add_topic(self):
+        self.assertTrue(self.client.login(username='jacob',
+                                          password='JKM'))
+        res = self.client.post(reverse('edit-committee-topic',
+                                 kwargs={'committee_id': self.committee_1.id}),
+                               {'title':'test topic title',
+                                'description': 'test topic description',
+                                'committees':self.committee_1.id,
+                                'form-INITIAL_FORMS':0,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':3})
+        self.assertEqual(res.status_code, 302) # redirect after POST
+        topic_id = res['location'].split('/')[-2] # id of the new topic
+        t = Topic.objects.get(pk=topic_id)
+        self.assertEqual(t.title, 'test topic title')
+        self.assertEqual(t.description, 'test topic description')
+        self.assertEqual(Topic.objects.count(), 3) # make sure we created
+                                                   # a new topic
+        # cleanup
+        t.delete()
 
     def testListView (self):
         res = self.client.get(reverse('topic-list'))

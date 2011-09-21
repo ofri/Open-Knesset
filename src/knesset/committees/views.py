@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
 from django.views import generic
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import (HttpResponse, HttpResponseRedirect, Http404,
+    HttpResponseForbidden, HttpResponseBadRequest)
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -178,21 +179,22 @@ class TopicDetailView(DetailView):
 @login_required
 def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'POST':
-        edit_form = EditTopicForm(data=request.POST)
+        if topic_id:
+            t = Topic.objects.get(pk=topic_id)
+            if request.user != t.creator:
+                return HttpResponseForbidden()
+        else:
+            t = None
+        edit_form = EditTopicForm(data=request.POST, instance=t)
         links_formset = LinksFormset(request.POST)
         if edit_form.is_valid() and links_formset.is_valid():
-            if topic_id:
-                t = Topic.objects.get(pk=topic_id)
-                if request.user != t.creator:
-                    return HttpResponseBadRequest()
-
             topic = edit_form.save(commit=False)
-            topic.creator = request.user
             if topic_id:
                 topic.id = topic_id
+            else: # new topic
+                topic.creator = request.user
             topic.save()
             edit_form.save_m2m()
-
             links = links_formset.save(commit=False)
             ct = ContentType.objects.get_for_model(topic)
             for link in links:
@@ -209,6 +211,8 @@ def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'GET':
         if topic_id: # editing existing topic
             t = Topic.objects.get(pk=topic_id)
+            if request.user != t.creator:
+                return HttpResponseForbidden()
             edit_form = EditTopicForm(instance=t)
             ct = ContentType.objects.get_for_model(t)
             links_formset = LinksFormset(queryset=Link.objects.filter(
