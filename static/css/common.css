@@ -373,7 +373,7 @@ form > p > select { width:250px; }
 }
 
 .item-list { position: relative; }
-.item-list .item { 
+.item-list .item {
     clear:both; padding:5px !important;
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
@@ -381,13 +381,19 @@ form > p > select { width:250px; }
 .item-header { float: right; }
 .item-header a { margin:0; padding:0;}
 .item-credit {font-size:80%;}
-.avatar-item { 
+.avatar-item {
     margin: 5px 0px 5px 10px;
     height: 48px;
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
-.big-avatar { 
+.mk-card .avatar-item {
+    margin: 5px;
+    height: 38px;
+    width: 28px;
+    float: right;
+}
+.big-avatar {
     margin: 5px 5px 5px 10px;
     height: 64px;
     border: 1px solid #7777AA;
@@ -411,7 +417,7 @@ form > p > select { width:250px; }
     }
 .item-metadata a {font-weight:normal}
 .item-metadata { font-size:90%; margin-top:3pt}
-.date-item span { 
+.date-item span {
     display:block; background:white; text-align:center; color: #7891AB;
     border-radius: 3px;
 }
@@ -446,8 +452,8 @@ form > p > select { width:250px; }
 #content-main .selected {
     border:1px solid #FF3300;
 }
-.stage { 
-    border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt; 
+.stage {
+    border-radius:3px; display:inline-block; width:10em; text-align:center; margin-left:15pt;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 .stage_1 { background-color: #aaaaaa; }
@@ -754,7 +760,7 @@ div.mk-card , .tip {
     margin:0.2em;
     line-height: 100%;
 }
-div.mk-card > div { float:right }
+div.mk-card { width:11em; vertical-align: top; min-height: 60px;}
 div.mk-card>a { padding:0px; }
 .tip { width: 20em; padding: 0.5em; display: none; }
 #content-main .proposal_content_text strong { display: block; margin:0.5em 0em;}
@@ -881,7 +887,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     border-style:solid;
     border-color:#6E9CA6 transparent;
     /* reduce the damage in FF3.0 */
-    display:block; 
+    display:block;
     width:0;
 }
 #content-main .triangle-border:after {
@@ -893,7 +899,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     border-style:solid;
     border-color:#fff transparent;
     /* reduce the damage in FF3.0 */
-    display:block; 
+    display:block;
     width:0;
 }
 #content-main .triangle-border.top:before {
