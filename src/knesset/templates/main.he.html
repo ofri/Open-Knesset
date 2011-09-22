@@ -5,24 +5,13 @@
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block subnav %}
-        <div id="search" style="text-align:center;float:none;clear:none;"><p class="help-text">חיפוש חופשי באתר כנסת פתוחה</p>{% search_form "search_page" %}</div>
-        
+<div style="text-align:center;">
+<p><a href="{% url help %}" style="float:left;">מה אפשר לעשות באתר? </a></p>
+       <div id="search">{% search_form "search_page" %}</div>
 {% endblock %}
-{% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
 {% block divcontent %}
-<!-- add this to sidebar: <iframe src="http://www.facebook.com/plugins/likebox.php?id=114171195283394&amp;width=200&amp;connections=10&amp;stream=false&amp;header=true&amp;height=287" scrolling="no" frameborder="0" style="border:none; overflow:auto; width:200px; height:210px; position:absolute; left:10px;" allowTransparency="true"></iframe>
--->
-<div id="main-help">
-    רוצים לדעת איך זה עובד או להצטרף ולעזור?<br/>
-    <span class="awesome-button"><a href="{% url about %}">קראו עוד אודות הפרויקט</a></span>
-</div>
-<div id="main-about">
-האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
-אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
-המשתמש.
-    האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
-</div>
-<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em; background: url('/static/img/embed_hover.png') repeat-x;"> 
+<div class="three_boxes">
+<div id="main-news" class="display_note_outer" > 
 <h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
 <p style="padding:1em; font-size:120%;">
 ב-4-6 באוקטובר תארח "הכנסת הפתוחה"  3 ימי דיונים <b>של ועדות הכנסת הרשמיות</b> תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
@@ -31,42 +20,25 @@
 ביומיים הבאים, יערכו ועדות הכנסת דיונים רשמיים בהיכל העצמאות בתל אביב. הציבור מוזמן לדון ולדרג הצעות לסדר
 
  רוצים להעלות נושאים לסדר היום של ועדות הכנסת - <a href="{% url committee-list %}">כאן</a>
- </p></div>
+ </p></div >
   
-
-<h2>מה אפשר לעשות באתר? </h2>
-<div id="what" class="display_note_outer">
-    <div class="display_note alt">
-        <h3>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h3>
-        <p>וההתקדמות שלהן בתהליך החקיקה.</p>
-        <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
-    </div>
-    <div class="display_note">
-        <h3>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a></h3>
-        <p>למשל:</p>
-        <ul>
-            {% for tag in tags %}
-            <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="display_note alt">
-        <h3>מעקב הצבעות חבר כנסת</h3>
-        <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
-        <p>לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></p>
-    </div>
-    <div class="display_note"><h3>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3>
-        <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
-        <div>לדוגמה, הדף של {% mk_card member %}</div>
-    </div>
-    <div class="display_note alt">
-        <h3>לקרוא את הפרוטוקולים</h3>
-        <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
-        <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
-    </div>
-    <p style="clear:both; padding:1em;">ואנחנו כל הזמן עובדים על עוד...</p>
+<div id="main-about" class="display_note_outer">
+<h3>אודותינו</h3>
+האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
+אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
+המשתמש.
+    האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
 </div>
-<div class="display_note_outer" style="margin-top:2em;">
+<div id="main-media" class="display_note_outer">
+<a href="https://flickr.com/photos/daonb/collections/72157627723450730/"><img src="https://static.flickr.com/6175/cols/72157627723450730_38e4d27b0c_l.jpg"/></a>
+</div>
+<div id="main-help" class="display_note_outer">
+    <p>
+    רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
+    <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
+</div>
+
+<div class="display_note_outer" style="clear:both; margin-top:2em;">
     <div class="display_note alt" style="width:50%; height: 100%;">
         <h3>הצעות אחרונות לסדר</h3>
         {% include "committees/_topics_summary.html" %}
