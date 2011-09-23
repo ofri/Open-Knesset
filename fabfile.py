@@ -43,9 +43,9 @@ def clone_repo():
 def update(fork='ofri', branch='master'):
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
     with cd(env.path):
-        run('git checkout src/knesset/templates/last_build.txt')
         run('git pull %s %s' % (fork, branch))
-        run('date > src/knesset/templates/last_build.txt')
+        run('bin/buildout')
+        run('bin/django syncdb --migrate')
 
 def install_env():
     """Install the required packages using buildout"""
