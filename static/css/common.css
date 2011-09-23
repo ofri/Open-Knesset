@@ -519,15 +519,14 @@ form > p > select { width:250px; }
 
 #content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
-.three-boxes { width: 80%; text-align: center; }
-#main-about, #main-help, #main-media {margin:1em; width:33%; padding:1em; float:right;}
-#main-about { text-align:justify }
-#main-news, #main-help { float:left; margin: 1em;}
-#main-help { line-height:150%; text-align:center; }
+#main-about, #main-media, #main-help {float: left; text-align:center; margin:1em; padding:1em;}
+#main-about { text-align:justify; width:28%;}
+#main-news { float:right; margin: 1em auto; padding: 0.8em; }
+#main-help { line-height:150%; text-align:center; width:20% ; }
 #main-media { padding:1em; width: 33%; text-align: center; height: 140px; width: 200px;}
 #main-media a { text-align: center; }
 #main-about + h2 { margin-top:40px }
-#main-news { width:56%; text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
+#main-news { width:100%; text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
 .display_note_outer {
     -moz-border-radius:1em 1em 1em 1em;
     -webkit-border-radius:1em 1em 1em 1em;

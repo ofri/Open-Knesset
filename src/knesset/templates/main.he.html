@@ -8,37 +8,39 @@
 <div style="text-align:center;">
 <p><a href="{% url help %}" style="float:left;">מה אפשר לעשות באתר? </a></p>
        <div id="search">{% search_form "search_page" %}</div>
+</div>
 {% endblock %}
 {% block divcontent %}
-<div class="three_boxes">
-<div id="main-news" class="display_note_outer" > 
-<h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
-<p style="padding:1em; font-size:120%;">
-ב-4-6 באוקטובר תארח "הכנסת הפתוחה"  3 ימי דיונים <b>של ועדות הכנסת הרשמיות</b> תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
-האירוע ייערך ב"היכל העצמאות" בשדרות רוטשילד, בבניין ההיסטורי בו הוכרזה הקמת מדינת ישראל.<br/>
-הכנס יחל בישיבה משותפת של הוועדות בכנסת (בירושלים) בנוכחות יושבי ראש הוועדות, ואליה יוזמנו מובילי המחאה החברתית.
-ביומיים הבאים, יערכו ועדות הכנסת דיונים רשמיים בהיכל העצמאות בתל אביב. הציבור מוזמן לדון ולדרג הצעות לסדר
+<div style="width:80%; margin:0 auto;">
+    <div id="main-news" class="display_note_outer" > 
+        <h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
+        <p style="padding:1em; font-size:120%;">
+        ב-4-6 באוקטובר תארח "הכנסת הפתוחה"  3 ימי דיונים <b>של ועדות הכנסת הרשמיות</b> תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
+        האירוע ייערך ב"היכל העצמאות" בשדרות רוטשילד, בבניין ההיסטורי בו הוכרזה הקמת מדינת ישראל.<br/>
+        הכנס יחל בישיבה משותפת של הוועדות בכנסת (בירושלים) בנוכחות יושבי ראש הוועדות, ואליה יוזמנו מובילי המחאה החברתית.
+        ביומיים הבאים, יערכו ועדות הכנסת דיונים רשמיים בהיכל העצמאות בתל אביב. הציבור מוזמן לדון ולדרג הצעות לסדר
 
- רוצים להעלות נושאים לסדר היום של ועדות הכנסת - <a href="{% url committee-list %}">כאן</a>
- </p></div >
-  
-<div id="main-about" class="display_note_outer">
-<h3>אודותינו</h3>
-האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
-אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
-המשתמש.
-    האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+         רוצים להעלות נושאים לסדר היום של ועדות הכנסת - <a href="{% url committee-list %}">כאן</a>
+     </p></div >
+     <div id="main-help" class="display_note_outer">
+        <p>
+        רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
+        <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
+    </div>
+    <div id="main-about" class="display_note_outer">
+        <h3>אודותינו</h3>
+        האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
+        אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
+        המשתמש.
+            האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+    </div>
+    <div id="main-media" class="display_note_outer">
+        <a href="https://flickr.com/photos/daonb/collections/72157627723450730/"><img src="https://static.flickr.com/6175/cols/72157627723450730_38e4d27b0c_l.jpg"/></a>
+    </div>
 </div>
-<div id="main-media" class="display_note_outer">
-<a href="https://flickr.com/photos/daonb/collections/72157627723450730/"><img src="https://static.flickr.com/6175/cols/72157627723450730_38e4d27b0c_l.jpg"/></a>
-</div>
-<div id="main-help" class="display_note_outer">
-    <p>
-    רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
-    <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
-</div>
+<div class="clear"></div>
 
-<div class="display_note_outer" style="clear:both; margin-top:2em;">
+<div class="display_note_outer" style="clear:both; margin:2em auto; width: 80%;">
     <div class="display_note alt" style="width:50%; height: 100%;">
         <h3>הצעות אחרונות לסדר</h3>
         {% include "committees/_topics_summary.html" %}
@@ -96,7 +98,6 @@
         {% empty %}
             <li>{% trans "No annotations yet..." %}
         {% endfor %}
-    </div>
     </div>
     </div>
         
