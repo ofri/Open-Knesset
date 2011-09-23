@@ -4,6 +4,11 @@
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/logos.js"></script>
+{% endblock %}
+
 {% block subnav %}
 <div style="text-align:center;">
 <p><a href="{% url help %}" style="float:left;">מה אפשר לעשות באתר? </a></p>
@@ -19,6 +24,10 @@
         </p>
         <h2><a href="https://www.facebook.com/event.php?eid=277251232292741">אתם מוזמנים</a></h2>
      </div >
+    <div id="main-hasadna" class="display_note_outer">
+        <a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a>
+        <a href="http://yeda.us"><canvas class="hLogo" style="width:100%;"></canvas></a>
+    </div>
      <div id="main-help" class="display_note_outer">
         <p>
         רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
@@ -30,9 +39,6 @@
         אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
         המשתמש.
             האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
-    </div>
-    <div id="main-media" class="display_note_outer">
-        <a href="https://flickr.com/photos/daonb/collections/72157627723450730/"><img src="https://static.flickr.com/6175/cols/72157627723450730_38e4d27b0c_l.jpg"/></a>
     </div>
 </div>
 <div class="clear"></div>
@@ -98,5 +104,10 @@
     </div>
     </div>
         
+    <script>
+     $(document).ready(function () {
+        $(".hLogo").hLogo();
+        });
+    </script>
 {% endblock %}
 
