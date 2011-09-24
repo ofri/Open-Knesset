@@ -377,7 +377,7 @@ form > p > select { width:250px; }
     overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
 }
 .item-list .item.alt { background:#E4F4E4 }
-.item-header { float: right; }
+.item-header { float: right; clear:both;}
 .item-header a { margin:0; padding:0;}
 .item-credit {font-size:70%; width:48px;}
 .avatar-item {

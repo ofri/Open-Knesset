@@ -107,6 +107,24 @@
                         </a>
                     </div>
                 {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
+                {% for c in a.previous_comments %}
+                    <div class="item-header">
+                        <div class="avatar-item">
+                            <a href="{% url public-profile c.user.username %}">{% avatar c.user 48 %}</a>
+                        </div>
+                        <div class="item-credit">
+                            <a href="{% url public-profile c.user.username %}">{{c.user}}</a>&nbsp; &nbsp;{{c.user.get_full_name}}
+                        </div>
+                    </div>
+                    <a style="float:left;" href="{{c.get_absolute_url }}">
+                        <div class="date-item">
+                            {{ c.submit_date|date:"d/m" }}<span>{{c.submit_date|date:"Y"}}</span>{{c.submit_date|date:"H:i"}}
+                        </div>
+                    </a>
+                    <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:300px; float:right">
+                    {{c.comment|urlizetrunc:20|linebreaksbr}}
+                    </p>
+                {% endfor %}
                 <div class="item-header">
                     <div class="avatar-item">
                         <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
@@ -115,14 +133,15 @@
                         <a href="{% url public-profile a.user.username %}">{{a.user}}</a>&nbsp; &nbsp;{{a.user.get_full_name}}
                     </div>
                 </div>
-                <a style="float:left;href="{{a.get_absolute_url }}" style="float:right;">
+                <a style="float:left;" href="{{a.get_absolute_url }}">
                     <div class="date-item">
                         {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
                     </div>
                 </a>
-                <p class="triangle-border right" style="text-align:center; margin:0 82px 5px 60px;">
+                <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:300px; float:right">
                 {{a.comment|urlizetrunc:20|linebreaksbr}}
                 </p>
+
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}

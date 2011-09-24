@@ -36,13 +36,21 @@ def main(request):
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
         tags = Tag.objects.cloud_for_model(Bill)
         context['tags'] = random.sample(tags, min(len(tags),8)) if tags else None
-        context['annotations'] = \
-            list(Annotation.objects.all().order_by('-timestamp')[:10])
-        for a in context['annotations']:
+        annotations = list(Annotation.objects.all().order_by('-timestamp')[:10])
+        for a in annotations:
             a.submit_date = a.timestamp
-        context['annotations'].extend(
-                Comment.objects.all().order_by('-submit_date')[:10])
-        context['annotations'].sort(key=lambda x:x.submit_date,reverse=True)
+        comments = list(Comment.objects.all().order_by('-submit_date')[:10])
+        previous_comments = set()
+        for c in comments:
+            c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
+                                                         content_type=c.content_type,
+                                                         submit_date__lt=c.submit_date)
+            previous_comments.update(c.previous_comments)
+            c.is_comment = True
+        comments = [c for c in comments if c not in previous_comments]
+        annotations.extend(comments)
+        annotations.sort(key=lambda x:x.submit_date,reverse=True)
+        context['annotations'] = annotations
         context['topics'] = Topic.objects.summary('-modified')[:20]
         context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
