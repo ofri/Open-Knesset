@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.views.generic.simple import redirect_to
+from django.views.generic.simple import redirect_to, direct_to_template
 
 from planet import views as planet_views
 from hitcount.views import update_hit_count_ajax
@@ -17,7 +17,7 @@ from knesset.mks.views import get_mk_entry, mk_is_backlinkable
 
 from knesset.auxiliary.views import main, post_annotation, post_details, \
     RobotsView, AboutView, CommentsView, add_tag_to_object, \
-    remove_tag_from_object, create_tag_and_add_to_item
+    remove_tag_from_object, create_tag_and_add_to_item, help_page
 
 admin.autodiscover()
 
@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     (r'^agenda/', include('knesset.agendas.urls')),
     (r'^users/', include('knesset.user.urls')),
     (r'^badges/', include('knesset.badges.urls')),
+    url(r'^help/', help_page, name="help"),
      (r'^admin/', include(admin.site.urls)),
      (r'^comments/$', CommentsView.as_view()),
      url(r'^comments/delete/(?P<comment_id>\d+)/$', 'knesset.utils.delete', name='comments-delete-comment'),

@@ -25,18 +25,29 @@ from knesset.utils import notify_responsible_adult
 import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
-def main(request):
-    context = cache.get('main_page_context')
+def help_page(request):
+    context = cache.get('help_page_context')
     if not context:
         context = {}
-        context['title'] = _('Home')
+        context['title'] = _('Help')
         context['member'] = Member.objects.all()[random.randrange(Member.objects.count())]
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
         tags = Tag.objects.cloud_for_model(Bill)
         context['tags'] = random.sample(tags, min(len(tags),8)) if tags else None
-        annotations = list(Annotation.objects.all().order_by('-timestamp')[:10])
+        context['has_search'] = False # enable the base template search
+        cache.set('help_page_context', context, 300) # 5 Minutes
+    template_name = '%s.%s%s' % ('help_page', settings.LANGUAGE_CODE, '.html')
+    return render_to_response(template_name, context, context_instance=RequestContext(request))
+
+def main(request):
+    context = cache.get('main_page_context')
+    if not context:
+        context = {}
+        context['title'] = _('Home')
+        annotations = \
+            list(Annotation.objects.all().order_by('-timestamp')[:10])
         for a in annotations:
             a.submit_date = a.timestamp
         comments = list(Comment.objects.all().order_by('-submit_date')[:10])

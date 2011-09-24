@@ -4,70 +4,46 @@
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
-{% block subnav %}
-        <div id="search" style="text-align:center;float:none;clear:none;"><p class="help-text">חיפוש חופשי באתר כנסת פתוחה</p>{% search_form "search_page" %}</div>
 
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/logos.js"></script>
 {% endblock %}
-{% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
+
+{% block subnav %}
+<div style="text-align:center;">
+<p><a href="{% url help %}" style="float:left;">מה אפשר לעשות באתר? </a></p>
+       <div id="search">{% search_form "search_page" %}</div>
+</div>
+{% endblock %}
 {% block divcontent %}
-<!-- add this to sidebar: <iframe src="http://www.facebook.com/plugins/likebox.php?id=114171195283394&amp;width=200&amp;connections=10&amp;stream=false&amp;header=true&amp;height=287" scrolling="no" frameborder="0" style="border:none; overflow:auto; width:200px; height:210px; position:absolute; left:10px;" allowTransparency="true"></iframe>
--->
-<div id="main-help">
-    רוצים לדעת איך זה עובד או להצטרף ולעזור?<br/>
-    <span class="awesome-button"><a href="{% url about %}">קראו עוד אודות הפרויקט</a></span>
+<div style="width:80%; margin:0 auto;">
+    <div id="main-news" class="display_note_outer" > 
+        <h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
+        <p style="padding:1em; font-size:120%;">
+בח' בתשרי, 6/10/2011, תארח "הכנסת הפתוחה" יום דיונים מיוחד של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי". האירוע ייערך בשדרות רוטשילד, מול בית דיזינגוף, בו הוכרזה הקמת מדינת ישראל. אירוע זה יהיה הראשון בסדרה של אירועים שיתקיימו במהלך המושב הקרוב ובהם ועדות הכנסת יקיימו ימי דיונים על צדק חברתי מחוץ למשכן.
+        </p>
+        <h2><a href="https://www.facebook.com/event.php?eid=277251232292741">אתם מוזמנים</a></h2>
+     </div >
+    <div id="main-hasadna" class="display_note_outer">
+        <a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a>
+        <a href="http://yeda.us"><canvas class="hLogo" style="width:100%;"></canvas></a>
+    </div>
+     <div id="main-help" class="display_note_outer">
+        <p>
+        רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
+        <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
+    </div>
+    <div id="main-about" class="display_note_outer">
+        <h3>אודותינו</h3>
+        האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
+        אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
+        המשתמש.
+            האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+    </div>
 </div>
-<div id="main-about">
-האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת.
-אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
-המשתמש.
-    האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
-</div>
-<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em; background: url('/static/img/embed_hover.png') repeat-x;">
-<h3>כנס בין כסה לעשור - "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
-<p style="padding:1em; font-size:120%;">
-ב-6 באוקטובר תארח "הכנסת הפתוחה" יום דיונים מיוחד של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
-האירוע ייערך בשדרות רוטשילד,  מול בית דיזינגוף, בבניין ההיסטורי בו הוכרזה הקמת מדינת ישראל.
-<br>
-האירוע יחל בישיבה של ועדת הכספים בנוכחות יו"ר הכנסת והשר הממונה על השירות הממשלתי, לדיון במסקנות ועדת טרכטנברג.
-אחר הצהריים תתכנס ישיבה של הוועדה לזכויות הילד לדיון על "צהרונים לגיל הרך - עלות ופיקוח".
-<br>
-הציבור מוזמן לדון ולדרג הצעות לסדר היום של ועדות הכנסת - <a href="{% url committee-list %}">כאן</a>
- </p></div>
+<div class="clear"></div>
 
-
-<h2>מה אפשר לעשות באתר? </h2>
-<div id="what" class="display_note_outer">
-    <div class="display_note alt">
-        <h3>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h3>
-        <p>וההתקדמות שלהן בתהליך החקיקה.</p>
-        <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
-    </div>
-    <div class="display_note">
-        <h3>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a></h3>
-        <p>למשל:</p>
-        <ul>
-            {% for tag in tags %}
-            <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="display_note alt">
-        <h3>מעקב הצבעות חבר כנסת</h3>
-        <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
-        <p>לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></p>
-    </div>
-    <div class="display_note"><h3>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3>
-        <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
-        <div>לדוגמה, הדף של {% mk_card member %}</div>
-    </div>
-    <div class="display_note alt">
-        <h3>לקרוא את הפרוטוקולים</h3>
-        <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
-        <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
-    </div>
-    <p style="clear:both; padding:1em;">ואנחנו כל הזמן עובדים על עוד...</p>
-</div>
-<div class="display_note_outer" style="margin-top:2em;">
+<div class="display_note_outer" style="clear:both; margin:2em auto; width: 90%;">
     <div class="display_note alt" style="width:50%; height: 100%;">
         <h3>הצעות אחרונות לסדר</h3>
         {% include "committees/_topics_summary.html" %}
@@ -121,7 +97,7 @@
                             {{ c.submit_date|date:"d/m" }}<span>{{c.submit_date|date:"Y"}}</span>{{c.submit_date|date:"H:i"}}
                         </div>
                     </a>
-                    <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:300px; float:right">
+                    <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:250px; float:right">
                     {{c.comment|urlizetrunc:20|linebreaksbr}}
                     </p>
                 {% endfor %}
@@ -138,17 +114,19 @@
                         {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
                     </div>
                 </a>
-                <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:300px; float:right">
+                <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:250px; float:right">
                 {{a.comment|urlizetrunc:20|linebreaksbr}}
                 </p>
-
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}
         {% endfor %}
     </div>
     </div>
-    </div>
-
+</div>
+<script>
+ $(document).ready(function () {
+    $(".hLogo").hLogo();
+    });
+</script>
 {% endblock %}
-
