@@ -6,7 +6,7 @@
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block subnav %}
         <div id="search" style="text-align:center;float:none;clear:none;"><p class="help-text">חיפוש חופשי באתר כנסת פתוחה</p>{% search_form "search_page" %}</div>
-        
+
 {% endblock %}
 {% block header %}<h1>{% trans 'Open Knesset' %}</h1>{% endblock %}
 {% block divcontent %}
@@ -17,23 +17,23 @@
     <span class="awesome-button"><a href="{% url about %}">קראו עוד אודות הפרויקט</a></span>
 </div>
 <div id="main-about">
-האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת. 
+האתר מאפשר לכל אזרח להשתתף באורח פעיל יותר בפעילות הכנסת.
 אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
 המשתמש.
     האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
 </div>
-<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em; background: url('/static/img/embed_hover.png') repeat-x;"> 
+<div class="display_note_outer" style="width:60%; text-align: center; margin: 1em auto; padding: 1em; background: url('/static/img/embed_hover.png') repeat-x;">
 <h3>כנס בין כסה לעשור - "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
 <p style="padding:1em; font-size:120%;">
 ב-6 באוקטובר תארח "הכנסת הפתוחה" יום דיונים מיוחד של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
 האירוע ייערך בשדרות רוטשילד,  מול בית דיזינגוף, בבניין ההיסטורי בו הוכרזה הקמת מדינת ישראל.
-<br> 
+<br>
 האירוע יחל בישיבה של ועדת הכספים בנוכחות יו"ר הכנסת והשר הממונה על השירות הממשלתי, לדיון במסקנות ועדת טרכטנברג.
 אחר הצהריים תתכנס ישיבה של הוועדה לזכויות הילד לדיון על "צהרונים לגיל הרך - עלות ופיקוח".
-<br> 
+<br>
 הציבור מוזמן לדון ולדרג הצעות לסדר היום של ועדות הכנסת - <a href="{% url committee-list %}">כאן</a>
  </p></div>
-  
+
 
 <h2>מה אפשר לעשות באתר? </h2>
 <div id="what" class="display_note_outer">
@@ -77,40 +77,26 @@
     <div class="annotations item-list">
         {% for a in annotations %}
             <div class="item {% cycle "alt" "normal" %}">
-                <div class="item-header">
-                    <div class="avatar-item">
-                        <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
-                    </div>
-                </div>
-                <a style="float:left;href="{{a.get_absolute_url }}" style="float:right;">
-                    <div class="date-item">
-                        {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
-                    </div>
-                </a>
-                <div class="item-credit">
-                    <a href="{% url public-profile a.user.username %}">{{a.user}}</a>&nbsp; &nbsp;{{a.user.get_full_name}}
-                </div>
-                <p>{{a.comment|urlizetrunc:20|linebreaksbr}}</p>
                 {% if a.timestamp %}
-                    <p class="triangle-border top" style="clear:both;">
+                    <p style="clear:both;">
                         "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
                         <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
                         </a>
                     </p>
                 {% else %}{% if a.content_type.model == "bill" %}
-                    <p class="triangle-border top" style="clear:both;text-align:center; ">
+                    <p style="clear:both;text-align:center; ">
                     {% with bill=a.content_object %}
                         <a href="{{ bill.get_absolute_url }}">{{bill}}</a>
                     {% endwith %}
                     </p>
                 {% else %}{% if a.content_type.model == "vote" %}
-                    <p class="triangle-border top" style="clear:both;text-align:center; ">
+                    <p style="clear:both;text-align:center; ">
                     {% with vote=a.content_object %}
                         <a href="{{ vote.get_absolute_url }}">{{vote}}</a>
                     {% endwith %}
                     </p>
                 {% else %}{% if a.content_type.model == "topic" %}
-                    <div class="triangle-border top" style="clear:both;">
+                    <div style="clear:both;">
                         <div class="item-credit">
                             {% if a.content_object.creator %}
                             <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>
@@ -121,6 +107,22 @@
                         </a>
                     </div>
                 {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
+                <div class="item-header">
+                    <div class="avatar-item">
+                        <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
+                    </div>
+                    <div class="item-credit">
+                        <a href="{% url public-profile a.user.username %}">{{a.user}}</a>&nbsp; &nbsp;{{a.user.get_full_name}}
+                    </div>
+                </div>
+                <a style="float:left;href="{{a.get_absolute_url }}" style="float:right;">
+                    <div class="date-item">
+                        {{ a.submit_date|date:"d/m" }}<span>{{a.submit_date|date:"Y"}}</span>{{a.submit_date|date:"H:i"}}
+                    </div>
+                </a>
+                <p class="triangle-border right" style="text-align:center; margin:0 82px 5px 60px;">
+                {{a.comment|urlizetrunc:20|linebreaksbr}}
+                </p>
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}
@@ -128,6 +130,6 @@
     </div>
     </div>
     </div>
-        
+
 {% endblock %}
 
