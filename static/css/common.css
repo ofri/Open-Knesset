@@ -522,12 +522,14 @@ form > p > select { width:250px; }
 #main-about, #main-hasadna, #main-help {float: left; text-align:center; margin:1em; padding:1em;}
 #main-about { text-align:justify; width:28%;}
 #main-news { float:right; margin: 1em auto; padding: 0.8em; }
-#main-help { line-height:150%; text-align:center; width:20% ; }
-#main-hasadna { padding:1em; width: 20%; text-align: center; }
+#main-help { line-height:150%; text-align:center; width:24% ; }
+#main-hasadna { padding:1em; width: 28%; text-align: right; }
+#main-hasadna a { padding: 0; }
 #main-media a { text-align: center; }
 #main-about + h2 { margin-top:40px }
 #main-news { width:100%; text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
 .display_note_outer {
+    background-color: #CFD4C7;
     -moz-border-radius:1em 1em 1em 1em;
     -webkit-border-radius:1em 1em 1em 1em;
     border-radius: 1em 1em 1em 1em;
