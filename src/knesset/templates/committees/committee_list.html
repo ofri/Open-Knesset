@@ -6,12 +6,12 @@
 {% block description %}{% trans "Committees" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block divcontent %}
-  <h2>{% trans "Committees" %}</h2>
+  <h2>{% trans "Committees" %}<span style="font-size:70%;">
+<a href="help/">({% trans "what does committees do?"%})</a></span></h2>
   <div class="main-column">
         <div class="item-list">
         {% for o in committees %}
-              <div class="item normal">
-              <a id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >
+              <a style="display: block;" class="item normal" id="detail-{{ o.id }}" href="{% url committee-detail o.id %}" >
                   <!-- TODO: fix mk-card
                   <div class="item-header" style="width:60px; text-align: center; margin: 0 auto;">
                   {% for cp in o.chairpersons.all %}
@@ -22,7 +22,6 @@
                   <h4>{{ o.name }}</h4>
                   <p>{{ o.description|linebreaksbr }}</p>
               </a>
-              </div>
         {% endfor %}
         </div>
   </div>
