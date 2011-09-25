@@ -1,0 +1,5 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target.comment as comment and action.target.user as user %}
+{{ user }} commented <a href="http://{{domain}}{{ url }}">{{ comment }}</a>
+<br>
+{% endblocktrans %}
