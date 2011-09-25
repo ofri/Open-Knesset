@@ -382,7 +382,7 @@ form > p > select { width:250px; }
 .item-header a { margin:0; padding:0;}
 .item-credit {font-size:70%; width:48px;}
 .avatar-item {
-    margin: 5px 0px 5px 10px;
+    margin: 5px 5px 5px 10px;
     height: 48px;
     border: 1px solid #7777AA;
     border-radius: 3px;
@@ -519,10 +519,10 @@ form > p > select { width:250px; }
 
 #content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
-#main-about, #main-hasadna, #main-help {float: left; text-align:center; margin:1em; padding:1em;}
+#main-about, #main-hasadna, #main-help {float: right; text-align:center; margin:1em 1%; padding:1em;}
 #main-about { text-align:justify; width:28%;}
 #main-news { float:right; margin: 1em auto; padding: 0.8em; }
-#main-help { line-height:150%; text-align:center; width:24% ; }
+#main-help { line-height:150%; text-align:center; width:24%;}
 #main-hasadna { padding:1em; width: 28%; text-align: right; }
 #main-hasadna a { padding: 0; }
 #main-media a { text-align: center; }
@@ -548,7 +548,8 @@ form > p > select { width:250px; }
     float:right;
 }
 
-#content-main .display_note.alt { background: #D6E3D6; }
+#content-main .display_note.normal, #content-main .item.normal { background: #D6E3D6; }
+#content-main .item.alt { background: #E6EEE6; }
 .display_note h3 {
     font-size:14px; height:3ex; margin:0; padding:3px;
     font-weight:normal;
@@ -560,7 +561,7 @@ form > p > select { width:250px; }
 input.vote_input {
     width:600px;
 }
-#content-main .display_note p, #content-main .display_note > div  { margin:10px }
+#content-main .display_note p, #content-main .display_note > div  { margin:10px 0 }
 
 input.bill_input {
     width:400px;
@@ -877,7 +878,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     margin-left:30px;
 }
 #content-main .triangle-border.right {
-    margin-right:30px;
+    margin-right:30px; text-align:center; margin:5px 10px; width:60%; float:left;
 }
 #content-main .triangle-border:before {
     content:"";
@@ -946,6 +947,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     right:-21px; /* value = - border-left-width - border-right-width */
     border-width:9px 0 9px 21px;
     border-color:transparent #fff;
+    
 }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
