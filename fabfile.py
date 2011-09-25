@@ -44,6 +44,10 @@ def update(fork='ofri', branch='master'):
     """Pull the latest code into the git repo and copy to a timestamped release directory"""
     with cd(env.path):
         run('git pull %s %s' % (fork, branch))
+        run('bin/buildout install lastbuild')
+
+def refresh_env():
+    with cd(env.path):
         run('bin/buildout')
         run('bin/django syncdb --migrate')
 
@@ -55,6 +59,6 @@ def install_env():
         # Run our migrations
         run('bin/django syncdb --noinput --migrate')
 
-def refresh_server():
-    """Restart the web server"""
+def refresh_app():
+    """Restart the app server"""
     sudo('kill -HUP `head -n1 /tmp/dev.oknesset.gunicorn.pid`')
