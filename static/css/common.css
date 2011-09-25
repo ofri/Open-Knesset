@@ -877,7 +877,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     margin-left:30px;
 }
 #content-main .triangle-border.right {
-    margin-right:30px;
+    margin-right:30px; text-align:center; margin:5px 10px; width:60%; float:left;
 }
 #content-main .triangle-border:before {
     content:"";
@@ -946,6 +946,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     right:-21px; /* value = - border-left-width - border-right-width */
     border-width:9px 0 9px 21px;
     border-color:transparent #fff;
+    
 }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
