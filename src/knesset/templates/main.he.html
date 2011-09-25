@@ -97,7 +97,7 @@
                         <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
                     </div>
                     <div class="item-credit">
-                        <a href="{% url public-profile a.user.username %}">{{a.user}}</a>&nbsp; &nbsp;{{a.user.get_full_name}}
+                        <a href="{% url public-profile a.user.username %}">{% firstof a.user.get_full_name a.user %}</a>
                     </div>
                 </div>
                 <p class="triangle-border right" style="text-align:center; margin:5px 10px; width:250px; float:right">
