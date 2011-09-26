@@ -14,7 +14,7 @@ env.repository = 'git://github.com/daonb/Open-Knesset.git'
 def dev():
     """Staging server settings"""
     env.path = '/usr/local/src/dev.oknesset'
-    env.hosts = ['daonb@81.218.229.67:27628']
+    env.hosts = ['dev.oknesset.org']
 
 def live():
     """Production server settings"""
