@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-25 23:46+0300\n"
+"POT-Creation-Date: 2011-09-26 10:12+0300\n"
 "PO-Revision-Date: 2011-09-13 01:03+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -1048,7 +1048,7 @@ msgstr ""
 msgid "Latest Annotations and comments"
 msgstr "הארות ותגובות אחרונות"
 
-#: templates/main.he.html:118 templates/committees/committee_detail.html:98
+#: templates/main.he.html:108 templates/committees/committee_detail.html:98
 #: templates/user/annotated_items.html:20
 #: templates/user/public_profile.html:62
 msgid "No annotations yet..."
@@ -1787,6 +1787,10 @@ msgstr "עריכת הצעה לסדר"
 msgid "Links to relevant material"
 msgstr "קישורים לחומר רלוונטי"
 
+#: templates/committees/topic_detail.html:6
+msgid "suggested topic"
+msgstr "הצעה לסדר"
+
 #: templates/committees/topic_detail.html:26
 msgid "Suggested Topics for a committee meeting"
 msgstr "הצעות לסדר יום"
@@ -1803,13 +1807,17 @@ msgstr "מחיקה"
 msgid "your rating"
 msgstr "הדירוג שלך"
 
-#: templates/committees/topic_detail.html:63
+#: templates/committees/topic_detail.html:64
 #: templates/laws/vote_detail.html:20 templates/mks/member_detail.html:351
 #: templates/mks/party_detail.html:71
 msgid "Links"
 msgstr "קישורים"
 
 #: templates/committees/topic_detail.html:67
+msgid "share"
+msgstr "הפיצו"
+
+#: templates/committees/topic_detail.html:87
 msgid "average rating"
 msgstr "דירוג ממוצע"
 

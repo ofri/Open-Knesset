@@ -3,7 +3,7 @@
 {% load links %}
 {% load ratings %}
 {% load avatar_tags %}
-{% block extratitle %}{{ topic.title }}{% endblock %}
+{% block extratitle %}{{ topic.title }} - {% trans "suggested topic"%} {% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript">
@@ -50,6 +50,7 @@
 
 {% block content %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
+
     <h2>{{topic.title}}</h2>
     <div class="main-column">
         <div class="item-header big-avatar">
@@ -62,6 +63,25 @@
         <div style="padding: 0.5em; clear:both;"></div>
         <h3>{% trans "Links" %}:</h3>
         {% object_links topic %}
+        <div class="clear" style="padding-bottom:1em;"></div>
+        <h3>{% trans "share" %}:</h3>
+        <p style="padding-top:0.5em;">
+        <a href="https://twitter.com/share" class="twitter-share-button social-row" data-count="horizontal" data-via="oknesset" style="display:block;float:right;">צייץ</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+        <iframe src="http://www.facebook.com/plugins/like.php?href={{request.get_host|iriencode}}{{request.get_full_path|iriencode}}&amp;locale=he_IL&amp;layout=standard&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;" scrolling="no" frameborder="0" allowTransparency="true" style="height:20px;" ></iframe>
+<!-- Place this tag where you want the +1 button to render -->
+<g:plusone size="medium" annotation="inline" width="120"></g:plusone>
+
+<!-- Place this render call where appropriate -->
+<script type="text/javascript">
+  window.___gcfg = {lang: 'iw'};
+
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+        </p>
     </div>
     <div class="secondary-column">
         <h3> {% trans "average rating" %}: </h3>
@@ -92,4 +112,6 @@
             {% endif %}
         })
     </script>
+{% endblock %}
+{% block social %}
 {% endblock %}
