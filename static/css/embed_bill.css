@@ -619,6 +619,12 @@ div#graph.drilling {
 	    width: 90%;
 	    z-index: 10;
 	}
+		
+		.pill-nav li{
+			float: right;
+			background: url("../img/embed_pills.png") left 0; 
+		}
+		
 		#thedrill-details{
 			width: 100%;
 		}
