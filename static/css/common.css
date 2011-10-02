@@ -372,10 +372,10 @@ form > p > select { width:250px; }
 
 }
 
-.item-list { position: relative; }
+.item-list { position: relative; padding:0.5em;}
 .item-list .item {
-    clear:both; padding:5px !important;
-    overflow:auto; width:100%; /* css trick to prevent the need for empty clearer */
+    clear:both; 
+    overflow:none; 
 }
 .item-list .item.alt { background:#E4F4E4 }
 .item-header { float: right; clear:both;}
