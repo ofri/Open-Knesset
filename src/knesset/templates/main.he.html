@@ -13,12 +13,17 @@
 {% block divcontent %}
 <div style="width:80%; margin:0 auto;">
     <div id="main-news" class="display_note_outer" > 
-        <h3>כנס "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
-        <p style="padding:1em; font-size:120%;">
-בח' בתשרי, 6/10/2011, תארח "הכנסת הפתוחה" יום דיונים מיוחד של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי". האירוע ייערך בשדרות רוטשילד, מול בית דיזינגוף, בו הוכרזה הקמת מדינת ישראל. אירוע זה יהיה הראשון בסדרה של אירועים שיתקיימו במהלך המושב הקרוב ובהם ועדות הכנסת יקיימו ימי דיונים על צדק חברתי מחוץ למשכן.
-        </p>
-        <h2><a href="https://www.facebook.com/event.php?eid=277251232292741">אתם מוזמנים</a></h2>
-     </div >
+<h3>כנס בין כסה לעשור - "שקיפות ושיתוף הציבור למען צדק חברתי"</h3>
+<h4 ><a href="https://groups.google.com/group/open-knesset/browse_thread/thread/d242e76d9e9d2645" style="color:red;">עדכון חם - דחיה לשבוע האחרון של אוקטובר</a></h4>
+<p style="padding:1em; font-size:120%;">
+ב-27 לאוקטובר תארח "הכנסת הפתוחה" יום דיונים מיוחד של ועדות הכנסת הרשמיות תחת הכותרת "שקיפות ושיתוף הציבור למען צדק חברתי".
+האירוע ייערך בבית דיזינגוף בשדרות רוטשילד, בבניין ההיסטורי בו הוכרזה הקמת מדינת ישראל.
+<br> 
+האירוע יחל בישיבה של ועדת הכספים בנוכחות יו"ר הכנסת והשר הממונה על השירות הממשלתי.
+אחר הצהריים תתכנס ישיבה של הוועדה לזכויות הילד ולאחריה ישיבות של הועדה המשותפת לבריאות וסביבה והועדה לטיפול בבעיית העובדים הזרים.
+<br> 
+<a href="https://www.facebook.com/event.php?eid=277251232292741">הציבור מוזמן</a>
+ </p></div>
     <div id="main-hasadna" class="display_note_outer">
         <img src="/static/img/hasadna-logo.png" style="width:50px; float:left">
         <h3>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא לידע ציבורי</a></h3><br>
@@ -51,7 +56,7 @@
             <div class="item {% cycle "alt" "normal" %}">
                 {% if a.timestamp %}
                     <p style="clear:both;">
-                        "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
+                        <strong>{{a.content_object.header}}</strong>: "{{a.selection}}",
                         <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
                         </a>
                     </p>
@@ -71,21 +76,21 @@
                     <div style="clear:both;">
                         <div class="item-credit">
                             {% if a.content_object.creator %}
-                            <a href="{% url public-profile a.content_object.creator.username %}">{{a.content_object.creator}}</a>
-                            {% endif %}&nbsp; &nbsp;{{a.content_object.creator.get_full_name}}
+                                {% with a.content_object.creator as u %}
+                                    <a href="{% url public-profile u.username %}">{% firstof u.get_full_name u.user %}</a>
+                                {% endwith %}
+                            {% endif %}
                         </div>
                         <a href="{{a.content_object.get_absolute_url}}"><strong>{{a.content_object.title}}</strong>
                         <p>{{ a.content_object.description|linebreaksbr }}</p>
                         </a>
                     </div>
                 {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
+                <div style="padding-right:2em;">
                 {% for c in a.previous_comments %}
                     <div class="item-header">
                         <div class="avatar-item">
                             <a href="{% url public-profile c.user.username %}">{% avatar c.user 48 %}</a>
-                        </div>
-                        <div class="item-credit">
-                        <a href="{% url public-profile c.user.username %}">{% firstof c.user.get_full_name c.user %}</a>
                         </div>
                     </div>
                     <p class="triangle-border right">
@@ -96,9 +101,7 @@
                     <div class="avatar-item">
                         <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
                     </div>
-                    <div class="item-credit">
-                        <a href="{% url public-profile a.user.username %}">{% firstof a.user.get_full_name a.user %}</a>
-                    </div>
+                </div>
                 </div>
                 <p class="triangle-border right">
                 {{a.comment|urlizetrunc:20|linebreaksbr}}
