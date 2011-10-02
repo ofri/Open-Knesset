@@ -86,12 +86,19 @@
                         </a>
                     </div>
                 {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
-                <div style="padding-right:2em;">
+                <div class="item-comments">
                 {% for c in a.previous_comments %}
                     <div class="item-header">
                         <div class="avatar-item">
-                            <a href="{% url public-profile c.user.username %}">{% avatar c.user 48 %}</a>
+                            <a href="{% url public-profile c.user.username %}">
+                                {% avatar c.user 48 %}
+                            </a>
                         </div>
+                        <p>
+                            <a href="{% url public-profile c.user.username %}">
+                                {% firstof c.user.get_full_name c.user %}
+                            </a>
+                        </p>
                     </div>
                     <p class="triangle-border right">
                     {{c.comment|urlizetrunc:20|linebreaksbr}}
@@ -99,13 +106,21 @@
                 {% endfor %}
                 <div class="item-header">
                     <div class="avatar-item">
-                        <a href="{% url public-profile a.user.username %}">{% avatar a.user 48 %}</a>
+                        <a href="{% url public-profile a.user.username %}">
+                            {% avatar a.user 48 %}
+                        </a>
                     </div>
-                </div>
+                    <p>
+                        <a href="{% url public-profile a.user.username %}">
+                            {% firstof a.user.get_full_name a.user %}
+                        </a>
+                    </p>
                 </div>
                 <p class="triangle-border right">
                 {{a.comment|urlizetrunc:20|linebreaksbr}}
                 </p>
+            </div>
+            <div class="clear"></div>
             </div>
         {% empty %}
             <li>{% trans "No annotations yet..." %}

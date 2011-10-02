@@ -378,15 +378,17 @@ form > p > select { width:250px; }
     overflow:none; 
 }
 .item-list .item.alt { background:#E4F4E4 }
-.item-header { float: right; clear:both;}
-.item-header a { margin:0; padding:0;}
+.item-header { float: right; clear:both; text-align:center;}
+.item-header a, .item-header>p { margin:0; padding:0;}
 .item-credit {font-size:70%; }
 .avatar-item {
-    margin: 5px 5px 5px 10px;
+    margin: 5px 5px 0 10px;
     height: 48px;
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
+.avatar-item img { display:block;}
+.item-comments { padding-right:1.5em;}
 .mk-card .avatar-item {
     margin: 5px;
     height: 38px;
@@ -428,11 +430,7 @@ form > p > select { width:250px; }
     margin-bottom: 0.5em;
     /*border-top: 1px solid #888;
     color:#000;*/
-    font-size:115%;
     line-height:1.5;
-}
-#content-main .item:hover {
-    background-color:#CFD4D7;
 }
 #content-main .list-wrap {
     line-height: 250%;
@@ -548,7 +546,7 @@ form > p > select { width:250px; }
     float:right;
 }
 
-#content-main .display_note.normal, #content-main .item.normal { background: #D6E3D6; }
+.normal { background: #D6E3D6; }
 #content-main .item.alt { background: #E6EEE6; }
 .display_note h3 {
     font-size:14px; height:3ex; margin:0; padding:3px;
@@ -561,7 +559,7 @@ form > p > select { width:250px; }
 input.vote_input {
     width:600px;
 }
-#content-main .display_note p, #content-main .display_note > div  { margin:10px 0 }
+.display_note p, .display_note > div  { margin:10px 0 }
 
 input.bill_input {
     width:400px;
@@ -854,7 +852,7 @@ ul.member-summary ul { vertical-align: top; }
 .item-list li:hover { text-decoration: underline; }
 .item-list a { padding: 0; }
 .item-list .date { font-size: 120%; }
-.item-list p { padding-right: 2em; }
+.item-list { padding-right: 0.5em; }
 /* annotations */
 ul.annotations { list-style-type: disc; padding: 1em; }
 .annotations li { display: block; line-height: 200%; padding-bottom: 0.5em; position:relative;}
