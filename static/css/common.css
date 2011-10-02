@@ -574,7 +574,8 @@ form.unbind-form label{
 }
 
 /* Search */
-div #search { height:32px;padding-top:10px; }
+#search { height:32px;padding-top:10px;float:left; }
+#main-search { height:32px;padding-top:10px;text-align:center;}
 #id_search_page_q {
     border: 2px solid #0d204a;
     border-radius: 5px;
