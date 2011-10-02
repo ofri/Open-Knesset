@@ -381,8 +381,8 @@ form > p > select { width:250px; }
 .item-header { float: right; clear:both; text-align:center;}
 .item-header a, .item-header>p { margin:0; padding:0;}
 .item-credit {font-size:70%; }
-.avatar-item {
-    margin: 5px 5px 0 10px;
+.avatar-item { margin: 5px 5px 0 10px;}
+.avatar-item img {
     height: 48px;
     border: 1px solid #7777AA;
     border-radius: 3px;
