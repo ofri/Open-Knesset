@@ -11,15 +11,15 @@ from fabric.contrib.console import confirm
 
 env.repository = 'git://github.com/daonb/Open-Knesset.git'
 
-def dev():
+def dev(port=80):
     """Staging server settings"""
     env.path = '/usr/local/src/dev.oknesset'
-    env.hosts = ['dev.oknesset.org']
+    env.hosts = ['dev.oknesset.org:%s' % port]
 
-def live():
+def live(port=80):
     """Production server settings"""
     env.path = '/usr/local/src/oknesset'
-    env.hosts = ['oknesset.org']
+    env.hosts = ['oknesset.org:%s' % port]
 
 def setup():
     """
