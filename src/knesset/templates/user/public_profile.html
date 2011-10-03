@@ -3,8 +3,8 @@
 {% load mks %}
 {% load pagination_tags %}
 {% load avatar_tags %}
-{% block extratitle %}{{viewed_user.username}}{% endblock %}
-{% block header %}<h1>{{viewed_user.username}}</h1>{% endblock %}
+{% block extratitle %}{{viewed_user.get_profile}}{% endblock %}
+{% block header %}<h1>{{viewed_user.get_profile}}</h1>{% endblock %}
 {% block content %}
     {% if viewed_user.get_profile.public_profile or viewed_user == user%}
         <div style="float:right;">

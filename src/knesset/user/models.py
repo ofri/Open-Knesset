@@ -97,7 +97,7 @@ class UserProfile(models.Model):
         return self.badges.filter(badge_type=badge_type).count()>0
 
     def __unicode__(self):
-        return self.user.__unicode__()
+        return self.user.get_full_name() or self.user.username
 
 def handle_user_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
