@@ -73,8 +73,12 @@ class EmailValidation(models.Model):
                 g.permissions.add(Permission.objects.get(name='Can add comment'))
                 g.permissions.add(Permission.objects.get(name='Can add annotation'))
                 g.permissions.add(Permission.objects.get(name='Can add Topic'))
-
             ev.user.groups.add(g)
+
+            p = user.get_profile()
+            p.email_notification = 'D'
+            p.save()
+
             ev.activation_key = ''
             ev.save()
             return (True, "")
