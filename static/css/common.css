@@ -388,6 +388,7 @@ form > p > select { width:250px; }
     border-radius: 3px;
 }
 .avatar-item img { display:block;}
+p.username {max-width:55px; }
 .item-comments { padding-right:1.5em;}
 .mk-card .avatar-item {
     margin: 5px;
