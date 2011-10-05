@@ -40,6 +40,10 @@ class MemberListView(ListView):
 
     def get_context_data(self, **kwargs):
         info = self.request.GET.get('info','bills_pre')
+        if info not in ['abc','bills_proposed','bills_pre',
+                        'bills_first','bills_approved','votes',
+                        'presence','committees','graph']:
+            raise Http404()
         original_context = super(MemberListView, self).get_context_data(**kwargs)
         qs = original_context['object_list'].filter(is_current=True)
 
