@@ -4,6 +4,8 @@ from django.core.management.base import NoArgsCommand
 from django.core.files.base import ContentFile
 from django.contrib.auth.models import User, Group
 
+from actstream import follow
+
 from knesset.mks.models import Member
 from avatar.models import Avatar
 
@@ -44,9 +46,12 @@ class Command(NoArgsCommand):
                 profile = user.profiles.create()
 
             profile.email_notification='D'
-            profile.description = member.get_role
+            if not profile.description:
+                profile.description = member.get_role
+
             profile.gender = member.gender
             profile.save()
+            follow (user, member)
 
             if not member.user:
                 member.user = user
