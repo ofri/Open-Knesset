@@ -56,8 +56,8 @@
             <div class="item {% cycle "alt" "normal" %}">
                 {% if a.timestamp %}
                     <p style="clear:both;">
-                        <strong>{{a.content_object.header}}</strong>: "{{a.selection}}",
-                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
+                        <strong>{{a.content_object.header}}</strong>: "{{a.selection|truncatewords:30}}",
+                        <a href="{{a.get_absolute_url}}">{{ a.content_object.meeting|linebreaksbr }}</a></h4>
                         </a>
                     </p>
                 {% else %}{% if a.content_type.model == "bill" %}
@@ -82,7 +82,7 @@
                             {% endif %}
                         </div>
                         <a href="{{a.content_object.get_absolute_url}}"><strong>{{a.content_object.title}}</strong>
-                        <p>{{ a.content_object.description|linebreaksbr }}</p>
+                        <p>{{ a.content_object.description|truncatewords:30|linebreaksbr }}</p>
                         </a>
                     </div>
                 {% else %} {{a.content_type.name}}{% endif %}{% endif %}{% endif %}{% endif %}
