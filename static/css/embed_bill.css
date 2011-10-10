@@ -19,7 +19,7 @@ a{
 #header,
 #graph,
 #footer{
-    max-width: 500px;
+    max-width: 400px;
     width: 100%;
 }
 #header{
@@ -620,11 +620,65 @@ div#graph.drilling {
 	    z-index: 10;
 	}
 		
-		.pill-nav li{
-			float: right;
-			background: url("../img/embed_pills.png") left 0; 
+		ul.pill-nav{
+			padding: 0 8px;
+			margin: 20px 0 60px;
 		}
-		
+			.pill-nav li{
+				float: right;
+				background: url("../img/embed_pills.png") left 0; 
+				list-style: none;
+				margin-left: 6%;
+				text-align: center;
+				width: 29%;
+			}
+			.pill-nav li:last-child{
+				margin-left: 0; 
+			}
+			.pill-nav li.active{
+				background-position: left -40px;
+			}
+				.pill-nav li.active a{
+					background-position: right -60px;
+					font-weight:bold;
+					color: #444444;
+					
+				}
+				.pill-nav li:hover a{
+					color: #444444;
+					overflow: hidden;
+				}
+				.pill-nav li a{
+				    background: url("../img/embed_pills.png") repeat scroll right -20px transparent;
+				    color: #666666;
+				    display: block;
+				    font-size: 14px;
+				    line-height: 18px;
+				    margin-right: -8px;
+				    padding-bottom: 2px;
+				    text-decoration: none;
+				}
+				.passed .pill-nav li a {color:#29771f}
+				.passed .pill-nav li:hover a,.passed .pill-nav li.active a {color:#2a5525}
+				.passed .pill-nav li {background-position: left -80px}
+				.passed .pill-nav a{background-position: right -100px}
+				.passed .pill-nav li.active{background-position: left -120px}
+				.passed .pill-nav li.active a{background-position: right -140px}
+				.failed .pill-nav li {background-position: left -160px}
+				.failed .pill-nav a{background-position: right -180px}
+				.failed .pill-nav li.active{background-position: left -200px}
+				.failed .pill-nav li.active a{background-position: right -220px}
+				
+		#thedrill-details,
+		#thedrill-meaning,
+		#thedrill-action{
+			display: none;
+		}
+				
+		#thedrill-details{
+			display: block;
+		}
+				
 		#thedrill-details{
 			width: 100%;
 		}
