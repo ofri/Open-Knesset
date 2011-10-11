@@ -27,7 +27,6 @@ var OKnessetParser = new function(){
 				return;
 			}
 
-			console.log(value.roles);
 			if (value.roles === "יו\"ר ועדת הפירושים") {
 				value.roles = "יושב ראש הכנסת";
 			}
