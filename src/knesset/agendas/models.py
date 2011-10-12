@@ -16,6 +16,12 @@ AGENDAVOTE_SCORE_CHOICES = (
     (0.5, _("Complies partially")),
     (1.0, _("Complies fully")),
 )
+MEETING_SCORE_CHOICES = (
+    (0.0, _("Negligible")),
+    (0.3, _("Marginal")),
+    (0.6, _("Important")),
+    (1.0, _("Critical")),
+)
 
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
@@ -23,8 +29,24 @@ class AgendaVote(models.Model):
     score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
 
+    def get_score_header(self):
+        return _('Position')
+
     class Meta:
         unique_together= ('agenda', 'vote')
+
+class AgendaMeeting(models.Model):
+    agenda = models.ForeignKey('Agenda', related_name='agendameetings')
+    meeting = models.ForeignKey('committees.CommitteeMeeting',
+                                related_name='agendacommitteemeetings')
+    score = models.FloatField(default=0.0, choices=MEETING_SCORE_CHOICES)
+    reasoning = models.TextField(null=True)
+
+    def get_score_header(self):
+        return _('Importance')
+
+    class Meta:
+        unique_together = ('agenda', 'meeting')
 
 def get_top_bottom(lst, top, bottom):
     """
