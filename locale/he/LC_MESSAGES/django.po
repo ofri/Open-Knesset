@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-17 18:26+0200\n"
-"PO-Revision-Date: 2011-10-17 18:27+0200\n"
+"POT-Creation-Date: 2011-10-17 20:19+0200\n"
+"PO-Revision-Date: 2011-10-17 20:19+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -26,7 +26,7 @@ msgstr ""
 #: mks/views.py:161
 #: mks/views.py:164
 #: templates/base.html:110
-#: templates/agendas/agenda_detail.html:48
+#: templates/agendas/agenda_detail.html:49
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
 #: templates/mks/member_graph.html:5
@@ -44,7 +44,7 @@ msgstr "ח\"כים"
 #: mks/views.py:339
 #: mks/views.py:354
 #: templates/base.html:111
-#: templates/agendas/agenda_detail.html:100
+#: templates/agendas/agenda_detail.html:101
 msgid "Parties"
 msgstr "מפלגות"
 
@@ -320,7 +320,7 @@ msgid "Title"
 msgstr "כותרת"
 
 #: committees/models.py:237
-#: templates/agendas/agenda_detail.html:43
+#: templates/agendas/agenda_detail.html:44
 msgid "Description"
 msgstr "תאור"
 
@@ -1100,7 +1100,7 @@ msgstr "אודות"
 #: templates/help_page.he.html:4
 #: templates/main.he.html:4
 #: templates/agendas/agenda_add.html:9
-#: templates/agendas/agenda_detail.html:12
+#: templates/agendas/agenda_detail.html:13
 #: templates/agendas/agenda_detail_edit.html:9
 #: templates/agendas/agenda_list.html:9
 #: templates/agendas/mk_agenda_detail.html:12
@@ -1447,59 +1447,60 @@ msgstr "הוספת אג'נדה"
 msgid "save"
 msgstr "שמירה"
 
-#: templates/agendas/agenda_detail.html:20
+#: templates/agendas/agenda_detail.html:21
 #: templates/committees/topic_detail.html:11
 #: templates/laws/bill_detail.html:13
 #: templates/mks/member_detail.html:19
 msgid "Watch"
 msgstr "מעקב"
 
-#: templates/agendas/agenda_detail.html:20
+#: templates/agendas/agenda_detail.html:21
 #: templates/committees/topic_detail.html:11
 #: templates/laws/bill_detail.html:13
 #: templates/mks/member_detail.html:19
 msgid "Unwatch"
 msgstr "הפסק מעקב"
 
-#: templates/agendas/agenda_detail.html:27
+#: templates/agendas/agenda_detail.html:28
 #: templates/agendas/agenda_list.html:35
 msgid "All Agendas"
 msgstr "כל האג'נדות"
 
-#: templates/agendas/agenda_detail.html:30
+#: templates/agendas/agenda_detail.html:31
 #: templates/committees/topic_detail.html:35
 msgid "Edit"
 msgstr "עריכה"
 
-#: templates/agendas/agenda_detail.html:37
+#: templates/agendas/agenda_detail.html:38
 msgid "Edited by"
 msgstr "בעריכת"
 
-#: templates/agendas/agenda_detail.html:51
+#: templates/agendas/agenda_detail.html:52
 msgid "Click here to see the full list."
 msgstr "לחץ כאן לרשימה המלאה."
 
-#: templates/agendas/agenda_detail.html:56
+#: templates/agendas/agenda_detail.html:57
 msgid "Agenda MKs"
 msgstr "ציוני הח\"כים באג'נדה"
 
-#: templates/agendas/agenda_detail.html:70
+#: templates/agendas/agenda_detail.html:71
 msgid "Agenda Top MKs"
 msgstr "הח\"כים התומכים ביותר באג'נדה"
 
-#: templates/agendas/agenda_detail.html:83
+#: templates/agendas/agenda_detail.html:84
 msgid "Agenda Bottom MKs"
 msgstr "הח\"כים המתנגדים ביותר לאג'נדה"
 
-#: templates/agendas/agenda_detail.html:101
+#: templates/agendas/agenda_detail.html:102
 msgid "Click the # to highlight MKs from this party"
 msgstr "ניתן ללחוץ על ה- # להדגשת חברי כנסת של מפלגה"
 
-#: templates/agendas/agenda_detail.html:127
+#: templates/agendas/agenda_detail.html:128
 msgid "Ascribed Votes"
 msgstr "הצבעות משויכות"
 
-#: templates/agendas/agenda_detail.html:146
+#: templates/agendas/agenda_detail.html:147
+#: templates/agendas/agenda_detail.html:172
 #: templates/agendas/mk_agenda_detail.html:46
 #: templates/committees/committeemeeting_list_by_tag.html:18
 #: templates/laws/bill_list.html:29
@@ -1510,6 +1511,10 @@ msgstr "הצבעות משויכות"
 #: templates/laws/vote_list_by_tag.html:23
 msgid "No results found"
 msgstr "לא נמצאו תוצאות"
+
+#: templates/agendas/agenda_detail.html:153
+msgid "Ascribed Committee Meetings"
+msgstr "ישיבות וועדה משויכות"
 
 #: templates/agendas/agenda_detail_edit.html:7
 #: templates/agendas/agenda_detail_edit.html:9
