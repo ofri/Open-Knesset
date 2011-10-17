@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-17 20:19+0200\n"
-"PO-Revision-Date: 2011-10-17 20:19+0200\n"
+"POT-Creation-Date: 2011-10-17 21:33+0200\n"
+"PO-Revision-Date: 2011-10-17 21:34+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -372,53 +372,53 @@ msgstr "הצעה לסדר"
 msgid "Topics"
 msgstr "הצעות לסדר"
 
-#: committees/views.py:85
+#: committees/views.py:90
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: committees/views.py:86
+#: committees/views.py:91
 #, python-format
 msgid "%(committee)s meeting on %(date)s on topic %(topic)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  בנושא %(topic)s"
 
-#: committees/views.py:93
+#: committees/views.py:98
 #, python-format
 msgid " page %(page)s"
 msgstr " עמוד %(page)s"
 
-#: committees/views.py:146
+#: committees/views.py:151
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: committees/views.py:147
+#: committees/views.py:152
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:257
+#: committees/views.py:262
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: committees/views.py:258
-#: committees/views.py:281
+#: committees/views.py:263
+#: committees/views.py:286
 #, python-format
 msgid "No %(object_type)s found"
 msgstr "לא נמצאו %(object_type)s"
 
-#: committees/views.py:280
+#: committees/views.py:285
 #, python-format
 msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
-#: committees/views.py:288
+#: committees/views.py:294
 #: laws/views.py:57
 #: laws/views.py:124
 #, python-format
 msgid "No Tag found matching \"%s\"."
 msgstr "לא נמצאו הצעות חוק בנושא \"%s\""
 
-#: committees/views.py:292
+#: committees/views.py:298
 #, python-format
 msgid "Committee Meetings tagged %(tag)s"
 msgstr "ישיבות וועדה שתויגו %(tag)s"
@@ -507,6 +507,7 @@ msgid "Vote types"
 msgstr "סוגי הצבעות"
 
 #: laws/forms.py:34
+#: templates/committees/committee_list.html:31
 #: templates/committees/committeemeeting_detail.html:57
 #: templates/committees/committeemeeting_detail.html:88
 #: templates/include/vote_list.html:8
@@ -1897,6 +1898,11 @@ msgstr "חיפוש לפי תאריך"
 #, python-format
 msgid "%(count)s Committee meetings tagged <a href=\"%(tag_url)s\">%(tag)s</a>"
 msgstr "%(count)s ישיבות וועדה בנושא <a href=\"%(tag_url)s\">%(tag)s</a>"
+
+#: templates/committees/committeemeeting_list_by_tag.html:22
+#, python-format
+msgid "MKs attendance in committee meetings related to %(tag)s"
+msgstr "נוכחות חברי הכנסת בישיבות וועדה בנושא %(tag)s"
 
 #: templates/committees/delete_topic.html:4
 msgid "Remove a topic"
