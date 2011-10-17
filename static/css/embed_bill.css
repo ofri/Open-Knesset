@@ -12,17 +12,17 @@ a{
 	color: #0080ff;
 }
 
-#title a {
+.title a {
     text-decoration: none;
 }
 
-#header,
-#graph,
-#footer{
+.header,
+.graph,
+.footer{
     max-width: 400px;
     width: 100%;
 }
-#header{
+.header{
     background: #FAFAFC;
     overflow: hidden;
     position: absolute;
@@ -31,7 +31,7 @@ a{
     top:0;
 }
 
-#explanation {
+.explanation {
     overflow: auto;
     max-height: 140px;
 }
@@ -48,7 +48,7 @@ a{
     height: 70px;
 }
 
-	#details{
+	.details{
 		margin: 10px 0 0 120px;
     	padding: 0 10px;
 		border-left: 1px dotted #cccccc;
@@ -70,10 +70,10 @@ a{
 			height: auto;
 			overflow: auto;
 		}
-		#excerpt{
+		.excerpt{
 			margin: 18px 0; 
 		}
-			#excerpt p{
+			.excerpt p{
 				margin: 0 0 10px;
 			}
 			.tglelps {
@@ -82,16 +82,16 @@ a{
 			.elpsd {
 			    display: none;
 			}
-			#external-links a{
+			.external-links a{
 				display: block;
 				font-size: 13px;
 				padding-right: 20px;
 				line-height: 1.4em;
 			}
-			#external-links a.oknesset-resource{
+			.external-links a.oknesset-resource{
 				background: url(../img/oknesset_favicon.png) right no-repeat;
 			}
-			#external-links a.knesset-resource{
+			.external-links a.knesset-resource{
 				background: url(../img/knesset_favicon.png) right no-repeat;
 			}
 			
@@ -110,7 +110,7 @@ a{
 		    overflow: hidden;
 		}
 		
-		#header .status{
+		.header .status{
 			bottom: 10px;
 			top: auto;
 			left: -100px;
@@ -124,7 +124,7 @@ a{
 			background: url(../img/embed_failed.png) no-repeat;
 		}
 		
-	#header .pms{
+	.header .pms{
 		margin: 10px;
 		position: absolute;
 		top: 0;
@@ -227,24 +227,24 @@ a{
 				background: url(../img/embed_arrow_up.png) no-repeat;
 			}
 
-#gov-position{
+.gov-position{
 	display: none;
 }
-#graph{
+.graph{
 	margin-top: 60px;
 	position: relative;
 }
-	#thedrill{
+	.thedrill{
 		display: none;
 	}
-	ul#steps{
+	ul.steps{
 		margin: 0;
 		padding: 0;
 	    overflow: hidden;
 		list-style-type: none;
 		width: 100%;
 	}
-		ul#steps li{
+		ul.steps li{
 			background: #eeeff5;
 			/* max-width: 60px; */
 			width: 12.5%;
@@ -255,53 +255,53 @@ a{
 			padding-top: 40px;
 			position: relative;
 		}
-		ul#steps li#summoned-1,
-		ul#steps li#summoned-2{
+		ul.steps li.summoned-1,
+		ul.steps li.summoned-2{
 		  display: none;
 		}
-		ul#steps li:hover{
+		ul.steps li:hover{
 			background-image: url(../img/embed_hover.png);
 		}
-		ul#steps li.current{
+		ul.steps li.current{
 			/*background-image: url(../img/embed_step_shadow.png);*/
 			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 		}
-		ul#steps li.odd{
+		ul.steps li.odd{
 			background-color: #f5f5f9;
 		}
-		ul#steps li.passed{
+		ul.steps li.passed{
 			background-color: #e6eee6;
 		}
-		ul#steps li.odd.passed{
+		ul.steps li.odd.passed{
 			background-color: #d6e3d6;
 		}
-		ul#steps li.failed{
+		ul.steps li.failed{
 			background-color: #f8ded7;
 		}
-		ul#steps li.odd.failed{
+		ul.steps li.odd.failed{
 			background-color: #f4c8bd;
 		}
-			ul#steps li div.step{
+			ul.steps li div.step{
 				height: 86px;
 			}
-			ul#steps li.passed div.step{
+			ul.steps li.passed div.step{
 				background: url(../img/embed_line_passed.png) bottom repeat-x;
 			}
-			ul#steps li#initiated div.step{
+			ul.steps li.initiated div.step{
 				background-position: bottom left;
 				background-repeat: no-repeat;
 			}
-			ul#steps li#passed div.step{
+			ul.steps li.accepted div.step{
 				background-position: bottom right;
 				background-repeat: no-repeat;
 			}
-			ul#steps li.pending.current div.step{
+			ul.steps li.pending.current div.step{
 				background: url(../img/embed_line_pending.png) bottom right no-repeat;
 			}
-			ul#steps li.failed.current div.step{
+			ul.steps li.failed.current div.step{
 				background: url(../img/embed_line_failed.png) bottom right no-repeat;
 			}
-			ul#steps li a{
+			ul.steps li a{
 			    display: none;
 			    width: 20px;
 			    height: 20px;
@@ -309,25 +309,25 @@ a{
 			    text-indent: -30000px;
 			    text-decoration: none;
 			}
-			ul#steps li:hover a{
+			ul.steps li:hover a{
 					display: block;
 				}
-				ul#steps li a.link{
+				ul.steps li a.link{
 					background: url(../img/embed_link.png);
 				}
-				ul#steps li a.info{
+				ul.steps li a.info{
 					background: url(../img/embed_info.png);
 				}
-				ul#steps li.pending a{
+				ul.steps li.pending a{
 					background-position: 0 -20px;
 				}
-				ul#steps li.failed a{
+				ul.steps li.failed a{
 					background-position: 0 -40px;
 				}
-				ul#steps li a:hover{
+				ul.steps li a:hover{
 					background-position: 0 bottom;
 				}
-				ul#steps li span.date{
+				ul.steps li span.date{
 					display: block;
 					position: absolute;
 					bottom: 0;
@@ -339,16 +339,16 @@ a{
 					color: #808080;
 					opacity: 0.5;
 				}
-				ul#steps li.passed span{
+				ul.steps li.passed span{
 					color: #43873a;
 				}
-				ul#steps li.failed span{
+				ul.steps li.failed span{
 					color: #b44630;
 				}
-				ul#steps li:hover span.date{
+				ul.steps li:hover span.date{
 					opacity: 1;
 				}
-				ul#steps li .icon{
+				ul.steps li .icon{
 					position: absolute;
 					top: 100px;
 					width: 100%;
@@ -358,34 +358,34 @@ a{
 					z-index: 1;
 					display: block;
 				}
-				ul#steps li#initiated .icon{
+				ul.steps li.initiated .icon{
 					background-image: url(../img/embed_icons_initiated.png);
 				}
-				ul#steps li#pre-vote .icon{
+				ul.steps li.pre-vote .icon{
 					background-image: url(../img/embed_icons_pre-vote.png);
 				}
-				ul#steps li#committee-1 .icon{
+				ul.steps li.committee-1 .icon{
 					background-image: url(../img/embed_icons_committee.png);
 				}
-				ul#steps li#vote-1 .icon{
+				ul.steps li.vote-1 .icon{
 					background-image: url(../img/embed_icons_vote-1.png);
 				}
-				ul#steps li#committee-2 .icon{
+				ul.steps li.committee-2 .icon{
 					background-image: url(../img/embed_icons_committee.png);
 				}
-				ul#steps li#vote-2 .icon{
+				ul.steps li.vote-2 .icon{
 					background-image: url(../img/embed_icons_vote-2.png);
 				}
-				ul#steps li#vote-3 .icon{
+				ul.steps li.vote-3 .icon{
 					background-image: url(../img/embed_icons_vote-3.png);
 				}
-				ul#steps li#passed .icon{
+				ul.steps li.accepted .icon{
 					background-image: url(../img/embed_icons_passed.png);
 				}
-				ul#steps li.passed .icon{
+				ul.steps li.passed .icon{
 					background-position: center center;
 				}
-				ul#steps li.failed .icon{
+				ul.steps li.failed .icon{
 					background-position: bottom center;
 				}
 				ul li .tooltip{
@@ -428,24 +428,24 @@ a{
 					display: block;
 				}
 				
-				ul#steps li .tooltip-score{
+				ul.steps li .tooltip-score{
 				    display: none;
 				    position: absolute;
 				    z-index: 15;
 				}
-				ul#steps li.voted:hover .tooltip-score {
+				ul.steps li.voted:hover .tooltip-score {
 					display: block;
 				}
-				ul#steps li.voted .step{
+				ul.steps li.voted .step{
 					margin-top: -30px;
 					padding-bottom: 30px;
 				}
-				ul#steps li.voted .tooltip-score{
+				ul.steps li.voted .tooltip-score{
 					top: 75px;
 					width: 300%;
 					left: -100%;
 				}
-				ul#steps li.voted .tooltip-score span{
+				ul.steps li.voted .tooltip-score span{
 					background-image: url(../img/embed_scale.png);
 					background-repeat:no-repeat;
 					color: #fff;
@@ -455,22 +455,22 @@ a{
 					height: 19px;
 					padding: 11px 0 0;
 				}
-				ul#steps li.voted .tooltip-score .scale{
+				ul.steps li.voted .tooltip-score .scale{
 					width: 120px;
 					text-align: center;
 					overflow: hidden;
 					margin: 0 auto;
 				}
-				ul#steps li.voted .tooltip-score span.for{
+				ul.steps li.voted .tooltip-score span.for{
 					background-position: top;
 					width: 100%;
 					position: static;
 				}
-				ul#steps li.voted .tooltip-score span.against{
+				ul.steps li.voted .tooltip-score span.against{
 					background-position: right bottom;
     				z-index: 10;
 				}
-				ul#steps li.voted .tooltip-score span.balance{
+				ul.steps li.voted .tooltip-score span.balance{
 				    background: none repeat scroll 0 0 transparent;
 				    position: absolute;
 				    text-align: center;
@@ -479,11 +479,11 @@ a{
 				    z-index: 20;
 				    padding-top:3px;
 				}
-		ul#steps li.focused{
+		ul.steps li.focused{
 			width: 80%;
 		}
 				
-#footer{
+.footer{
 	position: relative;
 	bottom: 0;
     background: #EEEFF5;
@@ -491,32 +491,32 @@ a{
     font-size: 11px;
 	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
 }
-	#footer,
-	#footer a{
+	.footer,
+	.footer a{
 		color: #999;
 	}
-	#footer a:hover{
+	.footer a:hover{
 		color: #666;
 	}
-	#footer #credit{
+	.footer .credit{
 		float: right;
 		padding: 1px 5px;
 	}
-	#footer #share{
+	.footer .share{
 		float: left;
 		padding: 1px 5px;
 	}
 
-	#footer #share a{
+	.footer .share a{
 		background: url(../img/embed_link.png) right -20px no-repeat;
 		padding: 2px 20px 2px 0;
 		margin-right: 3px;
 		text-decoration: none;
 	}
-	#footer #share a.embed{
+	.footer .share a.embed{
 		background-image: url(../img/embed_embed.png);
 	}
-	#footer #share a:hover{
+	.footer .share a:hover{
 		background-position: right -60px;
 	}
 
@@ -561,43 +561,43 @@ a{
  * Drill down
  */
 
-div#graph.drilling {
+div.graph.drilling {
 	overflow: hidden;
 	width: 100%;
 }
 
-	div#graph.drilling #thedrill{
+	div.graph.drilling .thedrill{
 		display: block;
 	}
 
-	div#graph.drilling .status,
-	div#graph.drilling ul#steps li .link,
-	div#graph.drilling ul#steps li .info,
-	div#graph.drilling ul#steps li.voted .tooltip-score,
-	div#graph.drilling ul#steps li .date {
+	div.graph.drilling .status,
+	div.graph.drilling ul.steps li .link,
+	div.graph.drilling ul.steps li .info,
+	div.graph.drilling ul.steps li.voted .tooltip-score,
+	div.graph.drilling ul.steps li .date {
 		display: none;
 	}
 
-	div#graph.drilling ul#steps{
+	div.graph.drilling ul.steps{
 		width: 760%;
 		margin-right: -92.5%; /* this property sets the focus */
 	}
 	
-		div#graph.drilling ul#steps li.drilled {
+		div.graph.drilling ul.steps li.drilled {
 			background: url("../img/embed_hover.png") #E6EEE6; 
 		}
 	
-		div#graph.drilling ul#steps li .icon {
+		div.graph.drilling ul.steps li .icon {
 			top:20px;
 			right: 10px;
 			width: 30px;
 		}
 	
-		div#graph.drilling ul#steps li div.step {
+		div.graph.drilling ul.steps li div.step {
 		    height: 6px;
 		}
 	
-		div#graph.drilling ul#steps li div.tooltip {
+		div.graph.drilling ul.steps li div.tooltip {
 	        display: block;
 		    left: auto;
 		    right: 50px;
@@ -606,13 +606,13 @@ div#graph.drilling {
 		    width: 90%;
 		}
 			
-			div#graph.drilling ul#steps li div.tooltip span {
+			div.graph.drilling ul.steps li div.tooltip span {
 		        background: url("../img/embed_hover.png") 0 -20px #E6EEE6;
 		        font-size: 14px;
 		        font-weight: bold;
 			}
 
-	#thedrill{
+	.thedrill{
 	    margin: 0 5%;
 	    position: absolute;
 	    top: 50px;
@@ -669,40 +669,40 @@ div#graph.drilling {
 				.failed .pill-nav li.active{background-position: left -200px}
 				.failed .pill-nav li.active a{background-position: right -220px}
 				
-		#thedrill-details,
-		#thedrill-meaning,
-		#thedrill-action{
+		.thedrill-details,
+		.thedrill-meaning,
+		.thedrill-action{
 			display: none;
 		}
 				
-		#thedrill-details{
+		.thedrill-details{
 			display: block;
 		}
 				
-		#thedrill-details{
+		.thedrill-details{
 			width: 100%;
 		}
-		#thedrill-details .for,
-		#thedrill-details .against{
+		.thedrill-details .for,
+		.thedrill-details .against{
 			width: 50%;
 			float: right;
 			color: #2a5525;
 		}
-		#thedrill-details .against{
+		.thedrill-details .against{
 			text-align: left;
 			color: #8a0505;
 		}
-		#thedrill .pms{
+		.thedrill .pms{
 			float: right;
 		}
-		#thedrill .pms ul{
+		.thedrill .pms ul{
 			width: auto;
 			overflow: visible;
 			display: inline;
 			margin: 3px;
 			background: #43873a;
 		}
-		#thedrill .pms li a{
+		.thedrill .pms li a{
 			border-color: #43873a;
 		}
 		.supporting{
@@ -714,13 +714,13 @@ div#graph.drilling {
 		.opposing{
 			background: #caa8a2;
 		}
-		#thedrill .opposing ul,
+		.thedrill .opposing ul,
 		.opposing li{
 			float: left;
 			display: inline;
 			background: #943a1f;
 		}
-		#thedrill .opposing li a{
+		.thedrill .opposing li a{
 			border-color: #943a1f;
 		}
 		.opposing li{
