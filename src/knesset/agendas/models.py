@@ -17,10 +17,10 @@ AGENDAVOTE_SCORE_CHOICES = (
     (1.0, _("Complies fully")),
 )
 MEETING_SCORE_CHOICES = (
-    (0.0, _("Negligible")),
-    (0.3, _("Marginal")),
-    (0.6, _("Important")),
-    (1.0, _("Critical")),
+    (0.0, _("Marginal Importance")),
+    (0.3, _("Medium Importance")),
+    (0.6, _("High Importance")),
+    (1.0, _("Very High Importance")),
 )
 
 class AgendaVote(models.Model):

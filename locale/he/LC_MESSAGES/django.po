@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-12 03:40+0200\n"
-"PO-Revision-Date: 2011-10-12 03:42+0200\n"
+"POT-Creation-Date: 2011-10-17 18:26+0200\n"
+"PO-Revision-Date: 2011-10-17 18:27+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -102,7 +102,6 @@ msgid "Cross reference"
 msgstr "ראה גם"
 
 #: settings.py:188
-#: agendas/models.py:22
 msgid "Important"
 msgstr "חשוב"
 
@@ -220,16 +219,20 @@ msgid "Complies fully"
 msgstr "תמיכה מלאה"
 
 #: agendas/models.py:20
-msgid "Negligible"
-msgstr "זניח"
+msgid "Marginal Importance"
+msgstr "חשיבות נמוכה"
 
 #: agendas/models.py:21
-msgid "Marginal"
-msgstr "שולי"
+msgid "Medium Importance"
+msgstr "חשיבות בינונית"
+
+#: agendas/models.py:22
+msgid "High Importance"
+msgstr "חשיבות רבה"
 
 #: agendas/models.py:23
-msgid "Critical"
-msgstr "קריטי"
+msgid "Very High Importance"
+msgstr "חשיבות רבה מאוד"
 
 #: agendas/models.py:118
 msgid "Agenda"
@@ -3048,6 +3051,15 @@ msgstr "יומי"
 #: user/models.py:21
 msgid "Weekly"
 msgstr "שבועי"
+
+#~ msgid "Negligible"
+#~ msgstr "זניח"
+
+#~ msgid "Marginal"
+#~ msgstr "שולי"
+
+#~ msgid "Critical"
+#~ msgstr "קריטי"
 
 #~ msgid ""
 #~ "\n"
