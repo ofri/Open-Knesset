@@ -12,6 +12,7 @@ from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
+from knesset.links.models import Link
 from tagging.models import Tag, TaggedItem
 from knesset.committees.models import CommitteeMeeting
 import math
@@ -36,15 +37,16 @@ class MemberHandler(BaseHandler, HandlerExtensions):
               'discipline','average_weekly_presence',
               'committee_meetings_per_month','bills',
               'bills_proposed','bills_passed_pre_vote',
-              'bills_passed_first_vote','bills_approved', 
-              'roles', 'average_weekly_presence_rank', 'committees', 
+              'bills_passed_first_vote','bills_approved',
+              'roles', 'average_weekly_presence_rank', 'committees',
               'is_current', 'start_date', 'end_date',
-              'phone', 'fax', 'email', 'website', 'family_status', 'number_of_children',
-              'date_of_birth', 'place_of_birth', 'date_of_death', 'year_of_aliyah',
-              'blog', 'place_of_residence', 'area_of_residence', 'place_of_residence_lat', 
+              'phone', 'fax', 'email', 'family_status', 'number_of_children',
+              'date_of_birth', 'place_of_birth', 'date_of_death',
+              'year_of_aliyah', 'place_of_residence',
+              'area_of_residence', 'place_of_residence_lat',
               'place_of_residence_lon', 'residence_centrality',
-              'residence_economy', 'user', 'current_role_descriptions',)
-    
+              'residence_economy', 'current_role_descriptions', 'links')
+
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -136,95 +138,16 @@ class MemberHandler(BaseHandler, HandlerExtensions):
     def committees (self, member):
         temp_list = member.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
         return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
-    
-    @classmethod
-    def is_current (self, member):
-        return member.is_current
 
     @classmethod
-    def start_date (self, member):
-        return member.start_date
+    def links(cls, member):
+        ct = ContentType.objects.get_for_model(Member)
+        temp_list = Link.objects.filter(active=True,
+                                        content_type=ct,
+                                        object_pk=member.id).values('title',
+                                                                    'url')
+        return (map(lambda item: (item['title'], item['url']), temp_list))
 
-    @classmethod
-    def end_date (self, member):
-        return member.end_date
-
-    @classmethod
-    def phone (self, member):
-        return member.phone
-
-    @classmethod
-    def fax (self, member):
-        return member.fax
-
-    @classmethod
-    def email (self, member):
-        return member.email
-
-    @classmethod
-    def website (self, member):
-        return member.website
-
-    @classmethod
-    def family_status (self, member):
-        return member.family_status
-
-    @classmethod
-    def number_of_children (self, member):
-        return member.number_of_children
-
-    @classmethod
-    def date_of_birth (self, member):
-        return member.date_of_birth
-    
-    @classmethod
-    def place_of_birth (self, member):
-        return member.place_of_birth
-    
-    @classmethod
-    def date_of_death (self, member):
-        return member.date_of_death
-    
-    @classmethod
-    def year_of_aliyah (self, member):
-        return member.year_of_aliyah
-    
-    @classmethod
-    def blog (self, member):
-        return member.blog
-    
-    @classmethod
-    def place_of_residence (self, member):
-        return member.place_of_residence
-    
-    @classmethod
-    def area_of_residence (self, member):
-        return member.area_of_residence
-
-    @classmethod
-    def place_of_residence_lat (self, member):
-        return member.place_of_residence_lat
-    
-    @classmethod
-    def place_of_residence_lon (self, member):
-        return member.place_of_residence_lon
-    
-    @classmethod
-    def residence_centrality (self, member):
-        return member.residence_centrality
-    
-    @classmethod
-    def residence_economy (self, member):
-        return member.residence_economy
-    
-    @classmethod
-    def user (self, member):
-        return member.user
-    
-    @classmethod
-    def current_role_descriptions (self, member):
-        return member.current_role_descriptions
-    
     @classmethod
     def member (self, member):
         qs = self.qs.filter(member=member)
