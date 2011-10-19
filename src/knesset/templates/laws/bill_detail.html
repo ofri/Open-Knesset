@@ -5,8 +5,10 @@
 {% load mks %}
 {% block extrahead %}
 <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
 <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -23,6 +25,9 @@
         <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
     <h1>{% bill_full_name object %}</h1>
+    <div style="width:400px; margin:0 auto;">
+    {% bill_inabox object %}
+    </div>
     {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
     {% trans 'stage date' %}: {{ object.stage_date }}<br>
     {% for proposer in object.proposers.all %}

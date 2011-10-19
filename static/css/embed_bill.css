@@ -6,6 +6,7 @@
   font-family: Arial, Helvetica, sans-serif;
   color: #666;
   font-size: 15px;
+  position:relative;
   /*
  * UI-DIALOG
  */
@@ -17,21 +18,22 @@
 }
 .billbox a {
   color: #0080ff;
+  padding: 0;
 }
 .billbox .title a {
   text-decoration: none;
 }
-.billbox .header, .billbox .graph, .billbox .footer {
-  max-width: 400px;
-  width: 100%;
-}
+.billbox .header:hover { height: 80%; }
+.billbox .header:hover .pms ul { overflow:visible; width: 100px; }
+.billbox .header:hover .pms .more { display: none;}
 .billbox .header {
   background: #FAFAFC;
   overflow: hidden;
   position: absolute;
+  top:0;
   z-index: 20;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
-  top: 0;
+  width: 100%;
 }
 .billbox .explanation {
   overflow: auto;
@@ -46,7 +48,7 @@
 .billbox .header-small {
   height: 70px;
 }
-.billbox .details {
+.billbox .billbox-details {
   margin: 10px 0 0 120px;
   padding: 0 10px;
   border-left: 1px dotted #cccccc;
@@ -223,7 +225,7 @@
   display: none;
 }
 .billbox .graph {
-  margin-top: 60px;
+  padding-top: 60px;
   position: relative;
 }
 .billbox .thedrill {
