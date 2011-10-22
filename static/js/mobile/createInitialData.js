@@ -17,13 +17,13 @@ var OKnessetParser = new function(){
 	    Ext.each(members, function(value, index){
 	        // TODO - do not add memebers that are not "current"
 	        if (typeof value == "undefined") {
-	            console.log("member index " + index + " is undefined.");
+	            // console.log("** member index " + index + " is undefined.");
 	            return;
 	        }
 
 			// Filter non active members
 			if (value.roles.indexOf('לשעבר') != -1){
-				console.log("excluding " + value.name);
+				// console.log("** excluding " + value.name);
 				return;
 			}
 
@@ -60,7 +60,7 @@ var OKnessetParser = new function(){
 
 		// sort members
 		Ext.iterate(partyMap, function(key, value) {
-			console.log("party id " + value.id + " for member sort exists? " + (typeof sortedMembers[value.id]));
+			// console.log("** party id " + value.id + " for member sort exists? " + (typeof sortedMembers[value.id]));
 			if (typeof sortedMembers[value.id] != "undefined") {
 				value.members.sort(function(member1, member2){
 					return compareMembers(member1, member2, value.id);
@@ -69,7 +69,7 @@ var OKnessetParser = new function(){
 		});
 
 		Ext.each(slimData, function(value, index) {
-			console.log("slim party id " + value.id + " for member sort exists? " + (typeof sortedMembers[value.id]));
+			// console.log("** slim party id " + value.id + " for member sort exists? " + (typeof sortedMembers[value.id]));
 			if (typeof sortedMembers[value.id] != "undefined") {
 				value.members.sort(function(member1, member2){
 					return compareMembers(member1, member2, value.id);
@@ -99,12 +99,12 @@ var OKnessetParser = new function(){
 			}
 		}
 
-		console.log("!! member " + str + " cannot be found in sortedMembers array");
+		// console.log("** member " + str + " cannot be found in sortedMembers array");
 		return -1;
 	}
 
 	function onMemberComplete(options, success, response){
-	    console.log("onMemeberComplete " + success);
+	    // console.log("** onMemeberComplete " + success);
 	}
 
 	function onMemberFailure(result, request){
@@ -112,7 +112,7 @@ var OKnessetParser = new function(){
 	}
 
 	function storeMembers(result, request){
-	    console.log("storeMembers");
+	    // console.log("** storeMembers");
 	    parseMembers(JSON.parse(result.responseText));
 
 
@@ -141,7 +141,7 @@ var OKnessetParser = new function(){
 	}
 
 	function onPartyComplete(options, success, response){
-	    console.log("onPartyComplete " + success);
+	    // console.log("** onPartyComplete " + success);
 	}
 
 	function onPartyFailure(result, request){
@@ -149,7 +149,7 @@ var OKnessetParser = new function(){
 	}
 
 	function storeParties( result, request){
-	    console.log("storeParties");
+	    // console.log("** storeParties");
 	    parseParties(JSON.parse(result.responseText));
 
 		Ext.Ajax.request({
