@@ -12,8 +12,9 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.template import RequestContext
 from django.conf import settings
-from tagging.models import TaggedItem
+from tagging.models import TaggedItem, Tag
 from tagging.utils import get_tag
+import tagging
 from actstream import action
 from knesset.hashnav import ListView, DetailView, method_decorator
 from knesset.laws.models import Bill, PrivateProposal
@@ -38,7 +39,11 @@ class CommitteeListView(generic.ListView):
         context = super(CommitteeListView, self).get_context_data(**kwargs)
         context["topics"] = Topic.objects.summary()[:10]
         context["rating_range"] = range(7)
+        context['tags_cloud'] = Tag.objects.cloud_for_model(CommitteeMeeting)
+
         return context
+
+
 
 class CommitteeDetailView(DetailView):
 
@@ -282,6 +287,7 @@ def meeting_list_by_date(request, *args, **kwargs):
     return render_to_response("committees/committeemeeting_list.html",
         context, context_instance=RequestContext(request))
 
+
 def meeting_tag(request, tag):
     tag_instance = get_tag(tag)
     if tag_instance is None:
@@ -292,6 +298,18 @@ def meeting_tag(request, tag):
     extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
     qs = CommitteeMeeting
     queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+    mks = [cm.mks_attended.all() for cm in
+           TaggedItem.objects.get_by_model(CommitteeMeeting, tag_instance)]
+    d = {}
+    for mk in mks:
+        for p in mk:
+            d[p] = d.get(p,0)+1
+    # now d is a dict: MK -> number of meetings in this tag
+    mks = d.keys()
+    for mk in mks:
+        mk.count = d[mk]
+    mks = tagging.utils.calculate_cloud(mks)
+    extra_context['members'] = mks
     return generic.list_detail.object_list(request, queryset,
         template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
 

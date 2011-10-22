@@ -873,6 +873,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     -webkit-border-radius:10px;
     -moz-border-radius:10px;
     border-radius:10px;
+    min-height:20px;
 }
 #content-main .triangle-border.left {
     margin-left:30px;

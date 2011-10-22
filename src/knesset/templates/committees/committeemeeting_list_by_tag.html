@@ -18,6 +18,15 @@
             {% trans "No results found" %}
         {% endfor %}
     </div>
+    {% if members %}
+        <div><h2>{% blocktrans %}MKs attendance in committee meetings related to {{ tag }}{% endblocktrans %}</h2>
+            <div class="tags cloud">
+               {% for mk in members %}
+                   <a href="{% url member-detail pk=mk.id %}" class="level{{ mk.font_size }}">{{ mk }}</a>
+               {% endfor %}
+            </div>
+        </div>
+    {% endif %}
     {% if paginator %}
         {% pagination page_obj paginator request %}
     {% endif %}

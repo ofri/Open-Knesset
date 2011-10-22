@@ -12,6 +12,7 @@ from knesset.mks.models import Member, Party, Membership
 from knesset.laws.models import Vote, VoteAction, Bill, KnessetProposal, GovProposal
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
+from knesset.links.models import Link
 from tagging.models import Tag, TaggedItem
 from knesset.committees.models import CommitteeMeeting
 import math
@@ -36,9 +37,16 @@ class MemberHandler(BaseHandler, HandlerExtensions):
               'discipline','average_weekly_presence',
               'committee_meetings_per_month','bills',
               'bills_proposed','bills_passed_pre_vote',
-              'bills_passed_first_vote','bills_approved', 
-              'roles', 'average_weekly_presence_rank', 'committees', 
-              'is_current', )
+              'bills_passed_first_vote','bills_approved',
+              'roles', 'average_weekly_presence_rank', 'committees',
+              'is_current', 'start_date', 'end_date',
+              'phone', 'fax', 'email', 'family_status', 'number_of_children',
+              'date_of_birth', 'place_of_birth', 'date_of_death',
+              'year_of_aliyah', 'place_of_residence',
+              'area_of_residence', 'place_of_residence_lat',
+              'place_of_residence_lon', 'residence_centrality',
+              'residence_economy', 'current_role_descriptions', 'links')
+
     allowed_methods = ('GET')
     model = Member
     qs = Member.objects.all()
@@ -130,6 +138,15 @@ class MemberHandler(BaseHandler, HandlerExtensions):
     def committees (self, member):
         temp_list = member.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
         return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
+
+    @classmethod
+    def links(cls, member):
+        ct = ContentType.objects.get_for_model(Member)
+        temp_list = Link.objects.filter(active=True,
+                                        content_type=ct,
+                                        object_pk=member.id).values('title',
+                                                                    'url')
+        return (map(lambda item: (item['title'], item['url']), temp_list))
 
     @classmethod
     def member (self, member):

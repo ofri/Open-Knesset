@@ -5,6 +5,7 @@
 {% load annotatetags %}
 {% load hashtag %}
 {% load mks %}
+{% load agendas %}
 {% load hitcount_tags %}
 {% load pagination_tags %}
 
@@ -99,6 +100,7 @@
     {% endif %}
     </div>
 
+    {% agendas_for user object 'committeemeeting' %}
 
   {% with object.parts.list as parts %}
     {% get_annotations_for parts as annotation_dict %}
