@@ -1,4 +1,5 @@
 import random
+from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext as _
@@ -9,15 +10,16 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, \
     HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-
+import tagging
 from actstream import action
 from knesset.mks.models import Member
 from knesset.laws.models import Vote,Bill
-from knesset.committees.models import Topic
+from knesset.committees.models import Topic, CommitteeMeeting
 from tagging.models import Tag, TaggedItem
 from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult
@@ -135,12 +137,7 @@ def _add_tag_to_object(user, app, object_type, object_id, tag):
     ctype = ContentType.objects.get_by_natural_key(app, object_type)
     (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
     action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
-    if object_type=='bill': # TODO: when we have generic tag pages, clean this up.
-        url = reverse('bill-tag',args=[tag])
-    elif object_type=='vote':
-        url = reverse('vote-tag',args=[tag])
-    else:
-        url = reverse('committeemeeting-tag', args=[tag])
+    url = reverse('tag-detail', kwargs={'slug':tag.name})
     return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
 
 @login_required
@@ -192,5 +189,55 @@ def create_tag_and_add_to_item(request, app, object_type, object_id):
         return _add_tag_to_object(request.user, app, object_type, object_id, tag)
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def calculate_cloud_from_models(*args):
+    from tagging.models import Tag 
+    cloud = Tag._default_manager.cloud_for_model(args[0])
+    for model in args[1:]:
+        for tag in Tag._default_manager.cloud_for_model(model):
+            if tag in cloud:
+                cloud[cloud.index(tag)].count+=tag.count
+            else:
+                cloud.append(tag)
+    return tagging.utils.calculate_cloud(cloud)
+
+class TagList(ListView):
+    """Tags index view"""
+
+    model = Tag
+    template_name = 'auxiliary/tag_list.html'
+
+    def get_queryset(self):
+        return Tag.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(TagList, self).get_context_data(**kwargs)
+        tags_cloud = calculate_cloud_from_models(Vote,Bill,CommitteeMeeting)
+        context['tags_cloud'] = tags_cloud
+        return context
+
+class TagDetail(DetailView):
+    """Tags index view"""
+
+    model = Tag
+    template_name = 'auxiliary/tag_detail.html'
+    slug_field = 'name'
+    def get_context_data(self, **kwargs):
+        context = super(TagDetail, self).get_context_data(**kwargs)
+        tag = context['object']
+        bills_ct = ContentType.objects.get_for_model(Bill)
+        bills = [ti.object for ti in
+                    TaggedItem.objects.filter(tag=tag, content_type=bills_ct)]
+        context['bills'] = bills
+        votes_ct = ContentType.objects.get_for_model(Vote)
+        votes = [ti.object for ti in
+                    TaggedItem.objects.filter(tag=tag, content_type=votes_ct)]
+        context['votes'] = votes
+        cm_ct = ContentType.objects.get_for_model(CommitteeMeeting)
+        cms = [ti.object for ti in
+                    TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
+        context['cms'] = cms
+        return context
 
 

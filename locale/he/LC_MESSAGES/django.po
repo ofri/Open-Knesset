@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-17 21:33+0200\n"
-"PO-Revision-Date: 2011-10-17 21:34+0200\n"
+"POT-Creation-Date: 2011-10-24 23:12+0200\n"
+"PO-Revision-Date: 2011-10-24 23:13+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -268,17 +268,17 @@ msgstr "אין"
 msgid "Analysis of %(member)s votes by agenda %(agenda)s"
 msgstr "ניתוח ההצבעות של %(member)s לפי אג'נדה %(agenda)s"
 
-#: auxiliary/views.py:32
+#: auxiliary/views.py:34
 msgid "Help"
 msgstr "עזרה"
 
-#: auxiliary/views.py:48
+#: auxiliary/views.py:50
 #: templates/help_page.he.html:5
 #: templates/main.he.html:5
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:75
+#: auxiliary/views.py:77
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -507,6 +507,11 @@ msgid "Vote types"
 msgstr "סוגי הצבעות"
 
 #: laws/forms.py:34
+#: templates/base.html:114
+#: templates/auxiliary/tag_list.html:3
+#: templates/auxiliary/tag_list.html:4
+#: templates/auxiliary/tag_list.html:5
+#: templates/auxiliary/tag_list.html:10
 #: templates/committees/committee_list.html:31
 #: templates/committees/committeemeeting_detail.html:57
 #: templates/committees/committeemeeting_detail.html:88
@@ -1092,7 +1097,7 @@ msgstr "קבוצת הדיון נמצאת "
 #: templates/about.html:3
 #: templates/about.html.py:4
 #: templates/about.html:6
-#: templates/base.html:115
+#: templates/base.html:116
 msgid "About"
 msgstr "אודות"
 
@@ -1105,6 +1110,8 @@ msgstr "אודות"
 #: templates/agendas/agenda_detail_edit.html:9
 #: templates/agendas/agenda_list.html:9
 #: templates/agendas/mk_agenda_detail.html:12
+#: templates/auxiliary/tag_detail.html:6
+#: templates/auxiliary/tag_list.html:5
 #: templates/committees/committee_detail.html:16
 #: templates/committees/committee_list.html:6
 #: templates/committees/committeemeeting_detail.html:14
@@ -1156,7 +1163,7 @@ msgstr "כניסה לחשבון"
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:114
+#: templates/base.html:115
 #: templates/planet/base.html:12
 #: templates/planet/posts/list.html:4
 #: templates/planet/tags/detail.html:4
@@ -1164,7 +1171,7 @@ msgstr "ראשי"
 msgid "Posts"
 msgstr "מאמרים"
 
-#: templates/base.html:156
+#: templates/base.html:157
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
@@ -1503,6 +1510,7 @@ msgstr "הצבעות משויכות"
 #: templates/agendas/agenda_detail.html:147
 #: templates/agendas/agenda_detail.html:172
 #: templates/agendas/mk_agenda_detail.html:46
+#: templates/auxiliary/tag_detail.html:18
 #: templates/committees/committeemeeting_list_by_tag.html:18
 #: templates/laws/bill_list.html:29
 #: templates/laws/bill_list_by_tag.html:24
@@ -1588,6 +1596,26 @@ msgstr "מדד ההתאמה לאג'נדה"
 #: templates/agendas/mk_agenda_detail.html:25
 msgid "Score details"
 msgstr "פירוט ההצבעות"
+
+#: templates/auxiliary/tag_detail.html:10
+#, python-format
+msgid "%(count)s Bills"
+msgstr "%(count)s הצעות חוק"
+
+#: templates/auxiliary/tag_detail.html:22
+#, python-format
+msgid "%(count)s Votes"
+msgstr "%(count)s הצבעות"
+
+#: templates/auxiliary/tag_detail.html:30
+#: templates/auxiliary/tag_detail.html:42
+msgid "no results found"
+msgstr "לא נמצאו תוצאות"
+
+#: templates/auxiliary/tag_detail.html:34
+#, python-format
+msgid "%(count)s Committee Meetings"
+msgstr "%(count)s ישיבות וועדה"
 
 #: templates/avatar/change.html:3
 #: templates/user/editprofile.html:14

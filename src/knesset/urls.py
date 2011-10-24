@@ -15,9 +15,10 @@ from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.mks.views import get_mk_entry, mk_is_backlinkable
 
-from knesset.auxiliary.views import main, post_annotation, post_details, \
-    RobotsView, AboutView, CommentsView, add_tag_to_object, \
-    remove_tag_from_object, create_tag_and_add_to_item, help_page
+from knesset.auxiliary.views import (main, post_annotation, post_details,
+    RobotsView, AboutView, CommentsView, add_tag_to_object,
+    remove_tag_from_object, create_tag_and_add_to_item, help_page,
+    TagList, TagDetail)
 
 admin.autodiscover()
 
@@ -62,6 +63,8 @@ urlpatterns = patterns('',
      url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
      url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
      url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
+     url(r'^tags/$', TagList.as_view(), name='tags-list'),
+     url(r'^tags/(?P<slug>.*)$', TagDetail.as_view(), name='tag-detail'),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

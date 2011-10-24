@@ -58,7 +58,7 @@
         <div id="tags">
             {% if object.tags %}
                 {% for t in object.tags %}
-                    <a id="tag_{{t.id}}" href="{% url committeemeeting-tag tag=t %}" class="tag">{{ t }}</a>
+                    <a id="tag_{{t.id}}" href="{% url tag-detail slug=t %}" class="tag">{{ t }}</a>
                 {% endfor %}
             {% else %}
                 <span id="no-tags-yet">{% trans "No tags yet" %}</span>
@@ -83,13 +83,12 @@
                 {% endif %}
             </div>
         </div>
-
     {% else %}
         <h3>{% trans "Tags" %}</h3>
         {% if object.tags %}
             <div id="tags">
             {% for t in object.tags %}
-               <a href="{% url committeemeeting-tag tag=t %}" class="tag">{{ t }}</a>
+               <a href="{% url tag-detail slug=t %}" class="tag">{{ t }}</a>
             {% endfor %}
             </div>
         {% else %}
