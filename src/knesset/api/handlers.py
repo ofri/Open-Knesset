@@ -367,7 +367,8 @@ class TagHandler(BaseHandler):
 
         vote_tags = Tag.objects.usage_for_model(Vote)
         bill_tags = Tag.objects.usage_for_model(Bill)
-        all_tags = list(set(vote_tags).union(bill_tags))
+        cm_tags = Tag.objects.usage_for_model(CommitteeMeeting)
+        all_tags = list(set(vote_tags).union(bill_tags).union(cm_tags))
         all_tags.sort(key=attrgetter('name'))
         return all_tags
 
