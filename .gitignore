@@ -15,3 +15,4 @@ develop-eggs/
 *~
 nosetests.xml
 src/knesset/templates/last_build.txt
+static/avatars
