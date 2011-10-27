@@ -444,7 +444,7 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
 
 class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):
     # fields = ('committee__name', 'url', 'date', 'topics', 'protocol_text', 'src_url',
-    fields = ('committee_name', 'url', 'date', 'topics', 'protocol_text', 'src_url',
+    fields = (('committee', ('name', 'url')), 'url', 'date', 'topics', 'protocol_text', 'src_url',
               'mks_attended',
               )
     allowed_methods = ('GET',)
