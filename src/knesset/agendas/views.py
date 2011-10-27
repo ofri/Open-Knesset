@@ -13,8 +13,9 @@ from knesset.laws.models import Vote
 from knesset.mks.models import Member, Party
 from knesset.api.urls import vote_handler
 
-from forms import EditAgendaForm, AddAgendaForm, VoteLinkingFormSet
-from models import Agenda, AgendaVote
+from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
+                   MeetingLinkingFormSet)
+from models import Agenda, AgendaVote, AgendaMeeting
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -223,48 +224,94 @@ def agenda_add_view(request):
 def update_editors_agendas(request):
     if request.method == 'POST':
         vote_id = None
-        vl_formset = VoteLinkingFormSet(request.POST)
+        object_type = request.POST.get('form-0-object_type',None)
+        if object_type=='vote':
+            vl_formset = VoteLinkingFormSet(request.POST)
+        else:
+            vl_formset = MeetingLinkingFormSet(request.POST)
         if vl_formset.is_valid():
-            # TODO: check the user's permission
             for a in vl_formset.cleaned_data:
                 if a:
-                    if a['DELETE']:
-                        try:
-                            vote_id = a['vote_id']
-                            av = AgendaVote.objects.get(
-                                   agenda__id=a['agenda_id'],
-                                   vote__id = a['vote_id'])
-                            av.delete()
-                        except AgendaVote.DoesNotExist:
-                            pass
-                    else: # not delete, so try to create
-                        try:
-                            vote_id = a['vote_id']
-                            print "vote id = %s" % vote_id
-                            av = AgendaVote.objects.get(
-                                   agenda__id=a['agenda_id'],
-                                   vote__id = a['vote_id'])
-                            av.score = a['weight']
-                            av.reasoning = a['reasoning']
-                            av.save()
-                        except AgendaVote.DoesNotExist:
-                            av = AgendaVote(
-                                   agenda_id=int(a['agenda_id']),
-                                   vote_id=int(a['vote_id']),
-                                   score = a['weight'],
-                                   reasoning = a['reasoning'])
-                            av.save()
+                    # Check that the user is an editor of the agenda
+                    # he's trying to edit
+                    try:
+                        agenda = Agenda.objects.get(pk=a['agenda_id'])
+                        if request.user not in agenda.editors.all():
+                            return HttpResponseForbidden()
+                    except Agenda.DoesNotExist:
+                        return HttpResponseForbidden()
+
+                    if a['object_type'] == 'vote':
+                        if a['DELETE']:
+                            try:
+                                object_id = a['vote_id']
+                                av = AgendaVote.objects.get(
+                                       agenda__id=a['agenda_id'],
+                                       vote__id = a['vote_id'])
+                                av.delete()
+                            except AgendaVote.DoesNotExist:
+                                pass
+                        else: # not delete, so try to create
+                            try:
+                                object_id = a['vote_id']
+                                av = AgendaVote.objects.get(
+                                       agenda__id=a['agenda_id'],
+                                       vote__id = a['vote_id'])
+                                av.score = a['weight']
+                                av.reasoning = a['reasoning']
+                                av.save()
+                            except AgendaVote.DoesNotExist:
+                                av = AgendaVote(
+                                       agenda_id=int(a['agenda_id']),
+                                       vote_id=int(a['vote_id']),
+                                       score = a['weight'],
+                                       reasoning = a['reasoning'])
+                                av.save()
+                    if a['object_type'] == 'committeemeeting':
+                        if a['DELETE']:
+                            try:
+                                object_id = a['vote_id']
+                                av = AgendaMeeting.objects.get(
+                                       agenda__id=a['agenda_id'],
+                                       meeting__id = a['vote_id'])
+                                av.delete()
+                            except AgendaMeeting.DoesNotExist:
+                                pass
+                        else: # not delete, so try to create
+                            try:
+                                object_id = a['vote_id']
+                                av = AgendaMeeting.objects.get(
+                                       agenda__id=a['agenda_id'],
+                                       meeting__id = a['vote_id'])
+                                av.score = a['weight']
+                                av.reasoning = a['reasoning']
+                                av.save()
+                            except AgendaMeeting.DoesNotExist:
+                                av = AgendaMeeting(
+                                       agenda_id=int(a['agenda_id']),
+                                       meeting_id=int(a['vote_id']),
+                                       score = a['weight'],
+                                       reasoning = a['reasoning'])
+                                av.save()
                 else:
-                    print "invalid form"
-            if vote_id:
-                return HttpResponseRedirect(reverse('vote-detail', kwargs={'object_id':vote_id}))
-            else:
-                return HttpResponseRedirect(reverse('vote-list'))
+                    logger.info("invalid form")
 
         else:
             # TODO: Error handling: what to do with illeal forms?
-            print "invalid formset"
+            logger.info("invalid formset")
             return HttpResponseRedirect(reverse('vote-list'))
+        if object_id:
+            if object_type=='vote':
+                return HttpResponseRedirect(reverse('vote-detail',
+                                        kwargs={'object_id':object_id}))
+            else:
+                return HttpResponseRedirect(reverse('committee-meeting',
+                                         kwargs={'pk':object_id}))
+        else: # no object id was found, return to list
+            if object_type=='vote':
+                return HttpResponseRedirect(reverse('vote-list'))
+            else:
+                return HttpResponseRedirect(reverse('committee-list'))
 
     else:
         return HttpResponseNotAllowed(['POST'])

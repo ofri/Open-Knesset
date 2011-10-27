@@ -6,12 +6,12 @@
         <tr><td colspan="2">
          <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
         </td></tr>
-        <tr><th>{% trans "Position" %}:</th><td>{{ agendavote.get_score_display }}</td></tr>
+        <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
         <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
     {% endfor %}
     </table>
     {% endif %}
-    
+
     {% if formset %}
     <h3>{% trans "Ascribe your agendas" %}</h3>
     <form class="editors_agendas" action="{% url update-editors-agendas %}" method="post">
@@ -35,7 +35,7 @@
                 <td>{{ form.DELETE.label_tag }}</td>
                 <td>{{ form.DELETE }}</td>
             </tr>
-            
+
         {% endfor %}
         </table>
         <input type="submit" value="{% trans "Update" %}">

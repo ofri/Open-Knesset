@@ -2,10 +2,12 @@ import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
-from tagging.models import Tag,TaggedItem
+from django.contrib.auth.models import User, Group, Permission
+from tagging.models import Tag, TaggedItem
 from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
+from knesset.committees.models import Committee
 from django.utils import simplejson as json
 
 class ApiViewsTest(TestCase):
@@ -134,3 +136,44 @@ class ApiViewsTest(TestCase):
             t.delete()
         self.agenda.delete()
         self.private_agenda.delete()
+
+class MeetingApiTest(TestCase):
+
+    def setUp(self):
+        self.committee_1 = Committee.objects.create(name='c1')
+        self.committee_2 = Committee.objects.create(name='c2')
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
+                                 protocol_text='''jacob:
+I am a perfectionist
+adrian:
+I have a deadline''')
+        self.meeting_1.create_protocol_parts()
+        self.meeting_2 = self.committee_1.meetings.create(date=datetime.datetime.now(),
+                                                         protocol_text='m2')
+        self.meeting_2.create_protocol_parts()
+        self.jacob = User.objects.create_user('jacob', 'jacob@example.com',
+                                              'JKM')
+        self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
+                                              'ADRIAN')
+        (self.group, created) = Group.objects.get_or_create(name='Valid Email')
+        if created:
+            self.group.save()
+        self.group.permissions.add(Permission.objects.get(name='Can add annotation'))
+        self.jacob.groups.add(self.group)
+
+        ct = ContentType.objects.get_for_model(Tag)
+        self.adrian.user_permissions.add(Permission.objects.get(codename='add_tag', content_type=ct))
+
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1')
+        self.mk_1 = Member.objects.create(name='mk 1')
+        self.topic = self.committee_1.topic_set.create(creator=self.jacob,
+                                                title="hello", description="hello world")
+        self.tag_1 = Tag.objects.create(name='tag1')
+
+    def testCommitteeMeeting(self):
+        res = self.client.get(reverse('committee-meeting-handler', args=[self.meeting_1.id]))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json['committee']['name'], self.committee_1.name)
+        self.assertEqual(res_json['committee']['url'], self.committee_1.get_absolute_url())
+        self.assertEqual(res_json['url'], self.meeting_1.get_absolute_url())

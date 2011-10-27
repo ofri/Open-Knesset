@@ -4,7 +4,8 @@ from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES
+from models import (Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES,
+                    MEETING_SCORE_CHOICES)
 
 class H4(forms.Widget):
     """ used to display header fields """
@@ -68,6 +69,7 @@ class VoteLinkingForm(forms.Form):
                            label=_(u'Reasoning'),
                            widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )
+    object_type = forms.CharField(widget=forms.HiddenInput)
 
     def clean_weight(self):
         data = self.cleaned_data['weight']
@@ -81,5 +83,12 @@ class VoteLinkingForm(forms.Form):
             cleaned_data["DELETE"] = 'on'
         return cleaned_data
 
-VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0, can_delete=True)
+class MeetingLinkingForm(VoteLinkingForm):
+    weight = forms.TypedChoiceField(label=_('Importance'),
+                                    choices=MEETING_SCORE_CHOICES,
+                                    required=False,
+                                    widget=forms.RadioSelect)
 
+VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0, can_delete=True)
+MeetingLinkingFormSet = formset_factory(MeetingLinkingForm, extra=0,
+                                        can_delete=True)

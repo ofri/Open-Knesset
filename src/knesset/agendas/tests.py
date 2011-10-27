@@ -10,7 +10,7 @@ from django.conf import settings
 from models import Agenda, AgendaVote
 from knesset.laws.models import Vote, VoteAction
 from knesset.mks.models import Party, Member
-
+from knesset.committees.models import Committee, CommitteeMeeting
 just_id = lambda x: x.id
 
 class SimpleTest(TestCase):
@@ -56,6 +56,13 @@ class SimpleTest(TestCase):
                                                       vote=self.vote_2,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
+        self.committee_1 = Committee.objects.create(name='c1')
+        self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
+                                 protocol_text='''jacob:
+I am a perfectionist
+adrian:
+I have a deadline''')
+        self.meeting_1.create_protocol_parts()
 
         self.domain = 'http://' + Site.objects.get_current().domain
 
@@ -148,6 +155,116 @@ class SimpleTest(TestCase):
         agenda = Agenda.objects.get(id=self.agenda_1.id)
         self.assertEqual(agenda.name, 'test1')
 
+    def test_agenda_ascribe_meeting_not_logged_in(self):
+        url = reverse('update-editors-agendas')
+        res = self.client.post(url,
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'committeemeeting',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-weight':0.3,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url),
+                             status_code=302)
+
+    def test_agenda_ascribe_meeting_not_editor(self):
+        self.assertTrue(self.client.login(username='john',
+                                          password='LSD'))
+        res = self.client.post(reverse('update-editors-agendas'),
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'committeemeeting',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-weight':0.3,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertEqual(res.status_code, 403)
+
+
+    def test_agenda_ascribe_meeting(self):
+        self.assertTrue(self.client.login(username='jacob',
+                                          password='JKM'))
+        res = self.client.post(reverse('update-editors-agendas'),
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'committeemeeting',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-weight':0.3,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertRedirects(res,
+                             reverse('committee-meeting',
+                                         kwargs={'pk':self.meeting_1.id}),
+                             status_code=302)
+        a = Agenda.objects.get(pk=self.agenda_1.id)
+        self.assertEqual([am.meeting for am in a.agendameetings.all()],
+                         [self.meeting_1])
+
+    def test_agenda_ascribe_vote_not_logged_in(self):
+        url = reverse('update-editors-agendas')
+        res = self.client.post(url,
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'vote',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-weight':1.0,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url),
+                             status_code=302)
+
+    def test_agenda_ascribe_vote_not_editor(self):
+        self.assertTrue(self.client.login(username='john',
+                                          password='LSD'))
+        res = self.client.post(reverse('update-editors-agendas'),
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'vote',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-weight':1.0,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertEqual(res.status_code, 403)
+
+
+    def test_agenda_ascribe_vote(self):
+        self.assertTrue(self.client.login(username='jacob',
+                                          password='JKM'))
+        res = self.client.post(reverse('update-editors-agendas'),
+                               {'form-0-agenda_id':self.agenda_1.id,
+                                'form-0-object_type':'vote',
+                                'form-0-reasoning':'test reasoning',
+                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-weight':1.0,
+                                'form-INITIAL_FORMS':1,
+                                'form-MAX_NUM_FORMS':'',
+                                'form-TOTAL_FORMS':1,
+                               }
+                              )
+        self.assertRedirects(res,
+                             reverse('vote-detail',
+                                         kwargs={'object_id':self.meeting_1.id}),
+                             status_code=302)
+        av = AgendaVote.objects.get(agenda=self.agenda_1,
+                                    vote=self.vote_1)
+        self.assertEqual(av.score, 1.0)
+        self.assertEqual(av.reasoning, 'test reasoning')
 
     def testAgendaMkDetail(self):
         res = self.client.get(reverse('mk-agenda-detail',
