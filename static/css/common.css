@@ -1019,3 +1019,4 @@ div.general_discipline_control {
 .filter-form p { display: inline-block; width:28%; margin:5px 0 }
 .filter-form label { width:6em; display:inline-block; text-align:left}
 .filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
+.three-columns { float:right; width:31%; }

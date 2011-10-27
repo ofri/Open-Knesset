@@ -5,12 +5,17 @@
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-tags %}class="selected"{% endblock %}
-{% block divcontent %}
-    <h1>{{tag}}</h1>
+{% block header %}
+    <ul id="breadcrumbs"> 
+        <li class="first"><a href="{% url tags-list %}">{% trans "Tags" %}</a></li>
+        <li>{{tag}}</li>
+    </ul>
+{% endblock %}
+{{% block divcontent %}
+    <div class="item-list three-columns">
     {% with bills|length as count %}
         <h2>{% blocktrans %}{{ count }} Bills{% endblocktrans %}</h2>
     {% endwith %}
-    <div class="item-list">
         {% for o in bills %}
             <div class="item {% cycle "normal" "alt" %}">
                 {% bill_list_item o %}
@@ -19,10 +24,10 @@
             {% trans "No results found" %}
         {% endfor %}
     </div>
+    <div class="item-list three-columns">
     {% with votes|length as count %}
         <h2>{% blocktrans %}{{ count }} Votes{% endblocktrans %}</h2>
     {% endwith %}
-    <div class="item-list">
         {% for o in votes %}
             <div class="item {% cycle "normal" "alt" %}">
                 {% vote_list_item o %}
@@ -31,10 +36,10 @@
             {% trans "no results found" %}
         {% endfor %}
     </div>
+    <div class="item-list three-columns">
     {% with cms|length as count %}
         <h2>{% blocktrans %}{{ count }} Committee Meetings{% endblocktrans %}</h2>
     {% endwith %}
-    <div class="item-list">
         {% for o in cms %}
             <div class="item {% cycle "normal" "alt" %}">
                 {% committee_meeting_list_item o %}
