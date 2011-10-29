@@ -4,6 +4,7 @@
 {% load bills_extra %}
 {% load mks %}
 {% load links %}
+{% load voting_tags %}
 {% block extrahead %}
     <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
@@ -187,6 +188,33 @@
         <div id="bill-canvas">
         </div>
         <div class="secondary">
+            <h3>{% trans "Public Opinion" %}</h3>
+            <div id="public-opinion">
+                <span class="stand for" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</span><span class="stand against" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</span>
+                <br>
+                {% if user.is_authenticated %}
+                    {% vote_by_user user on object as vote_dict %}
+                    {% if vote_dict and vote_dict.direction %}
+                    {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
+                    <form action="{% url vote-on-bill bill.id 0 %}" method="post">{% csrf_token %}
+                    <p class="submit">
+                    <input type="submit" name="submit" value="{% trans "Delete" %}" />
+                    </p>
+                    </form>
+                    {% else %}
+                    <form action="{% url vote-on-bill bill.id 1 %}" method="post">{% csrf_token %}
+                    <p class="submit">
+                    <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
+                    </p>
+                    </form>
+                    <form action="{% url vote-on-bill bill.id -1 %}" method="post">{% csrf_token %}
+                    <p class="submit">
+                    <input type="submit" name="submit" value="{% trans "I'm against" %}" />
+                    </p>
+                    </form>
+                    {% endif %}
+                {% endif %}
+            </div>
             <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
             <div id="tagging-container">

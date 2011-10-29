@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'django_nose',
     'gunicorn',
     'djangoratings',
+    'voting',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
