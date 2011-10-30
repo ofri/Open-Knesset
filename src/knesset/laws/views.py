@@ -19,6 +19,7 @@ from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
 from tagging.utils import get_tag
 import tagging
+import voting
 from actstream import action
 from knesset.utils import limit_by_request, notify_responsible_adult
 from knesset.laws.models import *
@@ -198,6 +199,26 @@ class BillDetailView (DetailView):
             context['close_votes'] = close_votes
         except Exception, e:
             pass
+        votes = voting.models.Vote.objects.get_object_votes(bill)
+        if 1 not in votes: votes[1] = 0
+        if -1 not in votes: votes[-1] = 0
+        count = votes[1] + votes[-1]
+        score = {'for': votes[1],
+                 'against': votes[-1],
+                 'total': votes[1] - votes[-1],
+                 'count': count}
+        if count:
+            # use votes/count, with min 10 and max 90
+            score['for_percent'] = min(max(int(float(votes[1]) / count * 99),
+                                           9),
+                                       89)
+            score['against_percent'] = min(max(int(float(votes[-1]) / count * 99),
+                                               9),
+                                           89)
+        else: # 0 votes, use 50:50 width
+            score['for_percent'] = 49
+            score['against_percent'] = 49
+        context['voting_score'] = score
         return context
 
     @method_decorator(login_required)
