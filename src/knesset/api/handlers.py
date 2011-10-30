@@ -15,6 +15,7 @@ from knesset.committees.models import Committee, CommitteeMeeting
 from knesset.links.models import Link
 from tagging.models import Tag, TaggedItem
 from knesset.committees.models import CommitteeMeeting
+from knesset.events.models import Event
 import math
 from django.forms import model_to_dict
 
@@ -464,3 +465,16 @@ class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):
         else:
             self.qs = r
             return self.limit_by_request(request)
+
+class EventHandler(BaseHandler, HandlerExtensions):
+    allowed_methods = ('GET',)
+    model = Event
+
+    def read(self, request, **kwargs):
+        ''' returns an event or a list of events '''
+        r = super(EventHandler, self).read(request, **kwargs)
+        if kwargs and 'id' in kwargs:
+            return r
+        else:
+            return r.filter(when__gte=datetime.datetime.now())
+            
