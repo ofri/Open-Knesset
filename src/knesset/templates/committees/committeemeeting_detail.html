@@ -1,4 +1,4 @@
-{% extends "site_base.html" %}
+{% extends "two_cols.html" %}
 
 {% load i18n %}
 {% load comments %}
@@ -13,12 +13,36 @@
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ description }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extrahead %}
-    <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
+    <!--<link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />-->
     <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+    <!--<link href="{{MEDIA_URL}}js/annotator/annotator.min.css" rel="stylesheet" type="text/css" media="screen" />-->
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>
+    <!--<script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>-->
+    <!--<script type="text/javascript" src="{{MEDIA_URL}}js/annotator/annotator-full.min.js"></script>-->
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
+
+    <!--START annotator dev includes-->
+    <link rel="stylesheet" type="text/css" href="http://localhost:8001/css/annotator.css">
+    <script src="http://localhost:8001/lib/extensions.js"></script>
+    <script src="http://localhost:8001/lib/console.js"></script>
+    <script src="http://localhost:8001/lib/class.js"></script>
+    <script src="http://localhost:8001/lib/range.js"></script>
+    <script src="http://localhost:8001/lib/annotator.js"></script>
+    <script src="http://localhost:8001/lib/widget.js"></script>
+    <script src="http://localhost:8001/lib/editor.js"></script>
+    <script src="http://localhost:8001/lib/viewer.js"></script>
+    <script src="http://localhost:8001/lib/notification.js"></script>
+    <script src="http://localhost:8001/lib/plugin/store.js"></script>
+    <script src="http://localhost:8001/lib/plugin/permissions.js"></script>
+    <script src="http://localhost:8001/lib/plugin/auth.js"></script>
+    <script src="http://localhost:8001/lib/plugin/tags.js"></script>
+    <script src="http://localhost:8001/lib/plugin/unsupported.js"></script>
+    <script src="http://localhost:8001/lib/plugin/filter.js"></script>
+    <script src="http://localhost:8001/lib/plugin/kitchensink.js"></script>
+    <script src="http://localhost:8001/lib/plugin/marginviewer.js"></script>
+    <!--END annotator dev includes-->
+
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block messages %}
@@ -30,7 +54,7 @@
     <a href="mailto:editor@oknesset.org">{% trans "Please email editors if an annotation should be deleted" %}</a>
 </span>
 {% endblock %}
-{% block divcontent %}
+{% block upper %}
     <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
     <h1>{{ object.topics|safe }}</h1>
     <h2>{{ title }}</h2>
@@ -98,13 +122,14 @@
         (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
     {% endif %}
     </div>
-
+{% endblock %}
+{% block primary %}
     {% agendas_for user object 'committeemeeting' %}
 
   {% with object.parts.list as parts %}
     {% get_annotations_for parts as annotation_dict %}
     <h2>{% trans 'Protocol' %}</h2>
-    <div class="protocol">
+    <div class="protocol" id="protocol-content">
     {% autopaginate parts paginate_by %}
     {% for speech_part in parts %}
       {% with speech_part.id as spid %}
@@ -162,7 +187,7 @@
             <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
             <input type="checkbox" class="markall" name="markall-{{ speech_part.id }}" id="markall-{{ speech_part.id }}"/>
         </div>
-        <p class="tool-links">
+        <!--<p class="tool-links">
             <a href="#annotationform-{{ speech_part.id }}" class="annotationform-link annotating" id="selectable-{{ speech_part.id }}">{% trans "Annotate"%}</a>
         </p>
         <div class="annotating annotation-content" id="annotations-{{ speech_part.id }}">
@@ -171,7 +196,7 @@
             {% include "annotatetext/_annotation.html" %}
             {% endfor %}
             {% endwith %}
-        </div>
+        </div>-->
       {% endwith %}
       {% endwith %}
         </div>
@@ -183,7 +208,7 @@
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script>
+<!--<script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script>-->
 <script>
     window.logged_in = {% if request.user.is_anonymous %}false{% else %}true{% endif %};
     window.permission = {% if perms.annotatetext.add_annotation %}true{% else %}false{% endif %};
@@ -194,6 +219,17 @@
 <script type="text/javascript"><!--
     $(document).ready(function() {
         {% get_hit_count_javascript for object %}
+    });
+    jQuery(function($) {
+    	$('#protocol-content').annotator().annotator('setupPlugins',
+        {
+	storeUri: 'http://uat.annotateit.org/api',
+	userId:      'habeanf',       // Your AnnotateIt username
+	userName:    'habeanf',
+        accountId: '39fc339cf058bd22176771b3e36196dd',  // Your Account Key
+        authToken:   '5ce58e308a83d08ffd3c424e357360ff355661c3cf09258bcf01bc1d74a10c10'// Your Auth Token
+	},{Filter:false}).annotator('addPlugin', 'MarginViewer');
+
     });
     // current hit count = {% get_hit_count for object %}
 --></script>
