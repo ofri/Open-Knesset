@@ -467,6 +467,7 @@ class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):
             return self.limit_by_request(request)
 
 class EventHandler(BaseHandler, HandlerExtensions):
+    fields = ('which', 'what', 'where', 'when', 'url' )
     allowed_methods = ('GET',)
     model = Event
 
@@ -478,3 +479,12 @@ class EventHandler(BaseHandler, HandlerExtensions):
         else:
             return r.filter(when__gte=datetime.datetime.now())
             
+    @classmethod
+    def which(cls, event):
+        if event.which_object:
+            return {
+                    'name': unicode(event.which_object),
+                    'url': event.which_object.get_absolute_url(),
+                    }
+        else:
+            return None

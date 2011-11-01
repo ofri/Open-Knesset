@@ -34,7 +34,7 @@ urlpatterns = patterns('',
       url(r'^committee/(?P<id>[0-9]+)/$', committee_handler, name='committe-handler'),
       url(r'^committeemeeting/$', committee_meeting_handler, name='committee-meeting-handler'),
       url(r'^committeemeeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
-      url(r'^events/$', event_handler, name='event-handler'),
-      url(r'^events/(?P<id>[0-9]+)/$', event_handler, name='event-handler'),
+      url(r'^event/$', event_handler, name='event-handler'),
+      url(r'^event/(?P<id>[0-9]+)/$', event_handler, name='event-handler'),
       )
 
