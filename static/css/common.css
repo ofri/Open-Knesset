@@ -27,6 +27,14 @@ a:hover { text-decoration:underline;}
     float:right; margin:10px 10px 0 0;  height:100px; width:130px; overflow:hidden;
     line-height:10px;
 }
+.app-link {
+    float: left;
+    margin: 10px 0pt 0pt 0pt;
+}
+#mobile-logo {
+    float:left; margin: 0;  height:100px; width:130px; overflow:hidden;
+    line-height:10px;
+}
 #nav-global { margin:0; padding-right:165px;
       font-family:"Trebuchet MS",sans-serif; white-space:nowrap;
       padding-top: 72px;
@@ -374,8 +382,8 @@ form > p > select { width:250px; }
 
 .item-list { position: relative; padding:0.5em;}
 .item-list .item {
-    clear:both; 
-    overflow:none; 
+    clear:both;
+    overflow:none;
 }
 .item-list .item.alt { background:#E4F4E4 }
 .item-header { float: right; clear:both; text-align:center;}
@@ -947,7 +955,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     right:-21px; /* value = - border-left-width - border-right-width */
     border-width:9px 0 9px 21px;
     border-color:transparent #fff;
-    
+
 }
 /* two columns */
 .main-column { float: right; width:60%; padding: 0.5em;}
