@@ -22,6 +22,8 @@ class Event(models.Model):
     # so we are left to guess
     when_over_guessed = models.BooleanField(default=True)
     who = models.ManyToManyField(Person)
+    # TODO - just randomly looking it seems to be wrong in some objects:
+    # key 1957, contains repetition of the subject.
     what = models.TextField()
     where = models.TextField()
     which_type   = models.ForeignKey(ContentType,
