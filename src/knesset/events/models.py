@@ -1,4 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+
+# TODO x2: python-vobject in fedora <- are we tracking distribution locations somewhere?
+# readme file? buildout should have this too.
+
+import vobject
+
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
@@ -29,6 +35,17 @@ class Event(models.Model):
         return self.when > datetime.now()
 
     @property
+    def summary(self):
+        """ this is used for the title of the event in the calendar view (icalendar) """
+        topic = self.what[:30] + '...' if len(self.what) >= 30 else self.what
+        if self.which_object:
+            c = self.which_object
+            # Today it is only committee
+            return _('%(committee)s meeting: %(topic)s') % {
+                        'committee':c.name, 'topic':topic}
+        return topic
+
+    @property
     def which(self):
         return self.which_object and unicode(self.which_object) or self.what
 
@@ -37,3 +54,23 @@ class Event(models.Model):
             return '%s#event-%d' % (self.which_object.get_absolute_url(), self.id)
         else:
             return '#'
+
+    def add_vevent_to_ical(self, cal):
+        """
+        adds itself as a vevent to @cal.
+        cal should be a vobject.iCalendar
+        """
+        vevent = cal.add('vevent')
+        vevent.add('dtstart').value = self.when
+        summary = self.what
+        if not self.when_over:
+            # this can happen if you migrated so you have when_over but
+            # have not run parse_future_committee_meetings yet.
+            self.when_over = self.when + timedelta(hours=2)
+            self.when_over_guessed = True
+            self.save()
+        if self.when_over_guessed:
+            summary = u'ATTENTION: The end date is just projected, not available on knesset.gov. Be advised!\n\n' + summary
+        vevent.add('dtend').value = self.when_over
+        vevent.add('summary').value = self.summary
+        vevent.add('description').value = self.what
