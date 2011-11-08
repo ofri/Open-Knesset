@@ -72,9 +72,15 @@ class Command(BaseCommand):
                 parsed = parse_meeting_data(meeting_data)
                 if i > 0:
                     last = retval[-1]
-                    last.end_guessed = False
-                    last.end_minute = parsed.minute
-                    last.end_hour = parsed.end_hour
+                    # ugly, but it's a tuple, can't assign
+                    new_last = ParsedResult(
+                        name=last.name, year=last.year, month=last.month,
+                        day=last.day, hour=last.hour, minute=last.minute,
+                        title=last.title,
+                        end_hour=parsed.hour,
+                        end_minute=parsed.minute,
+                        end_guessed=False)
+                    retval[-1] = new_last
                 retval.append(parsed)
 
         # since this is now a two pass, kinda, do the logging after.
@@ -88,11 +94,11 @@ class Command(BaseCommand):
     def update_future_committee_meetings_db(self, r):
         for p in r:
             try:
-                committee = Committee.objects.get(name=row[0])
+                committee = Committee.objects.get(name=p.name)
                 ev, created = Event.objects.get_or_create( when = datetime.datetime( year=p.year, month=p.month, day=p.day, hour=p.hour, minute=p.minute, second=0 ),
                                                            when_over = datetime.datetime( year=p.year, month=p.month, day=p.day, hour=p.end_hour, minute=p.end_minute, second=0),
                                                            when_over_guessed = p.end_guessed,
-                                                           what = row[6],
+                                                           what = p.title,
                                                            which_pk = committee.id,
                                                            which_type = self.committee_ct,
                                                            )
@@ -100,11 +106,13 @@ class Command(BaseCommand):
                                                              '' if not ev.when_over_guessed else '(guess)',
                                                              ev.what))
             except Committee.DoesNotExist:
-                logger.debug("couldn't find committee  %s" % row[0])
+                logger.debug("couldn't find committee  %s" % p.name)
                 try:
-                    ev, created = Event.objects.get_or_create(when = datetime.datetime( year=row[1], month=row[2], day=row[3], hour=row[4], minute=row[5], second=0 ),
-                                                               what = row[6],
-                                                           )
+                    ev, created = Event.objects.get_or_create(
+                        when = datetime.datetime( year=p.year, month=p.month,
+                                                  day=p.day, hour=p.hour,
+                                                  minute=p.minute, second=0 ),
+                                                  what=p.title)
                 except Event.MultipleObjectsReturned:
                     created = False
             if created:
