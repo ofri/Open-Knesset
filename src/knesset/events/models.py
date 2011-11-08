@@ -26,4 +26,10 @@ class Event(models.Model):
 
     @property
     def which(self):
-        return self.which_objects and unicode(self.which_object) or self.what
+        return self.which_object and unicode(self.which_object) or self.what
+
+    def get_absolute_url(self):
+        if self.which_object:
+            return '%s#event-%d' % (self.which_object.get_absolute_url(), self.id)
+        else:
+            return '#'
