@@ -7,9 +7,9 @@ import vobject
 from django.http import HttpResponse
 from models import Event
 
-def icalendar(request, future_only=False):
+def icalendar(request, future_only=True):
     """
-    return a single icalendar file, optionally for a subset of the events.
+    return a single icalendar file, default to future_only.
     """
     cal = vobject.iCalendar()
     now = datetime.now()

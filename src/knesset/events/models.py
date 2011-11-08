@@ -75,4 +75,7 @@ class Event(models.Model):
         vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
         vevent.add('summary').value = self.summary
+        location = self.location
+        if location:
+            vevent.add('location').value = location
         vevent.add('description').value = self.what
