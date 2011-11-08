@@ -32,5 +32,7 @@ urlpatterns = patterns('',
       url(r'^committee/(?P<id>[0-9]+)/$', committee_handler, name='committe-handler'),
       url(r'^committeemeeting/$', committee_meeting_handler, name='committee-meeting-handler'),
       url(r'^committeemeeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
+      # NOTE: this view is not in the api application, but in the events application
+      url(r'^event/icalendar/$', 'knesset.events.views.icalendar'),
       )
 
