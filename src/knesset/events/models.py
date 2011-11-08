@@ -11,6 +11,10 @@ class Event(models.Model):
         and discuss upcoming events.
     '''
     when = models.DateTimeField()
+    when_over = models.DateTimeField(null=True)
+    # KNESSET_TODO the end time of a committee meeting is not recorded anywhere,
+    # so we are left to guess
+    when_over_guessed = models.BooleanField(default=True)
     who = models.ManyToManyField(Person)
     what = models.TextField()
     where = models.TextField()
