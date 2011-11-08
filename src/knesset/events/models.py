@@ -71,6 +71,8 @@ class Event(models.Model):
             self.save()
         if self.when_over_guessed:
             summary = u'ATTENTION: The end date is just projected, not available on knesset.gov. Be advised!\n\n' + summary
+        # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
+        vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
         vevent.add('summary').value = self.summary
         vevent.add('description').value = self.what
