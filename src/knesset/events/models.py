@@ -37,14 +37,18 @@ class Event(models.Model):
         return self.when > datetime.now()
 
     @property
-    def summary(self):
-        """ this is used for the title of the event in the calendar view (icalendar) """
-        topic = self.what[:30] + '...' if len(self.what) >= 30 else self.what
+    def location(self):
+        """ location of vevent in calendar view """
         if self.which_object:
             c = self.which_object
             # Today it is only committee
-            return _('%(committee)s meeting: %(topic)s') % {
-                        'committee':c.name, 'topic':topic}
+            return c.name
+        return None
+
+    @property
+    def summary(self):
+        """ this is used for the title of the event in the calendar view (icalendar) """
+        topic = self.what[:30] + '...' if len(self.what) >= 30 else self.what
         return topic
 
     @property
