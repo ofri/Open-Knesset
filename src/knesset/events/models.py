@@ -40,11 +40,6 @@ class Event(models.Model):
     def summary(self):
         """ this is used for the title of the event in the calendar view (icalendar) """
         topic = self.what[:30] + '...' if len(self.what) >= 30 else self.what
-        if self.which_object:
-            c = self.which_object
-            # Today it is only committee
-            return _('%(committee)s meeting: %(topic)s') % {
-                        'committee':c.name, 'topic':topic}
         return topic
 
     @property
@@ -73,6 +68,10 @@ class Event(models.Model):
             self.save()
         if self.when_over_guessed:
             summary = u'ATTENTION: The end date is just projected, not available on knesset.gov. Be advised!\n\n' + summary
+        # TODO: add `geo` to the Event model
+        # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
+        vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
         vevent.add('summary').value = self.summary
+        vevent.add('location').value = self.where
         vevent.add('description').value = self.what
