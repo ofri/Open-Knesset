@@ -13,7 +13,7 @@ install_requires = [
     'feedparser',
     'pil',
     'django-pagination',
-    'django-piston',
+    # 'django-piston',
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
