@@ -37,7 +37,7 @@ PDFINFO=local_or_system('pdfinfo')
 
 def pdftotext_version():
     p = subprocess.Popen(executable=PDFTOTEXT, args=[PDFTOTEXT, '-v'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    major, minor, patchlevel = p.stderr.readlines()[0].split()[-1].split('.')
+    major, minor, patchlevel = map(lambda x,y:y if x is None else x,p.stderr.readlines()[0].strip().split()[-1].split('.'),[0]*3)
     p.kill()
     return major, minor, patchlevel
 
