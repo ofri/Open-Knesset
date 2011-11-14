@@ -705,13 +705,13 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .speech-container { clear:both; }
 /* .speech-container>div { height: 100%; float: right;} */
 .speech-container .text-speaker {
-    width:100%;
+    width:60%;
     border-bottom:1px dotted #000;
     font-weight:bold;
     font-size:12pt;
 }
 .speech-container .mk { font-size:15pt; border-top:1px dotted black;}
-.speech-container .text-content { float:right; width: 100%; }
+.speech-container .text-content { float:right; width: 60%; }
 .tool-links { float: right; }
 .aannotationtoolbox { float:left; }
 .annotationfields { margin: 0.2em 1.2em 0.8em 0 !important; }
@@ -1008,7 +1008,7 @@ div.general_discipline_control {
 
 /* 2cols */
 .two_cols>div.primary {width:60%; }
-.two_cols>div.secondary {float: left; width:35%;  position:relative}
+.two_cols>div.secondary {float: left; width:35%; }
 .two_cols>h2 {margin-bottom: 1.5em; }
 .editors_agendas li {list-style-type:none;}
 
