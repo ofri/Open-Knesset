@@ -273,6 +273,8 @@ class MemberDetailView(DetailView):
                 'factional_discipline':factional_discipline,
                 'votes_against_own_bills':votes_against_own_bills,
                 'general_discipline':general_discipline,
+                'kartisbikur_embed_link':member.kartisbikur_embed_link,
+                'kartisbikur_image_link':member.kartisbikur_image_link
                })
         return context
 
