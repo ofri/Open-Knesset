@@ -1022,3 +1022,18 @@ div.general_discipline_control {
 .filter-form label { width:6em; display:inline-block; text-align:left}
 .filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
 .three-columns { float:right; width:31%; }
+
+/* video */
+.video_400_300 {
+    width:400px;height:300px;overflow:hidden;
+}
+.video_400_300 img {
+    width:400px;height:300px;
+}
+.video_400_300 .video_playbtn {
+    position:relative;
+    width:400px;height:300px;
+    top:-300px;
+    background:transparent url(/static/icons/play.png) no-repeat center center;
+    cursor:pointer;
+}

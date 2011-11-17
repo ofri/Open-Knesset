@@ -15,8 +15,16 @@
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript">
+        function asyncJsLoad(src){
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src=src;
+            script.async = true;
+            document.getElementsByTagName('head')[0].appendChild(script);
+        };
         $(document).ready(function() {
-                register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
+            register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
+            asyncJsLoad("{{MEDIA_URL}}js/video.js");
         });
     </script>
 {% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
@@ -352,13 +360,13 @@
                                 {% object_links object %}
                         </div> <br/>
 
-			<div>
-				<h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
-				<div>
-				    <img src='{{kartisbikur_image_link}}' width='400' height='300'/>
-				</div>
-				<div style='position:relative;width:400px;height:300px;top:-300px;background:transparent url(/static/icons/play.png) no-repeat center center;cursor:pointer;' onClick='alert("run kartis bikur video");'></div>
-			</div> <br/>
+                        <div>
+                            <h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
+                            <div class='video_400_300' embed_link='{{kartisbikur_embed_link}}'>
+                                <div><img src='{{kartisbikur_image_link}}'/></div>
+                                <div class='video_playbtn'></div>
+                            </div>
+                        </div> <br/>
 
                         <div>
                             <h3>{% trans "Proposed bills topics" %}</h3>
