@@ -20,6 +20,7 @@ from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser
 import parse_presence, parse_laws, mk_roles_parser, parse_remote
+import parse_videos
 
 from parse_gov_legislation_comm import ParseGLC
 
@@ -51,6 +52,8 @@ class Command(NoArgsCommand):
             help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
             help="online update of votes data."),
+        make_option('--update-video', action='store_true', dest='update-video',
+            help="online update of video data."),
 
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -1363,6 +1366,25 @@ class Command(NoArgsCommand):
         if len(intersection):
             logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
 
+    def update_mk_kartisbikur(self):
+        for member in Member.objects.all():
+            names=[]
+            names.append(member.name)
+            for altname in member.memberaltname_set.all():
+                names.append(altname.name)
+            q=[]
+            for name in names:
+                q.append(u'"כרטיס ביקור ערוץ הכנסת '+name+'"')
+            videos=parse_videos.get_youtube_videos(queries=q,max_results=1)
+            print videos
+            break
+            if len(videos)>0:
+                video=videos[0]
+                if embed_link in video and large_thumbnail_link in video:
+                    member.kartisbikur_embed_link=video.embed_link
+                    member.kartisbikur_image_link=video.large_thumbnail_link
+                    member.save()
+
     def update_gov_law_decisions(self, year=None, month=None):
         logger.debug("update_gov_law_decisions")
         if year==None or month==None:
@@ -1417,13 +1439,15 @@ class Command(NoArgsCommand):
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
         laws = options.get('laws',False)
+        update_video = options.get('update-video', False)
+        
         if all_options:
             download = True
             load = True
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws)])):
+        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws),not(update_video)])):
             print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
@@ -1462,7 +1486,11 @@ class Command(NoArgsCommand):
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
             self.correct_votes_matching()
+            self.update_mk_kartisbikur()
             logger.debug('finished update')
+            
+        if update_video:
+            self.update_mk_kartisbikur()
 
 
 def iso_year_start(iso_year):
