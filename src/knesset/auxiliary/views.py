@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 import tagging
 from actstream import action
+from actstream.models import Action
 from knesset.mks.models import Member
 from knesset.laws.models import Vote,Bill
 from knesset.committees.models import Topic, CommitteeMeeting
@@ -23,6 +24,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult
+from feeds import main_actions
 
 import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -80,9 +82,10 @@ def main(request):
     if not context:
         context = {}
         context['title'] = _('Home')
+        actions = list(main_actions()[:10])
         annotations = get_annotations(
-            annotations=list(Annotation.objects.all().order_by('-timestamp')[:10]),
-            comments=Comment.objects.all().order_by('-submit_date')[:10])
+            annotations=[a.target for a in actions if a.verb != 'comment-added'],
+            comments=[x.target for x in actions if x.verb == 'comment-added'])
         context['annotations'] = annotations
         context['topics'] = Topic.objects.summary('-modified')[:20]
         context['has_search'] = True # disable the base template search
