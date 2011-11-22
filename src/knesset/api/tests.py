@@ -8,6 +8,7 @@ from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee
+from knesset.events.models import Event
 from django.utils import simplejson as json
 
 class ApiViewsTest(TestCase):
@@ -177,3 +178,16 @@ I have a deadline''')
         self.assertEqual(res_json['committee']['name'], self.committee_1.name)
         self.assertEqual(res_json['committee']['url'], self.committee_1.get_absolute_url())
         self.assertEqual(res_json['url'], self.meeting_1.get_absolute_url())
+
+class EventTest(TestCase):
+    def setUp(self):
+        self.ev1 = Event.objects.create(when=datetime.datetime.now()-datetime.timedelta(1), what="ev1")
+        self.ev2 = Event.objects.create(when=datetime.datetime.now()+datetime.timedelta(1), what="ev2")
+
+    def testEventlList(self):
+        res = self.client.get(reverse('event-handler'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 1)
+        self.assertEqual(res_json[0]['what'], 'ev2')
+
