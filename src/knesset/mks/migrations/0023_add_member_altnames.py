@@ -71,6 +71,8 @@ class Migration(SchemaMigration):
         },
         'mks.member': {
             'Meta': {'ordering': "['name']", 'object_name': 'Member'},
+            'about_video_embed_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'about_video_image_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'average_monthly_committee_presence': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
             'average_weekly_presence_hours': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
@@ -92,8 +94,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'is_current': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'kartisbikur_embed_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'kartisbikur_image_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'number_of_children': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'parties': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'all_members'", 'symmetrical': 'False', 'through': "orm['mks.Membership']", 'to': "orm['mks.Party']"}),

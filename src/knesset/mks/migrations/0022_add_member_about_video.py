@@ -8,20 +8,20 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'Member.kartisbikur_embed_link'
-        db.add_column('mks_member', 'kartisbikur_embed_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
+        # Adding field 'Member.about_video_embed_link'
+        db.add_column('mks_member', 'about_video_embed_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
 
-        # Adding field 'Member.kartisbikur_image_link'
-        db.add_column('mks_member', 'kartisbikur_image_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
+        # Adding field 'Member.about_video_image_link'
+        db.add_column('mks_member', 'about_video_image_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting field 'Member.kartisbikur_embed_link'
-        db.delete_column('mks_member', 'kartisbikur_embed_link')
+        # Deleting field 'Member.about_video_embed_link'
+        db.delete_column('mks_member', 'about_video_embed_link')
 
-        # Deleting field 'Member.kartisbikur_image_link'
-        db.delete_column('mks_member', 'kartisbikur_image_link')
+        # Deleting field 'Member.about_video_image_link'
+        db.delete_column('mks_member', 'about_video_image_link')
 
 
     models = {
@@ -72,6 +72,8 @@ class Migration(SchemaMigration):
         },
         'mks.member': {
             'Meta': {'ordering': "['name']", 'object_name': 'Member'},
+            'about_video_embed_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'about_video_image_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'average_monthly_committee_presence': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
             'average_weekly_presence_hours': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
@@ -93,8 +95,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'is_current': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'kartisbikur_embed_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'kartisbikur_image_link': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'number_of_children': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'parties': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'all_members'", 'symmetrical': 'False', 'through': "orm['mks.Membership']", 'to': "orm['mks.Party']"}),
@@ -109,6 +109,12 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'year_of_aliyah': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'mks.memberaltname': {
+            'Meta': {'object_name': 'MemberAltname'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'member': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mks.Member']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'})
         },
         'mks.membership': {
             'Meta': {'object_name': 'Membership'},

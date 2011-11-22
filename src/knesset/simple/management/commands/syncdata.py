@@ -1366,36 +1366,6 @@ class Command(NoArgsCommand):
         if len(intersection):
             logger.warn('Some MKs have roles in both knesset and govt: %s' % intersection)
 
-    def update_mk_kartisbikur(self):
-        for member in Member.objects.all():
-            if member.kartisbikur_embed_link is None:
-                videos=parse_videos.get_youtube_videos(q=u"כרטיס ביקור ערוץ הכנסת "+member.name)
-                result_video=None
-                for video in videos:
-                    if (
-                        'title' in video
-                        and 'embed_url_autoplay' in video
-                        and 'thumbnail480x360' in video
-                    ):
-                        title=video['title']
-                        if (
-                            u'כרטיס ביקור' in title
-                            and u'ערוץ הכנסת' in title
-                        ):
-                            if member.name in title:
-                                result_video=video
-                            else:
-                                for altname in member.memberaltname_set.all():
-                                    if altname in title:
-                                        result_video=video
-                                        break
-                            if result_video is not None:
-                                break
-                if result_video is not None:
-                    member.kartisbikur_embed_link=video['embed_url_autoplay']
-                    member.kartisbikur_image_link=video['thumbnail480x360']
-                    member.save()
-
     def update_gov_law_decisions(self, year=None, month=None):
         logger.debug("update_gov_law_decisions")
         if year==None or month==None:
@@ -1497,11 +1467,11 @@ class Command(NoArgsCommand):
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
             self.correct_votes_matching()
-            self.update_mk_kartisbikur()
+            parse_videos.update_mk_about_video()
             logger.debug('finished update')
             
         if update_video:
-            self.update_mk_kartisbikur()
+            parse_videos.update_mk_about_video()
 
 
 def iso_year_start(iso_year):

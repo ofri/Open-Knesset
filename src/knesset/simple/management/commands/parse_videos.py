@@ -7,13 +7,10 @@ GDATA_YOUTUBE_VIDEOS_URL='https://gdata.youtube.com/feeds/api/videos'
 def get_youtube_videos(q,max_results=20,author=None):
     videos=[]
     url=GDATA_YOUTUBE_VIDEOS_URL
-    # TODO: add url encoding to the query, ideally we could use utllib.quote
-    # but it seems to not support unicode strings
     url+='?q='+urllib.quote(q.encode('utf-8'))
     url+='&max_results='+str(max_results)
     url+='&alt=json'
     if author is not None:
-        # TODO: add url encoding
         url+='&author='+urllib.quote(author.encode('utf-8'))
     yvideos=json.load(urllib.urlopen(url))
     if 'feed' in yvideos:
@@ -50,7 +47,6 @@ def get_youtube_videos(q,max_results=20,author=None):
                             ):
                                 embed_url=ymediaContent['url']
                                 video['embed_url_autoplay']=embed_url+'&autoplay=1'
-                    #mediaGroup['media$thumbnail'][0]['url']
                     if 'media$thumbnail' in ymediaGroup:
                         ymediaThumbnails=ymediaGroup['media$thumbnail']
                         for k in range(len(ymediaThumbnails)):
@@ -60,3 +56,35 @@ def get_youtube_videos(q,max_results=20,author=None):
                                     video['thumbnail480x360']=ymediaThumbnail['url']
                 videos.append(video)
     return videos
+    
+
+def update_mk_about_video(self):
+    for member in Member.objects.all():
+        if member.about_video_embed_link is None:
+            videos=get_youtube_videos(q=u"כרטיס ביקור ערוץ הכנסת "+member.name)
+            result_video=None
+            for video in videos:
+                if (
+                    'title' in video
+                    and 'embed_url_autoplay' in video
+                    and 'thumbnail480x360' in video
+                ):
+                    title=video['title']
+                    if (
+                        u'כרטיס ביקור' in title
+                        and u'ערוץ הכנסת' in title
+                    ):
+                        if member.name in title:
+                            result_video=video
+                        else:
+                            for altname in member.memberaltname_set.all():
+                                if altname in title:
+                                    result_video=video
+                                    break
+                        if result_video is not None:
+                            break
+            if result_video is not None:
+                member.about_video_embed_link=video['embed_url_autoplay']
+                member.about_video_image_link=video['thumbnail480x360']
+                member.save()
+

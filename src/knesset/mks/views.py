@@ -263,8 +263,8 @@ class MemberDetailView(DetailView):
             general_discipline_params['against_opposition'] = True
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
-        kartisbikur_embed_link=member.kartisbikur_embed_link if member.kartisbikur_embed_link is not None else ''
-        kartisbikur_image_link=member.kartisbikur_image_link if member.kartisbikur_image_link is not None else ''
+        about_video_embed_link=member.about_video_embed_link if member.about_video_embed_link is not None else ''
+        about_video_image_link=member.about_video_image_link if member.about_video_image_link is not None else ''
 
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
@@ -276,8 +276,8 @@ class MemberDetailView(DetailView):
                 'factional_discipline':factional_discipline,
                 'votes_against_own_bills':votes_against_own_bills,
                 'general_discipline':general_discipline,
-                'kartisbikur_embed_link':kartisbikur_embed_link,
-                'kartisbikur_image_link':kartisbikur_image_link
+                'about_video_embed_link':about_video_embed_link,
+                'about_video_image_link':about_video_image_link
                })
         return context
 
