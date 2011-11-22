@@ -1368,21 +1368,32 @@ class Command(NoArgsCommand):
 
     def update_mk_kartisbikur(self):
         for member in Member.objects.all():
-            names=[]
-            names.append(member.name)
-            for altname in member.memberaltname_set.all():
-                names.append(altname.name)
-            q=[]
-            for name in names:
-                q.append(u'"כרטיס ביקור ערוץ הכנסת '+name+'"')
-            videos=parse_videos.get_youtube_videos(queries=q,max_results=1)
-            print videos
-            break
-            if len(videos)>0:
-                video=videos[0]
-                if embed_link in video and large_thumbnail_link in video:
-                    member.kartisbikur_embed_link=video.embed_link
-                    member.kartisbikur_image_link=video.large_thumbnail_link
+            if member.kartisbikur_embed_link is None:
+                videos=parse_videos.get_youtube_videos(q=u"כרטיס ביקור ערוץ הכנסת "+member.name)
+                result_video=None
+                for video in videos:
+                    if (
+                        'title' in video
+                        and 'embed_url_autoplay' in video
+                        and 'thumbnail480x360' in video
+                    ):
+                        title=video['title']
+                        if (
+                            u'כרטיס ביקור' in title
+                            and u'ערוץ הכנסת' in title
+                        ):
+                            if member.name in title:
+                                result_video=video
+                            else:
+                                for altname in member.memberaltname_set.all():
+                                    if altname in title:
+                                        result_video=video
+                                        break
+                            if result_video is not None:
+                                break
+                if result_video is not None:
+                    member.kartisbikur_embed_link=video['embed_url_autoplay']
+                    member.kartisbikur_image_link=video['thumbnail480x360']
                     member.save()
 
     def update_gov_law_decisions(self, year=None, month=None):

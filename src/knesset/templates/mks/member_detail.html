@@ -359,7 +359,7 @@
                             <h3>{% trans "Links" %}</h3>
                                 {% object_links object %}
                         </div> <br/>
-
+                        {% if kartisbikur_embed_link != '' and kartisbikur_image_link != '' %}
                         <div>
                             <h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
                             <div class='video_400_300' embed_link='{{kartisbikur_embed_link}}'>
@@ -367,6 +367,7 @@
                                 <div class='video_playbtn'></div>
                             </div>
                         </div> <br/>
+                        {% endif %}
 
                         <div>
                             <h3>{% trans "Proposed bills topics" %}</h3>
