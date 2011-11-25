@@ -1,6 +1,7 @@
 #encoding: utf-8
 
 import urllib, json
+from knesset.mks.models import Member
 
 GDATA_YOUTUBE_VIDEOS_URL='https://gdata.youtube.com/feeds/api/videos'
 
@@ -58,7 +59,7 @@ def get_youtube_videos(q,max_results=20,author=None):
     return videos
     
 
-def update_mk_about_video(self):
+def update_mk_about_video():
     for member in Member.objects.all():
         if member.about_video_embed_link is None:
             videos=get_youtube_videos(q=u"כרטיס ביקור ערוץ הכנסת "+member.name)

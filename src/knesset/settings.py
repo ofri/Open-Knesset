@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'knesset.notify',
     'knesset.persons',
     'knesset.events',
+    'knesset.video',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
