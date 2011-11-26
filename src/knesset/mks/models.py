@@ -147,9 +147,6 @@ class Member(models.Model):
     average_weekly_presence_hours = models.FloatField(null=True)
     average_monthly_committee_presence = models.FloatField(null=True)
 
-    about_video_embed_link = models.CharField(blank=True, null=True,max_length=255)
-    about_video_image_link = models.CharField(blank=True, null=True,max_length=255)
-
     backlinks_enabled = models.BooleanField(default=True)
 
     objects = BetterManager()

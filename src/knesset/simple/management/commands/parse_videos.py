@@ -1,6 +1,10 @@
 #encoding: utf-8
 
 import urllib, json
+from knesset.mks.models import Member
+from knesset.video.models import Video
+from django.contrib.contenttypes.models import ContentType
+from knesset.video.utils import get_videos_queryset
 
 GDATA_YOUTUBE_VIDEOS_URL='https://gdata.youtube.com/feeds/api/videos'
 
@@ -19,6 +23,8 @@ def get_youtube_videos(q,max_results=20,author=None):
             yentries=yfeed['entry']
             for yentry in yentries:
                 video={}
+                if 'id' in yentry and '$t' in yentry['id']:
+                    video['id']=yentry['id']['$t']
                 if (
                     'title' in yentry
                     and 'type' in yentry['title'] and yentry['title']['type']=='text'
@@ -30,12 +36,20 @@ def get_youtube_videos(q,max_results=20,author=None):
                     and 'type' in yentry['content'] and yentry['content']['type']=='text'
                     and '$t' in yentry['content']
                 ):
-                    video['content']=yentry['content']['$t']
+                    video['description']=yentry['content']['$t']
                 if (
                     'author' in yentry and 'name' in yentry['author']
                     and '$t' in yentry['author']['name']
                 ):
                     video['author']=yentry['author']['name']['$t']
+                if 'link' in yentry:
+                    ylinks=yentry['link']
+                    for ylink in ylinks:
+                        if (
+                            'rel' in ylink and 'type' in ylink and 'href' in ylink
+                            and ylink['rel']=='alternate' and ylink['type']=='text/html'
+                        ):
+                            video['link']=ylink['href']
                 if 'media$group' in yentry:
                     ymediaGroup=yentry['media$group']
                     if 'media$content' in ymediaGroup:
@@ -58,9 +72,9 @@ def get_youtube_videos(q,max_results=20,author=None):
     return videos
     
 
-def update_mk_about_video(self):
+def update_mk_about_video():
     for member in Member.objects.all():
-        if member.about_video_embed_link is None:
+        if get_videos_queryset(member).count()==0:
             videos=get_youtube_videos(q=u"כרטיס ביקור ערוץ הכנסת "+member.name)
             result_video=None
             for video in videos:
@@ -68,6 +82,9 @@ def update_mk_about_video(self):
                     'title' in video
                     and 'embed_url_autoplay' in video
                     and 'thumbnail480x360' in video
+                    and 'id' in video
+                    and 'description' in video
+                    and 'link' in video
                 ):
                     title=video['title']
                     if (
@@ -84,7 +101,16 @@ def update_mk_about_video(self):
                         if result_video is not None:
                             break
             if result_video is not None:
-                member.about_video_embed_link=video['embed_url_autoplay']
-                member.about_video_image_link=video['thumbnail480x360']
-                member.save()
+                v = Video(
+                    embed_link=result_video['embed_url_autoplay'],
+                    image_link=result_video['thumbnail480x360'],
+                    title=result_video['title'],
+                    description=result_video['description'],
+                    link=result_video['link'],
+                    source_type='youtube', 
+                    source_id=result_video['id'],
+                    group='about', 
+                    content_object=member
+                )
+                v.save()
 

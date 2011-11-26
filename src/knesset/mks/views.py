@@ -20,6 +20,8 @@ from knesset.mks.utils import percentile
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.agendas.models import Agenda
 
+from knesset.video.utils import get_videos_queryset
+
 import logging
 
 
@@ -263,8 +265,15 @@ class MemberDetailView(DetailView):
             general_discipline_params['against_opposition'] = True
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
-        about_video_embed_link=member.about_video_embed_link if member.about_video_embed_link is not None else ''
-        about_video_image_link=member.about_video_image_link if member.about_video_image_link is not None else ''
+        about_videos=get_videos_queryset(member,group='about')
+        if (about_videos.count()==1):
+            about_video=about_videos[0]
+            about_video_embed_link=about_video.embed_link
+            about_video_image_link=about_video.image_link
+        else:
+            about_video_embed_link=''
+            about_video_image_link=''
+        
 
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
