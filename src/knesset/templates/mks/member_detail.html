@@ -10,13 +10,14 @@
 {% load backlinks_tags %}
 {% load absurl %}
 {% load cache %}
+{% load video %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-                register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
+            register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
         });
     </script>
 {% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
@@ -50,6 +51,7 @@
        }
     );
     </script>
+    {% video_init %}
 {% endblock %}
 {% block description %} {% with object.name as name %} {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.   Information about {{ name }} for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public. {% endblocktrans %} {% endwith %} {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
@@ -351,6 +353,20 @@
                             <h3>{% trans "Links" %}</h3>
                                 {% object_links object %}
                         </div> <br/>
+                        
+                        {% if about_video_embed_link != '' and about_video_image_link != '' %}
+                        <div>
+                            <h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
+                            {% video_player 400 300 about_video_embed_link about_video_image_link %}
+                        </div> <br/>
+                        {% endif %}
+                        
+                        {% if num_related_videos > 0 %}
+                        <div>
+                            <h3>{% trans "קטעי וידאו אחרונים" %}</h3>
+                            {% video_playlist related_videos %}
+                        </div> <br/>
+                        {% endif %}
 
                         <div>
                             <h3>{% trans "Proposed bills topics" %}</h3>

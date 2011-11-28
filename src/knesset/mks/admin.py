@@ -17,6 +17,9 @@ class MemberLinksInline(generic.GenericTabularInline):
     ct_fk_field = 'object_pk'
     extra = 1
 
+class MemberAltnameInline(admin.TabularInline):
+    model = MemberAltname
+    extra = 1
 
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
@@ -30,7 +33,7 @@ class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date')
     list_display = ('name','PartiesString')
-    inlines = (MembershipInline, MemberLinksInline)
+    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline)
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'
