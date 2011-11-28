@@ -273,7 +273,8 @@ class MemberDetailView(DetailView):
         else:
             about_video_embed_link=''
             about_video_image_link=''
-        
+            
+        related_videos=get_videos_queryset(member,group='related').order_by('-published')[0:5]
 
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
@@ -286,7 +287,9 @@ class MemberDetailView(DetailView):
                 'votes_against_own_bills':votes_against_own_bills,
                 'general_discipline':general_discipline,
                 'about_video_embed_link':about_video_embed_link,
-                'about_video_image_link':about_video_image_link
+                'about_video_image_link':about_video_image_link,
+                'related_videos':related_videos,
+                'num_related_videos':related_videos.count()
                })
         return context
 

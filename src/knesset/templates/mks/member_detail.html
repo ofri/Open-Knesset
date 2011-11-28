@@ -358,7 +358,13 @@
                         <div>
                             <h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
                             {% video_player 400 300 about_video_embed_link about_video_image_link %}
-                            </div>
+                        </div> <br/>
+                        {% endif %}
+                        
+                        {% if num_related_videos > 0 %}
+                        <div>
+                            <h3>{% trans "קטעי וידאו אחרונים" %}</h3>
+                            {% video_playlist related_videos %}
                         </div> <br/>
                         {% endif %}
 

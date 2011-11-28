@@ -20,7 +20,6 @@ from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser
 import parse_presence, parse_laws, mk_roles_parser, parse_remote
-import parse_videos
 
 from parse_gov_legislation_comm import ParseGLC
 
@@ -52,8 +51,6 @@ class Command(NoArgsCommand):
             help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
             help="online update of votes data."),
-        make_option('--update-video', action='store_true', dest='update-video',
-            help="online update of video data."),
 
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -1420,7 +1417,6 @@ class Command(NoArgsCommand):
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
         laws = options.get('laws',False)
-        update_video = options.get('update-video', False)
         
         if all_options:
             download = True
@@ -1428,7 +1424,7 @@ class Command(NoArgsCommand):
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws),not(update_video)])):
+        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws)])):
             print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
@@ -1467,11 +1463,7 @@ class Command(NoArgsCommand):
             self.update_mk_role_descriptions()
             self.update_gov_law_decisions()
             self.correct_votes_matching()
-            parse_videos.update_mk_about_video()
             logger.debug('finished update')
-            
-        if update_video:
-            parse_videos.update_mk_about_video()
 
 
 def iso_year_start(iso_year):
