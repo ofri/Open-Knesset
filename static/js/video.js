@@ -18,11 +18,10 @@
         var prev=parent.prev('.video_playlist_player_embed');
         var player='<div class="video_playlist_player_embed">'
             +'<iframe src="'+embed_link+'" width=400" height="300" frameborder="0"></iframe>'
-            +'<a class="video_viewlink" href="javascript:;">'+title+'</a>'
+            +'<div><a class="video_viewlink" href="'+view_link+'" target="_blank">'+title+'</a></div>'
         +'</div>';
         player=$(player);
         player.find('.video_viewlink').click(function(){
-            window.open(view_link);
             $('.video_playlist_player_embed').remove();
             $('.video_playlist_player').show();
         });
