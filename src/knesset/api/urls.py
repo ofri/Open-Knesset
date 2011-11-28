@@ -12,6 +12,8 @@ tag_handler = cache_page(Resource(TagHandler), 60*15)
 agenda_handler = cache_page(Resource(AgendaHandler), 60*15)
 committee_handler = cache_page(Resource(CommitteeHandler), 60*15)
 committee_meeting_handler = cache_page(Resource(CommitteeMeetingHandler), 60*15)
+event_handler = cache_page(Resource(EventHandler), 60*15)
+
 
 urlpatterns = patterns('',
       url(r'^vote/$', vote_handler, name='vote-handler'),
@@ -32,5 +34,9 @@ urlpatterns = patterns('',
       url(r'^committee/(?P<id>[0-9]+)/$', committee_handler, name='committe-handler'),
       url(r'^committeemeeting/$', committee_meeting_handler, name='committee-meeting-handler'),
       url(r'^committeemeeting/(?P<id>[0-9]+)/$', committee_meeting_handler, name='committee-meeting-handler'),
+      url(r'^event/$', event_handler, name='event-handler'),
+      url(r'^event/(?P<id>[0-9]+)/$', event_handler, name='event-handler'),
+      # NOTE: this view is not in the api application, but in the events application
+      url(r'^event/icalendar/$', 'knesset.events.views.icalendar'),
       )
 
