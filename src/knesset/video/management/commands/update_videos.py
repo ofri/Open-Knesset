@@ -1,13 +1,24 @@
 # encoding: utf-8
-import urllib, json
+import urllib, json, logging, os, re, datetime
 from knesset.mks.models import Member
 from knesset.video.models import Video
 from django.contrib.contenttypes.models import ContentType
 from knesset.video.utils import get_videos_queryset
 from django.core.management.base import NoArgsCommand
 import dateutil.parser
+from optparse import make_option
+from knesset.committees.models import Committee
+from django.conf import settings
+from BeautifulSoup import BeautifulSoup
 
 GDATA_YOUTUBE_VIDEOS_URL='https://gdata.youtube.com/feeds/api/videos'
+PORTAL_KNESSET_COMMITTEES_INDEX_PAGE_URL='http://www.knesset.gov.il/committees/heb/current_vaadot.asp'
+PORTAL_KNESSET_BASEHREF='http://portal.knesset.gov.il'
+
+DATA_ROOT = getattr(settings, 'DATA_ROOT',
+                    os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
+
+logger = logging.getLogger("open-knesset.updatevideos")
 
 #### misc ####
 
@@ -169,6 +180,7 @@ def _update_member_about_video(member,video,names):
         return True
 
 def update_members_about_video():
+    logger.info('begin update_members_about_video')
     for member in Member.objects.all():
         if get_videos_queryset(member,group='about').count()==0:
             names=_get_member_names(member)
@@ -219,6 +231,7 @@ def _update_member_related_video(member,video):
         return False
 
 def update_members_related_videos():
+    logger.info('begin update_members_related_videos')
     for member in Member.objects.all():
         relvids=[]
         names=_get_member_names(member)
@@ -236,11 +249,173 @@ def update_members_related_videos():
             for video in relvids:
                 _update_member_related_video(member,video)
 
+#### committees ####
+
+def _get_committees_index_page():
+    rf=urllib.urlopen(PORTAL_KNESSET_COMMITTEES_INDEX_PAGE_URL)
+    return rf.read().decode('windows-1255').encode('utf-8')
+    
+def _get_committee_mainpage(soup,name):
+    href=''
+    portal_havaada=u'פורטל הוועדה'
+    elt=soup('b',text=name)
+    if len(elt)>0:
+        elt=elt[0].findAllNext('a',text=portal_havaada)
+        if len(elt)>0:
+            elt=elt[0]
+            href=elt.parent['href']
+    if len(href)>6:
+        return BeautifulSoup(urllib.urlopen(href).read())
+    else:
+        return ''
+
+def _update_committee_broadcasts_url(comm):
+    url=''
+    index=_get_committees_index_page()
+    soup=BeautifulSoup(index)
+    main=_get_committee_mainpage(soup,comm.name)
+    if type(main).__name__=='BeautifulSoup':
+        vaadot_meshudarot=u'ועדות משודרות'
+        elt=main('a',text=vaadot_meshudarot)
+        if len(elt)>0:
+            path=elt[0].parent['href']
+            url=PORTAL_KNESSET_BASEHREF+path
+    if len(url)>6:
+        comm.portal_knesset_broadcasts_url=url
+        comm.save()
+    else:
+        print comm.name+": no broadcasts_url!"
+    return url
+
+def _get_committee_videos(bcasturl):
+    videos=[]
+    soup=BeautifulSoup(urllib.urlopen(bcasturl).read())
+    elts=soup('span',{'onclick':re.compile(".*asf.*")})
+    if len(elts)>0:
+        for elt in elts:
+            onclick=elt['onclick']
+            r=re.compile("SetPlayerFileName\\('(.*),([0-9]*)/([0-9]*)/([0-9]*) ([0-9]*):([0-9]*):([0-9]*) (.*)'\\);")
+            mtch=re.search(r,onclick)
+            groups=mtch.groups()
+            if len(groups)==8:
+                videos.append({
+                    'mmsurl':groups[0],
+                    'title':groups[7],
+                    'datetime':datetime.datetime(int(groups[3]),int(groups[2]),int(groups[1]),int(groups[4]),int(groups[5]),int(groups[6])),
+                })
+    return videos
+
+def _update_committee_mms_video(comm,video):
+    curvids=get_videos_queryset(comm,'mms').filter(embed_link=video['mmsurl'])
+    if len(curvids)==0:
+        v = Video(
+            embed_link=video['mmsurl'],
+            title=video['title'],
+            source_type='mms-knesset-portal',
+            published=video['datetime'],
+            group='mms', 
+            content_object=comm
+        )
+        v.save()
+
+def download_committees_metadata(with_history):
+    if with_history:
+        raise Exception('download of historical data is not supported yet')
+    for comm in Committee.objects.all():
+        broadcasts_url=comm.portal_knesset_broadcasts_url
+        if len(broadcasts_url)==0:
+            broadcasts_url=_update_committee_broadcasts_url(comm)
+        if len(broadcasts_url)>0:
+            videos=_get_committee_videos(broadcasts_url)
+            for video in videos:
+                _update_committee_mms_video(comm,video)
+                    
+def download_committees_videos():
+    object_type=ContentType.objects.get_for_model(Committee)
+    for video in Video.objects.filter(content_type__pk=object_type.id,group='mms'):
+        url=video.embed_link
+        filename=url.split('/')
+        filename=filename[len(filename)-1]
+        if os.path.exists(DATA_ROOT+filename):
+            print "file already downloaded: "+filename
+        else:
+            cmd='mimms --resume '+url+' '+DATA_ROOT+filename+'.part'
+            os.system(cmd)
+            if os.path.exists(DATA_ROOT+filename+'.part'):
+                os.rename(DATA_ROOT+filename+'.part',DATA_ROOT+filename)
+                print "downloaded "+filename
+
+def upload_committees_videos():
+    object_type=ContentType.objects.get_for_model(Committee)
+    for video in Video.objects.filter(content_type__pk=object_type.id,group='mms'):
+        url=video.embed_link
+        filename=url.split('/')
+        filename=filename[len(filename)-1]
+        if os.path.exists(DATA_ROOT+filename):
+            video=_youtube_upload_video(DATA_ROOT+filename,{
+                'title':video['title'],
+                'published':video['published']
+            })
+
 #### Command ####
 
 class Command(NoArgsCommand):
+    option_list = NoArgsCommand.option_list + (
+        make_option('--all', action='store_true', dest='all',
+            help="runs all the update_videos processes."),
+        make_option('--download', action='store_true', dest='download',
+            help="download video metadata."),
+        make_option('--download-videos', action='store_true', dest='download-videos',
+            help="download video data (large files)"),
+        make_option('--upload', action='store_true', dest='upload',
+            help="uploads the downloaded video data to youtube."),
+        make_option('--update', action='store_true', dest='update',
+            help="update video metadata"),
+        make_option('--with-history', action='store_true', dest='with-history',
+            help="download historical data (only relevant with --download option)"),
+    )
+    help = "Update videos."
 
-        def handle_noargs(self, **options):
+    def handle_noargs(self, **options):
+        all_options = options.get('all', False)
+        download = options.get('download', False)
+        download_videos = options.get('download-videos', False)
+        upload = options.get('upload', False)
+        update = options.get('update', False)
+        with_history = options.get('with-history', False)
+
+        if all_options:
+            download=True
+            download_videos=True
+            upload=True
+            update=True
+        
+        if (all([
+            not(all_options),
+            not(download),
+            not(download_videos),
+            not(upload),
+            not(update),
+        ])):
+            print "no arguments found. Running update phase. try -h for help."
+            update=True
+        
+                    
+        if download:
+            print "beginning download phase"
+            download_committees_metadata(with_history)
+        
+        if download_videos:
+            print "beginning download-videos phase"
+            download_committees_videos()    
+        
+        if upload:
+            print "beginning upload phase"
+            upload_committees_videos()
+            
+        if update:
+            print "beginning update phase"
             update_members_about_video()
             update_members_related_videos()
+            logger.debug('finished update')
 
