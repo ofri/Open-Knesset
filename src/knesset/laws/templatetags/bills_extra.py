@@ -13,3 +13,7 @@ def bill_list_item(bill):
 @register.inclusion_tag('laws/item_tags.html')
 def item_tags(tags):
     return { 'tags': tags }
+
+@register.inclusion_tag('laws/bill_inabox.html')
+def bill_inabox(bill):
+    return { 'bill': bill }

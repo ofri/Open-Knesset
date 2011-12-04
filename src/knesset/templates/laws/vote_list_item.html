@@ -11,12 +11,12 @@
             <tr>
                 <td>{% trans 'For' %}:</td>
                 <td>{{ vote.for_votes_count }}</td>
-                <td class="column-bar">{% bar vote.for_votes_count "for" %}</td>
+                <td class="column-bar">{% if vote %}{% bar vote.for_votes_count "for" %}{% endif %}</td>
             </tr>
             <tr>
                 <td>{% trans 'Against' %}:</td>
                 <td>{{ vote.against_votes_count }}</td>
-                <td class="column-bar">{% bar vote.against_votes_count "against" %}</td>
+                <td class="column-bar">{% if vote %}{% bar vote.against_votes_count "against" %}{% endif %}</td>
             </tr>
         </table>
             {% if vote.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
@@ -59,7 +59,7 @@
         {% endif %}
     </div>
     {% if watched_members %}
-        {% for s in watched_members %}{% member_stand vote s %}{% endfor %}
+    {% if vote %}{% for s in watched_members %}{% member_stand vote s %}{% endfor %}{% endif %}
     {% else %} {% if forloop.first %}
         <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
         {% endif %}

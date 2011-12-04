@@ -20,7 +20,7 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=12" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=13" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
@@ -113,6 +113,7 @@
                 <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a class="hashnav" href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
                 <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a class="hashnav" href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
                 <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a class="hashnav" href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
+                <li id="nav-tags" {% block nav-tags %} {% endblock %} > <a class="hashnav" href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
                 <li id="nav-planet" {% block nav-planet %} {% endblock %} > <a class="hashnav" href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
                 <li id="nav-about" {% block nav-about %} {% endblock %} > <a class="hashnav" href="{% url about %}">{% trans 'About' %}</a> </li>
             </ul>

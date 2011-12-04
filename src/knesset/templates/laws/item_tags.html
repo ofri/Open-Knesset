@@ -3,6 +3,6 @@
     {% trans "Tags" %}:
     {% for tag in tags %}
         {% if not forloop.first %} | {% endif %}
-        <a href="{% url bill-tag tag=tag %}">{{ tag.name }}</a>
+        <a href="{% url tag-detail slug=tag %}">{{ tag.name }}</a>
     {% endfor %}
 </span>

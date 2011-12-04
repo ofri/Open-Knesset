@@ -1,500 +1,711 @@
-body{
-    margin:0px;
-    background: #fafafc;
-    direction: rtl;
-    text-align: right;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #666;
-    font-size: 15px;
-}
-
-a{
-	color: #0080ff;
-}
-
-#title a {
-    text-decoration: none;
-}
-
-#header,
-#graph,
-#footer{
-    max-width: 500px;
-    width: 100%;
-}
-#header{
-    background: #FAFAFC;
-    overflow: hidden;
-    position: absolute;
-    z-index: 20;
-    box-shadow: 0 0px 10px rgba(0,0,0,0.2);
-    top:0;
-}
-
-#explanation {
-    overflow: auto;
-    max-height: 140px;
-}
-
-.clear {
-    clear: both;
-}
-
-.header-hover{
-    height: 330px;
-}
-
-.header-small {
-    height: 70px;
-}
-
-	#details{
-		margin: 10px 0 0 120px;
-    	padding: 0 10px;
-		border-left: 1px dotted #cccccc;
-		position: relative;
-	}
-	.label{
-			font-size: 11px;
-			color: #808080;
-			display: block;
-		}
-		h1{
-		    color: #0080FF;
-		    font-size: 13px;
-		    font-weight: bold;
-		    height: 1.35em;
-		    margin-top: 0;
-		}
-		.header-hover h1{
-			height: auto;
-			overflow: auto;
-		}
-		#excerpt{
-			margin: 18px 0; 
-		}
-			#excerpt p{
-				margin: 0 0 10px;
-			}
-			.tglelps {
-			    margin-bottom: 4px;
-			}
-			.elpsd {
-			    display: none;
-			}
-			#external-links a{
-				display: block;
-				font-size: 13px;
-				padding-right: 20px;
-				line-height: 1.4em;
-			}
-			#external-links a.oknesset-resource{
-				background: url(../img/oknesset_favicon.png) right no-repeat;
-			}
-			#external-links a.knesset-resource{
-				background: url(../img/knesset_favicon.png) right no-repeat;
-			}
-			
-		.status{
-		    background: scroll 0 0 transparent;
-		    display: block;
-		    float: left;
-		    height: 40px;
-		    left: 10px;
-		    margin-top: -30px;
-		    position: absolute;
-		    text-indent: -9999px;
-		    top: 70px;
-		    width: 70px;
-		    z-index: 10;
-		}
-		
-		#header .status{
-			bottom: 10px;
-			top: auto;
-		}
-		
-		.status.passed{
-			background: url(../img/embed_passed.png) no-repeat;
-		}
-		
-		.status.failed{
-			background: url(../img/embed_failed.png) no-repeat;
-		}
-		
-	#pms{
-		margin: 10px;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100px;
-	}
-		#pms ul{
-			height: 35px;
-			overflow: hidden;
-			margin: 0;
-    		padding: 0;
-    		float: right;
-    		width: 75px;
-		}
-		.header-hover #pms ul{
-			height: auto;
-    		width: 100px;
-		}
-			#pms li,
-			#pms a.more{
-				float: right;
-			    height: 32px;
-			    list-style: none outside none;
-			    margin-bottom: 3px;
-			    margin-left: 3px;
-			}
-			#pms a.more{
-				margin-left: 0;
-				text-decoration: none;
-				line-height: 1.5em;
-			}
-			.header-hover #pms a.more{
-				display: none;
-			}
-				#pms li img{
-					width: 20px;
-					height: auto;
-					border: 1px solid #1088fe;
-				}
-	.pull{
-		clear: both;
-		width: 100%;
-		display: block;
-		background: #eeeff5;
-		text-indent: -30000px;
-		text-decoration: none;
-		position: absolute;
-		bottom: 0;
-		height: 10px;
-		cursor: pointer;
-	}
-		.pull .arrow {
-			width: 9px;
-			height: 9px;
-			position: absolute;
-			left: 50%;
-		}
-			.pull .arrow.down {
-				background: url(../img/embed_arrow_down.png) no-repeat;
-			}
-			.pull .arrow.up {
-				background: url(../img/embed_arrow_up.png) no-repeat;
-			}
-
-#gov-position{
-	display: none;
-}
-#graph{
-	margin-top: 60px;
-	position: relative;
-}
-	ul#steps{
-		margin: 0;
-		padding: 0;
-	    overflow: hidden;
-		list-style-type: none;
-		width: 100%;
-	}
-		ul#steps li{
-			background: #eeeff5 repeat-y;
-			max-width: 50px;
-			width: 10%;
-			float: right;
-			height: 100%;
-			margin: 0;
-			min-height: 250px;
-			padding-top: 40px;
-			position: relative;
-		}
-		ul#steps li:hover{
-			background-image: url(../img/embed_hover.png);
-		}
-		ul#steps li.current{
-			/*background-image: url(../img/embed_step_shadow.png);*/
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-		}
-		ul#steps li.odd{
-			background-color: #f5f5f9;
-		}
-		ul#steps li.passed{
-			background-color: #e6eee6;
-		}
-		ul#steps li.odd.passed{
-			background-color: #d6e3d6;
-		}
-		ul#steps li.failed{
-			background-color: #f8ded7;
-		}
-		ul#steps li.odd.failed{
-			background-color: #f4c8bd;
-		}
-			ul#steps li div.step{
-				height: 86px;
-			}
-			ul#steps li.passed div.step{
-				background: url(../img/embed_line_passed.png) bottom repeat-x;
-			}
-			ul#steps li#initiated div.step{
-				background-position: bottom left;
-				background-repeat: no-repeat;
-			}
-			ul#steps li#passed div.step{
-				background-position: bottom right;
-				background-repeat: no-repeat;
-			}
-			ul#steps li.pending.current div.step{
-				background: url(../img/embed_line_pending.png) bottom right no-repeat;
-			}
-			ul#steps li.failed.current div.step{
-				background: url(../img/embed_line_failed.png) bottom right no-repeat;
-			}
-			ul#steps li a{
-			    display: none;
-			    width: 20px;
-			    height: 20px;
-			    margin: 0 auto 8px;
-			    text-indent: -30000px;
-			    text-decoration: none;
-			}
-			ul#steps li:hover a{
-					display: block;
-				}
-				ul#steps li a.link{
-					background: url(../img/embed_link.png);
-				}
-				ul#steps li a.info{
-					background: url(../img/embed_info.png);
-				}
-				ul#steps li.pending a{
-					background-position: 0 -20px;
-				}
-				ul#steps li.failed a{
-					background-position: 0 -40px;
-				}
-				ul#steps li a:hover{
-					background-position: 0 bottom;
-				}
-				ul#steps li span.date{
-					display: block;
-					position: absolute;
-					bottom: 0;
-					text-align: center;
-					font-size: 11px;
-					height: 60px;
-					margin: 0 auto;
-					width: 100%;
-					color: #808080;
-					opacity: 0.5;
-				}
-				ul#steps li.passed span{
-					color: #43873a;
-				}
-				ul#steps li.failed span{
-					color: #b44630;
-				}
-				ul#steps li:hover span.date{
-					opacity: 1;
-				}
-				ul#steps li .icon{
-					position: absolute;
-					top: 100px;
-					width: 100%;
-					height: 50px;
-					background: url(../img/embed_icons_pending.png);
-					text-indent: -999999px;
-					z-index: 1;
-					display: block;
-				}
-				ul#steps li#initiated .icon{
-					background-position: -450px center;
-				}
-				ul#steps li#pre-vote .icon{
-					background-position: -400px center;
-				}
-				ul#steps li#summoned-1 .icon{
-					background-position: -350px center;
-				}
-				ul#steps li#committee-1 .icon{
-					background-position: -300px 0;
-				}
-				ul#steps li#vote-1 .icon{
-					background-position: -250px 0;
-				}
-				ul#steps li#summoned-2 .icon{
-					background-position: -200px 0;
-				}
-				ul#steps li#committee-2 .icon{
-					background-position: -150px 0;
-				}
-				ul#steps li#vote-2 .icon{
-					background-position: -100px 0;
-				}
-				ul#steps li#vote-3 .icon{
-					background-position: -50px 0;
-				}
-				ul#steps li#passed .icon{
-					background-position: 0px 0;
-				}
-				ul#steps li.passed .icon{
-					background-image: url(../img/embed_icons_passed.png);
-				}
-				ul#steps li.failed .icon{
-					background-image: url(../img/embed_icons_failed.png);
-				}
-				ul#steps li .tooltip{
-				    display: none;
-				    height: 30px;
-				    position: absolute;
-				    text-align: center;
-				    top: 155px;
-				    left: -150%;
-				    width: 400%;
-				    z-index: 200;
-				}
-				ul#steps li .tooltip span{
-					background: url(../img/embed_tooltip_pending.png) center;
-					padding: 11px 4px 4px;
-					font-size: 13px;
-					height: 20px;
-				}
-				ul#steps li.first .tooltip{
-					left: -310%;
-					text-align: right;
-				}
-				ul#steps li.first .tooltip span{
-					background-position: 40% 0;
-				}
-				ul#steps li.last .tooltip{
-					right: -310%;
-					text-align: left;
-				}
-				ul#steps li.last .tooltip span{
-					background-position: 86% 0;
-				}
-				ul#steps li.passed .tooltip span{
-					background-image: url(../img/embed_tooltip_passed.png);
-				}
-				ul#steps li.failed .tooltip span{
-					background-image: url(../img/embed_tooltip_failed.png);
-				}
-				ul#steps li:hover .tooltip,
-				ul#steps li.hover .tooltip{
-					display: block;
-				}
-				
-				ul#steps li .tooltip-score{
-				    display: none;
-				    position: absolute;
-				    z-index: 200;
-				}
-				ul#steps li.voted:hover .tooltip-score {
-					display: block;
-				}
-				ul#steps li.voted .step{
-					margin-top: -30px;
-					padding-bottom: 30px;
-				}
-				ul#steps li.voted .tooltip-score{
-					top: 75px;
-					width: 300%;
-					left: -100%;
-				}
-				ul#steps li.voted .tooltip-score span{
-					background-image: url(../img/embed_scale.png);
-					background-repeat:no-repeat;
-					color: #fff;
-					position: absolute;
-					text-indent: -99999px;
-					display: block;
-					height: 19px;
-					padding: 11px 0 0;
-				}
-				ul#steps li.voted .tooltip-score .scale{
-					width: 120px;
-					text-align: center;
-					overflow: hidden;
-					margin: 0 auto;
-				}
-				ul#steps li.voted .tooltip-score span.for{
-					background-position: top;
-					width: 100%;
-					position: static;
-				}
-				ul#steps li.voted .tooltip-score span.against{
-					background-position: right bottom;
-    				z-index: 10;
-				}
-				ul#steps li.voted .tooltip-score span.balance{
-				    background: none repeat scroll 0 0 transparent;
-				    position: absolute;
-				    text-align: center;
-				    text-indent: 0;
-				    width: 100%;
-				    z-index: 20;
-				    padding-top:3px;
-				}
-				
-#footer{
-	position: relative;
-	bottom: 0;
-    background: #EEEFF5;
-    height: 20px;
-    font-size: 13px;
-	box-shadow: 0 0px 10px rgba(0,0,0,0.2);
-}
-	#footer,
-	#footer a{
-		color: #999;
-	}
-	#footer a:hover{
-		color: #666;
-	}
-	#footer #credit{
-		float: right;
-		padding: 1px 5px;
-	}
-	#footer #share{
-		float: left;
-		padding: 1px 5px;
-	}
-
-.ui-dialog{
-    background: #EEEFF5; 
-    border: 1px dotted #cccccc;
-    opacity: 0.86;
-}
-
-.ui-widget-header{
-    background: none;
-    border: none;
-    height: 13px;
-}
-
-.ui-dialog-titlebar {
-  background-color: #D8DFEA !important;
-  opactity: 0.6;
+.billbox {
+  margin: 0px;
+  background: #fafafc;
   direction: rtl;
+  text-align: right;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #666;
+  font-size: 15px;
+  position:relative;
+  /*
+ * UI-DIALOG
+ */
+
+  /*
+ * Drill down
+ */
 
 }
+.billbox a {
+  color: #0080ff;
+  padding: 0;
+}
+.billbox .title a {
+  text-decoration: none;
+}
+.billbox .header:hover { height: 80%; }
+.billbox .header:hover .pms ul { overflow:visible; width: 100px; }
+.billbox .header:hover .pms .more { display: none;}
+.billbox .header {
+  background: #FAFAFC;
+  overflow: hidden;
+  position: absolute;
+  top:0;
+  z-index: 20;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+.billbox .explanation {
+  overflow: auto;
+  max-height: 140px;
+}
+.billbox .clear {
+  clear: both;
+}
+.billbox .header-hover {
+  height: 330px;
+}
+.billbox .header-small {
+  height: 70px;
+}
+.billbox .billbox-details {
+  margin: 10px 0 0 120px;
+  padding: 0 10px;
+  border-left: 1px dotted #cccccc;
+  position: relative;
+}
+.billbox .label {
+  font-size: 11px;
+  color: #808080;
+  display: block;
+}
+.billbox h1 {
+  color: #0080FF;
+  font-size: 13px;
+  font-weight: bold;
+  height: 1.35em;
+  margin-top: 0;
+}
+.billbox .header-hover h1 {
+  height: auto;
+  overflow: auto;
+}
+.billbox .excerpt {
+  margin: 18px 0;
+}
+.billbox .excerpt p {
+  margin: 0 0 10px;
+}
+.billbox .tglelps {
+  margin-bottom: 4px;
+}
+.billbox .elpsd {
+  display: none;
+}
+.billbox .external-links a {
+  display: block;
+  font-size: 13px;
+  padding-right: 20px;
+  line-height: 1.4em;
+}
+.billbox .external-links a.oknesset-resource {
+  background: url(../img/oknesset_favicon.png) right no-repeat;
+}
+.billbox .external-links a.knesset-resource {
+  background: url(../img/knesset_favicon.png) right no-repeat;
+}
+.billbox .status {
+  background: scroll 0 0 transparent;
+  display: block;
+  float: left;
+  height: 40px;
+  left: 10px;
+  margin-top: -30px;
+  position: absolute;
+  text-indent: -9999px;
+  top: 70px;
+  width: 80px;
+  z-index: 10;
+  overflow: hidden;
+}
+.billbox .header .status {
+  bottom: 10px;
+  top: auto;
+  left: -100px;
+}
+.billbox .status.passed {
+  background: url(../img/embed_passed.png) no-repeat;
+}
+.billbox .status.failed {
+  background: url(../img/embed_failed.png) no-repeat;
+}
+.billbox .header .pms {
+  margin: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+}
+.billbox .pms ul {
+  height: 22px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  float: right;
+  width: 75px;
+}
+.billbox .header-hover .pms ul {
+  height: auto;
+  width: 100px;
+}
+.billbox .pms li, .billbox .pms a.more {
+  float: right;
+  height: 20px;
+  list-style: none outside none;
+  margin-bottom: 5px;
+  margin-left: 3px;
+}
+.billbox .pms a.more {
+  margin-left: 0;
+  text-decoration: none;
+  line-height: 1.5em;
+}
+.billbox .header-hover .pms a.more {
+  display: none;
+}
+.billbox .pms li a {
+  border: 1px solid #1088FE;
+  display: block;
+  height: 20px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.billbox .pms li img {
+  width: 20px;
+  height: auto;
+  margin-top: -8px;
+}
+.billbox .pms ul:hover {
+  overflow: visible;
+}
+.billbox .pms ul li:hover {
+  position: relative;
+  margin-left: 25px;
+  overflow: visible;
+}
+.billbox .pms ul li:hover:last-child {
+  margin-left: 22px;
+}
+.billbox .pms li:hover a {
+  width: 40px;
+  height: 58px;
+  top: -18px;
+  right: -10px;
+  position: absolute;
+}
+.billbox .pms li:hover img {
+  width: 40px;
+  height: auto;
+  z-index: 30000;
+  margin-top: 0px;
+}
+.billbox .pms ul li:hover .tooltip {
+  display: block;
+  top: 50px;
+  width: 100px;
+  margin-left: -60px;
+  /*background-color: #fff;*/
 
-.ui-dialog-title {
+}
+.billbox .pull {
+  clear: both;
+  width: 100%;
+  display: block;
+  background: #eeeff5;
+  text-indent: -30000px;
+  text-decoration: none;
+  position: absolute;
+  bottom: 0;
+  height: 10px;
+  cursor: pointer;
+}
+.billbox .pull .arrow {
+  width: 9px;
+  height: 9px;
+  position: absolute;
+  left: 50%;
+}
+.billbox .pull .arrow.down {
+  background: url(../img/embed_arrow_down.png) no-repeat;
+}
+.billbox .pull .arrow.up {
+  background: url(../img/embed_arrow_up.png) no-repeat;
+}
+.billbox .gov-position {
+  display: none;
+}
+.billbox .graph {
+  padding-top: 60px;
+  position: relative;
+}
+.billbox .thedrill {
+  display: none;
+}
+.billbox ul.steps {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style-type: none;
+  width: 100%;
+}
+.billbox ul.steps li {
+  background: #eeeff5;
+  /* max-width: 60px; */
+
+  width: 12.5%;
+  float: right;
+  height: 100%;
+  margin: 0;
+  min-height: 250px;
+  padding-top: 40px;
+  position: relative;
+}
+.billbox ul.steps li.summoned-1, .billbox ul.steps li.summoned-2 {
+  display: none;
+}
+.billbox ul.steps li:hover {
+  background-image: url(../img/embed_hover.png);
+}
+.billbox ul.steps li.current {
+  /*background-image: url(../img/embed_step_shadow.png);*/
+
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+.billbox ul.steps li.odd {
+  background-color: #f5f5f9;
+}
+.billbox ul.steps li.passed {
+  background-color: #e6eee6;
+}
+.billbox ul.steps li.odd.passed {
+  background-color: #d6e3d6;
+}
+.billbox ul.steps li.failed {
+  background-color: #f8ded7;
+}
+.billbox ul.steps li.odd.failed {
+  background-color: #f4c8bd;
+}
+.billbox ul.steps li div.step {
+  height: 86px;
+}
+.billbox ul.steps li.passed div.step {
+  background: url(../img/embed_line_passed.png) bottom repeat-x;
+}
+.billbox ul.steps li.initiated div.step {
+  background-position: bottom left;
+  background-repeat: no-repeat;
+}
+.billbox ul.steps li.accepted div.step {
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+.billbox ul.steps li.pending.current div.step {
+  background: url(../img/embed_line_pending.png) bottom right no-repeat;
+}
+.billbox ul.steps li.failed.current div.step {
+  background: url(../img/embed_line_failed.png) bottom right no-repeat;
+}
+.billbox ul.steps li a {
+  display: none;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto 8px;
+  text-indent: -30000px;
+  text-decoration: none;
+}
+.billbox ul.steps li:hover a {
+  display: block;
+}
+.billbox ul.steps li a.link {
+  background: url(../img/embed_link.png);
+}
+.billbox ul.steps li a.info {
+  background: url(../img/embed_info.png);
+}
+.billbox ul.steps li.pending a {
+  background-position: 0 -20px;
+}
+.billbox ul.steps li.failed a {
+  background-position: 0 -40px;
+}
+.billbox ul.steps li a:hover {
+  background-position: 0 bottom;
+}
+.billbox ul.steps li span.date {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  font-size: 11px;
+  height: 60px;
+  margin: 0 auto;
+  width: 100%;
+  color: #808080;
+  opacity: 0.5;
+}
+.billbox ul.steps li.passed span {
+  color: #43873a;
+}
+.billbox ul.steps li.failed span {
+  color: #b44630;
+}
+.billbox ul.steps li:hover span.date {
+  opacity: 1;
+}
+.billbox ul.steps li .icon {
+  position: absolute;
+  top: 100px;
+  width: 100%;
+  height: 50px;
+  background: url(../img/embed_icons_initiated.png) top center;
+  text-indent: -999999px;
+  z-index: 1;
+  display: block;
+}
+.billbox ul.steps li.initiated .icon {
+  background-image: url(../img/embed_icons_initiated.png);
+}
+.billbox ul.steps li.pre-vote .icon {
+  background-image: url(../img/embed_icons_pre-vote.png);
+}
+.billbox ul.steps li.committee-1 .icon {
+  background-image: url(../img/embed_icons_committee.png);
+}
+.billbox ul.steps li.vote-1 .icon {
+  background-image: url(../img/embed_icons_vote-1.png);
+}
+.billbox ul.steps li.committee-2 .icon {
+  background-image: url(../img/embed_icons_committee.png);
+}
+.billbox ul.steps li.vote-2 .icon {
+  background-image: url(../img/embed_icons_vote-2.png);
+}
+.billbox ul.steps li.vote-3 .icon {
+  background-image: url(../img/embed_icons_vote-3.png);
+}
+.billbox ul.steps li.accepted .icon {
+  background-image: url(../img/embed_icons_passed.png);
+}
+.billbox ul.steps li.passed .icon {
+  background-position: center center;
+}
+.billbox ul.steps li.failed .icon {
+  background-position: bottom center;
+}
+.billbox ul li .tooltip {
+  display: none;
+  height: 30px;
+  position: absolute;
+  text-align: center;
+  top: 155px;
+  left: -150%;
+  width: 400%;
+  z-index: 15;
+}
+.billbox ul li .tooltip span {
+  background: url(../img/embed_tooltip_pending.png) center;
+  padding: 11px 4px 4px;
+  font-size: 13px;
+  height: 20px;
+}
+.billbox ul li.first .tooltip {
+  left: -310%;
+  text-align: right;
+}
+.billbox ul li.first .tooltip span {
+  background-position: 40% 0;
+}
+.billbox ul li.last .tooltip {
+  right: -310%;
+  text-align: left;
+}
+.billbox ul li.last .tooltip span {
+  background-position: 86% 0;
+}
+.billbox ul li.passed .tooltip span {
+  background-image: url(../img/embed_tooltip_passed.png);
+}
+.billbox ul li.failed .tooltip span {
+  background-image: url(../img/embed_tooltip_failed.png);
+}
+.billbox ul li:hover .tooltip {
+  display: block;
+}
+.billbox ul.steps li .tooltip-score {
+  display: none;
+  position: absolute;
+  z-index: 15;
+}
+.billbox ul.steps li.voted:hover .tooltip-score {
+  display: block;
+}
+.billbox ul.steps li.voted .step {
+  margin-top: -30px;
+  padding-bottom: 30px;
+}
+.billbox ul.steps li.voted .tooltip-score {
+  top: 75px;
+  width: 300%;
+  left: -100%;
+}
+.billbox ul.steps li.voted .tooltip-score span {
+  background-image: url(../img/embed_scale.png);
+  background-repeat: no-repeat;
+  color: #fff;
+  position: absolute;
+  text-indent: -99999px;
+  display: block;
+  height: 19px;
+  padding: 11px 0 0;
+}
+.billbox ul.steps li.voted .tooltip-score .scale {
+  width: 120px;
+  text-align: center;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.billbox ul.steps li.voted .tooltip-score span.for {
+  background-position: top;
+  width: 100%;
+  position: static;
+}
+.billbox ul.steps li.voted .tooltip-score span.against {
+  background-position: right bottom;
+  z-index: 10;
+}
+.billbox ul.steps li.voted .tooltip-score span.balance {
+  background: none repeat scroll 0 0 transparent;
+  position: absolute;
+  text-align: center;
+  text-indent: 0;
+  width: 100%;
+  z-index: 20;
+  padding-top: 3px;
+}
+.billbox ul.steps li.focused {
+  width: 80%;
+}
+.billbox .footer {
+  position: relative;
+  bottom: 0;
+  background: #EEEFF5;
+  height: 20px;
+  font-size: 11px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+}
+.billbox .footer, .billbox .footer a {
+  color: #999;
+}
+.billbox .footer a:hover {
+  color: #666;
+}
+.billbox .footer .credit {
+  float: right;
+  padding: 1px 5px;
+}
+.billbox .footer .share {
+  float: left;
+  padding: 1px 5px;
+}
+.billbox .footer .share a {
+  background: url(../img/embed_link.png) right -20px no-repeat;
+  padding: 2px 20px 2px 0;
+  margin-right: 3px;
+  text-decoration: none;
+}
+.billbox .footer .share a.embed {
+  background-image: url(../img/embed_embed.png);
+}
+.billbox .footer .share a:hover {
+  background-position: right -60px;
+}
+.billbox .ui-dialog {
+  background: #EEEFF5;
+  border: 1px dotted #cccccc;
+  opacity: 0.86;
+}
+.billbox .ui-widget-header {
+  background: none;
+  border: none;
+  height: 13px;
+}
+.billbox .ui-dialog-titlebar {
+  background-color: #D8DFEA !important;
+  opacity: 0.6;
+  direction: rtl;
+}
+.billbox .ui-dialog-title {
   float: right !important;
-  font-size: 12px
+  font-size: 12px;
 }
-
-.ui-dialog-content {
+.billbox .ui-dialog-content {
   color: black;
   float: right !important;
   overflow: auto !important;
 }
-
-.ui-dialog-content a {
-    color: blue !important;
+.billbox .ui-dialog-content a {
+  color: blue !important;
 }
+.billbox div.graph.drilling {
+  overflow: hidden;
+  width: 100%;
+}
+.billbox div.graph.drilling .thedrill {
+  display: block;
+}
+.billbox div.graph.drilling .status,
+.billbox div.graph.drilling ul.steps li .link,
+.billbox div.graph.drilling ul.steps li .info,
+.billbox div.graph.drilling ul.steps li.voted .tooltip-score,
+.billbox div.graph.drilling ul.steps li .date {
+  display: none;
+}
+.billbox div.graph.drilling ul.steps {
+  width: 760%;
+  margin-right: -92.5%;
+  /* this property sets the focus */
 
+}
+.billbox div.graph.drilling ul.steps li.drilled {
+  background: url("../img/embed_hover.png") #e6eee6;
+}
+.billbox div.graph.drilling ul.steps li .icon {
+  top: 20px;
+  right: 10px;
+  width: 30px;
+}
+.billbox div.graph.drilling ul.steps li div.step {
+  height: 6px;
+}
+.billbox div.graph.drilling ul.steps li div.tooltip {
+  display: block;
+  left: auto;
+  right: 50px;
+  text-align: right;
+  top: 35px;
+  width: 90%;
+}
+.billbox div.graph.drilling ul.steps li div.tooltip span {
+  background: url("../img/embed_hover.png") 0 -20px #e6eee6;
+  font-size: 14px;
+  font-weight: bold;
+}
+.billbox .thedrill {
+  margin: 0 5%;
+  position: absolute;
+  top: 50px;
+  width: 90%;
+  z-index: 10;
+}
+.billbox ul.pill-nav {
+  padding: 0 8px;
+  margin: 20px 0 60px;
+}
+.billbox .pill-nav li {
+  float: right;
+  background: url("../img/embed_pills.png") left 0;
+  list-style: none;
+  margin-left: 6%;
+  text-align: center;
+  width: 29%;
+}
+.billbox .pill-nav li:last-child {
+  margin-left: 0;
+}
+.billbox .pill-nav li.active {
+  background-position: left -40px;
+}
+.billbox .pill-nav li.active a {
+  background-position: right -60px;
+  font-weight: bold;
+  color: #444444;
+}
+.billbox .pill-nav li:hover a {
+  color: #444444;
+  overflow: hidden;
+}
+.billbox .pill-nav li a {
+  background: url("../img/embed_pills.png") repeat scroll right -20px transparent;
+  color: #666666;
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  margin-right: -8px;
+  padding-bottom: 2px;
+  text-decoration: none;
+}
+.billbox .passed .pill-nav li a {
+  color: #29771f;
+}
+.billbox .passed .pill-nav li:hover a, .billbox .passed .pill-nav li.active a {
+  color: #2a5525;
+}
+.billbox .passed .pill-nav li {
+  background-position: left -80px;
+}
+.billbox .passed .pill-nav a {
+  background-position: right -100px;
+}
+.billbox .passed .pill-nav li.active {
+  background-position: left -120px;
+}
+.billbox .passed .pill-nav li.active a {
+  background-position: right -140px;
+}
+.billbox .failed .pill-nav li {
+  background-position: left -160px;
+}
+.billbox .failed .pill-nav a {
+  background-position: right -180px;
+}
+.billbox .failed .pill-nav li.active {
+  background-position: left -200px;
+}
+.billbox .failed .pill-nav li.active a {
+  background-position: right -220px;
+}
+.billbox .thedrill-details, .billbox .thedrill-meaning, .billbox .thedrill-action {
+  display: none;
+}
+.billbox .thedrill-details {
+  display: block;
+}
+.billbox .thedrill-details {
+  width: 100%;
+}
+.billbox .thedrill-details .for, .billbox .thedrill-details .against {
+  width: 50%;
+  float: right;
+  color: #2a5525;
+}
+.billbox .thedrill-details .against {
+  text-align: left;
+  color: #8a0505;
+}
+.billbox .thedrill .pms {
+  float: right;
+}
+.billbox .thedrill .pms ul {
+  width: auto;
+  overflow: visible;
+  display: inline;
+  margin: 3px;
+  background: #43873a;
+}
+.billbox .thedrill .pms li a {
+  border-color: #43873a;
+}
+.billbox .supporting {
+  background: #b5cfb2;
+}
+.billbox .supporting li:last-child {
+  margin-left: 0;
+}
+.billbox .opposing {
+  background: #caa8a2;
+}
+.billbox .thedrill .opposing ul, .billbox .opposing li {
+  float: left;
+  display: inline;
+  background: #943a1f;
+}
+.billbox .thedrill .opposing li a {
+  border-color: #943a1f;
+}
+.billbox .opposing li {
+  margin: 0 3px 3px 0	;
+}
+.billbox .pms.opposing li:last-child {
+  margin-right: 0;
+}

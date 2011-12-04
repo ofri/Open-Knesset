@@ -526,15 +526,15 @@ p.username {max-width:55px; }
 
 #content-main .protocol { background-color:#EEE; padding:0.5em; height: 100%; }
 
-#main-about, #main-hasadna, #main-help {float: right; text-align:center; margin:1em 1%; padding:1em;}
-#main-about { text-align:justify; width:28%;}
-#main-news { float:right; margin: 1em auto; padding: 0.8em; }
-#main-help { line-height:150%; text-align:center; width:24%;}
-#main-hasadna { padding:1em; width: 28%; text-align: right; }
+#main-about, #main-hasadna, #main-help {float: left; text-align:center; margin:1em 0; padding:1em;width:28%}
+#main-about { text-align:justify;}
+#main-news { width:66%; margin:1em 0 1em 2em;padding-top:1.5em; float:right;
+    text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
+#main-help { line-height:150%; text-align:center; }
+#main-hasadna { text-align: right; }
 #main-hasadna a { padding: 0; }
 #main-media a { text-align: center; }
 #main-about + h2 { margin-top:40px }
-#main-news { width:100%; text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
 .display_note_outer {
     background-color: #CFD4C7;
     -moz-border-radius:1em 1em 1em 1em;
@@ -881,6 +881,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     -webkit-border-radius:10px;
     -moz-border-radius:10px;
     border-radius:10px;
+    min-height:20px;
 }
 #content-main .triangle-border.left {
     margin-left:30px;
@@ -1026,3 +1027,4 @@ div.general_discipline_control {
 .filter-form p { display: inline-block; width:28%; margin:5px 0 }
 .filter-form label { width:6em; display:inline-block; text-align:left}
 .filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
+.three-columns { float:right; width:31%; }
