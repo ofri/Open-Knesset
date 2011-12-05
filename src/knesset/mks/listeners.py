@@ -3,7 +3,6 @@ from django.db.models.signals import post_save
 from planet.models import Feed, Post
 from actstream import action
 from knesset.utils import cannonize, disable_for_loaddata
-from knesset.laws.models import VoteAction
 from knesset.links.models import Link, LinkType
 from knesset.mks.models import Member
 

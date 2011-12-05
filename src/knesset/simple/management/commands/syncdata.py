@@ -1417,6 +1417,7 @@ class Command(NoArgsCommand):
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
         laws = options.get('laws',False)
+        
         if all_options:
             download = True
             load = True

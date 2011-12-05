@@ -106,6 +106,10 @@ class Membership(models.Model):
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
 
+class MemberAltname(models.Model):
+    member = models.ForeignKey('Member')
+    name = models.CharField(max_length=64)
+
 class Member(models.Model):
     name    = models.CharField(max_length=64)
     parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
