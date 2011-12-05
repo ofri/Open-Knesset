@@ -13,6 +13,11 @@ class Comments(Feed):
     def items(self):
         return Comment.objects.order_by('-submit_date')[:20]
 
+    def item_description(self, item):
+        n = 1000
+        if len(item.comment) > n:
+            return "%s: %s..." % (item.name, item.comment[:n])
+        return "%s: %s" % (item.name, item.comment)
 
 class Votes(Feed):
     title = "%s | %s" %(_("Open Knesset"), _("Votes feed"))
