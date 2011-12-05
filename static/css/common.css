@@ -383,6 +383,9 @@ form > p > select { width:250px; }
     clear:both;
     overflow:none;
 }
+.item-list .item p {
+    word-wrap:break-word;
+}
 .item-list .item.alt { background:#E4F4E4 }
 .item-header { float: right; clear:both; text-align:center;}
 .item-header a, .item-header>p { margin:0; padding:0;}

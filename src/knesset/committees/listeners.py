@@ -53,9 +53,8 @@ post_save.connect(handle_annotation_save, sender=Annotation)
 
 @disable_for_loaddata
 def handle_comment_save(sender, comment, request, **kwargs):
-    if comment.content_type.model_class() ==  Topic:
-        action.send(comment.content_object, verb='comment-added', target=comment,
-                description=comment.comment)
-        follow(request.user, comment.content_object)
+    action.send(comment.content_object, verb='comment-added', target=comment,
+            description=comment.comment)
+    follow(request.user, comment.content_object)
 
 comment_was_posted.connect(handle_comment_save)

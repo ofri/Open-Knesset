@@ -22,6 +22,8 @@ from knesset.auxiliary.views import (main, post_annotation, post_details,
     remove_tag_from_object, create_tag_and_add_to_item, help_page,
     TagList, TagDetail)
 
+from knesset.feeds import MainActionsFeed
+
 admin.autodiscover()
 
 js_info_dict = {
@@ -50,6 +52,7 @@ urlpatterns = patterns('',
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      #(r'^search/', include('haystack.urls')),
      url(r'^search/', 'knesset.auxiliary.views.search', name='site-search'),
+     url(r'^feeds/$', MainActionsFeed(), name='main-actions-feed'),
      (r'^feeds/comments/$', feeds.Comments()),
      (r'^feeds/votes/$', feeds.Votes()),
      (r'^feeds/bills/$', feeds.Bills()),
