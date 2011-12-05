@@ -1022,3 +1022,32 @@ div.general_discipline_control {
 .filter-form label { width:6em; display:inline-block; text-align:left}
 .filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
 .three-columns { float:right; width:31%; }
+
+/* help texts*/
+ .quest-mark {
+   background:url("/static/icons/help_16.png") no-repeat;
+   display:inline-block;
+   position:relative;
+   width:16px;
+   height:16px;
+   cursor:help;
+  }
+  .helptext {
+    width:500px !important;
+    float:none !important;
+    right:40px;
+    top:-25px;
+    font-family:Verdana, sans-serif;
+    font-size:12px;
+    font-weight:normal;
+    color:#333;
+    display:none;
+    cursor:auto;
+    text-align:right !important;
+  }
+  .helptext .x {
+    position:absolute;
+    top:5px;
+    right:5px;
+    cursor:pointer;
+  }
