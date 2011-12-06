@@ -2,10 +2,9 @@
 
 from django.test import TestCase
 import collections
-from knesset.video.management.commands.update_videos import (
-    _validate_dict, _parse_dict, _build_url,
-    get_youtube_videos
-)
+from knesset.video.utils.parse_dict import validate_dict, parse_dict
+from knesset.video.utils import build_url
+from knesset.video.utils.youtube import get_youtube_videos
 import datetime
 from dateutil.tz import tzutc
 
@@ -16,30 +15,30 @@ class TestUpdateVideos(TestCase):
         
     def testValidateDict(self):
         h={'id':{'$t':'test','type':'text'},'tmp':'xxx'}
-        self.assertTrue(_validate_dict('test','test'))
-        self.assertTrue(_validate_dict(h,['id','tmp']))
-        self.assertTrue(_validate_dict(h,{'id':['$t']}))
-        self.assertTrue(_validate_dict(h,{'id':{'$t':'test'}}))
-        self.assertTrue(_validate_dict(h,{'id':{'type':'text','$t':'test'}},['tmp']))
-        self.assertFalse(_validate_dict(h,['id','tmp','xxx']))
-        self.assertFalse(_validate_dict(h,{'id':['x']}))
-        self.assertFalse(_validate_dict(h,{'id':{'$t':'xxx'}}))
-        self.assertFalse(_validate_dict(h,{'id':{'$t':'test','type':'text2'}}))
+        self.assertTrue(validate_dict('test','test'))
+        self.assertTrue(validate_dict(h,['id','tmp']))
+        self.assertTrue(validate_dict(h,{'id':['$t']}))
+        self.assertTrue(validate_dict(h,{'id':{'$t':'test'}}))
+        self.assertTrue(validate_dict(h,{'id':{'type':'text','$t':'test'}},['tmp']))
+        self.assertFalse(validate_dict(h,['id','tmp','xxx']))
+        self.assertFalse(validate_dict(h,{'id':['x']}))
+        self.assertFalse(validate_dict(h,{'id':{'$t':'xxx'}}))
+        self.assertFalse(validate_dict(h,{'id':{'$t':'test','type':'text2'}}))
         
     def testParseDict(self):
-        self.assertEqual(_parse_dict('xxx','yyy'),None)
-        self.assertEqual(_parse_dict('xxx','yyy',default='a'),'a')
+        self.assertEqual(parse_dict('xxx','yyy'),None)
+        self.assertEqual(parse_dict('xxx','yyy',default='a'),'a')
         h={'id':{'$t':'test','type':'text'},'tmp':'xxx'}
-        self.assertEqual(_parse_dict(h,'yyy',validate=['z']),None)
-        self.assertEqual(_parse_dict(h,'yyy',validate=['id']),None)
-        self.assertEqual(_parse_dict(h,'tmp',validate=['id']),'xxx')
-        self.assertEqual(_parse_dict(h,{'id':'$t2'}),None)
-        self.assertEqual(_parse_dict(h,{'id':'$t'}),'test')        
+        self.assertEqual(parse_dict(h,'yyy',validate=['z']),None)
+        self.assertEqual(parse_dict(h,'yyy',validate=['id']),None)
+        self.assertEqual(parse_dict(h,'tmp',validate=['id']),'xxx')
+        self.assertEqual(parse_dict(h,{'id':'$t2'}),None)
+        self.assertEqual(parse_dict(h,{'id':'$t'}),'test')        
         
     def testBuildUrl(self):
         url='base'
         q=collections.OrderedDict([('id',12345),('none',None),('str','string'),('uni',u'בדיקה')])
-        self.assertEqual(_build_url(url,q),'base?id=12345&none=&str=string&uni=%D7%91%D7%93%D7%99%D7%A7%D7%94')
+        self.assertEqual(build_url(url,q),'base?id=12345&none=&str=string&uni=%D7%91%D7%93%D7%99%D7%A7%D7%94')
         
     def testGetYoutubeVideosParse(self):
         videos=get_youtube_videos(videos_json=YOUTUBE_TEST_JSON_DATA)
