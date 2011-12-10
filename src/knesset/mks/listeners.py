@@ -3,7 +3,6 @@ from django.db.models.signals import post_save
 from planet.models import Feed, Post
 from actstream import action
 from knesset.utils import cannonize, disable_for_loaddata
-from knesset.laws.models import VoteAction
 from knesset.links.models import Link, LinkType
 from knesset.mks.models import Member
 
@@ -19,7 +18,7 @@ def connect_feed(sender, created, instance, **kwargs):
             if t.rfind(cannonize(m.name)) != -1:
                 Link.objects.create(url=instance.url, title = instance.title,
                                     content_object=m, link_type=rss_type)
-                print u'connected feed to %s' % m
+                logger.info(u'connected feed to %s' % m)
                 return
 post_save.connect(connect_feed, sender=Feed)
 

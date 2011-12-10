@@ -213,6 +213,8 @@
                     </p>
                     </form>
                     {% endif %}
+                {% else %}
+                    <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
                 {% endif %}
             </div>
             <h3>{% trans "Links" %}</h3>
@@ -261,7 +263,7 @@
                     {% trans "No tags yet" %}<br />
                 {% endif %}
 
-                (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to edit tags' %}</a>
             {% endif %}
             </div><!-- tagging -->
 

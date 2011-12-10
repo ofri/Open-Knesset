@@ -297,6 +297,13 @@ class Member(models.Model):
 
     def recalc_average_monthly_committee_presence(self):
         self.average_monthly_committee_presence = self.committee_meetings_per_month()
+        
+    @property
+    def names(self):
+        names=[self.name]
+        for altname in self.memberaltname_set.all():
+            names.append(altname.name)
+        return names
 
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')

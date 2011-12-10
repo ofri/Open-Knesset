@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 def validate_dict(h,*args):
     for arg in args:
         if type(h).__name__=='dict' and type(arg).__name__=='list':
@@ -10,7 +12,7 @@ def validate_dict(h,*args):
                     return False
                 v=arg[k]
                 val=h[k]
-                ans=_validate_dict(val,v)
+                ans=validate_dict(val,v)
                 if ans==False:
                     return False
         elif type(arg).__name__=='str':
@@ -23,7 +25,7 @@ def validate_dict(h,*args):
 def parse_dict(h,p,validate=None,default=None):
     if type(h).__name__!='dict':
         return default
-    if validate is not None and _validate_dict(h,validate)==False:
+    if validate is not None and validate_dict(h,validate)==False:
         return default
     if type(p).__name__=='str':
         if p in h:
@@ -37,8 +39,5 @@ def parse_dict(h,p,validate=None,default=None):
             else:
                 val=h[k]
                 v=p[k]
-                return _parse_dict(val,v,default=default)
-            
-    else:
+                return parse_dict(val,v,default=default)
         return default
-

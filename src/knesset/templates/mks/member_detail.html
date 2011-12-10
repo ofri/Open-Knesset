@@ -353,17 +353,17 @@
                             <h3>{% trans "Links" %}</h3>
                                 {% object_links object %}
                         </div> <br/>
-                        
+
                         {% if about_video_embed_link != '' and about_video_image_link != '' %}
                         <div>
-                            <h3>{% trans "כרטיס ביקור (ערוץ הכנסת)" %}</h3>
+                            <h3>{% trans "MK video (knesset channel)" %}</h3>
                             {% video_player 400 300 about_video_embed_link about_video_image_link %}
                         </div> <br/>
                         {% endif %}
-                        
+
                         {% if num_related_videos > 0 %}
                         <div>
-                            <h3>{% trans "קטעי וידאו אחרונים" %}</h3>
+                            <h3>{% trans "Latest videos" %}</h3>
                             {% video_playlist related_videos %}
                         </div> <br/>
                         {% endif %}
