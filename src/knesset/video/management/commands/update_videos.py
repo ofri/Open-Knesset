@@ -7,15 +7,6 @@ from knesset.video.utils.parse_dict import validate_dict
 from knesset.video.utils.youtube import get_youtube_videos
 from django.core.management.base import NoArgsCommand
 
-
-#### member - misc functions ####
-
-def _get_member_names(member):
-    names=[member.name]
-    for altname in member.memberaltname_set.all():
-        names.append(altname)
-    return names
-
 #### member - about video ####
 
 def _update_member_about_video(member,video,names):
