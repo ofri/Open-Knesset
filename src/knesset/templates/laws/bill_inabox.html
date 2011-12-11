@@ -1,4 +1,13 @@
 <div class="billbox">
+	<!-- Only load dom.min.js if it is not already loaded! use a cross browser method to determind if it should be loaded. -->
+	<script type="text/javascript" src="{{MEDIA_URL}}js/$dom.min.js"></script>
+	<script type="text/javascript">
+		if (typeof OKnesset === 'undefined') {
+        	OKnesset = {};
+        }
+
+		OKnesset.billBox = OKnesset.billBox || {};
+	</script>
 	<div class="header header-small">
 		<div class="billbox-details">
 			<div class="title">
@@ -96,9 +105,20 @@
 				</div>
 			</li>
 
-			<li class="pre-vote drilled
-				 {% if pre_vote_passed %}passed{% endif %}
-				 {% if was_pre_voted %}voted{% endif %}">
+			<li class="pre-vote drilled">
+				 	<script type="text/javascript">
+				 		// add 'passed' and 'voted' class to the pre-vote li element
+				 		OKnesset.billBox.passed = {{bill.pre_votes.all.0.against_votes_count}} < {{bill.pre_votes.all.0.for_votes_count}};
+						OKnesset.billBox.was_pre_voted = {{bill.pre_votes.count}} > 0;
+						if (OKnesset.billBox.passed) {
+							var li_pre_vote = $dom.get("li.pre-vote")[0];
+							$dom.addClass(li_pre_vote, "passed");
+						}
+						if (OKnesset.billBox.was_pre_voted){
+							var li_pre_vote = li_pre_vote || $dom.get("li.pre-vote")[0];
+							$dom.addClass(li_pre_vote, "voted");
+						}
+				 	</script>
 
 				<div class="step">
                     {% if bill.pre_votes.count > 0 %}
@@ -110,14 +130,27 @@
 					<div class="tooltip-score">
 						<span class="balance">{{bill.pre_votes.all.0.for_votes_count}}/{{bill.pre_votes.all.0.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
-							{# the background-position attribute value 'bottom' might not work on Firefox, or IE #}
-							<span class="against" style="width:{{pre_vote_against_width}}px; background-position:{{pre_vote_backgroundPosition}}px bottom"></span>
+							<span class="against" ></span>
 							<span class="for"></span>
+							<script type="text/javascript">
+						 		// set the style of the 'against' span
+								OKnesset.billBox.preVote_score_width = {{bill.pre_votes.all.0.against_votes_count}} * 120 / ({{bill.pre_votes.all.0.for_votes_count}} + {{bill.pre_votes.all.0.against_votes_count}});
+								var against = $dom.get("li.pre-vote .against")[0];
+								// the background-position attribute value 'bottom' might not work on Firefox, or IE
+								$dom.style(against, {'width':OKnesset.billBox.preVote_score_width + "px", 'background-position': (OKnesset.billBox.preVote_score_width - 120) + "px bottom" });
+							</script>
 						</div>
 					</div>
                     {% endif %}
 					<div class="tooltip"><span>קריאה טרומית</span></div>
-					<span class="date">{{pre_vote_date|safe}}</span>
+					<span class="date">?</span>
+					<script type="text/javascript">
+				 		// set the pre-vote date
+						if (OKnesset.billBox.was_pre_voted){
+							var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
+							pre_vote_date.innerHTML = "{{pre_vote_time.day}}/{{pre_vote_time.month}}<br>{{pre_vote_time.year}}";
+						}
+					</script>
 				</div>
 			</li>
 
