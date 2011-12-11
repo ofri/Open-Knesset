@@ -22,13 +22,15 @@
 		<div class="pms">
 			<div class="label">יזמו:</div>
 			<ul>
-				
-                {% for proposer in bill.proposers.all %}
+
+                {% for proposer in proposers_first3 %}
                 <li><a href="{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
-				
+
 			</ul>
-			<a href="#" class="more">+9</a>
+			{% if proposers_count_minus3 > 0 %}
+			<a href="#" class="more">+{{proposers_count_minus3}} </a>
+			{% endif %}
 		</div>
 		<div class="pull"><div class="arrow down"></div></div>
 	</div>
@@ -68,7 +70,7 @@
 				<p>בשלב זה אין צורך ברוב מיוחס בהצבעה על הצעת החוק, גם אם מדובר בהצעה בעלת עלות תקציבית (ראו בהמשך).</p>
 			</div>
 			<div class="thedrill-action">
-				
+
 			</div>
 		</div>
 		<span class="status"></span>
@@ -81,8 +83,8 @@
 		</div>
         {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
-		
-			<li class="initiated passed odd first">                 
+
+			<li class="initiated passed odd first">
 				<div class="step">
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
@@ -93,38 +95,44 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
-			<li class="pre-vote passed drilled">
+
+			<li class="pre-vote drilled
+				 {% if pre_vote_passed %}passed{% endif %}
+				 {% if was_pre_voted %}voted{% endif %}">
+
 				<div class="step">
                     {% if bill.pre_votes.count > 0 %}
                         <a href="{{ billurl }}#bill-pre-vote" class="link" target="_blank">קישור</a>
                     {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
+					{% if bill.pre_votes.count > 0 %}
 					<div class="tooltip-score">
-						<span class="balance"></span>
+						<span class="balance">{{bill.pre_votes.all.0.for_votes_count}}/{{bill.pre_votes.all.0.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
-							<span class="against"></span>
+							{# the background-position attribute value 'bottom' might not work on Firefox, or IE #}
+							<span class="against" style="width:{{pre_vote_against_width}}px; background-position:{{pre_vote_backgroundPosition}}px bottom"></span>
 							<span class="for"></span>
 						</div>
 					</div>
+                    {% endif %}
 					<div class="tooltip"><span>קריאה טרומית</span></div>
-					<span class="date">?</span>
+					<span class="date">{{pre_vote_date|safe}}</span>
 				</div>
 			</li>
-			
+
 			<li class="committee-1 passed odd">
 				<div class="step">
                     {% if bill.first_committee.meetings.count > 0 %}
                         <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
                     {% endif %}
-				    
+
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 			<li class="vote-1 passed">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
@@ -140,7 +148,7 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 			<li class="committee-2 passed odd">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
@@ -149,9 +157,9 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 			<li class="vote-2 passed">
-				<div class="step">	     
+				<div class="step">
   				<a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -159,9 +167,9 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 			<li class="vote-3 passed odd">
-				<div class="step">			    
+				<div class="step">
           <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -169,7 +177,7 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 			<li class="accepted passed last">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
@@ -179,11 +187,11 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			
+
 		</ul>
         {% endwith %}
 	</div>
-	
+
 	<div class="footer">
 		<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org">כנסת פתוחה</a> ו<a href="http://yeda.us">הסדנא לידע ציבורי</a></div>
 		<div class="share">

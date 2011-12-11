@@ -584,7 +584,7 @@
 .billbox .thedrill {
   margin: 0 5%;
   position: absolute;
-  top: 50px;
+  top: 120px;
   width: 90%;
   z-index: 10;
 }
