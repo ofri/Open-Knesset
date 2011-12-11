@@ -43,7 +43,23 @@
 		</div>
 		<div class="pull"><div class="arrow down"></div></div>
 	</div>
-	<div class="graph drilling-">
+	<script type="text/javascript">
+		function drill(e){
+			console.log("function drill ");
+			var sender = (e && e.target) || (window.event && window.event.srcElement);
+			var stageDiv = sender.tagName.toLowerCase() === 'li'? sender : $dom.ancestor(sender, 'li');
+			console.log(stageDiv);
+			var graph = $dom.get('.graph')[0];
+			$dom.addClass(graph, 'drilling');
+			$dom.addClass(stageDiv, 'drilled');
+			// TOOD remove "drilled" from all other steps
+
+			var stageIndex=$dom.descendants($dom.ancestor(stageDiv), "li").indexOf(stageDiv);
+			console.log(stageIndex);
+			$dom.style($dom.get('div.graph ul.steps')[0], {'margin-right': '' + 2.5 -760/8 * stageIndex + '%'});
+		}
+	</script>
+	<div class="graph">
 		<div class="thedrill passed">
 			<ul class="pill-nav">
 				<li class="details-btn active"><a href="#">פרטי ההצבעה</a></li>
@@ -51,8 +67,8 @@
 				<li class="action-btn"><a href="#">מעורבות אזרחית</a></li>
 			</ul>
 			<div class="thedrill-details">
-				<div class="for">בעד: 6</div>
-				<div class="against">נגד: 2</div>
+				<div class="for_votes">בעד: 6</div>
+				<div class="against_votes">נגד: 2</div>
 				<div class="pms supporting" style="width:66%">
 					<ul name="קדימה">
 						<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a><span class="tooltip"><span>אברהם מיכאלי</span></span></li>
@@ -93,7 +109,7 @@
         {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
 
-			<li class="initiated passed odd first">
+			<li class="initiated passed odd first" onclick="drill();">
 				<div class="step">
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
@@ -105,20 +121,20 @@
 				</div>
 			</li>
 
-			<li class="pre-vote drilled">
+			<li class="pre-vote" onclick="drill();">
+                    {% if bill.pre_votes.count > 0 %}
 				 	<script type="text/javascript">
 				 		// add 'passed' and 'voted' class to the pre-vote li element
-				 		OKnesset.billBox.passed = {{bill.pre_votes.all.0.against_votes_count}} < {{bill.pre_votes.all.0.for_votes_count}};
+						var li_pre_vote = $dom.get("li.pre-vote")[0];
+						$dom.addClass(li_pre_vote, "voted");
+
+				 		OKnesset.billBox.passed = {{pre_vote_last.against_votes_count}} < {{pre_vote_last.for_votes_count}};
 						OKnesset.billBox.was_pre_voted = {{bill.pre_votes.count}} > 0;
 						if (OKnesset.billBox.passed) {
-							var li_pre_vote = $dom.get("li.pre-vote")[0];
 							$dom.addClass(li_pre_vote, "passed");
 						}
-						if (OKnesset.billBox.was_pre_voted){
-							var li_pre_vote = li_pre_vote || $dom.get("li.pre-vote")[0];
-							$dom.addClass(li_pre_vote, "voted");
-						}
 				 	</script>
+                    {% endif %}
 
 				<div class="step">
                     {% if bill.pre_votes.count > 0 %}
@@ -128,13 +144,13 @@
 					<span class="icon">icon</span>
 					{% if bill.pre_votes.count > 0 %}
 					<div class="tooltip-score">
-						<span class="balance">{{bill.pre_votes.all.0.for_votes_count}}/{{bill.pre_votes.all.0.against_votes_count}}</span>
+						<span class="balance">{{pre_vote_last.for_votes_count}}/{{pre_vote_last.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
 							<span class="against" ></span>
 							<span class="for"></span>
 							<script type="text/javascript">
 						 		// set the style of the 'against' span
-								OKnesset.billBox.preVote_score_width = {{bill.pre_votes.all.0.against_votes_count}} * 120 / ({{bill.pre_votes.all.0.for_votes_count}} + {{bill.pre_votes.all.0.against_votes_count}});
+								OKnesset.billBox.preVote_score_width = {{pre_vote_last.against_votes_count}} * 120 / ({{pre_vote_last.for_votes_count}} + {{pre_vote_last.against_votes_count}});
 								var against = $dom.get("li.pre-vote .against")[0];
 								// the background-position attribute value 'bottom' might not work on Firefox, or IE
 								$dom.style(against, {'width':OKnesset.billBox.preVote_score_width + "px", 'background-position': (OKnesset.billBox.preVote_score_width - 120) + "px bottom" });
@@ -144,17 +160,17 @@
                     {% endif %}
 					<div class="tooltip"><span>קריאה טרומית</span></div>
 					<span class="date">?</span>
+					{% if bill.pre_votes.count > 0 %}
 					<script type="text/javascript">
 				 		// set the pre-vote date
-						if (OKnesset.billBox.was_pre_voted){
-							var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
-							pre_vote_date.innerHTML = "{{pre_vote_time.day}}/{{pre_vote_time.month}}<br>{{pre_vote_time.year}}";
-						}
+						var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
+						pre_vote_date.innerHTML = "{{pre_vote_time.day}}/{{pre_vote_time.month}}<br>{{pre_vote_time.year}}";
 					</script>
+                    {% endif %}
 				</div>
 			</li>
 
-			<li class="committee-1 passed odd">
+			<li class="committee-1 passed odd" onclick="drill();">
 				<div class="step">
                     {% if bill.first_committee.meetings.count > 0 %}
                         <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
@@ -166,7 +182,7 @@
 				</div>
 			</li>
 
-			<li class="vote-1 passed">
+			<li class="vote-1 passed" onclick="drill();">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -182,7 +198,7 @@
 				</div>
 			</li>
 
-			<li class="committee-2 passed odd">
+			<li class="committee-2 passed odd" onclick="drill();">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -191,7 +207,7 @@
 				</div>
 			</li>
 
-			<li class="vote-2 passed">
+			<li class="vote-2 passed" onclick="drill();">
 				<div class="step">
   				<a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -201,7 +217,7 @@
 				</div>
 			</li>
 
-			<li class="vote-3 passed odd">
+			<li class="vote-3 passed odd" onclick="drill();">
 				<div class="step">
           <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -211,7 +227,7 @@
 				</div>
 			</li>
 
-			<li class="accepted passed last">
+			<li class="accepted passed last" onclick="drill();">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>

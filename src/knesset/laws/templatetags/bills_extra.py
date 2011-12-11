@@ -27,12 +27,18 @@ def bill_inabox(bill):
 #        for h in CONVERT_TO_DISCUSSION_HEADERS:
 #            if v.title.find(h)>=0: # converted to discussion
 #                discussion = True
-
-    # what is the real index? 0 is not the correct one
-    return dict({ 'MEDIA_URL' : settings.MEDIA_URL,
+    bill_inabox_dict = dict({ 'MEDIA_URL' : settings.MEDIA_URL,
                  'bill': bill,
             'proposers_first3' : bill.proposers.all()[:3],
-            'proposers_count_minus3' : bill.proposers.count() - 3,
-            'pre_vote_time' : {'day' : bill.pre_votes.all()[0].time.day,
-                               'month' : bill.pre_votes.all()[0].time.month,
-                               'year' : bill.pre_votes.all()[0].time.year}})
+            'proposers_count_minus3' : bill.proposers.count() - 3})
+
+    if bill.pre_votes.count() > 0:
+        pre_vote_last = bill.pre_votes.all()[bill.pre_votes.count() - 1]
+        pre_vote_dict = dict({'pre_vote_last' : pre_vote_last,
+                              'pre_vote_time' : {'day' : pre_vote_last.time.day,
+                               'month' : pre_vote_last.time.month,
+                               'year' : pre_vote_last.time.year}})
+        bill_inabox_dict = dict(bill_inabox_dict.items() + pre_vote_dict.items())
+
+    # what is the real index? 0 is not the correct one
+    return bill_inabox_dict

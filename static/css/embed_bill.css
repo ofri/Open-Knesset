@@ -553,7 +553,7 @@
 }
 .billbox div.graph.drilling ul.steps {
   width: 760%;
-  margin-right: -92.5%;
+  /* margin-right: -92.5%; */
   /* this property sets the focus */
 
 }
@@ -664,12 +664,12 @@
 .billbox .thedrill-details {
   width: 100%;
 }
-.billbox .thedrill-details .for, .billbox .thedrill-details .against {
+.billbox .thedrill-details .for_votes, .billbox .thedrill-details .against_vote {
   width: 50%;
   float: right;
   color: #2a5525;
 }
-.billbox .thedrill-details .against {
+.billbox .thedrill-details .against_votes {
   text-align: left;
   color: #8a0505;
 }
