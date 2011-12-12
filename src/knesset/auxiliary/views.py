@@ -262,5 +262,3 @@ class TagDetail(DetailView):
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
         return context
-
-
