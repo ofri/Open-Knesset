@@ -36,11 +36,10 @@ class Event(models.Model):
     def is_future(self):
         return self.when > datetime.now()
 
-    @property
-    def summary(self):
+    def get_summary(self, length):
         """ this is used for the title of the event in the calendar view (icalendar) """
-        topic = self.what[:30] + '...' if len(self.what) >= 30 else self.what
-        return topic
+        return (self.what[:length - 3] + '...'
+                 if len(self.what) >= length else self.what)
 
     @property
     def which(self):
@@ -52,14 +51,14 @@ class Event(models.Model):
         else:
             return '#'
 
-    def add_vevent_to_ical(self, cal):
+    def add_vevent_to_ical(self, cal, summary_length):
         """
         adds itself as a vevent to @cal.
         cal should be a vobject.iCalendar
         """
         vevent = cal.add('vevent')
         vevent.add('dtstart').value = self.when
-        summary = self.what
+        summary_prepend = ''
         if not self.when_over:
             # this can happen if you migrated so you have when_over but
             # have not run parse_future_committee_meetings yet.
@@ -67,11 +66,12 @@ class Event(models.Model):
             self.when_over_guessed = True
             self.save()
         if self.when_over_guessed:
-            summary = u'ATTENTION: The end date is just projected, not available on knesset.gov. Be advised!\n\n' + summary
+            summary_prepend = u'NB: missing end date, see http://oknesset/help/missing/\n\n'
         # TODO: add `geo` to the Event model
         # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
         vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
-        vevent.add('summary').value = self.summary
+        summary = summary_prepend + self.get_summary(summary_length)
+        vevent.add('summary').value = summary
         vevent.add('location').value = self.where
         vevent.add('description').value = self.what
