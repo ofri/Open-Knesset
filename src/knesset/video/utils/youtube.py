@@ -1,8 +1,27 @@
+import urllib, json, dateutil.parser
+from knesset.video.utils import build_url
+from knesset.video.utils.parse_dict import parse_dict
+
 class GetYoutubeVideos:
 
     GDATA_YOUTUBE_VIDEOS_URL='https://gdata.youtube.com/feeds/api/videos'
 
-    def __init__(self,q=None,max_results=20,author=None,orderby='published',videos_json=None):
+    def __init__(
+        self,q=None,max_results=20,author=None,orderby='published',
+        videos_json=None,youtube_id_url=None,
+        limit_time='all_time'
+    ):
+        """
+            perform search on youtube
+            parameters:
+            q: (string) the query to search for
+            max_results: (int) maximum number of results to return
+            author: (string) limit to videos uploaded by this youtube user
+            orderby: (string) how to order the videos, possible values:
+                        relevance, published, viewCount, rating
+            limit_time: (string) limit to videos uploaded in a certain timeframe
+                        possible values: today, this_week, this_month, all_time
+        """
         self.videos=[]
         if videos_json is None and youtube_id_url is not None:
             videos_json=urllib.urlopen(youtube_id_url+'?alt=json').read()
@@ -14,7 +33,8 @@ class GetYoutubeVideos:
                 'orderby':orderby
             }
             if author is not None: params['author']=author
-            url=build_url(GDATA_YOUTUBE_VIDEOS_URL,params)
+            if limit_time is not None: params['time']=limit_time
+            url=build_url(self.GDATA_YOUTUBE_VIDEOS_URL,params)
             videos_json=urllib.urlopen(url).read()
         if videos_json is not None and len(videos_json)>0:
             yvideos=json.loads(videos_json)
@@ -26,14 +46,14 @@ class GetYoutubeVideos:
                 else:
                     yentries=[yentry]
             for yentry in yentries:
-                video=_parse_youtube_entry(yentry)
+                video=self._parse_youtube_entry(yentry)
                 self.videos.append(video)
 
     def _parse_youtube_entry(self,yentry):
         video={
-            'id':_parse_dict(yentry,{'id':'$t'}),
-            'title':_parse_dict(yentry,{'title':'$t'},validate={'title':{'type':'text'}}),
-            'description':_parse_dict(yentry,{'content':'$t'},validate={'content':{'type':'text'}}),
+            'id':parse_dict(yentry,{'id':'$t'}),
+            'title':parse_dict(yentry,{'title':'$t'},validate={'title':{'type':'text'}}),
+            'description':parse_dict(yentry,{'content':'$t'},validate={'content':{'type':'text'}}),
         }
         published=parse_dict(yentry,{'published':'$t'})
         if published is not None:

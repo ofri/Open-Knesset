@@ -1,3 +1,4 @@
+import sys
 from libmimms import libmms,core as mimms
 
 class _options():
@@ -9,7 +10,7 @@ class _options():
         self.quiet=False
         self.resume=True
         self.clobber=False
-        
+
 def get_size(url):
     stream=libmms.Stream(url, 1e6)
     return stream.length()

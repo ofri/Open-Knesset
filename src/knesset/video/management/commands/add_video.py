@@ -2,9 +2,8 @@ from django.core.management.base import NoArgsCommand
 from optparse import make_option
 import re
 from knesset.video.models import Video
-from knesset.video.utils.youtube import get_youtube_videos
+from knesset.video.utils.youtube import GetYoutubeVideos
 from knesset.mks.models import Member
-from knesset.video.utils import update_member_related_video
 
 class Command(NoArgsCommand):
 
@@ -43,7 +42,7 @@ class Command(NoArgsCommand):
     
     def _saveYoutubeVideoFromSource(self,v,obj):
         if len(v['source_id'])>0:
-            videos=get_youtube_videos(youtube_id_url=v['source_id'])
+            videos=GetYoutubeVideos(youtube_id_url=v['source_id']).videos
             if len(videos)==1:
                 video=videos[0]
                 if type(obj).__name__=='Member':

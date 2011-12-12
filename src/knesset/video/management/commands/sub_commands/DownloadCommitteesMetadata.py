@@ -90,7 +90,7 @@ class DownloadCommitteesMetadata(SubCommand):
                     
     def _update_committee_mms_video(self,comm,video):
         self._debug('_update_committee_mms_video')
-        curvids=get_videos_queryset(comm,'mms').filter(embed_link=video['mmsurl'])
+        curvids=get_videos_queryset(comm,group='mms',ignoreHide=True).filter(embed_link=video['mmsurl'])
         if len(curvids)==0:
             v = Video(
                 embed_link=video['mmsurl'],

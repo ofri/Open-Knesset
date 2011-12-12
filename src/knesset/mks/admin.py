@@ -27,9 +27,13 @@ class MemberRelatedVideosInline(generic.GenericTabularInline):
     ct_fk_field = 'object_pk'
     can_delete = False
     fields = ['title','description','embed_link','group','sticky','hide']
-    ordering = ['-group','sticky','-published']
+    ordering = ['group','-sticky','-published']
     readonly_fields = ['title','description','embed_link','group']
     extra = 0
+    def queryset(self, request):
+        qs = super(MemberRelatedVideosInline, self).queryset(request)
+        qs = qs.filter(hide=False)
+        return qs
 
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)

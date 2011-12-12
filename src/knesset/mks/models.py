@@ -281,7 +281,7 @@ class Member(models.Model):
     def all_names(self):
         names=[self.name]
         for altname in self.memberaltname_set.all():
-            names.append(altname)
+            names.append(altname.name)
         return names
 
     def recalc_bill_statistics(self):

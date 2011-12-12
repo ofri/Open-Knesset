@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import time
+import time, sys
 
 class TimeoutException:
     pass
@@ -9,15 +9,17 @@ class SubCommandErrorException:
     pass
 
 class Logger:
-    def __init__(self,verbosity=1):
+    def __init__(self,verbosity=1,out=sys.stdout):
         self._verbosity=int(verbosity)
+        self._out=out
     
     def log(self,msgtype,msg):
         if (
             self._verbosity>=2 or msgtype in ['warn','error']
             or (self._verbosity==1 and msgtype != 'debug') 
         ):
-            print msg
+            self._out.write(msg)
+            self._out.write("\r\n")
 
 class Timer:
     

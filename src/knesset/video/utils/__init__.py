@@ -5,7 +5,7 @@ from knesset.video.models import Video
 from django.db.models import Q
 import urllib
 
-def get_videos_queryset(obj,group=None):
+def get_videos_queryset(obj,group=None,ignoreHide=False):
     object_type=ContentType.objects.get_for_model(obj)
     filterKwargs={
         'content_type__pk':object_type.id,
@@ -13,7 +13,10 @@ def get_videos_queryset(obj,group=None):
     }
     if group is not None:
         filterKwargs['group']=group
-    return Video.objects.filter(Q(hide=False) | Q(hide=None),**filterKwargs)
+    if ignoreHide:
+        return Video.objects.filter(**filterKwargs)
+    else:
+        return Video.objects.filter(Q(hide=False) | Q(hide=None),**filterKwargs)
 
 def build_url(url,q):
     params=[]

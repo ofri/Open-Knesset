@@ -1,13 +1,5 @@
 # encoding: utf-8
 
-#import urllib, json, logging, os, re, datetime, time
-#from knesset.mks.models import Member
-#from knesset.video.models import Video
-#from django.contrib.contenttypes.models import ContentType
-#from knesset.video.utils import get_videos_queryset
-#import dateutil.parser
-#from libmimms import libmms,core as mimms
-
 import os
 from django.conf import settings
 from django.core.management.base import NoArgsCommand
@@ -15,8 +7,14 @@ from optparse import make_option
 from sub_commands import SubCommand, Timer, Logger, TimeoutException, SubCommandErrorException
 from sub_commands.DownloadCommitteesMetadata import DownloadCommitteesMetadata
 from sub_commands.DownloadCommitteesVideos import DownloadCommitteesVideos
+from knesset.video.management.commands.sub_commands.UpdateMembersAboutVideo import UpdateMembersAboutVideo
+from knesset.video.management.commands.sub_commands.UpdateMembersRelatedVideos import UpdateMembersRelatedVideos
 
 class Command(NoArgsCommand,SubCommand):
+
+    def __init__(self):
+        NoArgsCommand.__init__(self)
+        SubCommand.__init__(self,self)
 
     DATA_ROOT = getattr(settings, 'DATA_ROOT',
                         os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
@@ -50,8 +48,6 @@ class Command(NoArgsCommand,SubCommand):
             'upload':options.get('upload', False),
             'update':options.get('update', False),
             'with_history':options.get('with-history', False),
-            'time_limit':options.get('time-limit', None),
-            'verbosity':options.get('verbosity',1),
         }
         
     def _init_opts(self):
@@ -72,15 +68,14 @@ class Command(NoArgsCommand,SubCommand):
             not(self._opts['update']),
         ])):
             self._warn("no arguments found. Running update phase. try -h for help.")
-            update=True
+            self._opts['update']=True
 
-    def _init_subCommand(self):
-        self.command=self
-        if self._opts['time_limit'] is None:
+    def _init_subCommand(self,options):
+        if options.get('time-limit', None) is None:
             self.timer=Timer()
         else:
-            self.timer=Timer(self._opts['time_limit']*60)
-        self.logger=Logger(self._opts['verbosity'])
+            self.timer=Timer(options.get('time-limit', None)*60)
+        self.logger=Logger(options.get('verbosity',1))
 
     def _run_subCommands(self):
         if self._opts['download_metadata']:
@@ -99,16 +94,16 @@ class Command(NoArgsCommand,SubCommand):
             self._check_timer()
             
         if self._opts['update']:
-            print "beginning update phase"
+            self._info("beginning update phase")
             UpdateMembersAboutVideo(self)
             self._check_timer()
             UpdateMembersRelatedVideos(self)
             self._check_timer()
 
     def handle_noargs(self, **options):
+        self._init_subCommand(options)
         self._set_opts(options)
         self._init_opts()
-        self._init_subCommand()
         try:
             self._run_subCommands()
         except TimeoutException:

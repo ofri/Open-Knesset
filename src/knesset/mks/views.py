@@ -267,7 +267,7 @@ class MemberDetailView(DetailView):
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
         about_videos=get_videos_queryset(member,group='about')
-        if (about_videos.count()==1):
+        if (about_videos.count()>0):
             about_video=about_videos[0]
             about_video_embed_link=about_video.embed_link
             about_video_image_link=about_video.image_link

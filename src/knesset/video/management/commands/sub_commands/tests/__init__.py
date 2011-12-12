@@ -1,8 +1,64 @@
 #encoding: utf-8
 
 from django.test import TestCase
-from knesset.video.management.commands.sub_commands import SubCommand, SubCommandErrorException, Timer
+from knesset.video.management.commands.sub_commands import (
+    SubCommand, SubCommandErrorException, Timer,
+    Logger, TimeoutException
+)
 import time
+from StringIO import StringIO
+
+class testLogger(TestCase):
+    
+    def _runLogs(self,logger):
+        logger.log('debug','debug')
+        logger.log('info','info')
+        logger.log('warn','warn')
+        logger.log('error','error')
+    
+    def test(self):
+        strio=StringIO()
+        logger=Logger(out=strio)
+        self._runLogs(logger)
+        self.assertEquals(strio.getvalue(),'info\r\nwarn\r\nerror\r\n')
+        strio=StringIO()
+        logger=Logger(verbosity=0,out=strio)
+        self._runLogs(logger)
+        self.assertEqual(strio.getvalue(),'warn\r\nerror\r\n')
+        strio=StringIO()
+        logger=Logger(verbosity=2,out=strio)
+        self._runLogs(logger)
+        self.assertEqual(strio.getvalue(),'debug\r\ninfo\r\nwarn\r\nerror\r\n')
+     
+class testTimer(TestCase):
+    
+    def testElapsed(self):
+        start=time.time()
+        timer=Timer()
+        self.assertEqual(round(timer.elapsed,2),round(time.time()-start,2))
+        time.sleep(1)
+        self.assertEqual(round(timer.elapsed,2),round(time.time()-start,2))
+        
+    def testRemaining(self):
+        start=time.time()
+        limit=5
+        timer=Timer(limit=limit)
+        self.assertEqual(round(timer.remaining,2),round(limit-time.time()+start,2))
+        time.sleep(1)
+        self.assertEqual(round(timer.remaining,2),round(limit-time.time()+start,2))
+        
+    def testCheck(self):
+        timer=Timer(limit=2)
+        timer.check()
+        time.sleep(1)
+        timer.check()
+        time.sleep(1)
+        ok=False
+        try:
+            timer.check()
+        except TimeoutException:
+            ok=True
+        self.assertTrue(ok)
 
 class testSubCommand(TestCase):
 
@@ -54,11 +110,3 @@ class testSubCommand(TestCase):
             pass
         command=MyCommand()
         MySubCommand(command,self)
-        
-class testTimer(TestCase):
-    
-    def testNoLimit(self):
-        start=time.time()
-        t=Timer()
-        
-        
