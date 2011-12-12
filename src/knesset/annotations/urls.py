@@ -1,11 +1,12 @@
 #encoding: UTF-8
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
-from models import *
-from views import *
+from knesset.annotations.handlers import AnnotationHandler
+from piston.resource import Resource
+
+annotation_resource = Resource(AnnotationHandler)
 
 urlpatterns = patterns('',
-    url(r'^$', Annotation.as_view(action="create")),
-    url(r'^annotations/(?P<id>))?/$', Annotation.as_view(action="read_update_destroy")),
-    url(r'search?/$', Annotation.as_view(action="search"))
-)
+    #url(r'^(?P<annotation_id>[^/]+)/', AnnotationHandler),
+    url(r'^$', annotation_resource),
+    ) 

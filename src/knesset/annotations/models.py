@@ -37,6 +37,10 @@ class CommaDelimitedStringListField(models.TextField):
         value = ','.join(value)
         return super(CommaDelimitedStringListField, self).get_db_prep_save(value)
 
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^knesset\.annotations\.models\.DictField"])
+add_introspection_rules([], ["^knesset\.annotations\.models\.CommaDelimitedStringListField"])
+
 class AnnotationPermissions(models.Model):
     read = CommaDelimitedStringListField()
     update = CommaDelimitedStringListField()
