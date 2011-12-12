@@ -6,6 +6,7 @@ from django.contrib.contenttypes import generic
 
 from knesset.mks.models import *
 from knesset.links.models import Link
+from knesset.video.models import Video
 
 
 class MembershipInline(admin.TabularInline):
@@ -21,6 +22,19 @@ class MemberAltnameInline(admin.TabularInline):
     model = MemberAltname
     extra = 1
 
+class MemberRelatedVideosInline(generic.GenericTabularInline):
+    model = Video
+    ct_fk_field = 'object_pk'
+    can_delete = False
+    fields = ['title','description','embed_link','group','sticky','hide']
+    ordering = ['group','-sticky','-published']
+    readonly_fields = ['title','description','embed_link','group']
+    extra = 0
+    def queryset(self, request):
+        qs = super(MemberRelatedVideosInline, self).queryset(request)
+        qs = qs.filter(hide=False)
+        return qs
+
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
@@ -33,7 +47,7 @@ class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date')
     list_display = ('name','PartiesString')
-    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline)
+    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberRelatedVideosInline)
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'

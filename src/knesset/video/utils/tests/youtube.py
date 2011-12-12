@@ -1,48 +1,14 @@
 #encoding: utf-8
 
 from django.test import TestCase
-import collections
-from knesset.video.management.commands.update_videos import (
-    _validate_dict, _parse_dict, _build_url,
-    get_youtube_videos
-)
+from knesset.video.utils.youtube import GetYoutubeVideos
 import datetime
 from dateutil.tz import tzutc
 
-class TestUpdateVideos(TestCase):
-
-    def setUp(self):
-        pass
-        
-    def testValidateDict(self):
-        h={'id':{'$t':'test','type':'text'},'tmp':'xxx'}
-        self.assertTrue(_validate_dict('test','test'))
-        self.assertTrue(_validate_dict(h,['id','tmp']))
-        self.assertTrue(_validate_dict(h,{'id':['$t']}))
-        self.assertTrue(_validate_dict(h,{'id':{'$t':'test'}}))
-        self.assertTrue(_validate_dict(h,{'id':{'type':'text','$t':'test'}},['tmp']))
-        self.assertFalse(_validate_dict(h,['id','tmp','xxx']))
-        self.assertFalse(_validate_dict(h,{'id':['x']}))
-        self.assertFalse(_validate_dict(h,{'id':{'$t':'xxx'}}))
-        self.assertFalse(_validate_dict(h,{'id':{'$t':'test','type':'text2'}}))
-        
-    def testParseDict(self):
-        self.assertEqual(_parse_dict('xxx','yyy'),None)
-        self.assertEqual(_parse_dict('xxx','yyy',default='a'),'a')
-        h={'id':{'$t':'test','type':'text'},'tmp':'xxx'}
-        self.assertEqual(_parse_dict(h,'yyy',validate=['z']),None)
-        self.assertEqual(_parse_dict(h,'yyy',validate=['id']),None)
-        self.assertEqual(_parse_dict(h,'tmp',validate=['id']),'xxx')
-        self.assertEqual(_parse_dict(h,{'id':'$t2'}),None)
-        self.assertEqual(_parse_dict(h,{'id':'$t'}),'test')        
-        
-    def testBuildUrl(self):
-        url='base'
-        q=collections.OrderedDict([('id',12345),('none',None),('str','string'),('uni',u'בדיקה')])
-        self.assertEqual(_build_url(url,q),'base?id=12345&none=&str=string&uni=%D7%91%D7%93%D7%99%D7%A7%D7%94')
-        
+class testYoutube(TestCase):
+    
     def testGetYoutubeVideosParse(self):
-        videos=get_youtube_videos(videos_json=YOUTUBE_TEST_JSON_DATA)
+        videos=GetYoutubeVideos(videos_json=YOUTUBE_TEST_JSON_DATA).videos
         self.assertEqual(len(videos),2)
         self.assertEqual(videos[0]['embed_url'],u'https://www.youtube.com/v/IyLnwCYFG8I?version=3&f=videos&app=youtube_gdata')
         self.assertEqual(videos[0]['description'],u'www.facebook.com \u05d7"\u05db \u05d3\u05d1 \u05d7\u05e0\u05d9\u05df \u05e0\u05d5\u05d0\u05dd \u05d1\u05de\u05dc\u05d9\u05d0\u05d4 \u05dc\u05e4\u05e0\u05d9 \u05d4\u05d0\u05d9\u05e9\u05d5\u05e8 \u05d4\u05e1\u05d5\u05e4\u05d9 \u05e9\u05dc \u05d7\u05d5\u05e7 \u05d4\u05d7\u05e8\u05dd - \u05d4\u05d5\u05d0 \u05d7\u05d5\u05e7 \u05d4\u05d2\u05e0\u05ea \u05d4\u05d4\u05ea\u05e0\u05d7\u05dc\u05d5\u05d9\u05d5\u05ea, \u05d9\u05d5\u05dd \u05e9\u05e0\u05d9, \u05d4-11 \u05d1\u05d9\u05d5\u05dc\u05d9 2011')
@@ -66,23 +32,30 @@ class TestUpdateVideos(TestCase):
         self.assertEqual(videos[1]['thumbnail90x120'],"http://i.ytimg.com/vi/PaaEToi3wHE/1.jpg")
         
     def testGetYoutubeVideos(self):
-        videos=get_youtube_videos(q='"funny cat"',max_results=2)
+        videos=GetYoutubeVideos(q='"funny cat"',max_results=2).videos
         self.assertEqual(len(videos),2)
         video=videos[1]
-        self.assertIsNotNone(video['embed_url'])
         self.assertIsNotNone(video['description'])
         self.assertIsNotNone(video['author'])
         self.assertIsNotNone(video['title'])
-        self.assertIsNotNone(video['embed_url_autoplay'])
         self.assertIsNotNone(video['link'])
         self.assertIsNotNone(video['id'])
-        self.assertIsNotNone(video['thumbnail480x360'])
-        self.assertIsNotNone(video['thumbnail90x120'])
         self.assertIsNotNone(video['published'])
         self.assertIn('funny cat',(video['title']+video['description']).lower())
         
-    def tearDown(self):
-        pass
+    def testGetYoutubeVideoIdUrl(self):
+        videos=GetYoutubeVideos(youtube_id_url='http://gdata.youtube.com/feeds/api/videos/4SA3ecqrGvM').videos
+        self.assertEqual(len(videos),1)
+        self.assertEqual(videos[0]['embed_url'],u'http://www.youtube.com/v/4SA3ecqrGvM?version=3&f=videos&app=youtube_gdata')
+        self.assertEqual(videos[0]['description'], u'\u05e2\u05d5\u05d3 \u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd: http://Tapi.co.il\r\n\u05d0\u05d7\u05d3 \u05d4\u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd \u05d4\u05db\u05d9 \u05d7\u05de\u05d5\u05d3\u05d9\u05dd, \u05d7\u05ea\u05d5\u05dc \u05e7\u05d8\u05df \u05d7\u05de\u05d5\u05d3 \u05d5\u05de\u05e6\u05d7\u05d9\u05e7 \u05de\u05d5\u05e4\u05ea\u05e2.') 
+        self.assertEqual(videos[0]['author'], u'tapild')
+        self.assertEqual(videos[0]['thumbnail90x120'], u'http://i.ytimg.com/vi/4SA3ecqrGvM/1.jpg') 
+        self.assertEqual(videos[0]['title'], u'\u05d7\u05ea\u05d5\u05dc\u05d9\u05dd \u05de\u05e6\u05d7\u05d9\u05e7\u05d9\u05dd \u05d7\u05de\u05d5\u05d3\u05d9\u05dd | \u05d4\u05d7\u05ea\u05d5\u05dc \u05d4\u05de\u05d5\u05e4\u05ea\u05e2 | \u05d7\u05ea\u05d5\u05dc \u05d7\u05de\u05d5\u05d3 \u05de\u05e6\u05d7\u05d9\u05e7') 
+        self.assertEqual(videos[0]['embed_url_autoplay'], u'http://www.youtube.com/v/4SA3ecqrGvM?version=3&f=videos&app=youtube_gdata&autoplay=1')
+        self.assertEqual(videos[0]['link'], u'http://www.youtube.com/watch?v=4SA3ecqrGvM&feature=youtube_gdata')
+        self.assertEqual(videos[0]['published'], datetime.datetime(2010, 12, 30, 18, 13, tzinfo=tzutc()))
+        self.assertEqual(videos[0]['id'], u'http://gdata.youtube.com/feeds/api/videos/4SA3ecqrGvM')
+        self.assertEqual(videos[0]['thumbnail480x360'], u'http://i.ytimg.com/vi/4SA3ecqrGvM/0.jpg')
 
 YOUTUBE_TEST_JSON_DATA=ur"""{
     "version":"1.0","encoding":"UTF-8",
@@ -147,4 +120,3 @@ YOUTUBE_TEST_JSON_DATA=ur"""{
         ]
     }
 }"""
-

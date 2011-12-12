@@ -267,7 +267,7 @@ class MemberDetailView(DetailView):
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
         about_videos=get_videos_queryset(member,group='about')
-        if (about_videos.count()==1):
+        if (about_videos.count()>0):
             about_video=about_videos[0]
             about_video_embed_link=about_video.embed_link
             about_video_image_link=about_video.image_link
@@ -276,8 +276,10 @@ class MemberDetailView(DetailView):
             about_video_image_link=''
             
         related_videos=get_videos_queryset(member,group='related')
-        related_videos=related_videos.filter(published__gt=date.today()-timedelta(days=30))
-        related_videos=related_videos.order_by('-published')[0:5]
+        related_videos=related_videos.filter(
+            Q(published__gt=date.today()-timedelta(days=30))
+            | Q(sticky=True)
+        ).order_by('sticky').order_by('-published')[0:5]
 
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),

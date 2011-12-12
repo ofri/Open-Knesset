@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from actstream import follow,action
 from actstream.models import Action
-from knesset.mks.models import Member, Party, Membership
+from knesset.mks.models import Member, Party, Membership, MemberAltname
 from knesset.mks.views import MemberListView
 from knesset.laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
 from knesset.committees.models import CommitteeMeeting,Committee
@@ -430,3 +430,14 @@ class MemberBacklinksViewsTest(TestCase):
         self.mk_1.delete()
         self.mk_2.delete()
         self.jacob.delete()
+
+
+class MemberModelsTests(TestCase):
+    
+    def testNames(self):
+        m=Member(name='test member')
+        self.assertEqual(m.names, ['test member'])
+        m.save()
+        MemberAltname(member=m,name='test2').save()
+        self.assertEqual(m.names, ['test member','test2'])
+
