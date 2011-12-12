@@ -551,10 +551,10 @@
 .billbox div.graph.drilling ul.steps li .date {
   display: none;
 }
-.billbox div.graph.drilling ul.steps {
- /*
+.billbox div.graph.drilling-final ul.steps {
+
   width: 760%;
-   margin-right: -92.5%; */
+/*   margin-right: -92.5%; */
   /* this property sets the focus */
 
 }

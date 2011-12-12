@@ -13,6 +13,7 @@
 	    OKnesset.animationstring = 'animation';
 	    OKnesset.keyframeprefix = '';
 	    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
+	    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
 	    var pfx  = '';
 		var elm = $dom.get('.billbox')[0];
 
@@ -23,6 +24,7 @@
 		    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
 		      pfx = domPrefixes[ i ];
 		      OKnesset.animationstring = pfx + 'Animation';
+		      OKnesset.animationEndEvent = animationEnd[i];
 		      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
 		      OKnesset.animation = true;
 		      break;
@@ -89,39 +91,46 @@
 		OKnesset.drill = function(e){
 			console.log("function drill ");
 			var senderDiv = getSenderDiv(e);
-			console.log(senderDiv);
 			var graph = $dom.get('.graph')[0];
+			// TOOD remove "drilled" from all other steps
 			$dom.addClass(graph, 'drilling');
 			$dom.addClass(senderDiv, 'drilled');
-			// TOOD remove "drilled" from all other steps
 
 			var stageIndex=$dom.descendants($dom.ancestor(senderDiv), "li").indexOf(senderDiv);
-			console.log(stageIndex);
 			var stepsDiv = $dom.get('div.graph ul.steps')[0];
+
 			$dom.style(stepsDiv, {'margin-right': '' + 2.5 -760/8 * stageIndex + '%'});
 
 			if( OKnesset.animation === false ) {
 				console.log("no animation");
-			  // animate in JavaScript fallback
-
+				$dom.addClass(graph, 'drilling-final');
 			} else {
 				OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width : 100%;} 100% {width: 760%;}');
+
+				stepsDiv.addEventListener(
+				    OKnesset.animationEndEvent,
+				    function(){
+						$dom.addClass(graph, 'drilling-final');
+				    }, false);
 			}
 
-			stepsDiv.addEventListener(
-			    'webkitAnimationEnd',
-			    function(){
-					// TODO make a class with the full width, don't set the style directly
-					$dom.style(stepsDiv, {'width': '760%'});
-			    }, false);
-			senderDiv.setAttribute("onclick", "OKnesset.undrill();");
+			senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
 		}
 
 		OKnesset.undrill = function(e){
 			console.log(" function undrill");
 			var senderDiv = getSenderDiv(e);
 
-			senderDiv.setAttribute("onclick", "drill();");
+			var graph = $dom.get('.graph')[0];
+			// TOOD remove "drilled" from all other steps
+			$dom.removeClass(graph, 'drilling');
+			$dom.removeClass(graph, 'drilling-final');
+			$dom.removeClass(senderDiv, 'drilled');
+			var stepsDiv = $dom.get('div.graph ul.steps')[0];
+			$dom.style(stepsDiv, {'margin-right': '0%'});
+			window.setTimeout(function(){stepsDiv.setAttribute("style", "");}, 10);
+
+			senderDiv.setAttribute("onclick", "OKnesset.drill(event);");
 		}
 	</script>
 	<div class="graph drilling-">
@@ -174,7 +183,7 @@
         {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
 
-			<li class="initiated passed odd first" onclick="OKnesset.drill();">
+			<li class="initiated passed odd first" onclick="OKnesset.drill(event);">
 				<div class="step">
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
@@ -186,7 +195,7 @@
 				</div>
 			</li>
 
-			<li class="pre-vote" onclick="OKnesset.drill();">
+			<li class="pre-vote" onclick="OKnesset.drill(event);">
                     {% if bill.pre_votes.count > 0 %}
 				 	<script type="text/javascript">
 				 		// add 'passed' and 'voted' class to the pre-vote li element
@@ -235,7 +244,7 @@
 				</div>
 			</li>
 
-			<li class="committee-1 passed odd" onclick="OKnesset.drill();">
+			<li class="committee-1 passed odd" onclick="OKnesset.drill(event);">
 				<div class="step">
                     {% if bill.first_committee.meetings.count > 0 %}
                         <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
@@ -247,7 +256,7 @@
 				</div>
 			</li>
 
-			<li class="vote-1 passed" onclick="OKnesset.drill();">
+			<li class="vote-1 passed" onclick="OKnesset.drill(event);">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -263,7 +272,7 @@
 				</div>
 			</li>
 
-			<li class="committee-2 passed odd" onclick="OKnesset.drill();">
+			<li class="committee-2 passed odd" onclick="OKnesset.drill(event);">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -272,7 +281,7 @@
 				</div>
 			</li>
 
-			<li class="vote-2 passed" onclick="OKnesset.drill();">
+			<li class="vote-2 passed" onclick="OKnesset.drill(event);">
 				<div class="step">
   				<a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -282,7 +291,7 @@
 				</div>
 			</li>
 
-			<li class="vote-3 passed odd" onclick="OKnesset.drill();">
+			<li class="vote-3 passed odd" onclick="OKnesset.drill(event);">
 				<div class="step">
           <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
 					<a href="#" class="info">מידע</a>
@@ -292,7 +301,7 @@
 				</div>
 			</li>
 
-			<li class="accepted passed last" onclick="OKnesset.drill();">
+			<li class="accepted passed last" onclick="OKnesset.drill(event);">
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>
