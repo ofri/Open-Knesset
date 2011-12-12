@@ -552,8 +552,9 @@
   display: none;
 }
 .billbox div.graph.drilling ul.steps {
+ /*
   width: 760%;
-  /* margin-right: -92.5%; */
+   margin-right: -92.5%; */
   /* this property sets the focus */
 
 }
@@ -709,3 +710,4 @@
 .billbox .pms.opposing li:last-child {
   margin-right: 0;
 }
+
