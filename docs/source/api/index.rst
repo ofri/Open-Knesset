@@ -17,3 +17,4 @@ e.g:
     :maxdepth: 2
 
     member
+    committee
