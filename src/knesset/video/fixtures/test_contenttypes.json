@@ -1,1 +1,0 @@
-[{"pk": 50, "model": "contenttypes.contenttype", "fields": {"model": "member", "name": "Member", "app_label": "mks"}}]
