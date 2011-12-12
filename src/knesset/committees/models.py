@@ -28,7 +28,6 @@ class Committee(models.Model):
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
-    portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False)
 
     def __unicode__(self):
         return "%s" % self.name

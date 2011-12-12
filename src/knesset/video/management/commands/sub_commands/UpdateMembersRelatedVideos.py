@@ -16,7 +16,7 @@ class UpdateMembersRelatedVideos(SubCommand):
             self._debug(member.name)
             self._check_timer()
             relvids=[]
-            for name in member.all_names:
+            for name in member.names:
                 self._debug(name)
                 for video in self._getVideosForMember(name):
                     if self._verify_related_video(video,name):

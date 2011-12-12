@@ -277,13 +277,6 @@ class Member(models.Model):
         else:
             return ugettext('Past Member (male)')
 
-    @property
-    def all_names(self):
-        names=[self.name]
-        for altname in self.memberaltname_set.all():
-            names.append(altname.name)
-        return names
-
     def recalc_bill_statistics(self):
         self.bills_stats_proposed = self.bills.count()
         self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
