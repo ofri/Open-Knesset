@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.forms.models import modelformset_factory
 from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes import generic
+from django.db.models import Q
 
 from knesset.mks.models import *
 from knesset.links.models import Link
@@ -32,7 +33,7 @@ class MemberRelatedVideosInline(generic.GenericTabularInline):
     extra = 0
     def queryset(self, request):
         qs = super(MemberRelatedVideosInline, self).queryset(request)
-        qs = qs.filter(hide=False)
+        qs = qs.filter(Q(hide=False) | Q(hide=None))
         return qs
 
 class PartyAdmin(admin.ModelAdmin):
