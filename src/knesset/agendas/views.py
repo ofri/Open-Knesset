@@ -223,8 +223,8 @@ def agenda_add_view(request):
 @login_required
 def update_editors_agendas(request):
     if request.method == 'POST':
-        vote_id = None
         object_type = request.POST.get('form-0-object_type',None)
+        object_id = request.POST.get('form-0-vote_id',None)
         if object_type=='vote':
             vl_formset = VoteLinkingFormSet(request.POST)
         else:
@@ -299,7 +299,7 @@ def update_editors_agendas(request):
         else:
             # TODO: Error handling: what to do with illeal forms?
             logger.info("invalid formset")
-            return HttpResponseRedirect(reverse('vote-list'))
+            logger.info("%s" % vl_formset.errors)
         if object_id:
             if object_type=='vote':
                 return HttpResponseRedirect(reverse('vote-detail',

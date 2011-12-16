@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 import tagging
 from actstream import action
+from actstream.models import Action
 from knesset.mks.models import Member
 from knesset.laws.models import Vote,Bill
 from knesset.committees.models import Topic, CommitteeMeeting
@@ -23,6 +24,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult
+from feeds import main_actions
 
 import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -43,26 +45,47 @@ def help_page(request):
     template_name = '%s.%s%s' % ('help_page', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))
 
+def add_previous_comments(comments):
+    previous_comments = set()
+    for c in comments:
+        c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
+                                                     content_type=c.content_type,
+                                                     submit_date__lt=c.submit_date)
+        previous_comments.update(c.previous_comments)
+        c.is_comment = True
+    comments = [c for c in comments if c not in previous_comments]
+    return comments
+
+def get_annotations(comments, annotations):
+    for a in annotations:
+        a.submit_date = a.timestamp
+    comments = add_previous_comments(comments)
+    annotations.extend(comments)
+    annotations.sort(key=lambda x:x.submit_date,reverse=True)
+    return annotations
+
 def main(request):
+    """
+    Note on annotations:
+     Old:
+        Return annotations by concatenating Annotation last 10 and Comment last
+        10, adding all related comments (comments on same item that are older).
+        annotations_old = get_annotations(
+            annotations=list(Annotation.objects.all().order_by('-timestamp')[:10]),
+            comments=Comment.objects.all().order_by('-submit_date')[:10])
+     New:
+        Return annotations by Action filtered to include only:
+         annotation-added (to meeting), ignore annotated (by user)
+         comment-added
+    """
     context = cache.get('main_page_context')
     if not context:
         context = {}
         context['title'] = _('Home')
-        annotations = \
-            list(Annotation.objects.all().order_by('-timestamp')[:10])
-        for a in annotations:
-            a.submit_date = a.timestamp
-        comments = list(Comment.objects.all().order_by('-submit_date')[:10])
-        previous_comments = set()
-        for c in comments:
-            c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
-                                                         content_type=c.content_type,
-                                                         submit_date__lt=c.submit_date)
-            previous_comments.update(c.previous_comments)
-            c.is_comment = True
-        comments = [c for c in comments if c not in previous_comments]
-        annotations.extend(comments)
-        annotations.sort(key=lambda x:x.submit_date,reverse=True)
+        actions = list(main_actions()[:10])
+        annotations = get_annotations(
+            annotations=[a.target for a in actions if a.verb != 'comment-added'],
+            comments=[x.target for x in actions if x.verb == 'comment-added'])
         context['annotations'] = annotations
         context['topics'] = Topic.objects.summary('-modified')[:20]
         context['has_search'] = True # disable the base template search
@@ -239,5 +262,3 @@ class TagDetail(DetailView):
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
         return context
-
-

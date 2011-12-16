@@ -19,7 +19,8 @@ install_requires = [
     'BeautifulSoup',
     'nose',
     'django-nose',
-    'gunicorn'
+    'gunicorn',
+    'vobject',
     ]
 setup(
         name = "Open-Knesset",

@@ -15,7 +15,7 @@ class UpdateMembersAboutVideo(SubCommand):
             self._debug(member.name)
             self._check_timer()
             if not self._isMemberHaveAboutVideo(member):
-                names=member.all_names
+                names=member.names
                 got_video=False
                 for name in names:
                     videos=self._getVideosForMemberName(name)

@@ -1,9 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load laws_extra bills_extra committees %}
-{% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extratitle %}{{ tag }}{% endblock %}
+{% block keywords %}{{ tag }}{% endblock %}
+{% block description %}{{ tag }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-tags %}class="selected"{% endblock %}
 {% block header %}
     <ul id="breadcrumbs"> 
