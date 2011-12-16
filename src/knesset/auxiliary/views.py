@@ -237,6 +237,7 @@ class TagList(ListView):
     def get_context_data(self, **kwargs):
         context = super(TagList, self).get_context_data(**kwargs)
         tags_cloud = calculate_cloud_from_models(Vote,Bill,CommitteeMeeting)
+        tags_cloud.sort(key=lambda x:x.name)
         context['tags_cloud'] = tags_cloud
         return context
 
