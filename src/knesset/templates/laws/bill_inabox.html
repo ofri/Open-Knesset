@@ -8,29 +8,31 @@
 
 		OKnesset.billBox = OKnesset.billBox || {};
 
-		// detect css animation support
-		OKnesset.animation = false;
-	    OKnesset.animationstring = 'animation';
-	    OKnesset.keyframeprefix = '';
-	    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
-	    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
-	    var pfx  = '';
-		var elm = $dom.get('.billbox')[0];
+		// Detect Animation support
+		(function(){
+			OKnesset.animation = false;
+		    OKnesset.animationstring = 'animation';
+		    OKnesset.keyframeprefix = '';
+		    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
+		    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
+		    var pfx  = '';
+			var elm = $dom.get('.billbox')[0];
 
-		if( elm.style.animationName ) { OKnesset.animation = true; }
+			if( elm.style.animationName ) { OKnesset.animation = true; }
 
-		if( OKnesset.animation === false ) {
-		  for( var i = 0; i < domPrefixes.length; i++ ) {
-		    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
-		      pfx = domPrefixes[ i ];
-		      OKnesset.animationstring = pfx + 'Animation';
-		      OKnesset.animationEndEvent = animationEnd[i];
-		      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
-		      OKnesset.animation = true;
-		      break;
-		    }
-		  }
-		}
+			if( OKnesset.animation === false ) {
+			  for( var i = 0; i < domPrefixes.length; i++ ) {
+			    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+			      pfx = domPrefixes[ i ];
+			      OKnesset.animationstring = pfx + 'Animation';
+			      OKnesset.animationEndEvent = animationEnd[i];
+			      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
+			      OKnesset.animation = true;
+			      break;
+			    }
+			  }
+			}
+		})();
 
 		OKnesset.addAnimation = function(elm, animName, animProps, keyFrameContent){
 			  elm.style[ OKnesset.animationstring ] = animName + ' ' + animProps;
@@ -47,6 +49,18 @@
 			    document.getElementsByTagName( 'head' )[ 0 ].appendChild( s );
 			  }
 		}
+
+		OKnesset.drilldata = [];
+		OKnesset.drilldata.push({'stage' : 1});
+		OKnesset.drilldata.push({'stage' : 2});
+		// ...
+		OKnesset.drilldata.push({'stage' : 6});
+
+		{% if bill.pre_votes.count  > 0 %}
+			OKnesset.drilldata[1] = {{pre_vote_drill_data|safe}};
+		{% endif %}
+
+
 	</script>
 	<div class="header header-small">
 		<div class="billbox-details">
@@ -99,7 +113,10 @@
 			var stageIndex=$dom.descendants($dom.ancestor(senderDiv), "li").indexOf(senderDiv);
 			var stepsDiv = $dom.get('div.graph ul.steps')[0];
 			var margin = 2.5 -(760/8 * stageIndex);
-			//$dom.style(stepsDiv, {'margin-right': '' + 2.5 -760/8 * stageIndex + '%'});
+
+			// update "drill" data
+			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[1].against.count;
+			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[1].for.count;
 
 			if( OKnesset.animation === false ) {
 				console.log("no animation");
@@ -142,8 +159,8 @@
 				<li class="action-btn"><a href="#">מעורבות אזרחית</a></li>
 			</ul>
 			<div class="thedrill-details">
-				<div class="for_votes">בעד: 6</div>
-				<div class="against_votes">נגד: 2</div>
+				<div class="for_votes">בעד: <span>6</span></div>
+				<div class="against_votes">נגד: <span>2</span></div>
 				<div class="pms supporting" style="width:66%">
 					<ul name="קדימה">
 						<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a><span class="tooltip"><span>אברהם מיכאלי</span></span></li>
@@ -203,9 +220,7 @@
 						var li_pre_vote = $dom.get("li.pre-vote")[0];
 						$dom.addClass(li_pre_vote, "voted");
 
-				 		OKnesset.billBox.passed = {{pre_vote_last.against_votes_count}} < {{pre_vote_last.for_votes_count}};
-						OKnesset.billBox.was_pre_voted = {{bill.pre_votes.count}} > 0;
-						if (OKnesset.billBox.passed) {
+						if ({{pre_vote_passed|lower}}) {
 							$dom.addClass(li_pre_vote, "passed");
 						}
 				 	</script>
@@ -219,13 +234,13 @@
 					<span class="icon">icon</span>
 					{% if bill.pre_votes.count > 0 %}
 					<div class="tooltip-score">
-						<span class="balance">{{pre_vote_last.for_votes_count}}/{{pre_vote_last.against_votes_count}}</span>
+						<span class="balance">{{pre_vote.for_votes_count}}/{{pre_vote.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
 							<span class="against" ></span>
 							<span class="for"></span>
 							<script type="text/javascript">
 						 		// set the style of the 'against' span
-								OKnesset.billBox.preVote_score_width = {{pre_vote_last.against_votes_count}} * 120 / ({{pre_vote_last.for_votes_count}} + {{pre_vote_last.against_votes_count}});
+								OKnesset.billBox.preVote_score_width = {{pre_vote.against_votes_count}} * 120 / ({{pre_vote.for_votes_count}} + {{pre_vote.against_votes_count}});
 								var against = $dom.get("li.pre-vote .against")[0];
 								// the background-position attribute value 'bottom' might not work on Firefox, or IE
 								$dom.style(against, {'width':OKnesset.billBox.preVote_score_width + "px", 'background-position': (OKnesset.billBox.preVote_score_width - 120) + "px bottom" });
