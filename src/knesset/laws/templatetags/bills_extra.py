@@ -23,7 +23,7 @@ def split_member_vote_list_by_party(member_vote_list):
     ''' create a party patrtitioned list of "for" voters and "against" voters '''
 
     list_by_party = []
-    if member_vote_list.count > 0:
+    if member_vote_list.count() > 0:
         ''' first party, first member '''
         curr_party = { 'party' : member_vote_list[0].member.current_party.name,
                       'members' : []}
