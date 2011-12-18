@@ -42,6 +42,25 @@ def split_member_vote_list_by_party(member_vote_list):
         list_by_party.append(curr_party)
     return list_by_party
 
+def create_vote_dict(vote):
+    for_vote_sorted = vote.for_votes().order_by('member__current_party')
+    for_votes_grouped = split_member_vote_list_by_party(for_vote_sorted)
+    against_vote_sorted = vote.against_votes().order_by('member__current_party')
+    against_votes_grouped = split_member_vote_list_by_party(against_vote_sorted)
+
+    vote_drill_data = dict({ 'against' : dict({ 'count' : against_vote_sorted.count(),
+                                          'votes' : against_votes_grouped}),
+                                'for' : dict({ 'count' : for_vote_sorted.count(),
+                                          'votes' : for_votes_grouped})})
+
+    vote_dict = dict({'vote' : vote,
+                          'vote_drill_data' : json.dumps(vote_drill_data),
+                          'vote_passed' : vote.against_votes_count < vote.for_votes_count,
+                          'vote_time' : {'day' : vote.time.day,
+                           'month' : vote.time.month,
+                           'year' : vote.time.year}})
+    return vote_dict
+
 @register.inclusion_tag('laws/bill_inabox.html')
 def bill_inabox(bill):
     """ TODO: firstX and not first3"""
@@ -54,28 +73,13 @@ def bill_inabox(bill):
     #pre vote
     if bill.pre_votes.count() > 0:
         pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
-        for_vote_sorted = pre_vote.for_votes().order_by('member__current_party')
-        pre_vote_for_votes = split_member_vote_list_by_party(for_vote_sorted)
-        against_vote_sorted = bill.pre_votes.all()[bill.pre_votes.count() - 1].against_votes().order_by('member__current_party')
-        pre_vote_against_votes = split_member_vote_list_by_party(against_vote_sorted)
+        pre_vote_dict = create_vote_dict(pre_vote)
+        bill_inabox_dict['pre_vote'] = pre_vote_dict;
 
-        pre_vote_drill_data = dict({ 'against' : dict({ 'count' : against_vote_sorted.count(),
-                                              'votes' : pre_vote_against_votes}),
-                                    'for' : dict({ 'count' : for_vote_sorted.count(),
-                                              'votes' : pre_vote_for_votes})})
+    #first vote
+    if bill.first_vote:
+        first_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
+        first_vote_dict = create_vote_dict(first_vote)
+        bill_inabox_dict['first_vote'] = first_vote_dict;
 
-        pre_vote_dict = dict({'pre_vote' : pre_vote,
-                              'pre_vote_drill_data' : json.dumps(pre_vote_drill_data),
-                              'pre_vote_passed' : pre_vote.against_votes_count < pre_vote.for_votes_count,
-#                              'pre_vote_for_votes_grouped_by_parties' : pre_vote_for_votes_grouped_by_parties,
-                              'pre_vote_time' : {'day' : pre_vote.time.day,
-                               'month' : pre_vote.time.month,
-                               'year' : pre_vote.time.year}})
-
-        #first vote
-
-
-        bill_inabox_dict = dict(bill_inabox_dict.items() + pre_vote_dict.items())
-
-    # what is the real index? 0 is not the correct one
     return bill_inabox_dict

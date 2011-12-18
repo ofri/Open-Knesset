@@ -61,7 +61,7 @@
 		OKnesset.drilldata.push({'stage' : 6});
 
 		{% if bill.pre_votes.count  > 0 %}
-			OKnesset.drilldata[1].votes = {{pre_vote_drill_data|safe}};
+			OKnesset.drilldata[1].votes = {{pre_vote.vote_drill_data|safe}};
 		{% endif %}
 
 
@@ -158,8 +158,8 @@
 			if (OKnesset.drilldata[stageIndex].votes) {}
 			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
 			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
-			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.against.count / {{pre_vote.votes.count}}) + "%"});
-			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.for.count / {{pre_vote.votes.count}}) + "%"});
+			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.against.count / {{pre_vote.vote.votes.count}}) + "%"});
+			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.for.count / {{pre_vote.vote.votes.count}}) + "%"});
 
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.for, "supporting");
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
@@ -253,7 +253,7 @@
 						var li_pre_vote = $dom.get("li.pre-vote")[0];
 						$dom.addClass(li_pre_vote, "voted");
 
-						if ({{pre_vote_passed|lower}}) {
+						if ({{pre_vote.vote_passed|lower}}) {
 							$dom.addClass(li_pre_vote, "passed");
 						}
 				 	</script>
@@ -267,13 +267,13 @@
 					<span class="icon">icon</span>
 					{% if bill.pre_votes.count > 0 %}
 					<div class="tooltip-score">
-						<span class="balance">{{pre_vote.for_votes_count}}/{{pre_vote.against_votes_count}}</span>
+						<span class="balance">{{pre_vote.vote.for_votes_count}}/{{pre_vote.vote.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
 							<span class="against" ></span>
 							<span class="for"></span>
 							<script type="text/javascript">
 						 		// set the style of the 'against' span
-								OKnesset.billBox.preVote_score_width = {{pre_vote.against_votes_count}} * 120 / ({{pre_vote.for_votes_count}} + {{pre_vote.against_votes_count}});
+								OKnesset.billBox.preVote_score_width = {{pre_vote.vote.against_votes_count}} * 120 / ({{pre_vote.vote.for_votes_count}} + {{pre_vote.vote.against_votes_count}});
 								var against = $dom.get("li.pre-vote .against")[0];
 								// the background-position attribute value 'bottom' might not work on Firefox, or IE
 								$dom.style(against, {'width':OKnesset.billBox.preVote_score_width + "px", 'background-position': (OKnesset.billBox.preVote_score_width - 120) + "px bottom" });
@@ -287,7 +287,7 @@
 					<script type="text/javascript">
 				 		// set the pre-vote date
 						var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
-						pre_vote_date.innerHTML = "{{pre_vote_time.day}}/{{pre_vote_time.month}}<br>{{pre_vote_time.year}}";
+						pre_vote_date.innerHTML = "{{pre_vote.vote_time.day}}/{{pre_vote.vote_time.month}}<br>{{pre_vote.vote_time.year}}";
 					</script>
                     {% endif %}
 				</div>
