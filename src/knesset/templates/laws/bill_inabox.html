@@ -53,11 +53,15 @@
 		OKnesset.drilldata = [];
 		OKnesset.drilldata.push({'stage' : 1});
 		OKnesset.drilldata.push({'stage' : 2});
-		// ...
+		OKnesset.drilldata.push({'stage' : 3});
+		OKnesset.drilldata.push({'stage' : 4});
+		OKnesset.drilldata.push({'stage' : 5});
+		OKnesset.drilldata.push({'stage' : 6});
+		OKnesset.drilldata.push({'stage' : 6});
 		OKnesset.drilldata.push({'stage' : 6});
 
 		{% if bill.pre_votes.count  > 0 %}
-			OKnesset.drilldata[1] = {{pre_vote_drill_data|safe}};
+			OKnesset.drilldata[1].votes = {{pre_vote_drill_data|safe}};
 		{% endif %}
 
 
@@ -98,13 +102,49 @@
 		<div class="pull"><div class="arrow down"></div></div>
 	</div>
 	<script type="text/javascript">
-		function getSenderDiv(e){
+		OKnesset.billBox.getSenderDiv = function(e){
 			var sender = (e && e.target) || (window.event && window.event.srcElement);
 			return sender.tagName.toLowerCase() === 'li'? sender : $dom.ancestor(sender, 'li');
 		}
+
+		// add the member images and links to the drill data
+		// <ul name="קדימה"><li><a href="/member/771"><img src="http://www.knesset.gov.il/mk/images/members/dicter_abraham-s.jpg" alt="אבי (משה) דיכטר" title="אבי (משה) דיכטר"></a><span class="tooltip"><span>אבי (משה) דיכטר</span></span></li></ul>
+		OKnesset.billBox.buildDrillVoters = function(partyGroupArray, pmsClass){
+			var graph = $dom.get('.graph')[0];
+			var pmsNode = $dom.get(".pms."+pmsClass, graph)[0];
+			pmsNode.innerHTML = "";
+			for (var i = 0 ; i < partyGroupArray.count ; i++){
+				var partyGroup =  partyGroupArray.votes[i];
+				var partyNode = $dom.create("ul");
+				partyNode.setAttribute("name", partyGroup.party);
+				pmsNode.appendChild(partyNode);
+				for (var j = 0 ; j < partyGroup.members.length ; j++){
+					var memberNode = $dom.create("li");
+					var memberLink = $dom.create("a");
+					var memberImage = $dom.create("img");
+					var memberTooltip = $dom.create("span.tooltip");
+					var memberName = $dom.create("span");
+
+					memberLink.setAttribute("href", partyGroup.members[j].url);
+					memberImage.setAttribute("src", partyGroup.members[j].img_url);
+					memberImage.setAttribute("alt", partyGroup.members[j].name);
+					memberImage.setAttribute("title", partyGroup.members[j].name);
+
+					memberNode.appendChild(memberLink);
+					memberLink.appendChild(memberImage);
+					memberNode.appendChild(memberTooltip);
+					memberTooltip.appendChild(memberName);
+
+					partyNode.appendChild(memberNode);
+
+					memberName.innerHTML = partyGroup.members[j].name
+				}
+			}
+
+		}
 		OKnesset.drill = function(e){
 			console.log("function drill ");
-			var senderDiv = getSenderDiv(e);
+			var senderDiv = OKnesset.billBox.getSenderDiv(e);
 			var graph = $dom.get('.graph')[0];
 			// TOOD remove "drilled" from all other steps
 			$dom.addClass(graph, 'drilling');
@@ -115,11 +155,16 @@
 			var margin = 2.5 -(760/8 * stageIndex);
 
 			// update "drill" data
-			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[1].against.count;
-			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[1].for.count;
-			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100* OKnesset.drilldata[1].against.count / {{pre_vote.votes.count}}) + "%"});
-			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100* OKnesset.drilldata[1].for.count / {{pre_vote.votes.count}}) + "%"});
+			if (OKnesset.drilldata[stageIndex].votes) {}
+			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
+			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
+			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.against.count / {{pre_vote.votes.count}}) + "%"});
+			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.for.count / {{pre_vote.votes.count}}) + "%"});
 
+			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.for, "supporting");
+			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
+
+			// end update "drill" data
 			if( OKnesset.animation === false ) {
 				console.log("no animation");
 				$dom.addClass(graph, 'drilling-final');
@@ -140,7 +185,7 @@
 
 		OKnesset.undrill = function(e){
 			console.log(" function undrill");
-			var senderDiv = getSenderDiv(e);
+			var senderDiv = OKnesset.billBox.getSenderDiv(e);
 
 			var graph = $dom.get('.graph')[0];
 			// TOOD remove "drilled" from all other steps
@@ -164,22 +209,8 @@
 				<div class="for_votes">בעד: <span></span></div>
 				<div class="against_votes">נגד: <span></span></div>
 				<div class="pms supporting">
-					<ul name="קדימה">
-						<li><a href="/member/784/"><img src="http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg" alt="אברהם מיכאלי" title="אברהם מיכאלי"/></a><span class="tooltip"><span>אברהם מיכאלי</span></span></li>
-						<li><a href="/member/805/"><img src="http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg" alt="דוד רותם" title="דוד רותם"/></a><span class="tooltip"><span>דוד רותם</span></span></li>
-						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
-						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
-					</ul>
-					<ul name="האיחוד הלאומי">
-						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
-						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
-					</ul>
 				</div>
-				<div class="pms opposing" style="width:34%">
-					<ul name="מרצ">
-						<li><a href="/member/768/"><img src="http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg" alt="זאב אלקין" title="זאב אלקין"/></a><span class="tooltip"><span>זאב אלקין</span></span></li>
-						<li><a href="/member/776/"><img src="http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg" alt="עתניאל שנלר" title="עתניאל שנלר"/></a><span class="tooltip"><span>עתניאל שנלר</span></span></li>
-					</ul>
+				<div class="pms opposing">
 				</div>
 			</div>
 			<div class="thedrill-meaning">

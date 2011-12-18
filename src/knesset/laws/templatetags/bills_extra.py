@@ -28,7 +28,10 @@ def split_member_vote_list_by_party(member_vote_list):
         curr_party = { 'party' : member_vote_list[0].member.current_party.name,
                       'members' : []}
         for vote in member_vote_list:
-            member = {'name' : vote.member.name}
+            member = {'name' : vote.member.name,
+                      'url' : vote.member.get_absolute_url(),
+                      'img_url' : vote.member.img_url,
+                      'id' : vote.member.id}
             if vote.member.current_party.name == curr_party['party']:
                 curr_party['members'].append(member)
             else:
@@ -48,6 +51,7 @@ def bill_inabox(bill):
             'proposers_first3' : bill.proposers.all()[:3],
             'proposers_count_minus3' : bill.proposers.count() - 3})
 
+    #pre vote
     if bill.pre_votes.count() > 0:
         pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
         for_vote_sorted = pre_vote.for_votes().order_by('member__current_party')
@@ -67,6 +71,10 @@ def bill_inabox(bill):
                               'pre_vote_time' : {'day' : pre_vote.time.day,
                                'month' : pre_vote.time.month,
                                'year' : pre_vote.time.year}})
+
+        #first vote
+
+
         bill_inabox_dict = dict(bill_inabox_dict.items() + pre_vote_dict.items())
 
     # what is the real index? 0 is not the correct one
