@@ -64,6 +64,14 @@
 			OKnesset.drilldata[1].votes = {{pre_vote.vote_drill_data|safe}};
 		{% endif %}
 
+		{% if bill.first_vote %}
+			OKnesset.drilldata[3].votes = {{first_vote.vote_drill_data|safe}};
+		{% endif %}
+
+		{% if bill.approval_vote %}
+			OKnesset.drilldata[5].votes = {{approval_vote.vote_drill_data|safe}};
+			OKnesset.drilldata[6].votes = OKnesset.drilldata[5].votes;
+		{% endif %}
 
 	</script>
 	<div class="header header-small">
@@ -143,6 +151,11 @@
 
 		}
 		OKnesset.drill = function(e){
+			if (OKnesset.drilling) {
+				return;
+			}
+			OKnesset.drilling = true;
+
 			console.log("function drill ");
 			var senderDiv = OKnesset.billBox.getSenderDiv(e);
 			var graph = $dom.get('.graph')[0];
@@ -158,8 +171,12 @@
 			if (OKnesset.drilldata[stageIndex].votes) {}
 			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
 			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
-			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.against.count / {{pre_vote.vote.votes.count}}) + "%"});
-			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100* OKnesset.drilldata[stageIndex].votes.for.count / {{pre_vote.vote.votes.count}}) + "%"});
+			var totalVotes = OKnesset.drilldata[stageIndex].votes.against.count + OKnesset.drilldata[stageIndex].votes.for.count;
+			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes) + "%"});
+			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes) + "%"});
+			if (OKnesset.drilldata[stageIndex].votes.for.count > OKnesset.drilldata[stageIndex].votes.against.count) {
+				$dom.addClass($dom.get(".thedrill", graph)[0], "passed");
+			}
 
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.for, "supporting");
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
@@ -177,6 +194,7 @@
 						stepsDiv.setAttribute("style", "");
 						$dom.addClass(graph, 'drilling-final');
 						$dom.style(stepsDiv, {'margin-right': margin + '%'});
+						OKnesset.drilling = false;
 				    }, false);
 			}
 
@@ -184,6 +202,9 @@
 		}
 
 		OKnesset.undrill = function(e){
+			if (OKnesset.drilling) {
+				return;
+			}
 			console.log(" function undrill");
 			var senderDiv = OKnesset.billBox.getSenderDiv(e);
 
@@ -198,8 +219,8 @@
 			senderDiv.setAttribute("onclick", "OKnesset.drill(event);");
 		}
 	</script>
-	<div class="graph drilling-">
-		<div class="thedrill passed">
+	<div class="graph">
+		<div class="thedrill">
 			<ul class="pill-nav">
 				<li class="details-btn active"><a href="#">פרטי ההצבעה</a></li>
 				<li class="meaning-btn"><a href="#">מה זה אומר?</a></li>
@@ -234,7 +255,7 @@
         {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
 
-			<li class="initiated passed odd first" onclick="OKnesset.drill(event);">
+			<li class="initiated passed odd first">
 				<div class="step">
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
@@ -293,7 +314,7 @@
 				</div>
 			</li>
 
-			<li class="committee-1 passed odd" onclick="OKnesset.drill(event);">
+			<li class="committee-1 passed odd">
 				<div class="step">
                     {% if bill.first_committee.meetings.count > 0 %}
                         <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
@@ -321,7 +342,7 @@
 				</div>
 			</li>
 
-			<li class="committee-2 passed odd" onclick="OKnesset.drill(event);">
+			<li class="committee-2 passed odd">
 				<div class="step">
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
@@ -350,7 +371,7 @@
 				</div>
 			</li>
 
-			<li class="accepted passed last" onclick="OKnesset.drill(event);">
+			<li class="accepted passed last" >
 				<div class="step">
 					<a href="#" class="link">קישור</a>
 					<a href="#" class="info">מידע</a>

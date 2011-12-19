@@ -55,7 +55,7 @@ def create_vote_dict(vote):
 
     vote_dict = dict({'vote' : vote,
                           'vote_drill_data' : json.dumps(vote_drill_data),
-                          'vote_passed' : vote.against_votes_count < vote.for_votes_count,
+                          'vote_passed' : vote.for_votes_count() > vote.against_votes_count(),
                           'vote_time' : {'day' : vote.time.day,
                            'month' : vote.time.month,
                            'year' : vote.time.year}})
@@ -73,13 +73,15 @@ def bill_inabox(bill):
     #pre vote
     if bill.pre_votes.count() > 0:
         pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
-        pre_vote_dict = create_vote_dict(pre_vote)
-        bill_inabox_dict['pre_vote'] = pre_vote_dict;
+        bill_inabox_dict['pre_vote'] = create_vote_dict(pre_vote)
 
     #first vote
     if bill.first_vote:
-        first_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
-        first_vote_dict = create_vote_dict(first_vote)
-        bill_inabox_dict['first_vote'] = first_vote_dict;
+        bill_inabox_dict['first_vote'] = create_vote_dict(bill.first_vote)
+
+    #second+third vote (approvval_vote
+    if bill.approval_vote:
+        bill_inabox_dict['approval_vote'] = create_vote_dict(bill.approval_vote)
+
 
     return bill_inabox_dict
