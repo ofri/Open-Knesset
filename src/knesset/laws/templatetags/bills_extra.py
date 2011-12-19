@@ -70,6 +70,14 @@ def bill_inabox(bill):
             'proposers_first3' : bill.proposers.all()[:3],
             'proposers_count_minus3' : bill.proposers.count() - 3})
 
+    #proposal
+    if bill.proposals.count() > 0:
+        proposal = bill.proposals.all()[bill.proposals.count() - 1]
+        bill_inabox_dict['proposal'] = dict({'day' : proposal.date.day,
+                           'month' : proposal.date.month,
+                           'year' : proposal.date.year})
+
+
     #pre vote
     if bill.pre_votes.count() > 0:
         pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]

@@ -255,7 +255,7 @@
         {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
 
-			<li class="initiated passed odd first">
+			<li class="initiated odd first">
 				<div class="step">
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
@@ -264,6 +264,15 @@
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>יזום ההצעה</span></div>
 					<span class="date">?</span>
+                    {% if bill.proposals.count > 0 %}
+					<script type="text/javascript">
+				 		// set the pre-vote date
+						var prposal_date = $dom.get("li.initiated span.date")[0];
+						prposal_date.innerHTML = "{{proposal.day}}/{{proposal.month}}<br>{{proposal.year}}";
+
+						$dom.addClass($dom.get('li.initiated')[0], "passed");
+					</script>
+                    {% endif %}
 				</div>
 			</li>
 
