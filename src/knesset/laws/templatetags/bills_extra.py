@@ -83,6 +83,10 @@ def bill_inabox(bill):
         pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
         bill_inabox_dict['pre_vote'] = create_vote_dict(pre_vote)
 
+    #first_committee_meetings
+    if bill.first_committee_meetings.count() > 0:
+        first_committee_meetings = bill.first_committee_meetings.all()[bill.first_committee_meetings.count() - 1]
+
     #first vote
     if bill.first_vote:
         bill_inabox_dict['first_vote'] = create_vote_dict(bill.first_vote)
