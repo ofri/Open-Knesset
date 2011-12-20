@@ -121,7 +121,7 @@
 			var graph = $dom.get('.graph')[0];
 			var pmsNode = $dom.get(".pms."+pmsClass, graph)[0];
 			pmsNode.innerHTML = "";
-			for (var i = 0 ; i < partyGroupArray.count ; i++){
+			for (var i = 0 ; i < partyGroupArray.votes.length ; i++){
 				var partyGroup =  partyGroupArray.votes[i];
 				var partyNode = $dom.create("ul");
 				partyNode.setAttribute("name", partyGroup.party);
@@ -188,17 +188,20 @@
 			} else {
 				OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width : 100%; margin-right : 0%} 100% {width: 760%; margin-right : '+ margin+'%}');
 
-				stepsDiv.addEventListener(
-				    OKnesset.animationEndEvent,
-				    function(){
+				var finishAnim = function(){
 						stepsDiv.setAttribute("style", "");
 						$dom.addClass(graph, 'drilling-final');
 						$dom.style(stepsDiv, {'margin-right': margin + '%'});
+						stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
+						senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
 						OKnesset.drilling = false;
-				    }, false);
+				    }
+				stepsDiv.addEventListener(
+				    OKnesset.animationEndEvent,
+					finishAnim,
+				    false);
 			}
 
-			senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
 		}
 
 		OKnesset.undrill = function(e){
@@ -209,23 +212,26 @@
 			var senderDiv = OKnesset.billBox.getSenderDiv(e);
 
 			var graph = $dom.get('.graph')[0];
-			// TOOD remove "drilled" from all other steps
-			$dom.removeClass(graph, 'drilling');
-			$dom.removeClass(graph, 'drilling-final');
-			$dom.removeClass(senderDiv, 'drilled');
 			var stepsDiv = $dom.get('div.graph ul.steps')[0];
-			$dom.style(stepsDiv, {'margin-right': '0%'});
+			OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width: 760%; margin-right : '+ stepsDiv.getAttribute("margin-right") +'%} 100% {width : 100%; margin-right : 0%} ');
 
-			senderDiv.setAttribute("onclick", "OKnesset.drill(event);");
+			var finishAnim = function(){
+				stepsDiv.setAttribute("style", "");
+				$dom.removeClass(graph, 'drilling');
+				$dom.removeClass(graph, 'drilling-final');
+				$dom.removeClass(senderDiv, 'drilled');
+				$dom.style(stepsDiv, {'margin-right': '0%'});
+				stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
+				senderDiv.setAttribute("onclick", "OKnesset.drill(event);");
+			}
+			stepsDiv.addEventListener(
+			    OKnesset.animationEndEvent,
+			   	finishAnim,
+				false);
 		}
 	</script>
 	<div class="graph">
 		<div class="thedrill">
-			<ul class="pill-nav">
-				<li class="details-btn active"><a href="#">פרטי ההצבעה</a></li>
-				<li class="meaning-btn"><a href="#">מה זה אומר?</a></li>
-				<li class="action-btn"><a href="#">מעורבות אזרחית</a></li>
-			</ul>
 			<div class="thedrill-details">
 				<div class="for_votes">בעד: <span></span></div>
 				<div class="against_votes">נגד: <span></span></div>
@@ -276,7 +282,7 @@
 				</div>
 			</li>
 
-			<li class="pre-vote" onclick="OKnesset.drill(event);">
+			<li class="pre-vote" {% if bill.pre_votes.count > 0 %} onclick="OKnesset.drill(event);" {% endif %}>
                     {% if bill.pre_votes.count > 0 %}
 				 	<script type="text/javascript">
 				 		// add 'passed' and 'voted' class to the pre-vote li element
@@ -323,20 +329,32 @@
 				</div>
 			</li>
 
-			<li class="committee-1 passed odd">
+			<li class="committee-1 odd">
 				<div class="step">
-                    {% if bill.first_committee.meetings.count > 0 %}
+                    {% if bill.first_committee_meetings.count > 0 %}
                         <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
                     {% endif %}
 
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
+					{% if bill.first_committee_meetings.count > 0 %}
+					<script type="text/javascript">
+				 		// set the committee date
+						var date = $dom.get("li.committee-1 span.date")[0];
+						date.innerHTML = "{{first_committee_meetings.day}}/{{first_committee_meetings.month}}<br>{{first_committee_meetings.year}}";
+						$dom.addClass($dom.get('li.committee-1')[0], "passed");
+					</script>
+                    {% endif %}
+
 				</div>
 			</li>
 
-			<li class="vote-1 passed" onclick="OKnesset.drill(event);">
+			<li class="vote-1" {% if bill.first_vote %} onclick="OKnesset.drill(event);" {% endif %}>
 				<div class="step">
+                    {% if bill.first_vote %}
+                        <a href="{{ billurl }}#bill-first-vote" class="link" target="_blank">קישור</a>
+                    {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip-score">
@@ -348,21 +366,45 @@
 					</div>
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
 					<span class="date">?</span>
+					{% if bill.first_vote %}
+					<script type="text/javascript">
+				 		// set the committee date
+						var date = $dom.get("li.vote-1 span.date")[0];
+						date.innerHTML = "{{first_vote.vote_time.day}}/{{first_vote.vote_time.month}}<br>{{first_vote.vote_time.year}}";
+						$dom.addClass($dom.get('li.vote-1')[0], "passed");
+					</script>
+                    {% endif %}
+
 				</div>
 			</li>
 
-			<li class="committee-2 passed odd">
+			<li class="committee-2 odd">
 				<div class="step">
+                    {% if bill.second_committee_meetings.count > 0 %}
+                        <a href="{{ billurl }}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+                    {% endif %}
+
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
+					{% if bill.second_committee_meetings.count > 0 %}
+					<script type="text/javascript">
+				 		// set the committee date
+						var date = $dom.get("li.committee-2 span.date")[0];
+						date.innerHTML = "{{second_committee_meetings.day}}/{{second_committee_meetings.month}}<br>{{second_committee_meetings.year}}";
+						$dom.addClass($dom.get('li.committee-2')[0], "passed");
+					</script>
+                    {% endif %}
 				</div>
 			</li>
 
-			<li class="vote-2 passed" onclick="OKnesset.drill(event);">
+			<li class="vote-2" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" {% endif %}>
 				<div class="step">
-  				<a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
+                    {% if bill.approval_vote %}
+                        <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
+                    {% endif %}
+
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שניה</span></div>
@@ -370,9 +412,11 @@
 				</div>
 			</li>
 
-			<li class="vote-3 passed odd" onclick="OKnesset.drill(event);">
+			<li class="vote-3 odd" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" {% endif %}>
 				<div class="step">
-          <a href="/bill/3260/#bill-approval" class="link" target="_blank">קישור</a>
+                    {% if bill.approval_vote %}
+                        <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
+                    {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>קריאה שלישית</span></div>
@@ -380,15 +424,33 @@
 				</div>
 			</li>
 
-			<li class="accepted passed last" >
+
+
+			<li class="accepted last" >
 				<div class="step">
-					<a href="#" class="link">קישור</a>
+                    {% if bill.approval_vote %}
+                        <a href="{{ billurl }}#bill-accepted" class="link" target="_blank">קישור</a>
+                    {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
 					<span class="date">?</span>
 				</div>
 			</li>
+			{% if bill.approval_vote %}
+			<script type="text/javascript">
+		 		// set the committee date
+				var date2 = $dom.get("li.vote-2 span.date")[0];
+				var date3 = $dom.get("li.vote-3 span.date")[0];
+				var dateApproval = $dom.get("li.accepted span.date")[0];
+				date2.innerHTML = "{{approval_vote.vote_time.day}}/{{approval_vote.vote_time.month}}<br>{{approval_vote.vote_time.year}}";
+				date3.innerHTML = date2.innerHTML;
+				dateApproval.innerHTML = date2.innerHTML;
+				$dom.addClass($dom.get('li.vote-2')[0], "passed");
+				$dom.addClass($dom.get('li.vote-3')[0], "passed");
+				$dom.addClass($dom.get('li.accepted')[0], "passed");
+			</script>
+            {% endif %}
 
 		</ul>
         {% endwith %}
