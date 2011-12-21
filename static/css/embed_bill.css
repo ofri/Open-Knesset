@@ -343,6 +343,7 @@
 .billbox ul.steps li:hover span.date {
   opacity: 1;
 }
+
 .billbox ul.steps li .icon {
   position: absolute;
   top: 100px;
@@ -352,6 +353,17 @@
   text-indent: -999999px;
   z-index: 1;
   display: block;
+}
+
+.billbox ul.steps li .closeicon {
+  position: absolute;
+  background: url(../img/embed_close.png) top center;
+  text-indent: -999999px;
+  z-index: 1;
+  top: 38px;
+  left: 10px;
+  width: 25px;
+  display: none;
 }
 .billbox ul.steps li.initiated .icon {
   background-image: url(../img/embed_icons_initiated.png);
@@ -380,9 +392,19 @@
 .billbox ul.steps li.passed .icon {
   background-position: center center;
 }
+
+.billbox ul.steps li.passed .closeicon {
+  background-position: center center;
+}
+
 .billbox ul.steps li.failed .icon {
   background-position: bottom center;
 }
+
+.billbox ul.steps li.failed .closeicon {
+  background-position: bottom center;
+}
+
 .billbox ul li .tooltip {
   display: none;
   height: 30px;
@@ -562,6 +584,11 @@
   right: 10px;
   width: 30px;
 }
+
+.billbox div.graph.drilling ul.steps li .closeicon {
+	display : block;
+}
+
 .billbox div.graph.drilling ul.steps li div.step {
   height: 6px;
 }

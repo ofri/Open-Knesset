@@ -288,9 +288,9 @@
 				 		// add 'passed' and 'voted' class to the pre-vote li element
 						var li_pre_vote = $dom.get("li.pre-vote")[0];
 						$dom.addClass(li_pre_vote, "voted");
-
+						$dom.addClass(li_pre_vote, "passed");
 						if ({{pre_vote.vote_passed|lower}}) {
-							$dom.addClass(li_pre_vote, "passed");
+
 						}
 				 	</script>
                     {% endif %}
@@ -301,6 +301,7 @@
                     {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
+					<span class="closeicon">icon</span>
 					{% if bill.pre_votes.count > 0 %}
 					<div class="tooltip-score">
 						<span class="balance">{{pre_vote.vote.for_votes_count}}/{{pre_vote.vote.against_votes_count}}</span>
@@ -423,8 +424,6 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-
-
 
 			<li class="accepted last" >
 				<div class="step">
