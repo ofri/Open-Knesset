@@ -184,25 +184,29 @@
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
 
 			// end update "drill" data
-			if( OKnesset.animation === false ) {
+//			if( OKnesset.animation === false ) {
 				console.log("no animation");
 				$dom.addClass(graph, 'drilling-final');
-			} else {
-				OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width : 100%; margin-right : 0%} 100% {width: 760%; margin-right : '+ margin+'%}');
+					$dom.style(stepsDiv, {'margin-right': margin + '%'});
+					window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");}, 10);
+					OKnesset.drilling = false;
 
-				var finishAnim = function(){
-						stepsDiv.setAttribute("style", "");
-						$dom.addClass(graph, 'drilling-final');
-						$dom.style(stepsDiv, {'margin-right': margin + '%'});
-						stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
-						senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
-						OKnesset.drilling = false;
-				    }
-				stepsDiv.addEventListener(
-				    OKnesset.animationEndEvent,
-					finishAnim,
-				    false);
-			}
+//			} else {
+//				OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width : 100%; margin-right : 0%} 100% {width: 760%; margin-right : '+ margin+'%}');
+//
+//				var finishAnim = function(){
+//						stepsDiv.setAttribute("style", "");
+//						$dom.addClass(graph, 'drilling-final');
+//						$dom.style(stepsDiv, {'margin-right': margin + '%'});
+//						stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
+//						senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
+//						OKnesset.drilling = false;
+//				    }
+//				stepsDiv.addEventListener(
+//				    OKnesset.animationEndEvent,
+//					finishAnim,
+//				    false);
+//			}
 
 		}
 
@@ -215,21 +219,21 @@
 
 			var graph = $dom.get('.graph')[0];
 			var stepsDiv = $dom.get('div.graph ul.steps')[0];
-			OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width: 760%; margin-right : '+ stepsDiv.getAttribute("margin-right") +'%} 100% {width : 100%; margin-right : 0%} ');
+//			OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width: 760%; margin-right : '+ stepsDiv.getAttribute("margin-right") +'%} 100% {width : 100%; margin-right : 0%} ');
 
-			var finishAnim = function(){
+//			var finishAnim = function(){
 				stepsDiv.setAttribute("style", "");
 				$dom.removeClass(graph, 'drilling');
 				$dom.removeClass(graph, 'drilling-final');
 				$dom.removeClass(senderDiv, 'drilled');
 				$dom.style(stepsDiv, {'margin-right': '0%'});
-				stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
-				senderDiv.setAttribute("onclick", "OKnesset.drill(event);");
-			}
-			stepsDiv.addEventListener(
-			    OKnesset.animationEndEvent,
-			   	finishAnim,
-				false);
+//				stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
+				window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.drill(event);");}, 10);
+//			}
+//			stepsDiv.addEventListener(
+//			    OKnesset.animationEndEvent,
+//			   	finishAnim,
+//				false);
 		}
 	</script>
 	<div class="graph">
