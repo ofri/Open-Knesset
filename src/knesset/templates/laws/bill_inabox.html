@@ -349,6 +349,7 @@
 
 						if (OKnesset.billFailedHenceForth) {
 							$dom.addClass($dom.get('li.committee-1')[0], "failed");
+							$dom.get("li.committee-1 span.date")[0].innerHTML = "";
 						}
 					</script>
 
@@ -362,6 +363,7 @@
                     {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
+                    {% if bill.first_vote %}
 					<div class="tooltip-score">
 						<span class="balance">{{first_vote.vote.for_votes_count}}/{{first_vote.vote.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
@@ -377,6 +379,8 @@
 
 						</div>
 					</div>
+                    {% endif %}
+
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
 					<span class="date">?</span>
 					<script type="text/javascript">
@@ -397,8 +401,8 @@
 
 						if (OKnesset.billFailedHenceForth) {
 							$dom.addClass($dom.get('li.vote-1')[0], "failed");
+							$dom.get("li.vote-1 span.date")[0].innerHTML = "";
 						}
-						//$dom.addClass($dom.get('li.vote-1')[0], "passed");
 					</script>
 
 				</div>
@@ -424,6 +428,7 @@
 
 						if (OKnesset.billFailedHenceForth) {
 							$dom.addClass($dom.get('li.committee-2')[0], "failed");
+							$dom.get("li.committee-2 span.date")[0].innerHTML = "";
 						}
 					</script>
 				</div>
@@ -516,6 +521,10 @@
 					$dom.addClass($dom.get('li.vote-2')[0], "failed");
 					$dom.addClass($dom.get('li.vote-3')[0], "failed");
 					$dom.addClass($dom.get('li.accepted')[0], "failed");
+
+					$dom.get("li.vote-2 span.date")[0].innerHTML ="";
+					$dom.get("li.vote-3 span.date")[0].innerHTML ="";
+					$dom.get("li.accepted span.date")[0].innerHTML ="";
 			}
 			</script>
 
