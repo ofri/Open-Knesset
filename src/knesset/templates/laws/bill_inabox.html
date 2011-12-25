@@ -73,6 +73,9 @@
 			OKnesset.drilldata[6].votes = OKnesset.drilldata[5].votes;
 		{% endif %}
 
+		OKnesset.billFailed = {{failed|lower}};
+		OKnesset.stepClass = [];
+
 	</script>
 	<div class="header header-small">
 		<div class="billbox-details">
@@ -283,18 +286,6 @@
 			</li>
 
 			<li class="pre-vote" {% if bill.pre_votes.count > 0 %} onclick="OKnesset.drill(event);" {% endif %}>
-                    {% if bill.pre_votes.count > 0 %}
-				 	<script type="text/javascript">
-				 		// add 'passed' and 'voted' class to the pre-vote li element
-						var li_pre_vote = $dom.get("li.pre-vote")[0];
-						$dom.addClass(li_pre_vote, "voted");
-						$dom.addClass(li_pre_vote, "passed");
-						if ({{pre_vote.vote_passed|lower}}) {
-
-						}
-				 	</script>
-                    {% endif %}
-
 				<div class="step">
                     {% if bill.pre_votes.count > 0 %}
                         <a href="{{ billurl }}#bill-pre-vote" class="link" target="_blank">קישור</a>
@@ -320,13 +311,23 @@
                     {% endif %}
 					<div class="tooltip"><span>קריאה טרומית</span></div>
 					<span class="date">?</span>
-					{% if bill.pre_votes.count > 0 %}
 					<script type="text/javascript">
+					{% if bill.pre_votes.count > 0 %}
 				 		// set the pre-vote date
 						var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
 						pre_vote_date.innerHTML = "{{pre_vote.vote_time.day}}/{{pre_vote.vote_time.month}}<br>{{pre_vote.vote_time.year}}";
-					</script>
+				 		// add 'passed' and 'voted' class to the pre-vote li element
+						var li_pre_vote = $dom.get("li.pre-vote")[0];
+						$dom.addClass(li_pre_vote, "voted");
+						if ({{pre_vote.vote_passed|lower}}) {
+							$dom.addClass(li_pre_vote, "passed");
+							OKnesset.billFailedHenceForth = false;
+						} else {
+							OKnesset.billFailedHenceForth = true;
+							$dom.addClass(li_pre_vote, "failed");
+						}
                     {% endif %}
+					</script>
 				</div>
 			</li>
 
@@ -339,14 +340,18 @@
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
-					{% if bill.first_committee_meetings.count > 0 %}
 					<script type="text/javascript">
+					{% if bill.first_committee_meetings.count > 0 %}
 				 		// set the committee date
 						var date = $dom.get("li.committee-1 span.date")[0];
 						date.innerHTML = "{{first_committee_meetings.day}}/{{first_committee_meetings.month}}<br>{{first_committee_meetings.year}}";
 						$dom.addClass($dom.get('li.committee-1')[0], "passed");
-					</script>
                     {% endif %}
+
+						if (OKnesset.billFailedHenceForth) {
+							$dom.addClass($dom.get('li.committee-1')[0], "failed");
+						}
+					</script>
 
 				</div>
 			</li>
@@ -367,14 +372,25 @@
 					</div>
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
 					<span class="date">?</span>
-					{% if bill.first_vote %}
 					<script type="text/javascript">
+					{% if bill.first_vote %}
 				 		// set the committee date
 						var date = $dom.get("li.vote-1 span.date")[0];
 						date.innerHTML = "{{first_vote.vote_time.day}}/{{first_vote.vote_time.month}}<br>{{first_vote.vote_time.year}}";
-						$dom.addClass($dom.get('li.vote-1')[0], "passed");
-					</script>
+						if ({{bill.first_vote.passed|lower}} ) {
+							$dom.addClass($dom.get('li.vote-1')[0], "passed");
+							OKnesset.billFailedHenceForth = false;
+						} else {
+							OKnesset.billFailedHenceForth = true;
+						}
+
                     {% endif %}
+
+						if (OKnesset.billFailedHenceForth) {
+							$dom.addClass($dom.get('li.vote-1')[0], "failed");
+						}
+						//$dom.addClass($dom.get('li.vote-1')[0], "passed");
+					</script>
 
 				</div>
 			</li>
@@ -389,14 +405,18 @@
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
-					{% if bill.second_committee_meetings.count > 0 %}
 					<script type="text/javascript">
+					{% if bill.second_committee_meetings.count > 0 %}
 				 		// set the committee date
 						var date = $dom.get("li.committee-2 span.date")[0];
 						date.innerHTML = "{{second_committee_meetings.day}}/{{second_committee_meetings.month}}<br>{{second_committee_meetings.year}}";
 						$dom.addClass($dom.get('li.committee-2')[0], "passed");
-					</script>
                     {% endif %}
+
+						if (OKnesset.billFailedHenceForth) {
+							$dom.addClass($dom.get('li.committee-2')[0], "failed");
+						}
+					</script>
 				</div>
 			</li>
 
@@ -436,8 +456,8 @@
 					<span class="date">?</span>
 				</div>
 			</li>
-			{% if bill.approval_vote %}
 			<script type="text/javascript">
+			{% if bill.approval_vote %}
 		 		// set the committee date
 				var date2 = $dom.get("li.vote-2 span.date")[0];
 				var date3 = $dom.get("li.vote-3 span.date")[0];
@@ -445,11 +465,21 @@
 				date2.innerHTML = "{{approval_vote.vote_time.day}}/{{approval_vote.vote_time.month}}<br>{{approval_vote.vote_time.year}}";
 				date3.innerHTML = date2.innerHTML;
 				dateApproval.innerHTML = date2.innerHTML;
-				$dom.addClass($dom.get('li.vote-2')[0], "passed");
-				$dom.addClass($dom.get('li.vote-3')[0], "passed");
-				$dom.addClass($dom.get('li.accepted')[0], "passed");
-			</script>
+				if ({{bill.approval_vote.passed|lower}}) {
+					$dom.addClass($dom.get('li.vote-2')[0], "passed");
+					$dom.addClass($dom.get('li.vote-3')[0], "passed");
+					$dom.addClass($dom.get('li.accepted')[0], "passed");
+				} else {
+					OKnesset.billFailedHenceForth = true;
+				}
             {% endif %}
+
+			if (OKnesset.billFailedHenceForth){
+					$dom.addClass($dom.get('li.vote-2')[0], "failed");
+					$dom.addClass($dom.get('li.vote-3')[0], "failed");
+					$dom.addClass($dom.get('li.accepted')[0], "failed");
+			}
+			</script>
 
 		</ul>
         {% endwith %}
