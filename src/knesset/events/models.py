@@ -58,20 +58,17 @@ class Event(models.Model):
         """
         vevent = cal.add('vevent')
         vevent.add('dtstart').value = self.when
-        summary_prepend = ''
         if not self.when_over:
             # this can happen if you migrated so you have when_over but
             # have not run parse_future_committee_meetings yet.
             self.when_over = self.when + timedelta(hours=2)
             self.when_over_guessed = True
             self.save()
-        if self.when_over_guessed:
-            summary_prepend = u'NB: missing end date, see http://oknesset/help/missing/\n\n'
         # TODO: add `geo` to the Event model
         # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
         vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
-        summary = summary_prepend + self.get_summary(summary_length)
+        summary = self.get_summary(summary_length)
         vevent.add('summary').value = summary
         vevent.add('location').value = self.where
         vevent.add('description').value = self.what
