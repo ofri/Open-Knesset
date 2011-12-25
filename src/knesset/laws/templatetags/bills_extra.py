@@ -107,10 +107,4 @@ def bill_inabox(bill):
     if bill.approval_vote:
         bill_inabox_dict['approval_vote'] = create_vote_dict(bill.approval_vote)
 
-    #determine if the bill had failed
-    if (bill.approval_vote and not bill.approval_vote.passed) or (bill.first_vote and not bill.first_vote.passed) or (pre_vote and not pre_vote.passed):
-        bill_inabox_dict['failed'] = True
-    else:
-        bill_inabox_dict['failed'] = False
-
     return bill_inabox_dict
