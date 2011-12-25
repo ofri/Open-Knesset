@@ -172,6 +172,7 @@
 			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
 			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
 			var totalVotes = OKnesset.drilldata[stageIndex].votes.against.count + OKnesset.drilldata[stageIndex].votes.for.count;
+			// TODO calculate opposing and supporting width (in percentage)
 			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes))) + "%"});
 			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes))) + "%"});
 			if (OKnesset.drilldata[stageIndex].votes.for.count > OKnesset.drilldata[stageIndex].votes.against.count) {
@@ -286,7 +287,7 @@
 				</div>
 			</li>
 
-			<li class="pre-vote" {% if bill.pre_votes.count > 0 %} onclick="OKnesset.drill(event);" {% endif %}>
+			<li class="pre-vote" {% if bill.pre_votes.count > 0 %} onclick="OKnesset.drill(event);"  style="cursor:pointer"{% endif %}>
 				<div class="step">
                     {% if bill.pre_votes.count > 0 %}
                         <a href="{{ billurl }}#bill-pre-vote" class="link" target="_blank">קישור</a>
@@ -358,7 +359,7 @@
 				</div>
 			</li>
 
-			<li class="vote-1" {% if bill.first_vote %} onclick="OKnesset.drill(event);" {% endif %}>
+			<li class="vote-1" {% if bill.first_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer" {% endif %}>
 				<div class="step">
                     {% if bill.first_vote %}
                         <a href="{{ billurl }}#bill-first-vote" class="link" target="_blank">קישור</a>
@@ -436,7 +437,7 @@
 				</div>
 			</li>
 
-			<li class="vote-2" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" {% endif %}>
+			<li class="vote-2" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
 				<div class="step">
                     {% if bill.approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
@@ -457,7 +458,7 @@
 				</div>
 			</li>
 
-			<li class="vote-3 odd" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" {% endif %}>
+			<li class="vote-3 odd" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
 				<div class="step">
                     {% if bill.approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
