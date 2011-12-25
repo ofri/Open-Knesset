@@ -300,10 +300,10 @@
 							<span class="for"></span>
 							<script type="text/javascript">
 						 		// set the style of the 'against' span
-								OKnesset.billBox.preVote_score_width = {{pre_vote.vote.against_votes_count}} * 120 / ({{pre_vote.vote.for_votes_count}} + {{pre_vote.vote.against_votes_count}});
+								var preVote_score_width = {{pre_vote.vote.against_votes_count}} * 120 / ({{pre_vote.vote.for_votes_count}} + {{pre_vote.vote.against_votes_count}});
 								var against = $dom.get("li.pre-vote .against")[0];
 								// the background-position attribute value 'bottom' might not work on Firefox, or IE
-								$dom.style(against, {'width':OKnesset.billBox.preVote_score_width + "px", 'background-position': (OKnesset.billBox.preVote_score_width - 120) + "px bottom" });
+								$dom.style(against, {'width':preVote_score_width + "px", 'background-position': (preVote_score_width - 120) + "px bottom" });
 							</script>
 						</div>
 					</div>
@@ -363,10 +363,18 @@
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip-score">
-						<span class="balance"></span>
+						<span class="balance">{{first_vote.vote.for_votes_count}}/{{first_vote.vote.against_votes_count}}</span>
 						<div class="scale" style="width:120px">
 							<span class="against"></span>
 							<span class="for"></span>
+							<script type="text/javascript">
+						 		// set the style of the 'against' span
+								var score_width = {{first_vote.vote.against_votes_count}} * 120 / ({{first_vote.vote.for_votes_count}} + {{first_vote.vote.against_votes_count}});
+								var against = $dom.get("li.vote-1 .against")[0];
+								// the background-position attribute value 'bottom' might not work on Firefox, or IE
+								$dom.style(against, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+							</script>
+
 						</div>
 					</div>
 					<div class="tooltip"><span>קריאה ראשונה</span></div>
@@ -376,8 +384,10 @@
 				 		// set the committee date
 						var date = $dom.get("li.vote-1 span.date")[0];
 						date.innerHTML = "{{first_vote.vote_time.day}}/{{first_vote.vote_time.month}}<br>{{first_vote.vote_time.year}}";
+						var li_first_vote = $dom.get('li.vote-1')[0];
+						$dom.addClass(li_first_vote, "voted");
 						if ({{bill.first_vote.passed|lower}} ) {
-							$dom.addClass($dom.get('li.vote-1')[0], "passed");
+							$dom.addClass(li_first_vote, "passed");
 							OKnesset.billFailedHenceForth = false;
 						} else {
 							OKnesset.billFailedHenceForth = true;
@@ -427,6 +437,14 @@
 
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
+					<div class="tooltip-score">
+						<span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
+							<span class="for"></span>
+						</div>
+					</div>
+
 					<div class="tooltip"><span>קריאה שניה</span></div>
 					<span class="date">?</span>
 				</div>
@@ -439,6 +457,14 @@
                     {% endif %}
 					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
+					<div class="tooltip-score">
+						<span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
+						<div class="scale" style="width:120px">
+							<span class="against"></span>
+							<span class="for"></span>
+						</div>
+					</div>
+
 					<div class="tooltip"><span>קריאה שלישית</span></div>
 					<span class="date">?</span>
 				</div>
@@ -464,9 +490,22 @@
 				date2.innerHTML = "{{approval_vote.vote_time.day}}/{{approval_vote.vote_time.month}}<br>{{approval_vote.vote_time.year}}";
 				date3.innerHTML = date2.innerHTML;
 				dateApproval.innerHTML = date2.innerHTML;
+				var li_second_vote = $dom.get('li.vote-2')[0];
+				var li_third_vote = $dom.get('li.vote-3')[0];
+				$dom.addClass(li_second_vote, "voted");
+				$dom.addClass(li_third_vote, "voted");
+
+		 		// set the style of the 'against' span
+				var score_width = {{approval_vote.vote.against_votes_count}} * 120 / ({{approval_vote.vote.for_votes_count}} + {{approval_vote.vote.against_votes_count}});
+				var against_2 = $dom.get("li.vote-2 .against")[0];
+				var against_3 = $dom.get("li.vote-3 .against")[0];
+				// the background-position attribute value 'bottom' might not work on Firefox, or IE
+				$dom.style(against_2, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+				$dom.style(against_3, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+
 				if ({{bill.approval_vote.passed|lower}}) {
-					$dom.addClass($dom.get('li.vote-2')[0], "passed");
-					$dom.addClass($dom.get('li.vote-3')[0], "passed");
+					$dom.addClass(li_second_vote, "passed");
+					$dom.addClass(li_third_vote, "passed");
 					$dom.addClass($dom.get('li.accepted')[0], "passed");
 				} else {
 					OKnesset.billFailedHenceForth = true;
