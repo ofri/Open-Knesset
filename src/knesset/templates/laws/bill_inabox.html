@@ -9,46 +9,46 @@
 		OKnesset.billBox = OKnesset.billBox || {};
 
 		// Detect Animation support
-		(function(){
-			OKnesset.animation = false;
-		    OKnesset.animationstring = 'animation';
-		    OKnesset.keyframeprefix = '';
-		    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
-		    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
-		    var pfx  = '';
-			var elm = $dom.get('.billbox')[0];
-
-			if( elm.style.animationName ) { OKnesset.animation = true; }
-
-			if( OKnesset.animation === false ) {
-			  for( var i = 0; i < domPrefixes.length; i++ ) {
-			    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
-			      pfx = domPrefixes[ i ];
-			      OKnesset.animationstring = pfx + 'Animation';
-			      OKnesset.animationEndEvent = animationEnd[i];
-			      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
-			      OKnesset.animation = true;
-			      break;
-			    }
-			  }
-			}
-		})();
-
-		OKnesset.addAnimation = function(elm, animName, animProps, keyFrameContent){
-			  elm.style[ OKnesset.animationstring ] = animName + ' ' + animProps;
-
-			  var keyframes = '@' + OKnesset.keyframeprefix + 'keyframes '+ animName +' { '+
-			  						keyFrameContent +
-			                  '}';
-
-			  if( document.styleSheets && document.styleSheets.length ) {
-			      document.styleSheets[0].insertRule( keyframes, 0 );
-			  } else {
-			    var s = document.createElement( 'style' );
-			    s.innerHTML = keyframes;
-			    document.getElementsByTagName( 'head' )[ 0 ].appendChild( s );
-			  }
-		}
+//		(function(){
+//			OKnesset.animation = false;
+//		    OKnesset.animationstring = 'animation';
+//		    OKnesset.keyframeprefix = '';
+//		    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
+//		    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
+//		    var pfx  = '';
+//			var elm = $dom.get('.billbox')[0];
+//
+//			if( elm.style.animationName ) { OKnesset.animation = true; }
+//
+//			if( OKnesset.animation === false ) {
+//			  for( var i = 0; i < domPrefixes.length; i++ ) {
+//			    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+//			      pfx = domPrefixes[ i ];
+//			      OKnesset.animationstring = pfx + 'Animation';
+//			      OKnesset.animationEndEvent = animationEnd[i];
+//			      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
+//			      OKnesset.animation = true;
+//			      break;
+//			    }
+//			  }
+//			}
+//		})();
+//
+//		OKnesset.addAnimation = function(elm, animName, animProps, keyFrameContent){
+//			  elm.style[ OKnesset.animationstring ] = animName + ' ' + animProps;
+//
+//			  var keyframes = '@' + OKnesset.keyframeprefix + 'keyframes '+ animName +' { '+
+//			  						keyFrameContent +
+//			                  '}';
+//
+//			  if( document.styleSheets && document.styleSheets.length ) {
+//			      document.styleSheets[0].insertRule( keyframes, 0 );
+//			  } else {
+//			    var s = document.createElement( 'style' );
+//			    s.innerHTML = keyframes;
+//			    document.getElementsByTagName( 'head' )[ 0 ].appendChild( s );
+//			  }
+//		}
 
 		OKnesset.drilldata = [];
 		OKnesset.drilldata.push({'stage' : 1});
@@ -72,8 +72,6 @@
 			OKnesset.drilldata[5].votes = {{approval_vote.vote_drill_data|safe}};
 			OKnesset.drilldata[6].votes = OKnesset.drilldata[5].votes;
 		{% endif %}
-
-		OKnesset.stepClass = [];
 
 	</script>
 	<div class="header header-small">
@@ -174,8 +172,8 @@
 			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
 			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
 			var totalVotes = OKnesset.drilldata[stageIndex].votes.against.count + OKnesset.drilldata[stageIndex].votes.for.count;
-			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes) + "%"});
-			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes) + "%"});
+			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes))) + "%"});
+			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes))) + "%"});
 			if (OKnesset.drilldata[stageIndex].votes.for.count > OKnesset.drilldata[stageIndex].votes.against.count) {
 				$dom.addClass($dom.get(".thedrill", graph)[0], "passed");
 			}
