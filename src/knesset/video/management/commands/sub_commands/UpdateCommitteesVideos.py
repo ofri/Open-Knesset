@@ -47,7 +47,10 @@ class UpdateCommitteesVideos(SubCommand):
                 href=elt.parent['href']
         if len(href)>6:
             self._debug(href)
-            return self._get_committee_mainpage_soup(href)
+            try:
+                return self._get_committee_mainpage_soup(href)
+            except Exception:
+                self._error('exception in get_committee_mainpage_soup, href='+href)
         else:
             return ''
         
