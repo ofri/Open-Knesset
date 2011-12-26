@@ -1,6 +1,7 @@
 from django.db import models
 import json
 from django.utils.simplejson import JSONEncoder as DjangoJSONEncoder
+from datetime import datetime
 
 class DictField(models.TextField):
     """DictField is a textfield that contains JSON-serialized dictionaries."""
@@ -42,19 +43,30 @@ add_introspection_rules([], ["^knesset\.annotations\.models\.DictField"])
 add_introspection_rules([], ["^knesset\.annotations\.models\.CommaDelimitedStringListField"])
 
 class AnnotationPermissions(models.Model):
-    read = CommaDelimitedStringListField()
-    update = CommaDelimitedStringListField()
-    delete = CommaDelimitedStringListField()
-    admin = CommaDelimitedStringListField()
+    read = CommaDelimitedStringListField(default=[])
+    update = CommaDelimitedStringListField(default=[])
+    delete = CommaDelimitedStringListField(default=[])
+    admin = CommaDelimitedStringListField(default=[])
+
+    def __repr__(self):
+      return ("id=" + repr(self.id) +
+              ", read=" + repr(self.read) +
+              ", update=" + repr(self.update) +
+              ", delete=" + repr(self.delete) +
+              ", admin=" + repr(self.admin))
+    def __str__(self):
+      return repr(self)
 
 class Annotation(models.Model):
     annotator_schema_version = models.CharField(max_length=20)
-    # By popular convention, URIs are bounded to 2000 chars
-    uri = models.CharField(max_length=2000)
+    uri = models.URLField()
     account_id = models.CharField(max_length=255) # Arbitrary limit
+    #TODO(shmichael): Add real django user here.
     user = DictField(default={})
     text = models.TextField()
-    quote = models.TextField()
-    created = models.DateTimeField()
-    ranges = CommaDelimitedStringListField()
+    quote = models.TextField(default="")
+    created = models.DateTimeField(default=datetime.now)
+    ranges = CommaDelimitedStringListField(default=[])
+    #TODO(shmichael): Add django tags here.
+    tags = CommaDelimitedStringListField(default=[])
     permissions = models.ForeignKey(AnnotationPermissions, db_index=True)

@@ -7,6 +7,7 @@ gettext = lambda x: x
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+PISTON_DISPLAY_ERRORS = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

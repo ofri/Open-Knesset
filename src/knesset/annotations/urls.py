@@ -7,6 +7,6 @@ from piston.resource import Resource
 annotation_resource = Resource(AnnotationHandler)
 
 urlpatterns = patterns('',
-    #url(r'^(?P<annotation_id>[^/]+)/', AnnotationHandler),
+    url(r'^(?P<id>[^/]+)/', annotation_resource),
     url(r'^$', annotation_resource),
     ) 
