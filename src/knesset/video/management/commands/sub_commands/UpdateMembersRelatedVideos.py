@@ -26,7 +26,10 @@ class UpdateMembersRelatedVideos(SubCommand):
                     self._update_member_related_video(member,video)
                 
     def _getVideosForMember(self,name):
-        return GetYoutubeVideos(q='"'+name+'"',max_results=15,limit_time='this_month').videos
+        return self._getYoutubeVideos(q='"'+name+'"',max_results=15,limit_time='this_month')
+
+    def _getYoutubeVideos(self,**kwargs):
+        return GetYoutubeVideos(**kwargs).videos
 
     def _verify_related_video(self,video,name):
         if validate_dict(video,['title','description']):
@@ -57,9 +60,16 @@ class UpdateMembersRelatedVideos(SubCommand):
         }
         
     def _isMemberHaveVideo(self,member,video):
-        qs=get_videos_queryset(member,ignoreHide=True)
-        qs=qs.filter(source_id=video['id'],source_type='youtube')
-        return qs.count()>0
+        return self._getMemberExistingVideosCount(
+            ignoreHide=True, member=member, 
+            source_id=video['id'], 
+            source_type='youtube',
+        )>0
+
+    def _getMemberExistingVideosCount(self,ignoreHide,member,source_id,source_type):
+        qs=get_videos_queryset(member,ignoreHide=ignoreHide)
+        qs=qs.filter(source_id=source_id,source_type=source_type)
+        return qs.count()
 
     def _saveVideo(self,videoFields):
         v=Video(**videoFields)

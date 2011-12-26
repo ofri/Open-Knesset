@@ -2,6 +2,7 @@
 
 from youtube import testYoutube
 from parse_dict import testParseDict
+from mms import testMms
 
 from django.test import TestCase
 import collections

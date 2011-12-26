@@ -14,13 +14,16 @@ class testParseDict(TestCase):
         self.assertFalse(validate_dict(h,{'id':['x']}))
         self.assertFalse(validate_dict(h,{'id':{'$t':'xxx'}}))
         self.assertFalse(validate_dict(h,{'id':{'$t':'test','type':'text2'}}))
+        h={'published':None}
+        self.assertFalse(validate_dict(h,['published']))
         
     def testParseDict(self):
         self.assertEqual(parse_dict('xxx','yyy'),None)
         self.assertEqual(parse_dict('xxx','yyy',default='a'),'a')
-        h={'id':{'$t':'test','type':'text'},'tmp':'xxx'}
+        h={'id':{'$t':'test','type':'text'},'tmp':'xxx','none':None}
         self.assertEqual(parse_dict(h,'yyy',validate=['z']),None)
         self.assertEqual(parse_dict(h,'yyy',validate=['id']),None)
+        self.assertEqual(parse_dict(h,'yyy',validate=['xxx']),None)
         self.assertEqual(parse_dict(h,'tmp',validate=['id']),'xxx')
         self.assertEqual(parse_dict(h,{'id':'$t2'}),None)
-        self.assertEqual(parse_dict(h,{'id':'$t'}),'test')   
+        self.assertEqual(parse_dict(h,{'id':'$t'}),'test')
