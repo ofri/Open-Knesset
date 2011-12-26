@@ -5,6 +5,7 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
+from django.contrib.auth.models import User
 from actstream.models import Follow
 from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
@@ -22,6 +23,17 @@ MEETING_SCORE_CHOICES = (
     (0.6, _("High Importance")),
     (1.0, _("Very High Importance")),
 )
+
+class UserSuggestedVote(models.Model):
+    agenda = models.ForeignKey('Agenda', related_name='user_suggested_votes')
+    vote = models.ForeignKey('laws.Vote', related_name='user_suggested_agendas')
+    reasoning = models.TextField(blank=True, default='')
+    user = models.ForeignKey(User, related_name='suggested_agenda_votes')
+
+    class Meta:
+        unique_together = ('agenda','vote','user')
+
+
 
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
@@ -103,6 +115,17 @@ class AgendaManager(models.Manager):
         else:
             agendas = Agenda.objects.filter(Q(is_public=True) | Q(editors=user)).distinct()
         return agendas
+
+    def get_possible_to_suggest(self, user, vote):
+        if user == None or not user.is_authenticated():
+            agendas = Agenda.objects.none()
+        else:
+            agendas = Agenda.objects.filter(is_public=True)\
+                            .exclude(editors=user)\
+                            .exclude(agendavotes__vote=vote)\
+                            .distinct()
+        return agendas
+
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)

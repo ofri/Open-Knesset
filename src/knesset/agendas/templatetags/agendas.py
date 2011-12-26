@@ -39,6 +39,9 @@ def agendas_for(user, vote, object_type):
     av = None
     if object_type=='vote':
         av = AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),vote=vote).distinct()
+        suggest_agendas = Agenda.objects.get_possible_to_suggest(
+                user=user,
+                vote=vote)
     if object_type=='committeemeeting':
         av = AgendaMeeting.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),meeting=vote).distinct()
     formset = None
@@ -50,6 +53,7 @@ def agendas_for(user, vote, object_type):
     return { 'formset': formset,
              'agendavotes':av,
              'object_type':object_type,
+             'suggest_agendas': suggest_agendas,
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')

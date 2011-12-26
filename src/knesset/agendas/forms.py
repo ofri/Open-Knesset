@@ -4,7 +4,8 @@ from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import (Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES,
+from models import (Agenda, AgendaVote, UserSuggestedVote,
+                    AGENDAVOTE_SCORE_CHOICES,
                     MEETING_SCORE_CHOICES)
 
 class H4(forms.Widget):
