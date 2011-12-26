@@ -175,7 +175,7 @@ class VoteHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'title', 'time',
               'summary','full_text',
               'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
-              'agendas',
+              'agendas','bills',
              )
     exclude = ('member')
     allowed_methods = ('GET',)
@@ -202,6 +202,10 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
+
+    @classmethod
+    def bills(cls, vote):
+        return [b.id for b in vote.bills()]
 
     @classmethod
     def for_votes(self, vote):

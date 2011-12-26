@@ -383,6 +383,9 @@ form > p > select { width:250px; }
     clear:both;
     overflow:none;
 }
+.item-list .item p {
+    word-wrap:break-word;
+}
 .item-list .item.alt { background:#E4F4E4 }
 .item-header { float: right; clear:both; text-align:center;}
 .item-header a, .item-header>p { margin:0; padding:0;}
@@ -629,10 +632,10 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 #subnav .tags a { padding-left:2em;}
 .cloud {font-size:140%;}
 #content-main .tags a { padding-left:1em;}
-.tags .level1 { font-size: 80% }
-.tags .level2 { font-size: 100% }
-.tags .level3 { font-size: 120% }
-.tags .level4 { font-size: 140% }
+.tags .level1 { font-size: 80%; color:#467; }
+.tags .level2 { font-size: 100%; color:#259; }
+.tags .level3 { font-size: 120%; color:#14A; }
+.tags .level4 { font-size: 140%; color:#03B;}
 
 /* mk maps css */
 #residence_map {

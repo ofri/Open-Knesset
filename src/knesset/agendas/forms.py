@@ -65,7 +65,7 @@ class VoteLinkingForm(forms.Form):
     agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
              required=False, widget=forms.RadioSelect)
-    reasoning = forms.CharField(required=False, max_length=300,
+    reasoning = forms.CharField(required=False, max_length=1000,
                            label=_(u'Reasoning'),
                            widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )
