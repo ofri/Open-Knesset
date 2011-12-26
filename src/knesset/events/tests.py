@@ -12,6 +12,7 @@ import vobject
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.utils import translation
 
 from models import Event
 
@@ -49,9 +50,9 @@ class SimpleTest(TestCase):
 
     def testIcalenderGuessedEndWarning(self):
         """
-        Tests that the icalendar view uses summary_length
-        correctly.
+        test the guessed end warning.
         """
+        translation.activate('en')
         res = self.client.get(reverse('event-icalendar'))
         self.assertEqual(res.status_code,200)
         vcal = vobject.base.readOne(res.content)
@@ -59,8 +60,9 @@ class SimpleTest(TestCase):
             if vevent.summary.value.startswith("future"):
                 self.assertEqual(vevent.description.value, self.ev2.what)
             elif vevent.summary.value == "ev3":
-                self.assertEqual(vevent.description.value, 
+                self.assertEqual(vevent.description.value,
                     'ev3\n\noknesset warnings:\nno end date data - guessed it to be 2 hours after start')
+        translation.deactivate()
 
     def tearDown(self):
         self.ev1.delete()
