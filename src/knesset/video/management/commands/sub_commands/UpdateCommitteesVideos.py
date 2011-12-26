@@ -12,6 +12,8 @@ class UpdateCommitteesVideos(SubCommand):
     PORTAL_KNESSET_COMMITTEES_INDEX_PAGE_URL='http://www.knesset.gov.il/committees/heb/current_vaadot.asp'
     
     PORTAL_KNESSET_BASEHREF='http://portal.knesset.gov.il'
+    
+    KNESSET_BASEHREF='http://www.knesset.gov.il'
 
     def __init__(self,command,committees=None):
         SubCommand.__init__(self,command)
@@ -46,11 +48,14 @@ class UpdateCommitteesVideos(SubCommand):
                 elt=elt[0]
                 href=elt.parent['href']
         if len(href)>6:
+            if href[0]=='/':
+                href=self.KNESSET_BASEHREF+href
             self._debug(href)
             try:
                 return self._get_committee_mainpage_soup(href)
             except Exception:
                 self._error('exception in get_committee_mainpage_soup, href='+href)
+                return ''
         else:
             return ''
         
@@ -85,7 +90,11 @@ class UpdateCommitteesVideos(SubCommand):
         self._debug('_get_committee_videos')
         videos=[]
         mmsurls=[]
-        soup=self._get_committee_videos_soup(bcasturl)
+        try:
+            soup=self._get_committee_videos_soup(bcasturl)
+        except Exception:
+            self._error('exception in _get_committee_videos_soup, bcasturl='+bcasturl)
+            return videos
         elts=soup('span',{'onclick':re.compile(".*asf.*")})
         if len(elts)>0:
             for elt in elts:
