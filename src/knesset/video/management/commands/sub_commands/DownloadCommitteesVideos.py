@@ -11,14 +11,12 @@ class DownloadCommitteesVideos(SubCommand):
 	
 	def __init__(self,command):
 		SubCommand.__init__(self,command)
-		object_type=ContentType.objects.get_for_model(Committee)
-		for video in Video.objects.filter(content_type__pk=object_type.id,group='mms'):
+		for video in self._getVideosToDownload():
 			self._check_timer()
 			url=video.embed_link
 			self._debug(url)
-			filename=url.split('/')
-			filename=filename[len(filename)-1]
-			if os.path.exists(self._get_data_root()+filename):
+			filename=self._getFilenameFromUrl(url)			
+			if self._isAlreadyDownloaded(filename):
 				self._debug("file already downloaded: "+filename)
 				continue
 			else:
@@ -41,3 +39,15 @@ class DownloadCommitteesVideos(SubCommand):
 				if filesize==streamsize:
 					os.rename(partfilename,filename)
 					self._debug("finished downloading: "+filename)
+
+	def _getFilenameFromUrl(self,url):
+		filename=url.split('/')
+		filename=filename[len(filename)-1]
+		return filename
+
+	def _getVideosToDownload(self):
+		object_type=ContentType.objects.get_for_model(Committee)
+		return Video.objects.filter(content_type__pk=object_type.id,group='mms')
+	
+	def _isAlreadyDownloaded(self,filename):
+		return os.path.exists(self._get_data_root()+filename)

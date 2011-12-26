@@ -7,17 +7,18 @@ import urllib,re,datetime
 from knesset.video.utils import get_videos_queryset
 from knesset.video.models import Video
 
-class DownloadCommitteesMetadata(SubCommand):
+class UpdateCommitteesVideos(SubCommand):
 
     PORTAL_KNESSET_COMMITTEES_INDEX_PAGE_URL='http://www.knesset.gov.il/committees/heb/current_vaadot.asp'
     
     PORTAL_KNESSET_BASEHREF='http://portal.knesset.gov.il'
 
-    def __init__(self,command):
+    def __init__(self,command,committees=None):
         SubCommand.__init__(self,command)
-        if self._get_opt('with_history'):
+        if self._get_opt('with-history'):
             self._error('download of historical data is not supported yet')
-        for comm in Committee.objects.all():
+        if committees is None: committees=Committee.objects.all()
+        for comm in committees:
             self._debug(comm.name)
             self._check_timer()
             broadcasts_url=comm.portal_knesset_broadcasts_url
@@ -46,9 +47,12 @@ class DownloadCommitteesMetadata(SubCommand):
                 href=elt.parent['href']
         if len(href)>6:
             self._debug(href)
-            return BeautifulSoup(urllib.urlopen(href).read())
+            return self._get_committee_mainpage_soup(href)
         else:
             return ''
+        
+    def _get_committee_mainpage_soup(self,href):
+        return BeautifulSoup(urllib.urlopen(href).read())
               
     def _update_committee_broadcasts_url(self,comm):
         self._debug('_update_committee_broadcasts_url')
@@ -64,14 +68,21 @@ class DownloadCommitteesMetadata(SubCommand):
                 url=self.PORTAL_KNESSET_BASEHREF+path
         if len(url)>6:
             self._debug(url)
-            comm.portal_knesset_broadcasts_url=url
-            comm.save()
+            self._update_committee_portal_knesset_broadcasts_url(comm,url)
         return url
-              
+    
+    def _update_committee_portal_knesset_broadcasts_url(self,comm,url):
+        comm.portal_knesset_broadcasts_url=url
+        comm.save()
+    
+    def _get_committee_videos_soup(self,bcasturl):
+        return BeautifulSoup(urllib.urlopen(bcasturl).read())
+    
     def _get_committee_videos(self,bcasturl):
         self._debug('_get_committee_videos')
         videos=[]
-        soup=BeautifulSoup(urllib.urlopen(bcasturl).read())
+        mmsurls=[]
+        soup=self._get_committee_videos_soup(bcasturl)
         elts=soup('span',{'onclick':re.compile(".*asf.*")})
         if len(elts)>0:
             for elt in elts:
@@ -80,24 +91,47 @@ class DownloadCommitteesMetadata(SubCommand):
                 mtch=re.search(r,onclick)
                 groups=mtch.groups()
                 if len(groups)==8:
-                    self._debug(groups[0])
-                    videos.append({
-                        'mmsurl':groups[0],
-                        'title':groups[7],
-                        'datetime':datetime.datetime(int(groups[3]),int(groups[2]),int(groups[1]),int(groups[4]),int(groups[5]),int(groups[6])),
-                    })
+                    mmsurl=groups[0]
+                    if mmsurl not in mmsurls:
+                        title=groups[7]
+                        # try to get a better title
+                        while elt.nextSibling is not None:
+                            elt=elt.nextSibling
+                            if len(elt.string)>len(title):
+                                title=elt.string
+                                break
+                        title=re.sub('^[0-9]*\. ', '', title)
+                        title=re.sub("\n", '', title)
+                        title=re.sub("``", "'", title)
+                        title=title.strip()
+                        self._debug(mmsurl)
+                        mmsurls.append(mmsurl)
+                        videos.append({
+                            'mmsurl':mmsurl,
+                            'title':title,
+                            'datetime':datetime.datetime(int(groups[3]),int(groups[2]),int(groups[1]),int(groups[4]),int(groups[5]),int(groups[6])),
+                        })
         return videos
-                    
+    
+    def _get_committee_num_mms_videos(self,comm,group,ignoreHide,embed_link):
+        return get_videos_queryset(comm,group=group,ignoreHide=ignoreHide).filter(embed_link=embed_link).count()
+    
+    def _getMmsVideoFields(self,video,comm):
+        return {
+            'embed_link':video['mmsurl'],
+            'title':video['title'],
+            'source_type':'mms-knesset-portal',
+            'published':video['datetime'],
+            'group':'mms',
+            'content_object':comm
+        }
+        
+    def _saveVideo(self,videoFields):
+        v=Video(**videoFields)
+        v.save()
+    
     def _update_committee_mms_video(self,comm,video):
         self._debug('_update_committee_mms_video')
-        curvids=get_videos_queryset(comm,group='mms',ignoreHide=True).filter(embed_link=video['mmsurl'])
-        if len(curvids)==0:
-            v = Video(
-                embed_link=video['mmsurl'],
-                title=video['title'],
-                source_type='mms-knesset-portal',
-                published=video['datetime'],
-                group='mms', 
-                content_object=comm
-            )
-            v.save()
+        numcurvids=self._get_committee_num_mms_videos(comm, 'mms', True, video['mmsurl'])
+        if numcurvids==0:
+            self._saveVideo(self._getMmsVideoFields(video, comm))

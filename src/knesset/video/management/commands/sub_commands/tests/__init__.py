@@ -1,5 +1,10 @@
 #encoding: utf-8
 
+from knesset.video.management.commands.sub_commands.tests.UpdateMembersAboutVideo import testUpdateMembersAboutVideo
+from knesset.video.management.commands.sub_commands.tests.UpdateMembersRelatedVideos import testUpdateMembersRelatedVideos
+from knesset.video.management.commands.sub_commands.tests.UpdateCommitteesVideos import testUpdateCommitteesVideos
+from knesset.video.management.commands.sub_commands.tests.AddVideo import testAddVideo
+#from knesset.video.management.commands.sub_commands.tests.DownloadCommitteesVideos import testDownloadCommitteesVideos
 from django.test import TestCase
 from knesset.video.management.commands.sub_commands import (
     SubCommand, SubCommandErrorException, Timer,

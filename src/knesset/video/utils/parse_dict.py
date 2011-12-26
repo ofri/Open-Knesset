@@ -4,11 +4,11 @@ def validate_dict(h,*args):
     for arg in args:
         if type(h).__name__=='dict' and type(arg).__name__=='list':
             for key in arg:
-                if key not in h:
+                if key not in h or h[key] is None:
                     return False
         elif type(h).__name__=='dict' and type(arg).__name__=='dict':
             for k in arg:
-                if k not in h:
+                if k not in h or h[k] is None:
                     return False
                 v=arg[k]
                 val=h[k]
@@ -28,13 +28,13 @@ def parse_dict(h,p,validate=None,default=None):
     if validate is not None and validate_dict(h,validate)==False:
         return default
     if type(p).__name__=='str':
-        if p in h:
+        if p in h and h[p] is not None:
             return h[p]
         else:
             return default
     elif type(p).__name__=='dict':
         for k in p:
-            if k not in h:
+            if k not in h or h[k] is None:
                 return default
             else:
                 val=h[k]
