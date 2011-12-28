@@ -130,8 +130,8 @@
 					var memberNode = $dom.create("li");
 					var memberLink = $dom.create("a");
 					var memberImage = $dom.create("img");
-					var memberTooltip = $dom.create("span.tooltip");
-					var memberName = $dom.create("span");
+//					var memberTooltip = $dom.create("span.tooltip");
+//					var memberName = $dom.create("span");
 
 					memberLink.setAttribute("href", partyGroup.members[j].url);
 					memberImage.setAttribute("src", partyGroup.members[j].img_url);
@@ -140,12 +140,12 @@
 
 					memberNode.appendChild(memberLink);
 					memberLink.appendChild(memberImage);
-					memberNode.appendChild(memberTooltip);
-					memberTooltip.appendChild(memberName);
+//					memberNode.appendChild(memberTooltip);
+//					memberTooltip.appendChild(memberName);
 
 					partyNode.appendChild(memberNode);
 
-					memberName.innerHTML = partyGroup.members[j].name
+						memberName.innerHTML = partyGroup.members[j].name
 				}
 			}
 
@@ -271,7 +271,6 @@
                     {% if bill.proposals.count > 0 %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>יזום ההצעה</span></div>
 					<span class="date">?</span>
@@ -292,7 +291,6 @@
                     {% if bill.pre_votes.count > 0 %}
                         <a href="{{ billurl }}#bill-pre-vote" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<span class="closeicon">icon</span>
 					{% if bill.pre_votes.count > 0 %}
@@ -336,7 +334,7 @@
 			<li class="committee-1 odd">
 				<div class="step">
                     {% if bill.first_committee_meetings.count > 0 %}
-                        <a href="{{ billurl }}#bill-first-committee-meetings" class="link" target="_blank">קישור</a>
+                        <a href="{{ first_committee_meetings.url}}" class="link" target="_blank">קישור</a>
                     {% endif %}
 
 					<span class="icon">icon</span>
@@ -364,7 +362,6 @@
                     {% if bill.first_vote %}
                         <a href="{{ billurl }}#bill-first-vote" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<span class="closeicon">icon</span>
                     {% if bill.first_vote %}
@@ -415,10 +412,8 @@
 			<li class="committee-2 odd">
 				<div class="step">
                     {% if bill.second_committee_meetings.count > 0 %}
-                        <a href="{{ billurl }}#bill-second-committee-meetings" class="link" target="_blank">קישור</a>
+                        <a href="{{  second_committee_meetings.url}}" class="link" target="_blank">קישור</a>
                     {% endif %}
-
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ישיבות ועדה</span></div>
 					<span class="date">?</span>
@@ -444,7 +439,6 @@
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
 
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<span class="closeicon">icon</span>
 					<div class="tooltip-score">
@@ -465,7 +459,6 @@
                     {% if bill.approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<span class="closeicon">icon</span>
 					<div class="tooltip-score">
@@ -484,9 +477,8 @@
 			<li class="accepted last" >
 				<div class="step">
                     {% if bill.approval_vote %}
-                        <a href="{{ billurl }}#bill-accepted" class="link" target="_blank">קישור</a>
+                        <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<a href="#" class="info">מידע</a>
 					<span class="icon">icon</span>
 					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
 					<span class="date">?</span>
@@ -535,15 +527,16 @@
 			</script>
 
 		</ul>
-        {% endwith %}
 	</div>
 
 	<div class="footer">
 		<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org">כנסת פתוחה</a> ו<a href="http://yeda.us">הסדנא לידע ציבורי</a></div>
 		<div class="share">
 			<a href="#" class="embed">הטמעה</a>
-			<a href="#" class="link">קישור</a>
+			<a href="{{billurl}}" class="link">קישור</a>
 		</div>
 	</div>
+    {% endwith %}
+
 </div>
 

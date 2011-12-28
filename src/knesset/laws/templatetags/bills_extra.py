@@ -89,7 +89,8 @@ def bill_inabox(bill):
         first_committee_meetings = bill.first_committee_meetings.all()[bill.first_committee_meetings.count() - 1]
         bill_inabox_dict['first_committee_meetings'] = dict({'day' : first_committee_meetings.date.day,
                            'month' : first_committee_meetings.date.month,
-                           'year' : first_committee_meetings.date.year})
+                           'year' : first_committee_meetings.date.year,
+                           'url' : first_committee_meetings.get_absolute_url()})
 
     #first vote
     if bill.first_vote:
@@ -100,7 +101,8 @@ def bill_inabox(bill):
         second_committee_meetings = bill.second_committee_meetings.all()[bill.second_committee_meetings.count() - 1]
         bill_inabox_dict['second_committee_meetings'] = dict({'day' : second_committee_meetings.date.day,
                            'month' : second_committee_meetings.date.month,
-                           'year' : second_committee_meetings.date.year})
+                           'year' : second_committee_meetings.date.year,
+                           'url' : second_committee_meetings.get_absolute_url()})
 
 
     #second+third vote (approvval_vote
