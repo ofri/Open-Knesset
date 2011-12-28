@@ -84,7 +84,11 @@
 			</div>
 			<div class="excerpt">
 				<span class="label">תקציר:</span>
-				<div class="explanation"></div>
+				<div class="explanation">
+					<div class="prop">
+						{{explanation|safe}}
+					</div>
+				</div>
 			</div>
 			<div class="external-links">
 				<span class="label">קישורים נוספים:</span>
@@ -145,7 +149,7 @@
 
 					partyNode.appendChild(memberNode);
 
-						memberName.innerHTML = partyGroup.members[j].name
+//						memberName.innerHTML = partyGroup.members[j].name
 				}
 			}
 
@@ -530,7 +534,7 @@
 	</div>
 
 	<div class="footer">
-		<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org">כנסת פתוחה</a> ו<a href="http://yeda.us">הסדנא לידע ציבורי</a></div>
+		<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
 		<div class="share">
 			<a href="#" class="embed">הטמעה</a>
 			<a href="{{billurl}}" class="link">קישור</a>

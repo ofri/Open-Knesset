@@ -61,6 +61,21 @@ def create_vote_dict(vote):
                            'year' : vote.time.year}})
     return vote_dict
 
+def get_explanation(bill):
+
+    if hasattr(bill, 'knesset_proposal'):
+        if bill.knesset_proposal.get_explanation() != '':
+            return bill.knesset_proposal.get_explanation()
+
+    if hasattr(bill, 'gov_proposal'):
+        if bill.gov_proposal.get_explanation() != '':
+            return bill.gov_proposal.get_explanation()
+
+    for proposal in bill.proposals.all():
+        if proposal.get_explanation() != '':
+            return proposal.get_explanation()
+
+
 @register.inclusion_tag('laws/bill_inabox.html')
 def bill_inabox(bill):
     """ TODO: firstX and not first3"""
@@ -68,7 +83,8 @@ def bill_inabox(bill):
     bill_inabox_dict = dict({ 'MEDIA_URL' : settings.MEDIA_URL,
                  'bill': bill,
             'proposers_first3' : bill.proposers.all()[:3],
-            'proposers_count_minus3' : bill.proposers.count() - 3})
+            'proposers_count_minus3' : bill.proposers.count() - 3,
+            'explanation' : get_explanation(bill)})
 
     #proposal
     if bill.proposals.count() > 0:
