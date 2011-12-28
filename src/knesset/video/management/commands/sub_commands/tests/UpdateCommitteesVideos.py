@@ -65,9 +65,11 @@ class testUpdateCommitteesVideos(TestCase):
     def testUpdateCommitteesVideos(self):
         he1=u'ועדת העבודה, הרווחה והבריאות'
         he2=u'ועדה לענייני ביקורת המדינה'
+        he3=u'ועדה מיוחדת לבעיית העובדים הזרים'
         committees=[
             Committee_test(1,he1,''),
             Committee_test(2,he2,'http://portal.knesset.gov.il/Com10bikoret/he-IL/CommitteeBroadcast/default.htm'),
+            Committee_test(3,he3,'')
         ]
         obj=UpdateCommitteesVideos_test(
             testCase=self, 
@@ -132,6 +134,18 @@ class testUpdateCommitteesVideos(TestCase):
         <tr valign=top>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td><a href="http://portal.knesset.gov.il/com10bikoret/he-il" onmouseout="this.style.color='#2962B9'" onmouseover="this.style.color='#55B561';">פורטל הוועדה</a></td>
+        </tr>
+        <tr><td colspan=7><img src="/images/arrow-s-green.gif" align="middle"> <b>ועדה מיוחדת לבעיית העובדים הזרים</b>
+        <!---->
+        </td></tr>
+        <tr valign=top>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td><a href="vaada.asp?vaada=15" onmouseout="this.style.color='#2962B9'" onmouseover="this.style.color='#55B561';">מידע כללי</a></td>
+        <td><a href="/agenda/heb/vaada.asp?vaada=15" onmouseout="this.style.color='#2962B9'" onmouseover="this.style.color='#55B561';">סדר יום</a></td>
+        <td><a href="/spokesman/heb/template.asp?ComId=15" onmouseout="this.style.color='#2962B9'" onmouseover="this.style.color='#55B561';">הודעות לעיתונות</a></td>
+        <td><a href="/protocols/heb/protocol_search.aspx?comID=15" onmouseout="this.style.color='#2962B9'" onmouseover="this.style.color='#55B561';">פרוטוקולי הישיבות</a></td>
+        <td></td>
+        <td></td>
         </tr>
     """
     

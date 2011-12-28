@@ -40,13 +40,14 @@ class UpdateCommitteesVideos(SubCommand):
     def _get_committee_mainpage(self,soup,name):
         self._debug('_get_committee_mainpage')
         href=''
-        portal_havaada=u'פורטל הוועדה'
-        elt=soup('b',text=name)
-        if len(elt)>0:
-            elt=elt[0].findAllNext('a',text=portal_havaada)
+        for text in [u'פורטל הוועדה',u'מידע כללי']:
+            elt=soup('b',text=name)
             if len(elt)>0:
-                elt=elt[0]
-                href=elt.parent['href']
+                elt=elt[0].findAllNext('a',text=text)
+                if len(elt)>0:
+                    elt=elt[0]
+                    href=elt.parent['href']
+            if len(href)>6: break
         if len(href)>6:
             if href[0]=='/':
                 href=self.KNESSET_BASEHREF+href
