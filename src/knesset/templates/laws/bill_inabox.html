@@ -77,7 +77,7 @@
 	<div class="header header-small">
 		<div class="billbox-details">
 			<div class="title">
-			  <a href="/bill/3260/" target="_blank">
+			  <a href={{billurl}} target="_blank">
 				<span class="label">שם ההצעה:</span>
                 <h1>{{bill.law.title}}: {{bill.title}}</h1>
 			  </a>
@@ -103,7 +103,7 @@
 			<ul>
 
                 {% for proposer in proposers_first3 %}
-                <li><a href="{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
+                <li><a href="http://www.oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
 
 			</ul>
@@ -267,7 +267,6 @@
 				</span>
 			</div>
 		</div>
-        {% with billurl=bill.get_absolute_url %}
 		<ul class="steps">
 
 			<li class="initiated odd first">
@@ -540,7 +539,6 @@
 			<a href="{{billurl}}" class="link">קישור</a>
 		</div>
 	</div>
-    {% endwith %}
 
 </div>
 
