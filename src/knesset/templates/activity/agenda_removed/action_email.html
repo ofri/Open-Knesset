@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target.title as vote %}
+The vote <a href="http://{{domain}}{{ url }}">{{ vote }}</a> has been removed from the adenga.
+{% endblocktrans %}<br>

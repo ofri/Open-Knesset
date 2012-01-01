@@ -8,7 +8,7 @@ import vobject
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from knesset.persons.models import Person
 
 class Event(models.Model):
@@ -58,7 +58,7 @@ class Event(models.Model):
         """
         vevent = cal.add('vevent')
         vevent.add('dtstart').value = self.when
-        summary_prepend = ''
+        warnings = []
         if not self.when_over:
             # this can happen if you migrated so you have when_over but
             # have not run parse_future_committee_meetings yet.
@@ -66,12 +66,14 @@ class Event(models.Model):
             self.when_over_guessed = True
             self.save()
         if self.when_over_guessed:
-            summary_prepend = u'NB: missing end date, see http://oknesset/help/missing/\n\n'
+            warnings.append(ugettext('no end date data - guessed it to be 2 hours after start'))
         # TODO: add `geo` to the Event model
         # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
         vevent.add('geo').value = '31.777067;35.205495'
         vevent.add('dtend').value = self.when_over
-        summary = summary_prepend + self.get_summary(summary_length)
-        vevent.add('summary').value = summary
+        vevent.add('summary').value = self.get_summary(summary_length)
         vevent.add('location').value = self.where
+        if warnings: 
+            self.what = '\n'.join((self.what, '', ugettext('oknesset warnings:'), ''))
+            self.what += '\n'.join(warnings)
         vevent.add('description').value = self.what
