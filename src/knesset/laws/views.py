@@ -410,12 +410,21 @@ class VoteDetailView(DetailView):
         mk_names = Member.objects.values_list('name',flat=True)
         if user_input_type == 'agenda':
             agenda = Agenda.objects.get(pk=request.POST.get('agenda'))
-            usv = UserSuggestedVote(user = request.user,
+            reasoning = request.POST.get('reasoning','')
+            usv = UserSuggestedVote.objects.filter(user = request.user,
                                 agenda = agenda,
-                                reasoning = request.POST.get('reasoning',''),
                                 vote = vote)
-            usv.save()
-            print usv.id
+            if usv:
+                usv = usv[0]
+                usv.reasoning = reasoning
+                usv.sent_to_editor = False
+                usv.save()
+            else:
+                usv = UserSuggestedVote(user = request.user,
+                                agenda = agenda,
+                                vote = vote,
+                                reasoning = reasoning)
+                usv.save()
 
         else: # adding an MK (either for or against)
             mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]

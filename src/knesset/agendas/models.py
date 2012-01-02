@@ -29,6 +29,7 @@ class UserSuggestedVote(models.Model):
     vote = models.ForeignKey('laws.Vote', related_name='user_suggested_agendas')
     reasoning = models.TextField(blank=True, default='')
     user = models.ForeignKey(User, related_name='suggested_agenda_votes')
+    sent_to_editor = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('agenda','vote','user')

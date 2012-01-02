@@ -16,6 +16,9 @@
 
     {% if suggest_agendas %}
         <h3>{% trans 'Suggest an agenda' %}</h3>
+        {% if suggested_agendas %}
+        <p>{% trans 'You suggested' %}: {% for a in suggested_agendas %}{{a.agenda}}{% if not forloop.last %}, {%endif%}{% endfor %}</p>
+        {% endif %}
         <form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="agenda"></input>
         <label for="id_agenda">{% trans 'Agenda' %}</label>
         <select name="agenda" id="id_agenda">
@@ -27,6 +30,8 @@
         <textarea rows="5" cols="30" id="id_name" name="reasoning"></textarea>
         <br><input type="submit" value="{% trans 'Submit' %}"></input>
         </form>
+    {% else %}
+        <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
     {% endif %}
 
     {% if formset %}

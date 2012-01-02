@@ -15,6 +15,7 @@ class Migration(SchemaMigration):
             ('vote', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_suggested_agendas', to=orm['laws.Vote'])),
             ('reasoning', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='suggested_agenda_votes', to=orm['auth.User'])),
+            ('sent_to_editor', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal('agendas', ['UserSuggestedVote'])
 
@@ -63,6 +64,7 @@ class Migration(SchemaMigration):
             'agenda': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_suggested_votes'", 'to': "orm['agendas.Agenda']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'reasoning': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'sent_to_editor': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggested_agenda_votes'", 'to': "orm['auth.User']"}),
             'vote': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_suggested_agendas'", 'to': "orm['laws.Vote']"})
         },
