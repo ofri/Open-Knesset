@@ -500,16 +500,35 @@
   width: 80%;
 }
 .billbox .footer {
-  position: relative;
+  position: absolute;
+  z-index: 20;
+  width: 100%;
   bottom: 0;
+  overflow : hidden;
   background: #EEEFF5;
   height: 20px;
   font-size: 11px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
 }
+
+.billbox .footer .footer-title{
+	height : 20px;
+}
+.billbox .footer.maximized{
+	height : 170px;
+}
+
 .billbox .footer, .billbox .footer a {
   color: #999;
 }
+.billbox .footer, .billbox .footer span {
+  color: #999;
+  cursor : pointer;
+}
+.billbox .footer span:hover {
+  color: #666;
+}
+
 .billbox .footer a:hover {
   color: #666;
 }
@@ -527,12 +546,41 @@
   margin-right: 3px;
   text-decoration: none;
 }
+
+.billbox .footer .share span {
+  background: url(../img/embed_link.png) right -20px no-repeat;
+  padding: 2px 20px 2px 0;
+  margin-right: 3px;
+  text-decoration: none;
+}
+
 .billbox .footer .share a.embed {
   background-image: url(../img/embed_embed.png);
 }
 .billbox .footer .share a:hover {
   background-position: right -60px;
 }
+.billbox .footer .share span:hover {
+  background-position: right -60px;
+}
+
+.billbox .footer .embeddiv{
+	position: relative;
+	width: 100%;
+	right : 10px;
+	font-size: 12px;
+	lint-height : 150%;
+
+}
+.billbox .footer .embeddiv input{
+	width : 90%;
+}
+
+.billbox .footer .embeddiv b{
+	font-size : 13px;
+}
+
+
 .billbox .ui-dialog {
   background: #EEEFF5;
   border: 1px dotted #cccccc;
