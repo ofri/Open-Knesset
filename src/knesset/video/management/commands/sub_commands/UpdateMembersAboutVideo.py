@@ -14,61 +14,102 @@ class UpdateMembersAboutVideo(SubCommand):
         for member in members:
             self._debug(member.name)
             self._check_timer()
-            if not self._isMemberHaveAboutVideo(member):
-                names=member.names
-                got_video=False
-                for name in names:
-                    videos=self._getVideosForMemberName(name)
-                    for video in videos:
-                        if self._update_member_about_video(member,video,names):
-                            got_video=True
-                            break
-                    if got_video:
+            sourceVideos=self._fetchSourceVideosOrderedByPublishedDesc(member)
+            for sourceVideo in sourceVideos:
+                if self._isValidSourceVideo(sourceVideo,member):
+                    videos=self._getVideosFromSource(sourceVideo,member)
+                    if len(videos)==0:
+                        # the source video does not exist in our database
+                        # this is the about video for this member!
+                        self._updateMemberAboutVideo(sourceVideo,member)
                         break
+                    else:
+                        # got some videos that match the source video
+                        # check if any of them are 'related' videos
+                        relatedVideo=None
+                        for video in videos:
+                            if video.group=='related' and not video.sticky and not video.hide:
+                                relatedVideo=video
+                                break
+                        if relatedVideo is not None:
+                            # got a related video that is not sticky and not hidden
+                            # hide it in the related and create it again as about
+                            # (we could just change the video's group field
+                            #  but it's better to create it again to make sure
+                            #  it's got all the relevant data)
+                            self._hideRelatedVideo(relatedVideo)
+                            self._updateMemberAboutVideo(sourceVideo,member)
+                        else:
+                            break
 
-    def _getVideosForMemberName(self,name):
-        return GetYoutubeVideos(q=u"כרטיס ביקור ערוץ הכנסת "+name).videos
-
-    def _isMemberHaveAboutVideo(self,member):
-        qs=get_videos_queryset(member, group='about', ignoreHide=True)
-        return qs.count()>0
-
-    def _getVideoFields(self,result_video,member):
-        return {
-            'embed_link':result_video['embed_url_autoplay'],
-            'image_link':result_video['thumbnail480x360'],
-            'title':result_video['title'],
-            'description':result_video['description'],
-            'link':result_video['link'],
-            'source_type':'youtube', 
-            'source_id':result_video['id'],
-            'published':result_video['published'],
-            'group':'about', 
-            'content_object':member
-        }
-
-    def _saveVideo(self,videoFields):
-        v=Video(**videoFields)
-        v.save()
-
-    def _update_member_about_video(self,member,video,names):
-        result_video=None
+    def _fetchSourceVideosOrderedByPublishedDesc(self,member):
+        videos=[]
+        for name in member.names:
+            for video in self._fetchSourceVideos(name):
+                if validate_dict(video,['published']):
+                    videos.append(video)
+        return sorted(videos,key=lambda video: video['published'], reverse=True)
+    
+    def _fetchSourceVideos(self,name):
+        return self._getYoutubeVideos(q=u"כרטיס ביקור ערוץ הכנסת "+name)
+        
+    def _isValidSourceVideo(self,video,member):
+        ans=False
         if validate_dict(video,[
             'title','embed_url_autoplay','thumbnail480x360',
             'id','description','link','published'
         ]):
-            title=video['title']
+            titledesc=video['title']+video['description']
             if (
-                u'כרטיס ביקור' in title
-                and u'ערוץ הכנסת' in title
+                u'כרטיס ביקור' in titledesc
+                and u'ערוץ הכנסת' in titledesc
             ):
-                for name in names:
-                    if name in title:
-                        result_video=video
+                for name in member.names:
+                    if name in titledesc:
+                        ans=True
                         break
-        if result_video is None:
-            return False
-        else:
-            self._saveVideo(self._getVideoFields(result_video, member))
-            return True
+        return ans
+    
+    def _getVideosFromSource(self,sourceVideo,member):
+        return self._getVideos(
+            getVideosQuerysetParams={'obj':member, 'ignoreHide':True},
+            filterParams={'source_id':sourceVideo['id'],'source_type':'youtube'}
+        )
+        
+    def _updateMemberAboutVideo(self,sourceVideo,member):
+        self._hideMemberAboutVideos(member)
+        self._saveVideo({
+            'embed_link':sourceVideo['embed_url_autoplay'],
+            'image_link':sourceVideo['thumbnail480x360'],
+            'title':sourceVideo['title'],
+            'description':sourceVideo['description'],
+            'link':sourceVideo['link'],
+            'source_type':'youtube', 
+            'source_id':sourceVideo['id'],
+            'published':sourceVideo['published'],
+            'group':'about', 
+            'content_object':member
+        })
 
+    # the following functions perform low level operations that will not be performed when testing
+    # e.g. saving database data or fetching from remote sites
+
+    def _getYoutubeVideos(self,**kwargs):
+        return GetYoutubeVideos(**kwargs).videos
+    
+    def _getVideos(self, getVideosQuerysetParams, filterParams):
+        return get_videos_queryset(**getVideosQuerysetParams).filter(**filterParams)
+    
+    def _saveVideo(self,videoFields):
+        v=Video(**videoFields)
+        v.save()
+        
+    def _hideRelatedVideo(self,video):
+        video.hide=True
+        video.save()
+        
+    def _hideMemberAboutVideos(self,member):
+        videos=get_videos_queryset(member,group='about')
+        for video in videos:
+            video.hide=True
+            video.save()

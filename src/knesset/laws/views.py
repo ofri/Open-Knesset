@@ -26,7 +26,7 @@ from knesset.laws.models import *
 from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav import DetailView, ListView
-from knesset.agendas.models import Agenda
+from knesset.agendas.models import Agenda,UserSuggestedVote
 
 import urllib
 import urllib2
@@ -398,11 +398,6 @@ class VoteDetailView(DetailView):
             related_bills.extend(vote.bills_first.all())
         context['bills'] = related_bills
 
-        if self.request.user.is_authenticated():
-            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
-        else:
-            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
-
         return context
 
     @method_decorator(login_required)
@@ -413,23 +408,42 @@ class VoteDetailView(DetailView):
         user_input_type = request.POST.get('user_input_type',None)
         vote = get_object_or_404(Vote, pk=object_id)
         mk_names = Member.objects.values_list('name',flat=True)
-        mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
-        mk = Member.objects.get(name=mk_name)
-        stand = None
-        if user_input_type == 'mk-for':
-            stand = 'for'
-        if user_input_type == 'mk-against':
-            stand = 'against'
-        if stand:
-            va = VoteAction.objects.filter(member=mk, vote=vote)
-            if va:
-                va = va[0]
-                va.type=stand
-                va.save()
+        if user_input_type == 'agenda':
+            agenda = Agenda.objects.get(pk=request.POST.get('agenda'))
+            reasoning = request.POST.get('reasoning','')
+            usv = UserSuggestedVote.objects.filter(user = request.user,
+                                agenda = agenda,
+                                vote = vote)
+            if usv:
+                usv = usv[0]
+                usv.reasoning = reasoning
+                usv.sent_to_editor = False
+                usv.save()
             else:
-                va = VoteAction(member=mk, vote=vote, type=stand)
-                va.save()
-            vote.update_vote_properties()
+                usv = UserSuggestedVote(user = request.user,
+                                agenda = agenda,
+                                vote = vote,
+                                reasoning = reasoning)
+                usv.save()
+
+        else: # adding an MK (either for or against)
+            mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
+            mk = Member.objects.get(name=mk_name)
+            stand = None
+            if user_input_type == 'mk-for':
+                stand = 'for'
+            if user_input_type == 'mk-against':
+                stand = 'against'
+            if stand:
+                va = VoteAction.objects.filter(member=mk, vote=vote)
+                if va:
+                    va = va[0]
+                    va.type=stand
+                    va.save()
+                else:
+                    va = VoteAction(member=mk, vote=vote, type=stand)
+                    va.save()
+                vote.update_vote_properties()
 
         return HttpResponseRedirect('.')
 

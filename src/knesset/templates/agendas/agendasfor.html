@@ -1,15 +1,37 @@
 {% load i18n %}
-    {% if agendavotes %}
     <h3>{% trans "Ascribed agendas" %}</h3>
-    <table>
-    {% for agendavote in agendavotes %}
-        <tr><td colspan="2">
-         <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
-        </td></tr>
-        <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
-        <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
-    {% endfor %}
-    </table>
+    {% if agendavotes %}
+        <table>
+        {% for agendavote in agendavotes %}
+            <tr><td colspan="2">
+             <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
+            </td></tr>
+            <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
+            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>{% trans 'No agendas ascribed yet.' %}</p>
+    {% endif %}
+
+    {% if suggest_agendas %}
+        <h3>{% trans 'Suggest an agenda' %}</h3>
+        {% if suggested_agendas %}
+        <p>{% trans 'You suggested' %}: {% for a in suggested_agendas %}{{a.agenda}}{% if not forloop.last %}, {%endif%}{% endfor %}</p>
+        {% endif %}
+        <form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="agenda"></input>
+        <label for="id_agenda">{% trans 'Agenda' %}</label>
+        <select name="agenda" id="id_agenda">
+        {% for a in suggest_agendas %}
+            <option value="{{a.id}}">{{a}}</option>
+        {% endfor %}
+        </select>
+        <label for="id_name">{% trans 'Reasoning' %}</label>
+        <textarea rows="5" cols="30" id="id_name" name="reasoning"></textarea>
+        <br><input type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
+    {% else %}
+        <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
     {% endif %}
 
     {% if formset %}
