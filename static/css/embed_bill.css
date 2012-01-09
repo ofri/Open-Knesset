@@ -7,14 +7,6 @@
   color: #666;
   font-size: 15px;
   position:relative;
-  /*
- * UI-DIALOG
- */
-
-  /*
- * Drill down
- */
-
 }
 
 .billbox .header,
@@ -135,7 +127,6 @@
   width: 100px;
 }
 .billbox .pms ul {
-  /*height: 22px;*/
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -148,10 +139,8 @@
 }
 .billbox .pms li, .billbox .pms a.more {
   float: right;
-  /*height: 20px;*/
   list-style: none outside none;
   margin-bottom: 5px;
-  /*margin-left: 3px; */
 }
 .billbox .pms a.more {
   margin-left: 0;
@@ -202,8 +191,6 @@
   top: 50px;
   width: 100px;
   margin-left: -60px;
-  /*background-color: #fff;*/
-
 }
 .billbox .pull {
   clear: both;
@@ -248,11 +235,8 @@
 }
 .billbox ul.steps li {
   background: #eeeff5;
-  /* max-width: 60px; */
-
   width: 12.5%;
   float: right;
-/*  height: 100%;*/
   margin: 0;
   min-height: 250px;
   padding-top: 40px;
@@ -265,8 +249,6 @@
   background-image: url(../img/embed_hover.png);
 }
 .billbox ul.steps li.current {
-  /*background-image: url(../img/embed_step_shadow.png);*/
-
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 .billbox ul.steps li.odd {
@@ -762,7 +744,6 @@
   overflow: visible;
   display: inline;
   margin: 3px;
-  /*background: #43873a;*/
 }
 .billbox .thedrill .pms li a {
   border-color: #43873a;
@@ -785,7 +766,6 @@
 .billbox .thedrill .opposing ul, .billbox .opposing li {
   float: left;
   display: inline;
-  /*background: #943a1f;*/
 }
 .billbox .thedrill .opposing li a {
   border-color: #943a1f;

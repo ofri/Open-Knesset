@@ -9,48 +9,6 @@
 
 		OKnesset.billBox = OKnesset.billBox || {};
 
-		// Detect Animation support
-//		(function(){
-//			OKnesset.animation = false;
-//		    OKnesset.animationstring = 'animation';
-//		    OKnesset.keyframeprefix = '';
-//		    var domPrefixes = 'Webkit Moz O ms Khtml'.split(' ');
-//		    var animationEnd = 'webkitAnimationEnd animationend oAnimationEnd msAnimationEnd Khtml_I_DONT_KNOW'.split(' ');
-//		    var pfx  = '';
-//			var elm = $dom.get('.billbox')[0];
-//
-//			if( elm.style.animationName ) { OKnesset.animation = true; }
-//
-//			if( OKnesset.animation === false ) {
-//			  for( var i = 0; i < domPrefixes.length; i++ ) {
-//			    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
-//			      pfx = domPrefixes[ i ];
-//			      OKnesset.animationstring = pfx + 'Animation';
-//			      OKnesset.animationEndEvent = animationEnd[i];
-//			      OKnesset.keyframeprefix = '-' + pfx.toLowerCase() + '-';
-//			      OKnesset.animation = true;
-//			      break;
-//			    }
-//			  }
-//			}
-//		})();
-//
-//		OKnesset.addAnimation = function(elm, animName, animProps, keyFrameContent){
-//			  elm.style[ OKnesset.animationstring ] = animName + ' ' + animProps;
-//
-//			  var keyframes = '@' + OKnesset.keyframeprefix + 'keyframes '+ animName +' { '+
-//			  						keyFrameContent +
-//			                  '}';
-//
-//			  if( document.styleSheets && document.styleSheets.length ) {
-//			      document.styleSheets[0].insertRule( keyframes, 0 );
-//			  } else {
-//			    var s = document.createElement( 'style' );
-//			    s.innerHTML = keyframes;
-//			    document.getElementsByTagName( 'head' )[ 0 ].appendChild( s );
-//			  }
-//		}
-
 		OKnesset.drilldata = [];
 		OKnesset.drilldata.push({'stage' : 1});
 		OKnesset.drilldata.push({'stage' : 2});
@@ -135,8 +93,6 @@
 					var memberNode = $dom.create("li");
 					var memberLink = $dom.create("a");
 					var memberImage = $dom.create("img");
-//					var memberTooltip = $dom.create("span.tooltip");
-//					var memberName = $dom.create("span");
 
 					memberLink.setAttribute("href", partyGroup.members[j].url);
 					memberImage.setAttribute("src", partyGroup.members[j].img_url);
@@ -145,12 +101,8 @@
 
 					memberNode.appendChild(memberLink);
 					memberLink.appendChild(memberImage);
-//					memberNode.appendChild(memberTooltip);
-//					memberTooltip.appendChild(memberName);
 
 					partyNode.appendChild(memberNode);
-
-//						memberName.innerHTML = partyGroup.members[j].name
 				}
 			}
 
@@ -188,30 +140,11 @@
 			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
 
 			// end update "drill" data
-//			if( OKnesset.animation === false ) {
-				console.log("no animation");
-				$dom.addClass(graph, 'drilling-final');
-					$dom.style(stepsDiv, {'margin-right': margin + '%'});
-					window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");}, 10);
-					OKnesset.drilling = false;
-
-//			} else {
-//				OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width : 100%; margin-right : 0%} 100% {width: 760%; margin-right : '+ margin+'%}');
-//
-//				var finishAnim = function(){
-//						stepsDiv.setAttribute("style", "");
-//						$dom.addClass(graph, 'drilling-final');
-//						$dom.style(stepsDiv, {'margin-right': margin + '%'});
-//						stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
-//						senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");
-//						OKnesset.drilling = false;
-//				    }
-//				stepsDiv.addEventListener(
-//				    OKnesset.animationEndEvent,
-//					finishAnim,
-//				    false);
-//			}
-
+			console.log("no animation");
+			$dom.addClass(graph, 'drilling-final');
+			$dom.style(stepsDiv, {'margin-right': margin + '%'});
+			window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");}, 10);
+			OKnesset.drilling = false;
 		}
 
 		OKnesset.undrill = function(e){
@@ -223,21 +156,12 @@
 
 			var graph = $dom.get('.graph')[0];
 			var stepsDiv = $dom.get('div.graph ul.steps')[0];
-//			OKnesset.addAnimation(stepsDiv, 'drill', '500ms', '0% {width: 760%; margin-right : '+ stepsDiv.getAttribute("margin-right") +'%} 100% {width : 100%; margin-right : 0%} ');
-
-//			var finishAnim = function(){
-				stepsDiv.setAttribute("style", "");
-				$dom.removeClass(graph, 'drilling');
-				$dom.removeClass(graph, 'drilling-final');
-				$dom.removeClass(senderDiv, 'drilled');
-				$dom.style(stepsDiv, {'margin-right': '0%'});
-//				stepsDiv.removeEventListener(OKnesset.animationEndEvent, finishAnim);
-				window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.drill(event);");}, 10);
-//			}
-//			stepsDiv.addEventListener(
-//			    OKnesset.animationEndEvent,
-//			   	finishAnim,
-//				false);
+			stepsDiv.setAttribute("style", "");
+			$dom.removeClass(graph, 'drilling');
+			$dom.removeClass(graph, 'drilling-final');
+			$dom.removeClass(senderDiv, 'drilled');
+			$dom.style(stepsDiv, {'margin-right': '0%'});
+			window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.drill(event);");}, 10);
 		}
 	</script>
 	<div class="graph">
