@@ -70,10 +70,11 @@ class Event(models.Model):
         # TODO: add `geo` to the Event model
         # FLOAT:FLOAT lon:lat, up to 6 digits, degrees.
         vevent.add('geo').value = '31.777067;35.205495'
+        vevent.add('x-pk').value = str(self.pk)
         vevent.add('dtend').value = self.when_over
         vevent.add('summary').value = self.get_summary(summary_length)
         vevent.add('location').value = self.where
-        if warnings: 
+        if warnings:
             self.what = '\n'.join((self.what, '', ugettext('oknesset warnings:'), ''))
             self.what += '\n'.join(warnings)
         vevent.add('description').value = self.what
