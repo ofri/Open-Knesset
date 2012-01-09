@@ -538,9 +538,16 @@
 			<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
 			<div class="share">
 				<script type="text/javascript">
+					OKnesset.embedMinimize = function(){
+						var footer = $dom.get('.footer')[0];
+						$dom.removeClass(footer, 'maximized');
+						$dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embed();");
+					}
 					OKnesset.embed = function(){
 						var footer = $dom.get('.footer')[0];
 						$dom.addClass(footer, 'maximized');
+
+						$dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embedMinimize();");
 
 						footer.onclick = function(e) {
 						  // in all browsers
@@ -555,7 +562,8 @@
 						// click anywhere else
 						document.documentElement.onclick = function() {
 						  // will hide the popup
-							$dom.removeClass(footer, 'maximized');
+						  OKnesset.embedMinimize()
+							//$dom.removeClass(footer, 'maximized');
 						};
 					}
 				</script>
