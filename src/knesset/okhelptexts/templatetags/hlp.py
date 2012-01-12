@@ -9,6 +9,7 @@ def ht(k):
         oKeyword = Keyword.objects.get(kw_text=k)
         oHelptext = oKeyword.helptext
         res = oHelptext.fulltext
+        moreinfo = oHelptext.moreinfo
     except Keyword.DoesNotExist: 
-        res = 0 
-    return {'helptext': res}
+        return None 
+    return {'helptext': res,'moreinfo': moreinfo}

@@ -4,6 +4,7 @@ from django.db import models
 
 class Helptext(models.Model):
   fulltext = models.TextField()
+  moreinfo = models.CharField(max_length=200,null=True)
   def __unicode__(self):
     return self.fulltext
 
