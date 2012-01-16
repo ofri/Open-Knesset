@@ -7,15 +7,15 @@
   color: #666;
   font-size: 15px;
   position:relative;
-  /*
- * UI-DIALOG
- */
-
-  /*
- * Drill down
- */
-
 }
+
+.billbox .header,
+.billbox .graph,
+.billbox .footer{
+    max-width: 500px;
+    width: 100%;
+}
+
 .billbox a {
   color: #0080ff;
   padding: 0;
@@ -127,7 +127,6 @@
   width: 100px;
 }
 .billbox .pms ul {
-  height: 22px;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -140,10 +139,8 @@
 }
 .billbox .pms li, .billbox .pms a.more {
   float: right;
-  height: 20px;
   list-style: none outside none;
   margin-bottom: 5px;
-  margin-left: 3px;
 }
 .billbox .pms a.more {
   margin-left: 0;
@@ -194,8 +191,6 @@
   top: 50px;
   width: 100px;
   margin-left: -60px;
-  /*background-color: #fff;*/
-
 }
 .billbox .pull {
   clear: both;
@@ -240,11 +235,8 @@
 }
 .billbox ul.steps li {
   background: #eeeff5;
-  /* max-width: 60px; */
-
   width: 12.5%;
   float: right;
-  height: 100%;
   margin: 0;
   min-height: 250px;
   padding-top: 40px;
@@ -257,8 +249,6 @@
   background-image: url(../img/embed_hover.png);
 }
 .billbox ul.steps li.current {
-  /*background-image: url(../img/embed_step_shadow.png);*/
-
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 .billbox ul.steps li.odd {
@@ -343,6 +333,7 @@
 .billbox ul.steps li:hover span.date {
   opacity: 1;
 }
+
 .billbox ul.steps li .icon {
   position: absolute;
   top: 100px;
@@ -352,6 +343,18 @@
   text-indent: -999999px;
   z-index: 1;
   display: block;
+}
+
+.billbox ul.steps li .closeicon {
+  position: absolute;
+  background: url(../img/embed_close.png) top center;
+  text-indent: -999999px;
+  z-index: 1;
+  top: 36px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  display: none;
 }
 .billbox ul.steps li.initiated .icon {
   background-image: url(../img/embed_icons_initiated.png);
@@ -380,9 +383,19 @@
 .billbox ul.steps li.passed .icon {
   background-position: center center;
 }
+
+.billbox ul.steps li.passed .closeicon {
+  background-position: center center;
+}
+
 .billbox ul.steps li.failed .icon {
   background-position: bottom center;
 }
+
+.billbox ul.steps li.failed .closeicon {
+  background-position: bottom center;
+}
+
 .billbox ul li .tooltip {
   display: none;
   height: 30px;
@@ -477,16 +490,35 @@
   width: 80%;
 }
 .billbox .footer {
-  position: relative;
+  position: absolute;
+  z-index: 20;
+  width: 100%;
   bottom: 0;
+  overflow : hidden;
   background: #EEEFF5;
   height: 20px;
   font-size: 11px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
 }
+
+.billbox .footer .footer-title{
+	height : 20px;
+}
+.billbox .footer.maximized{
+	height : 170px;
+}
+
 .billbox .footer, .billbox .footer a {
   color: #999;
 }
+.billbox .footer, .billbox .footer span {
+  color: #999;
+  cursor : pointer;
+}
+.billbox .footer span:hover {
+  color: #666;
+}
+
 .billbox .footer a:hover {
   color: #666;
 }
@@ -504,12 +536,41 @@
   margin-right: 3px;
   text-decoration: none;
 }
+
+.billbox .footer .share span {
+  background: url(../img/embed_link.png) right -20px no-repeat;
+  padding: 2px 20px 2px 0;
+  margin-right: 3px;
+  text-decoration: none;
+}
+
 .billbox .footer .share a.embed {
   background-image: url(../img/embed_embed.png);
 }
 .billbox .footer .share a:hover {
   background-position: right -60px;
 }
+.billbox .footer .share span:hover {
+  background-position: right -60px;
+}
+
+.billbox .footer .embeddiv{
+	position: relative;
+	width: 100%;
+	right : 10px;
+	font-size: 12px;
+	lint-height : 150%;
+
+}
+.billbox .footer .embeddiv input{
+	width : 90%;
+}
+
+.billbox .footer .embeddiv b{
+	font-size : 13px;
+}
+
+
 .billbox .ui-dialog {
   background: #EEEFF5;
   border: 1px dotted #cccccc;
@@ -551,11 +612,8 @@
 .billbox div.graph.drilling ul.steps li .date {
   display: none;
 }
-.billbox div.graph.drilling ul.steps {
+.billbox div.graph.drilling-final ul.steps {
   width: 760%;
-  margin-right: -92.5%;
-  /* this property sets the focus */
-
 }
 .billbox div.graph.drilling ul.steps li.drilled {
   background: url("../img/embed_hover.png") #e6eee6;
@@ -565,6 +623,11 @@
   right: 10px;
   width: 30px;
 }
+
+.billbox div.graph.drilling ul.steps li .closeicon {
+	display : block;
+}
+
 .billbox div.graph.drilling ul.steps li div.step {
   height: 6px;
 }
@@ -584,7 +647,7 @@
 .billbox .thedrill {
   margin: 0 5%;
   position: absolute;
-  top: 50px;
+  top: 120px;
   width: 90%;
   z-index: 10;
 }
@@ -664,12 +727,12 @@
 .billbox .thedrill-details {
   width: 100%;
 }
-.billbox .thedrill-details .for, .billbox .thedrill-details .against {
+.billbox .thedrill-details .for_votes, .billbox .thedrill-details .against_vote {
   width: 50%;
   float: right;
   color: #2a5525;
 }
-.billbox .thedrill-details .against {
+.billbox .thedrill-details .against_votes {
   text-align: left;
   color: #8a0505;
 }
@@ -681,7 +744,6 @@
   overflow: visible;
   display: inline;
   margin: 3px;
-  background: #43873a;
 }
 .billbox .thedrill .pms li a {
   border-color: #43873a;
@@ -689,8 +751,14 @@
 .billbox .supporting {
   background: #b5cfb2;
 }
+
+.billbox .supporting li {
+  border-left: 2px solid;
+  border-color: #43873a;
+}
 .billbox .supporting li:last-child {
   margin-left: 0;
+  border-left: 0;
 }
 .billbox .opposing {
   background: #caa8a2;
@@ -698,14 +766,18 @@
 .billbox .thedrill .opposing ul, .billbox .opposing li {
   float: left;
   display: inline;
-  background: #943a1f;
 }
 .billbox .thedrill .opposing li a {
   border-color: #943a1f;
 }
 .billbox .opposing li {
-  margin: 0 3px 3px 0	;
+  margin: 0 0px 3px 0	;
+  border-right: 2px solid;
+  border-color:#943a1f;
 }
+
 .billbox .pms.opposing li:last-child {
   margin-right: 0;
+  border-right: 0;
 }
+

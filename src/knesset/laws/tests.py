@@ -352,7 +352,7 @@ class ProposalModelTest(TestCase):
     def setUp(self):
         self.bill = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
-                                                   bill=self.bill, 
+                                                   bill=self.bill,
                                                    date=datetime(2005, 1, 22),
                                                 )
 
@@ -370,3 +370,4 @@ class ProposalModelTest(TestCase):
         self.kp_1.delete()
         self.bill.delete()
 
+class TemplateTagsTest(TestCase):

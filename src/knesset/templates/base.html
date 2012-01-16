@@ -13,7 +13,7 @@
             <meta name="ROBOTS" content="ALL">
         {% endif %}
         <meta http-equiv="imagetoolbar" content="no"/>
-        <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" /> 
+        <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
         <meta name="MSSmartTagsPreventParsing" content="true" >
         <meta name="Authors" content="OpenKnesset">
         <meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
@@ -89,7 +89,9 @@
     {% endif %}
     <div id="container">
         <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
-        {% if not has_search %}
+		<div class="app-link"><a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a></div>
+		<div class="app-link"><a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a></div>
+{% if not has_search %}
             <div id="search">{% search_form "search_page" %}</div>
         {% endif %}
         <div id="accounts">
@@ -130,7 +132,7 @@
                         {% if not debug %}
                             <!-- AddToAny BEGIN -->
                             <div class="a2a_kit a2a_default_style">
-                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">שתף</a>
+                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">◊©◊™◊£</a>
                             <span class="a2a_divider"></span>
                             <a class="a2a_button_email"></a>
                             <a class="a2a_button_facebook"></a>
