@@ -872,7 +872,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 .user_id { margin-right: 0.5em; width:60px; float: right; text-align:center; }
 /* comment bubbles */
 #content-main .triangle-border,#helptextcontainer .triangle-border {
-    position:absolute;
+    position:relative;
     padding:15px;
     margin:1.4em 1em;
     border:5px solid #6E9CA6;
@@ -883,6 +883,9 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     -moz-border-radius:10px;
     border-radius:10px;
     min-height:20px;
+}
+#helptextcontainer .triangle-border {
+    position:absolute;
 }
 #content-main .triangle-border.left, #helptextcontainer .triangle-border.left {
     margin-left:30px;
