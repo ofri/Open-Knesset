@@ -31,6 +31,10 @@ def agendas_for(user, vote, object_type):
                 r['weight'] = av.score
                 r['reasoning'] = av.reasoning
                 r['object_type'] = object_type
+                try:
+                    r['importance'] = av.importance
+                except AttributeError:
+                    pass
             except (AgendaVote.DoesNotExist, AgendaMeeting.DoesNotExist):
                 r['weight'] = None
                 r['reasoning'] = u''
