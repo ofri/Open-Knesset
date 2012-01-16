@@ -20,6 +20,9 @@ from knesset.mks.utils import percentile
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.agendas.models import Agenda
 
+from knesset.video.utils import get_videos_queryset
+from datetime import date, timedelta
+
 import logging
 
 
@@ -263,6 +266,21 @@ class MemberDetailView(DetailView):
             general_discipline_params['against_opposition'] = True
         general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
+        about_videos=get_videos_queryset(member,group='about')
+        if (about_videos.count()>0):
+            about_video=about_videos[0]
+            about_video_embed_link=about_video.embed_link
+            about_video_image_link=about_video.image_link
+        else:
+            about_video_embed_link=''
+            about_video_image_link=''
+            
+        related_videos=get_videos_queryset(member,group='related')
+        related_videos=related_videos.filter(
+            Q(published__gt=date.today()-timedelta(days=30))
+            | Q(sticky=True)
+        ).order_by('sticky').order_by('-published')[0:5]
+
         context.update({'watched_member': watched,
                 'actions': actor_stream(member).filter(verb__in=verbs),
                 'verbs_form': verbs_form,
@@ -273,6 +291,10 @@ class MemberDetailView(DetailView):
                 'factional_discipline':factional_discipline,
                 'votes_against_own_bills':votes_against_own_bills,
                 'general_discipline':general_discipline,
+                'about_video_embed_link':about_video_embed_link,
+                'about_video_image_link':about_video_image_link,
+                'related_videos':related_videos,
+                'num_related_videos':related_videos.count()
                })
         return context
 

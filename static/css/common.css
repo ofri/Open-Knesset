@@ -127,7 +127,7 @@ a:hover { text-decoration:underline;}
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
 h1 { line-height: 140% }
-h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; margin-left:1.5em; color:#251c1f; display:inline}
+h3 { font-size:125%; font-weight:bold; margin-bottom:.2em; margin-top:1.5em; margin-left:1.5em; color:#251c1f; display:inline-block;}
 h4 pre, h4 tt, h4 .literal { text-transform:none; }
 h5 { font-size:1em; font-weight:bold; margin-top:1.5em; margin-bottom:3px; }
 p, ul, dl { margin-top:.6em; margin-bottom:.8em; }
@@ -294,7 +294,9 @@ form > p > select { width:250px; }
 #content-main #tagging-container { padding-top:0.5em; padding-bottom:0.5em; }
 #content-main #tags { display: inline-block; padding-bottom:0.8em }
 #content-main #vote-tags { margin-right:2em; line-height:2.5em }
-
+#public-opinion > span.stand { display:inline-block; text-align:center; border-radius:0.5em;margin:0; }
+#public-opinion form {display:inline-block; width:49%}
+#public-opinion input {width:100%}
 #content-main .vote-up {
     background: url('/static/img/Thumbs-up.png') no-repeat center 0;
     padding-left: 1.1em;
@@ -384,6 +386,9 @@ form > p > select { width:250px; }
 .item-list .item {
     clear:both;
     overflow:none;
+}
+.item-list .item p {
+    word-wrap:break-word;
 }
 .item-list .item.alt { background:#E4F4E4 }
 .item-header { float: right; clear:both; text-align:center;}
@@ -631,10 +636,10 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 #subnav .tags a { padding-left:2em;}
 .cloud {font-size:140%;}
 #content-main .tags a { padding-left:1em;}
-.tags .level1 { font-size: 80% }
-.tags .level2 { font-size: 100% }
-.tags .level3 { font-size: 120% }
-.tags .level4 { font-size: 140% }
+.tags .level1 { font-size: 80%; color:#467; }
+.tags .level2 { font-size: 100%; color:#259; }
+.tags .level3 { font-size: 120%; color:#14A; }
+.tags .level4 { font-size: 140%; color:#03B;}
 
 /* mk maps css */
 #residence_map {
@@ -1028,3 +1033,48 @@ div.general_discipline_control {
 .filter-form label { width:6em; display:inline-block; text-align:left}
 .filter-form .submit { position:absolute; left:0; top:0; width:15%; height:6ex; }
 .three-columns { float:right; width:31%; }
+
+/* video */
+.video_400_300 {
+    width:400px;height:300px;overflow:hidden;
+}
+.video_400_300 img {
+    width:400px;height:300px;
+}
+.video_400_300 .video_playbtn {
+    position:relative;
+    width:400px;height:300px;
+    top:-300px;
+    background:transparent url(/static/icons/play.png) no-repeat center center;
+    cursor:pointer;
+}
+
+.video_playlist_player {
+    width:400px;height:90px;
+    overflow:hidden;
+    margin-bottom:5px;
+}
+.video_playlist_player a {
+    padding:0;
+}
+.video_playlist_player .video_image {
+    float:right;padding-left:5px;
+}
+.video_playlist_player img {
+    width:120px;height:90px;
+}
+.video_playlist_player .video_playbtn {
+    position:relative;
+    width:120px;height:90px;overflow:hidden;
+    top:-95px;
+    background:transparent url(/static/icons/play_small.png) no-repeat center center;
+    cursor:pointer;
+}
+.video_playlist_player .video_description {
+    line-height:1.3em;
+    height:7.8em;
+    overflow:hidden;
+}
+.video_playlist_player_embed {
+    margin-bottom:10px;
+}

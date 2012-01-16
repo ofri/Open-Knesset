@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'django_nose',
     'gunicorn',
     'djangoratings',
+    'voting',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -126,6 +127,7 @@ INSTALLED_APPS = (
     'knesset.notify',
     'knesset.persons',
     'knesset.events',
+    'knesset.video',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

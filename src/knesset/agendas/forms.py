@@ -4,7 +4,8 @@ from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import (Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES,
+from models import (Agenda, AgendaVote, UserSuggestedVote,
+                    AGENDAVOTE_SCORE_CHOICES,
                     MEETING_SCORE_CHOICES)
 
 class H4(forms.Widget):
@@ -65,7 +66,7 @@ class VoteLinkingForm(forms.Form):
     agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
              required=False, widget=forms.RadioSelect)
-    reasoning = forms.CharField(required=False, max_length=300,
+    reasoning = forms.CharField(required=False, max_length=1000,
                            label=_(u'Reasoning'),
                            widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )

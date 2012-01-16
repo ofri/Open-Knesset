@@ -37,5 +37,5 @@
         {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
     {% endif %}
 {% else %}
-    <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a>
+    <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a><span>
 {% endif %}

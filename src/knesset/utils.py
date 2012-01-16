@@ -14,6 +14,7 @@ import django.contrib.comments.views.moderation as moderation
 from django.utils.encoding import smart_str, smart_unicode
 from django.conf import settings
 from mailer import send_html_mail
+from actstream.models import Action
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -123,3 +124,9 @@ def notify_responsible_adult(msg):
     if adults:
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')    
         send_html_mail(_('Open Knesset requires attention'), msg, msg, from_email, adults)
+
+def main_actions():
+    """
+    Actions used for main view latests actions and for /feeds/main
+    """
+    return Action.objects.all().filter(verb__in=['comment-added','annotated']).order_by('-timestamp')

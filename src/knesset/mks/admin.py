@@ -3,9 +3,11 @@ from django.contrib import admin
 from django.forms.models import modelformset_factory
 from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes import generic
+from django.db.models import Q
 
 from knesset.mks.models import *
 from knesset.links.models import Link
+from knesset.video.models import Video
 
 
 class MembershipInline(admin.TabularInline):
@@ -17,6 +19,22 @@ class MemberLinksInline(generic.GenericTabularInline):
     ct_fk_field = 'object_pk'
     extra = 1
 
+class MemberAltnameInline(admin.TabularInline):
+    model = MemberAltname
+    extra = 1
+
+class MemberRelatedVideosInline(generic.GenericTabularInline):
+    model = Video
+    ct_fk_field = 'object_pk'
+    can_delete = False
+    fields = ['title','description','embed_link','group','sticky','hide']
+    ordering = ['group','-sticky','-published']
+    readonly_fields = ['title','description','embed_link','group']
+    extra = 0
+    def queryset(self, request):
+        qs = super(MemberRelatedVideosInline, self).queryset(request)
+        qs = qs.filter(Q(hide=False) | Q(hide=None))
+        return qs
 
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
@@ -30,7 +48,7 @@ class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date')
     list_display = ('name','PartiesString')
-    inlines = (MembershipInline, MemberLinksInline)
+    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberRelatedVideosInline)
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'

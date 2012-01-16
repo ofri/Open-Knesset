@@ -7,6 +7,7 @@ from planet import views as planet_views
 from hitcount.views import update_hit_count_ajax
 from backlinks.trackback.server import TrackBackServer
 from backlinks.pingback.server import default_server
+from voting.views import vote_on_object
 
 from knesset import feeds
 from knesset.sitemap import sitemaps
@@ -14,11 +15,14 @@ from knesset.mks.urls import mksurlpatterns
 from knesset.laws.urls import lawsurlpatterns
 from knesset.committees.urls import committeesurlpatterns
 from knesset.mks.views import get_mk_entry, mk_is_backlinkable
+from knesset.laws.models import Bill
 
 from knesset.auxiliary.views import (main, post_annotation, post_details,
     RobotsView, AboutView, CommentsView, add_tag_to_object,
     remove_tag_from_object, create_tag_and_add_to_item, help_page,
     TagList, TagDetail)
+
+from knesset.feeds import MainActionsFeed
 
 admin.autodiscover()
 
@@ -48,6 +52,7 @@ urlpatterns = patterns('',
      (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
      #(r'^search/', include('haystack.urls')),
      url(r'^search/', 'knesset.auxiliary.views.search', name='site-search'),
+     url(r'^feeds/$', MainActionsFeed(), name='main-actions-feed'),
      (r'^feeds/comments/$', feeds.Comments()),
      (r'^feeds/votes/$', feeds.Votes()),
      (r'^feeds/bills/$', feeds.Bills()),
@@ -65,6 +70,11 @@ urlpatterns = patterns('',
      url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
      url(r'^tags/$', TagList.as_view(), name='tags-list'),
      url(r'^tags/(?P<slug>.*)$', TagDetail.as_view(), name='tag-detail'),
+     url(r'^uservote/bill/(?P<object_id>\d+)/(?P<direction>\-?\d+)/?$',
+        vote_on_object, dict(model=Bill, template_object_name='bill',
+            template_name='laws/bill_confirm_vote.html',
+            allow_xmlhttprequest=True),
+        name='vote-on-bill'),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

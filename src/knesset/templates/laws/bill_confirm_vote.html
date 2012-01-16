@@ -1,0 +1,27 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load voting_tags %}
+
+{% block extratitle %}{% trans "Vote on bill" %}{% endblock %}
+
+{% block divcontent %}
+<h1>{% trans "Vote on bill" %}</h1>
+  {% if direction == 1 %}
+    בעד
+  {% endif %}
+  {% if direction == -1 %}
+    נגד
+  {% endif %}
+  {% if direction == 0 %}
+    מחק הצבעה
+  {% endif %}
+  <blockquote>{{ bill }}</blockquote>
+  <form action="." method="post">{% csrf_token %}
+      <p class="submit">
+      <input type="hidden" name="dirction" value="{{ direction}}" />
+      <input type="submit" name="submit" value="{% trans "Vote" %}" /> {% trans 'or' %} <a href="{{ bill.get_absolute_url }}">{% trans 'Cancel' %}</a>
+    </p>
+  </form>
+{% endblock %}
+
+

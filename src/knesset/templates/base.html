@@ -20,11 +20,10 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=13" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=14" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.history.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
@@ -132,12 +131,12 @@
                         {% if not debug %}
                             <!-- AddToAny BEGIN -->
                             <div class="a2a_kit a2a_default_style">
-                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">◊©◊™◊£</a>
+                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
                             <span class="a2a_divider"></span>
                             <a class="a2a_button_email"></a>
                             <a class="a2a_button_facebook"></a>
                             <a class="a2a_button_twitter"></a>
-                            <a class="a2a_button_google_buzz"></a>
+                            <a class="a2a_button_google_plus"></a>
                             <a class="a2a_button_delicious"></a>
                             <a class="a2a_button_digg"></a>
                             </div>

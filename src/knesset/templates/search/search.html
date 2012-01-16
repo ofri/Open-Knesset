@@ -5,6 +5,7 @@
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block divcontent %}
   {% if query %}
+    {% search_form "search_page" %}
     <h1>{% trans "Search results" %}</h1>
     <div id="cse-search-results">
       <div id="cse-search-results-js-required">

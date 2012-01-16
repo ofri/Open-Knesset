@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'python-openid',
+    'python-dateutil',
 #    'python-yadis',
     'oauth',
     'django-tagging',
@@ -12,13 +13,14 @@ install_requires = [
     'feedparser',
     'pil',
     'django-pagination',
-    'django-piston',
+    # 'django-piston',
     'django-extensions',
     'python-memcached',
     'BeautifulSoup',
     'nose',
     'django-nose',
-    'gunicorn'
+    'gunicorn',
+    'vobject',
     ]
 setup(
         name = "Open-Knesset",

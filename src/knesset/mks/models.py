@@ -106,6 +106,10 @@ class Membership(models.Model):
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
 
+class MemberAltname(models.Model):
+    member = models.ForeignKey('Member')
+    name = models.CharField(max_length=64)
+
 class Member(models.Model):
     name    = models.CharField(max_length=64)
     parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
@@ -286,6 +290,13 @@ class Member(models.Model):
 
     def recalc_average_monthly_committee_presence(self):
         self.average_monthly_committee_presence = self.committee_meetings_per_month()
+        
+    @property
+    def names(self):
+        names=[self.name]
+        for altname in self.memberaltname_set.all():
+            names.append(altname.name)
+        return names
 
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')
