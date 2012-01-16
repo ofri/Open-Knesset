@@ -17,7 +17,7 @@ GOV_BILL_CORRECT_OUTPUT = os.path.join(TESTDATA, '566.correct.pickle')
 class SyncdataTest(TestCase):
 
     def setUp(self):
-        self.dir = os.path.abspath(os.path.join(settings.PROJECT_ROOT, os.path.pardir,os.path.pardir,'tests', ''))
+        self.dir = os.path.abspath(os.path.join(settings.PROJECT_ROOT, 'tests'))
         
     def test_parse_knesset_bill_pdf_text(self):
         results = parse_knesset_bill_pdf.parse_pdf_text(os.path.join(self.dir,'knesset_proposal_366.txt'), "local-testing-cache/knesset_proposal_366.txt")

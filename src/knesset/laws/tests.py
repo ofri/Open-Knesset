@@ -369,5 +369,3 @@ class ProposalModelTest(TestCase):
     def tearDown(self):
         self.kp_1.delete()
         self.bill.delete()
-
-class TemplateTagsTest(TestCase):
