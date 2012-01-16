@@ -198,7 +198,7 @@ class Agenda(models.Model):
 
         #max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
         max_score = sum([abs(x['score']*x['importance']) for x in
-                         self.agendavotes.values('score','importance')]) * party.members.count()
+                         self.agendavotes.values('score','importance')]) * party.number_of_seats
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
