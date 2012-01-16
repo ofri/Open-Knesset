@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'knesset.persons',
     'knesset.events',
     'knesset.video',
+    'knesset.okhelptexts',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

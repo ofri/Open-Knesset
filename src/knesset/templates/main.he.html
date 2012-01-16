@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude mks search %}
+{% load i18n i18ninclude mks search hlp %}
 {% load avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
@@ -29,7 +29,7 @@
  </p></div>
     <div id="main-hasadna" class="display_note_outer">
         <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
-        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a></p>
+        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a>{% ht 'help1' %}</p>
             <h3><a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a></h3>
     </div>
      <div id="main-help" class="display_note_outer">
