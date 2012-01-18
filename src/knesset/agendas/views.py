@@ -254,7 +254,6 @@ def update_editors_agendas(request):
                         else: # not delete, so try to create
                             if (a['weight'] is not '' and
                                 a['importance'] is not ''):
-                                print a['importance']
                                 try:
                                     object_id = a['vote_id']
                                     av = AgendaVote.objects.get(
