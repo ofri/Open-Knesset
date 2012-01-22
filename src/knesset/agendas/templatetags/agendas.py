@@ -3,7 +3,8 @@ import json
 from django import template
 from django.conf import settings
 from knesset.links.models import Link
-from knesset.agendas.models import Agenda, AgendaVote, AgendaMeeting, Party
+from knesset.agendas.models import (Agenda, AgendaVote, AgendaMeeting, Party,
+                                    UserSuggestedVote)
 from knesset.agendas.forms import (VoteLinkingForm, VoteLinkingFormSet,
                                    MeetingLinkingFormSet)
 from django.core.cache import cache
@@ -30,6 +31,10 @@ def agendas_for(user, vote, object_type):
                 r['weight'] = av.score
                 r['reasoning'] = av.reasoning
                 r['object_type'] = object_type
+                try:
+                    r['importance'] = av.importance
+                except AttributeError:
+                    pass
             except (AgendaVote.DoesNotExist, AgendaMeeting.DoesNotExist):
                 r['weight'] = None
                 r['reasoning'] = u''
@@ -37,8 +42,16 @@ def agendas_for(user, vote, object_type):
             editable.append(r)
 
     av = None
+    suggest_agendas = None
+    suggested_agendas = None
     if object_type=='vote':
         av = AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),vote=vote).distinct()
+        suggest_agendas = Agenda.objects.get_possible_to_suggest(
+                user=user,
+                vote=vote)
+        if user.is_authenticated():
+            suggested_agendas = UserSuggestedVote.objects.filter(user=user,
+                                                                 vote=vote)
     if object_type=='committeemeeting':
         av = AgendaMeeting.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),meeting=vote).distinct()
     formset = None
@@ -50,6 +63,9 @@ def agendas_for(user, vote, object_type):
     return { 'formset': formset,
              'agendavotes':av,
              'object_type':object_type,
+             'suggest_agendas': suggest_agendas,
+             'suggested_agendas': suggested_agendas,
+             'url':vote.get_absolute_url(),
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')

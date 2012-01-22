@@ -65,7 +65,7 @@
                 {% trans "No tags yet" %}<br />
             {% endif %}
 
-            (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+            <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>
         {% endif %}
         </div>
         {% agendas_for user vote 'vote' %}

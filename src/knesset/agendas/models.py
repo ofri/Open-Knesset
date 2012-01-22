@@ -5,28 +5,44 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
+from django.contrib.auth.models import User
 from actstream.models import Follow
 from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
 
 AGENDAVOTE_SCORE_CHOICES = (
+    ('',_("Not selected")),
     (-1.0, _("Opposes fully")),
     (-0.5, _("Opposes partially")),
     (0.0, _("Agnostic")),
     (0.5, _("Complies partially")),
     (1.0, _("Complies fully")),
 )
-MEETING_SCORE_CHOICES = (
+IMPORTANCE_CHOICES = (
+    ('',_("Not selected")),
     (0.0, _("Marginal Importance")),
     (0.3, _("Medium Importance")),
     (0.6, _("High Importance")),
     (1.0, _("Very High Importance")),
 )
 
+class UserSuggestedVote(models.Model):
+    agenda = models.ForeignKey('Agenda', related_name='user_suggested_votes')
+    vote = models.ForeignKey('laws.Vote', related_name='user_suggested_agendas')
+    reasoning = models.TextField(blank=True, default='')
+    user = models.ForeignKey(User, related_name='suggested_agenda_votes')
+    sent_to_editor = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('agenda','vote','user')
+
+
+
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
     vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
     score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
+    importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
 
     def get_score_header(self):
@@ -39,7 +55,7 @@ class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
     meeting = models.ForeignKey('committees.CommitteeMeeting',
                                 related_name='agendacommitteemeetings')
-    score = models.FloatField(default=0.0, choices=MEETING_SCORE_CHOICES)
+    score = models.FloatField(default=0.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True)
 
     def get_score_header(self):
@@ -104,6 +120,17 @@ class AgendaManager(models.Manager):
             agendas = Agenda.objects.filter(Q(is_public=True) | Q(editors=user)).distinct()
         return agendas
 
+    def get_possible_to_suggest(self, user, vote):
+        if user == None or not user.is_authenticated():
+            agendas = Agenda.objects.none()
+        else:
+            agendas = Agenda.objects.filter(is_public=True)\
+                            .exclude(editors=user)\
+                            .exclude(agendavotes__vote=vote)\
+                            .distinct()
+        return agendas
+
+
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
@@ -134,9 +161,21 @@ class Agenda(models.Model):
         # Find all votes that
         #   1) This agenda is ascribed to
         #   2) the member participated in and either voted for or against
-        for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="for").distinct().aggregate(Sum('score'))['score__sum'] or 0
-        against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member=member,vote__voteaction__type="against").distinct().aggregate(Sum('score'))['score__sum'] or 0
-        max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)])
+        for_score = sum(
+                AgendaVote.objects.filter(
+                    agenda=self,
+                    vote__voteaction__member=member,
+                    vote__voteaction__type="for").extra(
+                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
+        against_score = sum(
+                AgendaVote.objects.filter(
+                    agenda=self,
+                    vote__voteaction__member=member,
+                    vote__voteaction__type="against").extra(
+                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
+
+        max_score = sum([abs(x['score']*x['importance']) for x in
+                         self.agendavotes.values('score','importance')])
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
@@ -144,9 +183,22 @@ class Agenda(models.Model):
 
     def party_score(self, party):
         # party_members_ids = party.members.all().values_list('id',flat=True)
-        for_score       = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="for").aggregate(Sum('score'))['score__sum'] or 0
-        against_score   = AgendaVote.objects.filter(agenda=self,vote__voteaction__member__in=party.members.all(),vote__voteaction__type="against").aggregate(Sum('score'))['score__sum'] or 0
-        max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
+        for_score = sum(map(itemgetter('weighted_score'),
+                            AgendaVote.objects.filter(
+                                agenda=self,
+                                vote__voteaction__member__in=party.members.all(),
+                                vote__voteaction__type="for").extra(
+                            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values('weighted_score')))
+        against_score = sum(map(itemgetter('weighted_score'),
+                            AgendaVote.objects.filter(
+                                agenda=self,
+                                vote__voteaction__member__in=party.members.all(),
+                                vote__voteaction__type="against").extra(
+                            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values('weighted_score')))
+
+        #max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
+        max_score = sum([abs(x['score']*x['importance']) for x in
+                         self.agendavotes.values('score','importance')]) * party.number_of_seats
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
