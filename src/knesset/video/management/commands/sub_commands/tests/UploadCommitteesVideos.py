@@ -40,8 +40,8 @@ class UploadCommitteesVideo_test(UploadCommitteesVideos):
         self.deleteFileLog.append(filename)
 
     def _log(self,*args,**kwargs):
-        #pass
-        print args[1]
+        pass
+        #print args[1]
         
     def _check_timer(self,*args,**kwargs): pass
     

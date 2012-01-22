@@ -70,10 +70,10 @@ class DownloadCommitteesVideos_test(DownloadCommitteesVideos):
         self.renameFileLog.append((filename,newfilename))
     
     def _debug(self,*args,**kwargs):
-        print args[0]
+        pass #print args[0]
         
     def _warn(self,*args,**kwargs):
-        print args[0]
+        pass #print args[0]
         
     def _check_timer(self):
         pass
@@ -153,7 +153,7 @@ class testDownloadCommitteesVideos(TestCase):
             ('mms://2.3.4.5/video5.asf', '/data/committee_mms_videos/video5.asf.part', 1.0),
             ('mms://2.3.4.5/video6.asf', '/data/committee_mms_videos/video6.asf.part', 1.0),
         ])
-        print obj.renameFileLog
+        #print obj.renameFileLog
         self.assertEqual(obj.renameFileLog,[
             ('/data/committee_mms_videos/video4.asf.part','/data/committee_mms_videos/video4.asf'),
             ('/data/committee_mms_videos/video5.asf.part','/data/committee_mms_videos/video5.asf'),
