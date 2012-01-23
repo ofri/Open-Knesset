@@ -1112,4 +1112,6 @@ div.general_discipline_control {
     right:5px;
     cursor:pointer;
   }
-  #helptextcontainer {width:100%;position:absolute;}
+#helptextcontainer {width:100%;position:absolute;}
+
+#embeddiv { width: 25em; float: left; margin-left: 0em; clear:left;}
