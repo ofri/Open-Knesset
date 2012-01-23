@@ -5,11 +5,14 @@
 {% load mks %}
 {% load links %}
 {% load voting_tags %}
-{% block extrahead %}
-    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+{% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+{% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
+    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());

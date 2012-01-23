@@ -11,11 +11,14 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-agendas %}class="selected"{% endblock %}
-{% block extrahead %}
+{% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
+
+{% block extrahead %}
     <script type="text/javascript">
         $(document).ready(function() {
                 register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");

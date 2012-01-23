@@ -21,6 +21,7 @@ install_requires = [
     'django-nose',
     'gunicorn',
     'vobject',
+    'django_compressor',
     ]
 setup(
         name = "Open-Knesset",

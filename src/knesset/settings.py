@@ -113,6 +113,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'djangoratings',
     'voting',
+    'compressor',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
