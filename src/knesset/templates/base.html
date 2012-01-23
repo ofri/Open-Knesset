@@ -28,7 +28,7 @@
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
-
+         
         {% if not debug %}
         <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -82,6 +82,7 @@
     </head>
 
     <body>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/okhelptexts.js"></script>
 <!--[if lte IE 6]><script src="static/js/ie6/warning.js"></script><script>window.onload=function(){e("static/js/ie6/")}</script><![endif]-->
     {% if debug %}
     <div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>

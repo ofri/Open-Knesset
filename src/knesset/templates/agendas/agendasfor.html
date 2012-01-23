@@ -7,6 +7,7 @@
              <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
             </td></tr>
             <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
+            <tr><th>{% trans "Importance" %}:</th><td>{{ agendavote.get_importance_display }}</td></tr>
             <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
         {% endfor %}
         </table>
@@ -49,6 +50,12 @@
                 <td>{{ form.weight.label_tag }}</td>
                 <td>{{ form.weight }}</td>
             </tr>
+            {% if form.importance %}
+            <tr>
+                <td>{{ form.importance.label_tag }}</td>
+                <td>{{ form.importance }}</td>
+            </tr>
+            {% endif %}
             <tr>
                 <td>{{ form.reasoning.label_tag }}</td>
                 <td>{{ form.reasoning }}</td>
