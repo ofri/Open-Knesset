@@ -8,10 +8,15 @@ import csv
 import datetime
 from django.core.management.base import BaseCommand
 from django.contrib.contenttypes.models import ContentType
+from dateutil import zoneinfo
 
 from knesset.mks.models import Member
 from knesset.committees.models import Committee
 from knesset.events.models import Event
+
+# NB: All dates scraped from the knesset site are assumed to be in timezone Israel.
+isr_tz = zoneinfo.gettz('Israel')
+utc_tz = zoneinfo.gettz('UTC')
 
 logger = logging.getLogger("open-knesset.parse_future_committee_meetings")
 spamWriter = csv.writer(open('eggs.csv', 'wb'))
@@ -95,8 +100,14 @@ class Command(BaseCommand):
         for p in r:
             try:
                 committee = Committee.objects.get(name=p.name)
-                ev, created = Event.objects.get_or_create( when = datetime.datetime( year=p.year, month=p.month, day=p.day, hour=p.hour, minute=p.minute, second=0 ),
-                                                           when_over = datetime.datetime( year=p.year, month=p.month, day=p.day, hour=p.end_hour, minute=p.end_minute, second=0),
+                when_over = datetime.datetime(
+                    year=p.year, month=p.month, day=p.day, hour=p.end_hour,
+                    minute=p.end_minute, second=0, tzinfo=isr_tz).astimezone(utc_tz)
+                when = datetime.datetime(
+                    year=p.year, month=p.month, day=p.day, hour=p.hour,
+                    minute=p.minute, second=0, tzinfo=isr_tz).astimezone(utc_tz)
+                ev, created = Event.objects.get_or_create( when = when,
+                                                           when_over = when_over,
                                                            when_over_guessed = p.end_guessed,
                                                            where = unicode(committee),
                                                            what = p.title,
