@@ -167,6 +167,10 @@
                   // Can be '#' + one of the "bill-stage" class divs.
                   show_only_vote_stage_div(location.hash.substring(1));
                 }
+                $("#embed").click(function () {
+                    $("#embeddiv").toggle();
+                    return false;
+                    });
             });
     </script>
 {% endblock %}
@@ -177,8 +181,18 @@
 {% block divcontent %}
     <div class="two_cols">
         <ul class="actions">
+			<li><a id="embed" href="#">{% trans "embed" %}</a></li>
             <li><span id="watch" class="awesome-button medium"></span></li>
         </ul>
+		<div id="embeddiv" style="display:none;">
+			<b>קחו את החוק לידיים!</b><br>
+			בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם תהליך החקיקה הזה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
+			<b>העתיקו את קוד ההטמעה (html):</b><br>
+			<input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="http://oknesset.org/object/{{object.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
+			<b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
+			<input type="text" readonly="readonly" value='http://oknesset.org/object/{{object.id}}'/>
+
+		</div>
         <h1>{% bill_full_name object %}</h1>
         {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
