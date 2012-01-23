@@ -15,7 +15,7 @@ just_id = lambda x: x.id
 
 class SimpleTest(TestCase):
     def setUp(self):
-        self.party_1 = Party.objects.create(name='party 1')
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
@@ -252,6 +252,7 @@ I have a deadline''')
                                 'form-0-reasoning':'test reasoning',
                                 'form-0-vote_id':self.vote_1.id,
                                 'form-0-weight':1.0,
+                                'form-0-importance':0.3,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
                                 'form-TOTAL_FORMS':1,
@@ -264,6 +265,7 @@ I have a deadline''')
         av = AgendaVote.objects.get(agenda=self.agenda_1,
                                     vote=self.vote_1)
         self.assertEqual(av.score, 1.0)
+        self.assertEqual(av.importance, 0.3)
         self.assertEqual(av.reasoning, 'test reasoning')
 
     def testAgendaMkDetail(self):

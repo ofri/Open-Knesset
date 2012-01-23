@@ -252,21 +252,25 @@ def update_editors_agendas(request):
                             except AgendaVote.DoesNotExist:
                                 pass
                         else: # not delete, so try to create
-                            try:
-                                object_id = a['vote_id']
-                                av = AgendaVote.objects.get(
-                                       agenda__id=a['agenda_id'],
-                                       vote__id = a['vote_id'])
-                                av.score = a['weight']
-                                av.reasoning = a['reasoning']
-                                av.save()
-                            except AgendaVote.DoesNotExist:
-                                av = AgendaVote(
-                                       agenda_id=int(a['agenda_id']),
-                                       vote_id=int(a['vote_id']),
-                                       score = a['weight'],
-                                       reasoning = a['reasoning'])
-                                av.save()
+                            if (a['weight'] is not '' and
+                                a['importance'] is not ''):
+                                try:
+                                    object_id = a['vote_id']
+                                    av = AgendaVote.objects.get(
+                                           agenda__id=a['agenda_id'],
+                                           vote__id = a['vote_id'])
+                                    av.score = a['weight']
+                                    av.importance = a['importance']
+                                    av.reasoning = a['reasoning']
+                                    av.save()
+                                except AgendaVote.DoesNotExist:
+                                    av = AgendaVote(
+                                           agenda_id=int(a['agenda_id']),
+                                           vote_id=int(a['vote_id']),
+                                           score = a['weight'],
+                                           importance = a['importance'],
+                                           reasoning = a['reasoning'])
+                                    av.save()
                     if a['object_type'] == 'committeemeeting':
                         if a['DELETE']:
                             try:

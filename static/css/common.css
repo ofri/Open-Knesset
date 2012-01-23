@@ -31,6 +31,10 @@ a:hover { text-decoration:underline;}
     float: left;
     margin: 10px 0pt 0pt 0pt;
 }
+#mobile-logo {
+    float:left; margin: 0;  height:100px; width:130px; overflow:hidden;
+    line-height:10px;
+}
 #nav-global { margin:0; padding-right:165px;
       font-family:"Trebuchet MS",sans-serif; white-space:nowrap;
       padding-top: 72px;
@@ -529,7 +533,7 @@ p.username {max-width:55px; }
 
 #main-about, #main-hasadna, #main-help {float: left; text-align:center; margin:1em 0; padding:1em;width:28%}
 #main-about { text-align:justify;}
-#main-news { width:66%; margin:1em 0 1em 2em;padding-top:1.5em; float:right;
+#main-news { width:500px; margin:1em 0 1em 2em;float:right;
     text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
 #main-help { line-height:150%; text-align:center; }
 #main-hasadna { text-align: right; }
@@ -819,6 +823,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 
 .numeric { direction: ltr }
 /* agendas */
+.agenda-importance { border: 1px solid gray; border-radius:3px; text-align:center; background-color:#DDEEDD; }
 .agenda-score, .agenda-mk-vote { border: 1px solid gray; border-radius:3px; text-align:center}
 .agenda-score.positive, .agenda-mk-vote.positive { background-color:#99EE99; }
 .agenda-score.negative, .agenda-mk-vote.negative { background-color:#EE9999; }
@@ -871,7 +876,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
 .annotations li.last:after { content: "";}
 .user_id { margin-right: 0.5em; width:60px; float: right; text-align:center; }
 /* comment bubbles */
-#content-main .triangle-border {
+#content-main .triangle-border,#helptextcontainer .triangle-border {
     position:relative;
     padding:15px;
     margin:1.4em 1em;
@@ -884,13 +889,16 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     border-radius:10px;
     min-height:20px;
 }
-#content-main .triangle-border.left {
+#helptextcontainer .triangle-border {
+    position:absolute;
+}
+#content-main .triangle-border.left, #helptextcontainer .triangle-border.left {
     margin-left:30px;
 }
-#content-main .triangle-border.right {
+#content-main .triangle-border.right, #helptextcontainer .triangle-border.right {
     margin-right:30px; text-align:center; margin:5px 10px; width:60%; float:left;
 }
-#content-main .triangle-border:before {
+#content-main .triangle-border:before,#helptextcontainer .triangle-border:before {
     content:"";
     position:absolute;
     bottom:-20px; /* value = - border-top-width - border-bottom-width */
@@ -902,7 +910,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     display:block;
     width:0;
 }
-#content-main .triangle-border:after {
+#content-main .triangle-border:after,#helptextcontainer .triangle-border:after {
     content:"";
     position:absolute;
     bottom:-13px; /* value = - border-top-width - border-bottom-width */
@@ -914,35 +922,35 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     display:block;
     width:0;
 }
-#content-main .triangle-border.top:before {
+#content-main .triangle-border.top:before,#helptextcontainer .triangle-border.top:before {
     top:-20px; /* value = - border-top-width - border-bottom-width */
     bottom:auto;
     left:auto;
     right:40px; /* controls horizontal position */
     border-width:0 20px 20px;
 }
-#content-main .triangle-border.top:after {
+#content-main .triangle-border.top:after,#helptextcontainer .triangle-border.top:after {
     top:-13px; /* value = - border-top-width - border-bottom-width */
     bottom:auto;
     left:auto;
     right:47px; /* value = (:before right) + (:before border-right) - (:after border-right) */
     border-width:0 13px 13px;
 }
-#content-main .triangle-border.left:before {
+#content-main .triangle-border.left:before,#helptextcontainer .triangle-border.left:before {
     top:10px; /* controls vertical position */
     bottom:auto;
     left:-30px; /* value = - border-left-width - border-right-width */
     border-width:15px 30px 15px 0;
     border-color:transparent #6E9CA6;
 }
-#content-main .triangle-border.left:after {
+#content-main .triangle-border.left:after,#helptextcontainer .triangle-border.left:after {
     top:16px; /* value = (:before top) + (:before border-top) - (:after border-top) */
     bottom:auto;
     left:-21px; /* value = - border-left-width - border-right-width */
     border-width:9px 21px 9px 0;
     border-color:transparent #fff;
 }
-#content-main .triangle-border.right:before {
+#content-main .triangle-border.right:before,#helptextcontainer .triangle-border.right:before {
     top:10px; /* controls vertical position */
     bottom:auto;
     left:auto;
@@ -950,7 +958,7 @@ ul.annotations { list-style-type: disc; padding: 1em; }
     border-width:15px 0 15px 30px;
     border-color:transparent #6E9CA6;
 }
-#content-main .triangle-border.right:after {
+#content-main .triangle-border.right:after,#helptextcontainer .triangle-border.right:after {
     top:16px; /* value = (:before top) + (:before border-top) - (:after border-top) */
     bottom:auto;
     left:auto;
@@ -1074,3 +1082,36 @@ div.general_discipline_control {
 .video_playlist_player_embed {
     margin-bottom:10px;
 }
+/* help texts*/
+ .quest-mark {
+   /*background:url("/static/icons/help_16.png") no-repeat;
+   //display:inline-block;
+   //position:relative;
+   width:16px;
+   height:16px;
+   */
+   cursor:help;
+  }
+  .helptext {
+    position:relative;
+    width:500px !important;
+    right:40px;
+    top:-25px;
+    font-family:Verdana, sans-serif;
+    font-size:12px;
+    font-weight:normal;
+    color:#333;
+    display:none;
+    cursor:auto;
+    text-align:right !important;
+    right:auto !important;
+  }
+  .helptext .x {
+    position:absolute;
+    top:5px;
+    right:5px;
+    cursor:pointer;
+  }
+#helptextcontainer {width:100%;position:absolute;}
+
+#embeddiv { width: 25em; float: left; margin-left: 0em; clear:left;}

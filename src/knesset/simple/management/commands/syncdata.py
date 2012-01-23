@@ -744,7 +744,7 @@ class Command(NoArgsCommand):
                     else:
                         subject = span[span.find(r'>')+1:] # no table, just take the text
             else: # we are parsing a matched link - comittee protocol url
-                if link.find(r'html')>0:
+                if (link.find(r'html')>0)or(link.find(r'rtf')>0):
                     html_url = FILES_BASE_URL + re.search(r"'\.\./([^']*)'", link).group(1)
                     res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results
                     date_text = ''

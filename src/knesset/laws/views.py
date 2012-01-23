@@ -478,17 +478,6 @@ def embed_bill_details(request, object_id):
     # TODO(shmichael): Only use the last stream item of each type, and if we find
     # contradictions, send to human operator for sanitizing.
     bill = get_object_or_404(Bill, pk=object_id)
-    out_stream = []
-    in_stream = Action.objects.stream_for_actor(bill)
-    if not in_stream:
-        bill.generate_activity_stream()
-        in_stream = Action.objects.stream_for_actor(bill)
 
-    for s in in_stream.order_by('timestamp'):
-        out_stream.append({'verb': s.verb, 'target': s.target.get_absolute_url(),
-                         'note': unicode(s.description),
-                         'time': mktime(s.timestamp.timetuple())+1e-6*s.timestamp.microsecond})
-
-    context = RequestContext (request,
-        {'bill': bill, 'stream': json.dumps(out_stream)})
+    context = RequestContext (request,{'bill': bill})
     return render_to_response("laws/embed_bill_detail.html", context)

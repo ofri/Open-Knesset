@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude mks search %}
+{% load i18n i18ninclude mks bills_extra search hlp %}
 {% load avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
@@ -13,23 +13,12 @@
 {% block divcontent %}
 <div style="width:90%; margin:0 5%;">
     <div id="main-news"  class="display_note_outer" > 
-<h3>החורף לא עוזבים את הכנסת!</h3>
-<p style="padding:1em; font-size:120%;">
-מתנדבי כנסת פתוחה מאמינים בשקיפות ושיתוף הציבור כבסיס לשלטון טוב יותר. במושב החורף הקרוב, נתמוך ב'משמר החברתי' שיצא ממחאת האוהלים ומטרתו לערב יותר אזרחים בפעילות הכנסת למען צדק חברתי.  
-<br/>
-במהלך המושב נפתח אפליקציה חדשה <a href="https://docs.google.com/document/d/1Jhl677nEss5h8t3z3dugwvaNeaqaZGUcfuKIR9zcGp0/edit?hl=en_US">שבטים</a> שתאפשר לכנסת פתוחה לתמוך בקבוצות אזרחים החולקים כאבים משותפים, מפתחים חזון משותף ופועלים בכנסת להגשמתו. 
-<br> 
-<br> 
-<a href="http://www.hamishmar.org.il">
-<img src="http://hamishmar.org.il/images/intrologo.jpg" />
-<br>הציבור מוזמן</a> 
-<br> 
-<br> 
-<a href="http://blog.yeda.us/2011/10/18/moshav1/" style="font-size:70%">מה קרה לכנס בין כסה לעשור?</a>
- </p></div>
+        <h3>הצעות חוק חמות באתר - הכנסו כדי להביע את דעתכם</h3>
+        {% if bill %}{% bill_inabox bill %}{% endif %}
+    </div>
     <div id="main-hasadna" class="display_note_outer">
         <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
-        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a></p>
+        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a>{% ht 'help1' %}</p>
             <h3><a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a></h3>
     </div>
      <div id="main-help" class="display_note_outer">
