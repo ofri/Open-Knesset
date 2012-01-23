@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load search %}
+{% load compress %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -20,15 +21,21 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
+        {% compress css %}
         <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=15" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
+        {% block extracss %} {% endblock %}
+        {% endcompress %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
+        <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+        {% compress js %}
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-        <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
-
+        <script type="text/javascript" src="{{MEDIA_URL}}js/okhelptexts.js"></script>
+        {% block extrajs %}{% endblock %}
+        {% endcompress %}
         {% if not debug %}
         <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -66,6 +73,9 @@
                 }
             });
         </script>
+        <script>
+            $.jGrowl.defaults.position="top-left";
+        </script>
 
         {% if LANGUAGE_BIDI %}
         <style>
@@ -73,24 +83,20 @@
             #member-photo { float:right; margin:0.5em;}
         body { direction: rtl; }
         </style>
-        <script>
-            $.jGrowl.defaults.position="top-left";
-        </script>
 
         {% endif %}
       {% block extrahead %}{% endblock %}
     </head>
 
     <body>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/okhelptexts.js"></script>
 <!--[if lte IE 6]><script src="static/js/ie6/warning.js"></script><script>window.onload=function(){e("static/js/ie6/")}</script><![endif]-->
     {% if debug %}
     <div id="debug-warning">{% trans 'This is a development server, all data in it should be considered fictional. users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div>
     {% endif %}
     <div id="container">
         <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
-		<div class="app-link"><a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a></div>
-		<div class="app-link"><a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a></div>
+        <div class="app-link"><a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a></div>
+        <div class="app-link"><a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a></div>
 {% if not has_search %}
             <div id="search">{% search_form "search_page" %}</div>
         {% endif %}
