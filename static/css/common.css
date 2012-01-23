@@ -533,7 +533,7 @@ p.username {max-width:55px; }
 
 #main-about, #main-hasadna, #main-help {float: left; text-align:center; margin:1em 0; padding:1em;width:28%}
 #main-about { text-align:justify;}
-#main-news { width:66%; margin:1em 0 1em 2em;padding-top:1.5em; float:right;
+#main-news { width:500px; margin:1em 0 1em 2em;float:right;
     text-align: center; background: url('/static/img/embed_hover.png') repeat-x; }
 #main-help { line-height:150%; text-align:center; }
 #main-hasadna { text-align: right; }

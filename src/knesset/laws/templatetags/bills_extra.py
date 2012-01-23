@@ -82,7 +82,7 @@ def bill_inabox(bill):
 
     bill_inabox_dict = dict({ 'MEDIA_URL' : settings.MEDIA_URL,
                  'bill': bill,
-                 'billurl' : 'http://www.oknesset.org%s' % bill.get_absolute_url(),
+                 'billurl' : 'http://oknesset.org%s' % bill.get_absolute_url(),
             'proposers_first3' : bill.proposers.all()[:3],
             'proposers_count_minus3' : bill.proposers.count() - 3,
             'explanation' : get_explanation(bill)})

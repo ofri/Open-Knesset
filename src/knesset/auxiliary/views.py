@@ -11,6 +11,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, \
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 import tagging
+import voting
 from actstream import action
 from actstream.models import Action
 from knesset.mks.models import Member
@@ -87,6 +88,9 @@ def main(request):
             annotations=[a.target for a in actions if a.verb != 'comment-added'],
             comments=[x.target for x in actions if x.verb == 'comment-added'])
         context['annotations'] = annotations
+        bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
+        if bill_votes:
+            context['bill'] = Bill.objects.get(pk=random.choice(bill_votes))
         context['topics'] = Topic.objects.summary('-modified')[:20]
         context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes

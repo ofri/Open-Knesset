@@ -51,7 +51,7 @@
 			</div>
 			<div class="external-links">
 				<span class="label">קישורים נוספים:</span>
-                <a href="http://www.oknesset.org{{ bill.get_absolute_url }}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
+                <a href="http://oknesset.org{{ bill.get_absolute_url }}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
 			</div>
 			<div>
 				<span class="status"></span>
@@ -62,7 +62,7 @@
 			<ul>
 
                 {% for proposer in proposers_first3 %}
-                <li><a href="http://www.oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
+                <li><a href="http://oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
 
 			</ul>
@@ -490,7 +490,7 @@
 					}
 				</script>
 				<span  class="embed" onclick="OKnesset.embed()">הטמעה</span>
-				<a href="http://www.oknesset.org{{billurl}}" target="_blank" class="link">קישור</a>
+				<a href="http://oknesset.org{{billurl}}" target="_blank" class="link">קישור</a>
 			</div>
 		</div>
 		<div class="embeddiv">
