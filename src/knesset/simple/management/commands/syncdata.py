@@ -231,10 +231,10 @@ class Command(NoArgsCommand):
 
     def get_votes_data(self):
         self.update_last_downloaded_vote_id()
-        f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
-        f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_downloaded_vote_id+1,13400) # this is the range of page ids to go over. currently its set manually.
+        r = range(self.last_downloaded_vote_id+1,17000) # this is the range of page ids to go over. currently its set manually.
         for id in r:
+	    f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+	    f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
@@ -259,8 +259,8 @@ class Command(NoArgsCommand):
                 f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date, count_for, count_against, count_abstain, count_no_vote))
                 logger.debug("downloaded data with vote id %d" % id)
             #print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
-        f.close()
-        f2.close()
+            f.close()
+            f2.close()
 
     def update_last_downloaded_member_id(self):
         """
@@ -450,8 +450,8 @@ class Command(NoArgsCommand):
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 vote_label_for_search = self.get_search_string(vote_label)
 
-                if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
-                    continue
+                #if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
+                #    continue
 
                 try:
                     v = Vote.objects.get(src_id=vote_id)
@@ -575,7 +575,7 @@ class Command(NoArgsCommand):
                 parties[p].save()
             for m in members:
                 members[m].save()
-            Member.objects.filter(end_date__isnull=True).delete() # remove members that haven't voted at all - no end date
+            #Member.objects.filter(end_date__isnull=True).delete() # remove members that haven't voted at all - no end date
             for ms in memberships:
                 memberships[ms].save()
             #for va in voteactions:
@@ -1033,8 +1033,8 @@ class Command(NoArgsCommand):
         proposals = parse_laws.ParsePrivateLaws(days)
         for proposal in proposals.laws_data:
 
-            if proposal['proposal_date'] < datetime.date(2009,02,24):
-                continue
+            #if proposal['proposal_date'] < datetime.date(2009,02,24):
+            #    continue
 
             # find the Law this poposal is updating, or create a new one
             law_name = proposal['law_name']
@@ -1106,8 +1106,8 @@ class Command(NoArgsCommand):
             last_booklet = 200
         proposals = parse_laws.ParseKnessetLaws(last_booklet)
         for proposal in proposals.laws_data:
-            if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
-                continue
+            #if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
+            #    continue
             law_name = proposal['law'][:200] # protect against parsing errors that
                                              # create very long (and erroneous) law names
             (law, created) = Law.objects.get_or_create(title=law_name)

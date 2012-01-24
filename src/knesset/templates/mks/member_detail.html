@@ -13,8 +13,11 @@
 {% load video %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
-{% block extrahead %}
+{% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+{% endblock %}
+{% block extrahead %}
     <script type="text/javascript">
         $(document).ready(function() {
             register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");
@@ -29,7 +32,6 @@
         .action-actor { display: none; }
     </style>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
-    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
     <script>
     function toggle_factional_discipline() {
         $(".factional_discipline_row").toggleClass("discipline_row");

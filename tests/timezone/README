@@ -1,0 +1,9 @@
+when fixing the icalendar file provided for the future committee events,
+these tests were useful.
+
+You need web.py - http://webpy.org/
+
+./ical.py
+
+./parse-webcal --url http://127.0.0.1:8080/Israel --text test
+./parse-webcal --url http://127.0.0.1:8080/UTC --text test

@@ -65,6 +65,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -112,6 +113,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'djangoratings',
     'voting',
+    'compressor',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
