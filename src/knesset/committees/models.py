@@ -209,12 +209,12 @@ class TopicManager(models.Manager):
     get_public = lambda self: self.filter(status__in=PUBLIC_TOPIC_STATUS)
 
     by_rank = lambda self: self.extra(select={
-            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            'rank': '((100/%s*rating_score/(1+rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
             }).order_by('-rank')
 
     def summary(self, order='-rank'):
         return self.filter(status__in=PUBLIC_TOPIC_STATUS).extra(select={
-            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            'rank': '((100/%s*rating_score/(1+rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
             }).order_by(order)
         #TODO: rinse it so this will work
         return self.get_public().by_rank()
