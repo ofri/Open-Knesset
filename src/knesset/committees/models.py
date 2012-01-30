@@ -156,8 +156,8 @@ class CommitteeMeeting(models.Model):
         # now create the sections
         for line in protocol_text:
             if legitimate_header(line):
-                #if section:
-                ProtocolPart(meeting=self, order=i,
+                if (i>1)or(section):
+                    ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
                 i += 1
                 header = re.sub('[\>:]+$','',re.sub('^[\< ]+','',line))
@@ -219,7 +219,7 @@ class TopicManager(models.Manager):
         #TODO: rinse it so this will work
         return self.get_public().by_rank()
 
-        
+
 class Topic(models.Model):
     '''
         Topic is used to hold the latest event about a topic and a committee
