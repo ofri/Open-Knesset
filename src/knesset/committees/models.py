@@ -70,6 +70,8 @@ class Committee(models.Model):
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
     """Retunrs true if 'line' looks like something should should be a protocol part header"""
+    if re.match(r'^\<.*\>\W*$',line): # this is a <...> line.
+        return True
     if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
         return False
     return True
@@ -138,6 +140,9 @@ class CommitteeMeeting(models.Model):
         # (move it to the end of the correct line)
         protocol_text = []
         for line in re.sub("[ ]+"," ", self.protocol_text).split('\n'):
+            #if re.match(r'^\<.*\>\W*$',line): # this line start and ends with
+            #                                  # <...>. need to remove it.
+            #    line = line[1:-1]
             if line.startswith(':'):
                 protocol_text[-1] += ':'
                 protocol_text.append(line[1:])
@@ -151,11 +156,11 @@ class CommitteeMeeting(models.Model):
         # now create the sections
         for line in protocol_text:
             if legitimate_header(line):
-                if section:
+                if (i>1)or(section):
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
                 i += 1
-                header = line[:-1]
+                header = re.sub('[\>:]+$','',re.sub('^[\< ]+','',line))
                 section = []
             else:
                 section.append (line)
@@ -204,17 +209,17 @@ class TopicManager(models.Manager):
     get_public = lambda self: self.filter(status__in=PUBLIC_TOPIC_STATUS)
 
     by_rank = lambda self: self.extra(select={
-            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            'rank': '((100/%s*rating_score/(1+rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
             }).order_by('-rank')
 
     def summary(self, order='-rank'):
         return self.filter(status__in=PUBLIC_TOPIC_STATUS).extra(select={
-            'rank': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
+            'rank': '((100/%s*rating_score/(1+rating_votes+%s))+100)/2' % (Topic.rating.range, Topic.rating.weight)
             }).order_by(order)
         #TODO: rinse it so this will work
         return self.get_public().by_rank()
 
-        
+
 class Topic(models.Model):
     '''
         Topic is used to hold the latest event about a topic and a committee
