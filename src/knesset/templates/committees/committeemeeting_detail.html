@@ -152,7 +152,7 @@
 </script>
       {% endif %}
       <div class="speech-{{ object.id }} speech-container" id="speech-{{ object.id }}-{{ speech_part.order }}">
-        <div class="text-speaker{% if speech_part.speaker.mk %} mk{% endif %}" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
+        <div class="text-speaker" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
             {% firstof speech_part.header "&nbsp;" %}
             {% ifnotequal speech_part.order 1 %}
                 <a href="#speech-{{ object.id }}-{{ speech_part.order }}" class="permalink">¶</a>
