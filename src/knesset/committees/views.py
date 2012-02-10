@@ -63,8 +63,7 @@ class CommitteeDetailView(DetailView):
                     if recent_meetings.count() > 0 \
                     else datetime.datetime.now()
             cur_date = datetime.datetime.now()
-            cached_context['future_meetings_list'] = \
-                    cm.events.filter(when__gt = cur_date)
+            cached_context['future_meetings_list'] = cm.future_meetings()
             cached_context['protocol_not_yet_published_list'] = \
                     cm.events.filter(when__gt = ref_date, when__lte = cur_date)
             cache.set('committee_detail_%d' % cm.id, cached_context,

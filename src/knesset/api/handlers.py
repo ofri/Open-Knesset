@@ -14,7 +14,6 @@ from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
 from knesset.links.models import Link
 from tagging.models import Tag, TaggedItem
-from knesset.committees.models import CommitteeMeeting
 from knesset.events.models import Event
 import math
 from django.forms import model_to_dict
@@ -429,6 +428,7 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
               'name',
               'members',
               'recent_meetings',
+              'future_meetings',
              )
     allowed_methods = ('GET',)
     model = Committee
@@ -439,6 +439,12 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
                    'title': x.title(),
                    'date': x.date }
                 for x in committee.recent_meetings() ]
+
+    @classmethod
+    def future_meetings(cls, committee):
+        return [ { 'title': x.what,
+                   'date': x.when }
+        for x in committee.future_meetings() ]
 
     @classmethod
     def members(cls, committee):
