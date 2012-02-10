@@ -289,3 +289,6 @@ class Topic(models.Model):
 
     def can_edit(self, user):
         return user==self.creator or user in self.editors.all()
+
+
+from listeners import *

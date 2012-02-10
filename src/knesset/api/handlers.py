@@ -444,7 +444,7 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
     def future_meetings(cls, committee):
         return [ { 'title': x.what,
                    'date': x.when }
-        for x in committee.future_meetings() ]
+                for x in committee.future_meetings() ]
 
     @classmethod
     def members(cls, committee):
@@ -489,11 +489,11 @@ class EventHandler(BaseHandler, HandlerExtensions):
             return r
         else:
             return r.filter(when__gte=datetime.datetime.now())
-            
+
     @classmethod
     def which(cls, event):
         if event.which_object:
-            return { 
+            return {
                     'name': unicode(event.which_object),
                     'url': event.which_object.get_absolute_url(),
                     }
