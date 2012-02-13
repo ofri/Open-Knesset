@@ -69,19 +69,18 @@ def agendas_for(user, vote, object_type):
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')
-def agenda_list_item(agenda, watched_agendas=None):
+def agenda_list_item(agenda, watched_agendas=None, agenda_votes_num=None, agenda_party_values=None, parties_lookup=None):
 
-    cached_context = cache.get('agenda_parties_%d' % agenda.id)
-    if not cached_context:
-        selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-        cached_context = {'selected_parties': selected_parties }
-        cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
-    party_scores = [(val.name, val.score) for val in cached_context['selected_parties']]
+    #cached_context = cache.get('agenda_parties_%d' % agenda.id)
+    #if not cached_context:
+    #    selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
+    #    cached_context = {'selected_parties': selected_parties }
+    #    cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
+    party_scores = [(parties_lookup[val[0]], val[1]) for val in agenda_party_values]
     enumerated_party = [(idx+0.5, values[0]) for idx, values in enumerate(party_scores)]
     enumerated_score = [(idx, values[1]) for idx, values in enumerate(party_scores)]
-
     return {'agenda': agenda,
             'watched_agendas': watched_agendas,
             'party_scores': json.dumps(enumerated_score, ensure_ascii=False),
-            'party_list': json.dumps(enumerated_party, ensure_ascii=False)}
-
+            'party_list': json.dumps(enumerated_party, ensure_ascii=False),
+            'agenda_votes_num': agenda_votes_num}
