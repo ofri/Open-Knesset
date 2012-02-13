@@ -3,6 +3,7 @@ import logging
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.db.models import Count
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
@@ -16,6 +17,8 @@ from knesset.api.urls import vote_handler
 from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting
+
+from queries import getAllAgendaPartyVotes
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -31,12 +34,21 @@ class AgendaListView (ListView):
 
     def get_context(self, *args, **kwargs):
         context = super(AgendaListView, self).get_context(*args, **kwargs)
+	# optimization - create query for votes per agenda
+	# store in context as dictionary votes[agendaid]=<votenum> 
+	agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
+	agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
+	allAgendaPartyVotes = getAllAgendaPartyVotes()
+	parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = p.agendas
         else:
             watched = None
         context['watched'] = watched
+	context['agenda_votes']=agenda_votes
+	context['agenda_party_values']=allAgendaPartyVotes
+	context['parties_lookup']=parties_lookup
         return context
 
 class AgendaDetailView (DetailView):
