@@ -11,20 +11,10 @@
 </div>
 {% endblock %}
 {% block divcontent %}
-<div style="width:90%; margin:0 5%;">
-    <div id="main-news"  class="display_note_outer" > 
+<div>
+    <div id="main-news"  class="display_note_outer" >
         <h3>הצעות חוק חמות באתר - הכנסו כדי להביע את דעתכם</h3>
         {% if bill %}{% bill_inabox bill %}{% endif %}
-    </div>
-    <div id="main-hasadna" class="display_note_outer">
-        <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
-        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a>{% ht 'help1' %}</p>
-            <h3><a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a></h3>
-    </div>
-     <div id="main-help" class="display_note_outer">
-        <p>
-        רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
-        <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
     </div>
     <div id="main-about" class="display_note_outer">
         <h3><a href="/about/">אודותינו</a></h3>
@@ -32,6 +22,19 @@
         אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
         המשתמש.
             האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+    </div>
+    <div id="main-hasadna" class="display_note_outer">
+        <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
+        <p>פרויקטים נוספים של <a href="http://www.hasadna.org.il/">הסדנא</a>{% ht 'help1' %}</p>
+            <h3><a href="http://budget.msh.gov.il/">פותחים את תקציב המדינה</a></h3>
+    </div>
+    <div id="main-help" class="display_note_outer">
+        <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+            <input type="hidden" value="_s-xclick" name="cmd">
+            <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+            <input type="image" border="0" alt="PayPal - הדרך הקלה והבטוחה לשלם באופן מקוון!" name="submit" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/IL/i/btn/btn_donateCC_LG.gif">
+            <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+        </form>
     </div>
 </div>
 <div class="clear"></div>
