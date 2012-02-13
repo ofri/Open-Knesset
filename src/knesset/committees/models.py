@@ -67,6 +67,10 @@ class Committee(models.Model):
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
 
+    def future_meetings(self):
+        cur_date = datetime.now()
+        return self.events.filter(when__gt = cur_date)
+
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
     """Retunrs true if 'line' looks like something should should be a protocol part header"""
