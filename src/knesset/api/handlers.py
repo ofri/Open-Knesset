@@ -266,7 +266,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=int(days_back))
+            qs = qs.filter(stage_date__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
