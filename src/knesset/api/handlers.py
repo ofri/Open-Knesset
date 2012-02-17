@@ -251,7 +251,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
     qs = Bill.objects.all()
 
     def read(self, request, **kwargs):
-        ''' returns a vote or a list of votes '''
+        ''' returns a bill or a list of bills '''
         qs = self.qs
 
         if 'id' in kwargs:
