@@ -11,7 +11,9 @@
 	</div>
 	<div class='videolist_details'>
 		{% trans "type" %}: {{video.source_type}}, {% trans "group" %}: {{video.group}}<br/>
-		{%trans "related object" %}: {{video.content_object}}<br/>
+		{%trans "related object" %}: {{video.content_object}}
+        {% if video.hide %}, <b>{% trans "hidden" %}</b>{% endif %}
+        <br/>
 		{% if video.source_type != 'youtube' and video.reviewed %}
 			<b>{% trans "video already reviewed" %}<br/>{% trans "this type of video cannot be hidden" %}</b>
 		{% else %}

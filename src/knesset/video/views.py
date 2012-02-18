@@ -16,23 +16,17 @@ class VideoListView (ListView):
 def videoListApproveAjaxView(request):
     if (request.user.is_staff):
         if request.method=='POST':
-            hideVideoIds=request.POST['hideVideoIds'].split(',')
-            showVideoIds=request.POST['showVideoIds'].split(',')
             updatedVideoIds=[]
-            for vid in hideVideoIds:
-                if len(vid)>0:
-                    video=Video.objects.get(id=vid)
-                    video.hide=True
-                    video.reviewed=True
-                    video.save()
-                    updatedVideoIds.append(vid)
-            for vid in showVideoIds:
-                if len(vid)>0:
-                    video=Video.objects.get(id=vid)
-                    video.hide=False
-                    video.reviewed=True
-                    video.save()
-                    updatedVideoIds.append(vid)
+            hideVideoIds=request.POST['hideVideoIds']
+            if (len(hideVideoIds))>0:
+                hideVideoIds=hideVideoIds.split(',')
+                Video.objects.filter(id__in=hideVideoIds).update(reviewed=True,hide=True)
+                updatedVideoIds.extend(hideVideoIds)
+            showVideoIds=request.POST['showVideoIds']
+            if len(showVideoIds)>0:
+                showVideoIds=showVideoIds.split(',')
+                Video.objects.filter(id__in=showVideoIds).update(reviewed=True,hide=False)
+                updatedVideoIds.extend(showVideoIds)
             res={
                 'status':True,
                 'updatedVideoIds':updatedVideoIds,

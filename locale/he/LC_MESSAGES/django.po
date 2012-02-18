@@ -3179,41 +3179,45 @@ msgstr "פעולות שממתינות לביצוע"
 msgid "updated (num) videos"
 msgstr "עודכנו (num) קטעי וידאו"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "type"
 msgstr "סוג"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "related object"
 msgstr "אובייקט מקושר"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "video already reviewed"
 msgstr "הוידאו עבר ביקורת"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "this type of video cannot be hidden"
 msgstr "לא ניתן להסתיר סוג וידאו זה"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "hide from the list?"
 msgstr "הסתר מהרשימה?"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "video already reviewed, keep displaying on the website?"
 msgstr "הוידאו עבר ביקורת, להמשיך להציג באתר?"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 msgid "approve for display on the website?"
 msgstr "אשר להצגה באתר?"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 #msgid "yes"
 #msgstr "כן"
 
-#: templates/video/video_list.html
+#: templates/video/_video_list_item.html
 #msgid "no"
 #msgstr "לא"
+
+#: templates/video/_video_list_item.html
+msgid "hidden"
+msgstr "מוסתר"
 
 #: user/forms.py:10
 #: user/forms.py:28
