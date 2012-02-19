@@ -28,6 +28,9 @@ ENCODING = 'utf8'
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
 
+SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)), 
+                         [u"ועדת משותפת פנים-עבודה לנושא סביבה ובריאות",])
+
 logger = logging.getLogger("open-knesset.syncdata")
 
 # defines for finding explanation part in private proposals
@@ -50,7 +53,9 @@ class Command(NoArgsCommand):
         make_option('--laws', action='store_true', dest='laws',
             help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
-            help="online update of votes data."),
+            help="online update of data."),
+        make_option('--committees', action='store_true', dest='committees',
+            help="online update of committees data."),
 
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -830,7 +835,13 @@ class Command(NoArgsCommand):
             updated_protocol = False
             if not cm.protocol_text:
                 cm.protocol_text = self.get_committee_protocol_text(link)
+                # check if it's one of the special committee's that need a little help
+                for i in SPECIAL_COMMITTEES:
+                    if i['name'] in cm.protocol_text[:300]:
+                        cm.committee = i['committee']
+                        break
                 updated_protocol = True
+
             cm.save()
 
             if updated_protocol:
@@ -1417,6 +1428,7 @@ class Command(NoArgsCommand):
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
         laws = options.get('laws',False)
+        committees = options.get('committees', False)
         
         if all_options:
             download = True
@@ -1424,7 +1436,8 @@ class Command(NoArgsCommand):
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws)])):
+        if (all([not(all_options),not(download),not(load),not(process),
+                 not(dump_to_file),not(update),not(laws), not(committees)])):
             print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
@@ -1464,6 +1477,10 @@ class Command(NoArgsCommand):
             self.update_gov_law_decisions()
             self.correct_votes_matching()
             logger.debug('finished update')
+
+        if committees:
+            self.get_protocols()
+            logger.debug('finished committees update')
 
 
 def iso_year_start(iso_year):
