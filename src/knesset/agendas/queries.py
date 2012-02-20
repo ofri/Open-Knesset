@@ -5,23 +5,23 @@ from operator import itemgetter
 def getAllAgendaPartyVotes():
     cursor = connection.cursor()
     cursor.execute(QUERY)
-    results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],g[2]),list(group))),
+    results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2])),list(group))),
                        groupby(cursor.fetchall(),key=itemgetter(0))))
     return results
 
 QUERY = """
-SELECT a.agendaid, 
-       a.partyid, 
-       round(coalesce(v.totalvotevalue,0)/a.totalscore*100,2) score 
-FROM   (SELECT agid                   agendaid, 
-               m.id                   partyid, 
-               sc * m.number_of_seats totalscore 
-        FROM   (SELECT agenda_id               agid, 
-                       SUM(abs(score * importance)) sc 
-                FROM   agendas_agendavote 
-                GROUP  BY agenda_id) agendavalues 
-               left outer join mks_party m 
-                 ) a 
+SELECT a.agendaid,
+       a.partyid,
+       round(cast(coalesce(v.totalvotevalue,0.0)/a.totalscore*100.0 as numeric),2) score
+FROM   (SELECT agid                   agendaid,
+               m.id                   partyid,
+               sc * m.number_of_seats totalscore
+        FROM   (SELECT agenda_id               agid,
+                       SUM(abs(score * importance)) sc
+                FROM   agendas_agendavote
+                GROUP  BY agenda_id) agendavalues
+               left outer join mks_party m
+                 on 1=1) a
        left outer join (SELECT agenda_id, 
                           partyid, 
                           SUM(forvotes) - SUM(againstvotes) totalvotevalue 
@@ -48,9 +48,9 @@ FROM   (SELECT agid                   agendaid,
                                              v.TYPE) p 
                                   inner join (SELECT vote_id, 
                                                      agenda_id, 
-                                                     score * importance VALUE 
+                                                     score * importance as VALUE 
                                               FROM   agendas_agendavote) a 
-                                    ON p.voteid = a.vote_id) 
+                                    ON p.voteid = a.vote_id) b  
                    GROUP  BY agenda_id, 
                              partyid 
                              ) v 
