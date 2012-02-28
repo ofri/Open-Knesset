@@ -86,7 +86,10 @@ I have a deadline''')
         annotations = self.committee_1.annotations
         self.assertEqual(annotations.count(), 1)
         self.assertEqual(annotations[0].comment, 'just perfect')
-
+        # test the deletion of an annotation
+        annotation.delete()
+        stream = Action.objects.stream_for_actor(self.jacob)
+        self.assertEqual(stream.count(), 2)
 
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email
