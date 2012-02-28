@@ -846,20 +846,24 @@ class Command(NoArgsCommand):
 
             if updated_protocol:
                 cm.create_protocol_parts()
-            try:
-                r = re.search("חברי הו?ועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+            self.find_attending_members(cm, mks, mk_names)
 
-                s = r.split('\n')
-                #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
-                for (i,name) in enumerate(mk_names):
-                    for s0 in s:
-                        if s0.find(name)>=0:
-                            #print "found %s in %s" % (m.name, str(cm.id))
-                            cm.mks_attended.add(mks[i])
-            except Exception:
-                exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
-            logger.debug('added %d members' % cm.mks_attended.count())
+    def find_attending_members(self,cm, mks, mk_names):
+        try:
+            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+            s = r.split('\n')
+            for (i,name) in enumerate(mk_names):
+                for s0 in s:
+                    if s0.find(name)>=0:
+                        cm.mks_attended.add(mks[i])
+        except Exception:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType,
+                                                                    exceptionValue,
+                                                                    exceptionTraceback)),
+                         '\nCommitteeMeeting.id='+str(cm.id))
+        logger.debug('meeting %d now had %d attending members' % (cm.id,
+                                                                  cm.mks_attended.count()))
 
     def get_committee_protocol_text(self, url):
         if url.find('html'):

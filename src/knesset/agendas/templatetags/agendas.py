@@ -53,6 +53,7 @@ def agendas_for(user, vote, object_type):
             suggested_agendas = UserSuggestedVote.objects.filter(user=user,
                                                                  vote=vote)
     if object_type=='committeemeeting':
+        suggest_agendas=False
         av = AgendaMeeting.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),meeting=vote).distinct()
     formset = None
     if editable:

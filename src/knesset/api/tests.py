@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Group, Permission
 from tagging.models import Tag, TaggedItem
-from knesset.laws.models import Vote, VoteAction, Bill
+from knesset.laws.models import Vote, VoteAction, Bill, Law
 from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee
@@ -32,6 +32,18 @@ class ApiViewsTest(TestCase):
         TaggedItem._default_manager.get_or_create(tag=self.tags[1], content_type=ctype, object_id=self.vote_1.id)
         self.agenda = Agenda.objects.create(name="agenda 1 (public)", public_owner_name="owner", is_public=True)
         self.private_agenda = Agenda.objects.create(name="agenda 2 (private)", public_owner_name="owner")
+        self.law_1 = Law.objects.create(title='law 1')
+        self.bill_1 = Bill.objects.create(stage='1',
+                                          stage_date=datetime.date.today(),
+                                          title='bill 1',
+                                          law=self.law_1)
+        self.bill_1.proposers.add(self.mks[0])
+        self.bill_2 = Bill.objects.create(stage='-1',
+                                          stage_date=datetime.date.today()-datetime.timedelta(10),
+                                          title='bill 2',
+                                          law=self.law_1)
+        self.bill_2.proposers.add(self.mks[1])
+        self.bill_2.proposers.add(self.mks[2])
 
     def test_api_member_list(self):
         res = self.client.get(reverse('member-handler'))
@@ -82,6 +94,20 @@ class ApiViewsTest(TestCase):
     def test_api_vote_not_found(self):
         res = self.client.get(reverse('vote-handler', args=[123456]))
         self.assertEqual(res.status_code, 404)
+
+    def test_api_bill_list(self):
+        res = self.client.get(reverse('bill-handler'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 2)
+        self.assertEqual(len(res_json[0]['proposing_mks']), 1)
+
+    def test_api_bill_list_with_days_back(self):
+        res = self.client.get('%s?days_back=2' % reverse('bill-handler'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 1)
+        self.assertEqual(len(res_json[0]['proposing_mks']), 1)
 
     def test_api_tag_list(self):
         res = self.client.get(reverse('tag-handler'))

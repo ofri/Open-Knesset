@@ -32,7 +32,9 @@
         <br><input type="submit" value="{% trans 'Submit' %}"></input>
         </form>
     {% else %}
-        <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
+        {% if suggest_agendas == False %}
+            <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
+        {% endif %}
     {% endif %}
 
     {% if formset %}
