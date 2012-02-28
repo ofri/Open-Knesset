@@ -761,6 +761,11 @@ class Command(NoArgsCommand):
         SEARCH_URL = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
         cj = cookielib.LWPCookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        committees_aliases = []
+        for c in Committee.objects.all():
+            if c.aliases:
+                committees_aliases += map(lambda x: (c, x), c.aliases.split(","))
+
         urllib2.install_opener(opener)
 
 
@@ -835,10 +840,10 @@ class Command(NoArgsCommand):
             updated_protocol = False
             if not cm.protocol_text:
                 cm.protocol_text = self.get_committee_protocol_text(link)
-                # check if it's one of the special committee's that need a little help
-                for i in SPECIAL_COMMITTEES:
-                    if i['name'] in cm.protocol_text[:300]:
-                        cm.committee = i['committee']
+                # check if the protocol is from the wrong commitee
+                for i in committees_aliases:
+                    if i[1] in cm.protocol_text[:300]:
+                        cm.committee = i[0]
                         break
                 updated_protocol = True
 
