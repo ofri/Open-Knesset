@@ -22,6 +22,7 @@ from queries import getAllAgendaPartyVotes
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.cache import cache
 
 logger = logging.getLogger("open-knesset.agendas.views")
 
@@ -38,7 +39,10 @@ class AgendaListView (ListView):
         # store in context as dictionary votes[agendaid]=<votenum> 
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
-        allAgendaPartyVotes = getAllAgendaPartyVotes()
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
         parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
