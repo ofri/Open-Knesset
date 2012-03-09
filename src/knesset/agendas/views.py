@@ -34,21 +34,21 @@ class AgendaListView (ListView):
 
     def get_context(self, *args, **kwargs):
         context = super(AgendaListView, self).get_context(*args, **kwargs)
-	# optimization - create query for votes per agenda
-	# store in context as dictionary votes[agendaid]=<votenum> 
-	agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
-	agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
-	allAgendaPartyVotes = getAllAgendaPartyVotes()
-	parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
+        # optimization - create query for votes per agenda
+        # store in context as dictionary votes[agendaid]=<votenum> 
+        agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
+        agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
+        allAgendaPartyVotes = getAllAgendaPartyVotes()
+        parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = p.agendas
         else:
             watched = None
         context['watched'] = watched
-	context['agenda_votes']=agenda_votes
-	context['agenda_party_values']=allAgendaPartyVotes
-	context['parties_lookup']=parties_lookup
+        context['agenda_votes']=agenda_votes
+        context['agenda_party_values']=allAgendaPartyVotes
+        context['parties_lookup']=parties_lookup
         return context
 
 class AgendaDetailView (DetailView):
@@ -112,6 +112,14 @@ class AgendaDetailView (DetailView):
             selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
             cached_context = {'selected_parties': selected_parties }
             cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
+        context.update(cached_context)
+
+        cached_context = cache.get('agenda_votes_%d' % agenda.id)
+        if not cached_context:
+            agenda_votes = agenda.agendavotes.order_by('-vote__time')\
+                                             .select_related('vote')
+            cached_context = {'agenda_votes': agenda_votes }
+            cache.set('agenda_votes_%d' % agenda.id, cached_context, 900)
         context.update(cached_context)
 
         return context

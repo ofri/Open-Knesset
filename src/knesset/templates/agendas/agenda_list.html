@@ -24,11 +24,11 @@
             <div class="item-list">
                 {% for o in user.agendas.all %}
                     <div class="item {% cycle "alt" "normal" %}">
-			{% with agenda_votes|lookup:o.id as agenda_votes_num %}
-			{% with agenda_party_values|lookup:o.id as agenda_party_values %}
-			{% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup %}
-			{% endwith %}
-			{% endwith %}
+                        {% with agenda_votes|lookup:o.id as agenda_votes_num %}
+                        {% with agenda_party_values|lookup:o.id as agenda_party_values %}
+                        {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup %}
+                        {% endwith %}
+                        {% endwith %}
                     </div>
                 {% empty %}
                     {% trans "You are not editing any agenda" %}
@@ -47,11 +47,11 @@
             {% for o in object_list %}
                 {% if user not in o.editors.all %}
                     <div class="item {% cycle "alt" "normal" %}">
-			{% with agenda_votes|lookup:o.id as agenda_votes_num %}
-			{% with agenda_party_values|lookup:o.id as agenda_party_values %}
-			{% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup %}
-			{% endwith %}
-			{% endwith %}
+                        {% with agenda_votes|lookup:o.id as agenda_votes_num %}
+                        {% with agenda_party_values|lookup:o.id as agenda_party_values %}
+                        {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup %}
+                        {% endwith %}
+                        {% endwith %}
                     </div>
                 {% endif %}
             {% endfor %}

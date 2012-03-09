@@ -130,7 +130,7 @@
 
         <h2> {% trans "Ascribed Votes" %}</h2>
         <table id="agenda-votes">
-            {% for agendavote in object.agendavotes.all %}
+            {% for agendavote in agenda_votes %}
                 <tr>
                     <td>
                         <div class="agenda-importance">{{agendavote.get_importance_display}}</div>
