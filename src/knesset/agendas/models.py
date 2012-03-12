@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from actstream.models import Follow
@@ -205,7 +207,12 @@ class Agenda(models.Model):
             return 0.0
 
     def number_of_followers(self):
-        return Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
+        n = cache.get('agenda_%d_num_followers' % self.id, None)
+        if n is None:
+            n = Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
+            cache.set('agenda_%d_num_followers' % self.id, n,
+                      settings.LONG_CACHE_TIME)
+        return n
 
     def related_mk_votes(self,member):
         # Find all votes that

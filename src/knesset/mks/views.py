@@ -175,8 +175,11 @@ class MemberDetailView(DetailView):
     model = Member
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
-        all_members = Member.objects.filter(is_current=True)
-        member_count = float(all_members.count())
+        all_members = cache.get('all_members', None)
+        if not all_members:
+            all_members = list(Member.objects.filter(is_current=True))
+            cache.set('all_members', all_members, settings.LONG_CACHE_TIME)
+        member_count = float(len(all_members))
 
         member_val = getattr(member,inprop) or 0
 
