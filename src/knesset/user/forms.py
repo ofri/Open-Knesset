@@ -65,7 +65,7 @@ class EditProfileForm(forms.Form):
                         'email_notification': self.userprofile.email_notification,
                         }
         self.has_email = True if user.email else False
-        g = Group.objects.get(name='Valid Email')
+        g, created = Group.objects.get_or_create(name='Valid Email')
         self.valid_email = g in self.user.groups.all()
 
     def clean_username(self):
