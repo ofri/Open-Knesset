@@ -22,13 +22,15 @@ logger = logging.getLogger("open-knesset.committees.models")
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
-    members = models.ManyToManyField('mks.Member', related_name='committees')
-    chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees')
-    replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees')
+    # comma seperated list of names used as name aliases for harvesting
+    aliases = models.TextField(null=True,blank=True)
+    members = models.ManyToManyField('mks.Member', related_name='committees', blank=True)
+    chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees', blank=True)
+    replacements = models.ManyToManyField('mks.Member', related_name='replacing_in_committees', blank=True)
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
-    portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False)
+    portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False, blank=True)
 
     def __unicode__(self):
         return "%s" % self.name
