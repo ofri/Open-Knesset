@@ -36,6 +36,10 @@ class MemberRelatedVideosInline(generic.GenericTabularInline):
         qs = qs.filter(Q(hide=False) | Q(hide=None))
         return qs
 
+class CoalitionMembershipAdmin(admin.ModelAdmin):
+    list_display = ('party','start_date','end_date')
+admin.site.register(CoalitionMembership, CoalitionMembershipAdmin)
+
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')

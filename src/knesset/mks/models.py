@@ -47,6 +47,20 @@ class BetterManager(models.Manager):
             ret[possible_names.index(m.name)] = m
         return ret
 
+class CoalitionMembership(models.Model):
+    party = models.ForeignKey('Party',
+                              related_name='coalition_memberships')
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ('party', 'start_date')
+
+    def __unicode__(self):
+        return "%s %s %s" % ((self.party.name,
+                              self.start_date or "",
+                              self.end_date or ""))
+
 class Party(models.Model):
     name        = models.CharField(max_length=64)
     start_date  = models.DateField(blank=True, null=True)
@@ -91,6 +105,16 @@ class Party(models.Model):
 
     def member_list(self):
         return self.members.all()
+
+    def is_coalition_at(self, date):
+        """Returns true is this party was a part of the coalition at the given
+        date"""
+        memberships = CoalitionMembership.objects.filter(party=self)
+        for membership in memberships:
+            if (not membership.start_date or membership.start_date <= date) and\
+               (not membership.end_date or membership.end_date >= date):
+                return True
+        return False
 
     @models.permalink
     def get_absolute_url(self):
