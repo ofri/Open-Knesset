@@ -30,7 +30,7 @@ class InternalLinksTest(TestCase):
                 self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
             else:
                 self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1))
-        self.vote_1.controversy = min(self.vote_1.for_votes_count(), self.vote_1.against_votes_count())
+        self.vote_1.controversy = min(self.vote_1.for_votes_count, self.vote_1.against_votes_count)
         self.vote_1.save()
         self.tags = []
         self.tags.append(Tag.objects.create(name = 'tag1'))
