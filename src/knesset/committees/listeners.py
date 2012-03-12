@@ -58,7 +58,6 @@ def handle_comment_save(sender, comment, request, **kwargs):
 comment_was_posted.connect(handle_comment_save)
 
 def delete_related_activities(sender, instance, **kwargs):
-    cm_ct = ContentType.objects.get_for_model(instance)
     Action.objects.filter(target_object_id=instance.id, verb__in=('annotated', 'comment-added')).delete()
 pre_delete.connect(delete_related_activities, sender=Annotation)
 pre_delete.connect(delete_related_activities, sender=Comment)

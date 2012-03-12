@@ -91,6 +91,46 @@ I have a deadline''')
         stream = Action.objects.stream_for_actor(self.jacob)
         self.assertEqual(stream.count(), 2)
 
+    def testTwoAnnotations(self):
+        '''create two annotations on same part, and delete them'''
+        self.assertTrue(self.client.login(username='jacob', password='JKM'))
+        part = self.meeting_1.parts.list()[0]
+        res = self.client.post(reverse('annotatetext-post_annotation'),
+                        {'selection_start': 7,
+                         'selection_end': 14,
+                         'flags': 0,
+                         'color': '#000',
+                         'lengthcheck': len(part.body),
+                         'comment' : 'just perfect',
+                         'object_id': part.id,
+                         'content_type': ContentType.objects.get_for_model(part).id,
+                        })
+        self.assertEqual(res.status_code, 302)
+        res = self.client.post(reverse('annotatetext-post_annotation'),
+                        {'selection_start': 8,
+                         'selection_end': 15,
+                         'flags': 0,
+                         'color': '#000',
+                         'lengthcheck': len(part.body),
+                         'comment' : 'not quite',
+                         'object_id': part.id,
+                         'content_type': ContentType.objects.get_for_model(part).id,
+                        })
+        self.assertEqual(res.status_code, 302)
+
+        annotations = Annotation.objects.filter(object_id=part.id,
+                         content_type=ContentType.objects.get_for_model(part).id)
+        self.assertEqual(annotations.count(), 2)
+        # ensure we will see it on the committee page
+        c_annotations = self.committee_1.annotations
+        self.assertEqual(c_annotations.count(), 2)
+        self.assertEqual(c_annotations[0].comment, 'just perfect')
+        self.assertEqual(c_annotations[1].comment, 'not quite')
+        # test the deletion of an annotation
+        annotations[0].delete()
+        c_annotations = self.committee_1.annotations
+        self.assertEqual(c_annotations.count(), 1)
+
     def testAnnotationForbidden(self):
         self.jacob.groups.clear() # invalidate this user's email
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
