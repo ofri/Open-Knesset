@@ -55,7 +55,7 @@ def create_vote_dict(vote):
 
     vote_dict = dict({'vote' : vote,
                           'vote_drill_data' : json.dumps(vote_drill_data),
-                          'vote_passed' : vote.for_votes_count() > vote.against_votes_count(),
+                          'vote_passed' : vote.for_votes_count > vote.against_votes_count,
                           'vote_time' : {'day' : vote.time.day,
                            'month' : vote.time.month,
                            'year' : vote.time.year}})
