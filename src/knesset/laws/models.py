@@ -507,12 +507,6 @@ class Bill(models.Model):
 
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)
-        for t in tags:
-            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
-            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
-            t.score_positive = t.score > 0
-        tags = [t for t in tags]
-        tags.sort(key=lambda x:-x.score)
         return tags
 
     def _set_tags(self, tag_list):

@@ -199,7 +199,7 @@
         <h1>{% bill_full_name object %}</h1>
         {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
-        {% for proposer in object.proposers.all %}
+        {% for proposer in proposers %}
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
         {% endfor %}<br>
         <div id="bill-canvas">
@@ -240,8 +240,8 @@
             {% if user.is_authenticated %}
                 <h3>{% trans "Tags" %}</h3>
                 <div id="tags">
-                    {% if object.tags %}
-                        {% for t in object.tags %}
+                    {% if tags %}
+                        {% for t in tags %}
                             <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
                         {% endfor %}
                     {% else %}
@@ -270,9 +270,9 @@
 
             {% else %}
                 <h3>{% trans "Tags" %}</h3>
-                {% if object.tags %}
+                {% if tags %}
                     <div id="tags">
-                    {% for t in object.tags %}
+                    {% for t in tags %}
                        <a href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                     </div>

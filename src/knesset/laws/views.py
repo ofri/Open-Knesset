@@ -199,6 +199,7 @@ class BillDetailView (DetailView):
             context['close_votes'] = close_votes
         except Exception, e:
             pass
+        context['proposers'] = bill.proposers.select_related('current_party')
         votes = voting.models.Vote.objects.get_object_votes(bill)
         if 1 not in votes: votes[1] = 0
         if -1 not in votes: votes[-1] = 0
@@ -219,6 +220,7 @@ class BillDetailView (DetailView):
             score['for_percent'] = 49
             score['against_percent'] = 49
         context['voting_score'] = score
+        context['tags'] = list(bill.tags)
         return context
 
     @method_decorator(login_required)
