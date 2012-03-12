@@ -8,7 +8,7 @@ from knesset.laws.models import Bill
 from knesset.committees.models import Committee
 from knesset.agendas.models import Agenda
 
-class TestPublicProfile(TestCase):
+class TestProfile(TestCase):
 
     def setUp(self):
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
@@ -37,6 +37,16 @@ class TestPublicProfile(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,'user/profile_list.html')
         self.assertEqual(len(res.context['object_list']), 1)
+
+    def testSignup(self):
+        res = self.client.post(reverse('register'), {'username': 'john', 
+                        'password1': '123', 'password2': '123',
+                        'email': 'john@example.com', 'email_notification': 'D'},
+                        follow = True)
+        self.assertEqual(res.redirect_chain, [('http://testserver/users/edit-profile/', 302)])
+        new = User.objects.get(username='john')
+        new_profile = new.get_profile()
+        self.assertEqual(new_profile.email_notification, 'D')
 
     def tearDown(self):
         self.jacob.delete()
