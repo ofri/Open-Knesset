@@ -41,10 +41,10 @@ class PartyVotingStatistics(models.Model):
         return VoteAction.objects.filter(member__current_party=self.party).exclude(type='no-vote').count()
 
     def votes_per_seat(self):
-        return round(float(self.votes_count) / self.party.number_of_seats,1)
+        return round(float(self.votes_count()) / self.party.number_of_seats,1)
 
     def discipline(self):
-        total_votes = self.votes_count
+        total_votes = self.votes_count()
         if total_votes > 0:
             votes_against_party = self.votes_against_party_count()
             return round(100.0*(total_votes-votes_against_party)/total_votes,1)

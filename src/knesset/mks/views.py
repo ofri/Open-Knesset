@@ -382,12 +382,18 @@ class PartyListView(ListView):
                 m = 10
                 for p in context['coalition']:
                     rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
-                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if rc:
+                        p.extra = round(float(sum(rc))/len(rc),1)
+                    else:
+                        p.extra = 0
                     if p.extra < m:
                         m = p.extra
                 for p in context['opposition']:
                     rc = [member.residence_centrality for member in p.members.all() if member.residence_centrality]
-                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if rc:
+                        p.extra = round(float(sum(rc))/len(rc),1)
+                    else:
+                        p.extra = 0
                     if p.extra < m:
                         m = p.extra
                 context['friend_pages'][4][2] = True
@@ -399,12 +405,18 @@ class PartyListView(ListView):
                 m = 10
                 for p in context['coalition']:
                     rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
-                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if rc:
+                        p.extra = round(float(sum(rc))/len(rc),1)
+                    else:
+                        p.extra = 0
                     if p.extra < m:
                         m = p.extra
                 for p in context['opposition']:
                     rc = [member.residence_economy for member in p.members.all() if member.residence_economy]
-                    p.extra = round(float(sum(rc))/len(rc),1)
+                    if rc:
+                        p.extra = round(float(sum(rc))/len(rc),1)
+                    else:
+                        p.extra = 0
                     if p.extra < m:
                         m = p.extra
                 context['friend_pages'][5][2] = True
