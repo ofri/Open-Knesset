@@ -1,508 +1,508 @@
 <div class="billbox">
-	<!-- Only load dom.min.js if it is not already loaded! use a cross browser method to determind if it should be loaded. -->
-	<script type="text/javascript" src="{{MEDIA_URL}}js/$dom.min.js"></script>
+    <!-- Only load dom.min.js if it is not already loaded! use a cross browser method to determind if it should be loaded. -->
+    <script type="text/javascript" src="{{MEDIA_URL}}js/$dom.min.js"></script>
     <link rel="stylesheet" href="{{MEDIA_URL}}css/embed_bill.css" type="text/css"/>
-	<script type="text/javascript">
-		if (typeof OKnesset === 'undefined') {
-        	OKnesset = {};
+    <script type="text/javascript">
+        if (typeof OKnesset === 'undefined') {
+            OKnesset = {};
         }
 
-		OKnesset.billBox = OKnesset.billBox || {};
+        OKnesset.billBox = OKnesset.billBox || {};
 
-		OKnesset.drilldata = [];
-		OKnesset.drilldata.push({'stage' : 1});
-		OKnesset.drilldata.push({'stage' : 2});
-		OKnesset.drilldata.push({'stage' : 3});
-		OKnesset.drilldata.push({'stage' : 4});
-		OKnesset.drilldata.push({'stage' : 5});
-		OKnesset.drilldata.push({'stage' : 6});
-		OKnesset.drilldata.push({'stage' : 6});
-		OKnesset.drilldata.push({'stage' : 6});
+        OKnesset.drilldata = [];
+        OKnesset.drilldata.push({'stage' : 1});
+        OKnesset.drilldata.push({'stage' : 2});
+        OKnesset.drilldata.push({'stage' : 3});
+        OKnesset.drilldata.push({'stage' : 4});
+        OKnesset.drilldata.push({'stage' : 5});
+        OKnesset.drilldata.push({'stage' : 6});
+        OKnesset.drilldata.push({'stage' : 6});
+        OKnesset.drilldata.push({'stage' : 6});
 
-		{% if bill.pre_votes.count  > 0 %}
-			OKnesset.drilldata[1].votes = {{pre_vote.vote_drill_data|safe}};
-		{% endif %}
+        {% if pre_vote %}
+            OKnesset.drilldata[1].votes = {{pre_vote.vote_drill_data|safe}};
+        {% endif %}
 
-		{% if bill.first_vote %}
-			OKnesset.drilldata[3].votes = {{first_vote.vote_drill_data|safe}};
-		{% endif %}
+        {% if first_vote %}
+            OKnesset.drilldata[3].votes = {{first_vote.vote_drill_data|safe}};
+        {% endif %}
 
-		{% if bill.approval_vote %}
-			OKnesset.drilldata[5].votes = {{approval_vote.vote_drill_data|safe}};
-			OKnesset.drilldata[6].votes = OKnesset.drilldata[5].votes;
-		{% endif %}
+        {% if approval_vote %}
+            OKnesset.drilldata[5].votes = {{approval_vote.vote_drill_data|safe}};
+            OKnesset.drilldata[6].votes = OKnesset.drilldata[5].votes;
+        {% endif %}
 
-	</script>
-	<div class="header header-small">
-		<div class="billbox-details">
-			<div class="title">
-			  <a href={{billurl}} target="_blank">
-				<span class="label">שם ההצעה:</span>
+    </script>
+    <div class="header header-small">
+        <div class="billbox-details">
+            <div class="title">
+              <a href={{billurl}} target="_blank">
+                <span class="label">שם ההצעה:</span>
                 <h1>{{bill.law.title}}: {{bill.title}}</h1>
-			  </a>
-			</div>
-			<div class="excerpt">
-				<span class="label">תקציר:</span>
-				<div class="explanation">
-					<div class="prop">
-						{{explanation|safe}}
-					</div>
-				</div>
-			</div>
-			<div class="external-links">
-				<span class="label">קישורים נוספים:</span>
+              </a>
+            </div>
+            <div class="excerpt">
+                <span class="label">תקציר:</span>
+                <div class="explanation">
+                    <div class="prop">
+                        {{explanation|safe}}
+                    </div>
+                </div>
+            </div>
+            <div class="external-links">
+                <span class="label">קישורים נוספים:</span>
                 <a href="http://oknesset.org{{ bill.get_absolute_url }}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
-			</div>
-			<div>
-				<span class="status"></span>
-			</div>
-		</div>
-		<div class="pms">
-			<div class="label">יזמו:</div>
-			<ul>
+            </div>
+            <div>
+                <span class="status"></span>
+            </div>
+        </div>
+        <div class="pms">
+            <div class="label">יזמו:</div>
+            <ul>
 
                 {% for proposer in proposers_first3 %}
                 <li><a href="http://oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
 
-			</ul>
-			{% if proposers_count_minus3 > 0 %}
-			<a href="#" class="more">+{{proposers_count_minus3}} </a>
-			{% endif %}
-		</div>
-		<div class="pull"><div class="arrow down"></div></div>
-	</div>
-	<script type="text/javascript">
-		OKnesset.billBox.getSenderDiv = function(e){
-			var sender = (e && e.target) || (window.event && window.event.srcElement);
-			return sender.tagName.toLowerCase() === 'li'? sender : $dom.ancestor(sender, 'li');
-		}
+            </ul>
+            {% if proposers_count_minus3 > 0 %}
+            <a href="#" class="more">+{{proposers_count_minus3}} </a>
+            {% endif %}
+        </div>
+        <div class="pull"><div class="arrow down"></div></div>
+    </div>
+    <script type="text/javascript">
+        OKnesset.billBox.getSenderDiv = function(e){
+            var sender = (e && e.target) || (window.event && window.event.srcElement);
+            return sender.tagName.toLowerCase() === 'li'? sender : $dom.ancestor(sender, 'li');
+        }
 
-		// add the member images and links to the drill data
-		OKnesset.billBox.buildDrillVoters = function(partyGroupArray, pmsClass){
-			var graph = $dom.get('.graph')[0];
-			var pmsNode = $dom.get(".pms."+pmsClass, graph)[0];
-			pmsNode.innerHTML = "";
-			for (var i = 0 ; i < partyGroupArray.votes.length ; i++){
-				var partyGroup =  partyGroupArray.votes[i];
-				var partyNode = $dom.create("ul");
-				partyNode.setAttribute("name", partyGroup.party);
-				pmsNode.appendChild(partyNode);
-				for (var j = 0 ; j < partyGroup.members.length ; j++){
-					var memberNode = $dom.create("li");
-					var memberLink = $dom.create("a");
-					var memberImage = $dom.create("img");
+        // add the member images and links to the drill data
+        OKnesset.billBox.buildDrillVoters = function(partyGroupArray, pmsClass){
+            var graph = $dom.get('.graph')[0];
+            var pmsNode = $dom.get(".pms."+pmsClass, graph)[0];
+            pmsNode.innerHTML = "";
+            for (var i = 0 ; i < partyGroupArray.votes.length ; i++){
+                var partyGroup =  partyGroupArray.votes[i];
+                var partyNode = $dom.create("ul");
+                partyNode.setAttribute("name", partyGroup.party);
+                pmsNode.appendChild(partyNode);
+                for (var j = 0 ; j < partyGroup.members.length ; j++){
+                    var memberNode = $dom.create("li");
+                    var memberLink = $dom.create("a");
+                    var memberImage = $dom.create("img");
 
-					memberLink.setAttribute("href", partyGroup.members[j].url);
-					memberImage.setAttribute("src", partyGroup.members[j].img_url);
-					memberImage.setAttribute("alt", partyGroup.members[j].name);
-					memberImage.setAttribute("title", partyGroup.members[j].name);
+                    memberLink.setAttribute("href", partyGroup.members[j].url);
+                    memberImage.setAttribute("src", partyGroup.members[j].img_url);
+                    memberImage.setAttribute("alt", partyGroup.members[j].name);
+                    memberImage.setAttribute("title", partyGroup.members[j].name);
 
-					memberNode.appendChild(memberLink);
-					memberLink.appendChild(memberImage);
+                    memberNode.appendChild(memberLink);
+                    memberLink.appendChild(memberImage);
 
-					partyNode.appendChild(memberNode);
-				}
-			}
+                    partyNode.appendChild(memberNode);
+                }
+            }
 
-		}
-		OKnesset.drill = function(e){
-			if (OKnesset.drilling) {
-				return;
-			}
-			OKnesset.drilling = true;
+        }
+        OKnesset.drill = function(e){
+            if (OKnesset.drilling) {
+                return;
+            }
+            OKnesset.drilling = true;
 
-			console.log("function drill ");
-			var senderDiv = OKnesset.billBox.getSenderDiv(e);
-			var graph = $dom.get('.graph')[0];
-			// TOOD remove "drilled" from all other steps
-			$dom.addClass(graph, 'drilling');
-			$dom.addClass(senderDiv, 'drilled');
+            console.log("function drill ");
+            var senderDiv = OKnesset.billBox.getSenderDiv(e);
+            var graph = $dom.get('.graph')[0];
+            // TOOD remove "drilled" from all other steps
+            $dom.addClass(graph, 'drilling');
+            $dom.addClass(senderDiv, 'drilled');
 
-			var stageIndex=$dom.descendants($dom.ancestor(senderDiv), "li").indexOf(senderDiv);
-			var stepsDiv = $dom.get('div.graph ul.steps')[0];
-			var margin = 2.5 -(760/8 * stageIndex);
+            var stageIndex=$dom.descendants($dom.ancestor(senderDiv), "li").indexOf(senderDiv);
+            var stepsDiv = $dom.get('div.graph ul.steps')[0];
+            var margin = 2.5 -(760/8 * stageIndex);
 
-			// update "drill" data
-			if (OKnesset.drilldata[stageIndex].votes) {}
-			$dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
-			$dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
-			var totalVotes = OKnesset.drilldata[stageIndex].votes.against.count + OKnesset.drilldata[stageIndex].votes.for.count;
-			// TODO calculate opposing and supporting width (in percentage)
-			$dom.style($dom.get(".pms.opposing", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes))) + "%"});
-			$dom.style($dom.get(".pms.supporting", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes))) + "%"});
-			if (OKnesset.drilldata[stageIndex].votes.for.count > OKnesset.drilldata[stageIndex].votes.against.count) {
-				$dom.addClass($dom.get(".thedrill", graph)[0], "passed");
-			}
+            // update "drill" data
+            if (OKnesset.drilldata[stageIndex].votes) {}
+            $dom.get(".against_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.against.count;
+            $dom.get(".for_votes span", graph)[0].innerHTML = OKnesset.drilldata[stageIndex].votes.for.count;
+            var totalVotes = OKnesset.drilldata[stageIndex].votes.against.count + OKnesset.drilldata[stageIndex].votes.for.count;
+            // TODO calculate opposing and supporting width (in percentage)
+            $dom.style($dom.get(".pms.opposing", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.against.count /totalVotes))) + "%"});
+            $dom.style($dom.get(".pms.supporting", graph)[0], {'width' : Math.min(90, Math.max(10, (100 * OKnesset.drilldata[stageIndex].votes.for.count / totalVotes))) + "%"});
+            if (OKnesset.drilldata[stageIndex].votes.for.count > OKnesset.drilldata[stageIndex].votes.against.count) {
+                $dom.addClass($dom.get(".thedrill", graph)[0], "passed");
+            }
 
-			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.for, "supporting");
-			OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
+            OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.for, "supporting");
+            OKnesset.billBox.buildDrillVoters(OKnesset.drilldata[stageIndex].votes.against, "opposing");
 
-			// end update "drill" data
-			console.log("no animation");
-			$dom.addClass(graph, 'drilling-final');
-			$dom.style(stepsDiv, {'margin-right': margin + '%'});
-			window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");}, 10);
-			OKnesset.drilling = false;
-		}
+            // end update "drill" data
+            console.log("no animation");
+            $dom.addClass(graph, 'drilling-final');
+            $dom.style(stepsDiv, {'margin-right': margin + '%'});
+            window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.undrill(event);");}, 10);
+            OKnesset.drilling = false;
+        }
 
-		OKnesset.undrill = function(e){
-			if (OKnesset.drilling) {
-				return;
-			}
-			console.log(" function undrill");
-			var senderDiv = OKnesset.billBox.getSenderDiv(e);
+        OKnesset.undrill = function(e){
+            if (OKnesset.drilling) {
+                return;
+            }
+            console.log(" function undrill");
+            var senderDiv = OKnesset.billBox.getSenderDiv(e);
 
-			var graph = $dom.get('.graph')[0];
-			var stepsDiv = $dom.get('div.graph ul.steps')[0];
-			stepsDiv.setAttribute("style", "");
-			$dom.removeClass(graph, 'drilling');
-			$dom.removeClass(graph, 'drilling-final');
-			$dom.removeClass(senderDiv, 'drilled');
-			$dom.style(stepsDiv, {'margin-right': '0%'});
-			window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.drill(event);");}, 10);
-		}
-	</script>
-	<div class="graph">
-		<div class="thedrill">
-			<div class="thedrill-details">
-				<div class="for_votes">בעד: <span></span></div>
-				<div class="against_votes">נגד: <span></span></div>
-				<div class="pms supporting">
-				</div>
-				<div class="pms opposing">
-				</div>
-			</div>
-			<div class="thedrill-meaning">
-				<p>קריאה טרומית ("דיון מוקדם") היא ההצבעה הראשונה על הצעת חוק פרטית. הצעות חוק ממשלתיות פטורות מהצבעה בקריאה טרומית ועולות ישירות לקריאה ראשונה. תוצאות הקריאה הטרומית מוכתבות כמעט תמיד על ידי עמדת הממשלה (קרי, עמדת הקואליציה). הצעה שלא היה לה רוב בקריאה טרומית מבוטלת, ואסור ליוזם ההצעה להעלותה שוב במשך חצי שנה.</p>
-				<p>הצעה שכן היה לה רוב, מועברת לדיון בועדה שעליה ממליץ היוזם, להכנה לקריאה ראשונה. אם מוצעת יותר מועדה אחת בה אמורה הצעת החוק להיות נידונה, תקבע ועדת הכנסת היכן תידון ההצעה. לקביעת הועדה המטפלת יש משמעות רבה לגבי המשך סיכויי קידום הצעת החוק ולגבי האופן שבו תעוצב לבסוף. זהות יו"ר הועדה שמטפלת בהצעת החוק עשויה להיות מכרעת לעצם הבאתה לדיון והצבעה נוספים, שכן באפשרותו לעכב את המשך החקיקה על ידי אי-העלאתה ("לקבור את ההצעה"), או לקדם בועדה הצעה לבטל את החקיקה. מנגד, ועדה 'תומכת' תזרז את הטיפול בחוק ותאפשר לסיים את הליכי החקיקה שלו במהירות.</p>
-				<p>ההצבעות על חוקים בקריאה טרומית מתקיימות תמיד בימי רביעי, ועל מנת להעלות הצעה להצבעה יש להשתמש במכסה שמוקנית על בסיס סיעתי, דבר המגביל מאוד את מספר ההצעות שח"כ יכול להעלות בזמן נתון. הצעה שזכתה לתמיכת ממשלה מקבלת פטור ממכסה.</p>
-				<p>בשלב זה אין צורך ברוב מיוחס בהצבעה על הצעת החוק, גם אם מדובר בהצעה בעלת עלות תקציבית (ראו בהמשך).</p>
-			</div>
-			<div class="thedrill-action">
+            var graph = $dom.get('.graph')[0];
+            var stepsDiv = $dom.get('div.graph ul.steps')[0];
+            stepsDiv.setAttribute("style", "");
+            $dom.removeClass(graph, 'drilling');
+            $dom.removeClass(graph, 'drilling-final');
+            $dom.removeClass(senderDiv, 'drilled');
+            $dom.style(stepsDiv, {'margin-right': '0%'});
+            window.setTimeout(function(){senderDiv.setAttribute("onclick", "OKnesset.drill(event);");}, 10);
+        }
+    </script>
+    <div class="graph">
+        <div class="thedrill">
+            <div class="thedrill-details">
+                <div class="for_votes">בעד: <span></span></div>
+                <div class="against_votes">נגד: <span></span></div>
+                <div class="pms supporting">
+                </div>
+                <div class="pms opposing">
+                </div>
+            </div>
+            <div class="thedrill-meaning">
+                <p>קריאה טרומית ("דיון מוקדם") היא ההצבעה הראשונה על הצעת חוק פרטית. הצעות חוק ממשלתיות פטורות מהצבעה בקריאה טרומית ועולות ישירות לקריאה ראשונה. תוצאות הקריאה הטרומית מוכתבות כמעט תמיד על ידי עמדת הממשלה (קרי, עמדת הקואליציה). הצעה שלא היה לה רוב בקריאה טרומית מבוטלת, ואסור ליוזם ההצעה להעלותה שוב במשך חצי שנה.</p>
+                <p>הצעה שכן היה לה רוב, מועברת לדיון בועדה שעליה ממליץ היוזם, להכנה לקריאה ראשונה. אם מוצעת יותר מועדה אחת בה אמורה הצעת החוק להיות נידונה, תקבע ועדת הכנסת היכן תידון ההצעה. לקביעת הועדה המטפלת יש משמעות רבה לגבי המשך סיכויי קידום הצעת החוק ולגבי האופן שבו תעוצב לבסוף. זהות יו"ר הועדה שמטפלת בהצעת החוק עשויה להיות מכרעת לעצם הבאתה לדיון והצבעה נוספים, שכן באפשרותו לעכב את המשך החקיקה על ידי אי-העלאתה ("לקבור את ההצעה"), או לקדם בועדה הצעה לבטל את החקיקה. מנגד, ועדה 'תומכת' תזרז את הטיפול בחוק ותאפשר לסיים את הליכי החקיקה שלו במהירות.</p>
+                <p>ההצבעות על חוקים בקריאה טרומית מתקיימות תמיד בימי רביעי, ועל מנת להעלות הצעה להצבעה יש להשתמש במכסה שמוקנית על בסיס סיעתי, דבר המגביל מאוד את מספר ההצעות שח"כ יכול להעלות בזמן נתון. הצעה שזכתה לתמיכת ממשלה מקבלת פטור ממכסה.</p>
+                <p>בשלב זה אין צורך ברוב מיוחס בהצבעה על הצעת החוק, גם אם מדובר בהצעה בעלת עלות תקציבית (ראו בהמשך).</p>
+            </div>
+            <div class="thedrill-action">
 
-			</div>
-		</div>
-		<span class="status"></span>
-		<div class="gov-position">
-			<div class="step">
-				<span class="date">
-					(טרם פורסמה)
-				</span>
-			</div>
-		</div>
-		<ul class="steps">
+            </div>
+        </div>
+        <span class="status"></span>
+        <div class="gov-position">
+            <div class="step">
+                <span class="date">
+                    (טרם פורסמה)
+                </span>
+            </div>
+        </div>
+        <ul class="steps">
 
-			<li class="initiated odd first">
-				<div class="step">
-                    {% if bill.proposals.count > 0 %}
+            <li class="initiated odd first">
+                <div class="step">
+                    {% if proposal %}
                         <a href="{{ billurl }}#bill-initiation" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>יזום ההצעה</span></div>
-					<span class="date">?</span>
-                    {% if bill.proposals.count > 0 %}
-					<script type="text/javascript">
-				 		// set the pre-vote date
-						var prposal_date = $dom.get("li.initiated span.date")[0];
-						prposal_date.innerHTML = "{{proposal.day}}/{{proposal.month}}<br>{{proposal.year}}";
+                    <span class="icon">icon</span>
+                    <div class="tooltip"><span>יזום ההצעה</span></div>
+                    <span class="date">?</span>
+                    {% if proposal %}
+                    <script type="text/javascript">
+                        // set the pre-vote date
+                        var prposal_date = $dom.get("li.initiated span.date")[0];
+                        prposal_date.innerHTML = "{{proposal.day}}/{{proposal.month}}<br>{{proposal.year}}";
 
-						$dom.addClass($dom.get('li.initiated')[0], "passed");
-					</script>
+                        $dom.addClass($dom.get('li.initiated')[0], "passed");
+                    </script>
                     {% endif %}
-				</div>
-			</li>
+                </div>
+            </li>
 
-			<li class="pre-vote" {% if bill.pre_votes.count > 0 %} onclick="OKnesset.drill(event);"  style="cursor:pointer"{% endif %}>
-				<div class="step">
-                    {% if bill.pre_votes.count > 0 %}
+            <li class="pre-vote" {% if pre_vote %} onclick="OKnesset.drill(event);"  style="cursor:pointer"{% endif %}>
+                <div class="step">
+                    {% if pre_vote %}
                         <a href="{{ billurl }}#bill-pre-vote" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<span class="closeicon">icon</span>
-					{% if bill.pre_votes.count > 0 %}
-					<div class="tooltip-score">
-						<span class="balance">{{pre_vote.vote.for_votes_count}}/{{pre_vote.vote.against_votes_count}}</span>
-						<div class="scale" style="width:120px">
-							<span class="against" ></span>
-							<span class="for"></span>
-							<script type="text/javascript">
-						 		// set the style of the 'against' span
-								var preVote_score_width = {{pre_vote.vote.against_votes_count}} * 120 / ({{pre_vote.vote.for_votes_count}} + {{pre_vote.vote.against_votes_count}});
-								var against = $dom.get("li.pre-vote .against")[0];
-								// the background-position attribute value 'bottom' might not work on Firefox, or IE
-								$dom.style(against, {'width':preVote_score_width + "px", 'background-position': (preVote_score_width - 120) + "px bottom" });
-							</script>
-						</div>
-					</div>
+                    <span class="icon">icon</span>
+                    <span class="closeicon">icon</span>
+                    {% if pre_vote %}
+                    <div class="tooltip-score">
+                        <span class="balance">{{pre_vote.vote.for_votes_count}}/{{pre_vote.vote.against_votes_count}}</span>
+                        <div class="scale" style="width:120px">
+                            <span class="against" ></span>
+                            <span class="for"></span>
+                            <script type="text/javascript">
+                                // set the style of the 'against' span
+                                var preVote_score_width = {{pre_vote.vote.against_votes_count}} * 120 / ({{pre_vote.vote.for_votes_count}} + {{pre_vote.vote.against_votes_count}});
+                                var against = $dom.get("li.pre-vote .against")[0];
+                                // the background-position attribute value 'bottom' might not work on Firefox, or IE
+                                $dom.style(against, {'width':preVote_score_width + "px", 'background-position': (preVote_score_width - 120) + "px bottom" });
+                            </script>
+                        </div>
+                    </div>
                     {% endif %}
-					<div class="tooltip"><span>קריאה טרומית</span></div>
-					<span class="date">?</span>
-					<script type="text/javascript">
-					{% if bill.pre_votes.count > 0 %}
-				 		// set the pre-vote date
-						var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
-						pre_vote_date.innerHTML = "{{pre_vote.vote_time.day}}/{{pre_vote.vote_time.month}}<br>{{pre_vote.vote_time.year}}";
-				 		// add 'passed' and 'voted' class to the pre-vote li element
-						var li_pre_vote = $dom.get("li.pre-vote")[0];
-						$dom.addClass(li_pre_vote, "voted");
-						if ({{pre_vote.vote_passed|lower}}) {
-							$dom.addClass(li_pre_vote, "passed");
-							OKnesset.billFailedHenceForth = false;
-						} else {
-							OKnesset.billFailedHenceForth = true;
-							$dom.addClass(li_pre_vote, "failed");
-						}
+                    <div class="tooltip"><span>קריאה טרומית</span></div>
+                    <span class="date">?</span>
+                    <script type="text/javascript">
+                    {% if pre_vote %}
+                        // set the pre-vote date
+                        var pre_vote_date = $dom.get("li.pre-vote span.date")[0];
+                        pre_vote_date.innerHTML = "{{pre_vote.vote_time.day}}/{{pre_vote.vote_time.month}}<br>{{pre_vote.vote_time.year}}";
+                        // add 'passed' and 'voted' class to the pre-vote li element
+                        var li_pre_vote = $dom.get("li.pre-vote")[0];
+                        $dom.addClass(li_pre_vote, "voted");
+                        if ({{pre_vote.vote_passed|lower}}) {
+                            $dom.addClass(li_pre_vote, "passed");
+                            OKnesset.billFailedHenceForth = false;
+                        } else {
+                            OKnesset.billFailedHenceForth = true;
+                            $dom.addClass(li_pre_vote, "failed");
+                        }
                     {% endif %}
-					</script>
-				</div>
-			</li>
+                    </script>
+                </div>
+            </li>
 
-			<li class="committee-1 odd">
-				<div class="step">
-                    {% if bill.first_committee_meetings.count > 0 %}
+            <li class="committee-1 odd">
+                <div class="step">
+                    {% if first_committee_meetings %}
                         <a href="{{ first_committee_meetings.url}}" class="link" target="_blank">קישור</a>
                     {% endif %}
 
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ישיבות ועדה</span></div>
-					<span class="date">?</span>
-					<script type="text/javascript">
-					{% if bill.first_committee_meetings.count > 0 %}
-				 		// set the committee date
-						var date = $dom.get("li.committee-1 span.date")[0];
-						date.innerHTML = "{{first_committee_meetings.day}}/{{first_committee_meetings.month}}<br>{{first_committee_meetings.year}}";
-						$dom.addClass($dom.get('li.committee-1')[0], "passed");
+                    <span class="icon">icon</span>
+                    <div class="tooltip"><span>ישיבות ועדה</span></div>
+                    <span class="date">?</span>
+                    <script type="text/javascript">
+                    {% if first_committee_meetings %}
+                        // set the committee date
+                        var date = $dom.get("li.committee-1 span.date")[0];
+                        date.innerHTML = "{{first_committee_meetings.day}}/{{first_committee_meetings.month}}<br>{{first_committee_meetings.year}}";
+                        $dom.addClass($dom.get('li.committee-1')[0], "passed");
                     {% endif %}
 
-						if (OKnesset.billFailedHenceForth) {
-							$dom.addClass($dom.get('li.committee-1')[0], "failed");
-							$dom.get("li.committee-1 span.date")[0].innerHTML = "";
-						}
-					</script>
+                        if (OKnesset.billFailedHenceForth) {
+                            $dom.addClass($dom.get('li.committee-1')[0], "failed");
+                            $dom.get("li.committee-1 span.date")[0].innerHTML = "";
+                        }
+                    </script>
 
-				</div>
-			</li>
+                </div>
+            </li>
 
-			<li class="vote-1" {% if bill.first_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer" {% endif %}>
-				<div class="step">
-                    {% if bill.first_vote %}
+            <li class="vote-1" {% if first_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer" {% endif %}>
+                <div class="step">
+                    {% if first_vote %}
                         <a href="{{ billurl }}#bill-first-vote" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<span class="closeicon">icon</span>
-                    {% if bill.first_vote %}
-					<div class="tooltip-score">
-						<span class="balance">{{first_vote.vote.for_votes_count}}/{{first_vote.vote.against_votes_count}}</span>
-						<div class="scale" style="width:120px">
-							<span class="against"></span>
-							<span class="for"></span>
-							<script type="text/javascript">
-						 		// set the style of the 'against' span
-								var score_width = {{first_vote.vote.against_votes_count}} * 120 / ({{first_vote.vote.for_votes_count}} + {{first_vote.vote.against_votes_count}});
-								var against = $dom.get("li.vote-1 .against")[0];
-								// the background-position attribute value 'bottom' might not work on Firefox, or IE
-								$dom.style(against, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
-							</script>
+                    <span class="icon">icon</span>
+                    <span class="closeicon">icon</span>
+                    {% if first_vote %}
+                    <div class="tooltip-score">
+                        <span class="balance">{{first_vote.vote.for_votes_count}}/{{first_vote.vote.against_votes_count}}</span>
+                        <div class="scale" style="width:120px">
+                            <span class="against"></span>
+                            <span class="for"></span>
+                            <script type="text/javascript">
+                                // set the style of the 'against' span
+                                var score_width = {{first_vote.vote.against_votes_count}} * 120 / ({{first_vote.vote.for_votes_count}} + {{first_vote.vote.against_votes_count}});
+                                var against = $dom.get("li.vote-1 .against")[0];
+                                // the background-position attribute value 'bottom' might not work on Firefox, or IE
+                                $dom.style(against, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+                            </script>
 
-						</div>
-					</div>
+                        </div>
+                    </div>
                     {% endif %}
 
-					<div class="tooltip"><span>קריאה ראשונה</span></div>
-					<span class="date">?</span>
-					<script type="text/javascript">
-					{% if bill.first_vote %}
-				 		// set the committee date
-						var date = $dom.get("li.vote-1 span.date")[0];
-						date.innerHTML = "{{first_vote.vote_time.day}}/{{first_vote.vote_time.month}}<br>{{first_vote.vote_time.year}}";
-						var li_first_vote = $dom.get('li.vote-1')[0];
-						$dom.addClass(li_first_vote, "voted");
-						if ({{bill.first_vote.passed|lower}} ) {
-							$dom.addClass(li_first_vote, "passed");
-							OKnesset.billFailedHenceForth = false;
-						} else {
-							OKnesset.billFailedHenceForth = true;
-						}
+                    <div class="tooltip"><span>קריאה ראשונה</span></div>
+                    <span class="date">?</span>
+                    <script type="text/javascript">
+                    {% if first_vote %}
+                        // set the committee date
+                        var date = $dom.get("li.vote-1 span.date")[0];
+                        date.innerHTML = "{{first_vote.vote_time.day}}/{{first_vote.vote_time.month}}<br>{{first_vote.vote_time.year}}";
+                        var li_first_vote = $dom.get('li.vote-1')[0];
+                        $dom.addClass(li_first_vote, "voted");
+                        if ({{bill.first_vote.passed|lower}} ) {
+                            $dom.addClass(li_first_vote, "passed");
+                            OKnesset.billFailedHenceForth = false;
+                        } else {
+                            OKnesset.billFailedHenceForth = true;
+                        }
 
                     {% endif %}
 
-						if (OKnesset.billFailedHenceForth) {
-							$dom.addClass($dom.get('li.vote-1')[0], "failed");
-							$dom.get("li.vote-1 span.date")[0].innerHTML = "";
-						}
-					</script>
+                        if (OKnesset.billFailedHenceForth) {
+                            $dom.addClass($dom.get('li.vote-1')[0], "failed");
+                            $dom.get("li.vote-1 span.date")[0].innerHTML = "";
+                        }
+                    </script>
 
-				</div>
-			</li>
+                </div>
+            </li>
 
-			<li class="committee-2 odd">
-				<div class="step">
-                    {% if bill.second_committee_meetings.count > 0 %}
-                        <a href="{{  second_committee_meetings.url}}" class="link" target="_blank">קישור</a>
+            <li class="committee-2 odd">
+                <div class="step">
+                    {% if second_committee_meetings %}
+                        <a href="{{ second_committee_meetings.url }}" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ישיבות ועדה</span></div>
-					<span class="date">?</span>
-					<script type="text/javascript">
-					{% if bill.second_committee_meetings.count > 0 %}
-				 		// set the committee date
-						var date = $dom.get("li.committee-2 span.date")[0];
-						date.innerHTML = "{{second_committee_meetings.day}}/{{second_committee_meetings.month}}<br>{{second_committee_meetings.year}}";
-						$dom.addClass($dom.get('li.committee-2')[0], "passed");
+                    <span class="icon">icon</span>
+                    <div class="tooltip"><span>ישיבות ועדה</span></div>
+                    <span class="date">?</span>
+                    <script type="text/javascript">
+                    {% if second_committee_meetings %}
+                        // set the committee date
+                        var date = $dom.get("li.committee-2 span.date")[0];
+                        date.innerHTML = "{{second_committee_meetings.day}}/{{second_committee_meetings.month}}<br>{{second_committee_meetings.year}}";
+                        $dom.addClass($dom.get('li.committee-2')[0], "passed");
                     {% endif %}
 
-						if (OKnesset.billFailedHenceForth) {
-							$dom.addClass($dom.get('li.committee-2')[0], "failed");
-							$dom.get("li.committee-2 span.date")[0].innerHTML = "";
-						}
-					</script>
-				</div>
-			</li>
+                        if (OKnesset.billFailedHenceForth) {
+                            $dom.addClass($dom.get('li.committee-2')[0], "failed");
+                            $dom.get("li.committee-2 span.date")[0].innerHTML = "";
+                        }
+                    </script>
+                </div>
+            </li>
 
-			<li class="vote-2" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
-				<div class="step">
-                    {% if bill.approval_vote %}
+            <li class="vote-2" {% if approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
+                <div class="step">
+                    {% if approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
 
-					<span class="icon">icon</span>
-					<span class="closeicon">icon</span>
-					<div class="tooltip-score">
-						<span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
-						<div class="scale" style="width:120px">
-							<span class="against"></span>
-							<span class="for"></span>
-						</div>
-					</div>
+                    <span class="icon">icon</span>
+                    <span class="closeicon">icon</span>
+                    <div class="tooltip-score">
+                        <span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
+                        <div class="scale" style="width:120px">
+                            <span class="against"></span>
+                            <span class="for"></span>
+                        </div>
+                    </div>
 
-					<div class="tooltip"><span>קריאה שניה</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
+                    <div class="tooltip"><span>קריאה שניה</span></div>
+                    <span class="date">?</span>
+                </div>
+            </li>
 
-			<li class="vote-3 odd" {% if bill.approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
-				<div class="step">
-                    {% if bill.approval_vote %}
+            <li class="vote-3 odd" {% if approval_vote %} onclick="OKnesset.drill(event);" style="cursor:pointer"{% endif %}>
+                <div class="step">
+                    {% if approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<span class="closeicon">icon</span>
-					<div class="tooltip-score">
-						<span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
-						<div class="scale" style="width:120px">
-							<span class="against"></span>
-							<span class="for"></span>
-						</div>
-					</div>
+                    <span class="icon">icon</span>
+                    <span class="closeicon">icon</span>
+                    <div class="tooltip-score">
+                        <span class="balance">{{approval_vote.vote.for_votes_count}}/{{approval_vote.vote.against_votes_count}}</span>
+                        <div class="scale" style="width:120px">
+                            <span class="against"></span>
+                            <span class="for"></span>
+                        </div>
+                    </div>
 
-					<div class="tooltip"><span>קריאה שלישית</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
+                    <div class="tooltip"><span>קריאה שלישית</span></div>
+                    <span class="date">?</span>
+                </div>
+            </li>
 
-			<li class="accepted last" >
-				<div class="step">
-                    {% if bill.approval_vote %}
+            <li class="accepted last" >
+                <div class="step">
+                    {% if approval_vote %}
                         <a href="{{ billurl }}#bill-approval" class="link" target="_blank">קישור</a>
                     {% endif %}
-					<span class="icon">icon</span>
-					<div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
-					<span class="date">?</span>
-				</div>
-			</li>
-			<script type="text/javascript">
-			{% if bill.approval_vote %}
-		 		// set the committee date
-				var date2 = $dom.get("li.vote-2 span.date")[0];
-				var date3 = $dom.get("li.vote-3 span.date")[0];
-				var dateApproval = $dom.get("li.accepted span.date")[0];
-				date2.innerHTML = "{{approval_vote.vote_time.day}}/{{approval_vote.vote_time.month}}<br>{{approval_vote.vote_time.year}}";
-				date3.innerHTML = date2.innerHTML;
-				dateApproval.innerHTML = date2.innerHTML;
-				var li_second_vote = $dom.get('li.vote-2')[0];
-				var li_third_vote = $dom.get('li.vote-3')[0];
-				$dom.addClass(li_second_vote, "voted");
-				$dom.addClass(li_third_vote, "voted");
+                    <span class="icon">icon</span>
+                    <div class="tooltip"><span>ההצעה הופכת לחוק</span></div>
+                    <span class="date">?</span>
+                </div>
+            </li>
+            <script type="text/javascript">
+            {% if approval_vote %}
+                // set the committee date
+                var date2 = $dom.get("li.vote-2 span.date")[0];
+                var date3 = $dom.get("li.vote-3 span.date")[0];
+                var dateApproval = $dom.get("li.accepted span.date")[0];
+                date2.innerHTML = "{{approval_vote.vote_time.day}}/{{approval_vote.vote_time.month}}<br>{{approval_vote.vote_time.year}}";
+                date3.innerHTML = date2.innerHTML;
+                dateApproval.innerHTML = date2.innerHTML;
+                var li_second_vote = $dom.get('li.vote-2')[0];
+                var li_third_vote = $dom.get('li.vote-3')[0];
+                $dom.addClass(li_second_vote, "voted");
+                $dom.addClass(li_third_vote, "voted");
 
-		 		// set the style of the 'against' span
-				var score_width = {{approval_vote.vote.against_votes_count}} * 120 / ({{approval_vote.vote.for_votes_count}} + {{approval_vote.vote.against_votes_count}});
-				var against_2 = $dom.get("li.vote-2 .against")[0];
-				var against_3 = $dom.get("li.vote-3 .against")[0];
-				// the background-position attribute value 'bottom' might not work on Firefox, or IE
-				$dom.style(against_2, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
-				$dom.style(against_3, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+                // set the style of the 'against' span
+                var score_width = {{approval_vote.vote.against_votes_count}} * 120 / ({{approval_vote.vote.for_votes_count}} + {{approval_vote.vote.against_votes_count}});
+                var against_2 = $dom.get("li.vote-2 .against")[0];
+                var against_3 = $dom.get("li.vote-3 .against")[0];
+                // the background-position attribute value 'bottom' might not work on Firefox, or IE
+                $dom.style(against_2, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
+                $dom.style(against_3, {'width':score_width + "px", 'background-position': (score_width - 120) + "px bottom" });
 
-				if ({{bill.approval_vote.passed|lower}}) {
-					$dom.addClass(li_second_vote, "passed");
-					$dom.addClass(li_third_vote, "passed");
-					$dom.addClass($dom.get('li.accepted')[0], "passed");
-				} else {
-					OKnesset.billFailedHenceForth = true;
-				}
+                if ({{bill.approval_vote.passed|lower}}) {
+                    $dom.addClass(li_second_vote, "passed");
+                    $dom.addClass(li_third_vote, "passed");
+                    $dom.addClass($dom.get('li.accepted')[0], "passed");
+                } else {
+                    OKnesset.billFailedHenceForth = true;
+                }
             {% endif %}
 
-			if (OKnesset.billFailedHenceForth){
-					$dom.addClass($dom.get('li.vote-2')[0], "failed");
-					$dom.addClass($dom.get('li.vote-3')[0], "failed");
-					$dom.addClass($dom.get('li.accepted')[0], "failed");
+            if (OKnesset.billFailedHenceForth){
+                    $dom.addClass($dom.get('li.vote-2')[0], "failed");
+                    $dom.addClass($dom.get('li.vote-3')[0], "failed");
+                    $dom.addClass($dom.get('li.accepted')[0], "failed");
 
-					$dom.get("li.vote-2 span.date")[0].innerHTML ="";
-					$dom.get("li.vote-3 span.date")[0].innerHTML ="";
-					$dom.get("li.accepted span.date")[0].innerHTML ="";
-			}
-			</script>
+                    $dom.get("li.vote-2 span.date")[0].innerHTML ="";
+                    $dom.get("li.vote-3 span.date")[0].innerHTML ="";
+                    $dom.get("li.accepted span.date")[0].innerHTML ="";
+            }
+            </script>
 
-		</ul>
-	</div>
+        </ul>
+    </div>
 
-	<div class="footer">
-		<div class="footer-title">
-			<div class="credit">עובד והונגש ע"י <a href="http://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
-			<div class="share">
-				<script type="text/javascript">
-					OKnesset.embedMinimize = function(){
-						var footer = $dom.get('.footer')[0];
-						$dom.removeClass(footer, 'maximized');
-						$dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embed();");
-					}
-					OKnesset.embed = function(){
-						var footer = $dom.get('.footer')[0];
-						$dom.addClass(footer, 'maximized');
+    <div class="footer">
+        <div class="footer-title">
+            <div class="credit">עובד והונגש ע"י <a href="http://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
+            <div class="share">
+                <script type="text/javascript">
+                    OKnesset.embedMinimize = function(){
+                        var footer = $dom.get('.footer')[0];
+                        $dom.removeClass(footer, 'maximized');
+                        $dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embed();");
+                    }
+                    OKnesset.embed = function(){
+                        var footer = $dom.get('.footer')[0];
+                        $dom.addClass(footer, 'maximized');
 
-						$dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embedMinimize();");
+                        $dom.get('.footer .embed')[0].setAttribute("onclick", "OKnesset.embedMinimize();");
 
-						footer.onclick = function(e) {
-						  // in all browsers
-						  if(e && e.stopPropagation) {
-						    e.stopPropagation();
-						  } else {
-						    e = window.event;
-						    e.cancelBubble = true;
-						  }
-						};
+                        footer.onclick = function(e) {
+                          // in all browsers
+                          if(e && e.stopPropagation) {
+                            e.stopPropagation();
+                          } else {
+                            e = window.event;
+                            e.cancelBubble = true;
+                          }
+                        };
 
-						// click anywhere else
-						document.documentElement.onclick = function() {
-						  // will hide the popup
-						  OKnesset.embedMinimize()
-						};
-					}
-				</script>
-				<span  class="embed" onclick="OKnesset.embed()">הטמעה</span>
-				<a href="{{billurl}}" target="_blank" class="link">קישור</a>
-			</div>
-		</div>
-		<div class="embeddiv">
-			<b>קחו את החוק לידיים!</b><br>
-			בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם תהליך החקיקה הזה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
-			<b>העתיקו את קוד ההטמעה (html):</b><br>
-			<input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="http://oknesset.org/bill/{{bill.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
-			<b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
-			<input type="text" readonly="readonly" value='http://oknesset.org/bill/{{bill.id}}'/>
+                        // click anywhere else
+                        document.documentElement.onclick = function() {
+                          // will hide the popup
+                          OKnesset.embedMinimize()
+                        };
+                    }
+                </script>
+                <span  class="embed" onclick="OKnesset.embed()">הטמעה</span>
+                <a href="{{billurl}}" target="_blank" class="link">קישור</a>
+            </div>
+        </div>
+        <div class="embeddiv">
+            <b>קחו את החוק לידיים!</b><br>
+            בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם תהליך החקיקה הזה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
+            <b>העתיקו את קוד ההטמעה (html):</b><br>
+            <input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="http://oknesset.org/bill/{{bill.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
+            <b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
+            <input type="text" readonly="readonly" value='http://oknesset.org/bill/{{bill.id}}'/>
 
-		</div>
-	</div>
+        </div>
+    </div>
 
 </div>
 
