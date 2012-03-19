@@ -69,61 +69,49 @@ class MemberListView(ListView):
             context['friend_pages'][0][2] = True
             context['title'] = _('Members')
         elif info=='bills_proposed':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.bills.count()
-                x.bill_stage = 'proposed'
-            qs.sort(key=lambda x:x.extra, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.bills.count()
-                x.bill_stage = 'proposed'
-            context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
+            qs = qs.order_by('-bills_stats_proposed')\
+                    .select_related('current_party')\
+                    .extra(select={'extra':'bills_stats_proposed'})
+            context['past_mks'] = context['past_mks'].order_by('-bills_stats_proposed')\
+                                                     .select_related('current_party')\
+                                                     .extra(select={'extra':'bills_stats_proposed'})
             context['friend_pages'][1][2] = True
-            context['norm_factor'] = float(qs[0].extra)/50.0
+            context['norm_factor'] = float(qs[0].bills_stats_proposed)/50.0
             context['title'] = "%s %s" % (_('Members'), _('By number of bills proposed'))
+            context['bill_stage'] = 'proposed'
         elif info=='bills_pre':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-                x.bill_stage = 'pre'
-            qs.sort(key=lambda x:x.extra, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-                x.bill_stage = 'pre'
-            context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
+            qs = qs.order_by('-bills_stats_pre')\
+                    .select_related('current_party')\
+                    .extra(select={'extra':'bills_stats_pre'})
+            context['past_mks'] = context['past_mks'].order_by('-bills_stats_pre')\
+                                                     .select_related('current_party')\
+                                                     .extra(select={'extra':'bills_stats_pre'})
             context['friend_pages'][2][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
             context['title'] = "%s %s" % (_('Members'), _('By number of bills pre-approved'))
+            context['bill_stage'] = 'pre'
         elif info=='bills_first':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-                x.bill_stage = 'first'
-            qs.sort(key=lambda x:x.extra, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
-                x.bill_stage = 'first'
-            context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
+            qs = qs.order_by('-bills_stats_first')\
+                    .select_related('current_party')\
+                    .extra(select={'extra':'bills_stats_first'})
+            context['past_mks'] = context['past_mks'].order_by('-bills_stats_first')\
+                                                     .select_related('current_party')\
+                                                     .extra(select={'extra':'bills_stats_first'})
             context['friend_pages'][3][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
             context['title'] = "%s %s" % (_('Members'), _('By number of bills first-approved'))
+            context['bill_stage'] = 'first'
         elif info=='bills_approved':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.bills.filter(stage='6').count()
-                x.bill_stage = 'approved'
-            qs.sort(key=lambda x:x.extra, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.bills.filter(stage='6').count()
-                x.bill_stage = 'approved'
-            context['past_mks'].sort(key=lambda x:x.extra, reverse=True)
+            qs = qs.order_by('-bills_stats_approved')\
+                    .select_related('current_party')\
+                    .extra(select={'extra':'bills_stats_approved'})
+            context['past_mks'] = context['past_mks'].order_by('-bills_stats_approved')\
+                                                     .select_related('current_party')\
+                                                     .extra(select={'extra':'bills_stats_approved'})
             context['friend_pages'][4][2] = True
             context['norm_factor'] = float(qs[0].extra)/50.0
             context['title'] = "%s %s" % (_('Members'), _('By number of bills approved'))
+            context['bill_stage'] = 'approved'
         elif info=='votes':
             qs = list(qs)
             vs = list(MemberVotingStatistics.objects.all())
