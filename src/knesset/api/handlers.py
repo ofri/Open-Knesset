@@ -304,7 +304,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
     @classmethod
     def tags(self,bill):
-        return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+        return [ {'id':t.id, 'name':t.name } for t in bill._get_tags() ]
 
     @classmethod
     def bill_title(self,bill):

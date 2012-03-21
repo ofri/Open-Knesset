@@ -38,7 +38,7 @@ class ApiViewsTest(TestCase):
                                           title='bill 1',
                                           law=self.law_1)
         self.bill_1.proposers.add(self.mks[0])
-        Tag.objects.add_tag(self.bill_1, "legalize")
+        Tag.objects.add_tag(self.bill_1, 'tag1')
         self.bill_2 = Bill.objects.create(stage='-1',
                                           stage_date=datetime.date.today()-datetime.timedelta(10),
                                           title='bill 2',
