@@ -38,6 +38,7 @@ class ApiViewsTest(TestCase):
                                           title='bill 1',
                                           law=self.law_1)
         self.bill_1.proposers.add(self.mks[0])
+        Tag.objects.add_tag(self.bill_1, "legalize")
         self.bill_2 = Bill.objects.create(stage='-1',
                                           stage_date=datetime.date.today()-datetime.timedelta(10),
                                           title='bill 2',
@@ -90,10 +91,16 @@ class ApiViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json['for_votes']), self.num_mks)
-
+    
     def test_api_vote_not_found(self):
         res = self.client.get(reverse('vote-handler', args=[123456]))
         self.assertEqual(res.status_code, 404)
+
+    def test_api_bill(self):
+        res = self.client.get(reverse('bill-handler', args=[self.bill_1.id]))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json['bill_title'], u"%s, %s" % (self.bill_1.law.title, self.bill_1.title))
 
     def test_api_bill_list(self):
         res = self.client.get(reverse('bill-handler'))

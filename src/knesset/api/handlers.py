@@ -236,6 +236,7 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
+    # TODO: s/bill_title/title
     fields = ('url', 'bill_title', 'popular_name',
               'stage_text', 'stage_date',
               'votes',
