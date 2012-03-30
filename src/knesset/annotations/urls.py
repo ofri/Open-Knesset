@@ -8,5 +8,5 @@ annotation_resource = Resource(AnnotationHandler)
 
 urlpatterns = patterns('',
     url(r'^(?P<id>[^/]+)/', annotation_resource),
-    url(r'^$', annotation_resource),
+    url(r'^$', annotation_resource, name="annotation-handler"),
     ) 

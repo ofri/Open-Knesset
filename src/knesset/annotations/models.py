@@ -3,50 +3,29 @@ import json
 from django.utils.simplejson import JSONEncoder as DjangoJSONEncoder
 from datetime import datetime
 
-class DictField(models.TextField):
-    """DictField is a textfield that contains JSON-serialized dictionaries."""
+class JsonField(models.TextField):
+    """JsonField is a textfield that contains JSON-serialized dictionaries."""
 
-    __metaclass__ = models.SubfieldBase
+    #__metaclass__ = models.SubfieldBase
 
     def to_python(self, value):
         """Convert string value to JSON after loading from the DB."""
         value = json.loads(value)
-        assert isinstance(value, dict)
         return value
 
     def get_db_prep_save(self, value):
         """Convert JSON object to a string before save."""
-        assert isinstance(value, dict)
-        value = json.dumps(value, cls=DjangoJSONEncoder)
-        return super(DictField, self).get_db_prep_save(value)
-
-class CommaDelimitedStringListField(models.TextField):
-    """CommaDelimitedStringListField is a textfield that contains a list of strings
-       delimited by commas."""
-    
-    __metaclass__ = models.SubfieldBase
-
-    def to_python(self, value):
-        """Convert the string value to a list after loading from the DB."""
-        value = value.split(",")
-        assert isinstance(value, list)
-        return value
-
-    def get_db_prep_save(self, value):
-        """Convert the list to a comma-delimited string."""
-        assert isinstance(value, list)
-        value = ','.join(value)
-        return super(CommaDelimitedStringListField, self).get_db_prep_save(value)
+        value = json.dumps(value, cls=DjangoJSONEncoder, ensure_ascii=False)
+        return super(JsonField, self).get_db_prep_save(value)
 
 from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^knesset\.annotations\.models\.DictField"])
-add_introspection_rules([], ["^knesset\.annotations\.models\.CommaDelimitedStringListField"])
+add_introspection_rules([], ["^knesset\.annotations\.models\.JsonField"])
 
 class AnnotationPermissions(models.Model):
-    read = CommaDelimitedStringListField(default=[])
-    update = CommaDelimitedStringListField(default=[])
-    delete = CommaDelimitedStringListField(default=[])
-    admin = CommaDelimitedStringListField(default=[])
+    read = JsonField(default=[])
+    update = JsonField(default=[])
+    delete = JsonField(default=[])
+    admin = JsonField(default=[])
 
     def __repr__(self):
       return ("id=" + repr(self.id) +
@@ -62,11 +41,11 @@ class Annotation(models.Model):
     uri = models.URLField()
     account_id = models.CharField(max_length=255) # Arbitrary limit
     #TODO(shmichael): Add real django user here.
-    user = DictField(default={})
+    user = JsonField()
     text = models.TextField()
     quote = models.TextField(default="")
     created = models.DateTimeField(default=datetime.now)
-    ranges = CommaDelimitedStringListField(default=[])
+    ranges = JsonField()
     #TODO(shmichael): Add django tags here.
-    tags = CommaDelimitedStringListField(default=[])
+    tags = JsonField()
     permissions = models.ForeignKey(AnnotationPermissions, db_index=True)
