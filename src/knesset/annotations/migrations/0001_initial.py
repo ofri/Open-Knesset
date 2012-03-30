@@ -11,10 +11,10 @@ class Migration(SchemaMigration):
         # Adding model 'AnnotationPermissions'
         db.create_table('annotations_annotationpermissions', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('read', self.gf('knesset.annotations.models.CommaDelimitedStringListField')()),
-            ('update', self.gf('knesset.annotations.models.CommaDelimitedStringListField')()),
-            ('delete', self.gf('knesset.annotations.models.CommaDelimitedStringListField')()),
-            ('admin', self.gf('knesset.annotations.models.CommaDelimitedStringListField')()),
+            ('read', self.gf('knesset.annotations.models.JsonField')()),
+            ('update', self.gf('knesset.annotations.models.JsonField')()),
+            ('delete', self.gf('knesset.annotations.models.JsonField')()),
+            ('admin', self.gf('knesset.annotations.models.JsonField')()),
         ))
         db.send_create_signal('annotations', ['AnnotationPermissions'])
 
@@ -24,11 +24,11 @@ class Migration(SchemaMigration):
             ('annotator_schema_version', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('uri', self.gf('django.db.models.fields.CharField')(max_length=2000)),
             ('account_id', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('user', self.gf('knesset.annotations.models.DictField')(default={})),
+            ('user', self.gf('knesset.annotations.models.JsonField')(default={})),
             ('text', self.gf('django.db.models.fields.TextField')()),
             ('quote', self.gf('django.db.models.fields.TextField')()),
             ('created', self.gf('django.db.models.fields.DateTimeField')()),
-            ('ranges', self.gf('knesset.annotations.models.CommaDelimitedStringListField')()),
+            ('ranges', self.gf('knesset.annotations.models.JsonField')()),
             ('permissions', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.AnnotationPermissions'])),
         ))
         db.send_create_signal('annotations', ['Annotation'])
@@ -52,18 +52,18 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'permissions': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.AnnotationPermissions']"}),
             'quote': ('django.db.models.fields.TextField', [], {}),
-            'ranges': ('knesset.annotations.models.CommaDelimitedStringListField', [], {}),
+            'ranges': ('knesset.annotations.models.JsonField', [], {}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'uri': ('django.db.models.fields.CharField', [], {'max_length': '2000'}),
-            'user': ('knesset.annotations.models.DictField', [], {'default': '{}'})
+            'user': ('knesset.annotations.models.JsonField', [], {'default': '{}'})
         },
         'annotations.annotationpermissions': {
             'Meta': {'object_name': 'AnnotationPermissions'},
-            'admin': ('knesset.annotations.models.CommaDelimitedStringListField', [], {}),
-            'delete': ('knesset.annotations.models.CommaDelimitedStringListField', [], {}),
+            'admin': ('knesset.annotations.models.JsonField', [], {}),
+            'delete': ('knesset.annotations.models.JsonField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'read': ('knesset.annotations.models.CommaDelimitedStringListField', [], {}),
-            'update': ('knesset.annotations.models.CommaDelimitedStringListField', [], {})
+            'read': ('knesset.annotations.models.JsonField', [], {}),
+            'update': ('knesset.annotations.models.JsonField', [], {})
         }
     }
 

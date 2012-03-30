@@ -27,19 +27,19 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'permissions': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.AnnotationPermissions']"}),
             'quote': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            'ranges': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'}),
-            'tags': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'}),
+            'ranges': ('knesset.annotations.models.JsonField', [], {'default': '[]'}),
+            'tags': ('knesset.annotations.models.JsonField', [], {'default': '[]'}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'uri': ('django.db.models.fields.URLField', [], {'max_length': '200'}),
-            'user': ('knesset.annotations.models.DictField', [], {'default': '{}'})
+            'user': ('knesset.annotations.models.JsonField', [], {'default': '{}'})
         },
         'annotations.annotationpermissions': {
             'Meta': {'object_name': 'AnnotationPermissions'},
-            'admin': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'}),
-            'delete': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'}),
+            'admin': ('knesset.annotations.models.JsonField', [], {'default': '[]'}),
+            'delete': ('knesset.annotations.models.JsonField', [], {'default': '[]'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'read': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'}),
-            'update': ('knesset.annotations.models.CommaDelimitedStringListField', [], {'default': '[]'})
+            'read': ('knesset.annotations.models.JsonField', [], {'default': '[]'}),
+            'update': ('knesset.annotations.models.JsonField', [], {'default': '[]'})
         }
     }
 

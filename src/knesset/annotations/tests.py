@@ -1,40 +1,39 @@
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from knesset.annotations.models import DictField, CommaDelimitedStringListField, Annotation
+from knesset.annotations.models import JsonField, Annotation
 
 class AnnotationModelTest(TestCase):
-    def test_dict_field_to_python(self):
-        field = DictField()
+    def test_json_field_object_to_python(self):
+        field = JsonField()
         result = field.to_python('{ "key": "value", "listkey": ["item1", "item2"] }')
         self.assertEqual("value", result["key"])
 
-    def test_dict_field_to_db(self):
-        field = DictField()
+    def test_json_field_object_to_db(self):
+        field = JsonField()
         obj = {"key": "value", "listkey": ["item1", "item2"]}
         result = field.get_db_prep_save(obj)
         self.assertEqual(obj, json.loads(result))
 
-    def test_comma_delimited_string_list_field_to_python(self):
-        field = CommaDelimitedStringListField()
-        result = field.to_python('word1,word2,word3')
+    def test_json_field_list_to_python(self):
+        field = JsonField()
+        result = field.to_python('["word1","word2","word3"]')
         self.assertEqual("word1", result[0])
 
-    def test_comma_delimited_string_list_field_to_db(self):
-        field = CommaDelimitedStringListField()
+    def test_json_field_list_to_db(self):
+        field = JsonField()
         result = field.get_db_prep_save(['word1', 'word2', 'word3'])
-        self.assertEqual('word1,word2,word3', result)
+        self.assertEqual(u'["word1", "word2", "word3"]', result)
 
     def test_create_annotation(self):
-        data = json.loads("""
-        {"permissions":
-          {"read":["habeanf"],
-           "update":["habeanf"],
-           "delete":["habeanf"],
-           "admin":["habeanf"]},
+        data = {"permissions":
+          {"read":["testuser"],
+           "update":["testuser"],
+           "delete":["testuser"],
+           "admin":["testuser"]},
            "user":
-             {"id":"habeanf","name":"habeanf"},
-           "text":"oiuio",
+             {"id":"testuser","name":"Test User"},
+           "text":"This is a test",
            "tags":[],
            "ranges":[{
              "start":"/div[3]/div[2]/blockquote/p",
@@ -42,26 +41,8 @@ class AnnotationModelTest(TestCase):
              "end":"/div[3]/div[2]/blockquote/p",
              "endOffset":19}],
            "quote":"Quote",
-           "uri":"http://localhost:8000/committee/meeting/4163/"}
-        """)
-        data2 = {"permissions":
-          {"read":["habeanf"],
-           "update":["habeanf"],
-           "delete":["habeanf"],
-           "admin":["habeanf"]},
-           "user":
-             {"id":"habeanf","name":"habeanf"},
-           "text":"oiuio",
-           "tags":[],
-           "ranges":[{
-             "start":"/div[3]/div[2]/blockquote/p",
-             "startOffset":4,
-             "end":"/div[3]/div[2]/blockquote/p",
-             "endOffset":19}],
-           "quote":"Quote",
-           "uri":"http://localhost:8000/committee/meeting/4163/"}
-         
-        res = self.client.post(reverse('annotation-handler'), data2)
-        print res
+           "uri":"http://oknesset.org/committee/meeting/4163/"}
+
+        res = self.client.post(reverse('annotation-handler'), data)
         self.assertEqual(201, res.status_code)
         self.assertEqual(1, Annotation.objects.count())
