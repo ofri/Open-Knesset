@@ -43,6 +43,6 @@ class AnnotationModelTest(TestCase):
            "quote":"Quote",
            "uri":"http://oknesset.org/committee/meeting/4163/"}
 
-        res = self.client.post(reverse('annotation-handler'), data)
+        res = self.client.post(reverse('annotation-handler'), json.dumps(data), content_type="application/json")
         self.assertEqual(201, res.status_code)
         self.assertEqual(1, Annotation.objects.count())
