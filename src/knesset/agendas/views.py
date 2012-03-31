@@ -1,4 +1,5 @@
 import logging
+from operator import itemgetter
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
@@ -18,7 +19,7 @@ from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting
 
-from queries import getAllAgendaPartyVotes
+from queries import getAllAgendaPartyVotes,getAllAgendaMkVotes
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -93,30 +94,25 @@ class AgendaDetailView (DetailView):
         context['watched_members'] = watched_members
 
         all_mks = 'all_mks' in self.request.GET.keys()
-        if all_mks:
-            cached_context = cache.get('agenda_mks_%d_all_mks' % agenda.id)
-            if not cached_context:
-                mks = agenda.selected_instances(Member, top=200, bottom=0)
-                cached_context = {'selected_mks':mks['top'],'all_mks':True}
-                cache.set('agenda_mks_%d_all_mks' % agenda.id,
-                          cached_context, 900)
-            context.update(cached_context)
-        else:
-            cached_context = cache.get('agenda_mks_%d' % agenda.id)
-            if not cached_context:
-                mks = agenda.selected_instances(Member, top=5,bottom=5)
-                cached_context = {'selected_mks_top': mks['top'],
-                                  'selected_mks_bottom': mks['bottom'],
-                                  'all_mks':False}
-                cache.set('agenda_mks_%d' % agenda.id, cached_context, 900)
-            context.update(cached_context)
+        allAgendaMkVotes = cache.get('AllAgendaMkVotes')
+        if not allAgendaMkVotes:
+            allAgendaMkVotes = getAllAgendaMkVotes()
+            cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
+	context['agenda_mk_values']=dict(allAgendaMkVotes[agenda.id])
+	if all_mks:
+		context['all_mks_ids']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:200])
+		context['all_mks']=True
+	else:
+		context['mks_top']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:5])
+		context['mks_bottom']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=False)[:5])
 
-        cached_context = cache.get('agenda_parties_%d' % agenda.id)
-        if not cached_context:
-            selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-            cached_context = {'selected_parties': selected_parties }
-            cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
-        context.update(cached_context)
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+	print allAgendaPartyVotes[agenda.id]
+	context['agenda_party_values']=dict(allAgendaPartyVotes[agenda.id])
+	context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
 
         cached_context = cache.get('agenda_votes_%d' % agenda.id)
         if not cached_context:
@@ -126,6 +122,15 @@ class AgendaDetailView (DetailView):
             cache.set('agenda_votes_%d' % agenda.id, cached_context, 900)
         context.update(cached_context)
 
+	# Optimization: get all parties and members before rendering
+	# Further possible optimization: only bring parties/members needed for rendering
+	parties_objects = Party.objects.all()
+	partiesDict = dict(map(lambda party:(party.id,party),parties_objects))
+	context['parties']=partiesDict
+
+	member_objects = Member.objects.all()
+	membersDict = dict(map(lambda mk:(mk.id,mk),member_objects))
+	context['members']=membersDict
         return context
 
 class AgendaMkDetailView (DetailView):
