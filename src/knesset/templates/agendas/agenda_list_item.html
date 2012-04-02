@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load lookup %}
 {% load user %}
 {% load bills_extra %}
 {% load common_text_handling %}
@@ -13,9 +14,11 @@
 <div class="item-metadata">
     <span class="editors">
         {% trans "Editors:" %}
-        {% for editor in agenda.editors.all %}
+        {% for editor_id in editor_ids %}
+        {% with editors|lookup:editor_id as editor %}
             {% if not forloop.first %} | {% endif %}
             {% user editor %}
+        {% endwith %}
         {% endfor %}
     </span><br>
     <span class="description">{{ agenda.description|pretty_crop:100|urlize }}</span>
