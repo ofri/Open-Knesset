@@ -28,10 +28,14 @@ ENCODING = 'utf8'
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
 
-SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)), 
-                         [u"ועדת משותפת פנים-עבודה לנושא סביבה ובריאות",])
-
 logger = logging.getLogger("open-knesset.syncdata")
+
+try:
+    SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)),
+                         [u"הוועדה המשותפת לנושא סביבה ובריאות",])
+except:
+    logger.warn("can't find special committees")
+    SPECIAL_COMMITTEES = {}
 
 # defines for finding explanation part in private proposals
 p_explanation = '</p><p class="explanation-header">דברי הסבר</p><p>'.decode('utf8')
