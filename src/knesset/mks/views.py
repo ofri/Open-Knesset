@@ -154,7 +154,7 @@ class MemberListView(ListView):
             context['friend_pages'][8][2] = True
             context['title'] = "%s %s" % (_('Members'), _('Graphical view'))
         context['object_list']=qs
-        cache.set('object_list_by_%s' % info, context, 900)
+        cache.set('object_list_by_%s' % info, context, settings.LONG_CACHE_TIME)
         original_context.update(context)
         return original_context
 
@@ -194,86 +194,92 @@ class MemberDetailView(DetailView):
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
+            cached_context = None
         else:
             watched = False
+            cached_context = cache.get('mk_%d' % member.id, None)
 
-        verbs = None
-        if 'verbs' in self.request.GET:
-            verbs_form = VerbsForm(self.request.GET)
-            if verbs_form.is_valid():
-                verbs = verbs_form.cleaned_data['verbs']
-        if verbs==None:
-            verbs = ('proposed', 'posted')
-            verbs_form = VerbsForm({'verbs': verbs})
+        if cached_context is None:
+            verbs = None
+            if 'verbs' in self.request.GET:
+                verbs_form = VerbsForm(self.request.GET)
+                if verbs_form.is_valid():
+                    verbs = verbs_form.cleaned_data['verbs']
+            if verbs==None:
+                verbs = ('proposed', 'posted')
+                verbs_form = VerbsForm({'verbs': verbs})
 
-        presence = {}
-        self.calc_percentile(member, presence,
-                             'average_weekly_presence_hours',
-                             'average_weekly_presence_hours',
-                             'average_weekly_presence_hours_percentile' )
-        self.calc_percentile(member, presence,
-                             'average_monthly_committee_presence',
-                             'average_monthly_committee_presence',
-                             'average_monthly_committee_presence_percentile' )
+            presence = {}
+            self.calc_percentile(member, presence,
+                                 'average_weekly_presence_hours',
+                                 'average_weekly_presence_hours',
+                                 'average_weekly_presence_hours_percentile' )
+            self.calc_percentile(member, presence,
+                                 'average_monthly_committee_presence',
+                                 'average_monthly_committee_presence',
+                                 'average_monthly_committee_presence_percentile' )
 
-        bills_statistics = {}
-        self.calc_bill_stats(member,bills_statistics,'proposed')
-        self.calc_bill_stats(member,bills_statistics,'pre')
-        self.calc_bill_stats(member,bills_statistics,'first')
-        self.calc_bill_stats(member,bills_statistics,'approved')
+            bills_statistics = {}
+            self.calc_bill_stats(member,bills_statistics,'proposed')
+            self.calc_bill_stats(member,bills_statistics,'pre')
+            self.calc_bill_stats(member,bills_statistics,'first')
+            self.calc_bill_stats(member,bills_statistics,'approved')
 
-        bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
-        #bills_tags.sort(key=lambda x:x.count,reverse=True)
-        bills_tags = calculate_cloud(bills_tags)
+            bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
+            #bills_tags.sort(key=lambda x:x.count,reverse=True)
+            bills_tags = calculate_cloud(bills_tags)
 
-        if self.request.user.is_authenticated():
-            agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
-        else:
-            agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
-        agendas = agendas['top'] + agendas['bottom']
-        for agenda in agendas:
-            agenda.watched=False
-        if self.request.user.is_authenticated():
-            watched_agendas = self.request.user.get_profile().agendas
-            for watched_agenda in watched_agendas:
-                if watched_agenda in agendas:
-                    agendas[agendas.index(watched_agenda)].watched = True
-                else:
-                    watched_agenda.score = watched_agenda.member_score(member)
-                    watched_agenda.watched = True
-                    agendas.append(watched_agenda)
-        agendas.sort(key=attrgetter('score'), reverse=True)
+            if self.request.user.is_authenticated():
+                agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+            else:
+                agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
+            agendas = agendas['top'] + agendas['bottom']
+            for agenda in agendas:
+                agenda.watched=False
+            if self.request.user.is_authenticated():
+                watched_agendas = self.request.user.get_profile().agendas
+                for watched_agenda in watched_agendas:
+                    if watched_agenda in agendas:
+                        agendas[agendas.index(watched_agenda)].watched = True
+                    else:
+                        watched_agenda.score = watched_agenda.member_score(member)
+                        watched_agenda.watched = True
+                        agendas.append(watched_agenda)
+            agendas.sort(key=attrgetter('score'), reverse=True)
 
-        factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+            factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
 
-        votes_against_own_bills = VoteAction.objects.filter(member=member,
-                                                            against_own_bill=True)
+            votes_against_own_bills = VoteAction.objects.filter(member=member,
+                                                                against_own_bill=True)
 
-        general_discipline_params = { 'member' : member }
-        is_coalition = member.current_party.is_coalition
-        if is_coalition:
-            general_discipline_params['against_coalition'] = True
-        else:
-            general_discipline_params['against_opposition'] = True
-        general_discipline = VoteAction.objects.filter(**general_discipline_params)
+            general_discipline_params = { 'member' : member }
+            is_coalition = member.current_party.is_coalition
+            if is_coalition:
+                general_discipline_params['against_coalition'] = True
+            else:
+                general_discipline_params['against_opposition'] = True
+            general_discipline = VoteAction.objects.filter(**general_discipline_params)
 
-        about_videos=get_videos_queryset(member,group='about')
-        if (about_videos.count()>0):
-            about_video=about_videos[0]
-            about_video_embed_link=about_video.embed_link
-            about_video_image_link=about_video.image_link
-        else:
-            about_video_embed_link=''
-            about_video_image_link=''
-            
-        related_videos=get_videos_queryset(member,group='related')
-        related_videos=related_videos.filter(
-            Q(published__gt=date.today()-timedelta(days=30))
-            | Q(sticky=True)
-        ).order_by('sticky').order_by('-published')[0:5]
+            about_videos=get_videos_queryset(member,group='about')[:1]
+            if len(about_videos):
+                about_video=about_videos[0]
+                about_video_embed_link=about_video.embed_link
+                about_video_image_link=about_video.image_link
+            else:
+                about_video_embed_link=''
+                about_video_image_link=''
 
-        context.update({'watched_member': watched,
-                'actions': actor_stream(member).filter(verb__in=verbs),
+            related_videos=get_videos_queryset(member,group='related')
+            related_videos=related_videos.filter(
+                Q(published__gt=date.today()-timedelta(days=30))
+                | Q(sticky=True)
+            ).order_by('sticky').order_by('-published')[:5]
+
+            actions = actor_stream(member).filter(verb__in=verbs)
+            for a in actions:
+                a.actor = member
+            cached_context = {'watched_member': watched,
+                'actions':actions,
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
                 'bills_tags':bills_tags,
@@ -286,7 +292,10 @@ class MemberDetailView(DetailView):
                 'about_video_image_link':about_video_image_link,
                 'related_videos':related_videos,
                 'num_related_videos':related_videos.count()
-               })
+               }
+            if not self.request.user.is_authenticated():
+                cache.set('mk_%d' % member.id, cached_context, settings.LONG_CACHE_TIME)
+        context.update(cached_context)
         return context
 
 class PartyListView(ListView):
