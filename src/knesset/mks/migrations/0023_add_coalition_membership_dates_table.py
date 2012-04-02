@@ -17,23 +17,11 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('mks', ['CoalitionMembership'])
 
-        # Deleting field 'Member.about_video_embed_link'
-        db.delete_column('mks_member', 'about_video_embed_link')
-
-        # Deleting field 'Member.about_video_image_link'
-        db.delete_column('mks_member', 'about_video_image_link')
-
 
     def backwards(self, orm):
         
         # Deleting model 'CoalitionMembership'
         db.delete_table('mks_coalitionmembership')
-
-        # Adding field 'Member.about_video_embed_link'
-        db.add_column('mks_member', 'about_video_embed_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
-
-        # Adding field 'Member.about_video_image_link'
-        db.add_column('mks_member', 'about_video_image_link', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True), keep_default=False)
 
 
     models = {
