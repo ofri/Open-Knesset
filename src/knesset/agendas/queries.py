@@ -111,3 +111,10 @@ FROM   (SELECT agenda_id                    agendaid,
          ON a.agendaid = v.agenda_id 
 ORDER  BY agendaid, 
           score DESC""" 
+
+def getAgendaEditorIds():
+    cursor = connection.cursor()
+    cursor.execute("""SELECT agenda_id,user_id FROM agendas_agenda_editors ORDER BY agenda_id""")
+    results = dict(map(lambda (key,group):(key,map(itemgetter(1),list(group))),
+                       groupby(cursor.fetchall(),key=itemgetter(0))))
+    return results

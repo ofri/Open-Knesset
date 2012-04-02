@@ -70,7 +70,7 @@ def agendas_for(user, vote, object_type):
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')
-def agenda_list_item(agenda, watched_agendas=None, agenda_votes_num=None, agenda_party_values=None, parties_lookup=None):
+def agenda_list_item(agenda, watched_agendas=None, agenda_votes_num=None, agenda_party_values=None, parties_lookup=None, editors_lookup=None, editor_ids=None):
 
     #cached_context = cache.get('agenda_parties_%d' % agenda.id)
     #if not cached_context:
@@ -84,4 +84,6 @@ def agenda_list_item(agenda, watched_agendas=None, agenda_votes_num=None, agenda
             'watched_agendas': watched_agendas,
             'party_scores': json.dumps(enumerated_score, ensure_ascii=False),
             'party_list': json.dumps(enumerated_party, ensure_ascii=False),
-            'agenda_votes_num': agenda_votes_num}
+            'agenda_votes_num': agenda_votes_num,
+            'editors': editors_lookup,
+            'editor_ids': editor_ids}
