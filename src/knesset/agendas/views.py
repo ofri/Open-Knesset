@@ -1,8 +1,10 @@
 import logging
 from operator import itemgetter
+from itertools import chain
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.db.models import Count
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
@@ -19,7 +21,7 @@ from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting
 
-from queries import getAllAgendaPartyVotes,getAllAgendaMkVotes
+from queries import getAllAgendaPartyVotes,getAllAgendaMkVotes,getAgendaEditorIds
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -50,6 +52,11 @@ class AgendaListView (ListView):
             watched = p.agendas
         else:
             watched = None
+	agendaEditorIds = getAgendaEditorIds()
+	allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
+	editors = User.objects.filter(id__in=allEditorIds)
+	context['agenda_editors'] = agendaEditorIds
+	context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
         context['watched'] = watched
         context['agenda_votes']=agenda_votes
         context['agenda_party_values']=allAgendaPartyVotes
