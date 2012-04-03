@@ -113,10 +113,10 @@ class AgendaDetailView (DetailView):
             context['mks_top']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:5])
             context['mks_bottom']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=False)[:5])
 
-            allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
-            if not allAgendaPartyVotes:
-                allAgendaPartyVotes = getAllAgendaPartyVotes()
-                cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
         context['agenda_party_values']=dict(allAgendaPartyVotes[agenda.id])
         context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
 
