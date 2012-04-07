@@ -1,0 +1,2 @@
+
+from Member import MemberResource
