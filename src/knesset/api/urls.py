@@ -4,7 +4,7 @@ from django.views.decorators.cache import cache_page
 
 from knesset.api.handlers import *
 
-import handlers2
+from resources import v2_api
 
 vote_handler = cache_page(Resource(VoteHandler), 60*15)
 bill_handler = cache_page(Resource(BillHandler), 60*15)
@@ -40,6 +40,6 @@ urlpatterns = patterns('',
       # NOTE: this view is not in the api application, but in the events application
       url(r'^event/icalendar/$', 'knesset.events.views.icalendar', name='event-icalendar'),
       url(r'^event/icalendar/(?P<summary_length>\d+)/$', 'knesset.events.views.icalendar', name='event-icalendar'),
-      (r'^', include(handlers2.v2_api.urls)),
+      (r'^', include(v2_api.urls)),
       )
 
