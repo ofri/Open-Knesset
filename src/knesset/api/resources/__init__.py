@@ -1,8 +1,11 @@
-
+'''
+Here we collect the api resources. To add a new API endpoint create a tasypie
+reource in an `api.py` file under the app and than import and resiter it here
+'''
 from tastypie.api import Api
-from Member import MemberResource
-from Party import PartyResource
-from Video import VideoResource
+from tastypie.resources import ModelResource
+from mks.api import MemberResource, PartyResource
+from video.api import VideoResource
 
 v2_api = Api(api_name='v2')
 v2_api.register(MemberResource())
