@@ -1,13 +1,22 @@
 '''
 Api for the members app
 '''
-from tastypie.resources import ModelResource
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
 from mks.models import Member, Party
 from knesset.api.resources.base import BaseResource
 from video.utils import get_videos_queryset
+from video.api import VideoResource
+
+class PartyResource(BaseResource):
+    ''' Party API
+    TBD: create a party app
+    '''
+
+    class Meta:
+        queryset = Party.objects.all()
+        allowed_methods = ['get']
 
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
@@ -28,24 +37,8 @@ class MemberResource(BaseResource):
             )
         exclude_from_list_view = ['about_video_id','related_videos_uri']
 
-    current_party_id = fields.IntegerField(readonly=True)
-    about_video_id = fields.IntegerField(readonly=True)
+    party = fields.ToOneField(PartyResource, 'current_party')
+    videos = fields.ToManyField(VideoResource,
+                    attribute= lambda b: get_videos_queryset(b.obj),
+                    null = True)
 
-    def dehydrate_current_party_id(self,bundle):
-        return bundle.obj.current_party.id
-
-    def dehydrate_about_video_id(self,bundle):
-        about_videos=get_videos_queryset(bundle.obj,group='about')
-        if about_videos.count()>0:
-            return about_videos[0].id
-        else:
-            return None
-
-class PartyResource(BaseResource):
-    ''' Party API
-    TBD: create a party app
-    '''
-
-    class Meta:
-        queryset = Party.objects.all()
-        allowed_methods = ['get']
