@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'knesset.events',
     'knesset.video',
     'knesset.okhelptexts',
+    'tastypie',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
