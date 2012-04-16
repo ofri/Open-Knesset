@@ -31,12 +31,12 @@ class AnnotationHandler(BaseHandler):
           annotator_schema_version = data['annotator_schema_version'],
           uri = data['uri'],
           account_id = data['account_id'],
-          user = data.get'user'),
-          text = data.get['text'],
-          quote = data.get['quote'],
-          created = data.get['created'] or datetime.now(),
-          ranges = data.get['ranges'],
-          tags = data.get['tags'],
+          user = data['user'],
+          text = data['text'],
+          quote = data['quote'],
+          created = data['created'] or datetime.now(),
+          ranges = data['ranges'],
+          tags = data['tags'],
           permissions_id = permissions.id)
       item.save()
       return rc.CREATED
