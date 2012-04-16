@@ -10,7 +10,7 @@ class LinksManager(models.Manager):
         a class).
         """
         ct = ContentType.objects.get_for_model(model)
-        qs = self.get_query_set().filter(content_type=ct)
+        qs = self.get_query_set().filter(active=True, content_type=ct)
         if isinstance(model, models.Model):
             qs = qs.filter(object_pk=force_unicode(model._get_pk_val()))
         return qs

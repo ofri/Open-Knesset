@@ -4,10 +4,12 @@ Api for the members app
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
-from mks.models import Member, Party
 from knesset.api.resources.base import BaseResource
+from mks.models import Member, Party
 from video.utils import get_videos_queryset
 from video.api import VideoResource
+from links.models import Link
+from links.api import LinkResource
 
 class PartyResource(BaseResource):
     ''' Party API
@@ -37,8 +39,11 @@ class MemberResource(BaseResource):
             )
         exclude_from_list_view = ['about_video_id','related_videos_uri']
 
-    party = fields.ToOneField(PartyResource, 'current_party')
+    party = fields.ToOneField(PartyResource, 'current_party', full=True)
     videos = fields.ToManyField(VideoResource,
                     attribute= lambda b: get_videos_queryset(b.obj),
                     null = True)
-
+    links = fields.ToManyField(LinkResource,
+                    attribute = lambda b: Link.objects.for_model(b.obj),
+                    full = True,
+                    null = True)
