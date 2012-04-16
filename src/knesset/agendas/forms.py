@@ -4,8 +4,9 @@ from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from models import (Agenda, AgendaVote, AGENDAVOTE_SCORE_CHOICES,
-                    MEETING_SCORE_CHOICES)
+from models import (Agenda, AgendaVote, UserSuggestedVote,
+                    AGENDAVOTE_SCORE_CHOICES,
+                    IMPORTANCE_CHOICES)
 
 class H4(forms.Widget):
     """ used to display header fields """
@@ -57,15 +58,17 @@ class AddAgendaForm(ModelForm):
     class Meta:
         model = Agenda
         fields = ('name', 'public_owner_name', 'description')
+class MeetingLinkingForm(forms.Form):
 
-class VoteLinkingForm(forms.Form):
     # a form to help agendas' editors tie votes to agendas
     agenda_name = forms.CharField(widget=H4, required=False, label='')
     vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
     agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
-    weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
-             required=False, widget=forms.RadioSelect)
-    reasoning = forms.CharField(required=False, max_length=300,
+    weight = forms.TypedChoiceField(label=_('Importance'),
+                                    choices=IMPORTANCE_CHOICES,
+                                    required=False,
+                                    widget=forms.Select)
+    reasoning = forms.CharField(required=False, max_length=1000,
                            label=_(u'Reasoning'),
                            widget = forms.Textarea(attrs={'cols':30, 'rows':5}),
                            )
@@ -83,11 +86,13 @@ class VoteLinkingForm(forms.Form):
             cleaned_data["DELETE"] = 'on'
         return cleaned_data
 
-class MeetingLinkingForm(VoteLinkingForm):
-    weight = forms.TypedChoiceField(label=_('Importance'),
-                                    choices=MEETING_SCORE_CHOICES,
-                                    required=False,
-                                    widget=forms.RadioSelect)
+class VoteLinkingForm(MeetingLinkingForm):
+    weight = forms.TypedChoiceField(label=_('Position'), choices=AGENDAVOTE_SCORE_CHOICES,
+             required=False, widget=forms.Select)
+    importance = forms.TypedChoiceField(label=_('Importance'),
+                                        choices=IMPORTANCE_CHOICES,
+                                        required=False,
+                                        widget=forms.Select)
 
 VoteLinkingFormSet = formset_factory(VoteLinkingForm, extra=0, can_delete=True)
 MeetingLinkingFormSet = formset_factory(MeetingLinkingForm, extra=0,

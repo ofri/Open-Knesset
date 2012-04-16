@@ -1,5 +1,6 @@
-from django.db.models.signals import post_save,m2m_changed
+from django.db.models.signals import post_save,m2m_changed, pre_delete
 from django.contrib.comments.signals import comment_was_posted
+from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from planet.models import Feed, Post
 from actstream import action, follow
@@ -20,7 +21,6 @@ def handle_cm_save(sender, created, instance, **kwargs):
                                  target_object_id=instance.id,
                                  target_content_type=cm_ct).count()==0:    
             action.send(m, verb='attended', target=instance, description='committee meeting', timestamp=instance.date)
-    
 post_save.connect(handle_cm_save, sender=CommitteeMeeting)
 
 @disable_for_loaddata
@@ -38,7 +38,6 @@ def record_committee_presence(**kwargs):
                                  target_object_id=meeting.id,
                                  target_content_type=cm_ct).count()==0:    
             action.send(m, verb='attended', target=meeting, description='committee meeting', timestamp=meeting.date)
-    
 m2m_changed.connect(record_committee_presence, sender=CommitteeMeeting.mks_attended.through)
 
 @disable_for_loaddata
@@ -53,9 +52,12 @@ post_save.connect(handle_annotation_save, sender=Annotation)
 
 @disable_for_loaddata
 def handle_comment_save(sender, comment, request, **kwargs):
-    if comment.content_type.model_class() ==  Topic:
-        action.send(comment.content_object, verb='comment-added', target=comment,
-                description=comment.comment)
-        follow(request.user, comment.content_object)
-
+    action.send(comment.content_object, verb='comment-added', target=comment,
+            description=comment.comment)
+    follow(request.user, comment.content_object)
 comment_was_posted.connect(handle_comment_save)
+
+def delete_related_activities(sender, instance, **kwargs):
+    Action.objects.filter(target_object_id=instance.id, verb__in=('annotated', 'comment-added')).delete()
+pre_delete.connect(delete_related_activities, sender=Annotation)
+pre_delete.connect(delete_related_activities, sender=Comment)

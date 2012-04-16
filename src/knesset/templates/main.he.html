@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude mks search %}
+{% load i18n i18ninclude mks bills_extra search hlp %}
 {% load avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
@@ -11,31 +11,10 @@
 </div>
 {% endblock %}
 {% block divcontent %}
-<div style="width:90%; margin:0 5%;">
-    <div id="main-news"  class="display_note_outer" > 
-<h3>החורף לא עוזבים את הכנסת!</h3>
-<p style="padding:1em; font-size:120%;">
-מתנדבי כנסת פתוחה מאמינים בשקיפות ושיתוף הציבור כבסיס לשלטון טוב יותר. במושב החורף הקרוב, נתמוך ב'משמר החברתי' שיצא ממחאת האוהלים ומטרתו לערב יותר אזרחים בפעילות הכנסת למען צדק חברתי.  
-<br/>
-במהלך המושב נפתח אפליקציה חדשה <a href="https://docs.google.com/document/d/1Jhl677nEss5h8t3z3dugwvaNeaqaZGUcfuKIR9zcGp0/edit?hl=en_US">שבטים</a> שתאפשר לכנסת פתוחה לתמוך בקבוצות אזרחים החולקים כאבים משותפים, מפתחים חזון משותף ופועלים בכנסת להגשמתו. 
-<br> 
-<br> 
-<a href="http://www.hamishmar.org.il">
-<img src="http://hamishmar.org.il/images/intrologo.jpg" />
-<br>הציבור מוזמן</a> 
-<br> 
-<br> 
-<a href="http://blog.yeda.us/2011/10/18/moshav1/" style="font-size:70%">מה קרה לכנס בין כסה לעשור?</a>
- </p></div>
-    <div id="main-hasadna" class="display_note_outer">
-        <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
-        <p>פרויקטים נוספים של <a href="http://yeda.us/">הסדנא</a></p>
-            <h3><a href="http://prezi.com/nio4fr-1co0d/opening-the-israeli-budget/">פותחים את תקציב המדינה</a></h3>
-    </div>
-     <div id="main-help" class="display_note_outer">
-        <p>
-        רוצים לדעת איך זה עובד או להצטרף ולעזור?</p>
-        <a href="{% url about %}">קראו עוד אודות הפרויקט</a>
+<div>
+    <div id="main-news"  class="display_note_outer" >
+        <h3>הצעות חוק חמות באתר - הכנסו כדי להביע את דעתכם</h3>
+        {% if bill %}{% bill_inabox bill %}{% endif %}
     </div>
     <div id="main-about" class="display_note_outer">
         <h3><a href="/about/">אודותינו</a></h3>
@@ -43,6 +22,19 @@
         אנו סורקים את אתר הכנסת ומקורות מידע רשמיים ובאמצעות אלגוריתמים חישוביים וצוות עורכים מסור, מסדרים ומארגנים את המידע לנוחות
         המשתמש.
             האתר עדיין בפיתוח, ואנו מתנצלים מראש על באגים ושגיאות בנתונים.
+    </div>
+    <div id="main-hasadna" class="display_note_outer">
+        <a href="http://yeda.us/"><img src="/static/img/hasadna-logo.png" style="width:50px; float:left"></a>
+        <p>פרויקטים נוספים של <a href="http://www.hasadna.org.il/">הסדנא</a>{% ht 'hasadna' %}</p>
+            <h3><a href="http://budget.msh.gov.il/">פותחים את תקציב המדינה</a></h3>
+    </div>
+    <div id="main-help" class="display_note_outer">
+        <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+            <input type="hidden" value="_s-xclick" name="cmd">
+            <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+            <input type="image" border="0" alt="PayPal - הדרך הקלה והבטוחה לשלם באופן מקוון!" name="submit" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/IL/i/btn/btn_donateCC_LG.gif">
+            <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+        </form>
     </div>
 </div>
 <div class="clear"></div>

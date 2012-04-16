@@ -28,6 +28,6 @@ post_save.connect(record_agenda_ascription_action, sender=AgendaVote)
 def record_agenda_removal_action(sender, instance, **kwargs):
     action.send(instance.agenda, verb='agenda removed',
                 description="agenda %s removed from vote %s" % (instance.agenda.name,instance.vote.title),
-                target = instance,
+                target = instance.vote,
                 timestamp = datetime.datetime.now())
 pre_delete.connect(record_agenda_removal_action, sender=AgendaVote)

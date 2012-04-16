@@ -62,7 +62,7 @@ class BillViewsTest(TestCase):
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
         res = self.client.get(reverse('bill-list'), {'stage': '2'})
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), [self.bill_2.id, self.bill_3.id])
+        self.assertEqual(set(map(just_id, object_list)), set([self.bill_2.id, self.bill_3.id]))
 
     def test_bill_list_with_member(self):
         "Test the view of bills proposed by specific MK"
@@ -352,7 +352,7 @@ class ProposalModelTest(TestCase):
     def setUp(self):
         self.bill = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
-                                                   bill=self.bill, 
+                                                   bill=self.bill,
                                                    date=datetime(2005, 1, 22),
                                                 )
 
@@ -369,4 +369,3 @@ class ProposalModelTest(TestCase):
     def tearDown(self):
         self.kp_1.delete()
         self.bill.delete()
-

@@ -66,6 +66,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -113,6 +114,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'djangoratings',
     'voting',
+    'compressor',
     'knesset',
     'knesset.annotations',                 # knesset apps
     'knesset.auxiliary',
@@ -129,6 +131,8 @@ INSTALLED_APPS = (
     'knesset.notify',
     'knesset.persons',
     'knesset.events',
+    'knesset.video',
+    'knesset.okhelptexts',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -173,6 +177,14 @@ GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
+
+# you need to generate a token and put it in local_settings.py
+# to generate a token run: bin/django update_videos --get-youtube-token
+YOUTUBE_AUTHSUB_TOKEN=''
+
+# you need to get a developer key and put it in local_settings.py
+# to get a developer key goto: http://code.google.com/apis/youtube/dashboard
+YOUTUBE_DEVELOPER_KEY=''
 
 CACHES = {
     'default': {

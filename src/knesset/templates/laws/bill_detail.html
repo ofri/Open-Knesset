@@ -5,11 +5,14 @@
 {% load mks %}
 {% load links %}
 {% load voting_tags %}
-{% block extrahead %}
-    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+{% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+{% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
+    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
@@ -167,6 +170,10 @@
                   // Can be '#' + one of the "bill-stage" class divs.
                   show_only_vote_stage_div(location.hash.substring(1));
                 }
+                $("#embed").click(function () {
+                    $("#embeddiv").toggle();
+                    return false;
+                    });
             });
     </script>
 {% endblock %}
@@ -177,12 +184,22 @@
 {% block divcontent %}
     <div class="two_cols">
         <ul class="actions">
+            <li><a id="embed" href="#">{% trans "embed" %}</a></li>
             <li><span id="watch" class="awesome-button medium"></span></li>
         </ul>
+        <div id="embeddiv" style="display:none;">
+            <b>קחו את החוק לידיים!</b><br>
+            בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם תהליך החקיקה הזה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
+            <b>העתיקו את קוד ההטמעה (html):</b><br>
+            <input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="http://oknesset.org/bill/{{object.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
+            <b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
+            <input type="text" readonly="readonly" value='http://oknesset.org/bill/{{object.id}}'/>
+
+        </div>
         <h1>{% bill_full_name object %}</h1>
         {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
-        {% for proposer in object.proposers.all %}
+        {% for proposer in proposers %}
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
         {% endfor %}<br>
         <div id="bill-canvas">
@@ -213,6 +230,8 @@
                     </p>
                     </form>
                     {% endif %}
+                {% else %}
+                    <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
                 {% endif %}
             </div>
             <h3>{% trans "Links" %}</h3>
@@ -221,8 +240,8 @@
             {% if user.is_authenticated %}
                 <h3>{% trans "Tags" %}</h3>
                 <div id="tags">
-                    {% if object.tags %}
-                        {% for t in object.tags %}
+                    {% if tags %}
+                        {% for t in tags %}
                             <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
                         {% endfor %}
                     {% else %}
@@ -251,9 +270,9 @@
 
             {% else %}
                 <h3>{% trans "Tags" %}</h3>
-                {% if object.tags %}
+                {% if tags %}
                     <div id="tags">
-                    {% for t in object.tags %}
+                    {% for t in tags %}
                        <a href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                     </div>
@@ -261,7 +280,7 @@
                     {% trans "No tags yet" %}<br />
                 {% endif %}
 
-                (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
+                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to edit tags' %}</a>
             {% endif %}
             </div><!-- tagging -->
 
@@ -412,7 +431,4 @@
             {% endif %}
         </div>
     </div>
-
-
-
 {% endblock %}

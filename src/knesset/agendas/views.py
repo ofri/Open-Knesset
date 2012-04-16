@@ -1,8 +1,12 @@
 import logging
+from operator import itemgetter
+from itertools import chain
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.template import RequestContext
+from django.db.models import Count
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
@@ -17,8 +21,11 @@ from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting
 
+from queries import getAllAgendaPartyVotes,getAllAgendaMkVotes,getAgendaEditorIds
+
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.cache import cache
 
 logger = logging.getLogger("open-knesset.agendas.views")
 
@@ -31,12 +38,29 @@ class AgendaListView (ListView):
 
     def get_context(self, *args, **kwargs):
         context = super(AgendaListView, self).get_context(*args, **kwargs)
+        # optimization - create query for votes per agenda
+        # store in context as dictionary votes[agendaid]=<votenum> 
+        agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
+        agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+        parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = p.agendas
         else:
             watched = None
+	agendaEditorIds = getAgendaEditorIds()
+	allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
+	editors = User.objects.filter(id__in=allEditorIds)
+	context['agenda_editors'] = agendaEditorIds
+	context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
         context['watched'] = watched
+        context['agenda_votes']=agenda_votes
+        context['agenda_party_values']=allAgendaPartyVotes
+        context['parties_lookup']=parties_lookup
         return context
 
 class AgendaDetailView (DetailView):
@@ -77,31 +101,42 @@ class AgendaDetailView (DetailView):
         context['watched_members'] = watched_members
 
         all_mks = 'all_mks' in self.request.GET.keys()
+        allAgendaMkVotes = cache.get('AllAgendaMkVotes')
+        if not allAgendaMkVotes:
+            allAgendaMkVotes = getAllAgendaMkVotes()
+            cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
+        context['agenda_mk_values']=dict(allAgendaMkVotes[agenda.id])
         if all_mks:
-            cached_context = cache.get('agenda_mks_%d_all_mks' % agenda.id)
-            if not cached_context:
-                mks = agenda.selected_instances(Member, top=200, bottom=0)
-                cached_context = {'selected_mks':mks['top'],'all_mks':True}
-                cache.set('agenda_mks_%d_all_mks' % agenda.id,
-                          cached_context, 900)
-            context.update(cached_context)
+            context['all_mks_ids']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:200])
+            context['all_mks']=True
         else:
-            cached_context = cache.get('agenda_mks_%d' % agenda.id)
-            if not cached_context:
-                mks = agenda.selected_instances(Member, top=5,bottom=5)
-                cached_context = {'selected_mks_top': mks['top'],
-                                  'selected_mks_bottom': mks['bottom'],
-                                  'all_mks':False}
-                cache.set('agenda_mks_%d' % agenda.id, cached_context, 900)
-            context.update(cached_context)
+            context['mks_top']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:5])
+            context['mks_bottom']=map(itemgetter(0),sorted(sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=False)[:5],key=itemgetter(1),reverse=True))
 
-        cached_context = cache.get('agenda_parties_%d' % agenda.id)
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+        context['agenda_party_values']=dict(allAgendaPartyVotes[agenda.id])
+        context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
+
+        cached_context = cache.get('agenda_votes_%d' % agenda.id)
         if not cached_context:
-            selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
-            cached_context = {'selected_parties': selected_parties }
-            cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
+            agenda_votes = agenda.agendavotes.order_by('-vote__time')\
+                                             .select_related('vote')
+            cached_context = {'agenda_votes': agenda_votes }
+            cache.set('agenda_votes_%d' % agenda.id, cached_context, 900)
         context.update(cached_context)
 
+        # Optimization: get all parties and members before rendering
+        # Further possible optimization: only bring parties/members needed for rendering
+        parties_objects = Party.objects.all()
+        partiesDict = dict(map(lambda party:(party.id,party),parties_objects))
+        context['parties']=partiesDict
+
+        member_objects = Member.objects.all()
+        membersDict = dict(map(lambda mk:(mk.id,mk),member_objects))
+        context['members']=membersDict
         return context
 
 class AgendaMkDetailView (DetailView):
@@ -223,8 +258,8 @@ def agenda_add_view(request):
 @login_required
 def update_editors_agendas(request):
     if request.method == 'POST':
-        vote_id = None
         object_type = request.POST.get('form-0-object_type',None)
+        object_id = request.POST.get('form-0-vote_id',None)
         if object_type=='vote':
             vl_formset = VoteLinkingFormSet(request.POST)
         else:
@@ -252,21 +287,25 @@ def update_editors_agendas(request):
                             except AgendaVote.DoesNotExist:
                                 pass
                         else: # not delete, so try to create
-                            try:
-                                object_id = a['vote_id']
-                                av = AgendaVote.objects.get(
-                                       agenda__id=a['agenda_id'],
-                                       vote__id = a['vote_id'])
-                                av.score = a['weight']
-                                av.reasoning = a['reasoning']
-                                av.save()
-                            except AgendaVote.DoesNotExist:
-                                av = AgendaVote(
-                                       agenda_id=int(a['agenda_id']),
-                                       vote_id=int(a['vote_id']),
-                                       score = a['weight'],
-                                       reasoning = a['reasoning'])
-                                av.save()
+                            if (a['weight'] is not '' and
+                                a['importance'] is not ''):
+                                try:
+                                    object_id = a['vote_id']
+                                    av = AgendaVote.objects.get(
+                                           agenda__id=a['agenda_id'],
+                                           vote__id = a['vote_id'])
+                                    av.score = a['weight']
+                                    av.importance = a['importance']
+                                    av.reasoning = a['reasoning']
+                                    av.save()
+                                except AgendaVote.DoesNotExist:
+                                    av = AgendaVote(
+                                           agenda_id=int(a['agenda_id']),
+                                           vote_id=int(a['vote_id']),
+                                           score = a['weight'],
+                                           importance = a['importance'],
+                                           reasoning = a['reasoning'])
+                                    av.save()
                     if a['object_type'] == 'committeemeeting':
                         if a['DELETE']:
                             try:
@@ -299,7 +338,7 @@ def update_editors_agendas(request):
         else:
             # TODO: Error handling: what to do with illeal forms?
             logger.info("invalid formset")
-            return HttpResponseRedirect(reverse('vote-list'))
+            logger.info("%s" % vl_formset.errors)
         if object_id:
             if object_type=='vote':
                 return HttpResponseRedirect(reverse('vote-detail',

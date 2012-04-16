@@ -14,7 +14,6 @@ from knesset.agendas.models import Agenda
 from knesset.committees.models import Committee, CommitteeMeeting
 from knesset.links.models import Link
 from tagging.models import Tag, TaggedItem
-from knesset.committees.models import CommitteeMeeting
 from knesset.events.models import Event
 import math
 from django.forms import model_to_dict
@@ -175,7 +174,7 @@ class VoteHandler(BaseHandler, HandlerExtensions):
     fields = ('url', 'title', 'time',
               'summary','full_text',
               'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
-              'agendas',
+              'agendas','bills',
              )
     exclude = ('member')
     allowed_methods = ('GET',)
@@ -202,6 +201,10 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
+
+    @classmethod
+    def bills(cls, vote):
+        return [b.id for b in vote.bills()]
 
     @classmethod
     def for_votes(self, vote):
@@ -233,6 +236,7 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
+    # TODO: s/bill_title/title
     fields = ('url', 'bill_title', 'popular_name',
               'stage_text', 'stage_date',
               'votes',
@@ -248,7 +252,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
     qs = Bill.objects.all()
 
     def read(self, request, **kwargs):
-        ''' returns a vote or a list of votes '''
+        ''' returns a bill or a list of bills '''
         qs = self.qs
 
         if 'id' in kwargs:
@@ -263,7 +267,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
         if type:
             qs = qs.filter(title__contains=type)
         if days_back:
-            qs = qs.since(days=int(days_back))
+            qs = qs.filter(stage_date__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if order:
             qs = qs.sort(by=order)
         return qs[page_len*page_num:page_len*(page_num +1)]
@@ -300,7 +304,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
     @classmethod
     def tags(self,bill):
-        return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+        return [ {'id':t.id, 'name':t.name } for t in bill._get_tags() ]
 
     @classmethod
     def bill_title(self,bill):
@@ -425,6 +429,7 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
               'name',
               'members',
               'recent_meetings',
+              'future_meetings',
              )
     allowed_methods = ('GET',)
     model = Committee
@@ -435,6 +440,12 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
                    'title': x.title(),
                    'date': x.date }
                 for x in committee.recent_meetings() ]
+
+    @classmethod
+    def future_meetings(cls, committee):
+        return [ { 'title': x.what,
+                   'date': x.when }
+                for x in committee.future_meetings() ]
 
     @classmethod
     def members(cls, committee):
@@ -479,11 +490,11 @@ class EventHandler(BaseHandler, HandlerExtensions):
             return r
         else:
             return r.filter(when__gte=datetime.datetime.now())
-            
+
     @classmethod
     def which(cls, event):
         if event.which_object:
-            return { 
+            return {
                     'name': unicode(event.which_object),
                     'url': event.which_object.get_absolute_url(),
                     }

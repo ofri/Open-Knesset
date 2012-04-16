@@ -26,7 +26,7 @@ from knesset.laws.models import *
 from knesset.mks.models import Member
 from knesset.tagvotes.models import TagVote
 from knesset.hashnav import DetailView, ListView
-from knesset.agendas.models import Agenda
+from knesset.agendas.models import Agenda,UserSuggestedVote
 
 import urllib
 import urllib2
@@ -199,6 +199,7 @@ class BillDetailView (DetailView):
             context['close_votes'] = close_votes
         except Exception, e:
             pass
+        context['proposers'] = bill.proposers.select_related('current_party')
         votes = voting.models.Vote.objects.get_object_votes(bill)
         if 1 not in votes: votes[1] = 0
         if -1 not in votes: votes[-1] = 0
@@ -219,6 +220,7 @@ class BillDetailView (DetailView):
             score['for_percent'] = 49
             score['against_percent'] = 49
         context['voting_score'] = score
+        context['tags'] = list(bill.tags)
         return context
 
     @method_decorator(login_required)
@@ -398,11 +400,6 @@ class VoteDetailView(DetailView):
             related_bills.extend(vote.bills_first.all())
         context['bills'] = related_bills
 
-        if self.request.user.is_authenticated():
-            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=self.request.user))
-        else:
-            context['agendavotes'] = vote.agendavotes.filter(agenda__in=Agenda.objects.get_relevant_for_user(user=None))
-
         return context
 
     @method_decorator(login_required)
@@ -413,23 +410,42 @@ class VoteDetailView(DetailView):
         user_input_type = request.POST.get('user_input_type',None)
         vote = get_object_or_404(Vote, pk=object_id)
         mk_names = Member.objects.values_list('name',flat=True)
-        mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
-        mk = Member.objects.get(name=mk_name)
-        stand = None
-        if user_input_type == 'mk-for':
-            stand = 'for'
-        if user_input_type == 'mk-against':
-            stand = 'against'
-        if stand:
-            va = VoteAction.objects.filter(member=mk, vote=vote)
-            if va:
-                va = va[0]
-                va.type=stand
-                va.save()
+        if user_input_type == 'agenda':
+            agenda = Agenda.objects.get(pk=request.POST.get('agenda'))
+            reasoning = request.POST.get('reasoning','')
+            usv = UserSuggestedVote.objects.filter(user = request.user,
+                                agenda = agenda,
+                                vote = vote)
+            if usv:
+                usv = usv[0]
+                usv.reasoning = reasoning
+                usv.sent_to_editor = False
+                usv.save()
             else:
-                va = VoteAction(member=mk, vote=vote, type=stand)
-                va.save()
-            vote.update_vote_properties()
+                usv = UserSuggestedVote(user = request.user,
+                                agenda = agenda,
+                                vote = vote,
+                                reasoning = reasoning)
+                usv.save()
+
+        else: # adding an MK (either for or against)
+            mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
+            mk = Member.objects.get(name=mk_name)
+            stand = None
+            if user_input_type == 'mk-for':
+                stand = 'for'
+            if user_input_type == 'mk-against':
+                stand = 'against'
+            if stand:
+                va = VoteAction.objects.filter(member=mk, vote=vote)
+                if va:
+                    va = va[0]
+                    va.type=stand
+                    va.save()
+                else:
+                    va = VoteAction(member=mk, vote=vote, type=stand)
+                    va.save()
+                vote.update_vote_properties()
 
         return HttpResponseRedirect('.')
 
@@ -464,17 +480,6 @@ def embed_bill_details(request, object_id):
     # TODO(shmichael): Only use the last stream item of each type, and if we find
     # contradictions, send to human operator for sanitizing.
     bill = get_object_or_404(Bill, pk=object_id)
-    out_stream = []
-    in_stream = Action.objects.stream_for_actor(bill)
-    if not in_stream:
-        bill.generate_activity_stream()
-        in_stream = Action.objects.stream_for_actor(bill)
 
-    for s in in_stream.order_by('timestamp'):
-        out_stream.append({'verb': s.verb, 'target': s.target.get_absolute_url(),
-                         'note': unicode(s.description),
-                         'time': mktime(s.timestamp.timetuple())+1e-6*s.timestamp.microsecond})
-
-    context = RequestContext (request,
-        {'bill': bill, 'stream': json.dumps(out_stream)})
+    context = RequestContext (request,{'bill': bill})
     return render_to_response("laws/embed_bill_detail.html", context)

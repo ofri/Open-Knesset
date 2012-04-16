@@ -30,6 +30,13 @@ DATA_ROOT = getattr(settings, 'DATA_ROOT',
 
 logger = logging.getLogger("open-knesset.syncdata")
 
+try:
+    SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)),
+                         [u"הוועדה המשותפת לנושא סביבה ובריאות",])
+except:
+    logger.warn("can't find special committees")
+    SPECIAL_COMMITTEES = {}
+
 # defines for finding explanation part in private proposals
 p_explanation = '</p><p class="explanation-header">דברי הסבר</p><p>'.decode('utf8')
 strong_explanation = re.compile('<strong>\s*ד\s*ב\s*ר\s*י\s*ה\s*ס\s*ב\s*ר\s*</strong>'.decode('utf8'),re.UNICODE)
@@ -50,7 +57,9 @@ class Command(NoArgsCommand):
         make_option('--laws', action='store_true', dest='laws',
             help="download and parse laws"),
         make_option('--update', action='store_true', dest='update',
-            help="online update of votes data."),
+            help="online update of data."),
+        make_option('--committees', action='store_true', dest='committees',
+            help="online update of committees data."),
 
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -231,10 +240,10 @@ class Command(NoArgsCommand):
 
     def get_votes_data(self):
         self.update_last_downloaded_vote_id()
-        f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
-        f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
-        r = range(self.last_downloaded_vote_id+1,13400) # this is the range of page ids to go over. currently its set manually.
+        r = range(self.last_downloaded_vote_id+1,17000) # this is the range of page ids to go over. currently its set manually.
         for id in r:
+	    f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+	    f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
@@ -259,8 +268,8 @@ class Command(NoArgsCommand):
                 f2.write("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\n" % (id, src_url, name, meeting_num, vote_num, date, count_for, count_against, count_abstain, count_no_vote))
                 logger.debug("downloaded data with vote id %d" % id)
             #print " %.2f%% done" % ( (100.0*(float(id)-r[0]))/(r[-1]-r[0]) )
-        f.close()
-        f2.close()
+            f.close()
+            f2.close()
 
     def update_last_downloaded_member_id(self):
         """
@@ -450,8 +459,8 @@ class Command(NoArgsCommand):
                 vote_time = datetime.datetime(int(year), int(month), int(day), vote_hm.hour, vote_hm.minute)
                 vote_label_for_search = self.get_search_string(vote_label)
 
-                if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
-                    continue
+                #if vote_date < datetime.date(2009, 02, 24): # vote before 18th knesset
+                #    continue
 
                 try:
                     v = Vote.objects.get(src_id=vote_id)
@@ -575,7 +584,7 @@ class Command(NoArgsCommand):
                 parties[p].save()
             for m in members:
                 members[m].save()
-            Member.objects.filter(end_date__isnull=True).delete() # remove members that haven't voted at all - no end date
+            #Member.objects.filter(end_date__isnull=True).delete() # remove members that haven't voted at all - no end date
             for ms in memberships:
                 memberships[ms].save()
             #for va in voteactions:
@@ -744,7 +753,7 @@ class Command(NoArgsCommand):
                     else:
                         subject = span[span.find(r'>')+1:] # no table, just take the text
             else: # we are parsing a matched link - comittee protocol url
-                if link.find(r'html')>0:
+                if (link.find(r'html')>0)or(link.find(r'rtf')>0):
                     html_url = FILES_BASE_URL + re.search(r"'\.\./([^']*)'", link).group(1)
                     res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results
                     date_text = ''
@@ -756,6 +765,11 @@ class Command(NoArgsCommand):
         SEARCH_URL = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
         cj = cookielib.LWPCookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        committees_aliases = []
+        for c in Committee.objects.all():
+            if c.aliases:
+                committees_aliases += map(lambda x: (c, x), c.aliases.split(","))
+
         urllib2.install_opener(opener)
 
 
@@ -830,25 +844,35 @@ class Command(NoArgsCommand):
             updated_protocol = False
             if not cm.protocol_text:
                 cm.protocol_text = self.get_committee_protocol_text(link)
+                # check if the protocol is from the wrong commitee
+                for i in committees_aliases:
+                    if i[1] in cm.protocol_text[:300]:
+                        cm.committee = i[0]
+                        break
                 updated_protocol = True
+
             cm.save()
 
             if updated_protocol:
                 cm.create_protocol_parts()
-            try:
-                r = re.search("חברי הו?ועדה(.*?)(\n(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+            self.find_attending_members(cm, mks, mk_names)
 
-                s = r.split('\n')
-                #s = [s0.replace(' - ',' ').replace("'","").replace(u"”",'').replace('"','').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-') for s0 in s]
-                for (i,name) in enumerate(mk_names):
-                    for s0 in s:
-                        if s0.find(name)>=0:
-                            #print "found %s in %s" % (m.name, str(cm.id))
-                            cm.mks_attended.add(mks[i])
-            except Exception:
-                exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nCommitteeMeeting.id='+str(cm.id))
-            logger.debug('added %d members' % cm.mks_attended.count())
+    def find_attending_members(self,cm, mks, mk_names):
+        try:
+            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+            s = r.split('\n')
+            for (i,name) in enumerate(mk_names):
+                for s0 in s:
+                    if s0.find(name)>=0:
+                        cm.mks_attended.add(mks[i])
+        except Exception:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.debug("%s%s", ''.join(traceback.format_exception(exceptionType,
+                                                                    exceptionValue,
+                                                                    exceptionTraceback)),
+                         '\nCommitteeMeeting.id='+str(cm.id))
+        logger.debug('meeting %d now had %d attending members' % (cm.id,
+                                                                  cm.mks_attended.count()))
 
     def get_committee_protocol_text(self, url):
         if url.find('html'):
@@ -1033,8 +1057,8 @@ class Command(NoArgsCommand):
         proposals = parse_laws.ParsePrivateLaws(days)
         for proposal in proposals.laws_data:
 
-            if proposal['proposal_date'] < datetime.date(2009,02,24):
-                continue
+            #if proposal['proposal_date'] < datetime.date(2009,02,24):
+            #    continue
 
             # find the Law this poposal is updating, or create a new one
             law_name = proposal['law_name']
@@ -1106,8 +1130,8 @@ class Command(NoArgsCommand):
             last_booklet = 200
         proposals = parse_laws.ParseKnessetLaws(last_booklet)
         for proposal in proposals.laws_data:
-            if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
-                continue
+            #if not(proposal['date']) or proposal['date'] < datetime.date(2009,02,24):
+            #    continue
             law_name = proposal['law'][:200] # protect against parsing errors that
                                              # create very long (and erroneous) law names
             (law, created) = Law.objects.get_or_create(title=law_name)
@@ -1417,13 +1441,16 @@ class Command(NoArgsCommand):
         dump_to_file = options.get('dump-to-file', False)
         update = options.get('update', False)
         laws = options.get('laws',False)
+        committees = options.get('committees', False)
+        
         if all_options:
             download = True
             load = True
             process = True
             dump_to_file = True
 
-        if (all([not(all_options),not(download),not(load),not(process),not(dump_to_file),not(update),not(laws)])):
+        if (all([not(all_options),not(download),not(load),not(process),
+                 not(dump_to_file),not(update),not(laws), not(committees)])):
             print "no arguments found. doing nothing. \ntry -h for help.\n--all to run the full syncdata flow.\n--update for an online dynamic update."
 
         if download:
@@ -1463,6 +1490,10 @@ class Command(NoArgsCommand):
             self.update_gov_law_decisions()
             self.correct_votes_matching()
             logger.debug('finished update')
+
+        if committees:
+            self.get_protocols()
+            logger.debug('finished committees update')
 
 
 def iso_year_start(iso_year):

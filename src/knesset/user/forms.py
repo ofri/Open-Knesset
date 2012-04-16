@@ -10,6 +10,11 @@ class RegistrationForm(UserCreationForm):
     username = forms.RegexField(label=_("Username"), max_length=30, regex=r'^(?u)[ \w.@+-]{4,}$',
         help_text = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."),
         error_message = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."))
+
+    email_notification = forms.ChoiceField(choices = NOTIFICATION_PERIOD_CHOICES, initial="W",
+                                           label = _('E-Mail Notifications'),
+                                           help_text = _('Should we send you e-mail notification about updates to things you follow on the site?'))
+
     class Meta:
         model = User
         fields = ('username', 'email')
@@ -19,6 +24,9 @@ class RegistrationForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
+            profile = user.get_profile()
+            profile.email_notification = self.cleaned_data['email_notification']
+            profile.save()
         return user
 
 class EditProfileForm(forms.Form):
@@ -57,7 +65,7 @@ class EditProfileForm(forms.Form):
                         'email_notification': self.userprofile.email_notification,
                         }
         self.has_email = True if user.email else False
-        g = Group.objects.get(name='Valid Email')
+        g, created = Group.objects.get_or_create(name='Valid Email')
         self.valid_email = g in self.user.groups.all()
 
     def clean_username(self):
