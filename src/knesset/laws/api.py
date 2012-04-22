@@ -11,6 +11,7 @@ from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
+from models import Law, Bill
 
 class LawResource(BaseResource):
     class Meta:
@@ -19,7 +20,6 @@ class LawResource(BaseResource):
 
 class BillResource(BaseResource):
     ''' Bill API '''
-
     class Meta:
         queryset = Bill.objects.all()
         allowed_methods = ['get']
@@ -31,10 +31,9 @@ class BillResource(BaseResource):
             stage = ALL,
             )
     proposers = fields.ToManyField(MemberResource,
-                    'proposers',
+                    'proposers', 
+                    full=True
                 )
-
-
 
     law = fields.ToOneField(LawResource, 'law', full=True)
 

@@ -12,7 +12,7 @@ from django.utils import simplejson as json
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 
-from knesset.laws.models import Vote,Bill,KnessetProposal
+from knesset.laws.models import Vote,Law, Bill,KnessetProposal
 from knesset.mks.models import Member
 
 
@@ -369,3 +369,36 @@ class ProposalModelTest(TestCase):
     def tearDown(self):
         self.kp_1.delete()
         self.bill.delete()
+
+class APIv2Test(TestCase):
+
+    def setUp(self):
+        self.url_prefix = '/api/v2'
+        self.vote_1 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 1')
+        self.vote_2 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 2')
+        self.mk_1 = Member.objects.create(name='mk 2')
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
+        self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
+        self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
+        self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
+                                                   bill=self.bill_1,
+                                                   date=date.today())
+        self.law_1 = Law.objects.create(title='law 1')
+        self.tag_1 = Tag.objects.create(name='tag1')
+
+    def test_law_resource(self):
+        uri = '%s/law/%s/' % (self.url_prefix, self.law_1.id)
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+
+    def tearDown(self):
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.bill_1.delete()
+        self.bill_2.delete()
+        self.bill_3.delete()
+        self.law_1.delete()
+        self.mk_1.delete()
+        self.tag_1.delete()
