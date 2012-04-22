@@ -126,8 +126,7 @@ class MemberVotingStatistics(models.Model):
 @disable_for_loaddata
 def handle_mk_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
-        mvs = MemberVotingStatistics(member=instance)
-        mvs.save()
+        MemberVotingStatistics.objects.get_or_create(member=instance)
 post_save.connect(handle_mk_save, sender=Member)
 
 class VoteAction(models.Model):
