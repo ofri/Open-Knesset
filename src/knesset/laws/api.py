@@ -31,9 +31,9 @@ class BillResource(BaseResource):
             stage = ALL,
             )
     proposers = fields.ToManyField(MemberResource,
-                    'proposers', 
+                    'proposers',
                     full=True
                 )
 
-    law = fields.ToOneField(LawResource, 'law', full=True)
+    law = fields.ToOneField(LawResource, 'law', null=True, full=True)
 

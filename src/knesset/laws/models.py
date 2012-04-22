@@ -68,8 +68,7 @@ class PartyVotingStatistics(models.Model):
 @disable_for_loaddata
 def handle_party_save(sender, created, instance, **kwargs):
     if created and instance._state.db=='default':
-        pvs = PartyVotingStatistics(party=instance)
-        pvs.save()
+        PartyVotingStatistics.objects.get_or_create(party=instance)
 post_save.connect(handle_party_save, sender=Party)
 
 

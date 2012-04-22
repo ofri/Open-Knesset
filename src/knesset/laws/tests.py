@@ -13,7 +13,7 @@ from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 
 from knesset.laws.models import Vote,Law, Bill,KnessetProposal
-from knesset.mks.models import Member
+from knesset.mks.models import Member, Party, Membership
 
 
 just_id = lambda x: x.id
@@ -378,10 +378,12 @@ class APIv2Test(TestCase):
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(),
                                           title='vote 2')
-        self.mk_1 = Member.objects.create(name='mk 2')
+        self.party_1 = Party.objects.create(name='party 1')
+        self.mk_1 = Member.objects.create(name='mk 2',
+                current_party=self.party_1)
+        # Membership.objects.create(member=self.mk_1, party=self.party_1)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
-        self.bill_2 = Bill.objects.create(stage='2', title='bill 2')
-        self.bill_3 = Bill.objects.create(stage='2', title='bill 1')
+        self.bill_1.proposers.add(self.mk_1)
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
                                                    bill=self.bill_1,
                                                    date=date.today())
@@ -392,13 +394,27 @@ class APIv2Test(TestCase):
         uri = '%s/law/%s/' % (self.url_prefix, self.law_1.id)
         res = self.client.get(uri, format='json')
         self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['resource_uri'], uri)
+        self.assertEqual(int(data['id']), self.law_1.id)
+        self.assertEqual(data['title'], "law 1")
+
+    def test_bill_resource(self):
+        uri = '%s/bill/%s/' % (self.url_prefix, self.bill_1.id)
+        from sys import stderr ; stderr.write(uri)
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['resource_uri'], uri)
+        self.assertEqual(int(data['id']), self.bill_1.id)
+        self.assertEqual(data['title'], "bill 1")
+
 
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
         self.bill_1.delete()
-        self.bill_2.delete()
-        self.bill_3.delete()
         self.law_1.delete()
         self.mk_1.delete()
+        self.party_1.delete()
         self.tag_1.delete()
