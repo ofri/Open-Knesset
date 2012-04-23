@@ -289,7 +289,7 @@ I have a deadline''')
         res2 = self.client.get(reverse('agenda-detail',
                                        kwargs={'pk': self.agenda_4.id}))
 
-	self.assertEqual(res2.status_code, 200)
+        self.assertEqual(res2.status_code, 200)
 
     def tearDown(self):
         self.party_1.delete()
