@@ -1420,9 +1420,12 @@ class Command(NoArgsCommand):
 
                 # try to find a private proposal this decision is referencing
                 try:
-                    pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                    pp_id = int(re.search(r'פ/?(\d+)'.decode('utf8'),d['title']).group(1))
                     re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
                     pp = PrivateProposal.objects.get(proposal_id=pp_id)
+                    logger.debug("GovL.id = %d is matched to pp.id=%d, "
+                                 "bill.id=%d" % (decision.id, pp.id,
+                                                 pp.bill.id))
                     decision.bill = pp.bill
                     decision.save()
                 except AttributeError: # one of the regex failed
