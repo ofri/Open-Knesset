@@ -3,7 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from django.contrib.auth.models import User,Group,Permission,ContentType
+from django.contrib.auth.models import User,Group,Permission
 
 class Migration(DataMigration):
 
@@ -14,10 +14,7 @@ class Migration(DataMigration):
         
         p = Permission.objects.get(name='Can add comment')
         g.permissions.add(p)
-        annotatetext = ContentType.objects.get(name="annotation",
-                                               app_label="annotatetext")
-        g.permissions.add(Permission.objects.get(name='Can add annotation',
-                                                 content_type = annotatetext))
+        g.permissions.add(Permission.objects.get(name='Can add annotation'))
                 
         for u in User.objects.all():
             if p in u.user_permissions.all():

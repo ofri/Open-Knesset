@@ -116,8 +116,7 @@ INSTALLED_APPS = (
     'voting',
     'compressor',
     'knesset',
-    'knesset.annotations',                 # knesset apps
-    'knesset.auxiliary',
+    'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
     'knesset.laws',
     'knesset.committees',

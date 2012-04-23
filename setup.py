@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     # 'django-piston',
+    # 'python-yadis',
     'BeautifulSoup',
     'South',
     'django-debug-toolbar',
@@ -23,7 +24,6 @@ install_requires = [
     'python-memcached',
     'python-openid',
     'vobject',
-#    'python-yadis',
 ]
 setup(
         name = "Open-Knesset",

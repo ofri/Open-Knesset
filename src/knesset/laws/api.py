@@ -1,49 +1,39 @@
 '''
-Api for the members app
+API for the laws app
 '''
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
 from knesset.api.resources.base import BaseResource
 from mks.models import Member, Party
+from mks.api import MemberResource
 from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
+from models import Law, Bill
 
-class PartyResource(BaseResource):
-    ''' Party API
-    TBD: create a party app
-    '''
-
+class LawResource(BaseResource):
     class Meta:
-        queryset = Party.objects.all()
+        queryset = Law.objects.all()
         allowed_methods = ['get']
 
-class MemberResource(BaseResource):
-    ''' The Parliament Member API '''
+class BillResource(BaseResource):
+    ''' Bill API '''
     class Meta:
-        queryset = Member.objects.all()
+        queryset = Bill.objects.all()
         allowed_methods = ['get']
         ordering = [
-            'name',
-            'is_current',
-            'bills_stats_proposed',
-            'bills_stats_pre',
-            'bills_stats_first',
-            'bills_stats_approved',
-            ]
+            'title',
+            'stage',
+        ]
         filtering = dict(
-            name = ALL,
-            is_current = ALL,
+            stage = ALL,
             )
-        exclude_from_list_view = ['about_video_id','related_videos_uri']
+    proposers = fields.ToManyField(MemberResource,
+                    'proposers',
+                    full=True
+                )
 
-    party = fields.ToOneField(PartyResource, 'current_party', full=True)
-    videos = fields.ToManyField(VideoResource,
-                    attribute= lambda b: get_videos_queryset(b.obj),
-                    null = True)
-    links = fields.ToManyField(LinkResource,
-                    attribute = lambda b: Link.objects.for_model(b.obj),
-                    full = True,
-                    null = True)
+    law = fields.ToOneField(LawResource, 'law', null=True, full=True)
+
