@@ -277,6 +277,19 @@ I have a deadline''')
         self.assertEqual(int(res.context['score']), -33)
         self.assertEqual(len(res.context['related_votes']), 2)
 
+    def testAgendaDetailOptCacheFail(self):
+        res = self.client.get(reverse('agenda-detail',
+                                      kwargs={'pk': self.agenda_1.id}))
+
+        self.agenda_4 = Agenda.objects.create(name='agenda 4',
+                                              description='a bloody good agenda 4',
+                                              public_owner_name='Dr. Jacob',
+                                              is_public=True)
+
+        res2 = self.client.get(reverse('agenda-detail',
+                                       kwargs={'pk': self.agenda_4.id}))
+
+	self.assertEqual(res2.status_code, 200)
 
     def tearDown(self):
         self.party_1.delete()

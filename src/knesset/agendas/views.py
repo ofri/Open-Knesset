@@ -105,7 +105,10 @@ class AgendaDetailView (DetailView):
         if not allAgendaMkVotes:
             allAgendaMkVotes = getAllAgendaMkVotes()
             cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
-        context['agenda_mk_values']=dict(allAgendaMkVotes[agenda.id])
+        if agenda.id not in allAgendaMkVotes:
+            allAgendaMkVotes = getAllAgendaMkVotes()
+            cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
+        context['agenda_mk_values']=dict(allAgendaMkVotes.setdefault(agenda.id,[]))
         if all_mks:
             context['all_mks_ids']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:200])
             context['all_mks']=True
@@ -117,7 +120,7 @@ class AgendaDetailView (DetailView):
         if not allAgendaPartyVotes:
             allAgendaPartyVotes = getAllAgendaPartyVotes()
             cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
-        context['agenda_party_values']=dict(allAgendaPartyVotes[agenda.id])
+        context['agenda_party_values']=dict(allAgendaPartyVotes.setdefault(agenda.id,[]))
         context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
 
         cached_context = cache.get('agenda_votes_%d' % agenda.id)
