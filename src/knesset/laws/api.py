@@ -14,24 +14,29 @@ from links.api import LinkResource
 from models import Law, Bill, Vote
 
 class LawResource(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Law.objects.all()
         allowed_methods = ['get']
 
 class VoteResource(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
 
 class BillResource(BaseResource):
     ''' Bill API '''
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Bill.objects.all()
         allowed_methods = ['get']
         # excludes = ['stage']
-        ordering = ['title', 'stage']
+        ordering = ['stage_date', 'title']
         filtering = dict(stage = ALL)
+        exclude_from_list_view = ['proposers', 'explanation', 'legal_code',
+        'pre_votes', 'first_vote', 'approval_vote']
+        include_absolute_url = True
 
+    explanation = fields.CharField()
+    legal_code = fields.CharField()
     proposers = fields.ToManyField(MemberResource,
                     'proposers',
                     full=True)
@@ -53,20 +58,27 @@ class BillResource(BaseResource):
 
     law = fields.ToOneField(LawResource, 'law', null=True, full=True)
 
+    def dehydrate_explanation(self, bundle):
+        return self.get_src_parts(bundle)[1]
+
+    def dehydrate_legal_code(self, bundle):
+        return self.get_src_parts(bundle)[0]
+
     def dehydrate_stage(self, bundle):
         return bundle.obj.get_stage_display()
 
-    def dehydrate(self, bundle):
-        from simple.management.commands.syncdata import p_explanation
-        bill = bundle.obj
-        ps = bill.proposals.order_by('-date')[0]
-        if ps.content_html:
-            parts = ps.content_html.split(p_explanation)
+    def get_src_parts(self, bundle):
+        try:
+            return bundle.src_parts
+        except AttributeError:
+            parts = ['','']
+            from simple.management.commands.syncdata import p_explanation
+            bill = bundle.obj
             try:
-                bundle.data.update(dict(legal_code = parts[0]+'</p>',
-                    explanation = '<p>' + parts[1]))
+                ps = bill.proposals.order_by('-date')[0]
+                if ps.content_html:
+                    parts = ps.content_html.split(p_explanation)
             except IndexError:
                 pass
-
-        # bundle.data['stage'] = bill.get_stage_display()
-        return bundle
+            bundle.src_parts = parts
+        return parts

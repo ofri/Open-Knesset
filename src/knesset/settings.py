@@ -217,6 +217,8 @@ SERIALIZATION_MODULES = {
     'oknesset' : 'auxiliary.serializers'
 }
 
+API_LIMIT_PER_PAGE = 1000
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try: 
