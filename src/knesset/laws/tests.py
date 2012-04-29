@@ -401,14 +401,12 @@ class APIv2Test(TestCase):
 
     def test_bill_resource(self):
         uri = '%s/bill/%s/' % (self.url_prefix, self.bill_1.id)
-        from sys import stderr ; stderr.write(uri)
         res = self.client.get(uri, format='json')
         self.assertEqual(res.status_code,200)
         data = json.loads(res.content)
         self.assertEqual(data['resource_uri'], uri)
         self.assertEqual(int(data['id']), self.bill_1.id)
         self.assertEqual(data['title'], "bill 1")
-
 
     def tearDown(self):
         self.vote_1.delete()
