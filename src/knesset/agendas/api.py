@@ -54,8 +54,10 @@ class AgendaResource(BaseResource):
     def dehydrate(self, bundle):
         a = bundle.obj
         bundle.data['members'] = map(
-                lambda x: dict(name=x.name, score=a.member_score(x),
-                    absolute_url=x.get_absolute_url()),
+                lambda x: dict(name=x.name, 
+                    score = a.member_score(x),
+                    absolute_url = x.get_absolute_url(),
+                    party = x.current_party.name),
                 Member.objects.all())
         bundle.data['parties'] = map(
                 lambda x: dict(name=x.name, score=a.party_score(x),
