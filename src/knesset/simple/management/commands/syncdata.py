@@ -1116,6 +1116,8 @@ class Command(NoArgsCommand):
                     b.save()
                 for m in pl.proposers.all(): # add current proposers to bill proposers
                     b.proposers.add(m)
+                for m in pl.joiners.all(): # add joiners to bill
+                    b.joiners.add(m)
                 pl.bill = b # assign this bill to this PP
                 pl.save()
 

@@ -242,6 +242,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
               'votes',
               'committee_meetings',
               'proposing_mks',
+              'joining_mks',
               'tags',
               'proposals',
              )
@@ -301,6 +302,11 @@ class BillHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def proposing_mks(self, bill):
         return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name, 'img_url' : x.img_url } for x in bill.proposers.all() ]
+
+    @classmethod
+    def joining_mks(self, bill):
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name,
+                  'img_url' : x.img_url } for x in bill.joiners.all() ]
 
     @classmethod
     def tags(self,bill):
