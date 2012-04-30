@@ -18,18 +18,6 @@ class AgendaVoteResource(BaseResource):
     def dehydrate_title(self, bundle):
         return bundle.obj.vote.title
 
-class MemberScoreResource(BaseResource):
-    class Meta(BaseResource.Meta):
-        object_class = Member
-        allowed_methods = ['get']
-        fields = ['score', 'name']
-
-class PartyScoreResource(BaseResource):
-    class Meta(BaseResource.Meta):
-        object_class = Party
-        allowed_methods = ['get']
-        fields = ['score', 'name']
-
 class AgendaResource(BaseResource):
     ''' Agenda API '''
     class Meta(BaseResource.Meta):
@@ -41,8 +29,6 @@ class AgendaResource(BaseResource):
         excludes = ['is_public']
 
     followers = fields.IntegerField(attribute="number_of_followers")
-    explanation = fields.CharField()
-    legal_code = fields.CharField()
     votes = fields.ToManyField(AgendaVoteResource,
                     'agendavotes',
                     full=True)
