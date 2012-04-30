@@ -420,15 +420,6 @@
                 {% endif %}
             {% endif %}
             </div>
-
-            {% if close_votes %}
-                <div id="suggested-votes">
-                <h2>{% trans 'suggested votes' %}</h2>
-                {% for v in close_votes %}
-                    <a href="{% url vote-detail v.0 %}">{{ v.1 }}</a><br>
-                {% endfor %}
-                </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}

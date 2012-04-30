@@ -183,22 +183,6 @@ class BillDetailView (DetailView):
             context['watched'] = bill in p.bills
         else:
             context['watched'] = False
-        try:
-            kp = bill.knesset_proposal
-            t = kp.law.title + ' ' + kp.title
-            vs = Vote.objects.values('title','id')
-            vs_titles = [v['title'] for v in vs]
-            close_votes = difflib.get_close_matches(t, vs_titles, cutoff=0.5)
-            all_bill_votes = []
-            all_bill_votes.extend(bill.pre_votes.values_list('id',flat=True))
-            if bill.first_vote:
-                all_bill_votes.append(bill.first_vote.id)
-            if bill.approval_vote:
-                all_bill_votes.append(bill.approval_vote.id)
-            close_votes = [(v['id'],v['title']) for v in vs if v['title'] in close_votes and v['id'] not in all_bill_votes]
-            context['close_votes'] = close_votes
-        except Exception, e:
-            pass
         context['proposers'] = bill.proposers.select_related('current_party')
         votes = voting.models.Vote.objects.get_object_votes(bill)
         if 1 not in votes: votes[1] = 0
