@@ -7,6 +7,7 @@ from mks.api import MemberResource, PartyResource
 from video.api import VideoResource
 from links.api import LinkResource
 from laws.api import BillResource, LawResource
+from agendas.api import AgendaResource
 
 v2_api = Api(api_name='v2')
 
@@ -16,3 +17,4 @@ v2_api.register(VideoResource())
 v2_api.register(LinkResource())
 v2_api.register(BillResource())
 v2_api.register(LawResource())
+v2_api.register(AgendaResource())

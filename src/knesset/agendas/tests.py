@@ -278,6 +278,10 @@ I have a deadline''')
         self.assertEqual(len(res.context['related_votes']), 2)
 
 
+    def testV2Api(self):
+        res = self.client.get('/api/v2/agenda/%s/?format=json' % self.agenda_1.id)
+        self.assertEqual(res.status_code, 200)
+
     def tearDown(self):
         self.party_1.delete()
         self.mk_1.delete()
