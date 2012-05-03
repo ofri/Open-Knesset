@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from actstream.models import Follow
 from knesset.laws.models import VoteAction
 from knesset.mks.models import Party, Member
+import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
     ('',_("Not selected")),
@@ -97,6 +98,8 @@ def get_top_bottom(lst, top, bottom):
 
 
 class AgendaManager(models.Manager):
+    _mks_grade = None
+
     def get_selected_for_instance(self, instance, user=None, top=3, bottom=3):
         # Returns interesting agendas for model instances such as: member, party
         agendas = list(self.get_relevant_for_user(user))
@@ -132,6 +135,13 @@ class AgendaManager(models.Manager):
                             .distinct()
         return agendas
 
+    def get_mks_grade(self):
+        if not self._mks_grade:
+            self._mks_grade = cache.get('agendas_mks_grade')
+            if not self._mks_grade:
+                self._mks_grade = queries.agendas_mks_grade()
+                cache.set('agendas_mks_grade', self._mks_grade, 1800)
+        return self._mks_grade
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
@@ -242,5 +252,9 @@ class Agenda(models.Model):
         instances['top'].sort(key=attrgetter('score'), reverse=True)
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
+
+    def get_mks_grade(self):
+        mks_grade = Agenda.objects.get_mks_grade()
+        return mks_grade.get(self.id,[])
 
 from listeners import *

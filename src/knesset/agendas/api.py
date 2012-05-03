@@ -33,13 +33,16 @@ class AgendaVoteResource(BaseResource):
     def dehydrate_title(self, bundle):
         return bundle.obj.vote.title
 
+class AgendaMKResource(BaseResource):
+    class Meta(BaseResource.Meta):
+        allowed_methods = ['get']
+        resource_name = 'agenda/mk'
+
 class AgendaResource(BaseResource):
     ''' Agenda API '''
     class Meta(BaseResource.Meta):
         queryset = Agenda.objects.filter(is_public=True)
         allowed_methods = ['get']
-        # excludes = ['stage']
-        filtering = dict(stage = ALL)
         include_absolute_url = True
         excludes = ['is_public']
 
