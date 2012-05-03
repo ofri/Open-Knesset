@@ -436,8 +436,8 @@ class BillProposal(models.Model):
 
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
-    proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
-    joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
+    proposers = models.ManyToManyField('mks.Member', related_name='proposals_proposed', blank=True, null=True)
+    joiners = models.ManyToManyField('mks.Member', related_name='proposals_joined', blank=True, null=True)
     bill = models.ForeignKey('Bill', related_name='proposals',
                              blank=True, null=True)
 
@@ -482,6 +482,8 @@ class Bill(models.Model):
     second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True) # CM related to this bill, *after* first vote
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True) # approval vote of this bill
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
+    joiners = models.ManyToManyField('mks.Member', related_name='bills_joined',
+                                     blank=True, null=True) # superset of all joiners
 
     class Meta:
         verbose_name = _('Bill')
