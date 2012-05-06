@@ -441,3 +441,84 @@ class MemberModelsTests(TestCase):
         MemberAltname(member=m,name='test2').save()
         self.assertEqual(m.names, ['test member','test2'])
 
+from agendas.models import Agenda, AgendaVote
+class MKAgendasTest(TestCase):
+
+    def setUp(self):
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1)
+        self.mk_1 = Member.objects.create(name='mk_1',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
+
+        self.mk_2 = Member.objects.create(name='mk_2',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
+
+        self.agenda_1 = Agenda.objects.create(name='agenda 1',
+                                              description='a bloody good agenda 1',
+                                              public_owner_name='Dr. Jacob',
+                                              is_public=True)
+        self.agenda_2 = Agenda.objects.create(name='agenda 2',
+                                              description='a bloody good agenda 2',
+                                              public_owner_name='Greenpeace',
+                                              is_public=True)
+        self.agenda_3 = Agenda.objects.create(name='agenda 3',
+                                              description='a bloody good agenda 3',
+                                              public_owner_name='Hidden One',
+                                              is_public=False)
+        self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
+        self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
+        self.voteactions = [ VoteAction.objects.create(vote=self.vote_1,
+                                member=self.mk_1, type='for'),
+                             VoteAction.objects.create(vote=self.vote_2,
+                                member=self.mk_1, type='for'),
+                             VoteAction.objects.create(vote=self.vote_1,
+                                member=self.mk_2, type='against'),
+                             VoteAction.objects.create(vote=self.vote_2,
+                                member=self.mk_2, type='against'),
+                             ]
+        self.agendavotes = [AgendaVote.objects.create(agenda=self.agenda_1,
+                                                      vote=self.vote_1,
+                                                      score=-1,
+                                                      reasoning="there's got to be a reason 1"),
+                            AgendaVote.objects.create(agenda=self.agenda_2,
+                                                      vote=self.vote_2,
+                                                      score=0.5,
+                                                      reasoning="there's got to be a reason 2"),
+                            AgendaVote.objects.create(agenda=self.agenda_1,
+                                                      vote=self.vote_2,
+                                                      score=0.5,
+                                                      reasoning="there's got to be a reason 3"),
+                            ]
+
+        self.domain = 'http://' + Site.objects.get_current().domain
+
+    def testMemberValues(self):
+        agenda_values1 = self.mk_1.get_agendas_values()
+        self.assertEqual(len(agenda_values1), 2)
+        agenda_values2 = self.mk_2.get_agendas_values()
+        self.assertEqual(len(agenda_values2), 2)
+        self.assertEqual(agenda_values1, {1: {'rank': 2, 'score': -33.33}, 2:
+            {'rank': 1, 'score': 100.0}})
+        self.assertEqual(agenda_values2, {1: {'rank': 1, 'score': 33.33}, 2:
+            {'rank': 2, 'score': -100.0}})
+
+    def testAPIv2(self):
+        res = self.client.get('/api/v2/member/%s/?format=json' % self.mk_1.id)
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.content)
+        self.assertEqual(data['name'], 'mk_1')
+        self.assertEqual(data['party']['name'], self.party_1.name)
+        self.assertEqual(data['agendas'], [
+            {'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 'score': -33.33, 'name': 'agenda 1', 'rank': 2},
+            {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 'score': 100.0, 'name': 'agenda 2', 'rank': 1}])
+
+    def tearDown(self):
+        self.party_1.delete()
+        self.mk_1.delete()
+        self.mk_2.delete()
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.agenda_1.delete()
+        self.agenda_2.delete()
+        self.agenda_3.delete()

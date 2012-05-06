@@ -6,6 +6,7 @@ import tastypie.fields as fields
 
 from knesset.api.resources.base import BaseResource
 from mks.models import Member, Party
+from agendas.models import Agenda
 from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
@@ -47,3 +48,18 @@ class MemberResource(BaseResource):
                     attribute = lambda b: Link.objects.for_model(b.obj),
                     full = True,
                     null = True)
+
+    def dehydrate(self, bundle):
+        mk = bundle.obj
+        agendas_values = mk.get_agendas_values()
+        agendas = []
+        for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
+            if a.is_public:
+                agendas.append(dict(name = a.name,
+                    owner = a.public_owner_name,
+                    score = agendas_values[a.id]['score'],
+                    rank = agendas_values[a.id]['rank'],
+                    absolute_url = a.get_absolute_url(),
+                    ))
+        bundle.data['agendas'] = agendas
+        return bundle
