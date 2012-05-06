@@ -51,14 +51,14 @@ class AgendaResource(BaseResource):
 
     def dehydrate(self, bundle):
         a = bundle.obj
-        mks_grade = dict(a.get_mks_values())
+        mks_values = dict(a.get_mks_values())
         members = []
-        for mk in Member.objects.filter(pk__in = mks_grade.keys()):
+        for mk in Member.objects.filter(pk__in = mks_values.keys()):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append (dict(name=mk.name,
-                    score = mks_grade[mk.id]['score'],
-                    rank = mks_grade[mk.id]['rank'],
+                    score = mks_values[mk.id]['score'],
+                    rank = mks_values[mk.id]['rank'],
                     absolute_url = mk.get_absolute_url(),
                     party = current_party.name,
                     party_url = current_party.get_absolute_url(),
