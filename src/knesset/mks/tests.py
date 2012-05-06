@@ -454,6 +454,10 @@ class MKAgendasTest(TestCase):
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
 
+        self.mk_3 = Member.objects.create(name='mk_3',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
+
         self.agenda_1 = Agenda.objects.create(name='agenda 1',
                                               description='a bloody good agenda 1',
                                               public_owner_name='Dr. Jacob',
@@ -502,6 +506,10 @@ class MKAgendasTest(TestCase):
             {'rank': 1, 'score': 100.0}})
         self.assertEqual(agenda_values2, {1: {'rank': 1, 'score': 33.33}, 2:
             {'rank': 2, 'score': -100.0}})
+
+    def testIdleMember(self):
+        agenda_values = self.mk_3.get_agendas_values()
+        self.assertNone(agenda_values)
 
     def testAPIv2(self):
         res = self.client.get('/api/v2/member/%s/?format=json' % self.mk_1.id)
