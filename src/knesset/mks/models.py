@@ -327,7 +327,10 @@ class Member(models.Model):
 
         out = {}
         for agenda_id, mks in Agenda.objects.get_mks_values().items():
-            out[agenda_id] = dict(mks)[self.id]
+            try:
+                out[agenda_id] = dict(mks)[self.id]
+            except KeyError:
+                pass
         return out
 
 

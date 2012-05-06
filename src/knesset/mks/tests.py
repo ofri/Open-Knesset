@@ -509,7 +509,7 @@ class MKAgendasTest(TestCase):
 
     def testIdleMember(self):
         agenda_values = self.mk_3.get_agendas_values()
-        self.assertNone(agenda_values)
+        self.assertFalse(agenda_values)
 
     def testAPIv2(self):
         res = self.client.get('/api/v2/member/%s/?format=json' % self.mk_1.id)
