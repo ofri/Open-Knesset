@@ -20,6 +20,8 @@ class PartyResource(BaseResource):
     class Meta:
         queryset = Party.objects.all()
         allowed_methods = ['get']
+        excludes = ['end_date', 'start_date']
+        include_absolute_url = True
 
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
@@ -39,6 +41,7 @@ class MemberResource(BaseResource):
             is_current = ALL,
             )
         exclude_from_list_view = ['about_video_id','related_videos_uri']
+        excludes = ['website', 'backlinks_enabled', 'area_of_residence']
 
     party = fields.ToOneField(PartyResource, 'current_party', full=True)
     videos = fields.ToManyField(VideoResource,
@@ -48,6 +51,9 @@ class MemberResource(BaseResource):
                     attribute = lambda b: Link.objects.for_model(b.obj),
                     full = True,
                     null = True)
+
+    def dehydrate_gender(self, bundle):
+        return bundle.obj.get_gender_display()
 
     def dehydrate(self, bundle):
         mk = bundle.obj
