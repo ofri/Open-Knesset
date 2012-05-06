@@ -46,7 +46,7 @@ class MemberResource(BaseResource):
     party = fields.ToOneField(PartyResource, 'current_party', full=True)
     videos = fields.ToManyField(VideoResource,
                     attribute= lambda b: get_videos_queryset(b.obj),
-                    null = True, full=True)
+                    null = True)
     links = fields.ToManyField(LinkResource,
                     attribute = lambda b: Link.objects.for_model(b.obj),
                     full = True,
