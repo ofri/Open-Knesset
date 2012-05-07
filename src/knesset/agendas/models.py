@@ -97,7 +97,6 @@ def get_top_bottom(lst, top, bottom):
 
 
 class AgendaManager(models.Manager):
-    _mks_values = None
 
     def get_selected_for_instance(self, instance, user=None, top=3, bottom=3):
         # Returns interesting agendas for model instances such as: member, party
@@ -135,19 +134,17 @@ class AgendaManager(models.Manager):
         return agendas
 
     def get_mks_values(self):
-        if not self._mks_values:
-            self._mks_values = cache.get('agendas_mks_values')
-            if not self._mks_values:
-                q = queries.agendas_mks_grade()
-                #TODO: need to sort by score?
-                mks_values = {}
-                for agenda_id, scores in q.items():
-                    mks_values[agenda_id] = \
-                        map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0])),
-                            enumerate(scores, 1))
-                self._mks_values = mks_values
-                cache.set('agendas_mks_values', self._mks_values, 1800)
-        return self._mks_values
+        mks_values = cache.get('agendas_mks_values')
+        if not mks_values:
+            q = queries.agendas_mks_grade()
+            #TODO: need to sort by score?
+            mks_values = {}
+            for agenda_id, scores in q.items():
+                mks_values[agenda_id] = \
+                    map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0])),
+                        enumerate(scores, 1))
+            cache.set('agendas_mks_values', mks_values, 1800)
+        return mks_values
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
