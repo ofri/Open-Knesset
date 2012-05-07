@@ -219,6 +219,8 @@ SERIALIZATION_MODULES = {
 
 API_LIMIT_PER_PAGE = 1000
 
+SOUTH_TESTS_MIGRATE = False
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try: 
