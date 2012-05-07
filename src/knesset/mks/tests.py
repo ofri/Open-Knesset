@@ -442,6 +442,7 @@ class MemberModelsTests(TestCase):
         self.assertEqual(m.names, ['test member','test2'])
 
 from agendas.models import Agenda, AgendaVote
+
 class MKAgendasTest(TestCase):
 
     def setUp(self):
@@ -517,7 +518,12 @@ class MKAgendasTest(TestCase):
         data = json.loads(res.content)
         self.assertEqual(data['name'], 'mk_1')
         self.assertEqual(data['party']['name'], self.party_1.name)
-        self.assertEqual(data['agendas'], [
+        agendas_uri = data['agendas']
+        expected_agendas_uri = '/api/v2/member-agendas/%s/' % self.mk_1.id
+        self.assertEqual(agendas_uri, expected_agendas_uri, "Wrong agendas URI returned for member")
+        res2 = self.client.get(expected_agendas_uri+'?format=json')
+        agendas = json.loads(res2.content)
+        self.assertEqual(agendas['agendas'], [
             {'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 'score': -33.33, 'name': 'agenda 1', 'rank': 2},
             {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 'score': 100.0, 'name': 'agenda 2', 'rank': 1}])
 

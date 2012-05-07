@@ -23,6 +23,29 @@ class PartyResource(BaseResource):
         excludes = ['end_date', 'start_date']
         include_absolute_url = True
 
+class MemberAgendasResource(BaseResource):
+    ''' The Parliament Member Agenda-compliance API '''
+    class Meta:
+        queryset = Member.objects.all()
+        allowed_methods = ['get']
+        fields = ['agendas'] # We're not really interested in any member details here
+        resource_name = "member-agendas"
+
+    def dehydrate(self, bundle):
+        mk = bundle.obj
+        agendas_values = mk.get_agendas_values()
+        agendas = []
+        for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
+            if a.is_public:
+                agendas.append(dict(name = a.name,
+                    owner = a.public_owner_name,
+                    score = agendas_values[a.id]['score'],
+                    rank = agendas_values[a.id]['rank'],
+                    absolute_url = a.get_absolute_url(),
+                    ))
+        bundle.data['agendas'] = agendas
+        return bundle
+        
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta:
@@ -56,16 +79,6 @@ class MemberResource(BaseResource):
         return bundle.obj.get_gender_display()
 
     def dehydrate(self, bundle):
-        mk = bundle.obj
-        agendas_values = mk.get_agendas_values()
-        agendas = []
-        for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
-            if a.is_public:
-                agendas.append(dict(name = a.name,
-                    owner = a.public_owner_name,
-                    score = agendas_values[a.id]['score'],
-                    rank = agendas_values[a.id]['rank'],
-                    absolute_url = a.get_absolute_url(),
-                    ))
-        bundle.data['agendas'] = agendas
+        bundle.data['agendas'] = MemberAgendasResource().get_resource_uri(bundle)
         return bundle
+
