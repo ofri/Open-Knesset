@@ -433,7 +433,7 @@ class MemberBacklinksViewsTest(TestCase):
 
 
 class MemberModelsTests(TestCase):
-    
+
     def testNames(self):
         m=Member(name='test member')
         self.assertEqual(m.names, ['test member'])
@@ -522,11 +522,15 @@ class MKAgendasTest(TestCase):
             {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 'score': 100.0, 'name': 'agenda 2', 'rank': 1}])
 
     def tearDown(self):
-        self.party_1.delete()
-        self.mk_1.delete()
-        self.mk_2.delete()
+        for av in self.agendavotes:
+            av.delete()
+        for va in self.voteactions:
+            va.delete()
         self.vote_1.delete()
         self.vote_2.delete()
+        self.mk_1.delete()
+        self.mk_2.delete()
+        self.party_1.delete()
         self.agenda_1.delete()
         self.agenda_2.delete()
         self.agenda_3.delete()
