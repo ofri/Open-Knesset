@@ -518,7 +518,7 @@ class MKAgendasTest(TestCase):
         data = json.loads(res.content)
         self.assertEqual(data['name'], 'mk_1')
         self.assertEqual(data['party']['name'], self.party_1.name)
-        agendas_uri = data['agendas']
+        agendas_uri = data['agendas_uri']
         expected_agendas_uri = '/api/v2/member-agendas/%s/' % self.mk_1.id
         self.assertEqual(agendas_uri, expected_agendas_uri, "Wrong agendas URI returned for member")
         res2 = self.client.get(expected_agendas_uri+'?format=json')

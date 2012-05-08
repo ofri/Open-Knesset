@@ -79,6 +79,6 @@ class MemberResource(BaseResource):
         return bundle.obj.get_gender_display()
 
     def dehydrate(self, bundle):
-        bundle.data['agendas'] = MemberAgendasResource().get_resource_uri(bundle)
+        bundle.data['agendas_uri'] = MemberAgendasResource().get_resource_uri(bundle)
         return bundle
 
