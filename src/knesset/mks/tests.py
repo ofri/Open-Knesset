@@ -528,11 +528,11 @@ class MKAgendasTest(TestCase):
         self.assertEqual(agendas['agendas'], [
             {'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 
              'score': -33.33, 'name': 'agenda 1', 'rank': 2,
-             'min': -33.33, 'max': 33.33,
+             'min': -33.33, 'max': 33.33, 'id': 1,
             },
             {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 
              'score': 100.0, 'name': 'agenda 2', 'rank': 1,
-             'min': -100.0, 'max': 100.0,
+             'min': -100.0, 'max': 100.0, 'id': 2,
              
             }])
 

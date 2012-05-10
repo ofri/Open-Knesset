@@ -34,11 +34,13 @@ class MemberAgendasResource(BaseResource):
     def dehydrate(self, bundle):
         mk = bundle.obj
         agendas_values = mk.get_agendas_values()
+        friends = mk.current_party.current_members().values_list('id', flat=True)
         agendas = []
         for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
             if a.is_public:
                 av = agendas_values[a.id]
                 agendas.append(dict(name = a.name,
+                    id = a.id,
                     owner = a.public_owner_name,
                     score = av['score'],
                     rank = av['rank'],
