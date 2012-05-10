@@ -503,10 +503,12 @@ class MKAgendasTest(TestCase):
         self.assertEqual(len(agenda_values1), 2)
         agenda_values2 = self.mk_2.get_agendas_values()
         self.assertEqual(len(agenda_values2), 2)
-        self.assertEqual(agenda_values1, {1: {'rank': 2, 'score': -33.33}, 2:
-            {'rank': 1, 'score': 100.0}})
-        self.assertEqual(agenda_values2, {1: {'rank': 1, 'score': 33.33}, 2:
-            {'rank': 2, 'score': -100.0}})
+        self.assertEqual(agenda_values1,
+                {1: {'rank': 2, 'score': -33.33, 'max': 33.33, 'min':-33.33}, 
+                 2: {'rank': 1, 'score': 100.0, 'max': 100.0, 'min':-100.0}})
+        self.assertEqual(agenda_values2,
+                {1: {'rank': 1, 'score': 33.33, 'max': 33.33, 'min':-33.33},
+                 2: {'rank': 2, 'score': -100.0, 'max': 100.0, 'min':-100.0}})
 
     def testIdleMember(self):
         agenda_values = self.mk_3.get_agendas_values()
@@ -524,8 +526,15 @@ class MKAgendasTest(TestCase):
         res2 = self.client.get(expected_agendas_uri+'?format=json')
         agendas = json.loads(res2.content)
         self.assertEqual(agendas['agendas'], [
-            {'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 'score': -33.33, 'name': 'agenda 1', 'rank': 2},
-            {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 'score': 100.0, 'name': 'agenda 2', 'rank': 1}])
+            {'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 
+             'score': -33.33, 'name': 'agenda 1', 'rank': 2,
+             'min': -33.33, 'max': 33.33,
+            },
+            {'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 
+             'score': 100.0, 'name': 'agenda 2', 'rank': 1,
+             'min': -100.0, 'max': 100.0,
+             
+            }])
 
     def tearDown(self):
         for av in self.agendavotes:

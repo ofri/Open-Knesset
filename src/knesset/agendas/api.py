@@ -69,28 +69,3 @@ class AgendaResource(BaseResource):
                     absolute_url=x.get_absolute_url()),
                 Party.objects.all())
         return bundle
-
-'''
-class AgendaMKResource(Resource):
-    class Meta(BaseResource.Meta):
-        queryset = User.objects.all()
-        include_absolute_url = True
-        allowed_methods = ['get']
-        resource_name = 'agenda/mk'
-
-    def get_resource_uri(self, bundle_or_resource):
-        kwargs = {'resource_name': self._meta.resource_name}
-        if isinstance(bundle_or_obj, Bundle):
-            kwargs['pk'] = bundle_or_obj.obj.id
-        else:
-            # TODO: what goes here?
-            pass
-
-        if self._meta.api_name is not None:
-            kwargs['api_name'] = self._meta.api_name
-        return self._build_reverse_url("api_dispatch_detail", kwargs=kwargs)
-
-    def get_object_list(self):
-        return "%(_uri_prefix)s/%(id)s/" % self
-
-'''

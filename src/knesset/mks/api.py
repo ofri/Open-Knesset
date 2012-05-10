@@ -37,15 +37,20 @@ class MemberAgendasResource(BaseResource):
         agendas = []
         for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
             if a.is_public:
+                av = agendas_values[a.id]
                 agendas.append(dict(name = a.name,
                     owner = a.public_owner_name,
-                    score = agendas_values[a.id]['score'],
-                    rank = agendas_values[a.id]['rank'],
+                    score = av['score'],
+                    rank = av['rank'],
+                    min = av['min'],
+                    max = av['max'],
+                    # party_min = av['party_min'],
+                    # party_max = av['party_max'],
                     absolute_url = a.get_absolute_url(),
                     ))
         bundle.data['agendas'] = agendas
         return bundle
-        
+
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta:
