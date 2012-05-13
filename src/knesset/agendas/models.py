@@ -140,13 +140,8 @@ class AgendaManager(models.Manager):
             #TODO: need to sort by score?
             mks_values = {}
             for agenda_id, scores in q.items():
-                amin = min(scores, key=itemgetter(1))[1]
-                amax = max(scores, key=itemgetter(1))[1]
                 mks_values[agenda_id] = \
-                    map(lambda x: (x[1][0], dict(score=x[1][1], 
-                            rank=x[0],
-                            min=amin, max=amax,
-                        )),
+                    map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0],)),
                         enumerate(scores, 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
