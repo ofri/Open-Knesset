@@ -36,34 +36,34 @@ class MemberAgendasResource(BaseResource):
         agendas_values = mk.get_agendas_values()
         friends = mk.current_party.current_members().values_list('id', flat=True)
         agendas = []
-        for a in Agenda.objects.filter(pk__in = agendas_values.keys()):
+        for a in Agenda.objects.filter(pk__in = agendas_values.keys(),
+                is_public = True):
             amin = 200.0 ; amax = -200.0
             pmin = 200.0 ; pmax = -200.0
-            if a.is_public:
-                av = agendas_values[a.id]
-                for mk_id, values in a.get_mks_values():
-                    score = values['score']
-                    if score < amin:
-                        amin = score
-                    if score > amax:
-                        amax = score
-                    if mk_id in friends:
-                        if score < pmin:
-                            pmin = score
-                        if score > pmax:
-                            pmax = score
+            av = agendas_values[a.id]
+            for mk_id, values in a.get_mks_values():
+                score = values['score']
+                if score < amin:
+                    amin = score
+                if score > amax:
+                    amax = score
+                if mk_id in friends:
+                    if score < pmin:
+                        pmin = score
+                    if score > pmax:
+                        pmax = score
 
-                agendas.append(dict(name = a.name,
-                    id = a.id,
-                    owner = a.public_owner_name,
-                    score = av['score'],
-                    rank = av['rank'],
-                    min = amin,
-                    max = amax,
-                    party_min = pmin,
-                    party_max = pmax,
-                    absolute_url = a.get_absolute_url(),
-                    ))
+            agendas.append(dict(name = a.name,
+                id = a.id,
+                owner = a.public_owner_name,
+                score = av['score'],
+                rank = av['rank'],
+                min = amin,
+                max = amax,
+                party_min = pmin,
+                party_max = pmax,
+                absolute_url = a.get_absolute_url(),
+                ))
         bundle.data['agendas'] = agendas
         return bundle
 
