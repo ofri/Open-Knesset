@@ -114,6 +114,7 @@ INSTALLED_APPS = (
     'djangoratings',
     'voting',
     'compressor',
+    'devserver',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',

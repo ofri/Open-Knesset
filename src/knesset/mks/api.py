@@ -70,7 +70,7 @@ class MemberAgendasResource(BaseResource):
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta:
-        queryset = Member.objects.all()
+        queryset = Member.objects.all().select_related('current_party')
         allowed_methods = ['get']
         ordering = [
             'name',
@@ -84,7 +84,8 @@ class MemberResource(BaseResource):
             name = ALL,
             is_current = ALL,
             )
-        exclude_from_list_view = ['about_video_id','related_videos_uri']
+        exclude_from_list_view = ['about_video_id','related_videos_uri',
+                'links', 'videos']
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
 
     party = fields.ToOneField(PartyResource, 'current_party', full=True)
