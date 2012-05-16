@@ -7,8 +7,8 @@ import tastypie.fields as fields
 from avatar.templatetags.avatar_tags import avatar_url
 
 from knesset.api.resources.base import BaseResource
-from mks.models import Member, Party
-from agendas.models import Agenda, AgendaVote
+from knesset.mks.models import Member, Party
+from knesset.agendas.models import Agenda, AgendaVote
 
 class UserResource(BaseResource):
     class Meta(BaseResource.Meta):
@@ -32,6 +32,35 @@ class AgendaVoteResource(BaseResource):
 
     def dehydrate_title(self, bundle):
         return bundle.obj.vote.title
+
+class AgendaTodoResource(BaseResource):
+    class Meta(BaseResource.Meta):
+        allowed_methods = ['get']
+        queryset = Agenda.objects.all()
+        resource_name = 'agenda-todo'
+        fields = ['votes_by_conrtoversy', 'votes_by_agendas']
+    
+    votes_by_controversy = fields.ListField()
+    votes_by_agendas = fields.ListField()
+    
+    # TODO: Make this a parameter or setting or something
+    NUM_SUGGESTIONS = 10
+    
+    def dehydrate_votes_by_agendas(self, bundle):
+        votes = bundle.obj.get_suggested_votes_by_agendas(AgendaTodoResource.NUM_SUGGESTIONS)
+        return self._dehydrate_votes(votes)
+
+    def dehydrate_votes_by_controversy(self, bundle):
+        votes = bundle.obj.get_suggested_votes_by_controversy(AgendaTodoResource.NUM_SUGGESTIONS)
+        return self._dehydrate_votes(votes)
+
+    def _dehydrate_votes(self, votes):
+        def dehydrate_vote(vote):
+            return dict(id=vote.id,
+                        url=vote.get_absolute_url(),
+                        title=vote.title,
+                        score=vote.score)
+        return [dehydrate_vote(v) for v in votes]
 
 class AgendaResource(BaseResource):
     ''' Agenda API '''

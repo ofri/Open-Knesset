@@ -8,7 +8,7 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 from actstream.models import Follow
-from knesset.laws.models import VoteAction
+from knesset.laws.models import VoteAction, Vote
 from knesset.mks.models import Party, Member
 import queries
 
@@ -259,6 +259,32 @@ class Agenda(models.Model):
     def get_mks_values(self):
         mks_grade = Agenda.objects.get_mks_values()
         return mks_grade.get(self.id,[])
+
+    def get_suggested_votes_by_agendas(self, num):
+        votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
+        votes = votes.annotate(score=Sum('agendavotes__importance'))
+        return votes.order_by('-score')[:num] 
+    
+    def get_suggested_votes_by_agenda_tags(self, num):
+        # TODO: This is untested, agendas currently don't have tags
+        votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
+        tag_importance_subquery = """
+        SELECT sum(av.importance)
+        FROM agendas_agendavote av
+        JOIN tagging_taggeditem avti ON avti.object_id=av.id and avti.object_type_id=%s
+        JOIN tagging_taggeditem ati ON ati.object_id=agendas_agenda.id and ati.object_type_id=%s
+        WHERE avti.tag_id = ati.tag_id
+        """
+        agenda_type_id = ContentType.objects.get_for_model(self).id
+        votes = votes.extra(select=dict(score = tag_importance_subquery),
+                            select_params = [agenda_type_id]*2)
+        return votes.order_by('-score')[:num]
+    
+    def get_suggested_votes_by_controversy(self, num):
+        votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
+        votes = votes.extra(select=dict(score = 'controversy'))
+        return votes.order_by('-score')[:num] 
+    
 
 from listeners import *
 from operator import itemgetter, attrgetter
