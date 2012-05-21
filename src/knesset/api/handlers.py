@@ -339,7 +339,8 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
 
 class PartyHandler(BaseHandler):
-    fields = ('id', 'name', 'start_date', 'end_date')
+    fields = ('id', 'name', 'start_date', 'end_date', 'members',
+              'is_coalition', 'number_of_seats')
     allowed_methods = ('GET',)
     model = Party
 
@@ -349,6 +350,10 @@ class PartyHandler(BaseHandler):
             q = urllib.unquote(q)
             return Party.objects.find(q)
         return super(PartyHandler,self).read(request, **kwargs)
+
+    @classmethod
+    def members(cls,party):
+        return party.members.values_list('id',flat=True)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')
