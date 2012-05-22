@@ -30,7 +30,7 @@ class BillResource(BaseResource):
         allowed_methods = ['get']
         # excludes = ['stage']
         ordering = ['stage_date', 'title']
-        filtering = dict(stage = ALL)
+        filtering = dict(stage = ALL, proposer = ALL)
         exclude_from_list_view = ['proposers', 'explanation', 'legal_code',
         'pre_votes', 'first_vote', 'approval_vote']
         include_absolute_url = True
@@ -56,8 +56,6 @@ class BillResource(BaseResource):
                     full=True)
 
 
-    law = fields.ToOneField(LawResource, 'law', null=True, full=True)
-
     def dehydrate_explanation(self, bundle):
         return self.get_src_parts(bundle)[1]
 
@@ -82,3 +80,9 @@ class BillResource(BaseResource):
                 pass
             bundle.src_parts = parts
         return parts
+
+    def build_filters(self, filters={}):
+        orm_filters = super(BillResource, self).build_filters(filters)
+        if 'proposer' in filters:
+            orm_filters["proposers"] = filters['proposer']
+        return orm_filters
