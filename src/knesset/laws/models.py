@@ -303,16 +303,17 @@ class Vote(models.Model):
 
     def update_vote_properties(self):
         party_ids = Party.objects.values_list('id', flat=True)
+        d = self.time.date()
         party_is_coalition = dict(zip(
                     party_ids,
                     [x.is_coalition_at(self.time.date())
                         for x in Party.objects.all()]
         ))
 
-        for_party_ids = [va.member.current_party.id for va in self.for_votes()]
+        for_party_ids = [va.member.party_at(d).id for va in self.for_votes()]
         party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
 
-        against_party_ids = [va.member.current_party.id for va in self.against_votes()]
+        against_party_ids = [va.member.party_at(d).id for va in self.against_votes()]
         party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
 
         party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
@@ -341,33 +342,30 @@ class Vote(models.Model):
         against_opposition_count = 0
         against_own_bill_count = 0
         for va in VoteAction.objects.filter(vote=self):
-            dirt = False
-            if party_stands_for[va.member.current_party.id] and va.type=='against':
+            va.against_party = False
+            va.against_coalition = False
+            va.against_opposition = False
+            va.against_own_bill = False
+            if party_stands_for[va.member.party_at(d).id] and va.type=='against':
                 va.against_party = True
                 against_party_count += 1
-                dirt = True
-            if party_stands_against[va.member.current_party.id] and va.type=='for':
+            if party_stands_against[va.member.party_at(d).id] and va.type=='for':
                 va.against_party = True
                 against_party_count += 1
-                dirt = True
-            if va.member.current_party.is_coalition_at(self.time.date()):
+            if va.member.party_at(d).is_coalition_at(self.time.date()):
                 if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
                     va.against_coalition = True
                     against_coalition_count += 1
-                    dirt = True
             else:
                 if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
                     va.against_opposition = True
                     against_opposition_count += 1
-                    dirt = True
 
             if va.member in proposers and va.type=='against':
                 va.against_own_bill = True
                 against_own_bill_count += 1
-                dirt = True
 
-            if dirt:
-                va.save()
+            va.save()
 
         self.against_party = against_party_count
         self.against_coalition = against_coalition_count

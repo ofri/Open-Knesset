@@ -203,6 +203,16 @@ class Member(models.Model):
         return ", ".join([p.NameWithLink() for p in self.parties.all().order_by('membership__start_date')])
     PartiesString.allow_tags = True
 
+    def party_at(self, date):
+        """Returns the party this memeber was at given date
+        """
+        memberships = Membership.objects.filter(member=self)
+        for membership in memberships:
+            if (not membership.start_date or membership.start_date <= date) and\
+               (not membership.end_date or membership.end_date >= date):
+                return membership.party
+        return None
+
     def TotalVotesCount(self):
         return self.votes.exclude(voteaction__type='no-vote').count()
 
