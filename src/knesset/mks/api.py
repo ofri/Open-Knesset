@@ -1,6 +1,7 @@
 '''
 Api for the members app
 '''
+import urllib
 from django.core.urlresolvers import reverse
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
@@ -155,10 +156,9 @@ class MemberResource(BaseResource):
     agendas_uri = fields.CharField()
 
     def dehydrate_bills_uri(self, bundle):
-        return reverse('api_dispatch_detail', kwargs={'resource_name': 'member-bills',
-                                                    'api_name': 'v2',
-                                                    'pk' : bundle.obj.id})
-
+        return '%s?%s' % (reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
+                                                    'api_name': 'v2', }),
+                          urllib.urlencode(dict(proposer=bundle.obj.id)))
     def dehydrate_gender(self, bundle):
         return bundle.obj.get_gender_display()
 
