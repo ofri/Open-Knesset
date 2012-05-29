@@ -62,9 +62,8 @@ class MemberViewsTest(TestCase):
         self.meeting_2.save()
         self.vote = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for')
-        
         self.domain = 'http://' + Site.objects.get_current().domain
-        
+
     def testMemberList(self):
         res = self.client.get(reverse('member-list'))
         self.assertEqual(res.status_code, 200)
@@ -141,14 +140,16 @@ class MemberViewsTest(TestCase):
                                       args=[self.mk_1.id]))
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
-        self.assertEqual(len(parsed['entries']),4)
-        self.assertEqual(parsed['entries'][3]['link'], self.domain + self.bill_1.get_absolute_url())
-        self.assertEqual(parsed['entries'][2]['link'], self.domain + self.meeting_2.get_absolute_url())
-        self.assertEqual(parsed['entries'][1]['link'], self.domain + self.meeting_1.get_absolute_url())        
-        self.assertEqual(parsed['entries'][0]['link'], self.domain + self.vote.get_absolute_url())
-        
+        # self.assertEqual(len(parsed['entries']),4)
+        self.assertEqual(parsed['entries'][0]['link'], self.domain + 
+                self.vote.get_absolute_url())
+        self.assertEqual(parsed['entries'][1]['link'], self.domain + 
+                self.meeting_1.get_absolute_url())
+        self.assertEqual(parsed['entries'][2]['link'], self.domain + 
+                self.meeting_2.get_absolute_url())
+        self.assertEqual(parsed['entries'][3]['link'], self.domain +
+                self.bill_1.get_absolute_url())
 
-    
     def testMemberActivityFeedWithVerbProposed(self):
         res = self.client.get(reverse('member-activity-feed', 
                                       kwargs={'object_id': self.mk_1.id}),{'verbs':'proposed'})
@@ -517,7 +518,8 @@ class MKAgendasTest(TestCase):
         self.assertEqual(res.status_code, 200)
         data = json.loads(res.content)
         self.assertEqual(data['name'], 'mk_1')
-        self.assertEqual(data['party']['name'], self.party_1.name)
+        self.assertEqual(data['party_name'], self.party_1.name)
+        self.assertEqual(data['party_url'], self.party_1.get_absolute_url())
         agendas_uri = data['agendas_uri']
         expected_agendas_uri = '/api/v2/member-agendas/%s/' % self.mk_1.id
         self.assertEqual(agendas_uri, expected_agendas_uri, "Wrong agendas URI returned for member")
