@@ -144,7 +144,9 @@ class MemberResource(BaseResource):
                 'links', 'videos']
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
 
-    party = fields.ToOneField(PartyResource, 'current_party', full=True)
+    party_name = fields.CharField()
+    party_url = fields.CharField()
+
     videos = fields.ToManyField(VideoResource,
                     attribute= lambda b: get_videos_queryset(b.obj),
                     null = True)
@@ -166,4 +168,11 @@ class MemberResource(BaseResource):
         return reverse('api_dispatch_detail', kwargs={'resource_name': 'member-agendas',
                                                     'api_name': 'v2',
                                                     'pk' : bundle.obj.id})
+    def dehydrate_party_name(self, bundle):
+        return bundle.obj.current_party.name
+
+    def dehydrate_party_url(self, bundle):
+        return bundle.obj.current_party.get_absolute_url()
+
+    fields.ToOneField(PartyResource, 'current_party', full=True)
 
