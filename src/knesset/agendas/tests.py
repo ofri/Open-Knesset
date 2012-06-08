@@ -100,8 +100,10 @@ I have a deadline''')
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list),
-                         [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
+        self.assertEqual(set(map(just_id, object_list)),
+                         set([self.agenda_1.id,
+                              self.agenda_2.id,
+                              self.agenda_3.id]))
 
         translation.deactivate()
 
@@ -260,7 +262,7 @@ I have a deadline''')
                               )
         self.assertRedirects(res,
                              reverse('vote-detail',
-                                         kwargs={'object_id':self.meeting_1.id}),
+                                         kwargs={'object_id':self.vote_1.id}),
                              status_code=302)
         av = AgendaVote.objects.get(agenda=self.agenda_1,
                                     vote=self.vote_1)
