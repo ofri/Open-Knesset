@@ -70,7 +70,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',    
+    'django.contrib.messages.middleware.MessageMiddleware', # keep after session
+    'django.middleware.csrf.CsrfViewMiddleware',
     'pagination.middleware.PaginationMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -94,6 +95,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'django.contrib.messages',
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
