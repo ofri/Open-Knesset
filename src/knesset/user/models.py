@@ -48,6 +48,7 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     description = models.TextField(null=True,blank=True)
     email_notification = models.CharField(max_length=1, choices=NOTIFICATION_PERIOD_CHOICES, blank=True, null=True)
+    party = models.ForeignKey('mks.Party', null=True, blank=True)
 
     @property
     def members(self):
