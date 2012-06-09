@@ -1093,7 +1093,7 @@ div.general_discipline_control {
    */
    cursor:help;
   }
-  .helptext {
+  #helptextcontainer .helptext {
     position:relative;
     width:500px !important;
     right:40px;
@@ -1107,7 +1107,7 @@ div.general_discipline_control {
     text-align:right !important;
     right:auto !important;
   }
-  .helptext .x {
+  #helptextcontainer .helptext .x {
     position:absolute;
     top:5px;
     right:5px;
