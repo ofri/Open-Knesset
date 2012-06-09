@@ -6,7 +6,7 @@
 
 <div class="agenda-counts">
     {{ agenda_votes_num }} {% trans 'votes' %}<br>
-    {{ agenda.number_of_followers }} {% trans 'followers' %}
+    {{ agenda.num_followers }} {% trans 'followers' %}
     {% if agenda in watched_agendas %}<span>{% trans 'Including you' %}</span>{% endif %}
 </div>
 <a id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}
