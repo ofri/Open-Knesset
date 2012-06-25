@@ -7,5 +7,5 @@ Friendly Applications
 
 
 .. _Open-Knesset-Mobile: https://github.com/gardenofwine/Open-Knesset-Mobile
-
+.. _kolorabim: http://kolorabim.meteor.com/
 
