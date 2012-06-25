@@ -19,6 +19,9 @@ class SimpleTest(TestCase):
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
+        self.mk_2 = Member.objects.create(name='mk_2',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
@@ -44,8 +47,10 @@ class SimpleTest(TestCase):
         self.agenda_3.editors = [self.user_2]
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
+        self.vote_3 = Vote.objects.create(title='vote 3',time=datetime.datetime.now())
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
+        self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
                                                       score=-1,
@@ -56,6 +61,10 @@ class SimpleTest(TestCase):
                                                       reasoning="there's got to be a reason 2")
         self.agendavote_3 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_2,
+                                                      score=0.5,
+                                                      reasoning="there's got to be a reason 3")
+        self.agendavote_4 = AgendaVote.objects.create(agenda=self.agenda_3,
+                                                      vote=self.vote_3,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
         self.committee_1 = Committee.objects.create(name='c1')
@@ -112,17 +121,18 @@ I have a deadline''')
     def testAgendaDetail(self):
 
         # Access public agenda while not logged in
-        res = self.client.get(reverse('agenda-detail',
+        res = self.client.get('%s?all_mks' % reverse('agenda-detail',
                                       kwargs={'pk': self.agenda_1.id}))
+        self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'agendas/agenda_detail.html')
         self.assertEqual(res.context['object'].id, self.agenda_1.id)
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
+        self.assertEqual(len(res.context['all_mks_ids']), 2)
 
     def test_agenda_edit(self):
-
         # Try to edit agenda while not logged in
         res = self.client.get(reverse('agenda-detail-edit',
                                       kwargs={'pk': self.agenda_1.id}))
