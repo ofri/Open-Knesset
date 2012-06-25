@@ -1,7 +1,7 @@
 .. index:: API Calls (Member), Examples (Member)
 
-Member API
-================
+Member API - Version 1
+======================
 
 Each member entry in the response will contain the following fields (some may be
 optional or `null`):
