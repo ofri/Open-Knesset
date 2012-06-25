@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'djangoratings',
     'voting',
     'compressor',
+    'devserver',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -218,6 +219,10 @@ NOSE_ARGS = ['--with-xunit']
 SERIALIZATION_MODULES = {
     'oknesset' : 'auxiliary.serializers'
 }
+
+API_LIMIT_PER_PAGE = 1000
+
+SOUTH_TESTS_MIGRATE = False
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
