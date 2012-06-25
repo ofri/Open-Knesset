@@ -14,6 +14,8 @@ Each committee in the response will contain the following fields:
 **src_url**
     The original meeting's page at the Knesset site
 **committee**
+    TODO
 **date**
+    TODO
 **mks_attended**
-
+    TODO
