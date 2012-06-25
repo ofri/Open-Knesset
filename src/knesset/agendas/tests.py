@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -294,6 +295,58 @@ I have a deadline''')
                                        kwargs={'pk': self.agenda_4.id}))
 
         self.assertEqual(res2.status_code, 200)
+
+    def testV2Api(self):
+        res = self.client.get('/api/v2/agenda/%s/?format=json' % self.agenda_1.id)
+        self.assertEqual(res.status_code, 200)
+        
+    def _validate_vote(self, vote):
+        self.assertIn('id', vote, "Got vote with no id in agenda-todo")
+        self.assertIn('url', vote, "Got vote with no url in agenda-todo")
+        self.assertIn('title', vote, "Got vote with no title in agenda-todo")
+        self.assertIn('score', vote, "Got vote with no importance in agenda-todo")
+
+
+
+    def test_suggest_votes_for_new_agenda(self):
+        new_agenda = Agenda.objects.create(name='new agenda',
+                                           description='a brand new agenda',
+                                           public_owner_name='Dr. Jekill',
+                                           is_public=True)
+        res = self.client.get('/api/v2/agenda-todo/%s/?format=json' % new_agenda.id)
+        self.assertEqual(res.status_code, 200)
+        todo = json.loads(res.content)
+
+        def _validate_vote_list(list_key):         
+            self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
+            votes = todo[list_key]
+            self.assertGreater(len(votes), 1, 'Too little votes returned for new agenda')
+            for vote in votes:
+                self._validate_vote(vote)
+            
+            self.assertGreaterEqual(votes[0]['score'], votes[1]['score'], "votes returned out of importance order")
+
+        _validate_vote_list('votes_by_controversy')
+        _validate_vote_list('votes_by_agendas')
+
+    def test_suggest_votes_for_existing_agenda(self):
+        """
+        We expect to get only self.vote_1 returned for agenda_2
+        """
+        res = self.client.get('/api/v2/agenda-todo/%s/?format=json' % self.agenda_2.id)
+        self.assertEqual(res.status_code, 200)
+        todo = json.loads(res.content)
+
+        def _validate_vote_list(list_key):         
+            self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
+            votes = todo[list_key]
+            self.assertEquals(len(votes), 1, 'Got wrong number of "votes" for existing agenda')
+            vote = votes[0]
+            self._validate_vote(vote)
+            self.assertEqual(vote['id'], self.vote_1.id, "Expected vote not returned for existing agenda")
+
+        _validate_vote_list('votes_by_controversy')
+        _validate_vote_list('votes_by_agendas')
 
     def tearDown(self):
         self.party_1.delete()
