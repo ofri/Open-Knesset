@@ -8,6 +8,7 @@ from django.http import (HttpResponse, HttpResponseRedirect, Http404,
 from django.shortcuts import get_object_or_404,render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.template import RequestContext
@@ -206,9 +207,7 @@ def edit_topic(request, committee_id, topic_id=None):
                 link.object_pk = topic.id
                 link.save()
 
-            m = request.user.message_set.create()
-            m.message = 'Topic has been updated.'
-            m.save()
+            messages.add_message(request, messages.INFO, 'Topic has been updated')
             return HttpResponseRedirect(
                 reverse('topic-detail',args=[topic.id]))
 

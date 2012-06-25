@@ -103,7 +103,7 @@ class AgendaManager(models.Manager):
         agendas = list(self.get_relevant_for_user(user))
         for agenda in agendas:
             agenda.score = agenda.__getattribute__('%s_score' % instance.__class__.__name__.lower())(instance)
-            agenda.significance = agenda.score * agenda.number_of_followers()
+            agenda.significance = agenda.score * agenda.num_followers
         agendas.sort(key=attrgetter('significance'))
         agendas = get_top_bottom(agendas, top, bottom)
         agendas['top'].sort(key=attrgetter('score'), reverse=True)
@@ -116,11 +116,14 @@ class AgendaManager(models.Manager):
 
     def get_relevant_for_user(self, user):
         if user == None or not user.is_authenticated():
-            agendas = Agenda.objects.filter(is_public=True)
+            agendas = Agenda.objects.filter(is_public=True).order_by('-num_followers')
         elif user.is_superuser:
-            agendas = Agenda.objects.all()
+            agendas = Agenda.objects.all().order_by('-num_followers')
         else:
-            agendas = Agenda.objects.filter(Q(is_public=True) | Q(editors=user)).distinct()
+            agendas = Agenda.objects.filter(Q(is_public=True) |
+                                            Q(editors=user))\
+                                    .order_by('-num_followers')\
+                                    .distinct()
         return agendas
 
     def get_possible_to_suggest(self, user, vote):
@@ -153,6 +156,7 @@ class Agenda(models.Model):
     votes = models.ManyToManyField('laws.Vote',through=AgendaVote)
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
+    num_followers = models.IntegerField(default=0)
 
     objects = AgendaManager()
 
@@ -218,14 +222,6 @@ class Agenda(models.Model):
             return (for_score - against_score) / max_score * 100
         else:
             return 0.0
-
-    def number_of_followers(self):
-        n = cache.get('agenda_%d_num_followers' % self.id, None)
-        if n is None:
-            n = Follow.objects.filter(content_type=ContentType.objects.get(app_label="agendas", model="agenda").id,object_id=self.id).count()
-            cache.set('agenda_%d_num_followers' % self.id, n,
-                      settings.LONG_CACHE_TIME)
-        return n
 
     def related_mk_votes(self,member):
         # Find all votes that

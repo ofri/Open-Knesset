@@ -29,11 +29,13 @@ class SimpleTest(TestCase):
         self.agenda_1 = Agenda.objects.create(name='agenda 1',
                                               description='a bloody good agenda 1',
                                               public_owner_name='Dr. Jacob',
-                                              is_public=True)
+                                              is_public=True,
+                                              num_followers=100)
         self.agenda_2 = Agenda.objects.create(name='agenda 2',
                                               description='a bloody good agenda 2',
                                               public_owner_name='Greenpeace',
-                                              is_public=True)
+                                              is_public=True,
+                                              num_followers=50)
         self.agenda_3 = Agenda.objects.create(name='agenda 3',
                                               description='a bloody good agenda 3',
                                               public_owner_name='Hidden One',
@@ -102,7 +104,9 @@ I have a deadline''')
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
+                         [self.agenda_1.id,
+                              self.agenda_2.id,
+                              self.agenda_3.id])
 
         translation.deactivate()
 
@@ -261,7 +265,7 @@ I have a deadline''')
                               )
         self.assertRedirects(res,
                              reverse('vote-detail',
-                                         kwargs={'object_id':self.meeting_1.id}),
+                                         kwargs={'object_id':self.vote_1.id}),
                              status_code=302)
         av = AgendaVote.objects.get(agenda=self.agenda_1,
                                     vote=self.vote_1)

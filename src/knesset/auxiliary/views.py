@@ -24,8 +24,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
-from knesset.utils import notify_responsible_adult
-from feeds import main_actions
+from knesset.utils import notify_responsible_adult, main_actions
+from knesset.committees.models import PUBLIC_TOPIC_STATUS
 
 import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -84,6 +84,7 @@ def main(request):
         context = {}
         context['title'] = _('Home')
         actions = list(main_actions()[:10])
+
         annotations = get_annotations(
             annotations=[a.target for a in actions if a.verb != 'comment-added'],
             comments=[x.target for x in actions if x.verb == 'comment-added'])
@@ -91,7 +92,9 @@ def main(request):
         bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
         if bill_votes:
             context['bill'] = Bill.objects.get(pk=random.choice(bill_votes))
-        context['topics'] = Topic.objects.summary('-modified')[:20]
+        context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
+                                         .order_by('-modified')\
+                                         .select_related('creator')[:10]
         context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
