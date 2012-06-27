@@ -16,7 +16,8 @@ Contents:
     :maxdepth: 2
 
     architecture
-    api/index
+    api_v2/index
+    api_v1/index
     embed/index
     apps
 

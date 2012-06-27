@@ -1,6 +1,6 @@
 .. index:: API Calls (Member), Examples (Member)
 
-Member API - Version 1
+Member API
 ======================
 
 Each member entry in the response will contain the following fields (some may be
