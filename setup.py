@@ -23,6 +23,7 @@ install_requires = [
     'django_compressor',
     'gdata',
     'mimms',
+    'django-social-auth',
 ]
 setup(
         name = "Open-Knesset",
