@@ -1,4 +1,4 @@
-
+from itertools import chain
 from django.db import models
 from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
@@ -140,12 +140,21 @@ class AgendaManager(models.Manager):
         mks_values = cache.get('agendas_mks_values')
         if not mks_values:
             q = queries.agendas_mks_grade()
-            #TODO: need to sort by score?
+            # outer join - add missing mks to agendas
+            newAgendaMkVotes = {}
+            # generates a set of all the current mk ids that have ever voted for any agenda
+            # its not perfect, but its better than creating another query to generate all known mkids
+            allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
+            for agendaId,agendaVotes in q.items():
+                # the newdict will have 0's for each mkid, the update will change the value for known mks
+                newDict = {}.fromkeys(allMkIds,0)
+                newDict.update(dict(agendaVotes))
+                newAgendaMkVotes[agendaId]=newDict.items()
             mks_values = {}
-            for agenda_id, scores in q.items():
+            for agenda_id, scores in newAgendaMkVotes.items():
                 mks_values[agenda_id] = \
                     map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0],)),
-                        enumerate(scores, 1))
+                        enumerate(sorted(scores,key=itemgetter(1)), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
 
