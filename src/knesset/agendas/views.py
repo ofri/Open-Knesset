@@ -102,11 +102,19 @@ class AgendaDetailView (DetailView):
 
         all_mks = 'all_mks' in self.request.GET.keys()
         allAgendaMkVotes = cache.get('AllAgendaMkVotes')
-        if not allAgendaMkVotes:
+        if not allAgendaMkVotes or agenda.id not in allAgendaMkVotes:
             allAgendaMkVotes = getAllAgendaMkVotes()
-            cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
-        if agenda.id not in allAgendaMkVotes:
-            allAgendaMkVotes = getAllAgendaMkVotes()
+            # outer join - add missing mks to agendas
+            newAgendaMkVotes = {}
+            # generates a set of all the current mk ids that have ever voted for any agenda
+            # its not perfect, but its better than creating another query to generate all known mkids
+            allMkIds = set(map(itemgetter(0),chain.from_iterable(allAgendaMkVotes.values())))
+            for agendaId,agendaVotes in allAgendaMkVotes.items():
+                # the newdict will have 0's for each mkid, the update will change the value for known mks
+                newDict = {}.fromkeys(allMkIds,0)
+                newDict.update(dict(agendaVotes))
+                newAgendaMkVotes[agendaId]=newDict.items()
+            allAgendaMkVotes = newAgendaMkVotes
             cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
         context['agenda_mk_values']=dict(allAgendaMkVotes.setdefault(agenda.id,[]))
         if all_mks:
