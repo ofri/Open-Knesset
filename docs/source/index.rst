@@ -16,6 +16,7 @@ Contents:
     :maxdepth: 2
 
     architecture
+    flow
     api_v2/index
     api_v1/index
     embed/index
