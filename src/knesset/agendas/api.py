@@ -70,7 +70,7 @@ class AgendaResource(BaseResource):
         include_absolute_url = True
         excludes = ['is_public']
 
-    followers = fields.IntegerField(attribute="number_of_followers")
+    followers = fields.IntegerField(attribute="number_of_followers", default=0)
     editors = fields.ToManyField(UserResource,
                     'editors',
                     full=True)
