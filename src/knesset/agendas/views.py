@@ -52,11 +52,11 @@ class AgendaListView (ListView):
             watched = p.agendas
         else:
             watched = None
-    agendaEditorIds = getAgendaEditorIds()
-    allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
-    editors = User.objects.filter(id__in=allEditorIds)
-    context['agenda_editors'] = agendaEditorIds
-    context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
+        agendaEditorIds = getAgendaEditorIds()
+        allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
+        editors = User.objects.filter(id__in=allEditorIds)
+        context['agenda_editors'] = agendaEditorIds
+        context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
         context['watched'] = watched
         context['agenda_votes']=agenda_votes
         context['agenda_party_values']=allAgendaPartyVotes
