@@ -21,7 +21,7 @@ from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting
 
-from queries import getAllAgendaPartyVotes,getAllAgendaMkVotes,getAgendaEditorIds
+from queries import getAllAgendaPartyVotes, getAgendaEditorIds
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -52,11 +52,11 @@ class AgendaListView (ListView):
             watched = p.agendas
         else:
             watched = None
-	agendaEditorIds = getAgendaEditorIds()
-	allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
-	editors = User.objects.filter(id__in=allEditorIds)
-	context['agenda_editors'] = agendaEditorIds
-	context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
+    agendaEditorIds = getAgendaEditorIds()
+    allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
+    editors = User.objects.filter(id__in=allEditorIds)
+    context['agenda_editors'] = agendaEditorIds
+    context['editors'] = dict(map(lambda obj:(obj.id,obj),editors))
         context['watched'] = watched
         context['agenda_votes']=agenda_votes
         context['agenda_party_values']=allAgendaPartyVotes
@@ -101,28 +101,18 @@ class AgendaDetailView (DetailView):
         context['watched_members'] = watched_members
 
         all_mks = 'all_mks' in self.request.GET.keys()
-        allAgendaMkVotes = cache.get('AllAgendaMkVotes')
-        if not allAgendaMkVotes or agenda.id not in allAgendaMkVotes:
-            allAgendaMkVotes = getAllAgendaMkVotes()
-            # outer join - add missing mks to agendas
-            newAgendaMkVotes = {}
-            # generates a set of all the current mk ids that have ever voted for any agenda
-            # its not perfect, but its better than creating another query to generate all known mkids
-            allMkIds = set(map(itemgetter(0),chain.from_iterable(allAgendaMkVotes.values())))
-            for agendaId,agendaVotes in allAgendaMkVotes.items():
-                # the newdict will have 0's for each mkid, the update will change the value for known mks
-                newDict = {}.fromkeys(allMkIds,0)
-                newDict.update(dict(agendaVotes))
-                newAgendaMkVotes[agendaId]=newDict.items()
-            allAgendaMkVotes = newAgendaMkVotes
-            cache.set('AllAgendaMkVotes',allAgendaMkVotes,1800)
-        context['agenda_mk_values']=dict(allAgendaMkVotes.setdefault(agenda.id,[]))
+        mks_values = agenda.get_mks_values()
+        context['agenda_mk_values'] = dict(mks_values)
+        cmp_rank = lambda x,y: x[1]['rank']-y[1]['rank']
         if all_mks:
-            context['all_mks_ids']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:200])
-            context['all_mks']=True
+            context['all_mks_ids'] = map(itemgetter(0),sorted(mks_values,
+                cmp_rank, reverse=True)[:200])
+            context['all_mks'] = True
         else:
-            context['mks_top']=map(itemgetter(0),sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=True)[:5])
-            context['mks_bottom']=map(itemgetter(0),sorted(sorted(allAgendaMkVotes[agenda.id],key=itemgetter(1),reverse=False)[:5],key=itemgetter(1),reverse=True))
+            context['mks_top'] = map(itemgetter(0),sorted(mks_values,
+                cmp_rank, reverse=True)[:5])
+            context['mks_bottom'] = map(itemgetter(0),sorted(sorted(mks_values,key=itemgetter(1),reverse=False)[:5],
+                cmp_rank, reverse=True))
 
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
         if not allAgendaPartyVotes:
