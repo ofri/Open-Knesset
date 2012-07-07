@@ -9,6 +9,8 @@ from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count
+from django.core.cache import cache
+from django.conf import settings
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -80,7 +82,13 @@ class MemberVotingStatistics(models.Model):
         if from_date:
             return VoteAction.objects.filter(member=self.member, vote__time__gt=from_date).exclude(type='no-vote').count()
         else:
-            return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+            vc = cache.get('votes_count_%d' % self.member.id)
+            if not vc:
+                vc = VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+                cache.set('votes_count_%d' % self.member.id,
+                          vc,
+                          settings.LONG_CACHE_TIME)
+            return vc
 
     def average_votes_per_month(self):
         if hasattr(self, '_average_votes_per_month'):
