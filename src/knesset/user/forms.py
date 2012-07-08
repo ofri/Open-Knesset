@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
-from knesset.mks.models import GENDER_CHOICES
+from knesset.mks.models import GENDER_CHOICES, Party
 from knesset.user.models import NOTIFICATION_PERIOD_CHOICES
 
 
@@ -10,6 +10,14 @@ class RegistrationForm(UserCreationForm):
     username = forms.RegexField(label=_("Username"), max_length=30, regex=r'^(?u)[ \w.@+-]{4,}$',
         help_text = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."),
         error_message = _("Required. 4-30 characters (only letters, numbers spaces and @/./+/-/_ characters)."))
+
+    email_notification = forms.ChoiceField(choices = NOTIFICATION_PERIOD_CHOICES, initial="W",
+                                           label = _('E-Mail Notifications'),
+                                           help_text = _('Should we send you e-mail notification about updates to things you follow on the site?'))
+    party = forms.ModelChoiceField(Party.objects.all(),
+                                   required = False,
+                                   label = _('(citizen) party member?'),
+                                   help_text = _('Are you a member of any party?'))
     class Meta:
         model = User
         fields = ('username', 'email')
@@ -19,6 +27,10 @@ class RegistrationForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
+            profile = user.get_profile()
+            profile.email_notification = self.cleaned_data['email_notification']
+            profile.party = self.cleaned_data['party']
+            profile.save()
         return user
 
 class EditProfileForm(forms.Form):
@@ -32,15 +44,18 @@ class EditProfileForm(forms.Form):
     public_profile = forms.BooleanField(label=_('Public profile'),
                                         help_text = _('Allow other users to view your profile on the site'),
                                         required=False)
-    gender = forms.ChoiceField(choices = GENDER_CHOICES, 
+    gender = forms.ChoiceField(choices = GENDER_CHOICES,
                                label=_('Gender'))
     description = forms.CharField(required=False,
-                                  label=_('Tell us and other users bit about yourself'), 
+                                  label=_('Tell us and other users bit about yourself'),
                                   widget=forms.Textarea(attrs={'rows':3}))
     email_notification = forms.ChoiceField(choices = NOTIFICATION_PERIOD_CHOICES,
                                            label = _('E-Mail Notifications'),
                                            help_text = _('Should we send you e-mail notification about updates to things you follow on the site?'))
-                                           
+    party = forms.ModelChoiceField(Party.objects.all(),
+                                   required = False,
+                                   label = _('(citizen) party member?'),
+                                   help_text = _('Are you a member of any party?'))
 
     def __init__(self, user=None, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
@@ -55,9 +70,10 @@ class EditProfileForm(forms.Form):
                         'gender': self.userprofile.gender,
                         'description': self.userprofile.description,
                         'email_notification': self.userprofile.email_notification,
+                        'party': self.userprofile.party,
                         }
         self.has_email = True if user.email else False
-        g = Group.objects.get(name='Valid Email')
+        g, created = Group.objects.get_or_create(name='Valid Email')
         self.valid_email = g in self.user.groups.all()
 
     def clean_username(self):
@@ -87,7 +103,8 @@ class EditProfileForm(forms.Form):
         self.userprofile.public_profile = self.cleaned_data['public_profile']
         self.userprofile.description = self.cleaned_data['description']
         self.userprofile.email_notification = self.cleaned_data['email_notification']
-        
+        self.userprofile.party = self.cleaned_data['party']
+
         if commit:
             user.save()
             self.userprofile.save()

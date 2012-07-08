@@ -30,7 +30,7 @@ class InternalLinksTest(TestCase):
                 self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
             else:
                 self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1))
-        self.vote_1.controversy = min(self.vote_1.for_votes_count(), self.vote_1.against_votes_count())
+        self.vote_1.controversy = min(self.vote_1.for_votes_count, self.vote_1.against_votes_count)
         self.vote_1.save()
         self.tags = []
         self.tags.append(Tag.objects.create(name = 'tag1'))
@@ -44,26 +44,28 @@ class InternalLinksTest(TestCase):
         ctype = ContentType.objects.get_for_model(Bill)
         TaggedItem._default_manager.get_or_create(tag=self.tags[0], content_type=ctype, object_id=self.bill_1.id)
         self.domain = 'http://' + Site.objects.get_current().domain
-        
+
     def test_internal_links(self):
         """
         Internal links general test.
-        This test reads the site, starting from the main page, 
+        This test reads the site, starting from the main page,
         looks for links, and makes sure all internal pages return HTTP200
         """
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
-        
-        test_pages = [reverse('main'), reverse('vote-list'), reverse('bill-list'), reverse('member-list')]
+
+        test_pages = [reverse('main'), reverse('vote-list'),
+                      reverse('bill-list'), reverse('member-list'),
+                      reverse('party-list')]
         for page in test_pages:
 
-            links_to_visit = []        
+            links_to_visit = []
             res = self.client.get(page)
             self.assertEqual(res.status_code, 200)
             visited_links.add(page)
             for link in re.findall("href=\"(.*?)\"",res.content):
-                self.failUnless(link, "There seems to be an empty link in %s (href='')" % page)                    
-                if (link in visited_links) or (link.startswith("http")) or link.startswith("#"): 
+                self.failUnless(link, "There seems to be an empty link in %s (href='')" % page)
+                if (link in visited_links) or (link.startswith("http")) or link.startswith("#"):
                     continue
                 if link.startswith("./"):
                     link = link[2:]
@@ -72,16 +74,16 @@ class InternalLinksTest(TestCase):
                 if not link.startswith("/"): # relative
                     link = "%s%s" % (page,link)
                 links_to_visit.append(link)
-                
+
             while links_to_visit:
-                link = links_to_visit.pop()                
+                link = links_to_visit.pop()
                 res0 = self.client.get(link)
                 self.assertEqual(res0.status_code, 200, msg="internal link %s from page %s seems to be broken" % (link,page))
                 visited_links.add(link)
-                
+
         # generate a txt file report of the visited links. for debugging the test
         #visited_links = list(visited_links)
-        #visited_links.sort()                
+        #visited_links.sort()
         #f = open('internal_links_tested.txt','wt')
         #f.write('\n'.join(visited_links))
         #f.close()

@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load lookup %}
 {% load i18n %}
 {% load tagging_tags %}
 {% load laws_extra %}
@@ -59,42 +60,63 @@
                     <tr>
                         <td colspan="3" style="text-align:center">{% trans 'Agenda MKs' %}</td>
                     </tr>
-                    {% for selected_mk in selected_mks %}
+                    {% for selected_mk_id in all_mks_ids %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
                         <tr>
-                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
-                                <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>
+                                <div id="selected_mk_{{ selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
                             </td>
+			{% endwith %}
+			{% endwith %}
                         </tr>
+			{% endwith %}
                     {% endfor %}
                 {% else %}
                     <tr>
                         <td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
                     </tr>
-                    {% for selected_mk in selected_mks_top %}
+                    {% for selected_mk_id in mks_top %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
                         <tr>
-                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
-                                <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>
+                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
                             </td>
+			{% endwith %}
+			{% endwith %}
                         </tr>
+			{% endwith %}
                     {% endfor %}
                     <tr>
                         <td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
                     </tr>
-                    {% for selected_mk in selected_mks_bottom %}
+                    {% for selected_mk_id in mks_bottom %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
                         <tr>
-                            <td><a class="hashnav item dontwrap party-{{selected_mk.current_party.id}}" title="{{selected_mk.current_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{selected_mk.score|floatformat:"0"}}%</td>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
-                                <div id="selected_mk_{{ selected_mk.id }}_percentile" class="percentile {% if selected_mk.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{ selected_mk.id }}',({{ selected_mk.score }}+100)/2);</script>
+                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
                             </td>
-                            </tr>
+			{% endwith %}
+			{% endwith %}
+                        </tr>
+			{% endwith %}
                     {% endfor %}
                 {% endif %}
                 </table>
@@ -105,14 +127,16 @@
             <p>{% trans 'Click the # to highlight MKs from this party' %}</p>
             <div class="list-wrap">
                 <table>
-                {% for selected_party in selected_parties %}
+                {% for selected_party_id in agendaTopParties %}
+		{% with parties|lookup:selected_party_id as selected_party %}
                     <tr>
                         <td><a id="party-highlight-{{selected_party.id}}" href="#">#</a><a class="hashnav item dontwrap" id="party-link-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
-                        <td class="numeric">{{selected_party.score|floatformat:"0"}}%</td>
+			{% with agenda_party_values|lookup:selected_party.id as selected_party_score %}
+                        <td class="numeric">{{selected_party_score|floatformat:"0"}}%</td>
                         <td>
-                            <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party.score < 0 %}percentile_against{% endif %}"></div>
+                            <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party_score < 0 %}percentile_against{% endif %}"></div>
                             <script>
-                                set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party.score }}+100)/2);
+                                set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party_score }}+100)/2);
                                 $('#party-highlight-{{selected_party.id}}').click(function(){
                                     $('.party-{{selected_party.id}}').toggleClass('highlight');
                                     $('#party-highlight-{{selected_party.id}}').toggleClass('highlight');
@@ -120,7 +144,9 @@
                                 });
                             </script>
                         </td>
+			{% endwith %}
                         </tr>
+		{% endwith %}
                 {% endfor %}
                 </table>
             </div>
@@ -130,7 +156,7 @@
 
         <h2> {% trans "Ascribed Votes" %}</h2>
         <table id="agenda-votes">
-            {% for agendavote in object.agendavotes.all %}
+            {% for agendavote in agenda_votes %}
                 <tr>
                     <td>
                         <div class="agenda-importance">{{agendavote.get_importance_display}}</div>

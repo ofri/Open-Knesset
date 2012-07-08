@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -19,6 +20,9 @@ class SimpleTest(TestCase):
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
+        self.mk_2 = Member.objects.create(name='mk_2',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1)
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
@@ -28,11 +32,13 @@ class SimpleTest(TestCase):
         self.agenda_1 = Agenda.objects.create(name='agenda 1',
                                               description='a bloody good agenda 1',
                                               public_owner_name='Dr. Jacob',
-                                              is_public=True)
+                                              is_public=True,
+                                              num_followers=100)
         self.agenda_2 = Agenda.objects.create(name='agenda 2',
                                               description='a bloody good agenda 2',
                                               public_owner_name='Greenpeace',
-                                              is_public=True)
+                                              is_public=True,
+                                              num_followers=50)
         self.agenda_3 = Agenda.objects.create(name='agenda 3',
                                               description='a bloody good agenda 3',
                                               public_owner_name='Hidden One',
@@ -42,8 +48,10 @@ class SimpleTest(TestCase):
         self.agenda_3.editors = [self.user_2]
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
+        self.vote_3 = Vote.objects.create(title='vote 3',time=datetime.datetime.now())
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
+        self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
                                                       score=-1,
@@ -54,6 +62,10 @@ class SimpleTest(TestCase):
                                                       reasoning="there's got to be a reason 2")
         self.agendavote_3 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_2,
+                                                      score=0.5,
+                                                      reasoning="there's got to be a reason 3")
+        self.agendavote_4 = AgendaVote.objects.create(agenda=self.agenda_3,
+                                                      vote=self.vote_3,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
         self.committee_1 = Committee.objects.create(name='c1')
@@ -101,24 +113,27 @@ I have a deadline''')
         self.assertTemplateUsed(res, 'agendas/agenda_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.agenda_1.id, self.agenda_2.id, self.agenda_3.id])
+                         [self.agenda_1.id,
+                              self.agenda_2.id,
+                              self.agenda_3.id])
 
         translation.deactivate()
 
     def testAgendaDetail(self):
 
         # Access public agenda while not logged in
-        res = self.client.get(reverse('agenda-detail',
+        res = self.client.get('%s?all_mks' % reverse('agenda-detail',
                                       kwargs={'pk': self.agenda_1.id}))
+        self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res,
                                 'agendas/agenda_detail.html')
         self.assertEqual(res.context['object'].id, self.agenda_1.id)
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
+        self.assertEqual(len(res.context['all_mks_ids']), 2)
 
     def test_agenda_edit(self):
-
         # Try to edit agenda while not logged in
         res = self.client.get(reverse('agenda-detail-edit',
                                       kwargs={'pk': self.agenda_1.id}))
@@ -260,7 +275,7 @@ I have a deadline''')
                               )
         self.assertRedirects(res,
                              reverse('vote-detail',
-                                         kwargs={'object_id':self.meeting_1.id}),
+                                         kwargs={'object_id':self.vote_1.id}),
                              status_code=302)
         av = AgendaVote.objects.get(agenda=self.agenda_1,
                                     vote=self.vote_1)
@@ -277,6 +292,71 @@ I have a deadline''')
         self.assertEqual(int(res.context['score']), -33)
         self.assertEqual(len(res.context['related_votes']), 2)
 
+    def testAgendaDetailOptCacheFail(self):
+        res = self.client.get(reverse('agenda-detail',
+                                      kwargs={'pk': self.agenda_1.id}))
+
+        self.agenda_4 = Agenda.objects.create(name='agenda 4',
+                                              description='a bloody good agenda 4',
+                                              public_owner_name='Dr. Jacob',
+                                              is_public=True)
+
+        res2 = self.client.get(reverse('agenda-detail',
+                                       kwargs={'pk': self.agenda_4.id}))
+
+        self.assertEqual(res2.status_code, 200)
+
+    def testV2Api(self):
+        res = self.client.get('/api/v2/agenda/%s/?format=json' % self.agenda_1.id)
+        self.assertEqual(res.status_code, 200)
+        
+    def _validate_vote(self, vote):
+        self.assertIn('id', vote, "Got vote with no id in agenda-todo")
+        self.assertIn('url', vote, "Got vote with no url in agenda-todo")
+        self.assertIn('title', vote, "Got vote with no title in agenda-todo")
+        self.assertIn('score', vote, "Got vote with no importance in agenda-todo")
+
+
+
+    def test_suggest_votes_for_new_agenda(self):
+        new_agenda = Agenda.objects.create(name='new agenda',
+                                           description='a brand new agenda',
+                                           public_owner_name='Dr. Jekill',
+                                           is_public=True)
+        res = self.client.get('/api/v2/agenda-todo/%s/?format=json' % new_agenda.id)
+        self.assertEqual(res.status_code, 200)
+        todo = json.loads(res.content)
+
+        def _validate_vote_list(list_key):         
+            self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
+            votes = todo[list_key]
+            self.assertGreater(len(votes), 1, 'Too little votes returned for new agenda')
+            for vote in votes:
+                self._validate_vote(vote)
+            
+            self.assertGreaterEqual(votes[0]['score'], votes[1]['score'], "votes returned out of importance order")
+
+        _validate_vote_list('votes_by_controversy')
+        _validate_vote_list('votes_by_agendas')
+
+    def test_suggest_votes_for_existing_agenda(self):
+        """
+        We expect to get only self.vote_1 returned for agenda_2
+        """
+        res = self.client.get('/api/v2/agenda-todo/%s/?format=json' % self.agenda_2.id)
+        self.assertEqual(res.status_code, 200)
+        todo = json.loads(res.content)
+
+        def _validate_vote_list(list_key):         
+            self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
+            votes = todo[list_key]
+            self.assertEquals(len(votes), 1, 'Got wrong number of "votes" for existing agenda')
+            vote = votes[0]
+            self._validate_vote(vote)
+            self.assertEqual(vote['id'], self.vote_1.id, "Expected vote not returned for existing agenda")
+
+        _validate_vote_list('votes_by_controversy')
+        _validate_vote_list('votes_by_agendas')
 
     def tearDown(self):
         self.party_1.delete()

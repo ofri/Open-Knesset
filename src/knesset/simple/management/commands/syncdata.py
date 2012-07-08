@@ -28,10 +28,14 @@ ENCODING = 'utf8'
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
                     os.path.join(settings.PROJECT_ROOT, os.path.pardir, os.path.pardir, 'data'))
 
-SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)), 
-                         [u"ועדת משותפת פנים-עבודה לנושא סביבה ובריאות",])
-
 logger = logging.getLogger("open-knesset.syncdata")
+
+try:
+    SPECIAL_COMMITTEES = map(lambda x: dict(name=x, commitee=Committee.objects.get(name=x)),
+                         [u"הוועדה המשותפת לנושא סביבה ובריאות",])
+except:
+    logger.warn("can't find special committees")
+    SPECIAL_COMMITTEES = {}
 
 # defines for finding explanation part in private proposals
 p_explanation = '</p><p class="explanation-header">דברי הסבר</p><p>'.decode('utf8')
@@ -1112,6 +1116,8 @@ class Command(NoArgsCommand):
                     b.save()
                 for m in pl.proposers.all(): # add current proposers to bill proposers
                     b.proposers.add(m)
+                for m in pl.joiners.all(): # add joiners to bill
+                    b.joiners.add(m)
                 pl.bill = b # assign this bill to this PP
                 pl.save()
 
@@ -1416,9 +1422,12 @@ class Command(NoArgsCommand):
 
                 # try to find a private proposal this decision is referencing
                 try:
-                    pp_id = int(re.search(r'פ(\d+)'.decode('utf8'),d['title']).group(1))
+                    pp_id = int(re.search(r'פ/?(\d+)'.decode('utf8'),d['title']).group(1))
                     re.search(r'[2009|2010|2011|2012]'.decode('utf8'),d['title']).group(0)   # just make sure its about the right years
                     pp = PrivateProposal.objects.get(proposal_id=pp_id)
+                    logger.debug("GovL.id = %d is matched to pp.id=%d, "
+                                 "bill.id=%d" % (decision.id, pp.id,
+                                                 pp.bill.id))
                     decision.bill = pp.bill
                     decision.save()
                 except AttributeError: # one of the regex failed

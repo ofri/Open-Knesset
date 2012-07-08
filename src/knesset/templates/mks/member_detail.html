@@ -59,7 +59,7 @@
 {% block nav-members %}class="selected"{% endblock %}
 
 {% block divcontent %}
-{% cache 600 mks_detail object.id request.page request.get_full_path %}
+{% cache 14400 mks_detail object.id request.page request.get_full_path %}
     <ul class="actions">
         <li>
         <li><span id="watch" class="awesome-button medium"></span></li>
@@ -406,8 +406,7 @@
 
         <br/>
 
-{% cache 600 mks_detail_activities object.id request.page request.get_full_path %}
-
+{% cache 14400 mks_detail_activities object.id request.page request.get_full_path %}
         <div class="activities">
             <form class="select" method="get" action=".">
                 <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">

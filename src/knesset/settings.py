@@ -70,7 +70,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',    
+    'django.contrib.messages.middleware.MessageMiddleware', # keep after session
+    'django.middleware.csrf.CsrfViewMiddleware',
     'pagination.middleware.PaginationMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -106,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'django.contrib.messages',
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
@@ -127,6 +129,7 @@ INSTALLED_APPS = (
     'voting',
     'compressor',
     'social_auth',
+    'devserver',
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
@@ -144,6 +147,7 @@ INSTALLED_APPS = (
     'knesset.events',
     'knesset.video',
     'knesset.okhelptexts',
+    'tastypie',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -230,6 +234,10 @@ NOSE_ARGS = ['--with-xunit']
 SERIALIZATION_MODULES = {
     'oknesset' : 'auxiliary.serializers'
 }
+
+API_LIMIT_PER_PAGE = 1000
+
+SOUTH_TESTS_MIGRATE = False
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

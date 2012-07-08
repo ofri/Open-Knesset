@@ -18,6 +18,7 @@ class Command(NoArgsCommand):
             header.append('Vote id')
             header.append('Vote title')
             header.append('Score')
+            header.append('Importance')
             for mk in mks:
                 header.append('%s %d' % (mk['name'].encode('utf8'), mk['id']))
             csv_writer.writerow(header)
@@ -27,6 +28,7 @@ class Command(NoArgsCommand):
                 row.append(agenda_vote.vote.id)
                 row.append(agenda_vote.vote.title.encode('utf8'))
                 row.append(agenda_vote.score)
+                row.append(agenda_vote.importance)
                 mks_for = agenda_vote.vote.get_voters_id('for')
                 mks_against = agenda_vote.vote.get_voters_id('against')
                 for mk in mks:

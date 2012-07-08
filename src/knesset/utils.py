@@ -49,16 +49,16 @@ def delete(request, comment_id):
         return moderation.delete(request, comment_id)
     else:
         raise Http404
-    
+
 def clean_string(s):
     if isinstance(s,unicode):
         shitty_chars = [u'\u200e', u'\u200f', u'\u202a',u'\u202b',u'\u202c',u'\u202d',u'\u202e', u'\u201d', u'\u2013']
         trans = dict([(ord(chr), None) for chr in shitty_chars])
         s = s.translate(trans)
     else:
-        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')    
+        s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
     return s
-        
+
 def cannonize(s):
     s = clean_string(s)
     s.replace('&nbsp',' ')
@@ -85,19 +85,19 @@ def disable_for_loaddata(signal_handler):
 class RequestFactory(Client):
     """
     Class that lets you create mock Request objects for use in testing.
-    
+
     Usage:
-    
+
     rf = RequestFactory()
     get_request = rf.get('/hello/')
     post_request = rf.post('/submit/', {'foo': 'bar'})
-    
+
     This class re-uses the django.test.client.Client interface, docs here:
     http://www.djangoproject.com/documentation/testing/#the-test-client
-    
-    Once you have a request object you can pass it to any view function, 
+
+    Once you have a request object you can pass it to any view function,
     just as if that view had been hooked up using a URLconf.
-    
+
     """
     def request(self, **request):
         """
@@ -122,11 +122,13 @@ def notify_responsible_adult(msg):
     """Send an email to some responsible adult(s)"""
     adults = getattr(settings, 'RESPONSIBLE_ADULTS', None)
     if adults:
-        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')    
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
         send_html_mail(_('Open Knesset requires attention'), msg, msg, from_email, adults)
 
 def main_actions():
     """
     Actions used for main view latests actions and for /feeds/main
     """
-    return Action.objects.all().filter(verb__in=['comment-added','annotated']).order_by('-timestamp')
+    return Action.objects.filter(verb__in=['comment-added','annotated'])\
+                         .order_by('-timestamp')\
+                         .prefetch_related('target')

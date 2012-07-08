@@ -5,11 +5,12 @@ import logging
 from datetime import date, timedelta
 
 from django.db import models
-from django.db.models.signals import post_save
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count
+from django.core.cache import cache
+from django.conf import settings
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -18,7 +19,7 @@ from actstream.models import action
 
 from knesset.mks.models import Member, Party
 from knesset.tagvotes.models import TagVote
-from knesset.utils import disable_for_loaddata, slugify_name
+from knesset.utils import slugify_name
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -65,12 +66,6 @@ class PartyVotingStatistics(models.Model):
     def __unicode__(self):
         return "%s" % self.party.name
 
-@disable_for_loaddata
-def handle_party_save(sender, created, instance, **kwargs):
-    if created and instance._state.db=='default':
-        pvs = PartyVotingStatistics(party=instance)
-        pvs.save()
-post_save.connect(handle_party_save, sender=Party)
 
 
 
@@ -87,7 +82,13 @@ class MemberVotingStatistics(models.Model):
         if from_date:
             return VoteAction.objects.filter(member=self.member, vote__time__gt=from_date).exclude(type='no-vote').count()
         else:
-            return VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+            vc = cache.get('votes_count_%d' % self.member.id)
+            if not vc:
+                vc = VoteAction.objects.filter(member=self.member).exclude(type='no-vote').count()
+                cache.set('votes_count_%d' % self.member.id,
+                          vc,
+                          settings.LONG_CACHE_TIME)
+            return vc
 
     def average_votes_per_month(self):
         if hasattr(self, '_average_votes_per_month'):
@@ -123,13 +124,6 @@ class MemberVotingStatistics(models.Model):
     def __unicode__(self):
         return "%s" % self.member.name
 
-@disable_for_loaddata
-def handle_mk_save(sender, created, instance, **kwargs):
-    if created and instance._state.db=='default':
-        mvs = MemberVotingStatistics(member=instance)
-        mvs.save()
-post_save.connect(handle_mk_save, sender=Member)
-
 class VoteAction(models.Model):
     type   = models.CharField(max_length=10,choices=VOTE_ACTION_TYPE_CHOICES)
     member = models.ForeignKey('mks.Member')
@@ -140,15 +134,6 @@ class VoteAction(models.Model):
     against_own_bill = models.BooleanField(default=False)
     def __unicode__(self):
         return "%s %s %s" % (self.member.name, self.type, self.vote.title)
-
-@disable_for_loaddata
-def record_vote_action(sender, created, instance, **kwargs):
-    if created:
-        action.send(instance.member, verb='voted',
-                    description=instance.get_type_display(),
-                    target = instance.vote,
-                    timestamp=instance.vote.time)
-post_save.connect(record_vote_action, sender=VoteAction)
 
 class VoteManager(models.Manager):
     # TODO: add i18n to the types so we'd have
@@ -191,20 +176,25 @@ class VoteManager(models.Manager):
 
 class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
-    vote_number    = models.IntegerField(null=True,blank=True)
-    src_id         = models.IntegerField(null=True,blank=True)
-    src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
-    title          = models.CharField(max_length=1000)
-    time           = models.DateTimeField()
-    time_string    = models.CharField(max_length=100)
-    votes          = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
-    votes_count    = models.IntegerField(null=True, blank=True)
-    importance     = models.FloatField(default=0.0)
-    controversy    = models.IntegerField(null=True, blank=True)
+    vote_number = models.IntegerField(null=True,blank=True)
+    src_id = models.IntegerField(null=True,blank=True)
+    src_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    title = models.CharField(max_length=1000)
+    time = models.DateTimeField()
+    time_string = models.CharField(max_length=100)
+    votes = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
+    votes_count = models.IntegerField(null=True, blank=True)
+    for_votes_count = models.IntegerField(null=True, blank=True)
+    against_votes_count = models.IntegerField(null=True, blank=True)
+    importance = models.FloatField(default=0.0)
+    controversy = models.IntegerField(null=True, blank=True)
     against_party  = models.IntegerField(null=True, blank=True)
-    summary        = models.TextField(null=True,blank=True)
-    full_text      = models.TextField(null=True,blank=True)
-    full_text_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    against_coalition = models.IntegerField(null=True, blank=True)
+    against_opposition = models.IntegerField(null=True, blank=True)
+    against_own_bill = models.IntegerField(null=True, blank=True)
+    summary = models.TextField(null=True,blank=True)
+    full_text = models.TextField(null=True,blank=True)
+    full_text_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
 
     tagged_items = generic.GenericRelation(TaggedItem,
                                            object_id_field="object_id",
@@ -223,7 +213,7 @@ class Vote(models.Model):
 
     @property
     def passed(self):
-        return self.for_votes_count() > self.against_votes_count()
+        return self.for_votes_count > self.against_votes_count
 
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
@@ -231,36 +221,17 @@ class Vote(models.Model):
     def for_votes(self):
         return VoteAction.objects.filter(vote=self, type='for')
 
-    def for_votes_count(self):
-        return self.for_votes().count()
-
     def against_votes(self):
         return VoteAction.objects.filter(vote=self, type='against')
-
-    def against_votes_count(self):
-        return self.against_votes().count()
 
     def against_party_votes(self):
         return self.votes.filter(voteaction__against_party=True)
 
-    def against_party_votes_count(self):
-        return self.against_party_votes().count()
-
     def against_coalition_votes(self):
         return self.votes.filter(voteaction__against_coalition=True)
 
-    def against_coalition_votes_count(self):
-        return self.against_coalition_votes().count()
-
-    # TODO: this should die
-    def against_opposition_votes_count(self):
-        return VoteAction.objects.filter(vote=self, against_opposition=True).count()
-
     def against_own_bill_votes(self):
         return self.votes.filter(voteaction__against_own_bill=True)
-
-    def against_own_bill_votes_count(self):
-        return self.against_own_bill_votes().count()
 
     def short_summary(self):
         if self.summary==None:
@@ -318,14 +289,18 @@ class Vote(models.Model):
         return tf
 
     def update_vote_properties(self):
-        party_id_member_count_coalition = Party.objects.annotate(member_count=Count('members')).values_list('id','member_count','is_coalition')
-        party_ids = [x[0] for x in party_id_member_count_coalition]
-        party_is_coalition = dict(zip(party_ids, [x[2] for x in party_id_member_count_coalition] ))
+        party_ids = Party.objects.values_list('id', flat=True)
+        d = self.time.date()
+        party_is_coalition = dict(zip(
+                    party_ids,
+                    [x.is_coalition_at(self.time.date())
+                        for x in Party.objects.all()]
+        ))
 
-        for_party_ids = [va.member.current_party.id for va in self.for_votes()]
+        for_party_ids = [va.member.party_at(d).id for va in self.for_votes()]
         party_for_votes = [sum([x==id for x in for_party_ids]) for id in party_ids]
 
-        against_party_ids = [va.member.current_party.id for va in self.against_votes()]
+        against_party_ids = [va.member.party_at(d).id for va in self.against_votes()]
         party_against_votes = [sum([x==id for x in against_party_ids]) for id in party_ids]
 
         party_stands_for = [float(fv)>0.66*(fv+av) for (fv,av) in zip(party_for_votes, party_against_votes)]
@@ -350,34 +325,44 @@ class Vote(models.Model):
             proposers = reduce(lambda x,y: set.union(x,y), proposers)
 
         against_party_count = 0
+        against_coalition_count = 0
+        against_opposition_count = 0
+        against_own_bill_count = 0
         for va in VoteAction.objects.filter(vote=self):
-            dirt = False
-            if party_stands_for[va.member.current_party.id] and va.type=='against':
+            va.against_party = False
+            va.against_coalition = False
+            va.against_opposition = False
+            va.against_own_bill = False
+            if party_stands_for[va.member.party_at(d).id] and va.type=='against':
                 va.against_party = True
                 against_party_count += 1
-                dirt = True
-            if party_stands_against[va.member.current_party.id] and va.type=='for':
+            if party_stands_against[va.member.party_at(d).id] and va.type=='for':
                 va.against_party = True
-                dirt = True
-            if va.member.current_party.is_coalition:
+                against_party_count += 1
+            if va.member.party_at(d).is_coalition_at(self.time.date()):
                 if (coalition_stands_for and va.type=='against') or (coalition_stands_against and va.type=='for'):
                     va.against_coalition = True
-                    dirt = True
+                    against_coalition_count += 1
             else:
                 if (opposition_stands_for and va.type=='against') or (opposition_stands_against and va.type=='for'):
                     va.against_opposition = True
-                    dirt = True
+                    against_opposition_count += 1
 
             if va.member in proposers and va.type=='against':
                 va.against_own_bill = True
-                dirt = True
+                against_own_bill_count += 1
 
-            if dirt:
-                va.save()
+            va.save()
 
-        self.controversy = min(self.for_votes_count(), self.against_votes_count())
         self.against_party = against_party_count
+        self.against_coalition = against_coalition_count
+        self.against_opposition = against_opposition_count
+        self.against_own_bill = against_own_bill_count
         self.votes_count = VoteAction.objects.filter(vote=self).count()
+        self.for_votes_count = VoteAction.objects.filter(vote=self,type='for').count()
+        self.against_votes_count = VoteAction.objects.filter(vote=self,type='against').count()
+        self.controversy = min(self.for_votes_count or 0,
+                               self.against_votes_count or 0)
         self.save()
 
 class TagForm(forms.Form):
@@ -436,8 +421,8 @@ class BillProposal(models.Model):
 
 class PrivateProposal(BillProposal):
     proposal_id = models.IntegerField(blank=True, null=True)
-    proposers = models.ManyToManyField('mks.Member', related_name='bills_proposed', blank=True, null=True)
-    joiners = models.ManyToManyField('mks.Member', related_name='bills_joined', blank=True, null=True)
+    proposers = models.ManyToManyField('mks.Member', related_name='proposals_proposed', blank=True, null=True)
+    joiners = models.ManyToManyField('mks.Member', related_name='proposals_joined', blank=True, null=True)
     bill = models.ForeignKey('Bill', related_name='proposals',
                              blank=True, null=True)
 
@@ -482,6 +467,8 @@ class Bill(models.Model):
     second_committee_meetings = models.ManyToManyField('committees.CommitteeMeeting',related_name='bills_second', blank=True, null=True) # CM related to this bill, *after* first vote
     approval_vote = models.OneToOneField('Vote',related_name='bill_approved', blank=True, null=True) # approval vote of this bill
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
+    joiners = models.ManyToManyField('mks.Member', related_name='bills_joined',
+                                     blank=True, null=True) # superset of all joiners
 
     class Meta:
         verbose_name = _('Bill')
@@ -507,12 +494,6 @@ class Bill(models.Model):
 
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)
-        for t in tags:
-            ti = TaggedItem.objects.filter(tag=t).filter(object_id=self.id)[0]
-            t.score = sum(TagVote.objects.filter(tagged_item=ti).values_list('vote',flat=True))
-            t.score_positive = t.score > 0
-        tags = [t for t in tags]
-        tags.sort(key=lambda x:-x.score)
         return tags
 
     def _set_tags(self, tag_list):
@@ -605,7 +586,7 @@ class Bill(models.Model):
         if not self.stage_date or force_update: # might be empty if bill is new
             self.stage_date = date(1948, 5, 13)
         if self.approval_vote:
-            if self.approval_vote.for_votes_count() > self.approval_vote.against_votes_count():
+            if self.approval_vote.for_votes_count > self.approval_vote.against_votes_count:
                 self.stage = '6'
             else:
                 self.stage = '-6'
@@ -620,7 +601,7 @@ class Bill(models.Model):
             self.save()
             return
         if self.first_vote:
-            if self.first_vote.for_votes_count() > self.first_vote.against_votes_count():
+            if self.first_vote.for_votes_count > self.first_vote.against_votes_count:
                 self.stage = '4'
             else:
                 self.stage = '-4'
@@ -656,7 +637,7 @@ class Bill(models.Model):
                         self.stage_date = v.time.date()
         for v in self.pre_votes.all():
             if not(self.stage_date) or self.stage_date < v.time.date():
-                if v.for_votes_count() > v.against_votes_count():
+                if v.for_votes_count > v.against_votes_count:
                     self.stage = '2'
                 else:
                     self.stage = '-2'

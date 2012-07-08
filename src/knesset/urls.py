@@ -57,7 +57,8 @@ urlpatterns = patterns('',
      (r'^feeds/comments/$', feeds.Comments()),
      (r'^feeds/votes/$', feeds.Votes()),
      (r'^feeds/bills/$', feeds.Bills()),
-     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+     (r'^sitemap\.xml$', redirect_to, {'url': '/static/sitemap.xml'}),
+     #(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
      (r'^planet/', include('planet.urls')),
      url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),
      (r'^annotate/write/$', post_annotation, {}, 'annotatetext-post_annotation'),
@@ -76,6 +77,7 @@ urlpatterns = patterns('',
             template_name='laws/bill_confirm_vote.html',
             allow_xmlhttprequest=True),
         name='vote-on-bill'),
+    (r'^video/', include('knesset.video.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

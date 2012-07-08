@@ -1,5 +1,6 @@
 # encoding: utf-8
 from datetime import date,datetime
+import urllib
 from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -12,8 +13,8 @@ from django.utils import simplejson as json
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 
-from knesset.laws.models import Vote,Bill,KnessetProposal
-from knesset.mks.models import Member
+from knesset.laws.models import Vote,Law, Bill,KnessetProposal
+from knesset.mks.models import Member, Party, Membership
 
 
 just_id = lambda x: x.id
@@ -369,3 +370,71 @@ class ProposalModelTest(TestCase):
     def tearDown(self):
         self.kp_1.delete()
         self.bill.delete()
+
+class APIv2Test(TestCase):
+
+    def setUp(self):
+        self.url_prefix = '/api/v2'
+        self.vote_1 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 1')
+        self.vote_2 = Vote.objects.create(time=datetime.now(),
+                                          title='vote 2')
+        self.party_1 = Party.objects.create(name='party 1')
+        self.mk_1 = Member.objects.create(name='mk 2',
+                current_party=self.party_1)
+        # Membership.objects.create(member=self.mk_1, party=self.party_1)
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
+        self.bill_1.proposers.add(self.mk_1)
+        self.bill_2 = Bill.objects.create(stage='2', title='bill 2',
+                popular_name="Another Bill")
+        self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
+                                                   bill=self.bill_1,
+                                                   date=date.today())
+        self.law_1 = Law.objects.create(title='law 1')
+        self.tag_1 = Tag.objects.create(name='tag1')
+
+    def test_law_resource(self):
+        uri = '%s/law/%s/' % (self.url_prefix, self.law_1.id)
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['resource_uri'], uri)
+        self.assertEqual(int(data['id']), self.law_1.id)
+        self.assertEqual(data['title'], "law 1")
+
+    def test_bill_resource(self):
+        uri = '%s/bill/%s/' % (self.url_prefix, self.bill_1.id)
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['resource_uri'], uri)
+        self.assertEqual(int(data['id']), self.bill_1.id)
+        self.assertEqual(data['title'], "bill 1")
+
+    def test_bill_list(self):
+        uri = reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
+                                                    'api_name': 'v2'})
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['meta']['total_count'], 2)
+        self.assertEqual(len(data['objects']), 2)
+
+    def test_bill_list_for_proposer(self):
+        uri = reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
+                                                    'api_name': 'v2'})
+        res = self.client.get(uri, dict(proposer=self.mk_1.id, format='json'))
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['meta']['total_count'], 1)
+        self.assertEqual(len(data['objects']), 1)
+
+    def tearDown(self):
+        self.vote_1.delete()
+        self.vote_2.delete()
+        self.bill_1.delete()
+        self.bill_2.delete()
+        self.law_1.delete()
+        self.mk_1.delete()
+        self.party_1.delete()
+        self.tag_1.delete()

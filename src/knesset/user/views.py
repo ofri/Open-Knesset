@@ -9,8 +9,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.utils.translation import ugettext as _
 
 
 from annotatetext.models import Annotation
@@ -115,9 +117,10 @@ def edit_profile(request):
         edit_form = EditProfileForm(user=request.user, data=request.POST)
         if edit_form.is_valid():
             edit_form.save()
-            m = request.user.message_set.create()
-            m.message = 'Your profile has been updated.'
-            m.save()
+            messages.add_message(request,
+                                 messages.INFO,
+                                 _('Your profile has been updated.')
+                                )
             return HttpResponseRedirect('.')
 
     if request.method == 'GET':

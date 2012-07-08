@@ -47,6 +47,20 @@ class BetterManager(models.Manager):
             ret[possible_names.index(m.name)] = m
         return ret
 
+class CoalitionMembership(models.Model):
+    party = models.ForeignKey('Party',
+                              related_name='coalition_memberships')
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ('party', 'start_date')
+
+    def __unicode__(self):
+        return "%s %s %s" % ((self.party.name,
+                              self.start_date or "",
+                              self.end_date or ""))
+
 class Party(models.Model):
     name        = models.CharField(max_length=64)
     start_date  = models.DateField(blank=True, null=True)
@@ -91,6 +105,16 @@ class Party(models.Model):
 
     def member_list(self):
         return self.members.all()
+
+    def is_coalition_at(self, date):
+        """Returns true is this party was a part of the coalition at the given
+        date"""
+        memberships = CoalitionMembership.objects.filter(party=self)
+        for membership in memberships:
+            if (not membership.start_date or membership.start_date <= date) and\
+               (not membership.end_date or membership.end_date >= date):
+                return True
+        return False
 
     @models.permalink
     def get_absolute_url(self):
@@ -178,6 +202,16 @@ class Member(models.Model):
     def PartiesString(self):
         return ", ".join([p.NameWithLink() for p in self.parties.all().order_by('membership__start_date')])
     PartiesString.allow_tags = True
+
+    def party_at(self, date):
+        """Returns the party this memeber was at given date
+        """
+        memberships = Membership.objects.filter(member=self)
+        for membership in memberships:
+            if (not membership.start_date or membership.start_date <= date) and\
+               (not membership.end_date or membership.end_date >= date):
+                return membership.party
+        return None
 
     def TotalVotesCount(self):
         return self.votes.exclude(voteaction__type='no-vote').count()
@@ -297,6 +331,18 @@ class Member(models.Model):
         for altname in self.memberaltname_set.all():
             names.append(altname.name)
         return names
+
+    def get_agendas_values(self):
+        from agendas.models import Agenda
+
+        out = {}
+        for agenda_id, mks in Agenda.objects.get_mks_values().items():
+            try:
+                out[agenda_id] = dict(mks)[self.id]
+            except KeyError:
+                pass
+        return out
+
 
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')

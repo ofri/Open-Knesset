@@ -28,14 +28,11 @@
         {% endcompress %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-        <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-        {% compress js %}
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/okhelptexts.js"></script>
         {% block extrajs %}{% endblock %}
-        {% endcompress %}
         {% if not debug %}
         <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

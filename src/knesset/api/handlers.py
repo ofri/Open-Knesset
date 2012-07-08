@@ -35,7 +35,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
     fields = ('id', 'url', 'gender', 'name','party', 'img_url', 'votes_count',
               'votes_per_month', 'service_time',
               'discipline','average_weekly_presence',
-              'committee_meetings_per_month','bills',
+              'committee_meetings_per_month',#'bills',
               'bills_proposed','bills_passed_pre_vote',
               'bills_passed_first_vote','bills_approved',
               'roles', 'average_weekly_presence_rank', 'committees',
@@ -79,34 +79,38 @@ class MemberHandler(BaseHandler, HandlerExtensions):
         else:
             return None
 
-    @classmethod
-    def bills(cls, member):
-        d = [{'title':b.full_title,
-              'url':b.get_absolute_url(),
-              'stage':b.stage,
-              'stage_text':b.get_stage_display(),}
-            for b in member.bills.all()]
-        return d
+    #@classmethod
+    #def bills(cls, member):
+    #    d = [{'title':b.full_title,
+    #          'url':b.get_absolute_url(),
+    #          'stage':b.stage,
+    #          'stage_text':b.get_stage_display(),}
+    #        for b in member.bills.all()]
+    #    return d
 
     @classmethod
     def bills_proposed(self, member):
-        return member.bills.count()
+        return member.bills_stats_proposed
 
     @classmethod
     def bills_passed_pre_vote(self, member):
-        return member.bills.filter(Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+        return member.bills_stats_pre
 
     @classmethod
     def bills_passed_first_vote(self, member):
-        return member.bills.filter(Q(stage='4')|Q(stage='5')|Q(stage='6')).count()
+        return member.bills_stats_first
 
     @classmethod
     def bills_approved(self, member):
-        return member.bills.filter(stage='6').count()
+        return member.bills_stats_approved
 
     @classmethod
     def roles (self, member):
         return member.get_role
+
+    @classmethod
+    def average_weekly_presence(cls, member):
+        return member.average_weekly_presence_hours
 
     @classmethod
     def average_weekly_presence_rank (self, member):
@@ -116,12 +120,13 @@ class MemberHandler(BaseHandler, HandlerExtensions):
         rel_location = cache.get('average_presence_location_%d' % member.id)
         if not rel_location:
 
-            presence_list = sorted(map(lambda member: member.average_weekly_presence(), Member.objects.all()))
+            presence_list = sorted(map(lambda member: member.average_weekly_presence_hours,
+                                       Member.objects.all()))
             presence_groups = int(math.ceil(len(presence_list) / float(SCALE)))
 
             # Generate cache for all members
             for mk in Member.objects.all():
-                avg = mk.average_weekly_presence()
+                avg = mk.average_weekly_presence_hours
                 if avg:
                     mk_location = 1 + (presence_list.index(avg) / presence_groups)
                 else:
@@ -236,11 +241,13 @@ class VoteHandler(BaseHandler, HandlerExtensions):
         return dict(zip([a['id'] for a in agendas],agendas))
 
 class BillHandler(BaseHandler, HandlerExtensions):
+    # TODO: s/bill_title/title
     fields = ('url', 'bill_title', 'popular_name',
               'stage_text', 'stage_date',
               'votes',
               'committee_meetings',
               'proposing_mks',
+              'joining_mks',
               'tags',
               'proposals',
              )
@@ -302,8 +309,13 @@ class BillHandler(BaseHandler, HandlerExtensions):
         return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name, 'img_url' : x.img_url } for x in bill.proposers.all() ]
 
     @classmethod
+    def joining_mks(self, bill):
+        return [ { 'id': x.id, 'name' : x.name, 'party' : x.current_party.name,
+                  'img_url' : x.img_url } for x in bill.joiners.all() ]
+
+    @classmethod
     def tags(self,bill):
-        return [ {'id':t.id, 'score':t.score, 'name':t.name } for t in bill._get_tags() ]
+        return [ {'id':t.id, 'name':t.name } for t in bill._get_tags() ]
 
     @classmethod
     def bill_title(self,bill):
@@ -332,7 +344,8 @@ class BillHandler(BaseHandler, HandlerExtensions):
 
 
 class PartyHandler(BaseHandler):
-    fields = ('id', 'name', 'start_date', 'end_date')
+    fields = ('id', 'name', 'start_date', 'end_date', 'members',
+              'is_coalition', 'number_of_seats')
     allowed_methods = ('GET',)
     model = Party
 
@@ -342,6 +355,10 @@ class PartyHandler(BaseHandler):
             q = urllib.unquote(q)
             return Party.objects.find(q)
         return super(PartyHandler,self).read(request, **kwargs)
+
+    @classmethod
+    def members(cls,party):
+        return party.members.values_list('id',flat=True)
 
 class TagHandler(BaseHandler):
     fields = ('id', 'name', 'number_of_items')

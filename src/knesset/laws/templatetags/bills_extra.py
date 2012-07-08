@@ -23,7 +23,7 @@ def split_member_vote_list_by_party(member_vote_list):
     ''' create a party partitioned list of "for" voters and "against" voters '''
 
     list_by_party = []
-    if member_vote_list.count() > 0:
+    if len(member_vote_list) > 0:
         ''' first party, first member '''
         curr_party = { 'party' : member_vote_list[0].member.current_party.name,
                       'members' : []}
@@ -43,25 +43,31 @@ def split_member_vote_list_by_party(member_vote_list):
     return list_by_party
 
 def create_vote_dict(vote):
-    for_vote_sorted = vote.for_votes().order_by('member__current_party')
+    for_vote_sorted = vote.for_votes()\
+                          .order_by('member__current_party')\
+                          .select_related('member','member__current_party')
+    for_vote_sorted = list(for_vote_sorted)
     for_votes_grouped = split_member_vote_list_by_party(for_vote_sorted)
-    against_vote_sorted = vote.against_votes().order_by('member__current_party')
+    against_vote_sorted = vote.against_votes()\
+                              .order_by('member__current_party')\
+                              .select_related('member','member__current_party')
+    against_vote_sorted = list(against_vote_sorted)
     against_votes_grouped = split_member_vote_list_by_party(against_vote_sorted)
 
-    vote_drill_data = dict({ 'against' : dict({ 'count' : against_vote_sorted.count(),
+    vote_drill_data = dict({'against': dict({'count': len(against_vote_sorted),
                                           'votes' : against_votes_grouped}),
-                                'for' : dict({ 'count' : for_vote_sorted.count(),
+                            'for': dict({ 'count' : len(for_vote_sorted),
                                           'votes' : for_votes_grouped})})
 
     vote_dict = dict({'vote' : vote,
                           'vote_drill_data' : json.dumps(vote_drill_data),
-                          'vote_passed' : vote.for_votes_count() > vote.against_votes_count(),
+                          'vote_passed' : vote.for_votes_count > vote.against_votes_count,
                           'vote_time' : {'day' : vote.time.day,
                            'month' : vote.time.month,
                            'year' : vote.time.year}})
     return vote_dict
 
-def get_explanation(bill):
+def get_explanation(bill, proposals):
 
     if hasattr(bill, 'knesset_proposal'):
         if bill.knesset_proposal.get_explanation() != '':
@@ -71,7 +77,7 @@ def get_explanation(bill):
         if bill.gov_proposal.get_explanation() != '':
             return bill.gov_proposal.get_explanation()
 
-    for proposal in bill.proposals.all():
+    for proposal in proposals:
         if proposal.get_explanation() != '':
             return proposal.get_explanation()
 
@@ -79,51 +85,58 @@ def get_explanation(bill):
 @register.inclusion_tag('laws/bill_inabox.html')
 def bill_inabox(bill):
     """ TODO: firstX and not first3"""
+    proposals = list(bill.proposals.all())
 
+    proposers = bill.proposers.all()
     bill_inabox_dict = dict({ 'MEDIA_URL' : settings.MEDIA_URL,
                  'bill': bill,
                  'billurl' : 'http://oknesset.org%s' % bill.get_absolute_url(),
-            'proposers_first3' : bill.proposers.all()[:3],
-            'proposers_count_minus3' : bill.proposers.count() - 3,
-            'explanation' : get_explanation(bill)})
+            'proposers_first3' : proposers[:3],
+            'proposers_count_minus3' : len(proposers) - 3,
+            'explanation' : get_explanation(bill, proposals)})
 
     #proposal
-    if bill.proposals.count() > 0:
-        proposal = bill.proposals.all()[bill.proposals.count() - 1]
+    if proposals:
+        proposal = proposals[-1]
         bill_inabox_dict['proposal'] = dict({'day' : proposal.date.day,
                            'month' : proposal.date.month,
                            'year' : proposal.date.year})
 
 
     #pre vote
+    pre_votes = list(bill.pre_votes.all())
     pre_vote = None
-    if bill.pre_votes.count() > 0:
-        pre_vote = bill.pre_votes.all()[bill.pre_votes.count() - 1]
+    if pre_votes:
+        pre_vote = pre_votes[-1]
         bill_inabox_dict['pre_vote'] = create_vote_dict(pre_vote)
 
     #first_committee_meetings
-    if bill.first_committee_meetings.count() > 0:
-        first_committee_meetings = bill.first_committee_meetings.all()[bill.first_committee_meetings.count() - 1]
+    cms = list(bill.first_committee_meetings.all())
+    if cms:
+        first_committee_meetings = cms[-1]
         bill_inabox_dict['first_committee_meetings'] = dict({'day' : first_committee_meetings.date.day,
                            'month' : first_committee_meetings.date.month,
                            'year' : first_committee_meetings.date.year,
                            'url' : first_committee_meetings.get_absolute_url()})
 
     #first vote
-    if bill.first_vote:
-        bill_inabox_dict['first_vote'] = create_vote_dict(bill.first_vote)
+    fv = bill.first_vote
+    if fv:
+        bill_inabox_dict['first_vote'] = create_vote_dict(fv)
 
     #second_committee_meetings
-    if bill.second_committee_meetings.count() > 0:
-        second_committee_meetings = bill.second_committee_meetings.all()[bill.second_committee_meetings.count() - 1]
+    cms = list(bill.second_committee_meetings.all())
+    if cms:
+        second_committee_meetings = cms[-1]
         bill_inabox_dict['second_committee_meetings'] = dict({'day' : second_committee_meetings.date.day,
                            'month' : second_committee_meetings.date.month,
                            'year' : second_committee_meetings.date.year,
                            'url' : second_committee_meetings.get_absolute_url()})
 
 
-    #second+third vote (approvval_vote
-    if bill.approval_vote:
-        bill_inabox_dict['approval_vote'] = create_vote_dict(bill.approval_vote)
+    #second+third vote (approval_vote)
+    av = bill.approval_vote
+    if av:
+        bill_inabox_dict['approval_vote'] = create_vote_dict(av)
 
     return bill_inabox_dict
