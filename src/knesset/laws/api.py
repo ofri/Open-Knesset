@@ -22,6 +22,18 @@ class VoteResource(BaseResource):
     class Meta(BaseResource.Meta):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
+        exclude_from_list_view = ['members',]
+        filtering = dict(member = ALL)
+
+    members = fields.ToManyField(MemberResource,
+                    'votes',
+                    full=False)
+
+    def build_filters(self, filters={}):
+        orm_filters = super(VoteResource, self).build_filters(filters)
+        if 'member' in filters:
+            orm_filters["voteaction__member"] = filters['member']
+        return orm_filters
 
 class BillResource(BaseResource):
     ''' Bill API '''
