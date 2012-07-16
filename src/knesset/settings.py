@@ -88,7 +88,7 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_CREATE_USERS = True
 SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-
+SOCIAL_AUTH_ASSOCIATE_BY_MAIL = True
 # These keys will work for 127.0.0.1:8000
 # and are overriden in the production server.
 TWITTER_CONSUMER_KEY = 'KFZkQgImAyECXDS6tQTvOw'
