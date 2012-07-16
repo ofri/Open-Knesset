@@ -23,7 +23,9 @@ class VoteResource(BaseResource):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
         exclude_from_list_view = ['members',]
-        filtering = dict(member = ALL)
+        filtering = dict(member = ALL,
+                         member_for = ALL,
+                         member_against = ALL)
 
     members = fields.ToManyField(MemberResource,
                     'votes',
@@ -33,6 +35,13 @@ class VoteResource(BaseResource):
         orm_filters = super(VoteResource, self).build_filters(filters)
         if 'member' in filters:
             orm_filters["voteaction__member"] = filters['member']
+        if 'member_for' in filters:
+            orm_filters["voteaction__member"] = filters['member_for']
+            orm_filters["voteaction__type"] = 'for'
+        if 'member_against' in filters:
+            orm_filters["voteaction__member"] = filters['member_against']
+            orm_filters["voteaction__type"] = 'against'
+
         return orm_filters
 
 class BillResource(BaseResource):
