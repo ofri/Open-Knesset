@@ -89,6 +89,11 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_CREATE_USERS = True
 SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 
+# These keys will work for 127.0.0.1:8000
+# and are overriden in the production server.
+TWITTER_CONSUMER_KEY = 'KFZkQgImAyECXDS6tQTvOw'
+TWITTER_CONSUMER_SECRET = 's6ir2FMqw4fqXQbX4QCE6Ka1lRjycXxJuG6k8tYc'
+
 ROOT_URLCONF = 'knesset.urls'
 
 TEMPLATE_DIRS = (
