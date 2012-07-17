@@ -62,12 +62,12 @@ class DocumentManager(models.Manager):
         # info from m.m.m site
         info = parse_json(j)
         
-        # checking if the db already has document o instance and if no creating one
+        # checking if the db already has document o instance and if no, creating one
         for o in info:
             if self.filter(url=o['url']).exists():
                 logger.info("%s already exists in db" % o['url'])
             else:
-                logger.info("creating new document: %s" % o['url'])
+                logger.info("creating new Document instance: %s" % o['url'])
                 mks = text_lookup(Member, o['candidates'])
                 committees = text_lookup(Committee, o['candidates'])
                 d = self.create(url=o['url'], title=o['title'], publication_date=o['date'],req_committee=committees, req_mks=mks, author_names=o['author'])
