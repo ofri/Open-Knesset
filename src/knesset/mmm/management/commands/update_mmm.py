@@ -9,6 +9,6 @@ class Command(NoArgsCommand):
     
     def handle_noargs(self, **options):
         
-        json = open(DATA_ROOT + 'mmm_matches.json', 'r')
+        json = open(DATA_ROOT + 'mmm_matches.json')
         
         Document.objects.from_json(json)
