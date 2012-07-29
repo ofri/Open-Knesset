@@ -55,13 +55,22 @@ class Committee(models.Model):
                     params = [ self.id ]).distinct()
 
     def members_by_presence(self):
+        n = self.meetings.count()
+        if n==0: # this committee had not meetings, can really compute presence
+                 # scores. just return all relevant mks.
+            members = (self.members.all()|
+                       self.chairpersons.all()|
+                       self.replacements.all()).distinct()
+            for m in members:
+                m.meetings_count = 0
+            return members
+        # otherwise compute presence
         members = []
         for m in (self.members.all()|
                   self.chairpersons.all()|
                   self.replacements.all()).distinct():
             m.meetings_count = \
-                100 * m.committee_meetings.filter(committee=self).count() \
-                / self.meetings.count()
+                100 * m.committee_meetings.filter(committee=self).count() / n
             members.append(m)
         members.sort(key=lambda x:x.meetings_count, reverse=True)
         return members
