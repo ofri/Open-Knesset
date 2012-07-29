@@ -912,6 +912,7 @@ class Command(NoArgsCommand):
             return
         try:
             if l.url.endswith('.rtf'):
+                logger.info('get_full_text url=%s' % l.url)
                 file_str = StringIO()
                 file_str.write(urllib2.urlopen(l.url).read())
                 doc = Rtf15Reader.read(file_str)
