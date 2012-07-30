@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'knesset',
     'knesset.auxiliary',                  # knesset apps
     'knesset.mks',
+    'knesset.mmm',
     'knesset.laws',
     'knesset.committees',
     'knesset.simple',
