@@ -78,6 +78,7 @@ urlpatterns = patterns('',
             allow_xmlhttprequest=True),
         name='vote-on-bill'),
     (r'^video/', include('knesset.video.urls')),
+    (r'^mmm-documents/', include('mmm.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 if settings.LOCAL_DEV:

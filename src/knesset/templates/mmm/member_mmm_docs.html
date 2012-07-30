@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block divcontent %}
-	<h1>{% trans "M.M.M Documents ordered by" %}<a href="{% url mks:member_detail member.pk %}">{{ member.name }}</a></h1>
+	<h1>{% trans "M.M.M Documents ordered by" %}<a href="{% url member-detail member.id %}">{{ member.name }}</a></h1>
 
 	<div class="item-list">
 		{% autopaginate mmm_docs 15 %}
