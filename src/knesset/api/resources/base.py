@@ -1,4 +1,5 @@
 from tastypie.cache import SimpleCache
+from tastypie.throttle import CacheThrottle
 from tastypie.resources import ModelResource
 
 class BaseResource(ModelResource):
