@@ -4,6 +4,7 @@ from tastypie.resources import ModelResource
 class BaseResource(ModelResource):
     class Meta:
         cache = SimpleCache()
+        throttle = CacheThrottle(throttle_at=3600)
 
     def dispatch(self, request_type, request, **kwargs):
         #this allows to hide fields for list view
