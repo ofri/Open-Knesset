@@ -81,7 +81,7 @@ class AgendaResource(BaseResource):
         a = bundle.obj
         mks_values = dict(a.get_mks_values())
         members = []
-        for mk in Member.objects.filter(pk__in = mks_values.keys()):
+        for mk in Member.objects.filter(pk__in = mks_values.keys()).select_related('current_party'):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append (dict(name=mk.name,
