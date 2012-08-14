@@ -132,7 +132,6 @@ INSTALLED_APPS = (
     'gunicorn',
     'djangoratings',
     'voting',
-    'compressor',
     'social_auth',
     'devserver',
     'knesset',

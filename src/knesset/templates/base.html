@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load search %}
-{% load compress %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -21,11 +20,9 @@
         <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
-        {% compress css %}
         <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=16" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         {% block extracss %} {% endblock %}
-        {% endcompress %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}/img/favicon.png" />
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
         <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
