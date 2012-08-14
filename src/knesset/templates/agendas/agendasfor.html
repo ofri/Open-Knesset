@@ -8,7 +8,7 @@
             </td></tr>
             <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
             <tr><th>{% trans "Importance" %}:</th><td>{{ agendavote.get_importance_display }}</td></tr>
-            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning }}</td></tr>
+            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning|urlizetrunc:"30" }}</td></tr>
         {% endfor %}
         </table>
     {% else %}
