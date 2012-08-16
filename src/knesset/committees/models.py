@@ -225,7 +225,12 @@ class CommitteeMeeting(models.Model):
             for i in bgdata:
                 bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string}) 
 
-        return bg_links         
+        return bg_links
+
+    @property
+    def bg_material(self):
+        return Link.objects.filter(object_pk=self.id, 
+                    content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
 
 
 class ProtocolPartManager(models.Manager):

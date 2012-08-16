@@ -822,8 +822,7 @@ class Command(NoArgsCommand):
             if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
                 cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
                 logger.debug('cm %d already exists' % cm.id)
-                if not Link.objects.filter(object_pk=cm.id, 
-                    content_type=ContentType.objects.get_for_model(CommitteeMeeting).id):#committee meeting still has no bg
+                if not cm.bg_material: #committee meeting still has no bg - hack to get old bg material into db
                     self.get_bg_material(cm)
                 continue
             elif CommitteeMeeting.objects.filter(src_url=link).count():
