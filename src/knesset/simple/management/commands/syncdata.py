@@ -822,6 +822,9 @@ class Command(NoArgsCommand):
             if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
                 cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
                 logger.debug('cm %d already exists' % cm.id)
+                if not Link.objects.filter(object_pk=cm.id, 
+                    content_type=ContentType.objects.get_for_model(CommitteeMeeting).id):#committee meeting still has no bg
+                    self.get_bg_material(cm)
                 continue
             elif CommitteeMeeting.objects.filter(src_url=link).count():
                 cm = CommitteeMeeting.objects.get(src_url=link)
@@ -855,7 +858,10 @@ class Command(NoArgsCommand):
 
             if updated_protocol:
                 cm.create_protocol_parts()
+
             self.find_attending_members(cm, mks, mk_names)
+
+            self.get_bg_material(cm)
 
     def find_attending_members(self,cm, mks, mk_names):
         try:
@@ -904,6 +910,16 @@ class Command(NoArgsCommand):
                 text.append(sentence.content[0])
         all_text = '\n'.join(text)
         return re.sub(r'\n:\n',r':\n',all_text)
+
+    def get_bg_material(self,cm):
+
+        links = cm.get_bg_material()
+        if links:
+            for i in links:
+                l = Link.objects.create(url=i.get('url',''), title=i.get('title',''), content_object=cm)
+                l.save()
+                logger.debug('committee meeting link %d created' % l.id)
+
 
     def get_full_text(self,v):
         try:

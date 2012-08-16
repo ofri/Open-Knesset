@@ -223,7 +223,7 @@ class CommitteeMeeting(models.Model):
             bgdata = BeautifulSoup(data.read()).findAll('a')
 
             for i in bgdata:
-                bg_links.append( {'link': 'http://www.knesset.gov.il'+i['href'], 'title': i.string}) 
+                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string}) 
 
         return bg_links         
 
