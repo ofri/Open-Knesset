@@ -154,7 +154,7 @@ class AgendaManager(models.Manager):
             for agenda_id, scores in newAgendaMkVotes.items():
                 mks_values[agenda_id] = \
                     map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0],)),
-                        enumerate(sorted(scores,key=itemgetter(1)), 1))
+                        enumerate(sorted(scores,key=itemgetter(1),reverse=True), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
 
