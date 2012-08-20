@@ -105,14 +105,11 @@ class AgendaDetailView (DetailView):
         context['agenda_mk_values'] = dict(mks_values)
         cmp_rank = lambda x,y: x[1]['rank']-y[1]['rank']
         if all_mks:
-            context['all_mks_ids'] = map(itemgetter(0),sorted(mks_values,
-                cmp_rank, reverse=True)[:200])
+            context['all_mks_ids'] = map(itemgetter(0),mks_values[:200])
             context['all_mks'] = True
         else:
-            context['mks_top'] = map(itemgetter(0),sorted(mks_values,
-                cmp_rank, reverse=True)[:5])
-            context['mks_bottom'] = map(itemgetter(0),sorted(sorted(mks_values,key=itemgetter(1),reverse=False)[:5],
-                cmp_rank, reverse=True))
+            context['mks_top'] = map(itemgetter(0),mks_values[:5])
+            context['mks_bottom'] = map(itemgetter(0),mks_values[-5:])
 
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
         if not allAgendaPartyVotes:
