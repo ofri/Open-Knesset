@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-20 20:51+0300\n"
-"PO-Revision-Date: 2012-08-20 20:52+0200\n"
+"POT-Creation-Date: 2012-08-21 02:11+0300\n"
+"PO-Revision-Date: 2012-08-21 02:12+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -274,7 +274,7 @@ msgid "edited by"
 msgstr "בעריכת"
 
 #: agendas/views.py:91
-#: agendas/views.py:160
+#: agendas/views.py:157
 #: templates/committees/committee_detail.html:60
 #: templates/committees/committee_detail.html:68
 #: templates/committees/committee_detail.html:76
@@ -282,7 +282,7 @@ msgstr "בעריכת"
 msgid "None"
 msgstr "אין"
 
-#: agendas/views.py:158
+#: agendas/views.py:155
 #, python-format
 msgid "Analysis of %(member)s votes by agenda %(agenda)s"
 msgstr "ניתוח ההצבעות של %(member)s לפי אג'נדה %(agenda)s"
@@ -340,8 +340,8 @@ msgid "Committee Meeting"
 msgstr "ישיבת וועדה"
 
 #: committees/models.py:108
-#: templates/laws/bill_detail.html:356
-#: templates/laws/bill_detail.html:396
+#: templates/laws/bill_detail.html:366
+#: templates/laws/bill_detail.html:406
 #: templates/laws/law_detail.html:18
 #: templates/laws/law_detail.html.py:31
 #: templates/laws/law_detail.html:44
@@ -558,8 +558,8 @@ msgstr "סוגי הצבעות"
 #: templates/committees/committeemeeting_detail.html:60
 #: templates/committees/committeemeeting_detail.html:90
 #: templates/include/vote_list.html:8
-#: templates/laws/bill_detail.html:241
-#: templates/laws/bill_detail.html:272
+#: templates/laws/bill_detail.html:251
+#: templates/laws/bill_detail.html:282
 #: templates/laws/item_tags.html:3
 #: templates/laws/vote_detail.html:25
 #: templates/laws/vote_detail.html.py:57
@@ -580,10 +580,10 @@ msgstr "עד"
 
 #: laws/models.py:26
 #: templates/include/member_detail.html:50
-#: templates/laws/bill_detail.html:299
-#: templates/laws/bill_detail.html:340
-#: templates/laws/bill_detail.html:379
-#: templates/laws/bill_detail.html:410
+#: templates/laws/bill_detail.html:309
+#: templates/laws/bill_detail.html:350
+#: templates/laws/bill_detail.html:389
+#: templates/laws/bill_detail.html:420
 #: templates/laws/vote_detail.html:86
 #: templates/laws/vote_list_item.html:12
 msgid "For"
@@ -591,10 +591,10 @@ msgstr "בעד"
 
 #: laws/models.py:27
 #: templates/include/member_detail.html:58
-#: templates/laws/bill_detail.html:302
-#: templates/laws/bill_detail.html:340
-#: templates/laws/bill_detail.html:379
-#: templates/laws/bill_detail.html:410
+#: templates/laws/bill_detail.html:312
+#: templates/laws/bill_detail.html:350
+#: templates/laws/bill_detail.html:389
+#: templates/laws/bill_detail.html:420
 #: templates/laws/vote_detail.html:110
 #: templates/laws/vote_list_item.html:17
 msgid "Against"
@@ -658,7 +658,7 @@ msgid "In Committee"
 msgstr "בוועדה"
 
 #: laws/models.py:448
-#: templates/laws/bill_detail.html:374
+#: templates/laws/bill_detail.html:384
 msgid "First Vote"
 msgstr "קריאה ראשונה"
 
@@ -731,55 +731,55 @@ msgid "Votes tagged %(tag)s by %(member)s"
 msgstr "הצבעות של %(member)s בנושא %(tag)s"
 
 #: laws/views.py:135
-#: laws/views.py:444
+#: laws/views.py:490
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
 
-#: laws/views.py:240
+#: laws/views.py:286
 msgid "added-vote-to-bill"
 msgstr "קישר/ה הצבעה להצעת חוק"
 
-#: laws/views.py:275
+#: laws/views.py:321
 msgid "All stages"
 msgstr "כל השלבים"
 
-#: laws/views.py:284
+#: laws/views.py:330
 msgid "(Bills) proposed"
 msgstr "הוצעו"
 
-#: laws/views.py:285
+#: laws/views.py:331
 msgid "(Bills) passed pre-vote"
 msgstr "עברו טרומית"
 
-#: laws/views.py:286
+#: laws/views.py:332
 msgid "(Bills) passed first vote"
 msgstr "עברו קריאה ראשונה"
 
-#: laws/views.py:287
+#: laws/views.py:333
 msgid "(Bills) approved"
 msgstr "אושרו סופית"
 
-#: laws/views.py:298
+#: laws/views.py:344
 msgid "Invalid member id"
 msgstr "מזהה חבר כנסת לא חוקי"
 
-#: laws/views.py:326
+#: laws/views.py:372
 #, python-format
 msgid "Bills %(stage)s"
 msgstr "הצעות חוק ש%(stage)s"
 
-#: laws/views.py:328
+#: laws/views.py:374
 #, python-format
 msgid "Bills published in knesset booklet number %s"
 msgstr "חוקים שפורסמו בחוברת הכנסת מספר %s"
 
-#: laws/views.py:335
+#: laws/views.py:381
 #, python-format
 msgid "Bills %(stage)s by %(member)s"
 msgstr "הצעות חוק ביוזמת %(member)s ש%(stage)s"
 
-#: laws/views.py:337
+#: laws/views.py:383
 #, python-format
 msgid "Bills by %(member)s"
 msgstr "הצעות חוק ביוזמת %(member)s"
@@ -1654,9 +1654,9 @@ msgstr "נא לבחור"
 #: templates/committees/committeemeeting_detail.html:42
 #: templates/committees/committeemeeting_detail.html:54
 #: templates/committees/committeemeeting_list.html:11
-#: templates/laws/bill_detail.html:349
-#: templates/laws/bill_detail.html:389
-#: templates/laws/bill_detail.html:419
+#: templates/laws/bill_detail.html:359
+#: templates/laws/bill_detail.html:399
+#: templates/laws/bill_detail.html:429
 #: templates/laws/vote_detail.html:106
 #: templates/laws/vote_detail.html:131
 msgid "Submit"
@@ -1797,7 +1797,7 @@ msgstr "אין עדיין תגובות"
 #: templates/comments/object_comment_list.html:37
 #: templates/committees/committee_detail.html:31
 #: templates/committees/committeemeeting_detail.html:85
-#: templates/laws/bill_detail.html:266
+#: templates/laws/bill_detail.html:276
 #: templates/laws/vote_detail.html:51
 msgid "Please"
 msgstr "אנא"
@@ -1805,7 +1805,7 @@ msgstr "אנא"
 #: templates/comments/object_comment_list.html:37
 #: templates/committees/committee_detail.html:32
 #: templates/committees/committeemeeting_detail.html:85
-#: templates/laws/bill_detail.html:266
+#: templates/laws/bill_detail.html:276
 #: templates/laws/vote_detail.html:51
 msgid "validate your email"
 msgstr "אמת/י את הדואר אלקטרוני שסיפקת"
@@ -1924,39 +1924,39 @@ msgstr "הוספת הצעת חוק מתאימה"
 
 #: templates/committees/committeemeeting_detail.html:67
 #: templates/committees/committeemeeting_detail.html:98
-#: templates/laws/bill_detail.html:248
-#: templates/laws/bill_detail.html:280
+#: templates/laws/bill_detail.html:258
+#: templates/laws/bill_detail.html:290
 #: templates/laws/vote_detail.html:33
 #: templates/laws/vote_detail.html.py:65
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
 #: templates/committees/committeemeeting_detail.html:71
-#: templates/laws/bill_detail.html:252
+#: templates/laws/bill_detail.html:262
 #: templates/laws/vote_detail.html:37
 msgid "Edit Tags"
 msgstr "עריכת תגיות"
 
 #: templates/committees/committeemeeting_detail.html:72
-#: templates/laws/bill_detail.html:253
+#: templates/laws/bill_detail.html:263
 #: templates/laws/vote_detail.html:38
 msgid "Click here"
 msgstr "יש ללחוץ כאן"
 
 #: templates/committees/committeemeeting_detail.html:77
-#: templates/laws/bill_detail.html:258
+#: templates/laws/bill_detail.html:268
 #: templates/laws/vote_detail.html:43
 msgid "Create new tag"
 msgstr "יצירת תגית חדשה"
 
 #: templates/committees/committeemeeting_detail.html:82
-#: templates/laws/bill_detail.html:263
+#: templates/laws/bill_detail.html:273
 #: templates/laws/vote_detail.html:48
 msgid "Send"
 msgstr "שליחה"
 
 #: templates/committees/committeemeeting_detail.html:85
-#: templates/laws/bill_detail.html:266
+#: templates/laws/bill_detail.html:276
 #: templates/laws/vote_detail.html:51
 msgid " to create new tags"
 msgstr "כדי ליצור תגיות חדשות"
@@ -2050,7 +2050,7 @@ msgid "Login to rank this topic"
 msgstr "נדרש להתחבר כדי לדרג הצעה זו"
 
 #: templates/committees/topic_detail.html:38
-#: templates/laws/bill_detail.html:218
+#: templates/laws/bill_detail.html:228
 msgid "Delete"
 msgstr "מחיקה"
 
@@ -2059,7 +2059,7 @@ msgid "your rating"
 msgstr "הדירוג שלך"
 
 #: templates/committees/topic_detail.html:64
-#: templates/laws/bill_detail.html:237
+#: templates/laws/bill_detail.html:247
 #: templates/laws/vote_detail.html:20
 #: templates/mks/member_detail.html:363
 #: templates/mks/party_detail.html:71
@@ -2182,62 +2182,70 @@ msgstr "תאריך עדכון אחרון"
 msgid "Public Opinion"
 msgstr "דעת הקהל"
 
-#: templates/laws/bill_detail.html:215
+#: templates/laws/bill_detail.html:213
+msgid "Public Opinion - party members"
+msgstr "בקרב מתפקדי מפלגות"
+
+#: templates/laws/bill_detail.html:218
+msgid "Public Opinion - your party members"
+msgstr "בקרב מתפקדי המפלגה שלך"
+
+#: templates/laws/bill_detail.html:225
 msgid "You voted "
 msgstr "ההצבעה שלך"
 
-#: templates/laws/bill_detail.html:224
+#: templates/laws/bill_detail.html:234
 msgid "I'm for"
 msgstr "אני בעד"
 
-#: templates/laws/bill_detail.html:229
+#: templates/laws/bill_detail.html:239
 msgid "I'm against"
 msgstr "אני נגד"
 
-#: templates/laws/bill_detail.html:234
+#: templates/laws/bill_detail.html:244
 msgid "Please login to vote"
 msgstr "יש להכנס לחשבון כדי להצביע"
 
-#: templates/laws/bill_detail.html:283
+#: templates/laws/bill_detail.html:293
 msgid "Please login to edit tags"
 msgstr "יש להכנס לחשבון כדי לערוך תגיות"
 
-#: templates/laws/bill_detail.html:295
+#: templates/laws/bill_detail.html:305
 msgid "Government Stand"
 msgstr "עמדת הממשלה"
 
-#: templates/laws/bill_detail.html:305
+#: templates/laws/bill_detail.html:315
 msgid "Decision on government website"
 msgstr "ההחלטה באתר משרד ראש הממשלה"
 
-#: templates/laws/bill_detail.html:308
-#: templates/laws/bill_detail.html:329
-#: templates/laws/bill_detail.html:342
-#: templates/laws/bill_detail.html:360
-#: templates/laws/bill_detail.html:369
-#: templates/laws/bill_detail.html:381
-#: templates/laws/bill_detail.html:400
-#: templates/laws/bill_detail.html:412
+#: templates/laws/bill_detail.html:318
+#: templates/laws/bill_detail.html:339
+#: templates/laws/bill_detail.html:352
+#: templates/laws/bill_detail.html:370
+#: templates/laws/bill_detail.html:379
+#: templates/laws/bill_detail.html:391
+#: templates/laws/bill_detail.html:410
+#: templates/laws/bill_detail.html:422
 #: templates/persons/person_detail.html:21
 #: templates/persons/person_detail.html:29
 msgid "No Info"
 msgstr "אין נתונים"
 
-#: templates/laws/bill_detail.html:314
+#: templates/laws/bill_detail.html:324
 msgid "Bill initiation"
 msgstr "יזום הצעת החוק"
 
-#: templates/laws/bill_detail.html:316
+#: templates/laws/bill_detail.html:326
 msgid "Government Proposal"
 msgstr "הצעת חוק ממשלתית"
 
-#: templates/laws/bill_detail.html:316
+#: templates/laws/bill_detail.html:326
 msgid "booklet"
 msgstr "חוברת"
 
-#: templates/laws/bill_detail.html:316
-#: templates/laws/bill_detail.html:319
-#: templates/laws/bill_detail.html:367
+#: templates/laws/bill_detail.html:326
+#: templates/laws/bill_detail.html:329
+#: templates/laws/bill_detail.html:377
 #: templates/laws/knessetproposal_detail.html:11
 #: templates/laws/knessetproposal_detail.html:17
 #: templates/laws/law_detail.html:12
@@ -2246,29 +2254,29 @@ msgstr "חוברת"
 msgid "Bill on knesset website"
 msgstr "ההצעה באתר הכנסת"
 
-#: templates/laws/bill_detail.html:322
+#: templates/laws/bill_detail.html:332
 msgid "Read Proposal"
 msgstr "קריאת הצעה"
 
-#: templates/laws/bill_detail.html:325
+#: templates/laws/bill_detail.html:335
 msgid "Sorry, Proposal text not available"
 msgstr "לצערנו, טקסט ההצעה אינו זמין."
 
-#: templates/laws/bill_detail.html:335
+#: templates/laws/bill_detail.html:345
 msgid "Pre Vote"
 msgstr "קריאה טרומית"
 
-#: templates/laws/bill_detail.html:344
-#: templates/laws/bill_detail.html:383
-#: templates/laws/bill_detail.html:414
+#: templates/laws/bill_detail.html:354
+#: templates/laws/bill_detail.html:393
+#: templates/laws/bill_detail.html:424
 msgid "Suggest a matching vote"
 msgstr "הצעת הצבעה מתאימה"
 
-#: templates/laws/bill_detail.html:365
+#: templates/laws/bill_detail.html:375
 msgid "Bill formulated by the committee"
 msgstr "נוסח הצעת החוק של הוועדה"
 
-#: templates/laws/bill_detail.html:405
+#: templates/laws/bill_detail.html:415
 msgid "Bill Approval"
 msgstr "אישור הצעת החוק"
 
