@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-14 18:15+0300\n"
-"PO-Revision-Date: 2012-08-14 18:21+0200\n"
+"POT-Creation-Date: 2012-08-20 20:51+0300\n"
+"PO-Revision-Date: 2012-08-20 20:52+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -25,7 +25,7 @@ msgstr ""
 #: mks/views.py:140
 #: mks/views.py:152
 #: mks/views.py:155
-#: templates/base.html:116
+#: templates/base.html:113
 #: templates/agendas/agenda_detail.html:53
 #: templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4
@@ -43,13 +43,13 @@ msgstr "ח\"כים"
 #: mks/views.py:346
 #: mks/views.py:361
 #: mks/views.py:376
-#: templates/base.html:117
+#: templates/base.html:114
 #: templates/agendas/agenda_detail.html:126
 msgid "Parties"
 msgstr "מפלגות"
 
 #: context.py:15
-#: templates/base.html:115
+#: templates/base.html:112
 msgid "Past Votes"
 msgstr "הצבעות"
 
@@ -59,9 +59,9 @@ msgstr "הצבעות"
 #: laws/feeds.py:8
 #: laws/feeds.py:26
 #: templates/500.html:8
-#: templates/base.html:10
-#: templates/base.html.py:21
-#: templates/base.html:95
+#: templates/base.html:9
+#: templates/base.html.py:20
+#: templates/base.html:92
 msgid "Open Knesset"
 msgstr "כנסת פתוחה"
 
@@ -87,39 +87,39 @@ msgstr "פיד פעילויות ראשי"
 msgid "Main activity feed for the whole site, same as presented on the main page"
 msgstr "פיד ראשי עבור כל האתר, בדומה למוצג בדף הראשי"
 
-#: settings.py:220
+#: settings.py:219
 msgid "Statement"
 msgstr "הצהרה"
 
-#: settings.py:221
+#: settings.py:220
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: settings.py:222
+#: settings.py:221
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: settings.py:223
+#: settings.py:222
 msgid "Source?"
 msgstr "מקור?"
 
-#: settings.py:224
+#: settings.py:223
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: settings.py:225
+#: settings.py:224
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: settings.py:226
+#: settings.py:225
 msgid "Important"
 msgstr "חשוב"
 
-#: settings.py:227
+#: settings.py:226
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: settings.py:228
+#: settings.py:227
 msgid "Comment"
 msgstr "תגובה"
 
@@ -202,7 +202,7 @@ msgstr "חשיבות"
 
 #: agendas/forms.py:72
 #: templates/agendas/agendasfor.html:11
-#: templates/agendas/agendasfor.html:30
+#: templates/agendas/agendasfor.html:31
 msgid "Reasoning"
 msgstr "הסבר"
 
@@ -259,7 +259,7 @@ msgstr "אג'נדה"
 
 #: agendas/models.py:174
 #: agendas/urls.py:7
-#: templates/base.html:119
+#: templates/base.html:116
 #: templates/agendas/agenda_list.html:8
 #: templates/agendas/agenda_list.html:9
 #: templates/agendas/agenda_list.html:10
@@ -382,7 +382,7 @@ msgid "deleted"
 msgstr "נמחק"
 
 #: committees/models.py:274
-#: templates/base.html:118
+#: templates/base.html:115
 #: templates/committees/committee_detail.html:20
 #: templates/committees/committee_list.html:4
 #: templates/committees/committee_list.html:5
@@ -548,7 +548,7 @@ msgid "Vote types"
 msgstr "סוגי הצבעות"
 
 #: laws/forms.py:34
-#: templates/base.html:120
+#: templates/base.html:117
 #: templates/auxiliary/tag_detail.html:10
 #: templates/auxiliary/tag_list.html:3
 #: templates/auxiliary/tag_list.html:4
@@ -686,7 +686,7 @@ msgstr "הצעת חוק"
 
 #: laws/models.py:475
 #: laws/urls.py:11
-#: templates/base.html:114
+#: templates/base.html:111
 #: templates/committees/committeemeeting_detail.html:45
 #: templates/mks/member_detail.html:310
 msgid "Bills"
@@ -731,7 +731,7 @@ msgid "Votes tagged %(tag)s by %(member)s"
 msgstr "הצבעות של %(member)s בנושא %(tag)s"
 
 #: laws/views.py:135
-#: laws/views.py:438
+#: laws/views.py:444
 #, python-format
 msgid "Votes tagged %(tag)s"
 msgstr "הצבעות שתויגו %(tag)s"
@@ -1048,6 +1048,7 @@ msgstr "עדכונים שונים"
 
 #: notify/management/commands/notify.py:164
 #: templates/notify/header.html:3
+#: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
 msgstr "עדכוני כנסת פתוחה"
 
@@ -1139,12 +1140,12 @@ msgstr "קבוצת הדיון נמצאת "
 #: templates/about.html:3
 #: templates/about.html.py:4
 #: templates/about.html:6
-#: templates/base.html:122
+#: templates/base.html:119
 msgid "About"
 msgstr "אודות"
 
 #: templates/about.html:4
-#: templates/base.html:22
+#: templates/base.html:21
 #: templates/help_page.he.html:4
 #: templates/main.he.html:4
 #: templates/agendas/agenda_add.html:9
@@ -1180,35 +1181,35 @@ msgstr "אודות"
 msgid "Open Knesset - Opening the Knesset to the public"
 msgstr "כנסת פתוחה - פותחים את הכנסת לציבור"
 
-#: templates/base.html:91
+#: templates/base.html:88
 msgid "This is a development server, all data in it should be considered fictional. users are kindly requested to go to "
 msgstr "זהו שרת פיתוח. יש להתייחס לכל הכתוב כאן כאל מידע דמיוני. משתמשים מתבקשים לעבור ל"
 
-#: templates/base.html:103
+#: templates/base.html:100
 msgid "Logged in as "
 msgstr "מחובר כ "
 
-#: templates/base.html:104
+#: templates/base.html:101
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
 
-#: templates/base.html:105
+#: templates/base.html:102
 #: templates/user/login.html:12
 msgid "Logout"
 msgstr "יציאה מהחשבון"
 
-#: templates/base.html:107
+#: templates/base.html:104
 #: templates/site_base.html:7
 #: templates/user/login.html:4
 #: templates/user/login.html.py:20
 msgid "login"
 msgstr "כניסה לחשבון"
 
-#: templates/base.html:113
+#: templates/base.html:110
 msgid "Main"
 msgstr "ראשי"
 
-#: templates/base.html:121
+#: templates/base.html:118
 #: templates/planet/base.html:12
 #: templates/planet/posts/list.html:4
 #: templates/planet/tags/detail.html:4
@@ -1216,7 +1217,7 @@ msgstr "ראשי"
 msgid "Posts"
 msgstr "מאמרים"
 
-#: templates/base.html:163
+#: templates/base.html:159
 msgid "Some rights reserved."
 msgstr "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט וקישור לאתר."
 
@@ -1353,6 +1354,7 @@ msgstr "של"
 
 #: templates/activity/voted/action.html:8
 #: templates/activity/voted/action_email.html:6
+#: templates/activity/voted/action_email.txt:2
 msgid "present and didn't vote"
 msgstr "נכח ולא הצביע"
 
@@ -1644,7 +1646,11 @@ msgstr "הצעת אג'נדה קשורה"
 msgid "You suggested"
 msgstr "ההצעות שלך"
 
-#: templates/agendas/agendasfor.html:32
+#: templates/agendas/agendasfor.html:26
+msgid "Please select"
+msgstr "נא לבחור"
+
+#: templates/agendas/agendasfor.html:33
 #: templates/committees/committeemeeting_detail.html:42
 #: templates/committees/committeemeeting_detail.html:54
 #: templates/committees/committeemeeting_list.html:11
@@ -1656,15 +1662,15 @@ msgstr "ההצעות שלך"
 msgid "Submit"
 msgstr "אישור"
 
-#: templates/agendas/agendasfor.html:36
+#: templates/agendas/agendasfor.html:49
 msgid "Login to suggest an agenda"
 msgstr "רוצה להציע אג'נדה קשורה? לחץ כאן כדי להרשם"
 
-#: templates/agendas/agendasfor.html:41
+#: templates/agendas/agendasfor.html:54
 msgid "Ascribe your agendas"
 msgstr "שיוך אג'נדה בעריכתך"
 
-#: templates/agendas/agendasfor.html:72
+#: templates/agendas/agendasfor.html:85
 msgid "Update"
 msgstr "עדכון"
 
@@ -2733,8 +2739,9 @@ msgid "M.M.M Documents"
 msgstr "מסמכי ממ\"מ"
 
 #: templates/mmm/committee_mmm_docs.html:13
-msgid "M.M.M Documents ordered by "
-msgstr "מסמכי ממ\"מ שהוזמנו על ידי "
+#: templates/mmm/member_mmm_docs.html:13
+msgid "M.M.M Documents ordered by"
+msgstr "מסמכי ממ\"מ שהוזמנו על ידי"
 
 #: templates/mmm/member_mmm_docs.html:5
 #: templates/mmm/member_mmm_docs.html:8
@@ -2742,16 +2749,17 @@ msgstr "מסמכי ממ\"מ שהוזמנו על ידי "
 msgid "M.M.M Documents ordered by %(member.name)s"
 msgstr "מסמכי ממ\"מ שהוזמנו על ידי %(member.name)s"
 
-#: templates/mmm/member_mmm_docs.html:13
-msgid "M.M.M Documents ordered by"
-msgstr "מסמכי ממ\"מ שהוזמנו על ידי"
-
 #: templates/notify/footer.html:3
+#: templates/notify/footer.txt:3
 msgid "To stop receiving updates"
 msgstr "על מנת להפסיק את קבלת העדכונים"
 
 #: templates/notify/footer.html:4
 msgid "visit the site, and change your settings"
+msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
+
+#: templates/notify/footer.txt:3
+msgid "Visit the site, and change your settings"
 msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
 
 #: templates/notify/header.html:4
@@ -2763,7 +2771,17 @@ msgstr ""
 "שלום %(username)s,<br>\n"
 "הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
 
+#: templates/notify/header.txt:3
+#, python-format
+msgid ""
+"Hi %(username)s,\n"
+"Here's what happened lately in the knesset and on our site"
+msgstr ""
+"שלום %(username)s,\n"
+"הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+
 #: templates/notify/member_section.html:2
+#: templates/notify/member_section.txt:3
 msgid "followed MKs"
 msgstr "חברי כנסת במעקב"
 
@@ -3354,15 +3372,8 @@ msgstr "שבועי"
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
 
-#~ msgid "Visit the site, and change your settings"
-#~ msgstr "יש לבקר באתר ולעדכן את הגדרות שליחת הדוא\"ל"
-
-#~ msgid ""
-#~ "Hi %(username)s,\n"
-#~ "Here's what happened lately in the knesset and on our site"
-#~ msgstr ""
-#~ "שלום %(username)s,\n"
-#~ "הנה מה שקרה בכנסת ובאתר שלנו לאחרונה"
+#~ msgid "M.M.M Documents ordered by "
+#~ msgstr "מסמכי ממ\"מ שהוזמנו על ידי "
 
 #~ msgid "suggested votes"
 #~ msgstr "הצבעות מוצעות"
