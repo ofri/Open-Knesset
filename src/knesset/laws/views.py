@@ -389,13 +389,19 @@ class VoteDetailView(DetailView):
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         object_id = kwargs['pk']
-        if not object_id:
+        try:
+            object_id = int(kwargs['pk'])
+        except:
             return HttpResponseBadRequest()
         user_input_type = request.POST.get('user_input_type',None)
         vote = get_object_or_404(Vote, pk=object_id)
         mk_names = Member.objects.values_list('name',flat=True)
         if user_input_type == 'agenda':
-            agenda = Agenda.objects.get(pk=request.POST.get('agenda'))
+            try:
+                agenda_id = int(request.POST.get('agenda'))
+            except:
+                return HttpResponseBadRequest()
+            agenda = Agenda.objects.get(pk=agenda_id)
             reasoning = request.POST.get('reasoning','')
             usv = UserSuggestedVote.objects.filter(user = request.user,
                                 agenda = agenda,
