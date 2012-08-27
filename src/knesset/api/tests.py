@@ -32,6 +32,7 @@ class TestAPIV2(TestCase):
 class ApiViewsTest(TestCase):
 
     def setUp(self):
+        cache.cache.clear()
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
         self.party_1 = Party.objects.create(name='party 1')
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
