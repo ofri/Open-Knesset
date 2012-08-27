@@ -133,6 +133,12 @@
                     {% block social %}
                     <div class="content-footer">
                         {% if not debug %}
+                        <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+                             | <input type="hidden" value="_s-xclick" name="cmd">
+                            <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+                            <input type="submit" name="submit" value="תרמו לנו!">
+                            <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+                        </form> 
                             <!-- AddToAny BEGIN -->
                             <div class="a2a_kit a2a_default_style">
                             <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
