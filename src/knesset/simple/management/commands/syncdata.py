@@ -242,8 +242,8 @@ class Command(NoArgsCommand):
         self.update_last_downloaded_vote_id()
         r = range(self.last_downloaded_vote_id+1,17000) # this is the range of page ids to go over. currently its set manually.
         for id in r:
-	    f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
-	    f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
+        f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+        f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id
@@ -725,6 +725,7 @@ class Command(NoArgsCommand):
                 self.check_vote_mentioned_in_cm(v, cm)
 
     def get_protocols_page(self, page, page_num):
+        logger.debug('get_protocols_page. page_num=%d' % page_num)
         FILES_BASE_URL = "http://www.knesset.gov.il/protocols/"
         res = []
         max_linked_page = max([int(r) for r in re.findall("'Page\$(\d*)",page)])
@@ -762,6 +763,7 @@ class Command(NoArgsCommand):
         return (last_page, res)
 
     def get_protocols(self, max_page=10):
+        logger.debug('get_protocols. max_page=%d' % max_page)
         SEARCH_URL = "http://www.knesset.gov.il/protocols/heb/protocol_search.aspx"
         cj = cookielib.LWPCookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -813,6 +815,8 @@ class Command(NoArgsCommand):
             (last_page, page_res) = self.get_protocols_page(page, page_num)
             res.extend(page_res)
 
+        logger.debug('res contains %d entries' % len(res))
+
         for (date_string, com, topic, link) in res:
             (c, created) = Committee.objects.get_or_create(name=com)
             if created:
@@ -822,6 +826,8 @@ class Command(NoArgsCommand):
             if CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string).count():
                 cm = CommitteeMeeting.objects.filter(committee=c, date=d, topics=topic, date_string=date_string)[0]
                 logger.debug('cm %d already exists' % cm.id)
+                if not cm.bg_material: #committee meeting still has no bg - hack to get old bg material into db
+                    self.get_bg_material(cm)
                 continue
             elif CommitteeMeeting.objects.filter(src_url=link).count():
                 cm = CommitteeMeeting.objects.get(src_url=link)
@@ -855,7 +861,10 @@ class Command(NoArgsCommand):
 
             if updated_protocol:
                 cm.create_protocol_parts()
+
             self.find_attending_members(cm, mks, mk_names)
+
+            self.get_bg_material(cm)
 
     def find_attending_members(self,cm, mks, mk_names):
         try:
@@ -875,6 +884,7 @@ class Command(NoArgsCommand):
                                                                   cm.mks_attended.count()))
 
     def get_committee_protocol_text(self, url):
+        logger.debug('get_committee_protocol_text. url=%s' % url)
         if url.find('html'):
             url = url.replace('html','rtf')
         file_str = StringIO()
@@ -904,6 +914,14 @@ class Command(NoArgsCommand):
                 text.append(sentence.content[0])
         all_text = '\n'.join(text)
         return re.sub(r'\n:\n',r':\n',all_text)
+
+    def get_bg_material(self,cm):
+        links = cm.get_bg_material()
+        if links:
+            for i in links:
+                l = Link.objects.create(url=i.get('url',''), title=i.get('title',''), content_object=cm)
+                logger.debug('committee meeting link %d created' % l.id)
+
 
     def get_full_text(self,v):
         try:
