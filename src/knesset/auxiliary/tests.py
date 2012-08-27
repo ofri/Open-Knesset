@@ -87,3 +87,15 @@ class InternalLinksTest(TestCase):
         #f = open('internal_links_tested.txt','wt')
         #f.write('\n'.join(visited_links))
         #f.close()
+
+
+class SiteMapTest(TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_sitemap(self):
+        res = self.client.get(reverse('sitemap'))
+        self.assertEqual(res.status_code, 200)
+        res = self.client.get(reverse('sitemaps', kwargs={'section':'index'}))
+        self.assertEqual(res.status_code, 200)
