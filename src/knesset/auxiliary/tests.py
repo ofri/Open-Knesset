@@ -10,6 +10,7 @@ from tagging.models import Tag,TaggedItem
 from knesset.laws.models import Vote, VoteAction, Bill
 from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
+from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
 
 class InternalLinksTest(TestCase):
@@ -97,5 +98,7 @@ class SiteMapTest(TestCase):
     def test_sitemap(self):
         res = self.client.get(reverse('sitemap'))
         self.assertEqual(res.status_code, 200)
-        res = self.client.get(reverse('sitemaps', kwargs={'section':'index'}))
-        self.assertEqual(res.status_code, 200)
+        for s in sitemaps.keys():
+            res = self.client.get(reverse('sitemaps', kwargs={'section':s}))
+            self.assertEqual(res.status_code, 200, 'sitemap %s returned %d' %
+                             (s,res.status_code))
