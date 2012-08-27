@@ -121,6 +121,7 @@ a:hover { text-decoration:underline;}
 .subcol-primary, .subcol-secondary { width:40%; float:left; padding-bottom:1.2em; }
 .subcol-primary { margin-right:1%; }
 .content-footer {clear: both; border:0px;margin:2em auto 0.5em;}
+
 /* CONTENT */
 
 h1,h2,h3 { font-family:"Trebuchet MS",sans-serif; font-weight:normal; color: #0d204a; }
@@ -1090,3 +1091,18 @@ div.general_discipline_control {
 #helptextcontainer {width:100%;position:absolute;}
 
 #embeddiv { width: 25em; float: left; margin-left: 0em; clear:left;}
+
+
+.content-footer form{
+    float:left;
+    margin-top:-4px;
+    padding-right: 10px;
+}
+
+.content-footer form input{
+    border:none;
+    text-decoration: underline;
+}
+.content-footer form input:hover{
+    cursor: pointer;
+}
