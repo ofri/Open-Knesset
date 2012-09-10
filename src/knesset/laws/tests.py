@@ -52,12 +52,12 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res, 'laws/bill_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id ])
+                         [ self.bill_3.id, self.bill_2.id, self.bill_1.id ])
     def testBillListByStage(self):
         res = self.client.get(reverse('bill-list'), {'stage': 'all'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id])
+                         [ self.bill_3.id, self.bill_2.id, self.bill_1.id])
         res = self.client.get(reverse('bill-list'), {'stage': '1'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
