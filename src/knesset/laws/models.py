@@ -471,6 +471,7 @@ class Bill(models.Model):
                                      blank=True, null=True) # superset of all joiners
 
     class Meta:
+        ordering = ('-stage_date','-id')
         verbose_name = _('Bill')
         verbose_name_plural = _('Bills')
 
