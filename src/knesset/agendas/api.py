@@ -4,6 +4,7 @@ API for the agendas app
 from django.contrib.auth.models import User
 from tastypie.constants import ALL
 import tastypie.fields as fields
+from tastypie.cache import SimpleCache
 from avatar.templatetags.avatar_tags import avatar_url
 
 from knesset.api.resources.base import BaseResource
@@ -69,6 +70,7 @@ class AgendaResource(BaseResource):
         allowed_methods = ['get']
         include_absolute_url = True
         excludes = ['is_public']
+        cache = SimpleCache(timeout = 300)
 
     editors = fields.ToManyField(UserResource,
                     'editors',
