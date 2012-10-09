@@ -242,8 +242,8 @@ class Command(NoArgsCommand):
         self.update_last_downloaded_vote_id()
         r = range(self.last_downloaded_vote_id+1,17000) # this is the range of page ids to go over. currently its set manually.
         for id in r:
-        f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
-        f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
+            f  = gzip.open(os.path.join(DATA_ROOT, 'results.tsv.gz'), "ab")
+            f2 = gzip.open(os.path.join(DATA_ROOT, 'votes.tsv.gz'),"ab")
             (page, src_url) = self.read_votes_page(id)
             title = self.get_page_title(page)
             if(title == """הצבעות במליאה-חיפוש"""): # found no vote with this id

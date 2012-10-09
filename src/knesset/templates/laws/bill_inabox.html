@@ -51,7 +51,7 @@
             </div>
             <div class="external-links">
                 <span class="label">קישורים נוספים:</span>
-                <a href="http://oknesset.org{{ bill.get_absolute_url }}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
+                <a href="https://oknesset.org{{ bill.get_absolute_url }}" class="oknesset-resource" target='_blank'>החוק באתר כנסת פתוחה</a>
             </div>
             <div>
                 <span class="status"></span>
@@ -62,7 +62,7 @@
             <ul>
 
                 {% for proposer in proposers_first3 %}
-                <li><a href="http://oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
+                <li><a href="https://oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
 
             </ul>
@@ -458,7 +458,7 @@
 
     <div class="footer">
         <div class="footer-title">
-            <div class="credit">עובד והונגש ע"י <a href="http://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
+            <div class="credit">עובד והונגש ע"י <a href="https://oknesset.org" target="_blank">כנסת פתוחה</a> ובתמיכת <a href="http://www.uru.org.il" target="_blank">עורו </a></div>
             <div class="share">
                 <script type="text/javascript">
                     OKnesset.embedMinimize = function(){
@@ -497,9 +497,9 @@
             <b>קחו את החוק לידיים!</b><br>
             בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם תהליך החקיקה הזה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
             <b>העתיקו את קוד ההטמעה (html):</b><br>
-            <input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="http://oknesset.org/bill/{{bill.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
+            <input type="text" readonly="readonly" value='<iframe frameborder="0" id="embed-widget" src="https://oknesset.org/bill/{{bill.id}}/embed/" style="width: 505px; height: 375px;"></iframe>'></br>
             <b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
-            <input type="text" readonly="readonly" value='http://oknesset.org/bill/{{bill.id}}'/>
+            <input type="text" readonly="readonly" value='https://oknesset.org/bill/{{bill.id}}'/>
 
         </div>
     </div>

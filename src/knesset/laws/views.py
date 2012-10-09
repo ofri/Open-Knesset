@@ -317,6 +317,7 @@ def bill_unbind_vote(request, object_id, vote_id):
 
 
 class BillListView (ListView):
+
     friend_pages = [
             ('stage','all',_('All stages')),
     ]
@@ -354,7 +355,7 @@ class BillListView (ListView):
         elif booklet:
             kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
             qs = qs.filter(knesset_proposal__in=kps)
-        return qs.order_by('-stage_date')
+        return qs.order_by('-stage_date','-id')
 
     def get_context(self):
         context = super(BillListView, self).get_context()
