@@ -7,6 +7,7 @@ from django.utils import translation
 from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.conf import settings
+from django.core.cache import cache
 import datetime
 from optparse import make_option
 import logging
@@ -15,7 +16,7 @@ logger = logging.getLogger("open-knesset.notify")
 from actstream.models import Follow, Action
 from mailer import send_html_mail
 from knesset.mks.models import Member
-from knesset.laws.models import Bill
+from knesset.laws.models import Bill, get_debated_bills
 from knesset.agendas.models import Agenda
 from knesset.notify.models import LastSent
 from knesset.user.models import UserProfile
@@ -117,12 +118,53 @@ class Command(NoArgsCommand):
 
         email_body = []
         email_body_html = []
+
+        # Generate party membership section
+        up = UserProfile.objects.filter(user=user).select_related('party')
+        if up:
+            up = up[0]
+            party = up.party
+            if party:
+                num_members = cache.get('party_num_members_%d' % party.id,
+                                          None)
+                if not num_members:
+                    num_members = party.userprofile_set.count()
+                    cache.set('party_num_members_%d' % party.id,
+                          num_members,
+                          settings.LONG_CACHE_TIME)
+                debated_bills = get_debated_bills() or []
+            else:
+                num_members = None
+
+            template_name = 'notify/party_membership'
+            party_membership_txt = render_to_string(template_name + '.txt',
+                                                    {'user':user,
+                                                     'userprofile':up,
+                                                     'num_members':num_members,
+                                                     'bills':debated_bills,
+                                                     'domain':self.domain})
+            party_membership_html = render_to_string(template_name + '.html',
+                                                     {'user':user,
+                                                     'userprofile':up,
+                                                     'num_members':num_members,
+                                                     'bills':debated_bills,
+                                                     'domain':self.domain})
+
+        else:
+            logger.warning('Can\'t find user profile')
+
+
+        # Add the updates for followed models
         for (model_class,title,title_html) in map(self.get_model_headers, self.update_models):
             if updates[model_class]: # this model has some updates, add it to the email
                 email_body.append(title.format())
                 email_body.append('\n'.join(updates[model_class]))
                 email_body_html.append(title_html.format())
                 email_body_html.append(''.join(updates_html[model_class]))
+        if email_body:
+            email_body.insert(0, party_membership_txt)
+        if email_body_html:
+            email_body_html.insert(0, party_membership_html)
         return (email_body, email_body_html)
 
 
