@@ -151,7 +151,10 @@ class Command(NoArgsCommand):
                 logger.warn('user %s has no userprofile' % user.username)
                 continue
 
-            if user_profile and user_profile.email_notification in email_notification and g in user.groups.all():
+            if (user.email and
+                user_profile and
+                user_profile.email_notification in email_notification and
+                g in user.groups.all()):
                 # if this user has a profile (should always be true)
                 # requested emails in the frequency we are handling now
                 # and has validated his email
