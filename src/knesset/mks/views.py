@@ -160,7 +160,7 @@ class MemberListView(ListView):
 
 class MemberDetailView(DetailView):
 
-    queryset = Member.objects.select_related('current_party')
+    queryset = Member.objects.select_related('current_party', 'voting_statistics')
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         # store in instance var if needed, no need to access cache for each
@@ -267,7 +267,8 @@ class MemberDetailView(DetailView):
                 general_discipline_params['against_coalition'] = True
             else:
                 general_discipline_params['against_opposition'] = True
-            general_discipline = VoteAction.objects.filter(**general_discipline_params)
+            general_discipline = VoteAction.objects.filter(
+                **general_discipline_params).select_related('vote')
 
             about_videos=get_videos_queryset(member,group='about')[:1]
             if len(about_videos):
@@ -284,7 +285,8 @@ class MemberDetailView(DetailView):
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
-            actions = actor_stream(member).filter(verb__in=verbs)
+            actions = actor_stream(member).filter(
+                verb__in=verbs).prefetch_related('target__bill')
             for a in actions:
                 a.actor = member
             cached_context = {'watched_member': watched,
