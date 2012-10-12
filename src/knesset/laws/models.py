@@ -180,7 +180,7 @@ class Vote(models.Model):
     src_id = models.IntegerField(null=True,blank=True)
     src_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
     title = models.CharField(max_length=1000)
-    time = models.DateTimeField()
+    time = models.DateTimeField(db_index=True)
     time_string = models.CharField(max_length=100)
     votes = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
     votes_count = models.IntegerField(null=True, blank=True)
