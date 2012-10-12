@@ -163,19 +163,26 @@ class MemberDetailView(DetailView):
     model = Member
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
-        all_members = cache.get('all_members', None)
-        if not all_members:
-            all_members = list(Member.objects.filter(is_current=True))
-            cache.set('all_members', all_members, settings.LONG_CACHE_TIME)
-        member_count = float(len(all_members))
+        # store in instance var if needed, no need to access cache for each
+        # call.
+        #
+        # If not found in the instance, than try to get from cache (and set if
+        # not found), plus setting it as an instance var
+        all_members = getattr(self, '_all_members', None)
 
+        if not all_members:
+            all_members = cache.get('all_members', None)
+            if not all_members:
+                self._all_members = all_members = list(
+                    Member.objects.filter(is_current=True).values())
+                cache.set('all_members', all_members, settings.LONG_CACHE_TIME)
+
+        member_count = float(len(all_members))
         member_val = getattr(member,inprop) or 0
 
-        get_inprop = lambda x: getattr(x,inprop) or 0
-        avg = sum(map(get_inprop, all_members))
-        avg = avg / member_count
-        var = sum(map(lambda x: (get_inprop(x)-avg)**2, all_members))
-        var = var / member_count
+        avg = sum(x.get(inprop) or 0 for x in all_members) / member_count
+
+        var = sum(((x.get(inprop) or 0) - avg) ** 2 for x in all_members) / member_count
 
         outdict[outvalprop] = member_val
         outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
