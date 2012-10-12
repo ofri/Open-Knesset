@@ -89,7 +89,11 @@ def main(request):
             annotations=[a.target for a in actions if a.verb != 'comment-added'],
             comments=[x.target for x in actions if x.verb == 'comment-added'])
         context['annotations'] = annotations
-        context['bill'] = get_debated_bills()[0]
+        b = get_debated_bills()
+        if b:
+            context['bill'] = get_debated_bills()[0]
+        else:
+            context['bill'] = None
         context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
                                          .order_by('-modified')\
                                          .select_related('creator')[:10]
