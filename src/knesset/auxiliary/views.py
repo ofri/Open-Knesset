@@ -1,3 +1,4 @@
+import csv
 import random
 from operator import attrgetter
 from django.template import RequestContext
@@ -7,7 +8,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden, HttpResponseRedirect, \
-    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest
+    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 import tagging
@@ -22,6 +23,7 @@ from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
+from django.views.generic.list import BaseListView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult, main_actions
@@ -270,3 +272,53 @@ class TagDetail(DetailView):
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
         return context
+
+
+class CsvView(BaseListView):
+    """A view which generates CSV files with information for a model queryset.
+    Important class members to set when inheriting:
+      * model -- the model to display information from.
+      * queryset -- the query performed on the model; defaults to all.
+      * filename -- the name of the resulting CSV file (e.g., "info.csv").
+      * list_display - a list (or tuple) of tuples, where the first item in
+        each tuple is the attribute (or the method) on the model to display and
+        the second item is the title of that column.
+    """
+
+    filename = None
+    list_display = None
+
+    def dispatch(self, request):
+        if None in (self.filename, self.list_display, self.model):
+            raise Http404()
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename="{}"'.format(self.filename)
+
+        object_list = self.get_queryset()
+        self.prepare_csv_for_utf8(response)
+        writer = csv.writer(response, dialect='excel')
+        writer.writerow([title.encode('utf8')
+                         for _, title in self.list_display])
+        for obj in object_list:
+            row = [self.get_display_attr(obj, attr)
+                   for attr, _ in self.list_display]
+            writer.writerow([unicode(item).encode('utf8') for item in row])
+        return response
+
+    @staticmethod
+    def get_display_attr(obj, attr):
+        """Return the display string for an attr, calling it if necessary."""
+        display_attr = getattr(obj, attr)
+        if hasattr(display_attr, '__call__'):
+            display_attr = display_attr()
+        return display_attr
+
+    @staticmethod
+    def prepare_csv_for_utf8(fileobj):
+        """Prepend a byte order mark (BOM) to a file.
+
+        When Excel opens a CSV file, it assumes the encoding is ASCII. The BOM
+        directs it to decode the file with utf-8.
+        """
+        fileobj.write('\xef\xbb\xbf')
