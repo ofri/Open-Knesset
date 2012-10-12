@@ -1,0 +1,10 @@
+{% load i18n %}
+{% trans 'Agenda Top MKs' %}
+{% for mk in mks.top %}
+    {{ mk }} - {{ mk.score|floatformat:0 }}
+{% endfor %}
+
+{% trans 'Agenda Bottom MKs' %}
+{% for mk in mks.bottom %}
+    {{ mk }} - {{ mk.score|floatformat:0 }}
+{% endfor %}

@@ -41,6 +41,21 @@ class Command(NoArgsCommand):
             help="send notifications to users that requested a weekly update"))
 
 
+    def agenda_update(self, agenda):
+        ''' generate the general update email for this agenda.
+            this will be called, and its output added to the email,
+            if and only if there has been some update in it's data.
+        '''
+        mks = agenda.selected_instances(Member)
+        template_name = 'notify/agenda_update'
+        update_txt = render_to_string(template_name + '.txt',
+                                      {'mks':mks,
+                                       'domain':self.domain})
+        update_html = render_to_string(template_name + '.html',
+                                       {'mks':mks,
+                                        'domain':self.domain})
+        return (update_txt,update_html)
+
     @classmethod
     def get_model_headers(cls, model):
         ''' for a given model this function returns a tuple with
@@ -104,6 +119,7 @@ class Command(NoArgsCommand):
                 updates[key].append(header)
                 updates_html[key].append(header_html)
 
+
             for action_instance in stream: # now generate the updates themselves
                 try:
                     action_output = render_to_string(('activity/%(verb)s/action_email.txt' % { 'verb':action_instance.verb.replace(' ','_') }),{ 'action':action_instance },None)
@@ -113,8 +129,13 @@ class Command(NoArgsCommand):
                     action_output_html = render_to_string(('activity/%(verb)s/action_email.html' % { 'verb':action_instance.verb.replace(' ','_') }),{ 'action':action_instance,'domain':self.domain },None)
                 except TemplateDoesNotExist: # fallback to the generic template
                     action_output_html = render_to_string(('activity/action_email.html'),{ 'action':action_instance,'domain':self.domain },None)
-                updates[key].append(action_output)
+                    updates[key].append(action_output)
                 updates_html[key].append(action_output_html)
+
+            if stream and model_class == Agenda:
+                txt,html = self.agenda_update(f)
+                updates[key].append(txt)
+                updates_html[key].append(html)
 
         email_body = []
         email_body_html = []
@@ -132,9 +153,9 @@ class Command(NoArgsCommand):
                     cache.set('party_num_members_%d' % party.id,
                           num_members,
                           settings.LONG_CACHE_TIME)
-                debated_bills = get_debated_bills() or []
             else:
                 num_members = None
+            debated_bills = get_debated_bills() or []
 
             template_name = 'notify/party_membership'
             party_membership_txt = render_to_string(template_name + '.txt',
@@ -165,6 +186,7 @@ class Command(NoArgsCommand):
             email_body.insert(0, party_membership_txt)
         if email_body_html:
             email_body_html.insert(0, party_membership_html)
+
         return (email_body, email_body_html)
 
 
