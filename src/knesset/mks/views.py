@@ -65,7 +65,8 @@ class MemberListView(ListView):
                               ['.?info=votes', _('By number of votes per month'), False],
                               ['.?info=presence', _('By average weekly hours of presence'), False],
                               ['.?info=committees', _('By average monthly committee meetings'), False],
-                              ['.?info=graph', _('Graphical view'), False]]
+                              ['.?info=graph', _('Graphical view'), False],
+                              ['./csv', _('Export Data to Excel'), False]]
         if info=='abc':
             context['friend_pages'][0][2] = True
             context['title'] = _('Members')
