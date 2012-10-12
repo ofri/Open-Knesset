@@ -4,6 +4,9 @@ from django.core.management.base import NoArgsCommand
 from django.core.management import call_command
 from django.db.models import get_apps, get_models, get_model
 from django.db import transaction
+from django.contrib.auth.models import User
+from user.models import UserProfile
+from actstream.models import Follow
 
 class Command(NoArgsCommand):
     """Export the sqlite database for developers, while whitelisting user data"""
@@ -72,6 +75,10 @@ class Command(NoArgsCommand):
 
         for model in set(untracked_m2m):
             self.sync_model(model)
+
+        users = UserProfile.objects.using(self.DB).filter(public_profile=False).select_related()
+        followobjs = Follow.objects.using(self.DB).filter(user__in=users)
+        followobjs.delete        
 
     def sync_model(self, model, only_latest=False):
         """Save model instances to the dev db"""
