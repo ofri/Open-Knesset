@@ -375,7 +375,9 @@ form > p > select { width:250px; }
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
+
 .avatar-item img { display:block;}
+
 p.username {max-width:55px; }
 .item-comments { padding-right:1.5em;}
 .mk-card .avatar-item {
@@ -384,6 +386,9 @@ p.username {max-width:55px; }
     width: 28px;
     float: right;
 }
+
+.mk-card .avatar-item a { padding:0; }
+.mk-card .avatar-item img { height: 38px; width: 28px; }
 .big-avatar {
     margin: 5px 5px 5px 10px;
     height: 64px;
