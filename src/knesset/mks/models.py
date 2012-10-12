@@ -187,6 +187,9 @@ class Member(models.Model):
         self.recalc_average_monthly_committee_presence()
         super(Member,self).save(**kwargs)
 
+    def average_votes_per_month(self):
+        return self.voting_statistics.average_votes_per_month()
+        
     def is_female(self):
         return self.gender=='F'
 

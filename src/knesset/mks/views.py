@@ -19,6 +19,7 @@ from knesset.mks.forms import VerbsForm
 from knesset.mks.utils import percentile
 from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
 from knesset.agendas.models import Agenda
+from knesset.auxiliary.views import CsvView
 
 from knesset.video.utils import get_videos_queryset
 from datetime import date, timedelta
@@ -157,6 +158,21 @@ class MemberListView(ListView):
         cache.set('object_list_by_%s' % info, context, settings.LONG_CACHE_TIME)
         original_context.update(context)
         return original_context
+
+
+class MemberCsvView(CsvView):
+    model = Member
+    filename = 'members.csv'
+    list_display = (('name', _('Name')),
+                    ('bills_stats_proposed', _('Bills Proposed')),
+                    ('bills_stats_pre', _('Bills Pre-Approved')),
+                    ('bills_stats_first', _('Bills First-Approved')),
+                    ('bills_stats_approved', _('Bills Approved')),
+                    ('average_votes_per_month', _('Average Votes per Month')),
+                    ('average_weekly_presence', _('Average Weekly Presence')),
+                    ('committee_meetings_per_month',
+                     _('Committee Meetings per Month')))
+
 
 class MemberDetailView(DetailView):
 
