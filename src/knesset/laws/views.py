@@ -432,12 +432,16 @@ class VoteDetailView(DetailView):
         for_votes = vote.for_votes().select_related('member','member__current_party')
         against_votes = vote.against_votes().select_related('member','member__current_party')
 
-        next_v = vote.get_next_by_time()
-        if next_v:
+        try:
+            next_v = vote.get_next_by_time()
             next_v = next_v.get_absolute_url()
-        prev_v = vote.get_previous_by_time()
-        if prev_v:
+        except Vote.DoesNotExist:
+            next_v = None
+        try:
+            prev_v = vote.get_previous_by_time()
             prev_v = prev_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            prev_v = None
 
         c = {'title':vote.title,
              'bills':related_bills,
