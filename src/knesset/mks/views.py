@@ -255,10 +255,11 @@ class MemberDetailView(DetailView):
                         agendas.append(watched_agenda)
             agendas.sort(key=attrgetter('score'), reverse=True)
 
-            factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+            factional_discipline = VoteAction.objects.select_related(
+                'vote').filter(member = member, against_party=True)
 
-            votes_against_own_bills = VoteAction.objects.filter(member=member,
-                                                                against_own_bill=True)
+            votes_against_own_bills = VoteAction.objects.select_related(
+                'vote').filter(member=member, against_own_bill=True)
 
             general_discipline_params = { 'member' : member }
             is_coalition = member.current_party.is_coalition
