@@ -1,44 +1,34 @@
+import logging
+import difflib
+
 from django.db import models
-from datetime import datetime
+from django.utils import simplejson
+
 from knesset.mks.models import Member
 from knesset.committees.models import Committee
-from django.utils import simplejson
-import re
-import logging
+
 
 logger = logging.getLogger("open-knesset.mmm.models")
-
-def parse_json(fp):
-    """ receives fp from data folder, loads/parses and returns a list of dictionaries """
-    
-    result = simplejson.load(fp)
-   
-    # modifying the data to be suitable for use
-    for o in result:
-#        o['candidates'] = re.sub(r"\s+", r" " , " ".join(o['candidates']))
-        o['date'] = datetime.strptime(o['date'], '%d/%m/%Y')
-    
-    return result
-
-
 
 def text_lookup(modelName, text):
     """receives a text and a modelName and returns a list of modelName objects found in the text"""
     
     result = []
-    
-    # a list of all modelName objects
-    all_obj = [(m.id, m.name) for m in modelName.objects.all()]
-    
-    for k, v in all_obj:
-        if v in text:
-            result.append(k)
+
+    for m in modelName.objects.all():
+        if m.name in text:
+            result.append(m.id)
+        else:
+            k = difflib.SequenceMatcher(None, m.name, text)
+            if k.ratio() >= 0.6:
+                logger.warning('No exact match found. Performing fuzzy matching!')
+                result.append(m.id)
     
     return result
 
 #from json helper function
 def verify(o, i, mks, committees):
-    if i[0].title == o['title'] and i[0].publication_date == o['date'] and i[0].author_names == 0['author']:
+    if i[0].title == o['title'] and i[0].publication_date == o['date'] and i[0].author_names == o['author']:
         if i[0].req_mks == mks or i[0].req_committees == committees:
             logger.info("%s already exists in db" % o['url'])
             return True
