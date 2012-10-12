@@ -422,15 +422,36 @@ class VoteDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(VoteDetailView, self).get_context_data(*args, **kwargs)
         vote = context['vote']
-        context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
         if Bill.objects.filter(approval_vote=vote).count()>0:
             related_bills.append(vote.bill_approved)
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
-        context['bills'] = related_bills
 
+        for_votes = vote.for_votes().select_related('member','member__current_party')
+        against_votes = vote.against_votes().select_related('member','member__current_party')
+
+        try:
+            next_v = vote.get_next_by_time()
+            next_v = next_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            next_v = None
+        try:
+            prev_v = vote.get_previous_by_time()
+            prev_v = prev_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            prev_v = None
+
+        c = {'title':vote.title,
+             'bills':related_bills,
+             'for_votes':for_votes,
+             'against_votes':against_votes,
+             'next_v':next_v,
+             'prev_v':prev_v,
+             'tags':vote.tags,
+            }
+        context.update(c)
         return context
 
     @method_decorator(login_required)

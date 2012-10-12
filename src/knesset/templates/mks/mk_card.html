@@ -1,7 +1,6 @@
-<a href="{% url member-detail mk.id %}">
 <div class="mk-card{% if cls %} {{ cls }}{% endif %}">
     <div class="avatar-item">
-        <img src="{{mk.img_url}}" style="width:28px;height:38px;"/>
+        <a href="{% url member-detail mk.id %}" style="padding:0"> <img src="{{mk.img_url}}" style="width:28px;height:38px;"/> </a>
     </div>
     <div>
         <a href="{% url member-detail mk.id %}">{{ mk.name }}</a><br>
@@ -9,4 +8,3 @@
         {{ mk.get_role }}
     </div>
 </div>
-</a>
