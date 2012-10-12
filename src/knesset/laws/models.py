@@ -20,6 +20,7 @@ from actstream.models import action
 from knesset.mks.models import Member, Party
 from knesset.tagvotes.models import TagVote
 from knesset.utils import slugify_name
+from knesset.laws.vote_choices import TYPE_CHOICES
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -218,6 +219,7 @@ class Vote(models.Model):
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
                          type=vote_type).values_list('member__id', flat=True)
+
     def for_votes(self):
         return VoteAction.objects.filter(vote=self, type='for')
 
@@ -232,6 +234,11 @@ class Vote(models.Model):
 
     def against_own_bill_votes(self):
         return self.votes.filter(voteaction__against_own_bill=True)
+
+    def vote_type(self):
+        for vtype, vtype_prefix in VoteManager.VOTE_TYPES.iteritems():
+            if self.title.startswith(vtype_prefix):
+                return dict(TYPE_CHOICES)[vtype]
 
     def short_summary(self):
         if self.summary==None:

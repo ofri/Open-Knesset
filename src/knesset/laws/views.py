@@ -421,6 +421,7 @@ class VoteCsvView(CsvView):
     model = Vote
     filename = 'votes.csv'
     list_display = (('title', _('Title')),
+                    ('vote_type', _('Vote Type')),
                     ('time', _('Time')),
                     ('votes_count', _('Votes Count')),
                     ('for_votes_count', _('For')),
