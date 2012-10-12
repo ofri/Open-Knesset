@@ -36,6 +36,7 @@ import datetime
 from time import mktime
 
 from forms import VoteSelectForm
+from knesset.auxiliary.views import CsvView
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -414,6 +415,21 @@ class VoteListView(ListView):
 
         context['form'] = self._get_filter_form()
         return context
+
+
+class VoteCsvView(CsvView):
+    model = Vote
+    filename = 'votes.csv'
+    list_display = (('title', _('Title')),
+                    ('time', _('Time')),
+                    ('votes_count', _('Votes Count')),
+                    ('for_votes_count', _('For')),
+                    ('against_votes_count', _('Against')),
+                    ('against_party', _('Votes Against Party')),
+                    ('against_coalition', _('Votes Against Coalition')),
+                    ('against_opposition', _('Votes Against Opposition')),
+                    ('against_own_bill', _('Votes Against Own Bill')))
+
 
 class VoteDetailView(DetailView):
     model = Vote
