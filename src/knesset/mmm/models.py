@@ -2,20 +2,20 @@ from django.db import models
 from datetime import datetime
 from knesset.mks.models import Member
 from knesset.committees.models import Committee
-import simplejson 
+from django.utils import simplejson
 import re
 import logging
 
 logger = logging.getLogger("open-knesset.mmm.models")
 
 def parse_json(fp):
-    """ recieves fp from data folder, loads/parses and returns a list of dictionaries """
+    """ receives fp from data folder, loads/parses and returns a list of dictionaries """
     
     result = simplejson.load(fp)
    
     # modifying the data to be suitable for use
     for o in result:
-        o['candidates'] = re.sub(r"\s+", r" " , " ".join(o['candidates']))
+#        o['candidates'] = re.sub(r"\s+", r" " , " ".join(o['candidates']))
         o['date'] = datetime.strptime(o['date'], '%d/%m/%Y')
     
     return result
@@ -23,7 +23,7 @@ def parse_json(fp):
 
 
 def text_lookup(modelName, text):
-    """ recieves a text and a modelName and returns a list of modelName objects found in it"""
+    """receives a text and a modelName and returns a list of modelName objects found in the text"""
     
     result = []
     
@@ -53,16 +53,13 @@ def verify(o, i, mks, committees):
 class DocumentManager(models.Manager):
 
     def from_json(self, j):
-        """Read a json j, and create Document instances based on it"""
-        # info from m.m.m site
-        info = parse_json(j)
-        
+
         # checking if the db already has document o instance and if no, creating one
-        for o in info:
+        for o in j:
             
             i = self.filter(url=o['url'])
-            mks = text_lookup(Member, o['candidates'])
-            committees = text_lookup(Committee, o['candidates'])
+            mks = text_lookup(Member, o['heading'])
+            committees = text_lookup(Committee, o['heading'])
             
             # db verification
             if i.exists():
