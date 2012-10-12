@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-12 22:12+0200\n"
-"PO-Revision-Date: 2012-10-12 22:12+0200\n"
+"POT-Creation-Date: 2012-10-13 00:33+0200\n"
+"PO-Revision-Date: 2012-10-13 00:35+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -272,7 +272,7 @@ msgstr "עזרה"
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:105
+#: auxiliary/views.py:109
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -1035,11 +1035,11 @@ msgstr "מפלגות לפי ממוצע ישיבות וועדות בחודש"
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
 
-#: notify/management/commands/notify.py:55
+#: notify/management/commands/notify.py:70
 msgid "Other Updates"
 msgstr "עדכונים שונים"
 
-#: notify/management/commands/notify.py:209
+#: notify/management/commands/notify.py:231
 #: templates/notify/header.html:3
 #: templates/notify/header.txt:2
 msgid "Open Knesset Updates"
@@ -1286,6 +1286,33 @@ msgid ""
 msgstr ""
 "\n"
 "ההצבעה <a href=\"http://%(domain)s%(url)s\">%(vote)s</a> שויכה לאג'נדה.\n"
+
+#: templates/activity/agenda_meeting_ascribed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"A meeting has been ascribed to the agenda: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
+msgstr ""
+"\n"
+"ישיבת ועדה שויכה לאג'נדה: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
+
+#: templates/activity/agenda_meeting_relation_updated/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"A meeting's relation to the agenda has changed: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
+msgstr ""
+"\n"
+"שיוך ישיבת ועדה לאג'נדה עודכן: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
+
+#: templates/activity/agenda_meeting_removed/action_email.html:2
+#, python-format
+msgid ""
+"\n"
+"A meeting has been removed from the agenda: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
+msgstr ""
+"\n"
+"ישיבת ועדה הוסרה מהאג'נדה: <a href=\"http://%(domain)s%(url)s\">%(meeting)s</a>\n"
 
 #: templates/activity/agenda_removed/action_email.html:2
 #, python-format
@@ -1545,10 +1572,14 @@ msgid "Agenda MKs"
 msgstr "ציוני הח\"כים באג'נדה"
 
 #: templates/agendas/agenda_detail.html:82
+#: templates/notify/agenda_update.html:2
+#: templates/notify/agenda_update.txt:2
 msgid "Agenda Top MKs"
 msgstr "הח\"כים התומכים ביותר באג'נדה"
 
 #: templates/agendas/agenda_detail.html:102
+#: templates/notify/agenda_update.html:3
+#: templates/notify/agenda_update.txt:7
 msgid "Agenda Bottom MKs"
 msgstr "הח\"כים המתנגדים ביותר לאג'נדה"
 
@@ -2802,19 +2833,23 @@ msgid "Your party has %(num_members)s members in open knesset. If you know other
 msgstr "יש %(num_members)s משתמשים הרשומים כמתפקדים של המפלגה. כל מתפקד נוסף שנרשם לאתר כנסת פתוחה מחזק אותנו ואת יכולת ההשפעה על חברי הכנסת. נודה לך מאוד אם תמליץ/י לחברי מפלגה נוספים להרשם לאתר."
 
 #: templates/notify/party_membership.html:6
+#: templates/notify/party_membership.txt:12
+msgid "We have noticed that you are not listed as a party member. You should really consider it."
+msgstr "אינך רשום/ה כחבר מפלגה. אם טרם התפקדת למפלגה, מומלץ מאוד לעשות זאת, ואז להרשם כחבר מפלגה באתר כנסת פתוחה."
+
+#: templates/notify/party_membership.html:7
+msgid "Read more about becoming a member in a party"
+msgstr "לקריאה נוספת אודות התפקדות ולמה זה חשוב"
+
+#: templates/notify/party_membership.html:10
 #: templates/notify/party_membership.txt:6
 msgid "Bills that are being discussed"
 msgstr "הצעות חוק חמות באתר"
 
-#: templates/notify/party_membership.html:7
+#: templates/notify/party_membership.html:11
 #: templates/notify/party_membership.txt:7
 msgid "Click the link below and vote to let your MKs what you think of these bills"
 msgstr "לחצו על הקישורים הבאים כדי להצביע על הצעות חוק חמות באתר. חברי הכנסת מקבלים עדכונים שוטפים על עמדת המתפקדים, וכך אתם יכולים להשפיע על הצבעותיהם."
-
-#: templates/notify/party_membership.html:12
-#: templates/notify/party_membership.txt:12
-msgid "We have noticed that you are not listed as a party member. You should really consider it."
-msgstr "אינך רשום/ה כחבר מפלגה. אם טרם התפקדת למפלגה, מומלץ מאוד לעשות זאת, ואז להרשם כחבר מפלגה באתר כנסת פתוחה."
 
 #: templates/okhelptexts/okhelptext.html:1
 msgid "For More Info Click Here"
