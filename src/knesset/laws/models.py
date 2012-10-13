@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.core.cache import cache
 from django.conf import settings
 
@@ -20,6 +20,8 @@ from actstream.models import action
 from mks.models import Member, Party
 from tagvotes.models import TagVote
 from knesset.utils import slugify_name
+from knesset.laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
+                                       BILL_AGRR_STAGES)
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -215,6 +217,7 @@ class Vote(models.Model):
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
                          type=vote_type).values_list('member__id', flat=True)
+
     def for_votes(self):
         return VoteAction.objects.filter(vote=self, type='for')
 
@@ -229,6 +232,11 @@ class Vote(models.Model):
 
     def against_own_bill_votes(self):
         return self.votes.filter(voteaction__against_own_bill=True)
+
+    def vote_type(self):
+        for vtype, vtype_prefix in VoteManager.VOTE_TYPES.iteritems():
+            if self.title.startswith(vtype_prefix):
+                return dict(TYPE_CHOICES)[vtype]
 
     def short_summary(self):
         if self.summary==None:
@@ -276,8 +284,6 @@ class Vote(models.Model):
             else:
                 t.user_score = 0
         return tags.sorted(cmp=lambda x,y:cmp(x.score, y.score))
-
-
 
     def tag_form(self):
         tf = TagForm()
@@ -435,25 +441,6 @@ class GovProposal(BillProposal):
     bill = models.OneToOneField('Bill', related_name='gov_proposal',
                                  blank=True, null=True)
 
-BILL_STAGE_CHOICES = (
-        (u'?', _(u'Unknown')),
-        (u'1', _(u'Proposed')),
-        (u'2', _(u'Pre-Approved')),
-        (u'-2',_(u'Failed Pre-Approval')),
-        (u'-2.1', _(u'Converted to discussion')),
-        (u'3', _(u'In Committee')),
-        (u'4', _(u'First Vote')),
-        (u'-4',_(u'Failed First Vote')),
-        (u'5', _(u'Committee Corrections')),
-        (u'6', _(u'Approved')),
-        (u'-6',_(u'Failed Approval')),
-)
-
-BILL_AGRR_STAGES = { 'proposed':Q(stage__isnull=False),
-                'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                'approved':Q(stage='6'),
-              }
 
 class BillManager(models.Manager):
 

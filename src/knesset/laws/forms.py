@@ -3,34 +3,9 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from datetime import date
 from tagging.models import Tag
-from models import Vote, Bill, BILL_STAGE_CHOICES, BILL_AGRR_STAGES, KnessetProposal
-
-TYPE_CHOICES = (
-    ('all', _('All votes')),
-    ('law-approve', _('Law Approvals')),
-    ('second-call', _('Second Call')),
-    ('demurrer', _('Demurrer')),
-    ('no-confidence', _('Motion of no confidence')),
-    ('pass-to-committee', _('Pass to committee')),
-    ('continuation', _('Continuation')),
-)
-
-TAGGED_CHOICES = (
-    ('all', _('All')),
-    ('false', _('Untagged Votes')),
-)
-
-BILL_TAGGED_CHOICES = (
-    ('all', _('All')),
-    ('false', _('Untagged Proposals')),
-)
-
-ORDER_CHOICES = (
-    ('time', _('Time')),
-    ('controversy', _('Controversy')),
-    ('against-party', _('Against Party')),
-    ('votes', _('Number of votes')),
-)
+from models import Vote, Bill, KnessetProposal
+from vote_choices import (ORDER_CHOICES, TAGGED_CHOICES, TYPE_CHOICES,
+        BILL_TAGGED_CHOICES, BILL_STAGE_CHOICES, BILL_AGRR_STAGES)
 
 STAGE_CHOICES = (
     ('all', _('All')),

@@ -36,6 +36,7 @@ import datetime
 from time import mktime
 
 from forms import VoteSelectForm, BillSelectForm
+from knesset.auxiliary.views import CsvView
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -412,7 +413,34 @@ class VoteListView(ListView):
             context['watched_members'] = False
 
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
         return context
+
+
+class VoteCsvView(CsvView):
+    model = Vote
+    filename = 'votes.csv'
+    list_display = (('title', _('Title')),
+                    ('vote_type', _('Vote Type')),
+                    ('time', _('Time')),
+                    ('votes_count', _('Votes Count')),
+                    ('for_votes_count', _('For')),
+                    ('against_votes_count', _('Against')),
+                    ('against_party', _('Votes Against Party')),
+                    ('against_coalition', _('Votes Against Coalition')),
+                    ('against_opposition', _('Votes Against Opposition')),
+                    ('against_own_bill', _('Votes Against Own Bill')))
+
+    def get_queryset(self, **kwargs):
+        form = VoteSelectForm(self.request.GET or {})
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
+
 
 class VoteDetailView(DetailView):
     model = Vote
