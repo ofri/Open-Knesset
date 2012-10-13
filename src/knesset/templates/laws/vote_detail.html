@@ -1,10 +1,14 @@
 {% extends "two_cols.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
 {% load tagging_tags %}
 {% load bills_extra %}
 {% load links %}
 {% load mks %}
 {% load agendas %}
+{% block help-section %}
+	{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -92,7 +96,8 @@
                 {% endblocktrans %}
                 <div>
                 {% for m in vote.for_votes %}
-                <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{% mk_card m.member %}</a>
+              
+			  <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{% mk_card m.member %}</a>
                     {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
