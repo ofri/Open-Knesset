@@ -414,6 +414,7 @@ class VoteListView(ListView):
             context['watched_members'] = False
 
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
         return context
 
 
@@ -430,6 +431,16 @@ class VoteCsvView(CsvView):
                     ('against_coalition', _('Votes Against Coalition')),
                     ('against_opposition', _('Votes Against Opposition')),
                     ('against_own_bill', _('Votes Against Own Bill')))
+
+    def get_queryset(self, **kwargs):
+        form = VoteSelectForm(self.request.GET or {})
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
 
 
 class VoteDetailView(DetailView):

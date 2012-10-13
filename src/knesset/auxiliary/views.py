@@ -291,6 +291,7 @@ class CsvView(BaseListView):
     def dispatch(self, request):
         if None in (self.filename, self.list_display, self.model):
             raise Http404()
+        self.request = request
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = \
             'attachment; filename="{}"'.format(self.filename)
@@ -312,6 +313,8 @@ class CsvView(BaseListView):
         display_attr = getattr(obj, attr)
         if hasattr(display_attr, '__call__'):
             display_attr = display_attr()
+        if display_attr is None:
+            return ""
         return display_attr
 
     @staticmethod

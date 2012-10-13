@@ -287,8 +287,6 @@ class Vote(models.Model):
                 t.user_score = 0
         return tags.sorted(cmp=lambda x,y:cmp(x.score, y.score))
 
-
-
     def tag_form(self):
         tf = TagForm()
         tf.tags = self.tags
