@@ -5,6 +5,9 @@
 {% load user %}
 {% load common_text_handling %}
 {% load agendas %}
+{% block help-section %}
+	{% i18ninclude "agendas/agenda_list_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
 {% block description %}{% trans "Agendas" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -15,7 +18,7 @@
 
 {% block nav-agendas %}class="selected"{% endblock %}
 {% block divcontent %}
-    {% i18ninclude "agendas/agenda_list_header.html" LANGUAGE_CODE %}
+	    {% i18ninclude "agendas/agenda_list_header.html" LANGUAGE_CODE %}
     <div id="list-wrap">
         <h2> {% trans "Your Agendas" %} </h2>
         {% if not user.is_authenticated %}
