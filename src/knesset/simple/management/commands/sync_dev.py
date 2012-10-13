@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from user.models import UserProfile
 from actstream.models import Follow
 
+OUT_DB = 'dev'
 class Command(NoArgsCommand):
     """Export the sqlite database for developers, while whitelisting user data"""
 
@@ -15,14 +16,13 @@ class Command(NoArgsCommand):
     ignore_models = ('sessions.session', 'auth.message', 'mailer',
         'accounts.email_validation', 'hitcount', 'actstream.follow',
         'avatar')
-    only_latest = ('actstream.action', )
+    only_latest = ('actstream.action', 'committees.protocolpart','committees.committeemeeting')
 
     LATEST_COUNT = 1000
-    DB = 'dev'
-    COMMIT_EVERY = 100
+    DB = OUT_DB
+    COMMIT_EVERY = 30
 
     def handle_noargs(self, **options):
-
         call_command('syncdb', database=self.DB, interactive=False,
                 migrate_all=True)
 
@@ -78,7 +78,7 @@ class Command(NoArgsCommand):
 
         users = UserProfile.objects.using(self.DB).filter(public_profile=False).select_related()
         followobjs = Follow.objects.using(self.DB).filter(user__in=users)
-        followobjs.delete        
+        followobjs.delete()
 
     def sync_model(self, model, only_latest=False):
         """Save model instances to the dev db"""
@@ -101,11 +101,16 @@ class Command(NoArgsCommand):
 
         counted = 0
         total = 0
+        newobjs = []
+        commit_every = 950/len(model._meta.fields)
         for obj in qs.iterator():
-            if counted > self.COMMIT_EVERY:
+            if counted > commit_every:
                 if self.verbosity > 1:
                     print "    committed %d so far" % total
+
+                model.objects.using(self.DB).bulk_create(newobjs)
                 transaction.commit(using=self.DB)
+                newobjs=[]
                 counted = 0
 
             # obfuscate user data
@@ -119,8 +124,10 @@ class Command(NoArgsCommand):
 
             if name_pair == ['user', 'userprofile']:
                 obj.description = u''
+            newobjs.append(obj)
 
-            obj.save(using=self.DB)
+#            obj.save(using=self.DB)
             counted += 1
             total += 1
         print "    %d Exported" % total
+        transaction.commit(using=self.DB)
