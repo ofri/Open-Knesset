@@ -1,10 +1,10 @@
 function toggleHelpExtended() {
-	$("#help-extended").toggle();
+	$(".help-section-extended").toggle();
 	$("#toggle-help").hide();
 };
 
 function unToggleHelpExtended() {
-	$("#help-extended").toggle();
+	$(".help-section-extended").toggle();
 	$("#toggle-help").show();
 };
 
@@ -12,5 +12,5 @@ function unToggleHelpExtended() {
 $(document).ready(function() {
 	$("#toggle-help").click(function() {toggleHelpExtended();});
 	$("#un-toggle-help").click(function() {unToggleHelpExtended();});
-	$("#help-extended").hide();
+	$(".help-section-extended").hide();
 		});
