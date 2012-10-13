@@ -215,24 +215,24 @@ class MemberDetailView(DetailView):
     def get_context_data (self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
+        verbs = None
+        if 'verbs' in self.request.GET:
+            verbs_form = VerbsForm(self.request.GET)
+            if verbs_form.is_valid():
+                verbs = verbs_form.cleaned_data['verbs']
+        if verbs==None:
+            verbs = ('proposed', 'posted')
+            verbs_form = VerbsForm({'verbs': verbs})
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
             cached_context = None
         else:
             watched = False
-            cached_context = cache.get('mk_%d' % member.id, None)
+            cached_context = cache.get('mk_%d_%s' % (member.id,
+                                                     '_'.join(verbs)))
 
         if cached_context is None:
-            verbs = None
-            if 'verbs' in self.request.GET:
-                verbs_form = VerbsForm(self.request.GET)
-                if verbs_form.is_valid():
-                    verbs = verbs_form.cleaned_data['verbs']
-            if verbs==None:
-                verbs = ('proposed', 'posted')
-                verbs_form = VerbsForm({'verbs': verbs})
-
             presence = {}
             self.calc_percentile(member, presence,
                                  'average_weekly_presence_hours',
@@ -302,7 +302,7 @@ class MemberDetailView(DetailView):
             ).order_by('sticky').order_by('-published')[:5]
 
             actions = actor_stream(member).filter(
-                verb__in=verbs).prefetch_related('target__bill')
+                verb__in=verbs)
             for a in actions:
                 a.actor = member
             cached_context = {'watched_member': watched,

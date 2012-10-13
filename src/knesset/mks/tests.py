@@ -44,7 +44,7 @@ class MemberViewsTest(TestCase):
                                            backlinks_enabled = False)
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
-        
+
         self.committee_1 = Committee.objects.create(name='c1')
         self.meeting_1 = self.committee_1.meetings.create(date=datetime.date.today()-datetime.timedelta(1),
                                  protocol_text='jacob:\nI am a perfectionist\nadrian:\nI have a deadline')
@@ -69,13 +69,20 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'mks/member_list_with_bars.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.mk_1.id, self.mk_2.id, ])
 
     def testMemberDetail(self):
+        res = self.client.get(reverse('member-detail', args=[self.mk_1.id]))
+        self.assertTemplateUsed(res,
+                                'mks/member_detail.html')
+        self.assertEqual(res.context['object'].id, self.mk_1.id)
 
-        res = self.client.get(reverse('member-detail',
-                                      args=[self.mk_1.id]))
+    def testMemberDetailOtherVerbs(self):
+        """Tests the member detail view with parameters that make it render
+        actions other than the default ones"""
+        res = self.client.get('%s?verbs=attended&verbs=voted' %
+                              reverse('member-detail', args=[self.mk_1.id]))
         self.assertTemplateUsed(res,
                                 'mks/member_detail.html')
         self.assertEqual(res.context['object'].id, self.mk_1.id)
@@ -98,11 +105,11 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'mks/party_list.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list), 
+        self.assertEqual(map(just_id, object_list),
                          [ self.party_1.id, self.party_2.id, ])
 
     def testPartyDetail(self):
-        res = self.client.get(reverse('party-detail', 
+        res = self.client.get(reverse('party-detail',
                               args=[self.party_1.id]))
         self.assertTemplateUsed(res, 'mks/party_detail.html')
         self.assertEqual(res.context['object'].id, self.party_1.id)
@@ -136,53 +143,53 @@ class MemberViewsTest(TestCase):
         self.assertTrue(res.context['watched_member'])
 
     def testMemberActivityFeed(self):
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       args=[self.mk_1.id]))
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         # self.assertEqual(len(parsed['entries']),4)
-        self.assertEqual(parsed['entries'][0]['link'], self.domain + 
+        self.assertEqual(parsed['entries'][0]['link'], self.domain +
                 self.vote.get_absolute_url())
-        self.assertEqual(parsed['entries'][1]['link'], self.domain + 
+        self.assertEqual(parsed['entries'][1]['link'], self.domain +
                 self.meeting_1.get_absolute_url())
-        self.assertEqual(parsed['entries'][2]['link'], self.domain + 
+        self.assertEqual(parsed['entries'][2]['link'], self.domain +
                 self.meeting_2.get_absolute_url())
         self.assertEqual(parsed['entries'][3]['link'], self.domain +
                 self.bill_1.get_absolute_url())
 
     def testMemberActivityFeedWithVerbProposed(self):
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_1.id}),{'verbs':'proposed'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),1)
 
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_2.id}),{'verbs':'proposed'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
 
     def testMemberActivityFeedWithVerbAttended(self):
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_1.id}),{'verbs':'attended'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),2)
 
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_2.id}),{'verbs':'attended'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
 
     def testMemberActivityFeedWithVerbJoined(self):
-        res = self.client.get(reverse('member-activity-feed', 
+        res = self.client.get(reverse('member-activity-feed',
                                       kwargs={'object_id': self.mk_1.id}),{'verbs':'joined'})
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
-    
+
 
     def testMemberActivityFeedWithVerbPosted(self):
         res = self.client.get(reverse('member-activity-feed',
@@ -190,13 +197,13 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
-    
+
     def testPartyAPI(self):
         res = self.client.get(reverse('party-handler')) #, kwargs={'object_id': self.mk_1.id}),{'verbs':'posted'})
         self.assertEqual(res.status_code,200)
         parties = json.loads(res.content)
         self.assertEqual(map(lambda x:x['id'], parties), [self.party_1.id, self.party_2.id])
-    
+
 
     def tearDown(self):
         self.party_1.delete()
@@ -204,7 +211,7 @@ class MemberViewsTest(TestCase):
         self.mk_1.delete()
         self.mk_2.delete()
         self.jacob.delete()
-        
+
 class MemberBacklinksViewsTest(TestCase):
     urls = 'knesset.mks.server_urls'
 
@@ -221,7 +228,7 @@ class MemberBacklinksViewsTest(TestCase):
                                            backlinks_enabled = False)
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
-        
+
         self.mk_1.save()
         self.mk_2.save()
 
@@ -242,20 +249,20 @@ class MemberBacklinksViewsTest(TestCase):
         self.meeting_2.save()
         self.vote = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for')
-        
+
         self.client = Client(SERVER_NAME='example.com')
         self.xmlrpc_client = TestClientServerProxy('/pingback/')
         self.PINGABLE_MEMBER_ID = str(self.mk_1.id)
         self.NON_PINGABLE_MEMBER_ID = str(self.mk_2.id)
-        
+
     def trackbackPOSTRequest(self, path, params):
         return self.client.post(path, urlencode(params), content_type=TRACKBACK_CONTENT_TYPE)
 
     def assertTrackBackErrorResponse(self, response, msg):
         if response.content.find('<error>1</error>') == -1:
             raise self.failureException, msg
-    
-    '''    
+
+    '''
     def testTrackBackRDFTemplateTag(self):
         t = template.Template("{% load trackback_tags %}{% trackback_rdf object_url object_title trackback_url True %}")
         c = template.Context({'trackback_url': '/trackback/member/'+self.PINGABLE_MEMBER_ID+'/',
@@ -273,13 +280,13 @@ class MemberBacklinksViewsTest(TestCase):
         self.assertEquals(match.groups('link')[0], '/trackback/member/'+self.PINGABLE_MEMBER_ID+'/',
                           'TrackBack RDF did not contain a TrackBack server URI')
 
-    '''    
+    '''
     def testPingNonLinkingSourceURI(self):
         self.assertRaises(Fault,
                           self.xmlrpc_client.pingback.ping,
                           'http://example.com/bad-source-document/',
                           'http://example.com/member/'+PINGABLE_MEMBER_ID+'/')
-        
+
         try:
             self.xmlrpc_client.pingback.ping('http://example.com/bad-source-document/',
                                              'http://example.com/member/'+PINGABLE_MEMBER_ID+'/')
@@ -317,8 +324,8 @@ class MemberBacklinksViewsTest(TestCase):
             self.assertEquals(f.faultCode,
                               32,
                               'Server did not return "target does not exist" error')
-        
-        
+
+
     def testPingAlreadyRegistered(self):
         self.xmlrpc_client.pingback.ping('http://example.com/another-good-source-document/',
                                              'http://example.com/member/'+PINGABLE_MEMBER_ID+'/')
@@ -344,7 +351,7 @@ class MemberBacklinksViewsTest(TestCase):
         self.assertTrue(bool(match), 'Pingback link tag did not render')
         self.assertEquals(match.groups(0)[0], 'http://example.com/pingback/',
                           'Pingback link tag rendered incorrectly')
-                          
+
     def testPingNonPingableTargetURI(self):
         self.assertRaises(Fault,
                           self.xmlrpc_client.pingback.ping,
@@ -354,24 +361,24 @@ class MemberBacklinksViewsTest(TestCase):
             self.xmlrpc_client.pingback.ping('http://example.com/member/non-existent-resource/',
                                              'http://example.com/member/'+str(self.NON_PINGABLE_MEMBER_ID)+'/')
         except Fault, f:
-            self.assertEquals(f.faultCode, 
+            self.assertEquals(f.faultCode,
                               33,
                               'Server did not return "target not pingable" error')
-          
+
     def testPingSourceURILinks(self):
         r = self.xmlrpc_client.pingback.ping('http://example.com/good-source-document/',
                                              'http://example.com/member/'+self.PINGABLE_MEMBER_ID+'/')
-        
+
         self.assertEquals(r,
                           "Ping from http://example.com/good-source-document/ to http://example.com/member/1/ registered",
                           "Failed registering ping")
-        
+
         registered_ping = InboundBacklink.objects.get(source_url='http://example.com/good-source-document/',
                                                       target_url='http://example.com/member/'+self.PINGABLE_MEMBER_ID+'/')
-        self.assertEquals(str(registered_ping.target_object.id), 
+        self.assertEquals(str(registered_ping.target_object.id),
                               PINGABLE_MEMBER_ID,
                               'Server did not return "target not pingable" error')
-        
+
     def testDisallowedTrackbackMethod(self):
         response = self.client.get('/trackback/member/'+PINGABLE_MEMBER_ID+'/')
         self.assertEquals(response.status_code,
@@ -385,21 +392,21 @@ class MemberBacklinksViewsTest(TestCase):
         self.assertTrackBackErrorResponse(response,
                                           'Server did not return error response'
                                           'for ping with no URL parameter')
-                                          
+
     def testPingBadURLParameter(self):
         params = {'url': 'bad url'}
         response = self.trackbackPOSTRequest('http://example.com/trackback/member/'+self.PINGABLE_MEMBER_ID+'/',
                                              params)
         self.assertTrackBackErrorResponse(response,
                                           'Server did not return error response for ping with bad URL parameter')
-                                          
+
     def testPingNonExistentTarget(self):
         params = {'url': 'http://example.com/good-source-document/'}
         response = self.trackbackPOSTRequest('/trackback/member/5000/',
                                              params)
         self.assertTrackBackErrorResponse(response,
                                           'Server did not return error response for ping against non-existent resource')
-                                          
+
     def testPingNonPingableTarget(self):
         params = {'url': 'http://example.com/member/'+PINGABLE_MEMBER_ID+'/'}
         response = self.trackbackPOSTRequest('/trackback/member/'+self.NON_PINGABLE_MEMBER_ID+'/',
@@ -505,7 +512,7 @@ class MKAgendasTest(TestCase):
         agenda_values2 = self.mk_2.get_agendas_values()
         self.assertEqual(len(agenda_values2), 2)
         self.assertEqual(agenda_values1,
-                {1: {'rank': 2, 'score': -33.33, 'volume': 100.0}, 
+                {1: {'rank': 2, 'score': -33.33, 'volume': 100.0},
                  2: {'rank': 1, 'score': 100.0, 'volume': 100.0}})
         self.assertEqual(agenda_values2,
                 {1: {'rank': 1, 'score': 33.33, 'volume': 100.0},
@@ -526,12 +533,12 @@ class MKAgendasTest(TestCase):
         res2 = self.client.get(expected_agendas_uri+'?format=json')
         agendas = json.loads(res2.content)
         self.assertEqual(agendas['agendas'], [
-            {'id': 1, 'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/', 
+            {'id': 1, 'owner': 'Dr. Jacob', 'absolute_url': '/agenda/1/',
              'score': -33.33, 'name': 'agenda 1', 'rank': 2,
              'min': -33.33, 'max': 33.33,
              'party_min': -33.33, 'party_max': 33.33,
             },
-            {'id': 2, 'owner': 'Greenpeace', 'absolute_url': '/agenda/2/', 
+            {'id': 2, 'owner': 'Greenpeace', 'absolute_url': '/agenda/2/',
              'score': 100.0, 'name': 'agenda 2', 'rank': 1,
              'min': -100.0, 'max': 100.0,
              'party_min': -100.0, 'party_max': 100.0,
