@@ -78,7 +78,7 @@ a:hover { text-decoration:underline;}
             font-weight: bold; padding:0 0.2em; }
 .actions li span {vertical-align: top; }
 .actions {display: block; float: left;}
-.actions a {color: white; text-decoration: none;}
+.actions .awesome-button a {color: white; text-decoration: none;}
 
 
 /* ACCOUNTS */
@@ -1108,7 +1108,16 @@ box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
   }
 #helptextcontainer {width:100%;position:absolute;}
 
-#embeddiv { width: 25em; float: left; margin-left: 0em; clear:left;}
+#embeddiv {
+    width: 25em;
+    float: left;
+    margin-left: 0em;
+    clear:left;
+    background-color:#fff;
+    padding:0.3em;
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
+    box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
+}
 
 
 .content-footer form{

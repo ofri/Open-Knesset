@@ -196,9 +196,7 @@
         <h1>{% bill_full_name object %}</h1>
         {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
-        {% for proposer in proposers %}
-            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
-        {% endfor %}<br>
+        {% for proposer in proposers %} {% mk_card proposer %} {% endfor %}<br>
         <div id="bill-canvas">
         </div>
         <div class="secondary">
