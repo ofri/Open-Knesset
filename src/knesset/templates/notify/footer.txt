@@ -1,3 +1,2 @@
 {% load i18n %}
-
-{% trans 'To stop receiving updates' %} {% trans 'Visit the site, and change your settings' %}
+{% trans 'To stop receiving updates' %} {% trans 'visit the site, and change your settings' %}

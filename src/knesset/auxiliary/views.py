@@ -11,7 +11,6 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, \
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 import tagging
-import voting
 from actstream import action
 from actstream.models import Action
 from knesset.mks.models import Member
@@ -26,6 +25,7 @@ from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult, main_actions
 from knesset.committees.models import PUBLIC_TOPIC_STATUS
+from knesset.laws.models import get_debated_bills
 
 import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -89,9 +89,11 @@ def main(request):
             annotations=[a.target for a in actions if a.verb != 'comment-added'],
             comments=[x.target for x in actions if x.verb == 'comment-added'])
         context['annotations'] = annotations
-        bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
-        if bill_votes:
-            context['bill'] = Bill.objects.get(pk=random.choice(bill_votes))
+        b = get_debated_bills()
+        if b:
+            context['bill'] = get_debated_bills()[0]
+        else:
+            context['bill'] = None
         context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
                                          .order_by('-modified')\
                                          .select_related('creator')[:10]
