@@ -173,14 +173,14 @@ class AgendaManager(models.Manager):
             allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
             for agendaId,agendaVotes in q.items():
                 # the newdict will have 0's for each mkid, the update will change the value for known mks
-                newDict = {}.fromkeys(allMkIds,0)
-                newDict.update(dict(agendaVotes))
+                newDict = {}.fromkeys(allMkIds,(0,0))
+                newDict.update(dict(map(lambda (mkid,score,volume):(mkid,(score,volume)),agendaVotes)))
                 newAgendaMkVotes[agendaId]=newDict.items()
             mks_values = {}
             for agenda_id, scores in newAgendaMkVotes.items():
                 mks_values[agenda_id] = \
-                    map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0],)),
-                        enumerate(sorted(scores,key=itemgetter(1),reverse=True), 1))
+                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1])),
+                        enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
 
