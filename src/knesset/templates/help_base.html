@@ -1,0 +1,12 @@
+{% load i18n %}
+<div class="help-section">
+{% block help-content %}
+{% endblock %}
+<a href="#" id="toggle-help">{% trans "See more  ..." %}</a>
+<div id="help-extended" class="help-section-extended">
+{% block help-content-more%}
+{% endblock %}
+</div>
+</div>
+
+
