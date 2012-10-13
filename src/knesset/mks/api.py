@@ -126,7 +126,9 @@ class MemberAgendasResource(BaseResource):
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta(BaseResource.Meta):
+
         queryset = Member.objects.all().select_related('current_party')
+
         allowed_methods = ['get']
         ordering = [
             'name',
@@ -144,6 +146,7 @@ class MemberResource(BaseResource):
                 'links', 'videos']
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
         list_fields = ['name', 'id']
+        include_absolute_url = True
 
     party_name = fields.CharField()
     party_url = fields.CharField()
