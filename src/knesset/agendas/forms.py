@@ -58,12 +58,12 @@ class AddAgendaForm(ModelForm):
     class Meta:
         model = Agenda
         fields = ('name', 'public_owner_name', 'description')
-class MeetingLinkingForm(forms.Form):
 
-    # a form to help agendas' editors tie votes to agendas
+class MeetingLinkingForm(forms.Form):
+    # a form to help agendas' editors tie meetings to agendas
     agenda_name = forms.CharField(widget=H4, required=False, label='')
-    vote_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
-    agenda_id = forms.IntegerField(widget=forms.HiddenInput) #TODO: hide this!
+    obj_id = forms.IntegerField(widget=forms.HiddenInput)
+    agenda_id = forms.IntegerField(widget=forms.HiddenInput)
     weight = forms.TypedChoiceField(label=_('Importance'),
                                     choices=IMPORTANCE_CHOICES,
                                     required=False,

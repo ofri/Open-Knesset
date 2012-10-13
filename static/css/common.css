@@ -828,6 +828,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
     font-weight:normal;
 }
 
+select#id_agenda {max-width:100%}
 .comittee_member_detail {
     display:inline-block;
     text-align:center;

@@ -257,7 +257,7 @@ def agenda_add_view(request):
 def update_editors_agendas(request):
     if request.method == 'POST':
         object_type = request.POST.get('form-0-object_type',None)
-        object_id = request.POST.get('form-0-vote_id',None)
+        object_id = request.POST.get('form-0-obj_id',None)
         if object_type=='vote':
             vl_formset = VoteLinkingFormSet(request.POST)
         else:
@@ -277,10 +277,10 @@ def update_editors_agendas(request):
                     if a['object_type'] == 'vote':
                         if a['DELETE']:
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaVote.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       vote__id = a['vote_id'])
+                                       vote__id = a['obj_id'])
                                 av.delete()
                             except AgendaVote.DoesNotExist:
                                 pass
@@ -288,10 +288,10 @@ def update_editors_agendas(request):
                             if (a['weight'] is not '' and
                                 a['importance'] is not ''):
                                 try:
-                                    object_id = a['vote_id']
+                                    object_id = a['obj_id']
                                     av = AgendaVote.objects.get(
                                            agenda__id=a['agenda_id'],
-                                           vote__id = a['vote_id'])
+                                           vote__id = a['obj_id'])
                                     av.score = a['weight']
                                     av.importance = a['importance']
                                     av.reasoning = a['reasoning']
@@ -299,7 +299,7 @@ def update_editors_agendas(request):
                                 except AgendaVote.DoesNotExist:
                                     av = AgendaVote(
                                            agenda_id=int(a['agenda_id']),
-                                           vote_id=int(a['vote_id']),
+                                           vote_id=int(a['obj_id']),
                                            score = a['weight'],
                                            importance = a['importance'],
                                            reasoning = a['reasoning'])
@@ -307,26 +307,26 @@ def update_editors_agendas(request):
                     if a['object_type'] == 'committeemeeting':
                         if a['DELETE']:
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaMeeting.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       meeting__id = a['vote_id'])
+                                       meeting__id = a['obj_id'])
                                 av.delete()
                             except AgendaMeeting.DoesNotExist:
                                 pass
                         else: # not delete, so try to create
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaMeeting.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       meeting__id = a['vote_id'])
+                                       meeting__id = a['obj_id'])
                                 av.score = a['weight']
                                 av.reasoning = a['reasoning']
                                 av.save()
                             except AgendaMeeting.DoesNotExist:
                                 av = AgendaMeeting(
                                        agenda_id=int(a['agenda_id']),
-                                       meeting_id=int(a['vote_id']),
+                                       meeting_id=int(a['obj_id']),
                                        score = a['weight'],
                                        reasoning = a['reasoning'])
                                 av.save()

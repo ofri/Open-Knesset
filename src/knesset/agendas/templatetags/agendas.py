@@ -3,7 +3,8 @@ import json
 from django import template
 from django.conf import settings
 from knesset.links.models import Link
-from knesset.agendas.models import (Agenda, AgendaVote, AgendaMeeting, Party,
+from knesset.agendas.models import (Agenda, AgendaVote, AgendaMeeting,
+                                    AgendaBill, Party,
                                     UserSuggestedVote)
 from knesset.agendas.forms import (VoteLinkingForm, VoteLinkingFormSet,
                                    MeetingLinkingFormSet)
@@ -12,20 +13,20 @@ from django.core.cache import cache
 register = template.Library()
 
 @register.inclusion_tag('agendas/agendasfor.html')
-def agendas_for(user, vote, object_type):
-    ''' renders the relevent agenda for the vote and a form for the
+def agendas_for(user, obj, object_type):
+    ''' renders the relevent agenda for the object obj and a form for the
         agendas the given user can edit
     '''
     editable = []
     if user.is_authenticated():
         for a in user.agendas.all():
-            r = {'agenda_name': a.name, 'agenda_id': a.id, 'vote_id': vote.id}
+            r = {'agenda_name': a.name, 'agenda_id': a.id, 'obj_id': obj.id}
             try:
                 av = None
                 if object_type=='vote':
-                    av = a.agendavotes.get(vote=vote)
+                    av = a.agendavotes.get(vote=obj)
                 if object_type=='committeemeeting':
-                    av = a.agendameetings.get(meeting=vote)
+                    av = a.agendameetings.get(meeting=obj)
                 if not av:
                     raise AgendaVote.DoesNotExist
                 r['weight'] = av.score
@@ -45,16 +46,25 @@ def agendas_for(user, vote, object_type):
     suggest_agendas = None
     suggested_agendas = None
     if object_type=='vote':
-        av = AgendaVote.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),vote=vote).distinct()
+        av = AgendaVote.objects.filter(
+                agenda__in=Agenda.objects.get_relevant_for_user(user),
+                vote=obj).distinct()
         suggest_agendas = Agenda.objects.get_possible_to_suggest(
                 user=user,
-                vote=vote)
+                vote=obj)
         if user.is_authenticated():
             suggested_agendas = UserSuggestedVote.objects.filter(user=user,
-                                                                 vote=vote)
+                                                                 vote=obj)
     if object_type=='committeemeeting':
-        suggest_agendas=False
-        av = AgendaMeeting.objects.filter(agenda__in=Agenda.objects.get_relevant_for_user(user),meeting=vote).distinct()
+        suggest_agendas = False
+        av = AgendaMeeting.objects.filter(
+                agenda__in=Agenda.objects.get_relevant_for_user(user),
+                meeting=obj).distinct()
+    if object_type=='bill':
+        suggest_agendas = False
+        av = AgendaBill.objects.filter(
+                agenda__in=Agenda.objects.get_relevant_for_user(user),
+                bill=obj).distinct()
     formset = None
     if editable:
         if object_type=='vote':
@@ -62,11 +72,11 @@ def agendas_for(user, vote, object_type):
         if object_type=='committeemeeting':
             formset = MeetingLinkingFormSet(initial = editable)
     return { 'formset': formset,
-             'agendavotes':av,
+             'agendas':av,
              'object_type':object_type,
              'suggest_agendas': suggest_agendas,
              'suggested_agendas': suggested_agendas,
-             'url':vote.get_absolute_url(),
+             'url':obj.get_absolute_url(),
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')

@@ -38,8 +38,6 @@ class UserSuggestedVote(models.Model):
     class Meta:
         unique_together = ('agenda','vote','user')
 
-
-
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
     vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
@@ -49,9 +47,14 @@ class AgendaVote(models.Model):
 
     def get_score_header(self):
         return _('Position')
+    def get_importance_header(self):
+        return _('Importance')
 
     class Meta:
         unique_together= ('agenda', 'vote')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.vote)
 
 class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
@@ -62,9 +65,32 @@ class AgendaMeeting(models.Model):
 
     def get_score_header(self):
         return _('Importance')
+    def get_importance_header(self):
+        return None
 
     class Meta:
         unique_together = ('agenda', 'meeting')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.meeting)
+
+class AgendaBill(models.Model):
+    agenda = models.ForeignKey('Agenda', related_name='agendabills')
+    bill = models.ForeignKey('laws.bill', related_name='agendabills')
+    score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
+    importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
+    reasoning = models.TextField(null=True)
+
+    def get_score_header(self):
+        return _('Position')
+    def get_importance_header(self):
+        return _('Importance')
+
+    class Meta:
+        unique_together = ('agenda', 'bill')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.bill)
 
 def get_top_bottom(lst, top, bottom):
     """
@@ -268,8 +294,8 @@ class Agenda(models.Model):
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.annotate(score=Sum('agendavotes__importance'))
-        return votes.order_by('-score')[:num] 
-    
+        return votes.order_by('-score')[:num]
+
     def get_suggested_votes_by_agenda_tags(self, num):
         # TODO: This is untested, agendas currently don't have tags
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
@@ -284,12 +310,12 @@ class Agenda(models.Model):
         votes = votes.extra(select=dict(score = tag_importance_subquery),
                             select_params = [agenda_type_id]*2)
         return votes.order_by('-score')[:num]
-    
+
     def get_suggested_votes_by_controversy(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.extra(select=dict(score = 'controversy'))
-        return votes.order_by('-score')[:num] 
-    
+        return votes.order_by('-score')[:num]
+
 
 from listeners import *
 from operator import itemgetter, attrgetter
