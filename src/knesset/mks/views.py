@@ -545,6 +545,15 @@ class PartyListView(ListView):
 
         return context
 
+
+class PartyCsvView(CsvView):
+    model = Party
+    filename = 'parties.csv'
+    list_display = (('name', _('Name')),
+                    ('number_of_members', _('Number of Members')),
+                    ('number_of_seats', _('Number of Seats')),
+                    ('get_affiliation', _('Affiliation')))
+
 class PartyDetailView(DetailView):
     model = Party
 

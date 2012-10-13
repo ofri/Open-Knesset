@@ -120,6 +120,9 @@ class Party(models.Model):
     def get_absolute_url(self):
         return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
+    def get_affiliation(self):
+        return _('Coalition') if self.is_coalition else _('Opposition')
+
 
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
