@@ -1,10 +1,6 @@
 {% extends "two_cols.html" %}
-{% load i18n %}
-{% load tagging_tags %}
-{% load bills_extra %}
-{% load links %}
-{% load mks %}
-{% load agendas %}
+{% load i18n i18ninclude tagging_tags bills_extra links mks agendas %}
+{% block help-section %}{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
