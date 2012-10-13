@@ -1,9 +1,12 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
 {% block extratitle %}{% trans 'Tags' %}{% endblock %}
 {% block keywords %}{% trans 'Tags' %}{% endblock %}
 {% block description %}{% trans 'Tags' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-
+{% block help-section %}
+	 {% i18ninclude "auxiliary/tag_list_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block nav-tags %}class="selected"{% endblock %}
 {% block divcontent %}
 <div class="tags cloud">

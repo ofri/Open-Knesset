@@ -103,7 +103,7 @@ a:hover { text-decoration:underline;}
     min-width:620px;
     background:#dfe4e7;
     color:#311F1D;
-    padding: 0 1em 1em;
+    padding: 1em;
     position:relative;
     -moz-border-radius:1em;
     -webkit-border-radius:1em;
@@ -1065,6 +1065,17 @@ div.general_discipline_control {
 .video_playlist_player_embed {
     margin-bottom:10px;
 }
+
+/* help section*/
+.help-section{
+display: block;
+background: white;
+color: #7891AB;
+border-radius:.5em;
+padding: .5em;
+box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
+}
+
 /* help texts*/
  .quest-mark {
    /*background:url("/static/icons/help_16.png") no-repeat;

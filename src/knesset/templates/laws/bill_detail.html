@@ -172,6 +172,9 @@
             });
     </script>
 {% endblock %}
+{% block help-section %}
+	 {% i18ninclude "laws/bill_detail_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block extratitle %}{% bill_full_name object %}{% endblock %}
 {% block keywords %}{% bill_full_name object %},{{ keywords }}{% endblock %}
 {% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -191,9 +194,9 @@
             <b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
             <input type="text" readonly="readonly" value='http://oknesset.org/bill/{{object.id}}'/>
 
-        </div>
+        </div>       
         <h1>{% bill_full_name object %}</h1>
-        {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
+		{% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
         {% for proposer in proposers %}
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
