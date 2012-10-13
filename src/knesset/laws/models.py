@@ -16,8 +16,8 @@ import voting
 from actstream import Action
 from actstream.models import action
 
-from knesset.mks.models import Member, Party
-from knesset.tagvotes.models import TagVote
+from mks.models import Member, Party
+from tagvotes.models import TagVote
 from knesset.utils import slugify_name
 
 logger = logging.getLogger("open-knesset.laws.models")

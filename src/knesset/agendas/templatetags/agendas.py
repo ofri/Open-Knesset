@@ -27,6 +27,8 @@ def agendas_for(user, obj, object_type):
                     av = a.agendavotes.get(vote=obj)
                 if object_type=='committeemeeting':
                     av = a.agendameetings.get(meeting=obj)
+                if object_type=='bill':
+                    av = a.agendabills.get(bill=obj)
                 if not av:
                     raise AgendaVote.DoesNotExist
                 r['weight'] = av.score
@@ -36,7 +38,9 @@ def agendas_for(user, obj, object_type):
                     r['importance'] = av.importance
                 except AttributeError:
                     pass
-            except (AgendaVote.DoesNotExist, AgendaMeeting.DoesNotExist):
+            except (AgendaVote.DoesNotExist,
+                    AgendaMeeting.DoesNotExist,
+                    AgendaBill.DoesNotExist):
                 r['weight'] = None
                 r['reasoning'] = u''
                 r['object_type'] = object_type
@@ -56,27 +60,29 @@ def agendas_for(user, obj, object_type):
             suggested_agendas = UserSuggestedVote.objects.filter(user=user,
                                                                  vote=obj)
     if object_type=='committeemeeting':
-        suggest_agendas = False
+        suggest_agendas = None
         av = AgendaMeeting.objects.filter(
                 agenda__in=Agenda.objects.get_relevant_for_user(user),
                 meeting=obj).distinct()
     if object_type=='bill':
-        suggest_agendas = False
+        suggest_agendas = None
         av = AgendaBill.objects.filter(
                 agenda__in=Agenda.objects.get_relevant_for_user(user),
                 bill=obj).distinct()
+    suggest_agendas_login = suggest_agendas is False
     formset = None
     if editable:
-        if object_type=='vote':
+        if object_type=='vote' or object_type=='bill':
             formset = VoteLinkingFormSet(initial = editable)
         if object_type=='committeemeeting':
             formset = MeetingLinkingFormSet(initial = editable)
-    return { 'formset': formset,
-             'agendas':av,
-             'object_type':object_type,
-             'suggest_agendas': suggest_agendas,
-             'suggested_agendas': suggested_agendas,
-             'url':obj.get_absolute_url(),
+    return {'formset': formset,
+            'agendas': av,
+            'object_type': object_type,
+            'suggest_agendas': suggest_agendas,
+            'suggested_agendas': suggested_agendas,
+            'suggest_agendas_login':suggest_agendas_login,
+            'url': obj.get_absolute_url(),
            }
 
 @register.inclusion_tag('agendas/agenda_list_item.html')

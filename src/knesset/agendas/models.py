@@ -8,8 +8,8 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 from actstream.models import Follow
-from knesset.laws.models import VoteAction, Vote
-from knesset.mks.models import Party, Member
+from laws.models import VoteAction, Vote
+from mks.models import Party, Member
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -154,7 +154,7 @@ class AgendaManager(models.Manager):
 
     def get_possible_to_suggest(self, user, vote):
         if user == None or not user.is_authenticated():
-            agendas = Agenda.objects.none()
+            agendas = False
         else:
             agendas = Agenda.objects.filter(is_public=True)\
                             .exclude(editors=user)\
@@ -315,7 +315,6 @@ class Agenda(models.Model):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.extra(select=dict(score = 'controversy'))
         return votes.order_by('-score')[:num]
-
 
 from listeners import *
 from operator import itemgetter, attrgetter

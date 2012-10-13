@@ -45,7 +45,7 @@
             })
         </script>
     {% else %}
-        {% if suggest_agendas == False %}
+        {% if suggest_agendas_login %}
             <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
         {% endif %}
     {% endif %}

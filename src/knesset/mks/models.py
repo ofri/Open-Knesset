@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
-from knesset.links.models import Link
+from links.models import Link
 import difflib
 
 GENDER_CHOICES = (
