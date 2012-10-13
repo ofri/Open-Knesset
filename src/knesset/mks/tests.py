@@ -505,11 +505,11 @@ class MKAgendasTest(TestCase):
         agenda_values2 = self.mk_2.get_agendas_values()
         self.assertEqual(len(agenda_values2), 2)
         self.assertEqual(agenda_values1,
-                {1: {'rank': 2, 'score': -33.33}, 
-                 2: {'rank': 1, 'score': 100.0}})
+                {1: {'rank': 2, 'score': -33.33, 'volume': 100.0}, 
+                 2: {'rank': 1, 'score': 100.0, 'volume': 100.0}})
         self.assertEqual(agenda_values2,
-                {1: {'rank': 1, 'score': 33.33},
-                 2: {'rank': 2, 'score': -100.0}})
+                {1: {'rank': 1, 'score': 33.33, 'volume': 100.0},
+                 2: {'rank': 2, 'score': -100.0, 'volume': 100.0}})
         agenda_values = self.mk_3.get_agendas_values()
         self.assertFalse(agenda_values)
 
