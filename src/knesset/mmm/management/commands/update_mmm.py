@@ -14,7 +14,7 @@ def parse_json(str):
 
     # translating date strings to datetime objects
     for o in result:
-        o['date'] = datetime.strptime(o['date'], '%d/%m/%Y')
+        o['date'] = datetime.strptime(o['date'], '%d/%m/%Y').date()
 
     return result
 
