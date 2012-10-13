@@ -62,6 +62,7 @@ class AgendaTodoResource(BaseResource):
                         score=vote.score)
         return [dehydrate_vote(v) for v in votes]
 
+
 class AgendaResource(BaseResource):
     ''' Agenda API '''
     class Meta(BaseResource.Meta):
@@ -78,12 +79,10 @@ class AgendaResource(BaseResource):
     #                full=True)
 
     def dehydrate(self, bundle):
-        print "XXX"
         a = bundle.obj
         mks_values = dict(a.get_mks_values())
-        print "YYY"
         members = []
-        for mk in Member.objects.filter(pk__in = mks_values.keys()).select_related('current_party'):
+        for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append (dict(name=mk.name,
@@ -93,7 +92,6 @@ class AgendaResource(BaseResource):
                     party = current_party.name,
                     party_url = current_party.get_absolute_url(),
                 ))
-        print "ZZZ"
         bundle.data['members'] = members
         bundle.data['editors'] = [
             dict(absolute_url=e.get_absolute_url(), username=e.username,
@@ -105,9 +103,11 @@ class AgendaResource(BaseResource):
             for v in bundle.obj.agendavotes.select_related()
         ]
 
-        bundle.data['parties'] = map(
-                lambda x: dict(name=x.name, score=a.party_score(x),
-                    absolute_url=x.get_absolute_url()),
-                Party.objects.all())
-        print "***"
+        bundle.data['parties'] = [
+            dict(
+                name=x.name, score=a.party_score(x),
+                absolute_url=x.get_absolute_url()
+            ) for x in Party.objects.prefetch_related('members')
+        ]
+
         return bundle
