@@ -3,6 +3,9 @@
 {% load avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
+{% block help-section %}
+	 {% i18ninclude "main_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block subnav %}
 <div style="text-align:center;">
