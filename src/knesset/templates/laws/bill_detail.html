@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n laws_extra bills_extra mks links voting_tags agendas %}
+{% load i18n laws_extra bills_extra mks links voting_tags agendas i18ninclude %}
 {% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
@@ -172,9 +172,7 @@
             });
     </script>
 {% endblock %}
-{% block help-section %}
-	 {% i18ninclude "laws/bill_detail_help.html" LANGUAGE_CODE %}
-{% endblock %}
+{% block help-section %}{% i18ninclude "laws/bill_detail_help.html" LANGUAGE_CODE %}{% endblock %}
 {% block extratitle %}{% bill_full_name object %}{% endblock %}
 {% block keywords %}{% bill_full_name object %},{{ keywords }}{% endblock %}
 {% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -196,7 +194,7 @@
 
         </div>       
         <h1>{% bill_full_name object %}</h1>
-		{% trans 'stage' %}: {% trans object.get_stage_display %}<br>
+        {% trans 'stage' %}: {% trans object.get_stage_display %}<br>
         {% trans 'stage date' %}: {{ object.stage_date }}<br>
         {% for proposer in proposers %}
             <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{% mk_card proposer %}</a>
