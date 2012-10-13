@@ -8,12 +8,13 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.core.cache import cache
 from django.conf import settings
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
+from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action
 
@@ -452,6 +453,45 @@ BILL_STAGE_CHOICES = (
         (u'-6',_(u'Failed Approval')),
 )
 
+BILL_AGRR_STAGES = { 'proposed':Q(stage__isnull=False),
+                'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
+                'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
+                'approved':Q(stage='6'),
+              }
+
+class BillManager(models.Manager):
+
+    def filter_and_order(self, *args, **kwargs):
+        stage = kwargs.get('stage', None)
+        member = kwargs.get('member', None)
+        booklet = kwargs.get('booklet', None)
+
+        filter_kwargs = {}
+        if stage and stage != 'all':
+            if stage in BILL_AGRR_STAGES:
+                qs = self.filter(BILL_AGRR_STAGES[stage])
+            else:
+                filter_kwargs['stage__startswith'] = stage
+                qs = self.filter(**filter_kwargs)
+        else:
+            qs = self.all()
+
+        if kwargs.get('tagged', None):
+            if kwargs['tagged'] == 'false':
+                ct = ContentType.objects.get_for_model(Bill)
+                filter_tagged = TaggedItem.objects.filter(content_type=ct).distinct().values_list('object_id', flat=True)
+                qs = qs.exclude(id__in=filter_tagged)
+            elif kwargs['tagged'] != 'all':
+                qs = TaggedItem.objects.get_by_model(qs,get_tag(kwargs['tagged']))
+
+        if booklet:
+            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
+            if kps:
+                qs = qs.filter(knesset_proposal__in=kps)
+
+        return qs
+
+
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
     full_title = models.CharField(max_length=2000, blank=True)
@@ -469,6 +509,8 @@ class Bill(models.Model):
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
     joiners = models.ManyToManyField('mks.Member', related_name='bills_joined',
                                      blank=True, null=True) # superset of all joiners
+
+    objects = BillManager()
 
     class Meta:
         ordering = ('-stage_date','-id')
@@ -702,7 +744,6 @@ class Bill(models.Model):
         for g in self.gov_decisions.all():
             action.send(self, verb='was-voted-on-gov', target=g,
                         timestamp=g.date, description=str(g.stand))
-
 
 
 class GovLegislationCommitteeDecision(models.Model):

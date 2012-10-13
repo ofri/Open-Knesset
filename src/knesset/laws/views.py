@@ -35,7 +35,7 @@ import logging
 import datetime
 from time import mktime
 
-from forms import VoteSelectForm
+from forms import VoteSelectForm, BillSelectForm
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -323,11 +323,6 @@ class BillListView (ListView):
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    bill_stages = { 'proposed':Q(stage__isnull=False),
-                    'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'approved':Q(stage='6'),
-                  }
     bill_stages_names = { 'proposed':_('(Bills) proposed'),
                           'pre':_('(Bills) passed pre-vote'),
                           'first':_('(Bills) passed first vote'),
@@ -335,27 +330,30 @@ class BillListView (ListView):
                         }
 
     def get_queryset(self):
-        stage = self.request.GET.get('stage', False)
-        booklet = self.request.GET.get('booklet', False)
+
         member = self.request.GET.get('member', False)
+        options = {}
         if member:
             try:
                 member = int(member)
             except ValueError:
                 raise Http404(_('Invalid member id'))
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()
+            qs = member.bills
         else:
-            qs = self.queryset._clone()
-        if stage and stage!='all':
-            if stage in self.bill_stages:
-                qs = qs.filter(self.bill_stages[stage])
-            else:
-                qs = qs.filter(stage=stage)
-        elif booklet:
-            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
-            qs = qs.filter(knesset_proposal__in=kps)
-        return qs.order_by('-stage_date','-id')
+            qs = Bill.objects
+
+        form = self._get_filter_form()
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+
+        return qs.filter_and_order(**options)
+
+    def _get_filter_form(self):
+        form = BillSelectForm(self.request.GET) if self.request.GET \
+                else BillSelectForm()
+        return form
 
     def get_context(self):
         context = super(BillListView, self).get_context()
@@ -384,6 +382,7 @@ class BillListView (ListView):
                 context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
 
         context['friend_pages'] = r
+        context['form'] = self._get_filter_form()
         return context
 
 class VoteListView(ListView):
