@@ -321,7 +321,9 @@ class MemberDetailView(DetailView):
                 'num_related_videos':related_videos.count()
                }
             if not self.request.user.is_authenticated():
-                cache.set('mk_%d' % member.id, cached_context, settings.LONG_CACHE_TIME)
+                cache.set('mk_%d_%s' % (member.id, '_'.join(verbs)),
+                                        cached_context,
+                                        settings.LONG_CACHE_TIME)
         context.update(cached_context)
         return context
 
