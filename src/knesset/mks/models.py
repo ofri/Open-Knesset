@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
-from knesset.links.models import Link
+from links.models import Link
 import difflib
 
 GENDER_CHOICES = (
@@ -120,6 +120,9 @@ class Party(models.Model):
     def get_absolute_url(self):
         return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
+    def get_affiliation(self):
+        return _('Coalition') if self.is_coalition else _('Opposition')
+
 
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
@@ -151,7 +154,7 @@ class Member(models.Model):
     place_of_birth = models.CharField(blank=True, null=True, max_length=100)
     date_of_death  = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
-    is_current = models.BooleanField(default=True)
+    is_current = models.BooleanField(default=True, db_index=True)
     blog = models.OneToOneField(Blog, blank=True, null=True)
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
@@ -187,6 +190,9 @@ class Member(models.Model):
         self.recalc_average_monthly_committee_presence()
         super(Member,self).save(**kwargs)
 
+    def average_votes_per_month(self):
+        return self.voting_statistics.average_votes_per_month()
+        
     def is_female(self):
         return self.gender=='F'
 
@@ -324,7 +330,7 @@ class Member(models.Model):
 
     def recalc_average_monthly_committee_presence(self):
         self.average_monthly_committee_presence = self.committee_meetings_per_month()
-        
+
     @property
     def names(self):
         names=[self.name]

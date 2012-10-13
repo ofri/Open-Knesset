@@ -1,50 +1,39 @@
+import logging
+
 from django.db import models
-from datetime import datetime
+from django.utils import simplejson
+
 from knesset.mks.models import Member
 from knesset.committees.models import Committee
-import simplejson 
-import re
-import logging
+from fuzzy_match import fuzzy_match
+
 
 logger = logging.getLogger("open-knesset.mmm.models")
 
-def parse_json(fp):
-    """ recieves fp from data folder, loads/parses and returns a list of dictionaries """
-    
-    result = simplejson.load(fp)
-   
-    # modifying the data to be suitable for use
-    for o in result:
-        o['candidates'] = re.sub(r"\s+", r" " , " ".join(o['candidates']))
-        o['date'] = datetime.strptime(o['date'], '%d/%m/%Y')
-    
-    return result
-
-
-
-def text_lookup(modelName, text):
-    """ recieves a text and a modelName and returns a list of modelName objects found in it"""
+def text_lookup(Model, text):
+    """receives a text and a Model and returns a list of Model objects found in the text"""
     
     result = []
-    
-    # a list of all modelName objects
-    all_obj = [(m.id, m.name) for m in modelName.objects.all()]
-    
-    for k, v in all_obj:
-        if v in text:
-            result.append(k)
+
+    for m in Model.objects.all():
+        if m.name in text:
+            result.append(m.id)
+        else:
+            if fuzzy_match(m.name, text):
+                logger.warning('No exact match found. Performing fuzzy matching!')
+                result.append(m.id)
     
     return result
 
 #from json helper function
 def verify(o, i, mks, committees):
-    if i[0].title == o['title'] and i[0].publication_date == o['date'] and i[0].author_names == 0['author']:
+    if i[0].title == o['title'] and i[0].publication_date == o['date'] and i[0].author_names == o['author']:
         if i[0].req_mks == mks or i[0].req_committees == committees:
             logger.info("%s already exists in db" % o['url'])
-            return True
-        else:
-            logger.warning("Failed DB verification! Encountered conflicts between the object's mks and committees in our db and imported data.")
             return False
+        else:
+            logger.info("Found differences between imported data and our db. Performing Update!")
+            return True
     else:
         logger.warning("Failed DB verification! Encountered multiple conflicts between the object in our db and imported data.")
         return False
@@ -53,25 +42,24 @@ def verify(o, i, mks, committees):
 class DocumentManager(models.Manager):
 
     def from_json(self, j):
-        """Read a json j, and create Document instances based on it"""
-        # info from m.m.m site
-        info = parse_json(j)
-        
+
         # checking if the db already has document o instance and if no, creating one
-        for o in info:
+        for o in j:
             
             i = self.filter(url=o['url'])
-            mks = text_lookup(Member, o['candidates'])
-            committees = text_lookup(Committee, o['candidates'])
+            mks = text_lookup(Member, o['heading'])
+            committees = text_lookup(Committee, o['heading'])
             
             # db verification
-            if i.exists():
+            if i:
                 if len(i) != 1:
                     logger.warning("Corrupted DB! More than one object were found with same url.")
                 else:
-                    verify(o, i, mks, committees)
+                   if verify(o, i, mks, committees):
+                       i.req_mks = mks
+                       i.req_committee = committees
             else:
-                logger.info("creating new Document instance: %s" % o['url'])
+                logger.info("Creating new Document instance: %s" % o['url'])
                 d = self.create(url=o['url'], title=o['title'], publication_date=o['date'], author_names=o['author'])
                 d.req_committee = committees
                 d.req_mks = mks

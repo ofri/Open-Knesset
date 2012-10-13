@@ -19,7 +19,7 @@ from knesset.api.urls import vote_handler
 
 from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
-from models import Agenda, AgendaVote, AgendaMeeting
+from models import Agenda, AgendaVote, AgendaMeeting, AgendaBill
 
 from queries import getAllAgendaPartyVotes, getAgendaEditorIds
 
@@ -253,15 +253,23 @@ def agenda_add_view(request):
 
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))
 
+
+# used for redirection after an object has been added to the agenda
+object_redirect = {'vote':('vote-detail','vote-list'),
+                   'bill':('bill-detail','bill-list'),
+                   'committeemeeting':('committee-meeting','committee-list'),
+                  }
+object_formset_classes = {'vote':VoteLinkingFormSet,
+                          'bill':VoteLinkingFormSet,
+                          'committeemeeting':MeetingLinkingFormSet,
+                         }
+
 @login_required
 def update_editors_agendas(request):
     if request.method == 'POST':
         object_type = request.POST.get('form-0-object_type',None)
-        object_id = request.POST.get('form-0-vote_id',None)
-        if object_type=='vote':
-            vl_formset = VoteLinkingFormSet(request.POST)
-        else:
-            vl_formset = MeetingLinkingFormSet(request.POST)
+        object_id = request.POST.get('form-0-obj_id',None)
+        vl_formset = object_formset_classes[object_type](request.POST)
         if vl_formset.is_valid():
             for a in vl_formset.cleaned_data:
                 if a:
@@ -277,10 +285,10 @@ def update_editors_agendas(request):
                     if a['object_type'] == 'vote':
                         if a['DELETE']:
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaVote.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       vote__id = a['vote_id'])
+                                       vote__id = a['obj_id'])
                                 av.delete()
                             except AgendaVote.DoesNotExist:
                                 pass
@@ -288,10 +296,10 @@ def update_editors_agendas(request):
                             if (a['weight'] is not '' and
                                 a['importance'] is not ''):
                                 try:
-                                    object_id = a['vote_id']
+                                    object_id = a['obj_id']
                                     av = AgendaVote.objects.get(
                                            agenda__id=a['agenda_id'],
-                                           vote__id = a['vote_id'])
+                                           vote__id = a['obj_id'])
                                     av.score = a['weight']
                                     av.importance = a['importance']
                                     av.reasoning = a['reasoning']
@@ -299,7 +307,37 @@ def update_editors_agendas(request):
                                 except AgendaVote.DoesNotExist:
                                     av = AgendaVote(
                                            agenda_id=int(a['agenda_id']),
-                                           vote_id=int(a['vote_id']),
+                                           vote_id=int(a['obj_id']),
+                                           score = a['weight'],
+                                           importance = a['importance'],
+                                           reasoning = a['reasoning'])
+                                    av.save()
+                    if a['object_type'] == 'bill':
+                        if a['DELETE']:
+                            try:
+                                object_id = a['obj_id']
+                                av = AgendaBill.objects.get(
+                                       agenda__id=a['agenda_id'],
+                                       bill__id = a['obj_id'])
+                                av.delete()
+                            except AgendaBill.DoesNotExist:
+                                pass
+                        else: # not delete, so try to create
+                            if (a['weight'] is not '' and
+                                a['importance'] is not ''):
+                                try:
+                                    object_id = a['obj_id']
+                                    av = AgendaBill.objects.get(
+                                           agenda__id=a['agenda_id'],
+                                           bill__id = a['obj_id'])
+                                    av.score = a['weight']
+                                    av.importance = a['importance']
+                                    av.reasoning = a['reasoning']
+                                    av.save()
+                                except AgendaBill.DoesNotExist:
+                                    av = AgendaBill(
+                                           agenda_id=int(a['agenda_id']),
+                                           bill_id=int(a['obj_id']),
                                            score = a['weight'],
                                            importance = a['importance'],
                                            reasoning = a['reasoning'])
@@ -307,26 +345,26 @@ def update_editors_agendas(request):
                     if a['object_type'] == 'committeemeeting':
                         if a['DELETE']:
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaMeeting.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       meeting__id = a['vote_id'])
+                                       meeting__id = a['obj_id'])
                                 av.delete()
                             except AgendaMeeting.DoesNotExist:
                                 pass
                         else: # not delete, so try to create
                             try:
-                                object_id = a['vote_id']
+                                object_id = a['obj_id']
                                 av = AgendaMeeting.objects.get(
                                        agenda__id=a['agenda_id'],
-                                       meeting__id = a['vote_id'])
+                                       meeting__id = a['obj_id'])
                                 av.score = a['weight']
                                 av.reasoning = a['reasoning']
                                 av.save()
                             except AgendaMeeting.DoesNotExist:
                                 av = AgendaMeeting(
                                        agenda_id=int(a['agenda_id']),
-                                       meeting_id=int(a['vote_id']),
+                                       meeting_id=int(a['obj_id']),
                                        score = a['weight'],
                                        reasoning = a['reasoning'])
                                 av.save()
@@ -337,18 +375,15 @@ def update_editors_agendas(request):
             # TODO: Error handling: what to do with illeal forms?
             logger.info("invalid formset")
             logger.info("%s" % vl_formset.errors)
-        if object_id:
-            if object_type=='vote':
-                return HttpResponseRedirect(reverse('vote-detail',
-                                        kwargs={'object_id':object_id}))
-            else:
-                return HttpResponseRedirect(reverse('committee-meeting',
-                                         kwargs={'pk':object_id}))
-        else: # no object id was found, return to list
-            if object_type=='vote':
-                return HttpResponseRedirect(reverse('vote-list'))
-            else:
-                return HttpResponseRedirect(reverse('committee-list'))
-
+        if object_type in object_redirect:
+            if object_id: # return to object page
+                return HttpResponseRedirect(
+                        reverse(object_redirect[object_type][0],
+                                kwargs={'pk':object_id}))
+            else: # return to list
+                return HttpResponseRedirect(reverse(object_redirect[object_type][1]))
+        else:
+            logger.warn('unknown object_type')
+            return HttpResponseRedirect(reverse('main'))
     else:
         return HttpResponseNotAllowed(['POST'])

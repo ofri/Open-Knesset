@@ -7,6 +7,7 @@ from django.utils import translation
 from django.template.loader import render_to_string
 from django.template import TemplateDoesNotExist
 from django.conf import settings
+from django.core.cache import cache
 import datetime
 from optparse import make_option
 import logging
@@ -15,7 +16,7 @@ logger = logging.getLogger("open-knesset.notify")
 from actstream.models import Follow, Action
 from mailer import send_html_mail
 from knesset.mks.models import Member
-from knesset.laws.models import Bill
+from knesset.laws.models import Bill, get_debated_bills
 from knesset.agendas.models import Agenda
 from knesset.notify.models import LastSent
 from knesset.user.models import UserProfile
@@ -39,6 +40,21 @@ class Command(NoArgsCommand):
         make_option('--weekly', action='store_true', dest='weekly',
             help="send notifications to users that requested a weekly update"))
 
+
+    def agenda_update(self, agenda):
+        ''' generate the general update email for this agenda.
+            this will be called, and its output added to the email,
+            if and only if there has been some update in it's data.
+        '''
+        mks = agenda.selected_instances(Member)
+        template_name = 'notify/agenda_update'
+        update_txt = render_to_string(template_name + '.txt',
+                                      {'mks':mks,
+                                       'domain':self.domain})
+        update_html = render_to_string(template_name + '.html',
+                                       {'mks':mks,
+                                        'domain':self.domain})
+        return (update_txt,update_html)
 
     @classmethod
     def get_model_headers(cls, model):
@@ -103,6 +119,7 @@ class Command(NoArgsCommand):
                 updates[key].append(header)
                 updates_html[key].append(header_html)
 
+
             for action_instance in stream: # now generate the updates themselves
                 try:
                     action_output = render_to_string(('activity/%(verb)s/action_email.txt' % { 'verb':action_instance.verb.replace(' ','_') }),{ 'action':action_instance },None)
@@ -112,17 +129,64 @@ class Command(NoArgsCommand):
                     action_output_html = render_to_string(('activity/%(verb)s/action_email.html' % { 'verb':action_instance.verb.replace(' ','_') }),{ 'action':action_instance,'domain':self.domain },None)
                 except TemplateDoesNotExist: # fallback to the generic template
                     action_output_html = render_to_string(('activity/action_email.html'),{ 'action':action_instance,'domain':self.domain },None)
-                updates[key].append(action_output)
+                    updates[key].append(action_output)
                 updates_html[key].append(action_output_html)
+
+            if stream and model_class == Agenda:
+                txt,html = self.agenda_update(f)
+                updates[key].append(txt)
+                updates_html[key].append(html)
 
         email_body = []
         email_body_html = []
+
+        # Generate party membership section
+        up = UserProfile.objects.filter(user=user).select_related('party')
+        if up:
+            up = up[0]
+            party = up.party
+            if party:
+                num_members = cache.get('party_num_members_%d' % party.id,
+                                          None)
+                if not num_members:
+                    num_members = party.userprofile_set.count()
+                    cache.set('party_num_members_%d' % party.id,
+                          num_members,
+                          settings.LONG_CACHE_TIME)
+            else:
+                num_members = None
+            debated_bills = get_debated_bills() or []
+
+            template_name = 'notify/party_membership'
+            party_membership_txt = render_to_string(template_name + '.txt',
+                                                    {'user':user,
+                                                     'userprofile':up,
+                                                     'num_members':num_members,
+                                                     'bills':debated_bills,
+                                                     'domain':self.domain})
+            party_membership_html = render_to_string(template_name + '.html',
+                                                     {'user':user,
+                                                     'userprofile':up,
+                                                     'num_members':num_members,
+                                                     'bills':debated_bills,
+                                                     'domain':self.domain})
+
+        else:
+            logger.warning('Can\'t find user profile')
+
+
+        # Add the updates for followed models
         for (model_class,title,title_html) in map(self.get_model_headers, self.update_models):
             if updates[model_class]: # this model has some updates, add it to the email
                 email_body.append(title.format())
                 email_body.append('\n'.join(updates[model_class]))
                 email_body_html.append(title_html.format())
                 email_body_html.append(''.join(updates_html[model_class]))
+        if email_body:
+            email_body.insert(0, party_membership_txt)
+        if email_body_html:
+            email_body_html.insert(0, party_membership_html)
+
         return (email_body, email_body_html)
 
 
@@ -151,7 +215,10 @@ class Command(NoArgsCommand):
                 logger.warn('user %s has no userprofile' % user.username)
                 continue
 
-            if user_profile and user_profile.email_notification in email_notification and g in user.groups.all():
+            if (user.email and
+                user_profile and
+                user_profile.email_notification in email_notification and
+                g in user.groups.all()):
                 # if this user has a profile (should always be true)
                 # requested emails in the frequency we are handling now
                 # and has validated his email

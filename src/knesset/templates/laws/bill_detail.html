@@ -1,10 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n %}
-{% load laws_extra %}
-{% load bills_extra %}
-{% load mks %}
-{% load links %}
-{% load voting_tags %}
+{% load i18n laws_extra bills_extra mks links voting_tags agendas %}
 {% block extrajs %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
@@ -206,6 +201,7 @@
         <div id="bill-canvas">
         </div>
         <div class="secondary">
+            {% agendas_for user object 'bill' %}
             <h3>{% trans "Public Opinion" %}</h3>
             <div id="public-opinion">
                 <span class="stand for" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</span><span class="stand against" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</span>
