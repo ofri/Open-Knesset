@@ -8,8 +8,8 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 from actstream.models import Follow
-from knesset.laws.models import VoteAction, Vote
-from knesset.mks.models import Party, Member
+from laws.models import VoteAction, Vote
+from mks.models import Party, Member
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -38,8 +38,6 @@ class UserSuggestedVote(models.Model):
     class Meta:
         unique_together = ('agenda','vote','user')
 
-
-
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
     vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
@@ -49,9 +47,14 @@ class AgendaVote(models.Model):
 
     def get_score_header(self):
         return _('Position')
+    def get_importance_header(self):
+        return _('Importance')
 
     class Meta:
         unique_together= ('agenda', 'vote')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.vote)
 
 class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
@@ -62,9 +65,32 @@ class AgendaMeeting(models.Model):
 
     def get_score_header(self):
         return _('Importance')
+    def get_importance_header(self):
+        return None
 
     class Meta:
         unique_together = ('agenda', 'meeting')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.meeting)
+
+class AgendaBill(models.Model):
+    agenda = models.ForeignKey('Agenda', related_name='agendabills')
+    bill = models.ForeignKey('laws.bill', related_name='agendabills')
+    score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
+    importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
+    reasoning = models.TextField(null=True)
+
+    def get_score_header(self):
+        return _('Position')
+    def get_importance_header(self):
+        return _('Importance')
+
+    class Meta:
+        unique_together = ('agenda', 'bill')
+
+    def __unicode__(self):
+        return "%s %s" % (self.agenda,self.bill)
 
 def get_top_bottom(lst, top, bottom):
     """
@@ -128,7 +154,7 @@ class AgendaManager(models.Manager):
 
     def get_possible_to_suggest(self, user, vote):
         if user == None or not user.is_authenticated():
-            agendas = Agenda.objects.none()
+            agendas = False
         else:
             agendas = Agenda.objects.filter(is_public=True)\
                             .exclude(editors=user)\
@@ -147,14 +173,14 @@ class AgendaManager(models.Manager):
             allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
             for agendaId,agendaVotes in q.items():
                 # the newdict will have 0's for each mkid, the update will change the value for known mks
-                newDict = {}.fromkeys(allMkIds,0)
-                newDict.update(dict(agendaVotes))
+                newDict = {}.fromkeys(allMkIds,(0,0))
+                newDict.update(dict(map(lambda (mkid,score,volume):(mkid,(score,volume)),agendaVotes)))
                 newAgendaMkVotes[agendaId]=newDict.items()
             mks_values = {}
             for agenda_id, scores in newAgendaMkVotes.items():
                 mks_values[agenda_id] = \
-                    map(lambda x: (x[1][0], dict(score=x[1][1], rank=x[0],)),
-                        enumerate(sorted(scores,key=itemgetter(1),reverse=True), 1))
+                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1])),
+                        enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
 
@@ -297,7 +323,6 @@ class Agenda(models.Model):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.extra(select=dict(score = 'controversy'))
         return votes.order_by('-score')[:num]
-
 
 from listeners import *
 from operator import itemgetter, attrgetter

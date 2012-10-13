@@ -20,8 +20,16 @@
             <input type="submit" value="{% trans "Filter" %}" class="submit awesome-button">
             </form>
         </div>
+        <ul class="actions">
+            <li>
+                <span id="export-csv" class="awesome-button medium">
+                    <a href="./csv?{{ query_string }}">{% trans 'Export data to Excel' %}</a>
+                </span>
+            </li>
+        </ul>
 {% endblock %}
 {% block divcontent %}
+
     <div class="item-list">
 
     {% for o in object_list %}

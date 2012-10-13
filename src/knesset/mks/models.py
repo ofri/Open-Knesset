@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
-from knesset.links.models import Link
+from links.models import Link
 import difflib
 
 GENDER_CHOICES = (
@@ -120,6 +120,9 @@ class Party(models.Model):
     def get_absolute_url(self):
         return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
+    def get_affiliation(self):
+        return _('Coalition') if self.is_coalition else _('Opposition')
+
 
 class Membership(models.Model):
     member      = models.ForeignKey('Member')
@@ -187,6 +190,9 @@ class Member(models.Model):
         self.recalc_average_monthly_committee_presence()
         super(Member,self).save(**kwargs)
 
+    def average_votes_per_month(self):
+        return self.voting_statistics.average_votes_per_month()
+        
     def is_female(self):
         return self.gender=='F'
 

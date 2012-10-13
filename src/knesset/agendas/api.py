@@ -88,6 +88,7 @@ class AgendaResource(BaseResource):
             members.append (dict(name=mk.name,
                     score = mks_values[mk.id]['score'],
                     rank = mks_values[mk.id]['rank'],
+                    volume = mks_values[mk.id]['volume'],
                     absolute_url = mk.get_absolute_url(),
                     party = current_party.name,
                     party_url = current_party.get_absolute_url(),

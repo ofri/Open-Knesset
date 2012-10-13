@@ -13,12 +13,15 @@ from django.conf import settings
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
 import voting
+from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action
 
-from knesset.mks.models import Member, Party
-from knesset.tagvotes.models import TagVote
+from mks.models import Member, Party
+from tagvotes.models import TagVote
 from knesset.utils import slugify_name
+from knesset.laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
+                                       BILL_AGRR_STAGES)
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -64,9 +67,6 @@ class PartyVotingStatistics(models.Model):
 
     def __unicode__(self):
         return "%s" % self.party.name
-
-
-
 
 class MemberVotingStatistics(models.Model):
     member = models.OneToOneField('mks.Member', related_name='voting_statistics')
@@ -217,6 +217,7 @@ class Vote(models.Model):
     def get_voters_id(self, vote_type):
         return VoteAction.objects.filter(vote=self,
                          type=vote_type).values_list('member__id', flat=True)
+
     def for_votes(self):
         return VoteAction.objects.filter(vote=self, type='for')
 
@@ -231,6 +232,11 @@ class Vote(models.Model):
 
     def against_own_bill_votes(self):
         return self.votes.filter(voteaction__against_own_bill=True)
+
+    def vote_type(self):
+        for vtype, vtype_prefix in VoteManager.VOTE_TYPES.iteritems():
+            if self.title.startswith(vtype_prefix):
+                return dict(TYPE_CHOICES)[vtype]
 
     def short_summary(self):
         if self.summary==None:
@@ -278,8 +284,6 @@ class Vote(models.Model):
             else:
                 t.user_score = 0
         return tags.sorted(cmp=lambda x,y:cmp(x.score, y.score))
-
-
 
     def tag_form(self):
         tf = TagForm()
@@ -437,19 +441,39 @@ class GovProposal(BillProposal):
     bill = models.OneToOneField('Bill', related_name='gov_proposal',
                                  blank=True, null=True)
 
-BILL_STAGE_CHOICES = (
-        (u'?', _(u'Unknown')),
-        (u'1', _(u'Proposed')),
-        (u'2', _(u'Pre-Approved')),
-        (u'-2',_(u'Failed Pre-Approval')),
-        (u'-2.1', _(u'Converted to discussion')),
-        (u'3', _(u'In Committee')),
-        (u'4', _(u'First Vote')),
-        (u'-4',_(u'Failed First Vote')),
-        (u'5', _(u'Committee Corrections')),
-        (u'6', _(u'Approved')),
-        (u'-6',_(u'Failed Approval')),
-)
+
+class BillManager(models.Manager):
+
+    def filter_and_order(self, *args, **kwargs):
+        stage = kwargs.get('stage', None)
+        member = kwargs.get('member', None)
+        booklet = kwargs.get('booklet', None)
+
+        filter_kwargs = {}
+        if stage and stage != 'all':
+            if stage in BILL_AGRR_STAGES:
+                qs = self.filter(BILL_AGRR_STAGES[stage])
+            else:
+                filter_kwargs['stage__startswith'] = stage
+                qs = self.filter(**filter_kwargs)
+        else:
+            qs = self.all()
+
+        if kwargs.get('tagged', None):
+            if kwargs['tagged'] == 'false':
+                ct = ContentType.objects.get_for_model(Bill)
+                filter_tagged = TaggedItem.objects.filter(content_type=ct).distinct().values_list('object_id', flat=True)
+                qs = qs.exclude(id__in=filter_tagged)
+            elif kwargs['tagged'] != 'all':
+                qs = TaggedItem.objects.get_by_model(qs,get_tag(kwargs['tagged']))
+
+        if booklet:
+            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
+            if kps:
+                qs = qs.filter(knesset_proposal__in=kps)
+
+        return qs
+
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
@@ -468,6 +492,8 @@ class Bill(models.Model):
     proposers = models.ManyToManyField('mks.Member', related_name='bills', blank=True, null=True) # superset of all proposers of all private proposals related to this bill
     joiners = models.ManyToManyField('mks.Member', related_name='bills_joined',
                                      blank=True, null=True) # superset of all joiners
+
+    objects = BillManager()
 
     class Meta:
         ordering = ('-stage_date','-id')
@@ -715,7 +741,6 @@ def get_debated_bills():
             debated_bills = None
         cache.set('debated_bills', debated_bills, settings.LONG_CACHE_TIME)
     return debated_bills
-
 
 class GovLegislationCommitteeDecision(models.Model):
     title = models.CharField(max_length=1000)
