@@ -211,18 +211,18 @@ class Agenda(models.Model):
 
     def party_score(self, party):
         # party_members_ids = party.members.all().values_list('id',flat=True)
-        for_score = sum(map(itemgetter('weighted_score'),
-                            AgendaVote.objects.filter(
-                                agenda=self,
-                                vote__voteaction__member__in=party.members.all(),
-                                vote__voteaction__type="for").extra(
-                            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values('weighted_score')))
-        against_score = sum(map(itemgetter('weighted_score'),
-                            AgendaVote.objects.filter(
-                                agenda=self,
-                                vote__voteaction__member__in=party.members.all(),
-                                vote__voteaction__type="against").extra(
-                            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values('weighted_score')))
+        for_score = sum(
+            AgendaVote.objects.filter(
+                agenda=self,
+                vote__voteaction__member__in=party.members.all(),
+                vote__voteaction__type="for").extra(
+            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score', flat=True))
+        against_score = sum(
+            AgendaVote.objects.filter(
+                agenda=self,
+                vote__voteaction__member__in=party.members.all(),
+                vote__voteaction__type="against").extra(
+            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score', flat=True))
 
         #max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
         max_score = sum([abs(x['score']*x['importance']) for x in
@@ -268,8 +268,8 @@ class Agenda(models.Model):
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.annotate(score=Sum('agendavotes__importance'))
-        return votes.order_by('-score')[:num] 
-    
+        return votes.order_by('-score')[:num]
+
     def get_suggested_votes_by_agenda_tags(self, num):
         # TODO: This is untested, agendas currently don't have tags
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
@@ -284,12 +284,12 @@ class Agenda(models.Model):
         votes = votes.extra(select=dict(score = tag_importance_subquery),
                             select_params = [agenda_type_id]*2)
         return votes.order_by('-score')[:num]
-    
+
     def get_suggested_votes_by_controversy(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.extra(select=dict(score = 'controversy'))
-        return votes.order_by('-score')[:num] 
-    
+        return votes.order_by('-score')[:num]
+
 
 from listeners import *
 from operator import itemgetter, attrgetter
