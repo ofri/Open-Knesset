@@ -2,6 +2,7 @@ import logging
 
 from django.db import models
 from django.utils import simplejson
+from django.core.exceptions import ObjectDoesNotExist
 
 from knesset.mks.models import Member
 from knesset.committees.models import Committee
@@ -26,9 +27,11 @@ def text_lookup(Model, text):
     return result
 
 #from json helper function
-def verify(o, i, mks, committees):
-    if i[0].title == o['title'] and i[0].publication_date == o['date'] and i[0].author_names == o['author']:
-        if i[0].req_mks == mks or i[0].req_committees == committees:
+def verify(o, d, mks, committees):
+    if not hasattr(d, 'title'):
+        logger.warning(d)
+    if all([d.title == o['title'] ,d.publication_date == o['date'] , d.author_names == o['author']]):
+        if (mks and mks == list(d.req_mks.values_list('pk', flat=True))) or (committees and committees == list(d.req_committee.values_list('pk', flat=True))):
             logger.info("%s already exists in db" % o['url'])
             return False
         else:
@@ -42,29 +45,22 @@ def verify(o, i, mks, committees):
 class DocumentManager(models.Manager):
 
     def from_json(self, j):
-
-        # checking if the db already has document o instance and if no, creating one
+      # checking if the db already has document o instance and if no, creating one
         for o in j:
-            
-            i = self.filter(url=o['url'])
             mks = text_lookup(Member, o['heading'])
             committees = text_lookup(Committee, o['heading'])
-            
-            # db verification
-            if i:
-                if len(i) != 1:
-                    logger.warning("Corrupted DB! More than one object were found with same url.")
-                else:
-                   if verify(o, i, mks, committees):
-                       i.req_mks = mks
-                       i.req_committee = committees
-            else:
+
+            try:
+                d = self.get(url=o['url'])
+            except ObjectDoesNotExist:
                 logger.info("Creating new Document instance: %s" % o['url'])
                 d = self.create(url=o['url'], title=o['title'], publication_date=o['date'], author_names=o['author'])
                 d.req_committee = committees
                 d.req_mks = mks
 
-
+            if verify(o, d, mks, committees):
+               d.req_mks = mks
+               d.req_committee = committees
 
 class Document(models.Model):
     url = models.URLField(unique=True)
