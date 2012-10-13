@@ -210,23 +210,31 @@ class Agenda(models.Model):
             return 0.0
 
     def party_score(self, party):
-        # party_members_ids = party.members.all().values_list('id',flat=True)
-        for_score = sum(
-            AgendaVote.objects.filter(
-                agenda=self,
-                vote__voteaction__member__in=party.members.all(),
-                vote__voteaction__type="for").extra(
-            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score', flat=True))
-        against_score = sum(
-            AgendaVote.objects.filter(
-                agenda=self,
-                vote__voteaction__member__in=party.members.all(),
-                vote__voteaction__type="against").extra(
-            select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score', flat=True))
+        # Since we're already calculating python side, no need to do 2 queries
+        # with joins, select for and against, and calcualte the things
+        qs = AgendaVote.objects.filter(
+            agenda=self, vote__voteaction__member__in=party.members.all(),
+            vote__voteaction__type__in=['against', 'for']).extra(
+                select={'weighted_score': 'agendas_agendavote.score*agendas_agendavote.importance'}
+            ).values_list('weighted_score', 'vote__voteaction__type')
+
+        for_score = 0
+        against_score = 0
+
+        for score, action_type in qs:
+            if action_type == 'against':
+                against_score += score
+            else:
+                for_score += score
 
         #max_score = sum([abs(x) for x in self.agendavotes.values_list('score', flat=True)]) * party.members.count()
-        max_score = sum([abs(x['score']*x['importance']) for x in
-                         self.agendavotes.values('score','importance')]) * party.number_of_seats
+        # To save the queries, make sure to pass prefetch/select related
+        # Removed the values call, so that we can utilize the prefetched stuf
+        # This reduces the number of queries when called for example from
+        # AgendaResource.dehydrate
+        max_score = sum(abs(x.score * x.importance) for x in
+                        self.agendavotes.all()) * party.number_of_seats
+
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
