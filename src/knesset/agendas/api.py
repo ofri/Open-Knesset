@@ -107,11 +107,9 @@ class AgendaResource(BaseResource):
                      score=v.score, reasoning=v.reasoning)
                 for v in bundle.obj.agendavotes.select_related()
             ]
-
-
-        bundle.data['editors'] = [
-            dict(absolute_url=e.get_absolute_url(), username=e.username,
-                 avatar=avatar_url(e, 48))
-            for e in bundle.obj.editors.all()]
+            bundle.data['editors'] = [
+                dict(absolute_url=e.get_absolute_url(), username=e.username,
+                     avatar=avatar_url(e, 48))
+                for e in bundle.obj.editors.all()]
 
         return bundle
