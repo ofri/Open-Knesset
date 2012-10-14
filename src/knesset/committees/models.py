@@ -256,6 +256,9 @@ class ProtocolPart(models.Model):
 
     annotatable = True
 
+    class Meta:
+        ordering = ('order','id')
+
     def get_absolute_url(self):
         if self.order == 1:
             return self.meeting.get_absolute_url()
