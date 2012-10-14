@@ -70,7 +70,7 @@ class AgendaResource(BaseResource):
         allowed_methods = ['get']
         include_absolute_url = True
         excludes = ['is_public']
-
+        list_fields = ['name', 'id', 'description', 'public_owner_name']
     #editors = fields.ToManyField(UserResource,
     #                'editors',
     #                full=True)
