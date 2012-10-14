@@ -88,7 +88,7 @@ pre_delete.connect(record_agenda_meeting_removal_action, sender=AgendaMeeting)
 @disable_for_loaddata
 def update_num_followers(sender, instance, **kwargs):
     agenda = instance.actor
-    if agenda:
+    if isinstance(agenda, Agenda):
         agenda.num_followers = Follow.objects.filter(
             content_type = ContentType.objects.get(
                     app_label="agendas",
