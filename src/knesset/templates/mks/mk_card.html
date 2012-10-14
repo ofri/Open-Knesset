@@ -1,5 +1,5 @@
 {% load cache i18n %}{% get_current_language as LANGUAGE_CODE %}
-{% cache 3600 mkcard mk.pk LANGUAGE_CODE %}
+{% cache 3600 mkcard mk.pk cls LANGUAGE_CODE %}
 <div class="mk-card{% if cls %} {{ cls }}{% endif %}">
     <div class="avatar-item">{% url member-detail mk.id as mk_url%}
         <a href="{{ mk_url }}"><img src="{{mk.img_url}}"/></a>
