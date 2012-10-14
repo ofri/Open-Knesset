@@ -142,10 +142,8 @@ class MemberResource(BaseResource):
             name = ALL,
             is_current = ALL,
             )
-        exclude_from_list_view = ['about_video_id','related_videos_uri',
-                'links', 'videos']
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
-        list_fields = ['name', 'id']
+        list_fields = ['name', 'id', 'img_url']
         include_absolute_url = True
 
     party_name = fields.CharField()
