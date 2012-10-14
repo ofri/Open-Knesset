@@ -72,6 +72,8 @@ class AgendaResource(BaseResource):
         include_absolute_url = True
         excludes = ['is_public']
         cache = SimpleCache(timeout = 300)
+        list_fields= ['absolute_url', 'description', 'editors', 'id', 'name', 'num_followers', 
+                      'public_owner_name', 'resource_uri', ]
 
     #editors = fields.ToManyField(UserResource,
     #                'editors',
@@ -82,34 +84,31 @@ class AgendaResource(BaseResource):
 
     def dehydrate(self, bundle):
         a = bundle.obj
-        if self.get_resource_uri(bundle) == bundle.request.path:
-            # it's a detailed request so we add the mks & parties scores
-            mks_values = dict(a.get_mks_values())
-            members = []
-            for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
-                # TODO: this sucks, performance wise
-                current_party = mk.current_party
-                members.append (dict(name=mk.name,
-                        score = mks_values[mk.id]['score'],
-                        rank = mks_values[mk.id]['rank'],
-                        volume = mks_values[mk.id]['volume'],
-                        absolute_url = mk.get_absolute_url(),
-                        party = current_party.name,
-                        party_url = current_party.get_absolute_url(),
-                    ))
-            bundle.data['members'] = members
-            bundle.data['parties'] = [
-                dict(
-                    name=x.name, score=a.party_score(x),
-                    absolute_url=x.get_absolute_url()
-                ) for x in Party.objects.prefetch_related('members')
-            ]
-            bundle.data['votes'] = [
-                dict(title=v.vote.title, id=v.id, importance=v.importance,
-                     score=v.score, reasoning=v.reasoning)
-                for v in bundle.obj.agendavotes.select_related()
-            ]
-
+        mks_values = dict(a.get_mks_values())
+        members = []
+        for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
+            # TODO: this sucks, performance wise
+            current_party = mk.current_party
+            members.append (dict(name=mk.name,
+                    score = mks_values[mk.id]['score'],
+                    rank = mks_values[mk.id]['rank'],
+                    volume = mks_values[mk.id]['volume'],
+                    absolute_url = mk.get_absolute_url(),
+                    party = current_party.name,
+                    party_url = current_party.get_absolute_url(),
+                ))
+        bundle.data['members'] = members
+        bundle.data['parties'] = [
+            dict(
+                name=x.name, score=a.party_score(x),
+                absolute_url=x.get_absolute_url()
+            ) for x in Party.objects.prefetch_related('members')
+        ]
+        bundle.data['votes'] = [
+            dict(title=v.vote.title, id=v.id, importance=v.importance,
+                 score=v.score, reasoning=v.reasoning)
+            for v in bundle.obj.agendavotes.select_related()
+        ]
 
         bundle.data['editors'] = [
             dict(absolute_url=e.get_absolute_url(), username=e.username,
