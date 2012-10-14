@@ -12,6 +12,7 @@ from knesset.mks.models import Member,Party,WeeklyPresence
 from knesset.agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
+from knesset.auxiliary.views import CsvView
 
 class InternalLinksTest(TestCase):
 
@@ -102,3 +103,28 @@ class SiteMapTest(TestCase):
             res = self.client.get(reverse('sitemaps', kwargs={'section':s}))
             self.assertEqual(res.status_code, 200, 'sitemap %s returned %d' %
                              (s,res.status_code))
+
+
+class CsvViewTest(TestCase):
+
+    class TestModel(object):
+        def __init__(self, value):
+            self.value = value
+
+        def squared(self):
+            return self.value ** 2
+
+    class ConcreteCsvView(CsvView):
+        filename = 'test.csv'
+        list_display = (("value", "value"),
+                        ("squared", "squared"))
+
+    def test_csv_view(self):
+        view = self.ConcreteCsvView()
+        view.model = self.TestModel
+        view.queryset = [self.TestModel(2), self.TestModel(3)]
+        response = view.dispatch(None)
+        rows = response.content.splitlines()
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[1], '2,4')
+        self.assertEqual(rows[2], '3,9')

@@ -1,5 +1,3 @@
 {% load i18n %}
 {% trans 'Open Knesset Updates' %}
-{% blocktrans with user.username as username %}Hi {{ username }},
-Here's what happened lately in the knesset and on our site{% endblocktrans %}
-
+{% blocktrans with user.username as username %}Hi {{ username }},{% endblocktrans %}
