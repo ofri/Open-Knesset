@@ -1069,6 +1069,11 @@ padding: .5em;
 box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
 }
 
+/*This is used to avoid display and imidiate hide on a slow page rendering.. */
+.help-section-extended{
+display: none;
+}
+
 /* help texts*/
  .quest-mark {
    /*background:url("/static/icons/help_16.png") no-repeat;
