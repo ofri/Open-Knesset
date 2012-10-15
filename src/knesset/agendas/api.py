@@ -80,6 +80,7 @@ class AgendaResource(BaseResource):
 
     def dehydrate(self, bundle):
         a = bundle.obj
+        # DO NOT REUSE THIS IN OTHER PLACES!!
         if self.get_resource_uri(bundle) == bundle.request.path:
             # it's a detailed request so we add the mks & parties scores
             mks_values = dict(a.get_mks_values())

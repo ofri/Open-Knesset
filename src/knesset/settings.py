@@ -165,9 +165,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "social_auth.context_processors.social_auth_by_name_backends",
 "social_auth.context_processors.social_auth_backends",
 )
-INTERNAL_IPS = ('127.0.0.1',)
-# Add the following line to your local_settings.py files to disable django-debug-toolar:
 INTERNAL_IPS = ()
+# Add the following line to your local_settings.py files to enable django-debug-toolar:
+#INTERNAL_IPS = ('127.0.0.1',)
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
