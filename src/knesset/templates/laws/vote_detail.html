@@ -1,14 +1,6 @@
 {% extends "two_cols.html" %}
-{% load i18n %}
-{% load i18n i18ninclude %}
-{% load tagging_tags %}
-{% load bills_extra %}
-{% load links %}
-{% load mks %}
-{% load agendas %}
-{% block help-section %}
-	{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}
-{% endblock %}
+{% load i18n i18ninclude tagging_tags bills_extra links mks agendas %}
+{% block help-section %}{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -28,9 +20,8 @@
         {% if user.is_authenticated %}
             <h3>{% trans "Tags" %}</h3>
             <div id="tags">
-                {% if vote.tags %}
-
-                    {% for t in vote.tags %}
+                {% if tags %}
+                    {% for t in tags %}
                         <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                 {% else %}
@@ -56,19 +47,17 @@
                     {% endif %}
                 </div>
             </div>
-
         {% else %}
             <h3>{% trans "Tags" %}</h3>
-            {% if vote.tags %}
+            {% if tags %}
                 <div id="tags">
-                {% for t in vote.tags %}
+                {% for t in tags %}
                    <a href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
                 {% endfor %}
                 </div>
             {% else %}
                 {% trans "No tags yet" %}<br />
             {% endif %}
-
             <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>
         {% endif %}
         </div>
@@ -79,25 +68,24 @@
         <div>
             <h3>{% trans "Time" %}</h3>
             {{ vote.time_string }}
-            {% if vote.get_next_by_time %}
-            &nbsp; <a class="bold-link" href="{{ vote.get_next_by_time.get_absolute_url }}">{% trans 'Go to next vote by time' %}</a>
+            {% if next_v %}
+            &nbsp; <a class="bold-link" href="{{ next_v }}">{% trans 'Go to next vote by time' %}</a>
             {% endif %}
-            {% if vote.get_previous_by_time %}
-            &nbsp; <a class="bold-link" href="{{ vote.get_previous_by_time.get_absolute_url }}">{% trans 'Go to previous vote by time' %}</a>
+            {% if prev_v %}
+            &nbsp; <a class="bold-link" href="{{ prev_v }}">{% trans 'Go to previous vote by time' %}</a>
             {% endif %}
         </div>
         <div>
             <h3>{% trans "For" %}</h3>
             {% if vote.for_votes_count %}
-                {% blocktrans count vote.for_votes|length as counter %}
+                {% blocktrans count for_votes|length as counter %}
                 {{ counter }} MK
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
                 <div>
-                {% for m in vote.for_votes %}
-              
-			  <a class="hashnav item dontwrap" id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}" />{% mk_card m.member %}</a>
+                {% for m in for_votes %}
+                    {% mk_card m.member %}
                     {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
@@ -114,14 +102,14 @@
         <div>
             <h3>{% trans "Against" %}</h3>
             {% if vote.against_votes_count %}
-                {% blocktrans count vote.against_votes|length as counter %}
+                {% blocktrans count against_votes|length as counter %}
                 {{ counter }} MK
                 {% plural %}
                 {{ counter }} MKs
                 {% endblocktrans %}
                 <div>
-                {% for m in vote.against_votes %}
-                <a class="hashnav item dontwrap " id="detail-{{ m.member.id }}" href="{% url member-detail m.member.id %}" title="{{ m.member.current_party.name }}">{% mk_card m.member 'mk-card-against' %}</a>
+                {% for m in against_votes %}
+                    {% mk_card m.member 'mk-card-against' %}
                     {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
                     {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
                     {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}

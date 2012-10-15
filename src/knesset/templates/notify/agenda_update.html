@@ -1,0 +1,3 @@
+{% load i18n %}
+<h3>{% trans 'Agenda Top MKs' %}</h3>{% for mk in mks.top %}{{ mk }} - <span style="direction:ltr">‎{{ mk.score|floatformat:0 }}</span><br>{% endfor %}
+<h3>{% trans 'Agenda Bottom MKs' %}</h3>{% for mk in mks.bottom %}{{ mk }} - <span style="direction:ltr">‎{{ mk.score|floatformat:0 }}</span><br>{% endfor %}

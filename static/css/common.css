@@ -78,6 +78,7 @@ a:hover { text-decoration:underline;}
             font-weight: bold; padding:0 0.2em; }
 .actions li span {vertical-align: top; }
 .actions {display: block; float: left;}
+.actions .awesome-button a {color: white; text-decoration: none;}
 
 
 /* ACCOUNTS */
@@ -375,7 +376,9 @@ form > p > select { width:250px; }
     border: 1px solid #7777AA;
     border-radius: 3px;
 }
+
 .avatar-item img { display:block;}
+
 p.username {max-width:55px; }
 .item-comments { padding-right:1.5em;}
 .mk-card .avatar-item {
@@ -384,6 +387,9 @@ p.username {max-width:55px; }
     width: 28px;
     float: right;
 }
+
+.mk-card .avatar-item a { padding:0; }
+.mk-card .avatar-item img { height: 38px; width: 28px; }
 .big-avatar {
     margin: 5px 5px 5px 10px;
     height: 64px;
@@ -823,6 +829,7 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
     font-weight:normal;
 }
 
+select#id_agenda {max-width:100%}
 .comittee_member_detail {
     display:inline-block;
     text-align:center;
@@ -1106,7 +1113,16 @@ display: none;
   }
 #helptextcontainer {width:100%;position:absolute;}
 
-#embeddiv { width: 25em; float: left; margin-left: 0em; clear:left;}
+#embeddiv {
+    width: 25em;
+    float: left;
+    margin-left: 0em;
+    clear:left;
+    background-color:#fff;
+    padding:0.3em;
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
+    box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
+}
 
 
 .content-footer form{

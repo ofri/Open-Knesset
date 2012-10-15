@@ -29,7 +29,7 @@ class PartyResource(BaseResource):
         include_absolute_url = True
 
 class DictStruct:
-    def __init__(self, **entries): 
+    def __init__(self, **entries):
             self.__dict__.update(entries)
 
 class MemberBillsResource(BaseResource):
@@ -61,10 +61,10 @@ class MemberBillsResource(BaseResource):
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
         tag_cloud = map(lambda x: dict(size=x.font_size, count=x.count, name=x.name),
                         calculate_cloud(bills_tags))
-        bills  = map(lambda b: dict(title=b.full_title, 
+        bills  = map(lambda b: dict(title=b.full_title,
                                     url=b.get_absolute_url(),
-                                    stage=b.stage, 
-                                    stage_text=b.get_stage_display()), 
+                                    stage=b.stage,
+                                    stage_text=b.get_stage_display()),
                      member.bills.all())
         return DictStruct(id=member.id, tag_cloud=tag_cloud,bills=bills)
 
@@ -125,8 +125,10 @@ class MemberAgendasResource(BaseResource):
 
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
-    class Meta:
+    class Meta(BaseResource.Meta):
+
         queryset = Member.objects.all().select_related('current_party')
+
         allowed_methods = ['get']
         ordering = [
             'name',
@@ -140,9 +142,9 @@ class MemberResource(BaseResource):
             name = ALL,
             is_current = ALL,
             )
-        exclude_from_list_view = ['about_video_id','related_videos_uri',
-                'links', 'videos']
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
+        list_fields = ['name', 'id', 'img_url']
+        include_absolute_url = True
 
     party_name = fields.CharField()
     party_url = fields.CharField()

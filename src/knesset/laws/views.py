@@ -35,7 +35,8 @@ import logging
 import datetime
 from time import mktime
 
-from forms import VoteSelectForm
+from forms import VoteSelectForm, BillSelectForm
+from knesset.auxiliary.views import CsvView
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -323,11 +324,6 @@ class BillListView (ListView):
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    bill_stages = { 'proposed':Q(stage__isnull=False),
-                    'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'approved':Q(stage='6'),
-                  }
     bill_stages_names = { 'proposed':_('(Bills) proposed'),
                           'pre':_('(Bills) passed pre-vote'),
                           'first':_('(Bills) passed first vote'),
@@ -335,27 +331,30 @@ class BillListView (ListView):
                         }
 
     def get_queryset(self):
-        stage = self.request.GET.get('stage', False)
-        booklet = self.request.GET.get('booklet', False)
+
         member = self.request.GET.get('member', False)
+        options = {}
         if member:
             try:
                 member = int(member)
             except ValueError:
                 raise Http404(_('Invalid member id'))
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()
+            qs = member.bills
         else:
-            qs = self.queryset._clone()
-        if stage and stage!='all':
-            if stage in self.bill_stages:
-                qs = qs.filter(self.bill_stages[stage])
-            else:
-                qs = qs.filter(stage=stage)
-        elif booklet:
-            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
-            qs = qs.filter(knesset_proposal__in=kps)
-        return qs.order_by('-stage_date','-id')
+            qs = Bill.objects
+
+        form = self._get_filter_form()
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+
+        return qs.filter_and_order(**options)
+
+    def _get_filter_form(self):
+        form = BillSelectForm(self.request.GET) if self.request.GET \
+                else BillSelectForm()
+        return form
 
     def get_context(self):
         context = super(BillListView, self).get_context()
@@ -384,6 +383,7 @@ class BillListView (ListView):
                 context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
 
         context['friend_pages'] = r
+        context['form'] = self._get_filter_form()
         return context
 
 class VoteListView(ListView):
@@ -413,7 +413,34 @@ class VoteListView(ListView):
             context['watched_members'] = False
 
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
         return context
+
+
+class VoteCsvView(CsvView):
+    model = Vote
+    filename = 'votes.csv'
+    list_display = (('title', _('Title')),
+                    ('vote_type', _('Vote Type')),
+                    ('time', _('Time')),
+                    ('votes_count', _('Votes Count')),
+                    ('for_votes_count', _('For')),
+                    ('against_votes_count', _('Against')),
+                    ('against_party', _('Votes Against Party')),
+                    ('against_coalition', _('Votes Against Coalition')),
+                    ('against_opposition', _('Votes Against Opposition')),
+                    ('against_own_bill', _('Votes Against Own Bill')))
+
+    def get_queryset(self, **kwargs):
+        form = VoteSelectForm(self.request.GET or {})
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
+
 
 class VoteDetailView(DetailView):
     model = Vote
@@ -422,15 +449,36 @@ class VoteDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(VoteDetailView, self).get_context_data(*args, **kwargs)
         vote = context['vote']
-        context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
         if Bill.objects.filter(approval_vote=vote).count()>0:
             related_bills.append(vote.bill_approved)
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
-        context['bills'] = related_bills
 
+        for_votes = vote.for_votes().select_related('member','member__current_party')
+        against_votes = vote.against_votes().select_related('member','member__current_party')
+
+        try:
+            next_v = vote.get_next_by_time()
+            next_v = next_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            next_v = None
+        try:
+            prev_v = vote.get_previous_by_time()
+            prev_v = prev_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            prev_v = None
+
+        c = {'title':vote.title,
+             'bills':related_bills,
+             'for_votes':for_votes,
+             'against_votes':against_votes,
+             'next_v':next_v,
+             'prev_v':prev_v,
+             'tags':vote.tags,
+            }
+        context.update(c)
         return context
 
     @method_decorator(login_required)
