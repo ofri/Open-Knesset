@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target.full_title as bill %}
+A bill has been removed from the agenda: <a href="http://{{domain}}{{ url }}">{{ bill }}</a>
+{% endblocktrans %}<br>

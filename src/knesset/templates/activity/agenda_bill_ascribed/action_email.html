@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.bill.get_absolute_url as url and action.target.bill.full_title as bill %}
+A bill has been ascribed to the agenda: <a href="http://{{domain}}{{ url }}">{{ bill }}</a>
+{% endblocktrans %}<br>
