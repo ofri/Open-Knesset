@@ -10,14 +10,25 @@ from knesset.utils import disable_for_loaddata
 from knesset.mks.models import Member
 from models import CommitteeMeeting, Topic
 
-cm_ct = ContentType.objects.get(app_label="committees", model="committeemeeting")
-member_ct = ContentType.objects.get(app_label="mks", model="member")
-user_ct = ContentType.objects.get(app_label="auth", model="user")
+cm_ct = None
+member_ct = None
+user_ct = None
+annotation_ct = None
+
+def get_ct():
+    global cm_ct
+    global member_ct
+    global user_ct
+    global annotation_ct
+    cm_ct = ContentType.objects.get(app_label="committees", model="committeemeeting")
+    member_ct = ContentType.objects.get(app_label="mks", model="member")
+    user_ct = ContentType.objects.get(app_label="auth", model="user")
+    annotation_ct = ContentType.objects.get(app_label="annotatetext", model="annotation")
 
 @disable_for_loaddata
 def handle_cm_save(sender, created, instance, **kwargs):
-    cm_ct = ContentType.objects.get(app_label="committees", model="committeemeeting")
-    member_ct = ContentType.objects.get(app_label="mks", model="member")
+    if not cm_ct:
+        get_ct()
     for m in instance.mks_attended.all():
         if Action.objects.filter(actor_object_id=m.id,
                                  actor_content_type=member_ct,
@@ -29,6 +40,8 @@ post_save.connect(handle_cm_save, sender=CommitteeMeeting)
 
 @disable_for_loaddata
 def record_committee_presence(**kwargs):
+    if not member_ct:
+        get_ct()
     if kwargs['action'] != "post_add":
         return
     meeting = kwargs['instance']
@@ -45,24 +58,28 @@ m2m_changed.connect(record_committee_presence, sender=CommitteeMeeting.mks_atten
 @disable_for_loaddata
 def handle_annotation_save(sender, created, instance, **kwargs):
     if created:
+        if not cm_ct:
+            get_ct()
         if Action.objects.filter(
-                actor_object_id=instance_content_object.meeting.instance_content_object.meeting.id,
+                actor_object_id=instance.content_object.meeting.id,
                 actor_content_type=cm_ct,
                 verb='annotation-added',
-                target=instance,
-                description=str(instance.id)).count()==0:
+                target_object_id=instance.id,
+                target_content_type=annotation_ct).count()==0:
             action.send(instance.content_object.meeting, verb='annotation-added',
-                        target=instance, description=str(instance.id))
+                        target=instance, description=unicode(instance.flag_value))
         if Action.objects.filter(
                 actor_object_id=instance.user.id,
                 actor_content_type=user_ct,
                 verb='annotated',
-                target=instance).count()==0:
+                target_object_id=instance.id,
+                target_content_type=annotation_ct).count()==0:
             action.send(instance.user, verb='annotated',
                         target=instance, description=unicode(instance.flag_value))
 
-        if Follow.objects.filter(user=user,
-                                 actor=instance.content_object.meeting)\
+        if Follow.objects.filter(user=instance.user,
+                                 object_id=instance.content_object.meeting.id,
+                                 content_type=cm_ct)\
                          .count()==0:
             follow(instance.user, instance.content_object.meeting)
 post_save.connect(handle_annotation_save, sender=Annotation)
