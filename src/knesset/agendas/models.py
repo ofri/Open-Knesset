@@ -54,7 +54,7 @@ class AgendaVote(models.Model):
         unique_together= ('agenda', 'vote')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.vote)
+        return u"%s %s" % (self.agenda,self.vote)
 
 class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
@@ -72,7 +72,7 @@ class AgendaMeeting(models.Model):
         unique_together = ('agenda', 'meeting')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.meeting)
+        return u"%s %s" % (self.agenda,self.meeting)
 
 class AgendaBill(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendabills')
@@ -90,7 +90,7 @@ class AgendaBill(models.Model):
         unique_together = ('agenda', 'bill')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.bill)
+        return u"%s %s" % (self.agenda,self.bill)
 
 def get_top_bottom(lst, top, bottom):
     """
@@ -201,7 +201,7 @@ class Agenda(models.Model):
         unique_together = (("name", "public_owner_name"),)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
+        return u"%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
 
     @models.permalink
     def get_absolute_url(self):
