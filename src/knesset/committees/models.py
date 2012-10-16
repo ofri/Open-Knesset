@@ -20,7 +20,7 @@ import urllib2
 from BeautifulSoup import BeautifulSoup
 
 
-COMMITTEE_PROTOCOL_PAGINATE_BY = 400
+COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
 logger = logging.getLogger("open-knesset.committees.models")
 
