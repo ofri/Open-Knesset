@@ -23,7 +23,9 @@ class BaseResource(ModelResource):
     def get_list(self, request, **kwargs):
         """
         Returns a serialized list of resources.
-        We overide here, to add is_list in calls to full_dehydrate
+        We overide here, to add optional ``fields`` in calls to full_dehydrate
+        in case the resource specifies ``list_fields`` (and optional
+        ``extra_fields`` in GET).
 
         Calls ``obj_get_list`` to provide the data, then handles that result
         set and serializes it.
@@ -67,7 +69,8 @@ class BaseResource(ModelResource):
         Given a bundle with an object instance, extract the information from it
         to populate the resource.
 
-        We override this to take into account the request type
+        We override this to take into account optional fields in case of
+        ``list``.
         """
         # Dehydrate each field.
         if fields is None:
