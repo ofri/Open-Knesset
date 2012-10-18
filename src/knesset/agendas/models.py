@@ -192,6 +192,7 @@ class Agenda(models.Model):
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
     num_followers = models.IntegerField(default=0)
+    image = models.ImageField(blank=True, null=True, upload_to='agendas')
 
     objects = AgendaManager()
 

@@ -828,6 +828,12 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 .item-list a span.public-owner-name {
     font-weight:normal;
 }
+.item .agenda-image img { width:100px }
+.item .agenda-image {
+    float:right;
+    margin: 5px 5px 5px 10px;
+}
+.add { clear:both }
 
 select#id_agenda {max-width:100%}
 .comittee_member_detail {

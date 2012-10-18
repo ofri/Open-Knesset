@@ -28,7 +28,9 @@
                     <div class="item {% cycle "alt" "normal" %}">
                         {% with agenda_votes|lookup:o.id as agenda_votes_num %}
                         {% with agenda_party_values|lookup:o.id as agenda_party_values %}
-                        {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup %}
+                        {% with agenda_editors|lookup:o.id as agenda_editor_ids %}
+                        {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup editors agenda_editor_ids %}
+                        {% endwith %}
                         {% endwith %}
                         {% endwith %}
                     </div>
