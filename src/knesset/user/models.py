@@ -54,13 +54,13 @@ class UserProfile(models.Model):
     def members(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(Member)).select_related('actor'))
+                content_type=ContentType.objects.get_for_model(Member)).prefetch_related('actor'))
 
     @property
     def bills(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(Bill)).select_related('actor'))
+                content_type=ContentType.objects.get_for_model(Bill)).prefetch_related('actor'))
 
     @property
     def parties(self):
@@ -72,19 +72,19 @@ class UserProfile(models.Model):
     def agendas(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(Agenda)).select_related('actor'))
+                content_type=ContentType.objects.get_for_model(Agenda)).prefetch_related('actor'))
 
     @property
     def meetings(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(CommitteeMeeting)).select_related('actor'))
+                content_type=ContentType.objects.get_for_model(CommitteeMeeting)).prefetch_related('actor'))
 
     @property
     def topics(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(Topic)).select_related('actor'))
+                content_type=ContentType.objects.get_for_model(Topic)).prefetch_related('actor'))
 
 
     def get_badges(self):
