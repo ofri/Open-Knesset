@@ -20,32 +20,72 @@ class BaseResource(ModelResource):
         cache = SimpleCache()
         throttle = CacheThrottle(throttle_at=60, timeframe=60)
 
-    def alter_list_data_to_serialize(self, request, to_be_serialized):
-        fields = getattr(self._meta, 'list_fields', None)
+    def get_list(self, request, **kwargs):
+        """
+        Returns a serialized list of resources.
+        We overide here, to add is_list in calls to full_dehydrate
 
-        if not fields:
-            return to_be_serialized
+        Calls ``obj_get_list`` to provide the data, then handles that result
+        set and serializes it.
 
-        # copy the fields, we don't want to want to change the class attribute
-        fields = fields[:]
+        Should return a HttpResponse (200 OK).
+        """
+        # TODO: Uncached for now. Invalidation that works for everyone may be
+        # impossible.
+        objects = self.obj_get_list(request=request, **self.remove_api_resource_names(kwargs))
+        sorted_objects = self.apply_sorting(objects, options=request.GET)
 
-        if self._meta.include_resource_uri:
-            fields.append('resource_uri')
+        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(), limit=self._meta.limit, max_limit=self._meta.max_limit, collection_name=self._meta.collection_name)
+        to_be_serialized = paginator.page()
 
-        absolute_url = getattr(self._meta, 'include_absolute_url', False)
+        field_names = getattr(self._meta, 'list_fields', None)
+        if field_names:
+            field_names = field_names[:]
+            extra_fields = request.GET.get('extra_fields', None)
 
-        if absolute_url:
-            fields.append('absolute_url')
+            if extra_fields:
+                field_names.extend(x.strip() for x in extra_fields.split(',')
+                                   if x.strip())
+            if getattr(self._meta, 'include_resource_uri', False):
+                field_names.append('resource_uri')
+            if getattr(self._meta, 'include_absolute_url', False):
+                field_names.append('absolute_url')
 
-        extra_fields = request.GET.get('extra_fields')
+            fields = dict((name, obj) for name, obj in self.fields.iteritems()
+                          if name in field_names)
+        else:
+            fields = None
 
-        if extra_fields:
-            fields.extend(x.strip() for x in extra_fields.split(',')
-                          if x.strip())
+        # Dehydrate the bundles in preparation for serialization.
+        bundles = [self.build_bundle(obj=obj, request=request) for obj in to_be_serialized[self._meta.collection_name]]
+        to_be_serialized[self._meta.collection_name] = [self.full_dehydrate(bundle, fields) for bundle in bundles]
+        to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
+        return self.create_response(request, to_be_serialized)
 
-        for bundle in to_be_serialized['objects']:
-            # by default we only serve unicode and pk
-            d = bundle.data
-            bundle.data = dict((f, d.get(f)) for f in fields)
+    def full_dehydrate(self, bundle, fields=None):
+        """
+        Given a bundle with an object instance, extract the information from it
+        to populate the resource.
 
-        return to_be_serialized
+        We override this to take into account the request type
+        """
+        # Dehydrate each field.
+        if fields is None:
+            fields = self.fields
+
+        for field_name, field_object in fields.items():
+            # A touch leaky but it makes URI resolution work.
+            if getattr(field_object, 'dehydrated_type', None) == 'related':
+                field_object.api_name = self._meta.api_name
+                field_object.resource_name = self._meta.resource_name
+
+            bundle.data[field_name] = field_object.dehydrate(bundle)
+
+            # Check for an optional method to do further dehydration.
+            method = getattr(self, "dehydrate_%s" % field_name, None)
+
+            if method:
+                bundle.data[field_name] = method(bundle)
+
+        bundle = self.dehydrate(bundle)
+        return bundle
