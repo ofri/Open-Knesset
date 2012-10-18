@@ -834,6 +834,11 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
     margin: 5px 5px 5px 10px;
 }
 .add { clear:both }
+.ascribed-agendas img { float:left; width:100px; margin-top:0.5em}
+.ascribed-agendas .ascribed-agenda-link { display:block }
+.ascribed-agendas .ascribed-agenda-link a { padding:0 }
+.ascribed-agendas .ascribed-agenda-label { display:inline-block; width:5em }
+.mk-agenda-image { width:100px }
 
 select#id_agenda {max-width:100%}
 .comittee_member_detail {

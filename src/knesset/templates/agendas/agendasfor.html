@@ -1,16 +1,17 @@
 {% load i18n %}
     <h3>{% trans "Ascribed agendas" %}</h3>
     {% if agendas %}
-        <table>
+        <div class="ascribed-agendas">
         {% for agenda in agendas %}
-            <tr><td colspan="2">
-             <a id="ascribed-agenda-{{ agenda.agenda.id }}" href="{% url agenda-detail agenda.agenda.id %}"/>{{ agenda.agenda }}</a>
-            </td></tr>
-            <tr><th>{{ agenda.get_score_header }}:</th><td>{{ agenda.get_score_display }}</td></tr>
-            {% if agenda.get_importance_header %}<tr><th>{{ agenda.get_importance_header }}</th><td>{{ agenda.get_importance_display }}</td></tr>{% endif %}
-            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agenda.reasoning|urlizetrunc:"30" }}</td></tr>
+            <div class="ascribed-agenda-item">
+            {% if agenda.agenda.image %}<img src="{{ agenda.agenda.image.url }}" />{% endif %}
+            <span class="ascribed-agenda-link"><a id="ascribed-agenda-{{ agenda.agenda.id }}" href="{% url agenda-detail agenda.agenda.id %}"/>{{ agenda.agenda }}</a></span>
+            <div><span class="ascribed-agenda-label">{{ agenda.get_score_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_score_display }}</span></div>
+            {% if agenda.get_importance_header %}<div><span class="ascribed-agenda-label">{{ agenda.get_importance_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_importance_display }}</span></div>{% endif %}
+            <div><span class="ascribed-agenda-label">{% trans "Reasoning" %}:</span><span class="ascribed-agenda-value">{{ agenda.reasoning|urlizetrunc:"30" }}</span></div>
+            </div>
         {% endfor %}
-        </table>
+        </div>
     {% else %}
         <p>{% trans 'No agendas ascribed yet.' %}</p>
     {% endif %}
