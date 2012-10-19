@@ -72,7 +72,8 @@ class UserProfile(models.Model):
     def agendas(self):
         return map(lambda x: x.actor,
             Follow.objects.filter(user=self.user,
-                content_type=ContentType.objects.get_for_model(Agenda)).prefetch_related('actor'))
+                content_type=ContentType.objects.get_for_model(Agenda)).prefetch_related('actor',
+                                                                                         'actor__agendavotes'))
 
     @property
     def meetings(self):
