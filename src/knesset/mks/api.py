@@ -90,7 +90,7 @@ class MemberAgendasResource(BaseResource):
     def dehydrate(self, bundle):
         mk = bundle.obj
         agendas_values = mk.get_agendas_values()
-        friends = mk.current_party.current_members().values_list('id', flat=True)
+        friends = mk.current_party.current_members().values_list('id', flat=True).order_by()
         agendas = []
         for a in Agenda.objects.filter(pk__in = agendas_values.keys(),
                 is_public = True):
