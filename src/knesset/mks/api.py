@@ -82,7 +82,7 @@ class MemberBillsResource(BaseResource):
 class MemberAgendasResource(BaseResource):
     ''' The Parliament Member Agenda-compliance API '''
     class Meta:
-        queryset = Member.objects.all()
+        queryset = Member.objects.select_related('current_party').order_by()
         allowed_methods = ['get']
         fields = ['agendas'] # We're not really interested in any member details here
         resource_name = "member-agendas"
@@ -177,4 +177,3 @@ class MemberResource(BaseResource):
         return bundle.obj.current_party.get_absolute_url()
 
     fields.ToOneField(PartyResource, 'current_party', full=True)
-
