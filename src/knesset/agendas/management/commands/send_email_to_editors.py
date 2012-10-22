@@ -4,7 +4,7 @@ from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
 from mailer import send_html_mail
-from knesset.agendas.models import UserSuggestedVote
+from agendas.models import UserSuggestedVote
 from django.contrib.auth.models import User
 
 class Command(NoArgsCommand):

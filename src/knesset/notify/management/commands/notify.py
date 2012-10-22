@@ -15,12 +15,12 @@ logger = logging.getLogger("open-knesset.notify")
 
 from actstream.models import Follow, Action
 from mailer import send_html_mail
-from knesset.mks.models import Member
-from knesset.laws.models import Bill, get_debated_bills
-from knesset.agendas.models import Agenda
-from knesset.notify.models import LastSent
-from knesset.user.models import UserProfile
-from knesset.committees.models import Topic
+from mks.models import Member
+from laws.models import Bill, get_debated_bills
+from agendas.models import Agenda
+from notify.models import LastSent
+from user.models import UserProfile
+from committees.models import Topic
 
 
 class Command(NoArgsCommand):

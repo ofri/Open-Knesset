@@ -5,8 +5,8 @@ from django.conf import settings
 
 from tagging.models import Tag, TaggedItem
 
-from knesset.mks.models import Member,Party
-from knesset.laws.models import Vote,VoteAction,Bill
+from mks.models import Member,Party
+from laws.models import Vote,VoteAction,Bill
 
 class Command(NoArgsCommand):
 
