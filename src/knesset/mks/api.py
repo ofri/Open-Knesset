@@ -3,6 +3,7 @@ Api for the members app
 '''
 import urllib
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
@@ -16,6 +17,7 @@ from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
+
 
 class PartyResource(BaseResource):
     ''' Party API
@@ -79,49 +81,61 @@ class MemberBillsResource(BaseResource):
         member = Member.objects.get(pk=kwargs['pk'])
         return self.get_member_data(member)
 
+
 class MemberAgendasResource(BaseResource):
     ''' The Parliament Member Agenda-compliance API '''
+
+    agendas = fields.ListField()
+
     class Meta:
         queryset = Member.objects.select_related('current_party').order_by()
         allowed_methods = ['get']
-        fields = ['agendas'] # We're not really interested in any member details here
+        fields = ['agendas']  # We're not really interested in any member details here
         resource_name = "member-agendas"
 
-    def dehydrate(self, bundle):
+    def dehydrate_agendas(self, bundle):
         mk = bundle.obj
-        agendas_values = mk.get_agendas_values()
-        friends = mk.current_party.current_members().values_list('id', flat=True).order_by()
-        agendas = []
-        for a in Agenda.objects.filter(pk__in = agendas_values.keys(),
-                is_public = True):
-            amin = 200.0 ; amax = -200.0
-            pmin = 200.0 ; pmax = -200.0
-            av = agendas_values[a.id]
-            for mk_id, values in a.get_mks_values():
-                score = values['score']
-                if score < amin:
-                    amin = score
-                if score > amax:
-                    amax = score
-                if mk_id in friends:
-                    if score < pmin:
-                        pmin = score
-                    if score > pmax:
-                        pmax = score
+        _cache_key = 'api_v2_member_agendas_' + str(mk.pk)
+        agendas = cache.get(_cache_key)
 
-            agendas.append(dict(name = a.name,
-                id = a.id,
-                owner = a.public_owner_name,
-                score = av['score'],
-                rank = av['rank'],
-                min = amin,
-                max = amax,
-                party_min = pmin,
-                party_max = pmax,
-                absolute_url = a.get_absolute_url(),
+        if not agendas:
+            agendas_values = mk.get_agendas_values()
+            friends = mk.current_party.current_members().values_list('id', flat=True).order_by()
+            agendas = []
+            for a in Agenda.objects.filter(pk__in = agendas_values.keys(),
+                    is_public = True):
+                amin = 200.0 ; amax = -200.0
+                pmin = 200.0 ; pmax = -200.0
+                av = agendas_values[a.id]
+                for mk_id, values in a.get_mks_values():
+                    score = values['score']
+                    if score < amin:
+                        amin = score
+                    if score > amax:
+                        amax = score
+                    if mk_id in friends:
+                        if score < pmin:
+                            pmin = score
+                        if score > pmax:
+                            pmax = score
+
+                agendas.append(dict(
+                    name=a.name,
+                    id=a.id,
+                    owner=a.public_owner_name,
+                    score=av['score'],
+                    rank=av['rank'],
+                    min=amin,
+                    max=amax,
+                    party_min=pmin,
+                    party_max=pmax,
+                    absolute_url=a.get_absolute_url(),
                 ))
-        bundle.data['agendas'] = agendas
-        return bundle
+
+            cache.set(_cache_key, agendas, 24 * 3600)
+
+        return agendas
+
 
 class MemberResource(BaseResource):
     ''' The Parliament Member API '''
