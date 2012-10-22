@@ -51,9 +51,10 @@ def help_page(request):
 def add_previous_comments(comments):
     previous_comments = set()
     for c in comments:
-        c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
-                                                     content_type=c.content_type,
-                                                     submit_date__lt=c.submit_date)
+        c.previous_comments = Comment.objects.filter(
+            object_pk=c.object_pk,
+            content_type=c.content_type,
+            submit_date__lt=c.submit_date).select_related('user')
         previous_comments.update(c.previous_comments)
         c.is_comment = True
     comments = [c for c in comments if c not in previous_comments]
@@ -226,7 +227,7 @@ def create_tag_and_add_to_item(request, app, object_type, object_id):
 
 
 def calculate_cloud_from_models(*args):
-    from tagging.models import Tag 
+    from tagging.models import Tag
     cloud = Tag._default_manager.cloud_for_model(args[0])
     for model in args[1:]:
         for tag in Tag._default_manager.cloud_for_model(model):
