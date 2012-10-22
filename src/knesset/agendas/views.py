@@ -21,7 +21,7 @@ from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
 from models import Agenda, AgendaVote, AgendaMeeting, AgendaBill
 
-from queries import getAllAgendaPartyVotes, getAgendaEditorIds
+import queries
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
@@ -44,7 +44,7 @@ class AgendaListView (ListView):
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
         if not allAgendaPartyVotes:
-            allAgendaPartyVotes = getAllAgendaPartyVotes()
+            allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
             cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
         parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
@@ -52,7 +52,7 @@ class AgendaListView (ListView):
             watched = p.agendas
         else:
             watched = None
-        agendaEditorIds = getAgendaEditorIds()
+        agendaEditorIds = queries.getAgendaEditorIds()
         allEditorIds = list(set(chain.from_iterable(agendaEditorIds.values())))
         editors = User.objects.filter(id__in=allEditorIds)
         context['agenda_editors'] = agendaEditorIds
@@ -112,11 +112,9 @@ class AgendaDetailView (DetailView):
             context['mks_top'] = map(itemgetter(0),mks_values[:5])
             context['mks_bottom'] = map(itemgetter(0),mks_values[-5:])
 
-        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
-        if not allAgendaPartyVotes:
-            allAgendaPartyVotes = getAllAgendaPartyVotes()
-            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
-        context['agenda_party_values']=dict(allAgendaPartyVotes.setdefault(agenda.id,[]))
+        allAgendaPartyVotes = agenda.get_all_party_values()
+        print allAgendaPartyVotes
+        context['agenda_party_values']=dict(map(lambda x:(x[0],x[1]),allAgendaPartyVotes.setdefault(agenda.id,[])))
         context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
 
         cached_context = cache.get('agenda_votes_%d' % agenda.id)
