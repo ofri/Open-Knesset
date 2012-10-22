@@ -390,6 +390,7 @@
                                 <table>
                                 {% for agenda in agendas %}
                                     <tr style="height:4em;">
+                                        <td>{% if agenda.image %}<img class="mk-agenda-image" src="{{agenda.image.url}}" />{% endif %}</td>
                                         <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
                                         <td><a class="hashnav item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
                                         <td class="numeric">{{agenda.score|floatformat:"0"}}%</td>

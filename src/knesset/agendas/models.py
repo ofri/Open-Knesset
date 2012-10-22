@@ -142,13 +142,17 @@ class AgendaManager(models.Manager):
 
     def get_relevant_for_user(self, user):
         if user == None or not user.is_authenticated():
-            agendas = Agenda.objects.filter(is_public=True).order_by('-num_followers')
+            agendas = Agenda.objects.filter(is_public=True)\
+                                    .order_by('-num_followers')\
+                                    .prefetch_related('agendavotes')
         elif user.is_superuser:
-            agendas = Agenda.objects.all().order_by('-num_followers')
+            agendas = Agenda.objects.all().order_by('-num_followers')\
+                                          .prefetch_related('agendavotes')
         else:
             agendas = Agenda.objects.filter(Q(is_public=True) |
                                             Q(editors=user))\
                                     .order_by('-num_followers')\
+                                    .prefetch_related('agendavotes')\
                                     .distinct()
         return agendas
 
@@ -192,6 +196,7 @@ class Agenda(models.Model):
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
     num_followers = models.IntegerField(default=0)
+    image = models.ImageField(blank=True, null=True, upload_to='agendas')
 
     objects = AgendaManager()
 
@@ -215,21 +220,22 @@ class Agenda(models.Model):
         # Find all votes that
         #   1) This agenda is ascribed to
         #   2) the member participated in and either voted for or against
-        for_score = sum(
-                AgendaVote.objects.filter(
-                    agenda=self,
-                    vote__voteaction__member=member,
-                    vote__voteaction__type="for").extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
-        against_score = sum(
-                AgendaVote.objects.filter(
-                    agenda=self,
-                    vote__voteaction__member=member,
-                    vote__voteaction__type="against").extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
+        qs = AgendaVote.objects.filter(
+            agenda = self,
+            vote__voteaction__member = member,
+            vote__voteaction__type__in=['for','against']).extra(
+                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}
+            ).values_list('weighted_score','vote__voteaction__type')
 
-        max_score = sum([abs(x['score']*x['importance']) for x in
-                         self.agendavotes.values('score','importance')])
+        for_score = against_score = 0
+        for score, action_type in qs:
+            if action_type == 'against':
+                against_score += score
+            else:
+                for_score += score
+
+        max_score = sum([abs(x.score*x.importance) for x in
+                         self.agendavotes.all()])
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
