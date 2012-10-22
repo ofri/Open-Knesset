@@ -6,12 +6,9 @@ from mock import mock_reader
 from backlinks.pingback.server import PingbackServer
 from backlinks.trackback.server import TrackBackServer
 from backlinks.pingback.server import default_server
-from knesset.mks.views import get_mk_entry, mk_is_backlinkable
+from mks.views import get_mk_entry, mk_is_backlinkable, mk_detail
 
-
-from knesset.mks.views import mk_detail
 # Mock server classes
-
 
 class MockTrackBackServer(TrackBackServer):
     url_reader = mock_reader

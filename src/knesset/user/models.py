@@ -9,10 +9,10 @@ from django.contrib.contenttypes.models import ContentType
 from actstream import follow
 from actstream.models import Follow
 
-from knesset.mks.models import Party, Member, GENDER_CHOICES
-from knesset.laws.models import Bill
-from knesset.agendas.models import Agenda
-from knesset.committees.models import CommitteeMeeting,Topic
+from mks.models import Party, Member, GENDER_CHOICES
+from laws.models import Bill
+from agendas.models import Agenda
+from committees.models import CommitteeMeeting,Topic
 
 
 NOTIFICATION_PERIOD_CHOICES = (

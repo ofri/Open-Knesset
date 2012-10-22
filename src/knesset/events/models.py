@@ -9,7 +9,7 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _, ugettext
-from knesset.persons.models import Person
+from persons.models import Person
 
 class Event(models.Model):
     ''' hold the when, who, what, where and which fields of events

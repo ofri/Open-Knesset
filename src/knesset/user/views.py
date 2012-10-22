@@ -19,12 +19,12 @@ from annotatetext.models import Annotation
 from actstream import unfollow, follow
 from actstream.models import Action, Follow
 
-from knesset.accounts.models import EmailValidation
-from knesset.mks.models import Member
-from knesset.laws.models import Bill
-from knesset.agendas.models import Agenda
-from knesset.tagvotes.models import TagVote
-from knesset.committees.models import CommitteeMeeting,Topic
+from accounts.models import EmailValidation
+from mks.models import Member
+from laws.models import Bill
+from agendas.models import Agenda
+from tagvotes.models import TagVote
+from committees.models import CommitteeMeeting,Topic
 
 from forms import RegistrationForm, EditProfileForm
 

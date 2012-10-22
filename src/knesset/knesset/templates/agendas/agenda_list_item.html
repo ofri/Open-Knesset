@@ -1,0 +1,38 @@
+{% load i18n lookup user_tags bills_tags common_text_handling cache %}{% get_current_language as LANGUAGE_CODE %}
+{% cache 3600 agenda_list_item agenda.id LANGUAGE_CODE %}
+<div class="agenda-counts">
+    {{ agenda_votes_num }} {% trans 'votes' %}<br>
+    {{ agenda.num_followers }} {% trans 'followers' %}
+    {% if agenda in watched_agendas %}<span>{% trans 'Including you' %}</span>{% endif %}
+</div>
+{% if agenda.image %}
+<div class="agenda-image">
+    <img src="{{agenda.image.url}}" />
+</div>
+{% endif %}
+<a id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}
+<span class="public-owner-name"> {% trans 'by' %} {{ agenda.public_owner_name }}</span></a>
+<div class="item-metadata">
+    <span class="editors">
+        {% trans "Editors:" %}
+        {% for editor_id in editor_ids %}
+        {% with editors|lookup:editor_id as editor %}
+            {% if not forloop.first %} | {% endif %}
+            {% user editor %}
+        {% endwith %}
+        {% endfor %}
+    </span><br>
+    <span class="description">{{ agenda.description|pretty_crop:100|urlize }}</span>
+    <div id="visualization-{{ agenda.id }}" style="float: left; width: 500px; height: 150px;"></div>
+    <span style="display:block; clear:both">&nbsp;</span>
+</div>
+    <script type="text/javascript">
+      $(function () {
+        var ticks = {{ party_list|safe }};
+        var data = {{ party_scores|safe }}
+        $.plot($("#visualization-{{ agenda.id }}"),
+              [{data: data, bars: {show: true}, color: 1}],
+               { xaxis: { ticks: ticks }});
+        });
+    </script>
+{% endcache %}

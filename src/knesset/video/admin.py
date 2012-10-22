@@ -1,5 +1,5 @@
-from knesset.video.models import Video
 from django.contrib import admin
+from models import Video
 
 class VideoAdmin(admin.ModelAdmin):
     pass

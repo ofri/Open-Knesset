@@ -6,9 +6,8 @@ from planet.models import Feed, Post
 from actstream import action
 from actstream.models import Follow
 from knesset.utils import cannonize, disable_for_loaddata
-from knesset.agendas.models import AgendaVote, AgendaMeeting, AgendaBill
-from knesset.agendas.models import Agenda
-from knesset.links.models import Link, LinkType
+from agendas.models import AgendaVote, AgendaMeeting, AgendaBill, Agenda
+from links.models import Link, LinkType
 
 @disable_for_loaddata
 def record_agenda_ascription_action(sender, created, instance, **kwargs):

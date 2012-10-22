@@ -9,9 +9,9 @@ from django.utils import translation
 from django.conf import settings
 
 from models import Agenda, AgendaVote
-from knesset.laws.models import Vote, VoteAction
-from knesset.mks.models import Party, Member
-from knesset.committees.models import Committee, CommitteeMeeting
+from laws.models import Vote, VoteAction
+from mks.models import Party, Member
+from committees.models import Committee, CommitteeMeeting
 just_id = lambda x: x.id
 
 class SimpleTest(TestCase):

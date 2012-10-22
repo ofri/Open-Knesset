@@ -1,10 +1,10 @@
 #encoding: utf-8
 
 from django.test import TestCase
-from knesset.video.management.commands.sub_commands.UploadCommitteesVideos import UploadCommitteesVideos
+from video.management.commands.sub_commands.UploadCommitteesVideos import UploadCommitteesVideos
 
 class UploadCommitteesVideo_test(UploadCommitteesVideos):
-    
+
     def __init__(self,
         testCase,allMmsVideos,isVideoAlreadyUploadedReturn,isAlreadyDownloadedReturn,
         uploadVideoReturn,
@@ -17,10 +17,10 @@ class UploadCommitteesVideo_test(UploadCommitteesVideos):
         self.saveVideoLog=[]
         self.deleteFileLog=[]
         UploadCommitteesVideos.__init__(self,None)
-        
+
     def _getAllMmsVideos(self):
         return self._allMmsVideos
-    
+
     def _isVideoAlreadyUploaded(self,video):
         self._testCase.assertIn(video,self._isVideoAlreadyUploadedReturn)
         return self._isVideoAlreadyUploadedReturn[video]
@@ -28,7 +28,7 @@ class UploadCommitteesVideo_test(UploadCommitteesVideos):
     def _isAlreadyDownloaded(self,filename):
         self._testCase.assertIn(filename,self._isAlreadyDownloadedReturn)
         return self._isAlreadyDownloadedReturn[filename]
-    
+
     def _uploadVideo(self,filename,video):
         self._testCase.assertIn((filename,video),self._uploadVideoReturn)
         return self._uploadVideoReturn[(filename,video)]
@@ -42,9 +42,9 @@ class UploadCommitteesVideo_test(UploadCommitteesVideos):
     def _log(self,*args,**kwargs):
         pass
         #print args[1]
-        
+
     def _check_timer(self,*args,**kwargs): pass
-    
+
     def _get_data_root(self):
         return '/data/'
 
@@ -53,12 +53,12 @@ class Video_test():
     def __init__(self,embed_link,title):
         self.embed_link=embed_link
         self.title=title
-        
+
 
 class testUploadCommitteesVideos(TestCase):
-    
+
     maxDiff=None
-    
+
     def testUploadCommitteesVideos(self):
         videos=[
             Video_test(

@@ -7,12 +7,12 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
-from knesset.laws.models import Vote, VoteAction, Bill
-from knesset.mks.models import Member,Party,WeeklyPresence
-from knesset.agendas.models import Agenda
+from laws.models import Vote, VoteAction, Bill
+from mks.models import Member,Party,WeeklyPresence
+from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
-from knesset.auxiliary.views import CsvView
+from auxiliary.views import CsvView
 
 class InternalLinksTest(TestCase):
 

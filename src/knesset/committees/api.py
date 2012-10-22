@@ -6,8 +6,8 @@ from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
 
-from knesset.api.resources.base import BaseResource
-from committees.models import Committee, CommitteeMeeting, ProtocolPart
+from apis.resources.base import BaseResource
+from models import Committee, CommitteeMeeting, ProtocolPart
 from mks.api import MemberResource
 
 

@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.files import File
 from django.contrib.sites.models import Site
 from django.template import Template, Context
-from knesset.links.models import Link, LinkType
+from links.models import Link, LinkType
 
 class TestViews(unittest.TestCase):
 
@@ -27,7 +27,7 @@ class TestViews(unittest.TestCase):
         self.type_a.image = None
         self.type_a.save()
         c = Context ({'obj': self.obj})
-        t = Template('{% load links %}{% object_links obj %}')
+        t = Template('{% load links_tags %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
         self.assertEquals(r, 
   '<ulclass="links"><li><ahref="http://www.example.com/l1">&nbsp;(a)l1</a></li></ul>')
@@ -38,7 +38,7 @@ class TestViews(unittest.TestCase):
         self.type_a.image=File(f)
         self.type_a.save()
         c = Context ({'obj': self.obj})
-        t = Template('{% load links %}{% object_links obj %}')
+        t = Template('{% load links_tags %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
         self.assertEquals(r, 
   '<ulclass="links"><li><ahref="http://www.example.com/l1">&nbsp;<imgsrc="/static/icons/testimage.png"alt="a">l1</a></li></ul>')

@@ -13,15 +13,15 @@ from tagging.utils import calculate_cloud
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 
-from knesset.hashnav.detail import DetailView
-from knesset.mks.models import Member, Party
-from knesset.mks.forms import VerbsForm
-from knesset.mks.utils import percentile
-from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
-from knesset.agendas.models import Agenda
-from knesset.auxiliary.views import CsvView
+from hashnav.detail import DetailView
+from models import Member, Party
+from forms import VerbsForm
+from utils import percentile
+from laws.models import MemberVotingStatistics, Bill, VoteAction
+from agendas.models import Agenda
+from auxiliary.views import CsvView
 
-from knesset.video.utils import get_videos_queryset
+from video.utils import get_videos_queryset
 from datetime import date, timedelta
 
 import logging

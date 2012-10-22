@@ -1,5 +1,4 @@
-import csv
-import random
+import csv, random, tagging, logging
 from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -11,25 +10,21 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, \
     HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-import tagging
-from actstream import action
-from actstream.models import Action
-from knesset.mks.models import Member
-from knesset.laws.models import Vote,Bill
-from knesset.committees.models import Topic, CommitteeMeeting
-from tagging.models import Tag, TaggedItem
-from annotatetext.views import post_annotation as annotatetext_post_annotation
-from annotatetext.models import Annotation
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import BaseListView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
+from actstream import action
+from actstream.models import Action
+from mks.models import Member
+from laws.models import Vote, Bill, get_debated_bills
+from committees.models import Topic, CommitteeMeeting, PUBLIC_TOPIC_STATUS
+from tagging.models import Tag, TaggedItem
+from annotatetext.views import post_annotation as annotatetext_post_annotation
+from annotatetext.models import Annotation
 from knesset.utils import notify_responsible_adult, main_actions
-from knesset.committees.models import PUBLIC_TOPIC_STATUS
-from knesset.laws.models import get_debated_bills
 
-import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
 def help_page(request):

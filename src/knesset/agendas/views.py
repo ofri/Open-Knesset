@@ -12,10 +12,10 @@ from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 
-from knesset.hashnav import DetailView, ListView, method_decorator
-from knesset.laws.models import Vote
-from knesset.mks.models import Member, Party
-from knesset.api.urls import vote_handler
+from hashnav import DetailView, ListView, method_decorator
+from laws.models import Vote
+from mks.models import Member, Party
+from apis.urls import vote_handler
 
 from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)

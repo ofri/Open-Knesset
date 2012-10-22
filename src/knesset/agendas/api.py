@@ -5,9 +5,9 @@ import tastypie.fields as fields
 from avatar.templatetags.avatar_tags import avatar_url
 from django.contrib.auth.models import User
 
-from knesset.agendas.models import Agenda, AgendaVote
-from knesset.api.resources.base import BaseResource
-from knesset.mks.models import Member, Party
+from models import Agenda, AgendaVote
+from apis.resources.base import BaseResource
+from mks.models import Member, Party
 
 
 class UserResource(BaseResource):

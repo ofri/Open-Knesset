@@ -4,9 +4,9 @@ import re, os, datetime, cPickle,logging
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
-from knesset.simple.management.commands import parse_knesset_bill_pdf
-from knesset.simple.management.commands.parse_government_bill_pdf import pdftools
-from knesset.simple.management.commands.parse_laws import GovProposalParser
+from simple.management.commands import parse_knesset_bill_pdf
+from simple.management.commands.parse_government_bill_pdf import pdftools
+from simple.management.commands.parse_laws import GovProposalParser
 
 logger = logging.getLogger("open-knesset.simple")
 
@@ -18,7 +18,7 @@ class SyncdataTest(TestCase):
 
     def setUp(self):
         self.dir = os.path.abspath(os.path.join(settings.PROJECT_ROOT, 'tests'))
-        
+
     def test_parse_knesset_bill_pdf_text(self):
         try:
             results = parse_knesset_bill_pdf.parse_pdf_text(os.path.join(self.dir,'knesset_proposal_366.txt'), "local-testing-cache/knesset_proposal_366.txt")
@@ -33,14 +33,13 @@ class SyncdataTest(TestCase):
             self.assertEqual(results[3]['title'], expected_title)
         except IOError:
             pass
-        
+
     def test_pdftools_version(self):
         if pdftools.PDFTOTEXT is None:
             logger.warning("no pdftotext on the system, skipping parse_government_bill_pdf tests")
             return
-        self.assertTrue(pdftools.pdftotext_version_pass())    
-    
-    
+        self.assertTrue(pdftools.pdftotext_version_pass())
+
     # this test is not being run for now. need some fixes
     def dont_run__parse_government_bill_pdf(self):
         # make sure we have poppler - if not, just pass the test with an ignore

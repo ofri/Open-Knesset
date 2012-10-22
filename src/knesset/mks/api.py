@@ -9,8 +9,8 @@ import tastypie.fields as fields
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from knesset.api.resources.base import BaseResource
-from mks.models import Member, Party
+from apis.resources.base import BaseResource
+from models import Member, Party
 from agendas.models import Agenda
 from video.utils import get_videos_queryset
 from video.api import VideoResource

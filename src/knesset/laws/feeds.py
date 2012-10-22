@@ -1,8 +1,9 @@
 from django.utils.translation import ugettext as _
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
-from knesset.laws.models import Vote, Bill
 from django.core.urlresolvers import reverse
+from models import Vote, Bill
+
 class Votes(Feed):
     title = _("Knesset Votes feed")
     author_name = _("Open Knesset")

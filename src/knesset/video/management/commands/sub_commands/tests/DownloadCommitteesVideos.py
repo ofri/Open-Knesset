@@ -1,19 +1,19 @@
 #encoding: utf-8
 
 from django.test import TestCase
-from knesset.video.management.commands.sub_commands.DownloadCommitteesVideos import DownloadCommitteesVideos
+from video.management.commands.sub_commands.DownloadCommitteesVideos import DownloadCommitteesVideos
 
 class Mms_test:
-    
+
     def __init__(self,parent):
         self._parent=parent
-    
+
     def get_size(self,url):
         return self._parent.mmsGetSize(url)
-    
+
     def resume_download(self,url,partfilename,mins_remaining):
         return self._parent.mmsResumeDownload(url,partfilename,mins_remaining)
-    
+
     def download(self,url,filename,mins_remaining):
         return self._parent.mmsDownload(url,filename,mins_remaining)
 
@@ -45,15 +45,15 @@ class DownloadCommitteesVideos_test(DownloadCommitteesVideos):
 
     def _get_data_root(self):
         return '/data/'
-    
+
     def mmsGetSize(self,url):
         self._testCase.assertIn(url,self._mmsGetSizeReturn)
         return self._mmsGetSizeReturn[url]
-    
+
     def _getFileSize(self,filename):
         self._testCase.assertIn(filename,self._getFileSizeReturn)
         return self._getFileSizeReturn[filename]
-    
+
     def mmsResumeDownload(self,url,partfilename,mins_remaining):
         self.mmsResumeDownloadLog.append((url,partfilename,mins_remaining))
         return True
@@ -61,38 +61,38 @@ class DownloadCommitteesVideos_test(DownloadCommitteesVideos):
     def mmsDownload(self,url,filename,mins_remaining):
         self.mmsDownloadLog.append((url,filename,mins_remaining))
         return True
-        
+
     def _getDownloadedFileSize(self,filename):
         self._testCase.assertIn(filename,self._getDownloadedFileSizeReturn)
         return self._getDownloadedFileSizeReturn[filename]
-    
+
     def _renameFile(self,filename,newfilename):
         self.renameFileLog.append((filename,newfilename))
-    
+
     def _debug(self,*args,**kwargs):
         pass #print args[0]
-        
+
     def _warn(self,*args,**kwargs):
         pass #print args[0]
-        
+
     def _check_timer(self):
         pass
-    
+
     def _timer_remaining(self):
         return 60
-    
+
     def _verifyDataDir(self):
         pass
 
 class Video_test():
-    
+
     def __init__(self,embed_link):
         self.embed_link=embed_link
 
 class testDownloadCommitteesVideos(TestCase):
-    
+
     maxDiff=None
-    
+
     def testDownloadCommitteesVideos(self):
         videosToDownload=[
             Video_test('mms://1.2.3.4/video1.asf'),

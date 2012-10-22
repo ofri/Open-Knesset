@@ -7,10 +7,10 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from actstream import follow,action
 from actstream.models import Action
-from knesset.mks.models import Member, Party, Membership, MemberAltname
-from knesset.mks.views import MemberListView
-from knesset.laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
-from knesset.committees.models import CommitteeMeeting,Committee
+from mks.models import Member, Party, Membership, MemberAltname
+from mks.views import MemberListView
+from laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
+from committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
@@ -20,12 +20,10 @@ from urllib import urlencode
 from backlinks.models import InboundBacklink
 from backlinks.pingback.server import PingbackServer
 from django import template
-#from knesset.mks.server_urls import mock_pingback_server
-from knesset.mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
+from mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
 from django.utils import simplejson as json
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
-
 
 just_id = lambda x: x.id
 
@@ -213,7 +211,7 @@ class MemberViewsTest(TestCase):
         self.jacob.delete()
 
 class MemberBacklinksViewsTest(TestCase):
-    urls = 'knesset.mks.server_urls'
+    urls = 'mks.server_urls'
 
     def setUp(self):
         self.party_1 = Party.objects.create(name='party 1')

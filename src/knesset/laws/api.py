@@ -4,7 +4,7 @@ API for the laws app
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
-from knesset.api.resources.base import BaseResource
+from apis.resources.base import BaseResource
 from mks.models import Member, Party
 from mks.api import MemberResource
 from video.utils import get_videos_queryset

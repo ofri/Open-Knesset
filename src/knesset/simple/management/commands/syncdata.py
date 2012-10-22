@@ -10,12 +10,12 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
-from knesset.mks.models import Member,Party,Membership,WeeklyPresence
-from knesset.persons.models import Person,PersonAlias
-from knesset.laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
+from mks.models import Member,Party,Membership,WeeklyPresence
+from persons.models import Person,PersonAlias
+from laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
      KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
-from knesset.links.models import Link
-from knesset.committees.models import Committee,CommitteeMeeting
+from links.models import Link
+from committees.models import Committee,CommitteeMeeting
 from knesset.utils import cannonize
 
 import mk_info_html_parser as mk_parser

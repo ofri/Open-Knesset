@@ -1,5 +1,5 @@
-from knesset.api.resources.base import BaseResource
-from links.models import Link
+from apis.resources.base import BaseResource
+from models import Link
 
 class LinkResource(BaseResource):
     ''' Link API

@@ -1,17 +1,17 @@
 # encoding: utf-8
 
 import os
-from knesset.video.management.commands.sub_commands import SubCommand
-from knesset.video.models import Video
 from django.contrib.contenttypes.models import ContentType
-from knesset.committees.models import Committee
-from gdata.youtube.service import YouTubeService
 from django.conf import settings
-from knesset.video.utils.youtube import UploadYoutubeVideo
-from knesset.video.utils import get_videos_queryset
+from gdata.youtube.service import YouTubeService
+from committees.models import Committee
+from video.management.commands.sub_commands import SubCommand
+from video.models import Video
+from video.utils.youtube import UploadYoutubeVideo
+from video.utils import get_videos_queryset
 
 class UploadCommitteesVideos(SubCommand):
-    
+
     def __init__(self,command):
         SubCommand.__init__(self,command)
         videos=self._getVideosToUpload()
@@ -33,10 +33,10 @@ class UploadCommitteesVideos(SubCommand):
                     self._debug('failed to upload video')
             else:
                 self._debug('file does not exist: '+filename)
-        
+
     def _deleteFile(self,filename):
         os.remove(filename)
-    
+
     def _getVideoTitleForYoutube(self,video):
         # youtube title is limited to 100 bytes
         pre=u'ישיבת '.encode('utf-8')
@@ -49,8 +49,8 @@ class UploadCommitteesVideos(SubCommand):
             if len(committee_name)>available_length:
                 committee_name=committee_name[0:available_length]
         return pre+committee_name+post
-        
-    
+
+
     def _uploadVideo(self,filename,video):
         ret=(False,0)
         if hasattr(video,'title'):
@@ -76,12 +76,12 @@ class UploadCommitteesVideos(SubCommand):
         else:
             self._warn('video does not have title ('+filename+')')
         return ret
-    
+
     def _saveVideo(self,videoFields):
         v=Video(**videoFields)
         v.save()
         return v
-                
+
     def _getPreParseVideoFields(self,video,source_id):
         return {
             'title':video.title,
@@ -90,14 +90,14 @@ class UploadCommitteesVideos(SubCommand):
             'group':'youtube_upload',
             'content_object':video,
         }
-                        
+
     def _getVideosToUpload(self):
         ret=[]
         videos=self._getAllMmsVideos()
         for video in videos:
             if not self._isVideoAlreadyUploaded(video):
                 ret.append(video)
-        return ret 
+        return ret
 
     def _getAllMmsVideos(self):
         object_type=ContentType.objects.get_for_model(Committee)
@@ -114,4 +114,3 @@ class UploadCommitteesVideos(SubCommand):
 
     def _isAlreadyDownloaded(self,filename):
         return os.path.exists(filename)
-    

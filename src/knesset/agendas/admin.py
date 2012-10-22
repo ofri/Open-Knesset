@@ -1,4 +1,4 @@
-from knesset.agendas.models import *
+from models import Agenda, AgendaVote
 
 from django.contrib import admin
 

@@ -3,10 +3,10 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from actstream import action, follow
-from knesset.mks.models import Member
-from knesset.laws.models import Bill
-from knesset.committees.models import Committee
-from knesset.agendas.models import Agenda
+from mks.models import Member
+from laws.models import Bill
+from committees.models import Committee
+from agendas.models import Agenda
 
 class TestProfile(TestCase):
 

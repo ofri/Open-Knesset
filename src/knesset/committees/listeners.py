@@ -7,7 +7,7 @@ from actstream import action, follow
 from actstream.models import Action, Follow
 from annotatetext.models import Annotation
 from knesset.utils import disable_for_loaddata
-from knesset.mks.models import Member
+from mks.models import Member
 from models import CommitteeMeeting, Topic
 
 cm_ct = None
