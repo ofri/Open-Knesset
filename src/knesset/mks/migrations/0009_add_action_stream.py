@@ -33,7 +33,7 @@ class Migration(DataMigration):
 
 
         print 'adding votes actions (may take a while)'
-        from knesset.laws.models import VOTE_ACTION_TYPE_CHOICES
+        from laws.models import VOTE_ACTION_TYPE_CHOICES
         choice_dict = dict(VOTE_ACTION_TYPE_CHOICES)
         for instance in orm['laws.VoteAction'].objects.all():
             action.send(instance.member, verb='voted',

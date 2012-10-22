@@ -1,7 +1,6 @@
-
 from south.db import db
 from django.db import models
-from knesset.laws.models import *
+from laws.models import *
 
 class Migration:
     
