@@ -94,18 +94,22 @@ class AgendaResource(BaseResource):
                 score=mks_values[mk.id]['score'],
                 rank=mks_values[mk.id]['rank'],
                 volume=mks_values[mk.id]['volume'],
+                numvotes=mks_values[mk.id]['numvotes'],
                 absolute_url=mk.get_absolute_url(),
                 party=current_party.name,
                 party_url=current_party.get_absolute_url(),
+                party_id=current_party.pk
             ))
 
         return members
 
     def dehydrate_parties(self, bundle):
+        party_values = dict(map(lambda party_data:(party_data[0],(party_data[1],party_data[2])),
+                            bundle.obj.get_party_values()))
         return [
-            dict(name=x.name, score=bundle.obj.party_score(x),
+            dict(name=x.name, score=party_values[x.pk][0], volume=party_values[x.pk][1],
                  absolute_url=x.get_absolute_url())
-            for x in Party.objects.prefetch_related('members')
+            for x in Party.objects.all()
         ]
 
     def dehydrate_votes(self, bundle):
