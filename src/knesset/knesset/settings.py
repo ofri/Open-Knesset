@@ -106,7 +106,9 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
 )
-
+LOCALE_PATHS = (
+    os.path.join(PROJECT_ROOT, 'locale'),
+)
 INSTALLED_APPS = (
     'django.contrib.auth',          # django apps
     'django.contrib.contenttypes',
