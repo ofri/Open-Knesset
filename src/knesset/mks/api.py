@@ -4,7 +4,6 @@ Api for the members app
 import urllib
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
-from django.db.models import Count
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
@@ -142,8 +141,7 @@ class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta(BaseResource.Meta):
 
-        queryset = Member.objects.annotate(
-            mmms_count=Count('mmm_documents')).select_related('current_party')
+        queryset = Member.objects.all().select_related('current_party')
 
         allowed_methods = ['get']
         ordering = [
@@ -165,6 +163,7 @@ class MemberResource(BaseResource):
     party_name = fields.CharField()
     party_url = fields.CharField()
     mmms_count = fields.IntegerField(null=True)
+    votes_count = fields.IntegerField(null=True)
 
     videos = fields.ToManyField(VideoResource,
                     attribute= lambda b: get_videos_queryset(b.obj),
@@ -194,6 +193,23 @@ class MemberResource(BaseResource):
         return bundle.obj.current_party.get_absolute_url()
 
     def dehydrate_mmms_count(self, bundle):
-        return bundle.obj.mmms_count
+        _cache_key = 'api_v2_member_mmms_' + str(bundle.obj.pk)
+        count = cache.get(_cache_key)
+
+        if count is None:
+            count = bundle.obj.mmm_documents.count()
+            cache.set(_cache_key, count, 24 * 3600)
+
+        return count
+
+    def dehydrate_votes_count(self, bundle):
+        _cache_key = 'api_v2_member_votes_' + str(bundle.obj.pk)
+        count = cache.get(_cache_key)
+
+        if count is None:
+            count = bundle.obj.votes.count()
+            cache.set(_cache_key, count, 24 * 3600)
+
+        return count
 
     fields.ToOneField(PartyResource, 'current_party', full=True)
