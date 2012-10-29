@@ -7,9 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
-
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from tagging.models import Tag
 from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
@@ -127,7 +128,6 @@ def legitimate_header(line):
 
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
-    # TODO: do we really need a date string? can't we just format date?
     date_string = models.CharField(max_length=256)
     date = models.DateField()
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
@@ -145,8 +145,14 @@ class CommitteeMeeting(models.Model):
         return truncate_words (self.topics, 12)
 
     def __unicode__(self):
-        return (u"%s - %s" % (self.committee.name,
-                                self.title())).replace("&nbsp;", u"\u00A0")
+        cn = cache.get('committee_%d_name' % self.committee_id)
+        if not cn:
+            cn = self.committee.name
+            cache.set('committee_%d_name' % self.committee_id,
+                      cn,
+                      settings.LONG_CACHE_TIME)
+        return (u"%s - %s" % (cn,
+                              self.title())).replace("&nbsp;", u"\u00A0")
 
     @models.permalink
     def get_absolute_url(self):
