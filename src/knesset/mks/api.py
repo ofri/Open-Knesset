@@ -4,6 +4,7 @@ Api for the members app
 import urllib
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.db.models import Count
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
@@ -141,7 +142,8 @@ class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta(BaseResource.Meta):
 
-        queryset = Member.objects.all().select_related('current_party')
+        queryset = Member.objects.annotate(
+            mmms_count=Count('mmm_documents')).select_related('current_party')
 
         allowed_methods = ['get']
         ordering = [
@@ -162,6 +164,7 @@ class MemberResource(BaseResource):
 
     party_name = fields.CharField()
     party_url = fields.CharField()
+    mmms_count = fields.IntegerField(null=True)
 
     videos = fields.ToManyField(VideoResource,
                     attribute= lambda b: get_videos_queryset(b.obj),
@@ -189,5 +192,8 @@ class MemberResource(BaseResource):
 
     def dehydrate_party_url(self, bundle):
         return bundle.obj.current_party.get_absolute_url()
+
+    def dehydrate_mmms_count(self, bundle):
+        return bundle.obj.mmms_count
 
     fields.ToOneField(PartyResource, 'current_party', full=True)
