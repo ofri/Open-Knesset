@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.core.management.base import NoArgsCommand
 from django.contrib.auth.models import User,Group
 from django.contrib.contenttypes.models import ContentType
