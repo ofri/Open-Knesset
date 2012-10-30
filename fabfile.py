@@ -16,7 +16,7 @@ def web_apache_cmd(cmd):
 
 def _update_commit():
 	with cd("/oknesset_web/Open-Knesset"):
-		sudo('git log --pretty=format:"Code Commit: %H <br>Last Update: %cd" -n 1 > src/knesset/templates/last_build.txt',
+		sudo('git log --pretty=format:"Code Commit: %H <br>Last Update: %cd" -n 1 > src/knesset/knesset/templates/last_build.txt',
 			user='oknesset')
 
 def _chown(to_user,directory='Open-Knesset'):
