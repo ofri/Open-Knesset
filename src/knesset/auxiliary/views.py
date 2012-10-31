@@ -20,6 +20,7 @@ from actstream.models import Action
 from mks.models import Member
 from laws.models import Vote, Bill, get_debated_bills
 from committees.models import Topic, CommitteeMeeting, PUBLIC_TOPIC_STATUS
+from agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
@@ -92,6 +93,9 @@ def main(request):
             context['bill'] = get_debated_bills()[0]
         else:
             context['bill'] = None
+        public_agenda_ids = Agenda.objects.filter(is_public=True
+                                                 ).values_list('id',flat=True)
+        context['agenda_id'] = random.choice(public_agenda_ids)
         context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
                                          .order_by('-modified')\
                                          .select_related('creator')[:10]
