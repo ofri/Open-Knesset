@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load lookup i18n tagging_tags laws_tags common_visual_elements links_tags comments user_tags hitcount_tags committees_tags %}
+{% load lookup i18n tagging_tags laws_tags bills_tags common_visual_elements links_tags comments user_tags hitcount_tags committees_tags %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -18,15 +18,15 @@
     </script>
 {% endblock %}
 {% block subnav %}
-    <a id="watch" class="button" href="."></a>
-    &bull;
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
-    &bull;
-    {% if user in object.editors.all %}
-        <a class="button" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
-    {% endif %}
 {% endblock %}
 {% block divcontent %}
+    <ul class="actions">
+        <li><span id="watch" class="awesome-button medium"></span></li>
+        {% if user in object.editors.all %}
+            <li><a class="awesome-button medium" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a></li>
+        {% endif %}
+    </ul>
     <h1>{{ object }}</h1>
     <div id="agenda-info">
         <div>
@@ -39,7 +39,13 @@
             <h2> {% trans "Description" %}</h2>
             {{ object.description|urlize|linebreaks }}
         </div>
-
+        <div>
+        {% if object.is_public %}
+            <iframe width="600" height="400" src="http://ydaniv.github.com/ok-agenda-viz/?agenda_id={{object.id}}"></iframe>
+        {% else %}
+            <p>{% trans 'Note: This agenda is private. It is only viewable by its editors. If you feel this agenda should be made public, content us at mail@oknesset.org' %}</p>
+        {% endif %}
+        </div>
         <div style="display:inline-block">
             <h3>{% trans "Members" %}</h3>
             <div class="list-wrap">
@@ -171,6 +177,32 @@
         </div>
 
         <div class="item-list">
+            <h2> {% trans "Ascribed Bills" %}</h2>
+            <table id="agenda-bills">
+                {% for agendabill in object.agendabills.all %}
+                    <tr>
+                        <td>
+                            <div class="agenda-importance">{{agendabill.get_importance_display}}</div>
+                            <div class="agenda-score{% if agendabill.score > 0 %} positive{% endif %}{% if agendabill.score < 0 %} negative{% endif %}">
+                                {{ agendabill.get_score_display }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="item {% cycle "alt" "normal" %}">
+                                {% bill_list_item agendabill.bill %}
+                                <span class="reasoning">
+                                    {{ agendabill.reasoning|urlizetrunc:"30" }}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    {% trans "No results found" %}
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="item-list">
             <h2> {% trans "Ascribed Committee Meetings" %}</h2>
             <table id="agenda-meetings">
                 {% for agendameeting in object.agendameetings.all %}
@@ -193,7 +225,6 @@
                     {% trans "No results found" %}
                 {% endfor %}
             </table>
-
         </div>
     </div> {# id="agenda-info" #}
     {% if paginator %}
