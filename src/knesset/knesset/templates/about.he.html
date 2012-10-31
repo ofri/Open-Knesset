@@ -1,4 +1,4 @@
-
+{% load tryinclude %}
     <div class="about-page">
     <p>כנסת פתוחה הוא פרויקט שמטרתו לחשוף את פעילות הכנסת לציבור.</p>
 
@@ -172,5 +172,5 @@
 
     <p><a href="http://tuzig.com" class="external">טוזיג</a> - מימון של שרתי האתר<br /><a href="http://nsa.co.il" class="external">NSA</a> - עזרה ותמיכה מחברת NSA<br /><a href="http://shop.empeeric.com" class="external">אמפיריק</a> - אירוח מפגשי המפתחים</p>
 <h2>מידע טכני</h2>
-    <p>{% include "last_build.txt" %}</p>
+    <p>{% try_to_include "last_build.txt" %}</p>
 </div>
