@@ -11,6 +11,9 @@
 {% block nav-agendas %}class="selected"{% endblock %}
 
 {% block extrahead %}
+    {% if agenda.image %}
+        <meta property="og:image" content="{{agenda.image.url}}"/>
+    {% endif %}
     <script type="text/javascript">
         $(document).ready(function() {
                 register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
