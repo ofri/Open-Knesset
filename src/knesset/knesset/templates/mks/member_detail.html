@@ -8,6 +8,7 @@
 {% endblock %}
 {% block extrahead %}
     <meta property="og:image" content="{{ object.img_url }}"/>
+    <meta name="thumbnail" content="{{ object.img_url }}" />
     <script type="text/javascript">
         $(document).ready(function() {
             register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_member|lower}}, "{% url user-follow-unfollow %}");

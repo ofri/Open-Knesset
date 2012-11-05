@@ -13,6 +13,7 @@
 {% block extrahead %}
     {% if agenda.image %}
         <meta property="og:image" content="{{agenda.image.url}}"/>
+        <meta name="thumbnail" content="{{agenda.image.url}}" />
     {% endif %}
     <script type="text/javascript">
         $(document).ready(function() {
