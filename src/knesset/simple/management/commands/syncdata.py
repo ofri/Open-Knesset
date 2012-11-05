@@ -23,6 +23,8 @@ import parse_presence, parse_laws, mk_roles_parser, parse_remote
 
 from parse_gov_legislation_comm import ParseGLC
 
+from syncdata_globals import p_explanation,strong_explanation,explanation
+
 ENCODING = 'utf8'
 
 DATA_ROOT = getattr(settings, 'DATA_ROOT',
@@ -36,11 +38,6 @@ try:
 except:
     logger.warn("can't find special committees")
     SPECIAL_COMMITTEES = {}
-
-# defines for finding explanation part in private proposals
-p_explanation = '</p><p class="explanation-header">דברי הסבר</p><p>'.decode('utf8')
-strong_explanation = re.compile('<strong>\s*ד\s*ב\s*ר\s*י\s*ה\s*ס\s*ב\s*ר\s*</strong>'.decode('utf8'),re.UNICODE)
-explanation = re.compile('ד\s*ב\s*ר\s*י\s*ה\s*ס\s*ב\s*ר'.decode('utf8'), re.UNICODE)
 
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
