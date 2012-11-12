@@ -3,7 +3,7 @@
     <ul class="links">
     {% for link in links %}
         {% if link.active %}
-        <li><a href="{{ link.url|safe }}">
+        <li><a href="{{ link.url|safe }}" target="_blank">
             {% if link.link_type %}
                 &nbsp;
                 {% if link.link_type.image %}
