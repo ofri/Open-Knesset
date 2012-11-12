@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n links_tags laws_tags common_visual_elements activity_tags pagination_tags pingback_tags trackback_tags backlinks_tags absurl cache video %}
+{% load i18n links_tags laws_tags common_visual_elements activity_tags pagination_tags pingback_tags trackback_tags backlinks_tags absurl cache video hlp %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrajs %}
@@ -276,7 +276,7 @@
                             <h3>{% trans "Attendance" %}</h3>
                             <table>
                                 <tr>
-                                    <td style="width:140px;">{% trans "Knesset presence" %}</td>
+                                    <td style="width:140px;">{% trans "Knesset presence" %}{% ht 'mk-knesset-presence' %}</td>
                                     <td style="width:200px;">
                                         {{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %}
                                     </td>
@@ -289,7 +289,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{% trans "Committee presence" %}</td>
+                                    <td>{% trans "Committee presence" %}{% ht 'mk-committee-presence' %}</td>
                                     <td>{{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %}</td>
                                     <td>
                                         <div id="monthly_percentile" class="percentile"></div>
@@ -298,7 +298,7 @@
                                 </tr>
                             </table>
                             <br/>
-                            <h3>{% trans "Bills" %}</h3>
+                            <h3>{% trans "Bills" %} {% ht 'mk-bills' %}</h3>
                             <table>
                                 <tr>
                                     <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
