@@ -14,7 +14,7 @@ If you haven't done so already:
 
 In Ubuntu this can be done with:
 
-    sudo apt-get install python python-dev python-setuptools
+    sudo apt-get install python python-dev python-setuptools python-lxml
 
 ## Installation process ##
 - `python bootstrap.py`
