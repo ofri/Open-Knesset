@@ -138,7 +138,7 @@
             <div>
                 <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>
                 {% for cm in vote.committee_meetings.all %}
-                    <a class="hashnav item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
+                    <a class="item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
                     {% if not forloop.last %} &bull; {% endif %}
                 {% endfor %}
             </div>

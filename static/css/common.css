@@ -8,6 +8,10 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 body { margin:0; padding:0; background-color:#FFFFFF; color:black; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
+
+html.rtl body { direction: rtl; }
+
+
 #container { width:90%; margin: 0 auto;}
 #homepage #container { max-width:100em; }
 
@@ -46,6 +50,8 @@ a:hover { text-decoration:underline;}
                  -moz-border-radius:0.8em 0.8em 0em 0em;
                  -webkit-border-radius:0.8em 0.8em 0em 0em;
                  border-radius:0.8em 0.8em 0em 0em;}
+html.rtl #nav-global li { float:right; }
+
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
 #nav-global a:hover { color:#0d204a; }
 #nav-global li:hover { bottom: 1px solid #000; padding-bottom: 0px;
@@ -653,6 +659,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .details ul { padding-right: 0.5em; }
 .details li { list-style-type:none; }
 .member-photo { padding-top:0.7em; display:inline-block; }
+html.rtl #member-photo { float:right; margin:0.5em;}
 .member-header { padding-right:1em; display:inline-block; }
 .pagination {padding:1em 0; margin-top: 1em; text-align:center; }
 

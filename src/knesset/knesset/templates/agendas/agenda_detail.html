@@ -66,7 +66,7 @@
                         <tr>
 			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
 			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{ selected_mk.id}}_percentile" class="percentile 
@@ -87,7 +87,7 @@
                         <tr>
 			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
 			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
@@ -107,7 +107,7 @@
                         <tr>
 			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
 			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="hashnav item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
                             <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
                             <td>
                                 <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
@@ -131,7 +131,7 @@
                 {% for selected_party_id in agendaTopParties %}
 		{% with parties|lookup:selected_party_id as selected_party %}
                     <tr>
-                        <td><a id="party-highlight-{{selected_party.id}}" href="#">#</a><a class="hashnav item dontwrap" id="party-link-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
+                        <td><a id="party-highlight-{{selected_party.id}}" href="#">#</a><a class="item dontwrap" id="party-link-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
 			{% with agenda_party_values|lookup:selected_party.id as selected_party_score %}
                         <td class="numeric">{{selected_party_score|floatformat:"0"}}%</td>
                         <td>
