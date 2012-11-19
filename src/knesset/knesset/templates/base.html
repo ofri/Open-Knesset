@@ -1,8 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">{% load i18n search %}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>{% load i18n search %}
+<html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
     <head>
-        <meta http-equiv="Content-type" content="text/html; charset=utf-8" >
+        <meta charset="utf-8" >
         <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
         <title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
         <meta NAME="ROBOTS" content="{% if debug %}NOINDEX, NOFOLLOW{% else %}ALL{% endif %}">
