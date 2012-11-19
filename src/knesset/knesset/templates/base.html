@@ -1,5 +1,5 @@
 <!DOCTYPE html>{% load i18n search %}
-<html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
+<html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}" class="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
     <head>
         <meta charset="utf-8" >
         <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
@@ -14,7 +14,7 @@
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
         <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=18" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=19" rel="stylesheet" type="text/css" media="screen" />
         <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
         {% block extracss %} {% endblock %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}img/favicon.png" />
@@ -51,15 +51,6 @@
         <script>
             $.jGrowl.defaults.position="top-left";
         </script>
-
-        {% if LANGUAGE_BIDI %}
-        <style>
-            #nav-global li { float:right; }
-            #member-photo { float:right; margin:0.5em;}
-        body { direction: rtl; }
-        </style>
-
-        {% endif %}
       {% block extrahead %}{% endblock %}
       {% if not debug %}
       <script type="text/javascript">
