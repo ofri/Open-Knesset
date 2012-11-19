@@ -7,11 +7,7 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" >
         <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
         <title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
-        {% if debug %}
-            <meta NAME="ROBOTS" content="NOINDEX, NOFOLLOW">
-        {% else %}
-            <meta name="ROBOTS" content="ALL">
-        {% endif %}
+        <meta NAME="ROBOTS" content="{% if debug %}NOINDEX, NOFOLLOW{% else %}ALL{% endif %}">
         <meta http-equiv="imagetoolbar" content="no"/>
         <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
         <meta name="MSSmartTagsPreventParsing" content="true" >
