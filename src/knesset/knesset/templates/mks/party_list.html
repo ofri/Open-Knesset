@@ -21,7 +21,7 @@
         {% for o in coalition %}
         	<tr>
                 <td>{{ forloop.counter }}.</td>
-	            <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
+	            <td><a class="item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
 	            <td>{{ o.extra }}</td>
 	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
             </tr>
@@ -36,7 +36,7 @@
         {% for o in opposition %}
         	<tr>
                 <td>{{ forloop.counter }}.</td>
-	            <td><a class="hashnav item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
+	            <td><a class="item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
 	            <td>{{ o.extra }}</td>
 	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
             </tr>

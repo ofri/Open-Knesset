@@ -2,7 +2,7 @@
 {% cache 3600 vote_list_item vote.pk LANGUAGE_CODE %}
 <div>
     <div class="date-item">{{ vote.time|date:"d/m" }}<span>{{vote.time|date:"Y"}}</span>{{vote.time|date:"H:i"}}</div>
-    <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
+    <a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
     {{ vote.title }}<br/>
     <div class="info">
         <table>
