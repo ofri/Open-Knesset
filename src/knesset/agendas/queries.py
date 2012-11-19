@@ -12,8 +12,8 @@ def getAllAgendaPartyVotes():
 PARTY_QUERY = """
 SELECT a.agendaid,
        a.partyid,
-       round(cast(coalesce(v.totalvotevalue,0.0)/a.totalscore*100.0 as numeric),2) score,
-       round(cast(coalesce(v.numvotes,0.0)/a.totalvolume*100.0 as numeric),2) volume
+       round(coalesce(cast(coalesce(v.totalvotevalue,0.0)/a.totalscore*100.0 as numeric),0.0),2) score,
+       round(coalesce(cast(coalesce(v.numvotes,0.0)/a.totalvolume*100.0 as numeric),0.0),2) volume
 FROM   (SELECT agid                   agendaid,
                m.id                   partyid,
                sc * m.number_of_seats totalscore,
@@ -73,11 +73,11 @@ def agendas_mks_grade():
 MK_QUERY = """
 SELECT a.agendaid, 
        v.memberid, 
-       Round(CAST(Coalesce(v.totalvotevalue, 0.0) / a.totalscore * 100.0 AS 
-                  NUMERIC), 2 
+       Round(Coalesce(CAST(Coalesce(v.totalvotevalue, 0.0) / a.totalscore * 100.0 AS 
+                  NUMERIC),0.0), 2 
        ) score,
-       Round(CAST(Coalesce(v.numvotes,0.0) / a.numvotes * 100.0 AS
-                  NUMERIC), 2
+       Round(Coalesce(CAST(Coalesce(v.numvotes,0.0) / a.numvotes * 100.0 AS
+                  NUMERIC),0.0), 2
        ) volume,
        CAST(Coalesce(v.numvotes,0) AS NUMERIC) numvotes 
 FROM   (SELECT agenda_id                    agendaid, 
