@@ -1,7 +1,7 @@
 {% load i18n %}
 {% for o in object_list %}
 <li class="item">
-    <a class="hashnav" id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a><br/>
+    <a id="detail-{{ o.id }}" href="{{ o.get_absolute_url }}">{{ o.title }}</a><br/>
     <div class="info">
         <p class="date">{{ o.time_string }}</p>
         {% if o.tags %}    
