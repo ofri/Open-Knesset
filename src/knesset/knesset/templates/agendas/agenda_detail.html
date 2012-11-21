@@ -172,6 +172,8 @@
                                 {{ agendavote.reasoning|urlizetrunc:"30" }}
                             </span>
                         </div>
+                        {% get_comment_count for agendavote as comment_count %}
+                        <a href="{% url agenda-vote-detail agendavote.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
                     </td>
                 </tr>
             {% empty %}
@@ -198,6 +200,8 @@
                                     {{ agendabill.reasoning|urlizetrunc:"30" }}
                                 </span>
                             </div>
+                        {% get_comment_count for agendabill as comment_count %}
+                        <a href="{% url agenda-bill-detail agendabill.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
                         </td>
                     </tr>
                 {% empty %}
@@ -223,6 +227,8 @@
                                     {{ agendameeting.reasoning }}
                                 </span>
                             </div>
+                            {% get_comment_count for agendameeting as comment_count %}
+                            <a href="{% url agenda-meeting-detail agendameeting.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
                         </td>
                     </tr>
                 {% empty %}

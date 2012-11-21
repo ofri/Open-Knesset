@@ -4,6 +4,7 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from django.contrib.auth.models import User
@@ -45,6 +46,9 @@ class AgendaVote(models.Model):
     importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
 
+    def detail_view_url(self):
+        return reverse('agenda-vote-detail', args=[self.pk])
+
     def get_score_header(self):
         return _('Position')
     def get_importance_header(self):
@@ -63,6 +67,9 @@ class AgendaMeeting(models.Model):
     score = models.FloatField(default=0.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True)
 
+    def detail_view_url(self):
+        return reverse('agenda-meeting-detail', args=[self.pk])
+
     def get_score_header(self):
         return _('Importance')
     def get_importance_header(self):
@@ -80,6 +87,9 @@ class AgendaBill(models.Model):
     score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
     importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True)
+
+    def detail_view_url(self):
+        return reverse('agenda-bill-detail', args=[self.pk])
 
     def get_score_header(self):
         return _('Position')
@@ -187,7 +197,6 @@ class AgendaManager(models.Manager):
                         enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
-
 
     def get_all_party_values(self):
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
@@ -319,7 +328,7 @@ class Agenda(models.Model):
 
     def get_all_party_values(self):
         return Agenda.objects.get_all_party_values()
-        
+
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
         votes = votes.annotate(score=Sum('agendavotes__importance'))
