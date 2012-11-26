@@ -39,24 +39,23 @@ SITE_ID = 1
 USE_I18N = True
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-DATA_ROOT = os.path.join(PROJECT_ROOT, os.path.pardir,os.path.pardir,'data','')
+BUILDOUT_ROOT = os.path.abspath(
+    os.path.join(PROJECT_ROOT, os.path.pardir, os.path.pardir))
+DATA_ROOT = os.path.join(BUILDOUT_ROOT, 'data', '')
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT,
-                                          os.path.pardir,
-                                          os.path.pardir,
-                                          os.path.pardir,
-                                          'static', ''))
+MEDIA_ROOT = os.path.join(BUILDOUT_ROOT, 'media', '')
+
+# Absolute path to location of collected static files
+STATIC_ROOT = os.path.join(BUILDOUT_ROOT, 'static_root', '')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/static/django_admin_media/'
+STATIC_URL = '/static/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '1_ovxxkf(c*z_dwv!(-=dezf#%l(po5%#zzi*su-$d*_j*1sr+'
@@ -64,8 +63,8 @@ SECRET_KEY = '1_ovxxkf(c*z_dwv!(-=dezf#%l(po5%#zzi*su-$d*_j*1sr+'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",    
-#     'django.template.loaders.eggs.load_template_source',
+    "django.template.loaders.app_directories.Loader",
+    # 'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -74,7 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware', # keep after session
+    'django.contrib.messages.middleware.MessageMiddleware',  # keep after session
     'django.middleware.csrf.CsrfViewMiddleware',
     'pagination.middleware.PaginationMiddleware',
     # make sure to keep the DebugToolbarMiddleware last
@@ -106,6 +105,11 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
 )
+
+STATICFILES_DIRS = (
+    os.path.join(BUILDOUT_ROOT, 'static'),  # Finding current static files
+)
+
 LOCALE_PATHS = (
     os.path.join(PROJECT_ROOT, 'locale'),
 )
@@ -119,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
@@ -162,14 +167,14 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-"django.contrib.auth.context_processors.auth",
-"django.core.context_processors.debug",
-"django.core.context_processors.i18n",
-"django.core.context_processors.media",
-"django.core.context_processors.request",
-"knesset.context.processor",
-"social_auth.context_processors.social_auth_by_name_backends",
-"social_auth.context_processors.social_auth_backends",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "knesset.context.processor",
+    "social_auth.context_processors.social_auth_by_name_backends",
+    "social_auth.context_processors.social_auth_backends",
 )
 INTERNAL_IPS = ()
 # Add the following line to your local_settings.py files to enable django-debug-toolar:
@@ -252,7 +257,7 @@ SOUTH_TESTS_MIGRATE = False
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
-try: 
+try:
     from local_settings import *
 except ImportError:
     pass

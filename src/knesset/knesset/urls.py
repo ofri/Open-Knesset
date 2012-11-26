@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.views.generic.simple import redirect_to, direct_to_template
 from django.views.decorators.cache import cache_page
 from django.contrib.sitemaps import views as sitemaps_views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from planet import views as planet_views
 from hitcount.views import update_hit_count_ajax
@@ -90,8 +91,4 @@ urlpatterns = patterns('',
     (r'^mmm-documents/', include('mmm.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
-if settings.LOCAL_DEV:
-    urlpatterns += patterns('django.views',
-        (r'^static/(?P<path>.*)' , 'static.serve',
-         {'document_root': settings.MEDIA_ROOT}),
-    )
+urlpatterns += staticfiles_urlpatterns()
