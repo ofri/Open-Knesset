@@ -1,6 +1,5 @@
-{% load i18n %}
-{% load avatar_tags %}
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.raty.min.js"></script>
+{% load i18n avatar_tags %}{% load static from staticfiles %}
+<script type="text/javascript" src="{% static "js/jquery.raty.min.js" %}"></script>
 <div class="item-list">
 {% for t in topics %}
     <div class="item {% cycle "normal" "alt" %}">
@@ -49,7 +48,7 @@
                 number: 7,
                 start: {{t.rating.get_rating}},
                 readOnly: true,
-                path: '{{ MEDIA_URL }}/img',
+                path: '{% static "img" %}',
                 });
         {% endfor %}
     });

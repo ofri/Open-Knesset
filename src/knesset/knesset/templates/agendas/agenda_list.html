@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load lookup i18n i18ninclude user_tags common_text_handling agendas_tags %}
+{% load static from staticfiles %}
 {% block help-section %}
     {% i18ninclude "agendas/agenda_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
@@ -8,7 +9,7 @@
 {% block description %}{% trans "Agendas" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block extrajs %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.flot.min.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery.flot.min.js" %}"></script>
 {% endblock %}
 
 {% block nav-agendas %}class="selected"{% endblock %}

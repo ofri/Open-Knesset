@@ -1,13 +1,14 @@
 {% extends "site_base.html" %}
 {% load i18n laws_tags bills_tags mks_tags links_tags voting_tags agendas_tags i18ninclude %}
+{% load static from staticfiles %}
 {% block extrajs %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
+    <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
 {% endblock %}
 {% block extrahead %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
-    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
+    <link href="{% static "css/jquery.autocomplete.css" %}" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
@@ -116,13 +117,13 @@
                 circle_y = y + circle_radius,
                 c = paper.circle(circle_x,circle_y,circle_radius);
             if ( approved == null ) {
-                im = paper.image("{{MEDIA_URL}}img/unknown.png",x,y,30,30);
+                im = paper.image("{% static "img/unknown.png" %}",x,y,30,30);
             } else if ( approved ) {
                 c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#4c4"});
-                im = paper.image("{{MEDIA_URL}}img/ok.png",x,y,30,30);
+                im = paper.image("{% static "img/ok.png" %}",x,y,30,30);
             } else {
                 c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#c44"});
-                im = paper.image("{{MEDIA_URL}}img/stop.png",x,y,30,30);
+                im = paper.image("{% static "img/stop.png" %}",x,y,30,30);
             }
             s.push(c,im);
             return s;
@@ -130,7 +131,7 @@
         $(document).ready(function() {
                 register_watch({{object.id}}, 'bill', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched|lower}}, "{% url user-follow-unfollow %}");
                 var paper = Raphael("bill-canvas", 850, 150);
-                var titles = paper.image("{{MEDIA_URL}}img/bill-view-stage-labels.png",137,10,699,130);
+                var titles = paper.image("{% static "img/bill-view-stage-labels.png" %}",137,10,699,130);
                 var rect1 = paper.my_box(105,80,"gov-decision",{% if object.gov_decisions.all %}true{% else %}false{% endif %});
                 var rect1 = paper.my_arrow(10,10,"bill-initiation", {% if object.proposals.all or object.gov_proposal %} true {% else %} false {% endif %});
                 var rect2 = paper.my_arrow(110,10,"bill-pre-vote", {% if object.pre_votes.all %} true {% else %} false {% endif %});
@@ -148,7 +149,7 @@
                 {% if object.approval_vote %}
                     var im7 = paper.approved(735,25,{{ object.approval_vote.for_votes_count }}  > {{ object.approval_vote.against_votes_count }});
                     var bg = paper.circle(70,40,38).attr({"fill":"#fff","stroke-width":"3px","stroke":"#ff8"}),
-                    law = paper.image("{{MEDIA_URL}}img/law.png",40,8,60,66);
+                    law = paper.image("{% static "img/law.png" %}",40,8,60,66);
                 {% endif %}
                 $(titles.node).attr("pointer-events","none");
 
@@ -340,7 +341,7 @@
             <h2>{% trans 'Pre Vote' %}</h2>
             {% for v in object.pre_votes.all %}
                 {% if user.is_authenticated %}
-                    <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+                    <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
                 {% endif %}
                 <a class="item" href="{% url vote-detail v.id %}">{{ v.title }} {{ v.time }}</a>({% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }})<br>
             {% empty %}
@@ -379,7 +380,7 @@
             <h2>{% trans 'First Vote' %}</h2>
             {% if object.first_vote %}
                 {% if user.is_authenticated %}
-                    <a href="{% url bill-unbind-vote object.id object.first_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+                    <a href="{% url bill-unbind-vote object.id object.first_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                 {% endif %}
                 <a class="item" href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }} {{ object.first_vote.time }}</a>({% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }})<br>
             {% else %}
@@ -410,7 +411,7 @@
             <h2>{% trans 'Bill Approval' %}</h2>
             {% if object.approval_vote %}
                 {% if user.is_authenticated %}
-                    <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{{MEDIA_URL}}img/X.png"></a>
+                    <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                 {% endif %}
                 <a class="item" href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }} {{ object.approval_vote.time }}</a>({% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }})<br>
             {% else %}

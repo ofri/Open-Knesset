@@ -1,9 +1,9 @@
 {% extends 'site_base.html' %}
-{% load i18n %}
+{% load i18n %}{% load static from staticfiles %}
 
 {% block extratitle %}{% trans 'login' %}{% endblock %}
 {% block extracss %} 
-<link href="{{ MEDIA_URL }}css/auth-buttons.css" type="text/css" rel="stylesheet" media="all" />
+<link href="{% static "css/auth-buttons.css" %}" type="text/css" rel="stylesheet" media="all" />
 {% endblock %}
 {% block content %}
 {% if user.is_authenticated %}

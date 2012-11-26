@@ -21,7 +21,7 @@ def mk(m, icons=''):
     r += '&nbsp;%(name)s</a>'
 
     c = dict(id=m.id, url=m.get_absolute_url(), name=m.name,
-             icon_path= '%s/img' % settings.MEDIA_URL)
+             icon_path= '%simg' % settings.STATIC_URL)
 
     return r % c
 
@@ -33,7 +33,7 @@ def mk_card(mk, cls=None):
 class GetMemberFor(template.Node):
     ''' usage: {% get_member_for post as var %}
     This templatetag return the member associated with a specific object
-    curently, only the Post object is supported 
+    curently, only the Post object is supported
     '''
     def __init__(self, object_var_name, return_var_name):
         self.object_var_name = object_var_name

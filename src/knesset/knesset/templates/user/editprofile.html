@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n mks_tags avatar_tags %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
 {% block extratitle %}{% trans 'User Profile' %}{% endblock %}
 {% block header %}<h1>{% trans 'User Profile' %}</h1>{% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
         <td>
             {% for member in request.user.get_profile.members %}
                 <a class="item" id="following-member-{{member.id}}" href="{{member.get_absolute_url}}">
-                <img class="unfollow" id="unfollow-member-{{member.id}}" src="{{ MEDIA_URL }}img/X.png" />
+                <img class="unfollow" id="unfollow-member-{{member.id}}" src="{% static "img/X.png" %}" />
                 {{member}}
                 </a>
             {% endfor %}
@@ -33,7 +33,7 @@
         {% endif %}
         <td>
            <a class="item" id="following-bill-{{bill.id}}" href="{{ bill.get_absolute_url }}">
-            <img class="unfollow" id="unfollow-bill-{{ bill.id }}" src="{{ MEDIA_URL }}img/X.png" />
+            <img class="unfollow" id="unfollow-bill-{{ bill.id }}" src="{% static "img/X.png" %}" />
             {{ bill }}</a>
         </td>
     </tr>
@@ -47,7 +47,7 @@
         {% endif %}
         <td>
            <a class="item" id="following-meeting-{{meeting.id}}" href="{{ meeting.get_absolute_url }}">
-            <img class="unfollow" id="unfollow-meeting-{{ meeting.id }}" src="{{ MEDIA_URL }}img/X.png" />
+            <img class="unfollow" id="unfollow-meeting-{{ meeting.id }}" src="{% static "img/X.png" %}" />
             {{ meeting }}</a>
         </td>
     </tr>

@@ -1,11 +1,12 @@
 {% extends "site_base.html" %}
 {% load i18n tagging_tags laws_tags common_visual_elements links_tags comments user_tags hitcount_tags %}
+{% load static from staticfiles %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ object.name }}, {{ member }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-agendas %}class="selected"{% endblock %}
 {% block extrahead %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
 {% endblock %}
 {% block divcontent %}
     <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>

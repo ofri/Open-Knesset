@@ -1,11 +1,11 @@
 {% extends "site_base.html" %}
-{% load i18n %}
+{% load i18n %}{% load static from staticfiles %}
 {% block extratitle %}{% trans 'Members' %}{% endblock %}
 {% block keywords %}{% trans 'Members' %}{% endblock %}
 {% block description %}{% trans 'Members' %} - {% endblock %}
 {% block extrahead %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.flot.min.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/flot_graphs.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery.flot.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/flot_graphs.js" %}"></script>
 {% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
 {% block subnav %}
