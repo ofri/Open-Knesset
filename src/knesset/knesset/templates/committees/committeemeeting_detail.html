@@ -1,19 +1,20 @@
 {% extends "site_base.html" %}
 {% load i18n comments annotatetags hashtag mks_tags agendas_tags hitcount_tags pagination_tags %}
+{% load static from staticfiles %}
 
 {% block extratitle %}{{ object.topics|safe|truncatewords:10 }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ description }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extracss %}
-    <link href="{{MEDIA_URL}}annotatetext/annotate.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="{{MEDIA_URL}}css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{% static "annotatetext/annotate.css" %}" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{% static "css/jquery.autocomplete.css" %}" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}annotatetext/annotate.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.colorPicker.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/committeemeeting_detail.js"> </script>
+    <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
+    <script type="text/javascript" src="{% static "annotatetext/annotate.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.colorPicker.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/committeemeeting_detail.js" %}"> </script>
 {% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
 {% block messages %}

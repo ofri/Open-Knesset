@@ -1,15 +1,16 @@
 {% extends "two_cols.html" %}
 {% load i18n i18ninclude tagging_tags bills_tags links_tags mks_tags agendas_tags %}
+{% load static from staticfiles %}
 {% block help-section %}{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
 {% block extrahead %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.4.custom.min.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <link href="{{MEDIA_URL}}css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="{% static "js/jquery-1.4.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.4.custom.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
+    <link href="{% static "css/jquery-ui-1.8.4.custom.css" %}" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
 {% block title %} {{ vote.title }} {% endblock %}
 {% block secondary %}
@@ -86,9 +87,9 @@
                 <div>
                 {% for m in for_votes %}
                     {% mk_card m.member %}
-                    {% if m.against_party %}<img src="/static/img/Warning.png" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
-                    {% if m.against_coalition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
-                    {% if m.against_opposition %}<img src="/static/img/Error.png" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
+                    {% if m.against_party %}<img src="{% static "img/Warning.png" %}" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
+                    {% if m.against_coalition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
+                    {% if m.against_opposition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
                 &nbsp;
                 {% endfor %}
                 </div>
@@ -110,10 +111,10 @@
                 <div>
                 {% for m in against_votes %}
                     {% mk_card m.member 'mk-card-against' %}
-                    {% if m.against_party %}<img src="/static/img/Warning.png"/ title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
-                    {% if m.against_coalition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
-                    {% if m.against_opposition %}<img src="/static/img/Error.png"/ title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
-                    {% if m.against_own_bill %}<img src="/static/img/Error-grey.png"/ title="{% trans 'Voted against own bill' %}">{% endif %}
+                    {% if m.against_party %}<img src="{% static "img/Warning.png" %}" title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
+                    {% if m.against_coalition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
+                    {% if m.against_opposition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
+                    {% if m.against_own_bill %}<img src="{% static "img/Error-grey.png" %}" title="{% trans 'Voted against own bill' %}">{% endif %}
                 &nbsp;
                 {% endfor %}
                 </div>

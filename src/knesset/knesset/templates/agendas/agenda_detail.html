@@ -1,12 +1,13 @@
 {% extends "site_base.html" %}
 {% load lookup i18n tagging_tags laws_tags bills_tags common_visual_elements links_tags comments user_tags hitcount_tags committees_tags %}
+{% load static from staticfiles %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/tagging.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+    <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
 {% endblock %}
 {% block nav-agendas %}class="selected"{% endblock %}
 

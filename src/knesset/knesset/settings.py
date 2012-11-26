@@ -40,7 +40,7 @@ USE_I18N = True
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 BUILDOUT_ROOT = os.path.abspath(
-    os.path.join(PROJECT_ROOT, os.path.pardir, os.path.pardir))
+    os.path.join(PROJECT_ROOT, os.path.pardir, os.path.pardir, os.path.pardir))
 DATA_ROOT = os.path.join(BUILDOUT_ROOT, 'data', '')
 
 # Absolute path to the directory that holds media.

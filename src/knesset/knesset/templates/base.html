@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load i18n search %}
+<!DOCTYPE html>{% load i18n search %}{% load static from staticfiles %}
 <html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}" class="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
     <head>
         <meta charset="utf-8" >
@@ -14,16 +14,16 @@
         <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
         <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
         <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
-        <link href="{{MEDIA_URL}}css/{% block cssid %}common{% endblock %}.css?v=19" rel="stylesheet" type="text/css" media="screen" />
-        <link href="{{MEDIA_URL}}css/jquery.jgrowl.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{% static "css/common.css" %}?v=19" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{% static "css/jquery.jgrowl.css" %}" rel="stylesheet" type="text/css" media="screen" />
         {% block extracss %} {% endblock %}
-        <link rel="shortcut icon" href="{{MEDIA_URL}}img/favicon.png" />
+        <link rel="shortcut icon" href="{% static "img/favicon.png" %}" />
         <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.min.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.jgrowl.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/raphael-min.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/okhelptexts.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL}}js/togglehelpextended.js"></script>
+        <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/okhelptexts.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/togglehelpextended.js" %}"></script>
         {% block extrajs %}{% endblock %}
        <script>
             $('html').ajaxSend(function(event, xhr, settings) {

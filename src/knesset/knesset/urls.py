@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.views.generic.simple import redirect_to
 from django.views.decorators.cache import cache_page
 from django.contrib.sitemaps import views as sitemaps_views
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 
 from planet import views as planet_views
 from hitcount.views import update_hit_count_ajax
@@ -90,4 +90,4 @@ urlpatterns = patterns('',
     (r'^mmm-documents/', include('mmm.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
-urlpatterns += staticfiles_urlpatterns()
+urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

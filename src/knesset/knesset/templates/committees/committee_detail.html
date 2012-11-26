@@ -1,9 +1,9 @@
 {% extends "site_base.html" %}
-{% load i18n mks_tags avatar_tags %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="{{MEDIA_URL}}js/tooltip.js"></script>
+<script type="text/javascript" src="{% static "js/tooltip.js" %}"></script>
 <script>
     function set_percent(id,value) {
         $("#percent_"+id).css('background-position',((100-value))+"px 0px");

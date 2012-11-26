@@ -1,10 +1,11 @@
 {% extends "site_base.html" %}
 {% load i18n links_tags laws_tags common_visual_elements activity_tags pagination_tags pingback_tags trackback_tags backlinks_tags absurl cache video hlp %}
+{% load static from staticfiles %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{{MEDIA_URL}}js/watch.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/bars.js"></script>
+    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
 {% endblock %}
 {% block extrahead %}
     <meta property="og:image" content="{{ object.img_url }}"/>
@@ -54,7 +55,7 @@
     <ul class="actions">
         <li>
         <li><span id="watch" class="awesome-button medium"></span></li>
-        <li><a href="{% url member-activity-feed object.id %}"><img src="{{MEDIA_URL}}icons/rss.png" style="height:2em;"></a></li>
+        <li><a href="{% url member-activity-feed object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
     </ul>
     <div class="member-photo">
         <img src="{{ object.img_url }}"/>
