@@ -88,12 +88,13 @@ def bill_inabox(bill):
     proposals = list(bill.proposals.all())
 
     proposers = bill.proposers.all()
-    bill_inabox_dict = dict({ 'MEDIA_URL' : settings.MEDIA_URL,
-                 'bill': bill,
-                 'billurl' : 'http://oknesset.org%s' % bill.get_absolute_url(),
-            'proposers_first3' : proposers[:3],
-            'proposers_count_minus3' : len(proposers) - 3,
-            'explanation' : get_explanation(bill, proposals)})
+    bill_inabox_dict = {
+        'bill': bill,
+        'billurl': 'http://oknesset.org%s' % bill.get_absolute_url(),
+        'proposers_first3': proposers[:3],
+        'proposers_count_minus3': len(proposers) - 3,
+        'explanation': get_explanation(bill, proposals),
+    }
 
     #proposal
     if proposals:
