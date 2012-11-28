@@ -2,9 +2,6 @@
 {% load i18n i18ninclude mks_tags bills_tags search hlp avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
-{% block help-section %}
-     {% i18ninclude "main_help.html" LANGUAGE_CODE %}
-{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block subnav %}
 <div style="text-align:center;">
@@ -46,6 +43,13 @@
         <!-- AddToAny END -->
     </div>
     <div id="main-help" class="display_note_outer">
+        <h2>כלים נוספים שיעזרו לכם לבחור</h2>
+        <p><a href="http://www.mitpakdim.co.il/site/primaries/app/index.html" target="_blank">המדח"כ - הכלי שעושה לכם סדר בחברי הכנסת והמועמדים</a></p>
+        <p>אתרי שאלות ותשובות <a href="http://havoda.yeda.us/" target="_blank">במפלגת העבודה</a> ו<a href="http://likud.yeda.us/" target="_blank">בליכוד</a></p>
+        <p><a href="http://us6.campaign-archive1.com/?u=83cbee60b032fa5ca7b04f098&id=278c6c9998" target="_blank">ועלון המידע של הסדנא לידע ציבורי</a></p>
+    </div>
+    <!--
+    <div id="main-help" class="display_note_outer">
         <p>תרומות כספיות יכולות לעזור לנו מאוד להמשיך בפיתוח האתר, והן גם עוזרות לנו בכך שהן מראות שהציבור איתנו.</p>
         <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
             <input type="hidden" value="_s-xclick" name="cmd">
@@ -54,6 +58,7 @@
             <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
         </form>
     </div>
+    -->
 </div>
 <div class="clear"></div>
 
