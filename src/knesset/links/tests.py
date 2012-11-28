@@ -41,7 +41,7 @@ class TestViews(unittest.TestCase):
         t = Template('{% load links_tags %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
         self.assertEquals(r,
-  '<ulclass="links"><li><ahref="http://www.example.com/l1"target="_blank">&nbsp;<imgsrc="/static/icons/testimage.png"alt="a">l1</a></li></ul>')
+  '<ulclass="links"><li><ahref="http://www.example.com/l1"target="_blank">&nbsp;<imgsrc="/media/icons/testimage.png"alt="a">l1</a></li></ul>')
 
     def tearDown(self):
         self.l1.delete()
