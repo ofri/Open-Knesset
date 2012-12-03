@@ -27,6 +27,12 @@ In Ubuntu this can be done with:
 - `vi src/knesset/local_settings.py` # create your local setting file to store a bunch of things that you do NOT want to push to everyone # NOTE: NEVER push settings.py with local changes!
 - sample input for local_settings.py: `DATABASE_NAME = '<your-local-path>dev.db'`  # Or path to database file if using sqlite3.
 
+Note: at this point the bills view is missing bills names. To fix this you can run the time intensive:
+- bin/django shell_plus
+- for bill in Bill.objects.all(): bill.save()
+or run this for just several bills:
+- for bill in Bill.objects.all()[:100]: bill.save()
+
 ## Trouble? ##
 - Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
 - currently using MySQL as the database engine is not supported
