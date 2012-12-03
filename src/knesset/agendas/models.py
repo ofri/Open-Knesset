@@ -199,11 +199,7 @@ class AgendaManager(models.Manager):
         return mks_values
 
     def get_all_party_values(self):
-        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
-        if not allAgendaPartyVotes:
-            allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
-            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
-        return allAgendaPartyVotes
+        return queries.getAllAgendaPartyVotes()
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)

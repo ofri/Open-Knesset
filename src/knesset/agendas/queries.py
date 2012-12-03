@@ -1,12 +1,17 @@
 from django.db import connection, transaction
+from django.core.cache import cache
+
 from itertools import groupby
 from operator import itemgetter
 
 def getAllAgendaPartyVotes():
-    cursor = connection.cursor()
-    cursor.execute(PARTY_QUERY)
-    results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3])),list(group))),
-                       groupby(cursor.fetchall(),key=itemgetter(0))))
+    results = cache.get('AllAgendaPartyVotes')
+    if not results:
+        cursor = connection.cursor()
+        cursor.execute(PARTY_QUERY)
+        results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3])),list(group))),
+                           groupby(cursor.fetchall(),key=itemgetter(0))))
+        cache.set('AllAgendaPartyVotes', results, 1800)
     return results
 
 PARTY_QUERY = """
@@ -63,7 +68,7 @@ FROM   (SELECT agid                   agendaid,
             AND a.partyid = v.partyid 
 ORDER BY agendaid,score desc"""
 
-def agendas_mks_grade():
+def getAllAgendaMkVotes():
     cursor = connection.cursor()
     cursor.execute(MK_QUERY)
     results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3]),int(g[4])),list(group))),
@@ -125,8 +130,11 @@ ORDER  BY agendaid,
           score DESC""" 
 
 def getAgendaEditorIds():
-    cursor = connection.cursor()
-    cursor.execute("""SELECT agenda_id,user_id FROM agendas_agenda_editors ORDER BY agenda_id""")
-    results = dict(map(lambda (key,group):(key,map(itemgetter(1),list(group))),
-                       groupby(cursor.fetchall(),key=itemgetter(0))))
+    results = cache.get('AgendaEditorIds')
+    if not results:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT agenda_id,user_id FROM agendas_agenda_editors ORDER BY agenda_id""")
+        results = dict(map(lambda (key,group):(key,map(itemgetter(1),list(group))),
+                           groupby(cursor.fetchall(),key=itemgetter(0))))
+        cache.set('AgendaEditorIds', results, 1800)
     return results

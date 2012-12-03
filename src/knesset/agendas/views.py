@@ -42,10 +42,7 @@ class AgendaListView (ListView):
         # store in context as dictionary votes[agendaid]=<votenum>
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
-        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
-        if not allAgendaPartyVotes:
-            allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
-            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+        allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
         parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
