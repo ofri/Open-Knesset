@@ -8,8 +8,8 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 
-from models import Agenda, AgendaVote
-from laws.models import Vote, VoteAction
+from models import Agenda, AgendaVote, AgendaBill, AgendaMeeting
+from laws.models import Vote, VoteAction, Bill
 from mks.models import Party, Member
 from committees.models import Committee, CommitteeMeeting
 just_id = lambda x: x.id
@@ -49,6 +49,7 @@ class SimpleTest(TestCase):
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
         self.vote_3 = Vote.objects.create(title='vote 3',time=datetime.datetime.now())
+        self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name='kill bill')
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
         self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
@@ -68,6 +69,11 @@ class SimpleTest(TestCase):
                                                       vote=self.vote_3,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
+        self.agendabill_1 = AgendaBill.objects.create(agenda=self.agenda_1,
+                                                      bill=self.bill_1,
+                                                      score=0.5,
+                                                      reasoning="agenda bill 1")
+        self.committee_1 = Committee.objects.create(name='c1')
         self.committee_1 = Committee.objects.create(name='c1')
         self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
                                  protocol_text='''jacob:
@@ -75,6 +81,11 @@ I am a perfectionist
 adrian:
 I have a deadline''')
         self.meeting_1.create_protocol_parts()
+        self.agendabill_1 = AgendaMeeting.objects.create(agenda=self.agenda_1,
+                                                      meeting=self.meeting_1,
+                                                      score=0.5,
+                                                      reasoning="agenda meeting 1")
+        self.committee_1 = Committee.objects.create(name='c1')
 
         self.domain = 'http://' + Site.objects.get_current().domain
 
@@ -132,6 +143,18 @@ I have a deadline''')
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
         self.assertEqual(len(res.context['all_mks_ids']), 2)
+
+    def testAgendaVoteDetail(self):
+        res = self.client.get(reverse('agenda-vote-detail', args=[1]))
+        self.assertEqual(res.status_code, 200)
+
+    def testAgendaBillDetail(self):
+        res = self.client.get(reverse('agenda-bill-detail', args=[1]))
+        self.assertEqual(res.status_code, 200)
+
+    def testAgendaMeetingDetail(self):
+        res = self.client.get(reverse('agenda-meeting-detail', args=[1]))
+        self.assertEqual(res.status_code, 200)
 
     def test_agenda_edit(self):
         # Try to edit agenda while not logged in

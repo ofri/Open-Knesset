@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n comments %}
     <h3>{% trans "Ascribed agendas" %}</h3>
     {% if agendas %}
         <div class="ascribed-agendas">
@@ -9,6 +9,10 @@
             <div><span class="ascribed-agenda-label">{{ agenda.get_score_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_score_display }}</span></div>
             {% if agenda.get_importance_header %}<div><span class="ascribed-agenda-label">{{ agenda.get_importance_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_importance_display }}</span></div>{% endif %}
             <div><span class="ascribed-agenda-label">{% trans "Reasoning" %}:</span><span class="ascribed-agenda-value">{{ agenda.reasoning|urlizetrunc:"30" }}</span></div>
+            </div>
+            <div>
+                {% get_comment_count for agenda as comment_count %}
+                <a href="{{ agenda.detail_view_url }}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
             </div>
         {% endfor %}
         </div>

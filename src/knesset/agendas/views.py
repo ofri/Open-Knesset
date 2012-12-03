@@ -39,7 +39,7 @@ class AgendaListView (ListView):
     def get_context(self, *args, **kwargs):
         context = super(AgendaListView, self).get_context(*args, **kwargs)
         # optimization - create query for votes per agenda
-        # store in context as dictionary votes[agendaid]=<votenum> 
+        # store in context as dictionary votes[agendaid]=<votenum>
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
@@ -134,6 +134,32 @@ class AgendaDetailView (DetailView):
         member_objects = Member.objects.all()
         membersDict = dict(map(lambda mk:(mk.id,mk),member_objects))
         context['members']=membersDict
+        return context
+
+class AgendaVoteDetailView (DetailView):
+    model = AgendaVote
+    template_name = 'agendas/agenda_vote_detail.html'
+
+class AgendaMeetingDetailView (DetailView):
+    model = AgendaMeeting
+    template_name = 'agendas/agenda_meeting_detail.html'
+
+class AgendaBillDetailView (DetailView):
+    model = AgendaBill
+    template_name = 'agendas/agenda_bill_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaBillDetailView , self).get_context_data(*args, **kwargs)
+        agendabill = context['object']
+        bill = agendabill.bill
+        agenda = agendabill.agenda
+        try:
+            context['title'] = _("Comments on agenda %(agenda)s bill %(bill)s") % {
+                  'bill':bill.full_title,
+                  'agenda':agenda.name}
+        except AttributeError:
+            context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d bill %d' % (agenda.id,bill.id))
         return context
 
 class AgendaMkDetailView (DetailView):

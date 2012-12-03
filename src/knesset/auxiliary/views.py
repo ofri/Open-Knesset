@@ -95,7 +95,8 @@ def main(request):
         #    context['bill'] = None
         #public_agenda_ids = Agenda.objects.filter(is_public=True
         #                                         ).values_list('id',flat=True)
-        #context['agenda_id'] = random.choice(public_agenda_ids)
+        #if len(public_agenda_ids) > 0:
+        #    context['agenda_id'] = random.choice(public_agenda_ids)
         #context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
         #                                 .order_by('-modified')\
         #                                 .select_related('creator')[:10]
