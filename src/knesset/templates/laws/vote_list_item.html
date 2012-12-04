@@ -1,7 +1,5 @@
-{% load i18n %}
-{% load common_visual_elements %}
-{% load laws_extra %}
-{% load bills_extra %}
+{% load cache i18n common_visual_elements laws_extra bills_extra %}{% get_current_language as LANGUAGE_CODE %}
+{% cache 3600 vote_list_item vote.pk LANGUAGE_CODE %}
 <div>
     <div class="date-item">{{ vote.time|date:"d/m" }}<span>{{vote.time|date:"Y"}}</span>{{vote.time|date:"H:i"}}</div>
     <a class="hashnav" id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
@@ -58,6 +56,7 @@
             <!--{% trans 'No tags' %}-->
         {% endif %}
     </div>
+{% endcache %}
     {% if watched_members %}
     {% if vote %}{% for s in watched_members %}{% member_stand vote s %}{% endfor %}{% endif %}
     {% else %} {% if forloop.first %}

@@ -1,14 +1,14 @@
 {% load i18n %}
     <h3>{% trans "Ascribed agendas" %}</h3>
-    {% if agendavotes %}
+    {% if agendas %}
         <table>
-        {% for agendavote in agendavotes %}
+        {% for agenda in agendas %}
             <tr><td colspan="2">
-             <a id="ascribed-agenda-{{ agendavote.agenda.id }}" href="{% url agenda-detail agendavote.agenda.id %}"/>{{ agendavote.agenda }}</a>
+             <a id="ascribed-agenda-{{ agenda.agenda.id }}" href="{% url agenda-detail agenda.agenda.id %}"/>{{ agenda.agenda }}</a>
             </td></tr>
-            <tr><th>{{ agendavote.get_score_header }}:</th><td>{{ agendavote.get_score_display }}</td></tr>
-            <tr><th>{% trans "Importance" %}:</th><td>{{ agendavote.get_importance_display }}</td></tr>
-            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agendavote.reasoning|urlizetrunc:"30" }}</td></tr>
+            <tr><th>{{ agenda.get_score_header }}:</th><td>{{ agenda.get_score_display }}</td></tr>
+            {% if agenda.get_importance_header %}<tr><th>{{ agenda.get_importance_header }}</th><td>{{ agenda.get_importance_display }}</td></tr>{% endif %}
+            <tr><th>{% trans "Reasoning" %}:</th><td>{{ agenda.reasoning|urlizetrunc:"30" }}</td></tr>
         {% endfor %}
         </table>
     {% else %}
@@ -45,7 +45,7 @@
             })
         </script>
     {% else %}
-        {% if suggest_agendas == False %}
+        {% if suggest_agendas_login %}
             <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
         {% endif %}
     {% endif %}

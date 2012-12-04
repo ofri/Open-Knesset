@@ -13,8 +13,8 @@ from django.contrib.contenttypes.models import ContentType
 from tagging.models import Tag
 from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
-from knesset.events.models import Event
-from knesset.links.models import Link
+from events.models import Event
+from links.models import Link
 
 import urllib2
 from BeautifulSoup import BeautifulSoup

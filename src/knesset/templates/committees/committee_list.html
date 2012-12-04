@@ -1,10 +1,14 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
 {% load mks %}
 {% block extratitle %}{% trans "Committees" %}{% endblock %}
 {% block keywords %}{{% trans "Committees" %}{% endblock %}
 {% block description %}{% trans "Committees" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-committees %}class="selected"{% endblock %}
+{% block help-section %}
+	 {% i18ninclude "committees/committee_list_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block divcontent %}
   <h2>{% trans "Committees" %}<span style="font-size:70%;">
 <a href="help/">({% trans "what does committees do?"%})</a></span></h2>

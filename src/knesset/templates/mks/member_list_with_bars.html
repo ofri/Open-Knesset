@@ -1,17 +1,23 @@
 {% extends "site_base.html" %}
 {% load i18n %}
+{% load i18n i18ninclude %}
 {% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{% trans 'Members' %}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-members %}class="selected"{% endblock %}
+{% block help-section %}
+	 {% i18ninclude "mks/member_list_with_bars_help.html" LANGUAGE_CODE %}
+{% endblock %}
 {% block subnav %}
         {% for link in friend_pages %}
             <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull;
         {% endfor %}
 {% endblock %}
+
 {% block divcontent %}
 
+{% include "mks/export_csv_link.html" %}
 <div class="list-wrap">
     <h1>{% trans 'Current MKs' %}</h1>
     <table>

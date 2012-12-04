@@ -26,7 +26,7 @@ class UserResource(BaseResource):
 
 class AgendaVoteResource(BaseResource):
     class Meta(BaseResource.Meta):
-        object_class = AgendaVote
+        queryset = AgendaVote.objects.select_related()
         allowed_methods = ['get']
 
     title = fields.CharField()
@@ -40,13 +40,13 @@ class AgendaTodoResource(BaseResource):
         queryset = Agenda.objects.all()
         resource_name = 'agenda-todo'
         fields = ['votes_by_conrtoversy', 'votes_by_agendas']
-    
+
     votes_by_controversy = fields.ListField()
     votes_by_agendas = fields.ListField()
-    
+
     # TODO: Make this a parameter or setting or something
     NUM_SUGGESTIONS = 10
-    
+
     def dehydrate_votes_by_agendas(self, bundle):
         votes = bundle.obj.get_suggested_votes_by_agendas(AgendaTodoResource.NUM_SUGGESTIONS)
         return self._dehydrate_votes(votes)
@@ -63,39 +63,56 @@ class AgendaTodoResource(BaseResource):
                         score=vote.score)
         return [dehydrate_vote(v) for v in votes]
 
+
 class AgendaResource(BaseResource):
     ''' Agenda API '''
     class Meta(BaseResource.Meta):
-        queryset = Agenda.objects.filter(is_public=True)
+        queryset = Agenda.objects.filter(is_public=True).prefetch_related('agendavotes__vote', 'editors')
         allowed_methods = ['get']
         include_absolute_url = True
         excludes = ['is_public']
         cache = SimpleCache(timeout = 300)
+        list_fields= ['absolute_url', 'description', 'editors', 'id', 'name', 'num_followers', 
+                      'public_owner_name', 'resource_uri', ]
 
-    editors = fields.ToManyField(UserResource,
-                    'editors',
-                    full=True)
-    votes = fields.ToManyField(AgendaVoteResource,
-                    'agendavotes',
-                    full=True)
+    #editors = fields.ToManyField(UserResource,
+    #                'editors',
+    #                full=True)
+    #votes = fields.ToManyField(AgendaVoteResource,
+    #                'agendavotes',
+    #                full=True)
 
     def dehydrate(self, bundle):
         a = bundle.obj
         mks_values = dict(a.get_mks_values())
         members = []
-        for mk in Member.objects.filter(pk__in = mks_values.keys()).select_related('current_party'):
+        for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append (dict(name=mk.name,
                     score = mks_values[mk.id]['score'],
                     rank = mks_values[mk.id]['rank'],
+                    volume = mks_values[mk.id]['volume'],
                     absolute_url = mk.get_absolute_url(),
                     party = current_party.name,
                     party_url = current_party.get_absolute_url(),
                 ))
         bundle.data['members'] = members
-        bundle.data['parties'] = map(
-                lambda x: dict(name=x.name, score=a.party_score(x),
-                    absolute_url=x.get_absolute_url()),
-                Party.objects.all())
+        bundle.data['parties'] = [
+            dict(
+                name=x.name, score=a.party_score(x),
+                absolute_url=x.get_absolute_url()
+            ) for x in Party.objects.prefetch_related('members')
+        ]
+        bundle.data['votes'] = [
+            dict(title=v.vote.title, id=v.id, importance=v.importance,
+                 score=v.score, reasoning=v.reasoning)
+            for v in bundle.obj.agendavotes.select_related()
+        ]
+
+        bundle.data['editors'] = [
+            dict(absolute_url=e.get_absolute_url(), username=e.username,
+                 avatar=avatar_url(e, 48))
+            for e in bundle.obj.editors.all()]
+
         return bundle

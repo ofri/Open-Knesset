@@ -176,7 +176,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'committeemeeting',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-obj_id':self.meeting_1.id,
                                 'form-0-weight':0.3,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
@@ -193,7 +193,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'committeemeeting',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-obj_id':self.meeting_1.id,
                                 'form-0-weight':0.3,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
@@ -210,7 +210,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'committeemeeting',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.meeting_1.id,
+                                'form-0-obj_id':self.meeting_1.id,
                                 'form-0-weight':0.3,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
@@ -231,7 +231,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'vote',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-obj_id':self.vote_1.id,
                                 'form-0-weight':1.0,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
@@ -248,7 +248,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'vote',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-obj_id':self.vote_1.id,
                                 'form-0-weight':1.0,
                                 'form-INITIAL_FORMS':1,
                                 'form-MAX_NUM_FORMS':'',
@@ -265,7 +265,7 @@ I have a deadline''')
                                {'form-0-agenda_id':self.agenda_1.id,
                                 'form-0-object_type':'vote',
                                 'form-0-reasoning':'test reasoning',
-                                'form-0-vote_id':self.vote_1.id,
+                                'form-0-obj_id':self.vote_1.id,
                                 'form-0-weight':1.0,
                                 'form-0-importance':0.3,
                                 'form-INITIAL_FORMS':1,
@@ -309,7 +309,7 @@ I have a deadline''')
     def testV2Api(self):
         res = self.client.get('/api/v2/agenda/%s/?format=json' % self.agenda_1.id)
         self.assertEqual(res.status_code, 200)
-        
+
     def _validate_vote(self, vote):
         self.assertIn('id', vote, "Got vote with no id in agenda-todo")
         self.assertIn('url', vote, "Got vote with no url in agenda-todo")
@@ -327,13 +327,13 @@ I have a deadline''')
         self.assertEqual(res.status_code, 200)
         todo = json.loads(res.content)
 
-        def _validate_vote_list(list_key):         
+        def _validate_vote_list(list_key):
             self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
             votes = todo[list_key]
             self.assertGreater(len(votes), 1, 'Too little votes returned for new agenda')
             for vote in votes:
                 self._validate_vote(vote)
-            
+
             self.assertGreaterEqual(votes[0]['score'], votes[1]['score'], "votes returned out of importance order")
 
         _validate_vote_list('votes_by_controversy')
@@ -347,7 +347,7 @@ I have a deadline''')
         self.assertEqual(res.status_code, 200)
         todo = json.loads(res.content)
 
-        def _validate_vote_list(list_key):         
+        def _validate_vote_list(list_key):
             self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
             votes = todo[list_key]
             print votes
