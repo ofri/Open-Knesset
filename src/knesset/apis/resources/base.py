@@ -1,6 +1,25 @@
+from django.conf import settings
 from tastypie.cache import SimpleCache
-from tastypie.throttle import CacheThrottle
 from tastypie.resources import ModelResource
+from tastypie.throttle import CacheThrottle
+
+# are we using DummyCache ?
+_cache = getattr(settings, 'CACHES', {})
+_cache_default = _cache.get('default')
+_is_dummy = _cache_default and _cache_default['BACKEND'].endswith('DummyCache')
+
+
+class SmartCacheThrottle(CacheThrottle):
+    "Make sure throttling works with DummyCache"
+
+    def should_be_throttled(self, identifier, **kwargs):
+        # Tastypie breaks when using dummy cache.  if cache type is dummy
+        # we'll pretend the key wasn't found
+        if _is_dummy:
+            return False
+
+        return super(SmartCacheThrottle, self).should_be_throttled(
+            identifier, **kwargs)
 
 
 class BaseResource(ModelResource):
@@ -18,7 +37,7 @@ class BaseResource(ModelResource):
 
     class Meta:
         cache = SimpleCache()
-        throttle = CacheThrottle(throttle_at=60, timeframe=60)
+        throttle = SmartCacheThrottle(throttle_at=60, timeframe=60)
 
     def get_list(self, request, **kwargs):
         """
