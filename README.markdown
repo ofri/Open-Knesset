@@ -54,12 +54,12 @@ Running the installation instructions:
 ## Before you code ##
 Get your branch updated with the changes done by others. Please do this every time before you start developing:
 
-- cd Open-Knesset
-- git pull git@github.com:hasadna/Open-Knesset.git master
-- bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
-- bin/django syncdb --migrate      # do not create a superuser account
-- bin/test                         # if there are any failures, contact the other developers to see if that's something you should worry about.
-- bin/django runserver             # now you can play with the site using your browser
+- `cd Open-Knesset`
+- `git pull git@github.com:hasadna/Open-Knesset.git master`
+- `bin/buildout`                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
+- `bin/django syncdb --migrate`      # do not create a superuser account
+- `bin/test`                         # if there are any failures, contact the other developers to see if that's something you should worry about.
+- `bin/django runserver`             # now you can play with the site using your browser
 
 if you get the add_persons_aliases alert try `bin/django migrate --fake persons 0001`
 
