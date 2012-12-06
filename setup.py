@@ -25,6 +25,7 @@ install_requires = [
     'python-memcached',
     'python-openid',
     'vobject',
+    'django-tastypie',
 ]
 setup(
         name = "Open-Knesset",
