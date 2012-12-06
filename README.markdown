@@ -2,7 +2,7 @@
 
 ## Get the code ##
 - Make sure you have git installed, and have an account on github.com. Sign into github. see http://linux.yyz.us/git-howto.html for a short list of options with git and github.com help for more.
-- Fork the repository (https://github.com/ofri/Open-Knesset, top right of page). This creates a copy of the repository under your user.
+- Fork the repository (https://github.com/hasadna/Open-Knesset, top right of page). This creates a copy of the repository under your user.
 - Clone the repository: `git clone https://github.com/your-username/Open-Knesset.git` . This creates a copy of the project on your local machine.
 If you haven't done so already:
 - `git config --local user.name "Your Name"`
@@ -55,7 +55,7 @@ Running the installation instructions:
 Get your branch updated with the changes done by others. Please do this every time before you start developing:
 
 - cd Open-Knesset
-- git pull git://github.com/ofri/Open-Knesset.git master
+- git pull git@github.com:hasadna/Open-Knesset.git master
 - bin/buildout                     # only needed if the file buildout.cfg was changed; but can't hurt you if you run it every time.
 - bin/django syncdb --migrate      # do not create a superuser account
 - bin/test                         # if there are any failures, contact the other developers to see if that's something you should worry about.
