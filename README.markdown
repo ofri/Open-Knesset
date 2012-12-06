@@ -79,10 +79,10 @@ We use south to manage database migration. The work process looks something like
 Currently, there is no need to update translation (po) files. Its a real headache to merge when there are conflicts, so simply add a note to the commit message "need translations" if you added any _('...') or {% trans '...' %} to the code.
 
 ## After you code ##
-- bin/test # make sure you didn't break anything
-- git status # to see what changes you made
-- git diff filename # to see what changed in a specific file
-- git add filename # for each file you changed/added.
-- git commit -m "commit message" # Please write a sensible commit message, and include "fix#: [number]" of the issue number you're working on (if any).
-- git push # push changes to git repo
-- go to github.com and send a "pull request" so your code will be reviewed and pulled into the main branch.
+- `bin/test` # make sure you didn't break anything
+- `git status` # to see what changes you made
+- `git diff filename` # to see what changed in a specific file
+- `git add filename` # for each file you changed/added.
+- `git commit -m` "commit message" # Please write a sensible commit message, and include "fix#: [number]" of the issue number you're working on (if any).
+- `git push` # push changes to git repo
+- go to github.com and send a "pull request" so your code will be reviewed and pulled into the main branch, make sure the base repo is *hasadna/Open-Knesset*.
