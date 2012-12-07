@@ -26,7 +26,8 @@ install_requires = [
     'python-openid',
     'vobject',
     'django-tastypie',
-    'django-ratings'
+    'django-ratings',
+    'django-hitcount',
 ]
 
 setup(
