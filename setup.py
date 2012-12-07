@@ -26,6 +26,7 @@ install_requires = [
     'python-openid',
     'vobject',
     'django-tastypie',
+    'django-ratings'
 ]
 setup(
         name = "Open-Knesset",
