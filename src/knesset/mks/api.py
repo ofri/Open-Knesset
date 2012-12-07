@@ -45,19 +45,23 @@ class MemberBillsResource(BaseResource):
     bills = fields.ListField(attribute='bills')
     tag_cloud = fields.ListField(attribute='tag_cloud')
 
-    def get_resource_uri(self, bundle_or_obj):
+    def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
         kwargs = {
             'resource_name': self._meta.resource_name,
         }
-        if isinstance(bundle_or_obj, Bundle):
-            kwargs['pk'] = bundle_or_obj.obj.id
-        else:
-            kwargs['pk'] = bundle_or_obj.id
+
+        if bundle_or_obj is not None:
+            if isinstance(bundle_or_obj, Bundle):
+                kwargs['pk'] = bundle_or_obj.obj.id
+            else:
+                kwargs['pk'] = bundle_or_obj.id
+
+            url_name = 'api_dispatch_detail'
 
         if self._meta.api_name is not None:
             kwargs['api_name'] = self._meta.api_name
 
-        return self._build_reverse_url("api_dispatch_detail", kwargs=kwargs)
+        return self._build_reverse_url(url_name, kwargs=kwargs)
 
     def get_member_data(self, member):
         bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
