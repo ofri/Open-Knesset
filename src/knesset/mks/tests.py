@@ -67,7 +67,7 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'mks/member_list_with_bars.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list),
+        self.assertItemsEqual(map(just_id, object_list),
                          [ self.mk_1.id, self.mk_2.id, ])
 
     def testMemberDetail(self):
