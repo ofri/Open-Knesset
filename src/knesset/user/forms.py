@@ -33,6 +33,18 @@ class RegistrationForm(UserCreationForm):
             profile.save()
         return user
 
+    def clean_email(self):
+        "Can't use already existing emails for registration"
+
+        email = self.cleaned_data['email']
+        exists = User.objects.filter(email=email).count()
+
+        if exists:
+            raise forms.ValidationError(_('This email is already taken'))
+
+        return email
+
+
 class EditProfileForm(forms.Form):
     email = forms.EmailField(required=False ,label=_(u'email address'),
                              help_text = _("We don't spam, and don't show your email to anyone")
