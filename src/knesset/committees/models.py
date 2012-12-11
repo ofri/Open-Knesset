@@ -17,10 +17,6 @@ from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
 
-import urllib2
-from BeautifulSoup import BeautifulSoup
-
-
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
 logger = logging.getLogger("open-knesset.committees.models")
@@ -96,7 +92,7 @@ class Committee(models.Model):
 
         trans = { #key is our id, val is knesset id
             1:'1', #כנסת
-            2:'3', #כלכלה 
+            2:'3', #כלכלה
             3:'27', #עליה
             4:'5', #הפנים
             5:'6', #החוקה
@@ -228,6 +224,9 @@ class CommitteeMeeting(models.Model):
         """
             returns any background material for the committee meeting, or [] if none
         """
+        import urllib2
+        from BeautifulSoup import BeautifulSoup
+
         time = re.findall(r'(\d\d:\d\d)',self.date_string)[0]
         date = self.date.strftime('%d/%m/%Y')
         cid = self.committee.get_knesset_id()
@@ -238,13 +237,13 @@ class CommitteeMeeting(models.Model):
             bgdata = BeautifulSoup(data.read()).findAll('a')
 
             for i in bgdata:
-                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string}) 
+                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string})
 
         return bg_links
 
     @property
     def bg_material(self):
-        return Link.objects.filter(object_pk=self.id, 
+        return Link.objects.filter(object_pk=self.id,
                     content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
 
 
