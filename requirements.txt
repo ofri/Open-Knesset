@@ -19,6 +19,7 @@ django-extensions==1.0.1
 django-pagination==1.0.7
 django-tagging==0.3.1
 django_compressor==1.2
+vobject
 feedparser
 gdata
 gunicorn
