@@ -3,7 +3,6 @@
 #
 # Left out for now from setup
 #
-# BeautifulSoup - scraping
 # mimeparse - Looks like a requirement by tastypie, will be auto installed
 # mimms - Video download
 # PIL - needed, but will cause problems for windows devs with virtualenv, will
@@ -19,6 +18,7 @@ django-extensions==1.0.1
 django-pagination==1.0.7
 django-tagging==0.3.1
 django_compressor==1.2
+BeautifulSoup
 vobject
 feedparser
 gdata
