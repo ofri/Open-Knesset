@@ -64,9 +64,16 @@ class MemberBillsResource(BaseResource):
         return self._build_reverse_url(url_name, kwargs=kwargs)
 
     def get_member_data(self, member):
-        bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
-        tag_cloud = map(lambda x: dict(size=x.font_size, count=x.count, name=x.name),
-                        calculate_cloud(bills_tags))
+        bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),
+                                                    counts=True)
+        # we'll use getattr for font_size, as it might not always be there
+        # This prevents the need of using a forked django-tagging, and go
+        # upstream
+        tag_cloud = [{
+            'size': getattr(x, 'font_size', 1),
+            'count':x.count,
+            'name':x.name} for x in calculate_cloud(bills_tags)]
+
         bills  = map(lambda b: dict(title=b.full_title,
                                     url=b.get_absolute_url(),
                                     stage=b.stage,
