@@ -1,0 +1,44 @@
+# The very basic requirements, hopefully without devel, scraping and video
+# download dependencies, others will build upon it
+#
+# Left out for now from setup
+#
+# BeautifulSoup - scraping
+# mimeparse - Looks like a requirement by tastypie, will be auto installed
+# mimms - Video download
+# PIL - needed, but will cause problems for windows devs with virtualenv, will
+#       be handled later
+# pyth - scraping
+# poppler - required only for simple/management/parse_government_bill,
+# sphinx - for building documentation
+# sphinx-html - for building documentation
+
+Django==1.4.3
+South==0.7.6
+django-extensions==1.0.1
+django-pagination==1.0.7
+-e git://github.com/akariv/django-tagging.git#egg=django-tagging
+django_compressor==1.2
+feedparser
+gdata
+gunicorn
+django-social-auth
+oauth==1.0.1
+python-dateutil==1.5
+python-memcached
+-e git://github.com/openid/python-openid.git#egg=python-openid
+django-tastypie==0.9.11
+django-ratings
+-e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
+-e git://github.com/daonb/django-activity-stream.git#egg=django-activity-stream
+-e git://github.com/daonb/django-planet.git#egg=django-planet
+-e git://github.com/ofri/django-annotatetext.git#egg=django-annotatetext
+-e git://github.com/pinax/django-mailer.git#egg=django-mailer
+-e git://github.com/ofri/django-avatar.git#egg=django-avatar
+-e git://github.com/ofri/django-backlinks.git#egg=django-backlinks
+-e git://github.com/spreeker/django-voting2.git#egg=django-voting2
+-e git://github.com/hasadna/django-piston.git#egg=django-piston
+django-debug-toolbar>=0.8.3
+nose
+django-nose
+django-devserver = 0.4.0
