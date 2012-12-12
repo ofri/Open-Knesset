@@ -30,7 +30,7 @@ python-memcached
 django-tastypie==0.9.11
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
--e git://github.com/daonb/django-activity-stream.git#egg=django-activity-stream
+-e git://github.com/MeirKriheli/django-activity-stream.git#egg=django-activity-stream
 -e git://github.com/daonb/django-planet.git#egg=django-planet
 -e git://github.com/ofri/django-annotatetext.git#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
