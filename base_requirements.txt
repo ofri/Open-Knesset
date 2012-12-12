@@ -34,7 +34,7 @@ django-ratings
 -e git://github.com/hasadna/django-planet.git#egg=django-planet
 -e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
--e git://github.com/ofri/django-avatar.git#egg=django-avatar
+-e git://github.com/hasadna/django-avatar.git#egg=django-avatar
 -e git://github.com/ofri/django-backlinks.git#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git#egg=django-piston
