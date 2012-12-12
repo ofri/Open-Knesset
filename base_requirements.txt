@@ -17,7 +17,7 @@ Django==1.4.3
 South==0.7.6
 django-extensions==1.0.1
 django-pagination==1.0.7
--e git://github.com/akariv/django-tagging.git#egg=django-tagging
+django-tagging==0.3.1
 django_compressor==1.2
 feedparser
 gdata
