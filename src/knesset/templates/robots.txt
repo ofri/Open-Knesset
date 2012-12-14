@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /users/*
-Disallow: /ajax/hit/
-Crawl-delay: 60
-
-Sitemap: http://oknesset.org/static/sitemap.xml

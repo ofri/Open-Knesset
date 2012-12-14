@@ -7,16 +7,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
-
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from tagging.models import Tag
 from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
-from knesset.events.models import Event
-from knesset.links.models import Link
+from events.models import Event
+from links.models import Link
 
-COMMITTEE_PROTOCOL_PAGINATE_BY = 400
+COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
 logger = logging.getLogger("open-knesset.committees.models")
 
@@ -55,13 +56,22 @@ class Committee(models.Model):
                     params = [ self.id ]).distinct()
 
     def members_by_presence(self):
+        n = self.meetings.count()
+        if n==0: # this committee had not meetings, can really compute presence
+                 # scores. just return all relevant mks.
+            members = (self.members.all()|
+                       self.chairpersons.all()|
+                       self.replacements.all()).distinct()
+            for m in members:
+                m.meetings_count = 0
+            return members
+        # otherwise compute presence
         members = []
         for m in (self.members.all()|
                   self.chairpersons.all()|
                   self.replacements.all()).distinct():
             m.meetings_count = \
-                100 * m.committee_meetings.filter(committee=self).count() \
-                / self.meetings.count()
+                100 * m.committee_meetings.filter(committee=self).count() / n
             members.append(m)
         members.sort(key=lambda x:x.meetings_count, reverse=True)
         return members
@@ -72,6 +82,36 @@ class Committee(models.Model):
     def future_meetings(self):
         cur_date = datetime.now()
         return self.events.filter(when__gt = cur_date)
+
+    def get_knesset_id(self):
+        """
+            return the id of the committee on the knesset website,
+            update this if any committee id is changed in the db.
+            the knesset committee id list is fixed and includes all committes ever.
+        """
+
+        trans = { #key is our id, val is knesset id
+            1:'1', #כנסת
+            2:'3', #כלכלה
+            3:'27', #עליה
+            4:'5', #הפנים
+            5:'6', #החוקה
+            6:'8', #החינוך
+            7:'10', #ביקורת המדינה
+            8:'13', #מדע
+            9:'2', #כספים
+            10:'28', #עבודה
+            11:'11', #מעמד האישה
+            12:'15', #עובדים זרים
+            13:'33', #משנה סחר בנשים
+            14:'19', #פניות הציבור
+            15:'25', #זכויות הילד
+            16:'12', #סמים
+            17:'266', #עובדים ערבים
+            18:'321', #משותפת סביבה ובריאות
+        }
+
+        return trans[self.pk]
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -84,7 +124,6 @@ def legitimate_header(line):
 
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
-    # TODO: do we really need a date string? can't we just format date?
     date_string = models.CharField(max_length=256)
     date = models.DateField()
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
@@ -102,8 +141,14 @@ class CommitteeMeeting(models.Model):
         return truncate_words (self.topics, 12)
 
     def __unicode__(self):
-        return (u"%s - %s" % (self.committee.name,
-                                self.title())).replace("&nbsp;", u"\u00A0")
+        cn = cache.get('committee_%d_name' % self.committee_id)
+        if not cn:
+            cn = self.committee.name
+            cache.set('committee_%d_name' % self.committee_id,
+                      cn,
+                      settings.LONG_CACHE_TIME)
+        return (u"%s - %s" % (cn,
+                              self.title())).replace("&nbsp;", u"\u00A0")
 
     @models.permalink
     def get_absolute_url(self):
@@ -175,6 +220,33 @@ class CommitteeMeeting(models.Model):
         ProtocolPart(meeting=self, order=i,
             header=header, body='\n'.join(section)).save()
 
+    def get_bg_material(self):
+        """
+            returns any background material for the committee meeting, or [] if none
+        """
+        import urllib2
+        from BeautifulSoup import BeautifulSoup
+
+        time = re.findall(r'(\d\d:\d\d)',self.date_string)[0]
+        date = self.date.strftime('%d/%m/%Y')
+        cid = self.committee.get_knesset_id()
+        url = 'http://www.knesset.gov.il/agenda/heb/material.asp?c=%s&t=%s&d=%s' % (cid,time,date)
+        data = urllib2.urlopen(url)
+        bg_links = []
+        if data.url == url: #if no bg material exists we get redirected to a diffrent page
+            bgdata = BeautifulSoup(data.read()).findAll('a')
+
+            for i in bgdata:
+                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string})
+
+        return bg_links
+
+    @property
+    def bg_material(self):
+        return Link.objects.filter(object_pk=self.id,
+                    content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
+
+
 class ProtocolPartManager(models.Manager):
     def list(self):
         return self.order_by("order")
@@ -188,6 +260,9 @@ class ProtocolPart(models.Model):
     objects = ProtocolPartManager()
 
     annotatable = True
+
+    class Meta:
+        ordering = ('order','id')
 
     def get_absolute_url(self):
         if self.order == 1:

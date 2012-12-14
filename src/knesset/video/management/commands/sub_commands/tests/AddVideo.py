@@ -1,10 +1,10 @@
 #encoding: utf-8
 
 from django.test import TestCase
-from knesset.video.management.commands.sub_commands.AddVideo import AddVideo
+from video.management.commands.sub_commands.AddVideo import AddVideo
 
 class AddVideo_test(AddVideo):
-    
+
     def __init__(
         self, options, testCase, getMemberObjectReturn, getYoutubeVideosReturn,
         getIsVideoExistsReturn, saveVideoReturn
@@ -16,22 +16,22 @@ class AddVideo_test(AddVideo):
         self._saveVideoReturn=saveVideoReturn
         self.saveVideoLog=[]
         AddVideo.__init__(self,options)
-    
+
     def _getMemberObject(self,**kwargs):
         params=(kwargs['id'],)
         self._testCase.assertIn(params,self._getMemberObjectReturn)
         return self._getMemberObjectReturn[params]
-    
+
     def _getYoutubeVideos(self,**kwargs):
         params=(kwargs['youtube_id_url'],)
         self._testCase.assertIn(params,self._getYoutubeVideosReturn)
         return self._getYoutubeVideosReturn[params]
-    
+
     def _isVideoExists(self,video):
         params=(video['source_id'],)
         self._testCase.assertIn(params,self._getIsVideoExistsReturn)
         return self._getIsVideoExistsReturn[params]
-    
+
     def _saveVideo(self,videoFields):
         params=(videoFields['source_id'],)
         self._testCase.assertIn(params,self._saveVideoReturn)
@@ -39,11 +39,11 @@ class AddVideo_test(AddVideo):
         return self._saveVideoReturn[params]
 
 class Options_test():
-    
+
     def __init__(self,testCase,opts):
         self._opts=opts
         self._testCase=testCase
-    
+
     def get(self,varname,default):
         params=(varname,default)
         self._testCase.assertIn(params,self._opts)
@@ -53,17 +53,17 @@ class Member_test():
     pass
 
 class Video_test():
-    
+
     def __init__(self,id):
         self.id=id
-        
+
     def save(self):
         pass
 
 class testAddVideo(TestCase):
-    
+
     testAddVideo=True
-    
+
     def testInvalidParams(self):
         options=Options_test(self,{
             ('video-link',None):None,
@@ -119,7 +119,7 @@ class testAddVideo(TestCase):
         )
         self.assertFalse(av.run())
         self.assertIn("unable to determine source type from url",av.ans)
-    
+
     def testCantFindYoutubeVideo(self):
         options=Options_test(self,{
             ('video-link',None):'http://youtube/video?v=03aA',
@@ -141,7 +141,7 @@ class testAddVideo(TestCase):
         )
         self.assertFalse(av.run())
         self.assertIn("failed to add the video",av.ans)
-        
+
     def testVideoAlreadyExists(self):
         options=Options_test(self,{
             ('video-link',None):'http://youtube/video?v=03aA',
@@ -226,9 +226,3 @@ class testAddVideo(TestCase):
             getIsVideoExistsReturn, saveVideoReturn
         )
         self.assertTrue(av.run())
-        
-        
-        
-        
-        
-        

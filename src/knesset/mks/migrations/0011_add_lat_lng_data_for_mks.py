@@ -3,8 +3,8 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from knesset.mks.static_geocoder import static_geocoder
-from knesset.mks.models import Member
+from mks.static_geocoder import static_geocoder
+from mks.models import Member
 
 
 class Migration(DataMigration):

@@ -3,9 +3,9 @@ import logging, re
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from django.db.models import Q,Max
-from knesset.committees.models import ProtocolPart
-from knesset.mks.models import Member
-from knesset.persons.models import Person,PersonAlias,Title,Role,ProcessedProtocolPart
+from committees.models import ProtocolPart
+from mks.models import Member
+from persons.models import Person,PersonAlias,Title,Role,ProcessedProtocolPart
 
 logger = logging.getLogger("open-knesset.persons.create_persons")
 

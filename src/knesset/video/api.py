@@ -1,10 +1,10 @@
 from datetime import date,timedelta
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL
-from knesset.video.models import Video
+from models import Video
 from django.contrib.contenttypes.models import ContentType
-from knesset.mks.models import Member
-from knesset.committees.models import Committee
+from mks.models import Member
+from committees.models import Committee
 from django.db.models import Q
 
 class VideoResource(ModelResource):

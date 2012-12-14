@@ -2,7 +2,7 @@ from django import forms
 from django.forms.models import modelformset_factory
 
 from models import Topic
-from knesset.links.models import Link
+from links.models import Link
 
 class EditTopicForm(forms.ModelForm):
     class Meta:

@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from django.contrib.contenttypes.models import ContentType
-from knesset.video.models import Video
+from video.models import Video
 from django.db.models import Q
 import urllib
 

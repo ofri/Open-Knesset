@@ -13,14 +13,15 @@ from tagging.utils import calculate_cloud
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 
-from knesset.hashnav.detail import DetailView
-from knesset.mks.models import Member, Party
-from knesset.mks.forms import VerbsForm
-from knesset.mks.utils import percentile
-from knesset.laws.models import MemberVotingStatistics, Bill, VoteAction
-from knesset.agendas.models import Agenda
+from hashnav.detail import DetailView
+from models import Member, Party
+from forms import VerbsForm
+from utils import percentile
+from laws.models import MemberVotingStatistics, Bill, VoteAction
+from agendas.models import Agenda
+from auxiliary.views import CsvView
 
-from knesset.video.utils import get_videos_queryset
+from video.utils import get_videos_queryset
 from datetime import date, timedelta
 
 import logging
@@ -158,24 +159,47 @@ class MemberListView(ListView):
         original_context.update(context)
         return original_context
 
+
+class MemberCsvView(CsvView):
+    model = Member
+    filename = 'members.csv'
+    list_display = (('name', _('Name')),
+                    ('bills_stats_proposed', _('Bills Proposed')),
+                    ('bills_stats_pre', _('Bills Pre-Approved')),
+                    ('bills_stats_first', _('Bills First-Approved')),
+                    ('bills_stats_approved', _('Bills Approved')),
+                    ('average_votes_per_month', _('Average Votes per Month')),
+                    ('average_weekly_presence', _('Average Weekly Presence')),
+                    ('committee_meetings_per_month',
+                     _('Committee Meetings per Month')))
+
+
 class MemberDetailView(DetailView):
 
-    model = Member
+    queryset = Member.objects.select_related('current_party', 'voting_statistics')
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
-        all_members = cache.get('all_members', None)
-        if not all_members:
-            all_members = list(Member.objects.filter(is_current=True))
-            cache.set('all_members', all_members, settings.LONG_CACHE_TIME)
-        member_count = float(len(all_members))
+        # store in instance var if needed, no need to access cache for each
+        # call.
+        #
+        # If not found in the instance, than try to get from cache (and set if
+        # not found), plus setting it as an instance var. Also removes default
+        # ordering by name (we don't need it)
+        all_members = getattr(self, '_all_members', None)
 
+        if not all_members:
+            all_members = cache.get('all_members', None)
+            if not all_members:
+                self._all_members = all_members = list(
+                    Member.objects.filter(is_current=True).order_by().values())
+                cache.set('all_members', all_members, settings.LONG_CACHE_TIME)
+
+        member_count = float(len(all_members))
         member_val = getattr(member,inprop) or 0
 
-        get_inprop = lambda x: getattr(x,inprop) or 0
-        avg = sum(map(get_inprop, all_members))
-        avg = avg / member_count
-        var = sum(map(lambda x: (get_inprop(x)-avg)**2, all_members))
-        var = var / member_count
+        avg = sum(x[inprop] or 0 for x in all_members) / member_count
+
+        var = sum(((x[inprop] or 0) - avg) ** 2 for x in all_members) / member_count
 
         outdict[outvalprop] = member_val
         outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
@@ -191,24 +215,24 @@ class MemberDetailView(DetailView):
     def get_context_data (self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
+        verbs = None
+        if 'verbs' in self.request.GET:
+            verbs_form = VerbsForm(self.request.GET)
+            if verbs_form.is_valid():
+                verbs = verbs_form.cleaned_data['verbs']
+        if verbs==None:
+            verbs = ('proposed', 'posted')
+            verbs_form = VerbsForm({'verbs': verbs})
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
             cached_context = None
         else:
             watched = False
-            cached_context = cache.get('mk_%d' % member.id, None)
+            cached_context = cache.get('mk_%d_%s' % (member.id,
+                                                     '_'.join(verbs)))
 
         if cached_context is None:
-            verbs = None
-            if 'verbs' in self.request.GET:
-                verbs_form = VerbsForm(self.request.GET)
-                if verbs_form.is_valid():
-                    verbs = verbs_form.cleaned_data['verbs']
-            if verbs==None:
-                verbs = ('proposed', 'posted')
-                verbs_form = VerbsForm({'verbs': verbs})
-
             presence = {}
             self.calc_percentile(member, presence,
                                  'average_weekly_presence_hours',
@@ -247,10 +271,11 @@ class MemberDetailView(DetailView):
                         agendas.append(watched_agenda)
             agendas.sort(key=attrgetter('score'), reverse=True)
 
-            factional_discipline = VoteAction.objects.filter(member = member, against_party=True)
+            factional_discipline = VoteAction.objects.select_related(
+                'vote').filter(member = member, against_party=True)
 
-            votes_against_own_bills = VoteAction.objects.filter(member=member,
-                                                                against_own_bill=True)
+            votes_against_own_bills = VoteAction.objects.select_related(
+                'vote').filter(member=member, against_own_bill=True)
 
             general_discipline_params = { 'member' : member }
             is_coalition = member.current_party.is_coalition
@@ -258,7 +283,8 @@ class MemberDetailView(DetailView):
                 general_discipline_params['against_coalition'] = True
             else:
                 general_discipline_params['against_opposition'] = True
-            general_discipline = VoteAction.objects.filter(**general_discipline_params)
+            general_discipline = VoteAction.objects.filter(
+                **general_discipline_params).select_related('vote')
 
             about_videos=get_videos_queryset(member,group='about')[:1]
             if len(about_videos):
@@ -275,7 +301,8 @@ class MemberDetailView(DetailView):
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
-            actions = actor_stream(member).filter(verb__in=verbs)
+            actions = actor_stream(member).filter(
+                verb__in=verbs)
             for a in actions:
                 a.actor = member
             cached_context = {'watched_member': watched,
@@ -294,7 +321,9 @@ class MemberDetailView(DetailView):
                 'num_related_videos':related_videos.count()
                }
             if not self.request.user.is_authenticated():
-                cache.set('mk_%d' % member.id, cached_context, settings.LONG_CACHE_TIME)
+                cache.set('mk_%d_%s' % (member.id, '_'.join(verbs)),
+                                        cached_context,
+                                        settings.LONG_CACHE_TIME)
         context.update(cached_context)
         return context
 
@@ -528,6 +557,15 @@ class PartyListView(ListView):
                 context['title'] = "%s" % (_('Parties by monthly committee meetings'))
 
         return context
+
+
+class PartyCsvView(CsvView):
+    model = Party
+    filename = 'parties.csv'
+    list_display = (('name', _('Name')),
+                    ('number_of_members', _('Number of Members')),
+                    ('number_of_seats', _('Number of Seats')),
+                    ('get_affiliation', _('Affiliation')))
 
 class PartyDetailView(DetailView):
     model = Party

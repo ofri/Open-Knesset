@@ -7,10 +7,12 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
-from knesset.laws.models import Vote, VoteAction, Bill
-from knesset.mks.models import Member,Party,WeeklyPresence
-from knesset.agendas.models import Agenda
+from laws.models import Vote, VoteAction, Bill
+from mks.models import Member,Party,WeeklyPresence
+from agendas.models import Agenda
+from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
+from auxiliary.views import CsvView
 
 class InternalLinksTest(TestCase):
 
@@ -51,6 +53,8 @@ class InternalLinksTest(TestCase):
         This test reads the site, starting from the main page,
         looks for links, and makes sure all internal pages return HTTP200
         """
+        from django.conf import settings
+        print settings.DEBUG
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
 
@@ -64,6 +68,7 @@ class InternalLinksTest(TestCase):
             self.assertEqual(res.status_code, 200)
             visited_links.add(page)
             for link in re.findall("href=\"(.*?)\"",res.content):
+                link = link.lower()
                 self.failUnless(link, "There seems to be an empty link in %s (href='')" % page)
                 if (link in visited_links) or (link.startswith("http")) or link.startswith("#"):
                     continue
@@ -73,6 +78,10 @@ class InternalLinksTest(TestCase):
                     link = link[1:]
                 if not link.startswith("/"): # relative
                     link = "%s%s" % (page,link)
+
+                if link.find(settings.STATIC_URL)>=0: # skip testing static files
+                    continue
+
                 links_to_visit.append(link)
 
             while links_to_visit:
@@ -87,3 +96,42 @@ class InternalLinksTest(TestCase):
         #f = open('internal_links_tested.txt','wt')
         #f.write('\n'.join(visited_links))
         #f.close()
+
+
+class SiteMapTest(TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_sitemap(self):
+        res = self.client.get(reverse('sitemap'))
+        self.assertEqual(res.status_code, 200)
+        for s in sitemaps.keys():
+            res = self.client.get(reverse('sitemaps', kwargs={'section':s}))
+            self.assertEqual(res.status_code, 200, 'sitemap %s returned %d' %
+                             (s,res.status_code))
+
+
+class CsvViewTest(TestCase):
+
+    class TestModel(object):
+        def __init__(self, value):
+            self.value = value
+
+        def squared(self):
+            return self.value ** 2
+
+    class ConcreteCsvView(CsvView):
+        filename = 'test.csv'
+        list_display = (("value", "value"),
+                        ("squared", "squared"))
+
+    def test_csv_view(self):
+        view = self.ConcreteCsvView()
+        view.model = self.TestModel
+        view.queryset = [self.TestModel(2), self.TestModel(3)]
+        response = view.dispatch(None)
+        rows = response.content.splitlines()
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[1], '2,4')
+        self.assertEqual(rows[2], '3,9')

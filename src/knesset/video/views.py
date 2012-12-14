@@ -1,7 +1,7 @@
-import json
-from knesset.hashnav import ListView
+from django.utils import simplejson as json
+from hashnav import ListView
 from django.http import HttpResponse
-from knesset.video.models import Video
+from models import Video
 
 class VideoListView (ListView):
     def GET(self, *args, **kwargs):
@@ -9,7 +9,7 @@ class VideoListView (ListView):
         #    raise Exception('You must be logged in')
         #if (not self.request.user.is_staff())
         # self.request.user
-        # self.extra_context        
+        # self.extra_context
         self.extra_context['user']=self.request.user
         return super(VideoListView, self).GET(*args,**kwargs)
 

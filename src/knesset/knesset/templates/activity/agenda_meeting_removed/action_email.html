@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with action.target.get_absolute_url as url and action.target.topics|truncatewords:12 as meeting %}
+A meeting has been removed from the agenda: <a href="http://{{domain}}{{ url }}">{{ meeting }}</a>
+{% endblocktrans %}<br>

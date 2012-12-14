@@ -1,5 +1,6 @@
 # encoding: utf-8
 from datetime import date,datetime
+import urllib
 from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -12,9 +13,8 @@ from django.utils import simplejson as json
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 
-from knesset.laws.models import Vote,Law, Bill,KnessetProposal
-from knesset.mks.models import Member, Party, Membership
-
+from laws.models import Vote,Law, Bill,KnessetProposal
+from mks.models import Member, Party, Membership
 
 just_id = lambda x: x.id
 APP='laws'
@@ -51,12 +51,12 @@ class BillViewsTest(TestCase):
         self.assertTemplateUsed(res, 'laws/bill_list.html')
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id ])
+                         [ self.bill_3.id, self.bill_2.id, self.bill_1.id ])
     def testBillListByStage(self):
         res = self.client.get(reverse('bill-list'), {'stage': 'all'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list),
-                         [ self.bill_1.id, self.bill_2.id, self.bill_3.id])
+                         [ self.bill_3.id, self.bill_2.id, self.bill_1.id])
         res = self.client.get(reverse('bill-list'), {'stage': '1'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
@@ -384,6 +384,8 @@ class APIv2Test(TestCase):
         # Membership.objects.create(member=self.mk_1, party=self.party_1)
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name="The Bill")
         self.bill_1.proposers.add(self.mk_1)
+        self.bill_2 = Bill.objects.create(stage='2', title='bill 2',
+                popular_name="Another Bill")
         self.kp_1 = KnessetProposal.objects.create(booklet_number=2,
                                                    bill=self.bill_1,
                                                    date=date.today())
@@ -401,7 +403,6 @@ class APIv2Test(TestCase):
 
     def test_bill_resource(self):
         uri = '%s/bill/%s/' % (self.url_prefix, self.bill_1.id)
-        from sys import stderr ; stderr.write(uri)
         res = self.client.get(uri, format='json')
         self.assertEqual(res.status_code,200)
         data = json.loads(res.content)
@@ -409,11 +410,29 @@ class APIv2Test(TestCase):
         self.assertEqual(int(data['id']), self.bill_1.id)
         self.assertEqual(data['title'], "bill 1")
 
+    def test_bill_list(self):
+        uri = reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
+                                                    'api_name': 'v2'})
+        res = self.client.get(uri, format='json')
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['meta']['total_count'], 2)
+        self.assertEqual(len(data['objects']), 2)
+
+    def test_bill_list_for_proposer(self):
+        uri = reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
+                                                    'api_name': 'v2'})
+        res = self.client.get(uri, dict(proposer=self.mk_1.id, format='json'))
+        self.assertEqual(res.status_code,200)
+        data = json.loads(res.content)
+        self.assertEqual(data['meta']['total_count'], 1)
+        self.assertEqual(len(data['objects']), 1)
 
     def tearDown(self):
         self.vote_1.delete()
         self.vote_2.delete()
         self.bill_1.delete()
+        self.bill_2.delete()
         self.law_1.delete()
         self.mk_1.delete()
         self.party_1.delete()

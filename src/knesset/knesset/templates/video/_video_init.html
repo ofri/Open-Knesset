@@ -1,0 +1,10 @@
+{% load static from staticfiles %}
+<script type='text/javascript'>
+    $(function(){
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src="{% static "js/video.js" %}";
+        script.async = true;
+        document.getElementsByTagName('head')[0].appendChild(script);
+    });
+</script>

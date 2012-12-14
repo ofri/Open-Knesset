@@ -6,7 +6,7 @@
 import re,urllib2,subprocess,logging,sys,traceback
 from datetime import date
 from knesset.utils import clean_string
-from knesset.simple.management.commands.parse_government_bill_pdf import pdftools
+from simple.management.commands.parse_government_bill_pdf import pdftools
 
 logger = logging.getLogger("open-knesset.parse_knesset_bill_pdf")
 

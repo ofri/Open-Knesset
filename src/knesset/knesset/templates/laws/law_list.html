@@ -1,0 +1,20 @@
+{% extends "site_base.html" %}
+{% load i18n laws_tags %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-laws %}class="selected"{% endblock %}
+{% block divcontent %}
+	<div class="item-list">
+        {% for o in object_list %}
+            <div class="item">
+                <a id="detail-{{ o.id }}" href="{% url law-detail o.id %}">{{ o.title }}</a><br/>
+            </div>
+        {% empty %}
+            {% trans "No results found" %}
+        {% endfor %}
+	</div>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}

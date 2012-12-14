@@ -1,7 +1,7 @@
 
 from south.db import db
 from django.db import models
-from knesset.links.models import *
+from links.models import *
 
 class Migration:
     

@@ -2,7 +2,7 @@
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
 from django.views.generic.simple import redirect_to
-from knesset.hashnav import ListView
+from hashnav import ListView
 from models import *
 from views import *
 import feeds
@@ -27,6 +27,7 @@ lawsurlpatterns = patterns ('',
     url(r'^bill/auto_complete/$', bill_auto_complete, name='bill-auto-complete'),
     url(r'^bill/(?P<slug>[\w\-\"]+)/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail-with-slug'),
     url(r'^vote/$', vote_list_view, name='vote-list'),
+    url(r'^vote/csv$', VoteCsvView.as_view()),
     url(r'^vote/tag/$', vote_tags_cloud, name='vote-tags-cloud'),
     url(r'^vote/rss/$', feeds.Votes(), name='votes-feed'),
     url(r'^vote/tag/(?P<tag>.*)/$', vote_tag, name='vote-tag'),

@@ -2,7 +2,7 @@
 
 import gdata.youtube.service
 import urlparse
-from knesset.video.management.commands.sub_commands import SubCommand
+from video.management.commands.sub_commands import SubCommand
 
 class GetYoutubeToken(SubCommand):
 

@@ -1,14 +1,14 @@
 # encoding: utf-8
 
-from knesset.video.management.commands.sub_commands import SubCommand
-from knesset.video.utils.youtube import GetYoutubeVideos
-from knesset.mks.models import Member
-from knesset.video.utils.parse_dict import validate_dict
-from knesset.video.utils import get_videos_queryset
-from knesset.video.models import Video
+from video.management.commands.sub_commands import SubCommand
+from video.utils.youtube import GetYoutubeVideos
+from mks.models import Member
+from video.utils.parse_dict import validate_dict
+from video.utils import get_videos_queryset
+from video.models import Video
 
 class UpdateMembersRelatedVideos(SubCommand):
-    
+
     def __init__(self,command,members=None):
         SubCommand.__init__(self,command)
         if members is None: members=Member.objects.all()
@@ -24,7 +24,7 @@ class UpdateMembersRelatedVideos(SubCommand):
             if len(relvids)>0:
                 for video in relvids:
                     self._update_member_related_video(member,video)
-                
+
     def _getVideosForMember(self,name):
         return self._getYoutubeVideos(q='"'+name+'"',max_results=15,limit_time='this_month')
 
@@ -52,17 +52,17 @@ class UpdateMembersRelatedVideos(SubCommand):
             'title':video['title'],
             'description':video['description'],
             'link':video['link'],
-            'source_type':'youtube', 
+            'source_type':'youtube',
             'source_id':video['id'],
             'published':video['published'],
-            'group':'related', 
+            'group':'related',
             'content_object':member
         }
-        
+
     def _isMemberHaveVideo(self,member,video):
         return self._getMemberExistingVideosCount(
-            ignoreHide=True, member=member, 
-            source_id=video['id'], 
+            ignoreHide=True, member=member,
+            source_id=video['id'],
             source_type='youtube',
         )>0
 

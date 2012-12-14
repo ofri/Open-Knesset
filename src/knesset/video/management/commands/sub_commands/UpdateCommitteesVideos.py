@@ -1,11 +1,11 @@
 # encoding: utf-8
 
-from knesset.video.management.commands.sub_commands import SubCommand
-from knesset.committees.models import Committee
+from video.management.commands.sub_commands import SubCommand
+from committees.models import Committee
 from BeautifulSoup import BeautifulSoup
 import urllib,re,datetime,traceback,sys
-from knesset.video.utils import get_videos_queryset
-from knesset.video.models import Video
+from video.utils import get_videos_queryset
+from video.models import Video
 
 class UpdateCommitteesVideos(SubCommand):
 

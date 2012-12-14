@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
 from djangoratings.views import AddRatingFromModel
 
-from knesset.hashnav import DetailView
+from hashnav import DetailView
 from models import *
 from views import *
 

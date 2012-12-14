@@ -1,4 +1,6 @@
 #encoding: utf-8
+import urllib, urllib2, difflib, logging, datetime
+from time import mktime
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
@@ -22,20 +24,13 @@ import tagging
 import voting
 from actstream import action
 from knesset.utils import limit_by_request, notify_responsible_adult
-from knesset.laws.models import *
-from knesset.mks.models import Member
-from knesset.tagvotes.models import TagVote
-from knesset.hashnav import DetailView, ListView
-from knesset.agendas.models import Agenda,UserSuggestedVote
-
-import urllib
-import urllib2
-import difflib
-import logging
-import datetime
-from time import mktime
-
-from forms import VoteSelectForm
+from mks.models import Member
+from tagvotes.models import TagVote
+from hashnav import DetailView, ListView
+from agendas.models import Agenda,UserSuggestedVote
+from auxiliary.views import CsvView
+from forms import VoteSelectForm, BillSelectForm
+from models import *
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -162,6 +157,23 @@ def vote_tag(request, tag):
 
 
 
+def votes_to_bar_widths(v_count, v_for, v_against):
+    """ a helper function to compute presentation widths for user votes bars.
+        v_count - the total votes count
+        v_for - votes for
+        v_against - votes against
+        returns: a tuple (width of for bar, width of against bar) in percent
+
+    """
+    m = 12 # minimal width for small bar
+    T = 96 # total width for the 2 bars
+    if v_count: # use votes/count, with margin m
+        width_for = min(max(int(float(v_for) / v_count * T), m), 100-m)
+    else: # 0 votes, use 50:50 width
+        width_for = round(T/2)
+    width_against = T-width_for
+    return (width_for, width_against)
+
 class BillDetailView (DetailView):
     allowed_methods = ['get', 'post']
     model = Bill
@@ -179,10 +191,13 @@ class BillDetailView (DetailView):
         if bill.popular_name:
             context["keywords"] = bill.popular_name
         if self.request.user.is_authenticated():
-            p = self.request.user.get_profile()
-            context['watched'] = bill in p.bills
+            userprofile = self.request.user.get_profile()
+            context['watched'] = bill in userprofile.bills
         else:
             context['watched'] = False
+            userprofile = None
+
+        # compute data for user votes on this bill
         context['proposers'] = bill.proposers.select_related('current_party')
         votes = voting.models.Vote.objects.get_object_votes(bill)
         if 1 not in votes: votes[1] = 0
@@ -192,18 +207,44 @@ class BillDetailView (DetailView):
                  'against': votes[-1],
                  'total': votes[1] - votes[-1],
                  'count': count}
-        if count:
-            # use votes/count, with min 10 and max 90
-            score['for_percent'] = min(max(int(float(votes[1]) / count * 99),
-                                           9),
-                                       89)
-            score['against_percent'] = min(max(int(float(votes[-1]) / count * 99),
-                                               9),
-                                           89)
-        else: # 0 votes, use 50:50 width
-            score['for_percent'] = 49
-            score['against_percent'] = 49
+        (score['for_percent'], score['against_percent']) = votes_to_bar_widths(
+            count, score['for'], score['against'])
+
+        # Count only votes by users that are members of parties
+        party_member_votes = voting.models.Vote.objects.get_for_object(
+                    bill).filter(user__profiles__party__isnull=False,
+                                 is_archived=False)
+        votes_for = party_member_votes.filter(direction=1).count()
+        votes_against = party_member_votes.filter(direction=-1).count()
+        count = votes_for + votes_against
+        party_voting_score = {'for': votes_for, 'against': votes_against,
+                              'total': votes_for - votes_against,
+                              'count': count}
+        (party_voting_score['for_percent'], party_voting_score['against_percent']) = votes_to_bar_widths(
+            count, party_voting_score['for'], party_voting_score['against'])
+
+        # Count only votes by users that are members of the party of the viewing
+        # user
+        if userprofile and userprofile.party:
+            user_party_member_votes = voting.models.Vote.objects.get_for_object(
+                        bill).filter(user__profiles__party=userprofile.party,
+                                     is_archived=False)
+            votes_for = user_party_member_votes.filter(direction=1).count()
+            votes_against = user_party_member_votes.filter(direction=-1).count()
+            count = votes_for + votes_against
+            user_party_voting_score = {'for': votes_for, 'against': votes_against,
+                                       'total': votes_for - votes_against,
+                                       'count': count}
+            (user_party_voting_score['for_percent'],
+             user_party_voting_score['against_percent']) = votes_to_bar_widths(
+                count, user_party_voting_score['for'], user_party_voting_score['against'])
+        else:
+            user_party_voting_score = None
+
+
         context['voting_score'] = score
+        context['party_voting_score'] = party_voting_score
+        context['user_party_voting_score'] = user_party_voting_score
         context['tags'] = list(bill.tags)
         return context
 
@@ -271,16 +312,12 @@ def bill_unbind_vote(request, object_id, vote_id):
 
 
 class BillListView (ListView):
+
     friend_pages = [
             ('stage','all',_('All stages')),
     ]
     friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
 
-    bill_stages = { 'proposed':Q(stage__isnull=False),
-                    'pre':Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'first':Q(stage='4')|Q(stage='5')|Q(stage='6'),
-                    'approved':Q(stage='6'),
-                  }
     bill_stages_names = { 'proposed':_('(Bills) proposed'),
                           'pre':_('(Bills) passed pre-vote'),
                           'first':_('(Bills) passed first vote'),
@@ -288,27 +325,30 @@ class BillListView (ListView):
                         }
 
     def get_queryset(self):
-        stage = self.request.GET.get('stage', False)
-        booklet = self.request.GET.get('booklet', False)
+
         member = self.request.GET.get('member', False)
+        options = {}
         if member:
             try:
                 member = int(member)
             except ValueError:
                 raise Http404(_('Invalid member id'))
             member = get_object_or_404(Member, pk=member)
-            qs = member.bills.all()
+            qs = member.bills
         else:
-            qs = self.queryset._clone()
-        if stage and stage!='all':
-            if stage in self.bill_stages:
-                qs = qs.filter(self.bill_stages[stage])
-            else:
-                qs = qs.filter(stage=stage)
-        elif booklet:
-            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id',flat=True)
-            qs = qs.filter(knesset_proposal__in=kps)
-        return qs.order_by('-stage_date')
+            qs = Bill.objects
+
+        form = self._get_filter_form()
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+
+        return qs.filter_and_order(**options)
+
+    def _get_filter_form(self):
+        form = BillSelectForm(self.request.GET) if self.request.GET \
+                else BillSelectForm()
+        return form
 
     def get_context(self):
         context = super(BillListView, self).get_context()
@@ -337,6 +377,7 @@ class BillListView (ListView):
                 context['title'] = _('Bills by %(member)s') % {'member':context['member'].name}
 
         context['friend_pages'] = r
+        context['form'] = self._get_filter_form()
         return context
 
 class VoteListView(ListView):
@@ -366,7 +407,34 @@ class VoteListView(ListView):
             context['watched_members'] = False
 
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
         return context
+
+
+class VoteCsvView(CsvView):
+    model = Vote
+    filename = 'votes.csv'
+    list_display = (('title', _('Title')),
+                    ('vote_type', _('Vote Type')),
+                    ('time', _('Time')),
+                    ('votes_count', _('Votes Count')),
+                    ('for_votes_count', _('For')),
+                    ('against_votes_count', _('Against')),
+                    ('against_party', _('Votes Against Party')),
+                    ('against_coalition', _('Votes Against Coalition')),
+                    ('against_opposition', _('Votes Against Opposition')),
+                    ('against_own_bill', _('Votes Against Own Bill')))
+
+    def get_queryset(self, **kwargs):
+        form = VoteSelectForm(self.request.GET or {})
+
+        if form.is_bound and form.is_valid():
+            options = form.cleaned_data
+        else:
+            options = {}
+
+        return Vote.objects.filter_and_order(**options)
+
 
 class VoteDetailView(DetailView):
     model = Vote
@@ -375,27 +443,54 @@ class VoteDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(VoteDetailView, self).get_context_data(*args, **kwargs)
         vote = context['vote']
-        context['title'] = vote.title
 
         related_bills = list(vote.bills_pre_votes.all())
         if Bill.objects.filter(approval_vote=vote).count()>0:
             related_bills.append(vote.bill_approved)
         if Bill.objects.filter(first_vote=vote).count()>0:
             related_bills.extend(vote.bills_first.all())
-        context['bills'] = related_bills
 
+        for_votes = vote.for_votes().select_related('member','member__current_party')
+        against_votes = vote.against_votes().select_related('member','member__current_party')
+
+        try:
+            next_v = vote.get_next_by_time()
+            next_v = next_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            next_v = None
+        try:
+            prev_v = vote.get_previous_by_time()
+            prev_v = prev_v.get_absolute_url()
+        except Vote.DoesNotExist:
+            prev_v = None
+
+        c = {'title':vote.title,
+             'bills':related_bills,
+             'for_votes':for_votes,
+             'against_votes':against_votes,
+             'next_v':next_v,
+             'prev_v':prev_v,
+             'tags':vote.tags,
+            }
+        context.update(c)
         return context
 
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         object_id = kwargs['pk']
-        if not object_id:
+        try:
+            object_id = int(kwargs['pk'])
+        except:
             return HttpResponseBadRequest()
         user_input_type = request.POST.get('user_input_type',None)
         vote = get_object_or_404(Vote, pk=object_id)
         mk_names = Member.objects.values_list('name',flat=True)
         if user_input_type == 'agenda':
-            agenda = Agenda.objects.get(pk=request.POST.get('agenda'))
+            try:
+                agenda_id = int(request.POST.get('agenda'))
+            except:
+                return HttpResponseBadRequest()
+            agenda = Agenda.objects.get(pk=agenda_id)
             reasoning = request.POST.get('reasoning','')
             usv = UserSuggestedVote.objects.filter(user = request.user,
                                 agenda = agenda,

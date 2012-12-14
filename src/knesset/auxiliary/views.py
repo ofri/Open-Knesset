@@ -1,4 +1,4 @@
-import random
+import csv, random, tagging, logging
 from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -7,27 +7,25 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden, HttpResponseRedirect, \
-    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest
+    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-import tagging
-import voting
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import BaseListView
+from django.views.generic.list import ListView
+from django.contrib.comments.models import Comment
 from actstream import action
 from actstream.models import Action
-from knesset.mks.models import Member
-from knesset.laws.models import Vote,Bill
-from knesset.committees.models import Topic, CommitteeMeeting
+from mks.models import Member
+from laws.models import Vote, Bill, get_debated_bills
+from committees.models import Topic, CommitteeMeeting, PUBLIC_TOPIC_STATUS
+from agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
 from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
-from django.views.generic.base import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
-from django.contrib.comments.models import Comment
 from knesset.utils import notify_responsible_adult, main_actions
-from knesset.committees.models import PUBLIC_TOPIC_STATUS
 
-import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
 def help_page(request):
@@ -49,9 +47,10 @@ def help_page(request):
 def add_previous_comments(comments):
     previous_comments = set()
     for c in comments:
-        c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
-                                                     content_type=c.content_type,
-                                                     submit_date__lt=c.submit_date)
+        c.previous_comments = Comment.objects.filter(
+            object_pk=c.object_pk,
+            content_type=c.content_type,
+            submit_date__lt=c.submit_date).select_related('user')
         previous_comments.update(c.previous_comments)
         c.is_comment = True
     comments = [c for c in comments if c not in previous_comments]
@@ -83,18 +82,24 @@ def main(request):
     if not context:
         context = {}
         context['title'] = _('Home')
-        actions = list(main_actions()[:10])
-
-        annotations = get_annotations(
-            annotations=[a.target for a in actions if a.verb != 'comment-added'],
-            comments=[x.target for x in actions if x.verb == 'comment-added'])
-        context['annotations'] = annotations
-        bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
-        if bill_votes:
-            context['bill'] = Bill.objects.get(pk=random.choice(bill_votes))
-        context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
-                                         .order_by('-modified')\
-                                         .select_related('creator')[:10]
+        #actions = list(main_actions()[:10])
+        #
+        #annotations = get_annotations(
+        #    annotations=[a.target for a in actions if a.verb != 'comment-added'],
+        #    comments=[x.target for x in actions if x.verb == 'comment-added'])
+        #context['annotations'] = annotations
+        #b = get_debated_bills()
+        #if b:
+        #    context['bill'] = get_debated_bills()[0]
+        #else:
+        #    context['bill'] = None
+        #public_agenda_ids = Agenda.objects.filter(is_public=True
+        #                                         ).values_list('id',flat=True)
+        #if len(public_agenda_ids) > 0:
+        #    context['agenda_id'] = random.choice(public_agenda_ids)
+        #context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
+        #                                 .order_by('-modified')\
+        #                                 .select_related('creator')[:10]
         context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
@@ -222,7 +227,7 @@ def create_tag_and_add_to_item(request, app, object_type, object_id):
 
 
 def calculate_cloud_from_models(*args):
-    from tagging.models import Tag 
+    from tagging.models import Tag
     cloud = Tag._default_manager.cloud_for_model(args[0])
     for model in args[1:]:
         for tag in Tag._default_manager.cloud_for_model(model):
@@ -270,3 +275,56 @@ class TagDetail(DetailView):
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
         return context
+
+
+class CsvView(BaseListView):
+    """A view which generates CSV files with information for a model queryset.
+    Important class members to set when inheriting:
+      * model -- the model to display information from.
+      * queryset -- the query performed on the model; defaults to all.
+      * filename -- the name of the resulting CSV file (e.g., "info.csv").
+      * list_display - a list (or tuple) of tuples, where the first item in
+        each tuple is the attribute (or the method) on the model to display and
+        the second item is the title of that column.
+    """
+
+    filename = None
+    list_display = None
+
+    def dispatch(self, request):
+        if None in (self.filename, self.list_display, self.model):
+            raise Http404()
+        self.request = request
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename="{}"'.format(self.filename)
+
+        object_list = self.get_queryset()
+        self.prepare_csv_for_utf8(response)
+        writer = csv.writer(response, dialect='excel')
+        writer.writerow([title.encode('utf8')
+                         for _, title in self.list_display])
+        for obj in object_list:
+            row = [self.get_display_attr(obj, attr)
+                   for attr, _ in self.list_display]
+            writer.writerow([unicode(item).encode('utf8') for item in row])
+        return response
+
+    @staticmethod
+    def get_display_attr(obj, attr):
+        """Return the display string for an attr, calling it if necessary."""
+        display_attr = getattr(obj, attr)
+        if hasattr(display_attr, '__call__'):
+            display_attr = display_attr()
+        if display_attr is None:
+            return ""
+        return display_attr
+
+    @staticmethod
+    def prepare_csv_for_utf8(fileobj):
+        """Prepend a byte order mark (BOM) to a file.
+
+        When Excel opens a CSV file, it assumes the encoding is ASCII. The BOM
+        directs it to decode the file with utf-8.
+        """
+        fileobj.write('\xef\xbb\xbf')

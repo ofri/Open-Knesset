@@ -1,0 +1,3 @@
+{% load i18n %}
+{% trans 'Open Knesset Updates' %}
+{% blocktrans with user.username as username %}Hi {{ username }},{% endblocktrans %}

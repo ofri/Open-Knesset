@@ -1,0 +1,92 @@
+{% load i18n comments %}
+    <h3>{% trans "Ascribed agendas" %}</h3>
+    {% if agendas %}
+        <div class="ascribed-agendas">
+        {% for agenda in agendas %}
+            <div class="ascribed-agenda-item">
+            {% if agenda.agenda.image %}<img src="{{ agenda.agenda.image.url }}" />{% endif %}
+            <span class="ascribed-agenda-link"><a id="ascribed-agenda-{{ agenda.agenda.id }}" href="{% url agenda-detail agenda.agenda.id %}"/>{{ agenda.agenda }}</a></span>
+            <div><span class="ascribed-agenda-label">{{ agenda.get_score_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_score_display }}</span></div>
+            {% if agenda.get_importance_header %}<div><span class="ascribed-agenda-label">{{ agenda.get_importance_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_importance_display }}</span></div>{% endif %}
+            <div><span class="ascribed-agenda-label">{% trans "Reasoning" %}:</span><span class="ascribed-agenda-value">{{ agenda.reasoning|urlizetrunc:"30" }}</span></div>
+            </div>
+            <div>
+                {% get_comment_count for agenda as comment_count %}
+                <a href="{{ agenda.detail_view_url }}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>{% trans 'No agendas ascribed yet.' %}</p>
+    {% endif %}
+
+    {% if suggest_agendas %}
+        <h3>{% trans 'Suggest an agenda' %}</h3>
+        {% if suggested_agendas %}
+        <p>{% trans 'You suggested' %}: {% for a in suggested_agendas %}{{a.agenda}}{% if not forloop.last %}, {%endif%}{% endfor %}</p>
+        {% endif %}
+        <form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="agenda"></input>
+        <label for="id_agenda">{% trans 'Agenda' %}</label>
+        <select name="agenda" id="id_agenda">
+            <option value="">{% trans 'Please select' %}</option>
+        {% for a in suggest_agendas %}
+            <option value="{{a.id}}">{{a}}</option>
+        {% endfor %}
+        </select>
+        <label for="id_name">{% trans 'Reasoning' %}</label>
+        <textarea rows="5" cols="30" id="id_name" name="reasoning"></textarea>
+        <br><input id="suggestion_submit" type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
+        <script>
+            $(function(){
+                $('select#id_agenda').change(function(){
+                    a = $(this).val();
+                    if (a){
+                        $('#suggestion_submit').removeAttr('disabled');
+                    } else {
+                        $('#suggestion_submit').attr('disabled', 'disabled');
+                    }
+                }).change();
+            })
+        </script>
+    {% else %}
+        {% if suggest_agendas_login %}
+            <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
+        {% endif %}
+    {% endif %}
+
+    {% if formset %}
+    <h3>{% trans "Ascribe your agendas" %}</h3>
+    <form class="editors_agendas" action="{% url update-editors-agendas %}" method="post">
+    <table>
+        {{ formset.management_form }}
+        {% csrf_token %}
+        {% for form in formset.forms %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <tr><td colspan="2"> {{form.agenda_name}}</td></tr>
+            <tr>
+                <td>{{ form.weight.label_tag }}</td>
+                <td>{{ form.weight }}</td>
+            </tr>
+            {% if form.importance %}
+            <tr>
+                <td>{{ form.importance.label_tag }}</td>
+                <td>{{ form.importance }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>{{ form.reasoning.label_tag }}</td>
+                <td>{{ form.reasoning }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.DELETE.label_tag }}</td>
+                <td>{{ form.DELETE }}</td>
+            </tr>
+
+        {% endfor %}
+        </table>
+        <input type="submit" value="{% trans "Update" %}">
+    </form>
+{%endif %}
