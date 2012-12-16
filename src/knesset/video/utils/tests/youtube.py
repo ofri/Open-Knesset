@@ -1,12 +1,11 @@
 #encoding: utf-8
-
 from django.test import TestCase
-from knesset.video.utils.youtube import GetYoutubeVideos
+from video.utils.youtube import GetYoutubeVideos
 import datetime
 from dateutil.tz import tzutc
 
 class testYoutube(TestCase):
-    
+
     def testGetYoutubeVideosParse(self):
         videos=GetYoutubeVideos(videos_json=YOUTUBE_TEST_JSON_DATA).videos
         self.assertEqual(len(videos),2)
@@ -30,7 +29,7 @@ class testYoutube(TestCase):
         self.assertEqual(videos[1]['thumbnail480x360'], u'http://i.ytimg.com/vi/PaaEToi3wHE/0.jpg')
         self.assertEqual(videos[1]['published'],datetime.datetime(2011, 7, 25, 13, 11, 47, tzinfo=tzutc()))
         self.assertEqual(videos[1]['thumbnail90x120'],"http://i.ytimg.com/vi/PaaEToi3wHE/1.jpg")
-        
+
     def testGetYoutubeVideos(self):
         videos=GetYoutubeVideos(q='"funny cat"',max_results=2).videos
         self.assertEqual(len(videos),2)
@@ -44,15 +43,15 @@ class testYoutube(TestCase):
         title_and_desc = (video['title'] + video['description']).lower()
         self.assertIn('funny',title_and_desc)
         self.assertIn('cat',title_and_desc)
-        
+
     def testGetYoutubeVideoIdUrl(self):
         videos=GetYoutubeVideos(youtube_id_url='http://gdata.youtube.com/feeds/api/videos/4SA3ecqrGvM').videos
         self.assertEqual(len(videos),1)
         self.assertEqual(videos[0]['embed_url'],u'http://www.youtube.com/v/4SA3ecqrGvM?version=3&f=videos&app=youtube_gdata')
-        self.assertEqual(videos[0]['description'], u'\u05e2\u05d5\u05d3 \u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd: http://Tapi.co.il\r\n\u05d0\u05d7\u05d3 \u05d4\u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd \u05d4\u05db\u05d9 \u05d7\u05de\u05d5\u05d3\u05d9\u05dd, \u05d7\u05ea\u05d5\u05dc \u05e7\u05d8\u05df \u05d7\u05de\u05d5\u05d3 \u05d5\u05de\u05e6\u05d7\u05d9\u05e7 \u05de\u05d5\u05e4\u05ea\u05e2.') 
+        self.assertEqual(videos[0]['description'], u'\u05e2\u05d5\u05d3 \u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd: http://Tapi.co.il\r\n\u05d0\u05d7\u05d3 \u05d4\u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd \u05d4\u05db\u05d9 \u05d7\u05de\u05d5\u05d3\u05d9\u05dd, \u05d7\u05ea\u05d5\u05dc \u05e7\u05d8\u05df \u05d7\u05de\u05d5\u05d3 \u05d5\u05de\u05e6\u05d7\u05d9\u05e7 \u05de\u05d5\u05e4\u05ea\u05e2.')
         self.assertEqual(videos[0]['author'], u'tapild')
-        self.assertEqual(videos[0]['thumbnail90x120'], u'http://i.ytimg.com/vi/4SA3ecqrGvM/1.jpg') 
-        self.assertEqual(videos[0]['title'], u'\u05d7\u05ea\u05d5\u05dc\u05d9\u05dd \u05de\u05e6\u05d7\u05d9\u05e7\u05d9\u05dd \u05d7\u05de\u05d5\u05d3\u05d9\u05dd | \u05d4\u05d7\u05ea\u05d5\u05dc \u05d4\u05de\u05d5\u05e4\u05ea\u05e2 | \u05d7\u05ea\u05d5\u05dc \u05d7\u05de\u05d5\u05d3 \u05de\u05e6\u05d7\u05d9\u05e7') 
+        self.assertEqual(videos[0]['thumbnail90x120'], u'http://i.ytimg.com/vi/4SA3ecqrGvM/1.jpg')
+        self.assertEqual(videos[0]['title'], u'\u05d7\u05ea\u05d5\u05dc\u05d9\u05dd \u05de\u05e6\u05d7\u05d9\u05e7\u05d9\u05dd \u05d7\u05de\u05d5\u05d3\u05d9\u05dd | \u05d4\u05d7\u05ea\u05d5\u05dc \u05d4\u05de\u05d5\u05e4\u05ea\u05e2 | \u05d7\u05ea\u05d5\u05dc \u05d7\u05de\u05d5\u05d3 \u05de\u05e6\u05d7\u05d9\u05e7')
         self.assertEqual(videos[0]['embed_url_autoplay'], u'http://www.youtube.com/v/4SA3ecqrGvM?version=3&f=videos&app=youtube_gdata&autoplay=1')
         self.assertEqual(videos[0]['link'], u'http://www.youtube.com/watch?v=4SA3ecqrGvM&feature=youtube_gdata')
         self.assertEqual(videos[0]['published'], datetime.datetime(2010, 12, 30, 18, 13, tzinfo=tzutc()))

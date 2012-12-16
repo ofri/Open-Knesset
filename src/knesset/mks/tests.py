@@ -7,10 +7,10 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from actstream import follow,action
 from actstream.models import Action
-from knesset.mks.models import Member, Party, Membership, MemberAltname
-from knesset.mks.views import MemberListView
-from knesset.laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
-from knesset.committees.models import CommitteeMeeting,Committee
+from mks.models import Member, Party, Membership, MemberAltname
+from mks.views import MemberListView
+from laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
+from committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
@@ -20,12 +20,10 @@ from urllib import urlencode
 from backlinks.models import InboundBacklink
 from backlinks.pingback.server import PingbackServer
 from django import template
-#from knesset.mks.server_urls import mock_pingback_server
-from knesset.mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
+from mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
 from django.utils import simplejson as json
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
-
 
 just_id = lambda x: x.id
 
@@ -69,7 +67,7 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'mks/member_list_with_bars.html')
         object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list),
+        self.assertItemsEqual(map(just_id, object_list),
                          [ self.mk_1.id, self.mk_2.id, ])
 
     def testMemberDetail(self):
@@ -213,7 +211,7 @@ class MemberViewsTest(TestCase):
         self.jacob.delete()
 
 class MemberBacklinksViewsTest(TestCase):
-    urls = 'knesset.mks.server_urls'
+    urls = 'mks.server_urls'
 
     def setUp(self):
         self.party_1 = Party.objects.create(name='party 1')
@@ -512,11 +510,11 @@ class MKAgendasTest(TestCase):
         agenda_values2 = self.mk_2.get_agendas_values()
         self.assertEqual(len(agenda_values2), 2)
         self.assertEqual(agenda_values1,
-                {1: {'rank': 2, 'score': -33.33, 'volume': 100.0},
-                 2: {'rank': 1, 'score': 100.0, 'volume': 100.0}})
+                {1: {'numvotes': 2, 'rank': 2, 'score': -33.33, 'volume': 100.0},
+                 2: {'numvotes': 1, 'rank': 1, 'score': 100.0, 'volume': 100.0}})
         self.assertEqual(agenda_values2,
-                {1: {'rank': 1, 'score': 33.33, 'volume': 100.0},
-                 2: {'rank': 2, 'score': -100.0, 'volume': 100.0}})
+                {1: {'numvotes': 2, 'rank': 1, 'score': 33.33, 'volume': 100.0},
+                 2: {'numvotes': 1, 'rank': 2, 'score': -100.0, 'volume': 100.0}})
         agenda_values = self.mk_3.get_agendas_values()
         self.assertFalse(agenda_values)
 

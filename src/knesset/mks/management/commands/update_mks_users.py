@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 
 from actstream import follow
 
-from knesset.mks.models import Member
+from mks.models import Member
 from avatar.models import Avatar
 
 

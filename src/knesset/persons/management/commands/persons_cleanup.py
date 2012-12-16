@@ -3,9 +3,9 @@
 import logging, re, difflib
 from django.core.management.base import NoArgsCommand
 from django.db.models import Q
-from knesset.committees.models import CommitteeMeeting,ProtocolPart
-from knesset.mks.models import Member
-from knesset.persons.models import Person,PersonAlias
+from committees.models import CommitteeMeeting,ProtocolPart
+from mks.models import Member
+from persons.models import Person,PersonAlias
 
 logger = logging.getLogger("open-knesset.persons.create_persons")
 

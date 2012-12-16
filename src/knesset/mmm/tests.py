@@ -3,14 +3,12 @@ from datetime import datetime
 
 from django.test import TestCase
 from django.utils import simplejson
-from knesset.mmm.fuzzy_match import fuzzy_match
-
+from mmm.fuzzy_match import fuzzy_match
 from knesset.settings import PROJECT_ROOT
-from knesset.mks.models import Member
-from knesset.committees.models import Committee
-from knesset.mmm.models import Document, text_lookup, verify
-from knesset.mmm.management.commands.update_mmm import parse_json, combine_jsons
-
+from mks.models import Member
+from committees.models import Committee
+from mmm.models import Document, text_lookup, verify
+from mmm.management.commands.update_mmm import parse_json, combine_jsons
 
 matches = PROJECT_ROOT + "/mmm/test_matches.json"
 mmm =  PROJECT_ROOT + "/mmm/test_mmm.json"

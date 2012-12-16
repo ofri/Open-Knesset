@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from views import *
 from feeds import MemberActivityFeed
 
-mksurlpatterns = patterns('knesset.mks.views',
+mksurlpatterns = patterns('mks.views',
     url(r'^member/$', MemberListView.as_view(), name='member-list'),
     url(r'^member/csv$', MemberCsvView.as_view()),
     url(r'^party/csv$', PartyCsvView.as_view()),

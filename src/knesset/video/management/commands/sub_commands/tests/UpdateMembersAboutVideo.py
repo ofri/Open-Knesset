@@ -2,10 +2,10 @@
 
 import datetime
 from django.test import TestCase
-from knesset.video.management.commands.sub_commands.UpdateMembersAboutVideo import UpdateMembersAboutVideo
+from video.management.commands.sub_commands.UpdateMembersAboutVideo import UpdateMembersAboutVideo
 
 class UpdateMembersAboutVideo_test(UpdateMembersAboutVideo):
-    
+
     def __init__(self,members,testCase,getYoutubeVideosReturn,getVideosReturn):
         self._testCase=testCase
         self._getYoutubeVideosReturn=getYoutubeVideosReturn
@@ -14,13 +14,13 @@ class UpdateMembersAboutVideo_test(UpdateMembersAboutVideo):
         self.hideRelatedVideoLog=[]
         self.hideAboutVideosLog=[]
         UpdateMembersAboutVideo.__init__(self,None,members=members)
-    
+
     def _getYoutubeVideos(self,**kwargs):
         self._testCase.assertEquals(sorted(kwargs.keys()),['q'])
         params=(kwargs['q'])
         self._testCase.assertIn(params,self._getYoutubeVideosReturn)
         return self._getYoutubeVideosReturn[params]
-    
+
     def _getVideos(self, getVideosQuerysetParams, filterParams):
         self._testCase.assertEquals(sorted(getVideosQuerysetParams.keys()), ['ignoreHide','obj'])
         self._testCase.assertEquals(sorted(filterParams.keys()), ['source_id','source_type'])
@@ -30,10 +30,10 @@ class UpdateMembersAboutVideo_test(UpdateMembersAboutVideo):
         )
         self._testCase.assertIn(params,self._getVideosReturn)
         return self._getVideosReturn[params]
-    
+
     def _saveVideo(self,videoFields):
         self.saveVideoLog.append(videoFields)
-        
+
     def _hideRelatedVideo(self,video):
         self.hideRelatedVideoLog.append(video)
 
@@ -41,17 +41,17 @@ class UpdateMembersAboutVideo_test(UpdateMembersAboutVideo):
         self.hideAboutVideosLog.append(member)
 
     def _log(self,*args,**kwargs): pass
-    
+
     def _check_timer(self,*args,**kwargs): pass
 
 class Member_test():
-    
+
     def __init__(self,names=[]):
         self.name=names[0]
         self.names=names
-        
+
 class Video_test():
-    
+
     def __init__(self, **kwargs):
         video=getDbVideo(**kwargs)
         if 'hide' not in video:
@@ -60,13 +60,13 @@ class Video_test():
             video['sticky']=False
         for k in video:
             setattr(self,k,video[k])
-    
+
 def getSourceVideo(**kwargs):
     video={
-        'id':None, 
+        'id':None,
         'title':None,
         'embed_url_autoplay':'', 'thumbnail480x360':'',
-        'description':'', 'link':'', 
+        'description':'', 'link':'',
         'published':datetime.datetime(2011,12,01),
     }
     for k in kwargs:
@@ -75,8 +75,8 @@ def getSourceVideo(**kwargs):
 
 def getDbVideo(**kwargs):
     video={
-        'embed_link': '', 'image_link': '', 'source_type': 'youtube', 'link': '', 
-        'description': '', 'title': None, 'source_id': None, 
+        'embed_link': '', 'image_link': '', 'source_type': 'youtube', 'link': '',
+        'description': '', 'title': None, 'source_id': None,
         'group': 'about', 'content_object': None, 'published': ''
     }
     for k in kwargs:
@@ -84,9 +84,9 @@ def getDbVideo(**kwargs):
     return video
 
 class testUpdateMembersAboutVideo(TestCase):
-    
+
     maxDiff=None
-    
+
     def testUpdateMembersAboutVideo(self):
         kartisBikur=u'כרטיס ביקור ערוץ הכנסת '
         heName2=u'עוד חברכ'
@@ -99,13 +99,13 @@ class testUpdateMembersAboutVideo(TestCase):
         getYoutubeVideosReturn={
             (kartisBikur+'tester testee'):[
                 getSourceVideo(
-                    id=1, title=kartisBikur+'tester testee', 
+                    id=1, title=kartisBikur+'tester testee',
                     published=datetime.datetime(2011,11,01)
                 ),
             ],
             (kartisBikur+'testee tester'):[
                 getSourceVideo(
-                    id=2, title=kartisBikur+'testee tester', 
+                    id=2, title=kartisBikur+'testee tester',
                     published=datetime.datetime(2011,12,01)
                 ),
             ],

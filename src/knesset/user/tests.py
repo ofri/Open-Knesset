@@ -3,10 +3,10 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from actstream import action, follow
-from knesset.mks.models import Member
-from knesset.laws.models import Bill
-from knesset.committees.models import Committee
-from knesset.agendas.models import Agenda
+from mks.models import Member
+from laws.models import Bill
+from committees.models import Committee
+from agendas.models import Agenda
 
 class TestProfile(TestCase):
 
@@ -39,7 +39,7 @@ class TestProfile(TestCase):
         self.assertEqual(len(res.context['object_list']), 1)
 
     def testSignup(self):
-        res = self.client.post(reverse('register'), {'username': 'john', 
+        res = self.client.post(reverse('register'), {'username': 'john',
                         'password1': '123', 'password2': '123',
                         'email': 'john@example.com', 'email_notification': 'D'},
                         follow = True)
@@ -47,6 +47,31 @@ class TestProfile(TestCase):
         new = User.objects.get(username='john')
         new_profile = new.get_profile()
         self.assertEqual(new_profile.email_notification, 'D')
+
+    def test_no_double_signup(self):
+        "Don't allow new registration with an exiting email"
+
+        res = self.client.post(
+            reverse('register'), {
+                'username': 'first_jack',
+                'password1': '123', 'password2': '123',
+                'email': 'double_jack@example.com',
+                'email_notification': 'D'
+            },
+            follow=True)
+
+        self.assertEqual(res.redirect_chain, [('http://testserver/users/edit-profile/', 302)])
+
+        res = self.client.post(
+            reverse('register'), {
+                'username': 'double_jack',
+                'password1': '123', 'password2': '123',
+                'email': 'double_jack@example.com',
+                'email_notification': 'D'
+            },
+            follow=True)
+        # Now try to create another user with some email
+        self.assertContains(res, 'errorlist')
 
     def tearDown(self):
         self.jacob.delete()

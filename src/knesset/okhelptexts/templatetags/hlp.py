@@ -1,5 +1,5 @@
 from django import template
-from knesset.okhelptexts.models import Helptext,Keyword
+from okhelptexts.models import Helptext,Keyword
 
 register = template.Library()
 

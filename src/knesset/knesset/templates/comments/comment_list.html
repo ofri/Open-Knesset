@@ -1,0 +1,28 @@
+{% extends "site_base.html" %}
+{% load i18n laws_tags %}
+{% block extratitle %}{% trans 'Recent comments' %}{% endblock %}
+{% block description %}{% trans 'Recent comments' %} - {% endblock %}
+{% block divcontent %}
+    <h1>{% trans 'Recent comments' %}</h1>
+    {% for comment in object_list %}
+    <div class="comment" id="c{{ comment.id }}">
+        <h3>
+            <a href="{{ comment.get_absolute_url }}">
+                {% with comment.user.username|escape as username and comment.content_object.title as title %}
+                    {% blocktrans %}{{ username }} on {{ title }}{% endblocktrans %}
+                {% endwith %}
+                <span class="small quiet">
+                    {% with comment.submit_date|date:"F j, Y" as date and comment.submit_date|date:"P" as time %}
+                    {% blocktrans %}{{ date }} at {{ time }}{% endblocktrans %}
+                    {% endwith %}
+                </span>
+            </a>
+        </h3>
+        {{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}
+    </div>
+    {% endfor %}
+
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}

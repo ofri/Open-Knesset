@@ -1,7 +1,5 @@
-from knesset.persons.models import Person,PersonAlias,Title,Role
-
 from django.contrib import admin
-
+from models import Person,PersonAlias,Title,Role
 
 class RoleInline(admin.TabularInline):
     model = Role

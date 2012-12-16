@@ -1,6 +1,6 @@
 import urllib, json, dateutil.parser, urllib2, os, traceback
-from knesset.video.utils import build_url
-from knesset.video.utils.parse_dict import parse_dict
+from video.utils import build_url
+from video.utils.parse_dict import parse_dict
 from gdata.youtube.service import YouTubeService as gdata_YouTubeService
 import gdata.media
 #from gdata.youtube.service import YouTubeError as gdata_YouTubeError
@@ -30,8 +30,8 @@ class GetYoutubeVideos:
             videos_json=urllib.urlopen(youtube_id_url+'?alt=json').read()
         if videos_json is None and q is not None:
             params={
-                'q':q, 
-                'max-results':max_results, 
+                'q':q,
+                'max-results':max_results,
                 'alt':'json',
                 'orderby':orderby
             }
@@ -96,7 +96,7 @@ class GetYoutubeVideos:
         return video
 
 class UploadYoutubeVideo():
-    
+
     isOk=False
     errMsg=''
     errDesc=''
@@ -109,7 +109,7 @@ class UploadYoutubeVideo():
         'Movies_Drama','Movies_Family','Movies_Shorts','Shows','Movies_Sci_fi_fantasy',
         'Movies_Thriller','Trailers',
     ]
-    
+
     # title - string (required)
     # category - string (required) - from the list of self.ALLOWED_CATEGORIES
     # filename - string (required) - path of file to download
@@ -175,7 +175,7 @@ class UploadYoutubeVideo():
                 self.errDesc=str(e)+' '+traceback.format_exc()
 
 class YouTubeService(gdata_YouTubeService):
-    
+
     def __init__(self,developer_key,authsub_token):
         gdata_YouTubeService.__init__(
             self,

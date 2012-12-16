@@ -4,7 +4,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 from django.contrib.auth.models import User
-from knesset.mks.models import Member
+from mks.models import Member
 
 class Migration(DataMigration):
 

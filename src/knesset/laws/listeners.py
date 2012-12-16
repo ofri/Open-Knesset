@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from actstream import action
 from actstream.models import Action
 
-from utils import cannonize, disable_for_loaddata
+from knesset.utils import cannonize, disable_for_loaddata
 from mks.models import Member, Party
 from laws.models import PrivateProposal, VoteAction, MemberVotingStatistics,\
     PartyVotingStatistics

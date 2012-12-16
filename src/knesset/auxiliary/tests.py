@@ -7,12 +7,12 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
-from knesset.laws.models import Vote, VoteAction, Bill
-from knesset.mks.models import Member,Party,WeeklyPresence
-from knesset.agendas.models import Agenda
+from laws.models import Vote, VoteAction, Bill
+from mks.models import Member,Party,WeeklyPresence
+from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
-from knesset.auxiliary.views import CsvView
+from auxiliary.views import CsvView
 
 class InternalLinksTest(TestCase):
 
@@ -53,6 +53,8 @@ class InternalLinksTest(TestCase):
         This test reads the site, starting from the main page,
         looks for links, and makes sure all internal pages return HTTP200
         """
+        from django.conf import settings
+        print settings.DEBUG
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
 
@@ -66,6 +68,7 @@ class InternalLinksTest(TestCase):
             self.assertEqual(res.status_code, 200)
             visited_links.add(page)
             for link in re.findall("href=\"(.*?)\"",res.content):
+                link = link.lower()
                 self.failUnless(link, "There seems to be an empty link in %s (href='')" % page)
                 if (link in visited_links) or (link.startswith("http")) or link.startswith("#"):
                     continue
@@ -75,6 +78,10 @@ class InternalLinksTest(TestCase):
                     link = link[1:]
                 if not link.startswith("/"): # relative
                     link = "%s%s" % (page,link)
+
+                if link.find(settings.STATIC_URL)>=0: # skip testing static files
+                    continue
+
                 links_to_visit.append(link)
 
             while links_to_visit:

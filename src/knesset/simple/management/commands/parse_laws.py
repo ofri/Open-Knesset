@@ -12,10 +12,10 @@ from HTMLParser import HTMLParseError
 from django.core.files.base import ContentFile
 from django.contrib.contenttypes.models import ContentType
 
-from knesset.links.models import Link, LinkedFile
+from links.models import Link, LinkedFile
 import parse_knesset_bill_pdf
 from parse_government_bill_pdf import GovProposalParser
-from knesset.laws.models import (Bill, Law, GovProposal)
+from laws.models import (Bill, Law, GovProposal)
 
 logger = logging.getLogger("open-knesset.parse_laws")
 

@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext as _
 from django.http import Http404
-from knesset.hashnav import ListView, DetailView
-from knesset.persons.models import Person
-from knesset.committees.models import CommitteeMeeting
+from hashnav import ListView, DetailView
+from persons.models import Person
+from committees.models import CommitteeMeeting
 
 class PersonListView(ListView):
 

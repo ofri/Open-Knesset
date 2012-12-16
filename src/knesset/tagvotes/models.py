@@ -10,9 +10,13 @@ class TagVote(models.Model):
     """
     Holds the data for user's vote on a tag.
     """
-    tagged_item     = models.ForeignKey(TaggedItem, verbose_name=_('tagged item'), related_name='votes')
-    user            = models.ForeignKey(User, verbose_name=_('user'), related_name='tagvotes')
-    vote            = models.IntegerField()
+    tagged_item = models.ForeignKey(TaggedItem,
+                                    verbose_name=_('tagged item'),
+                                    related_name='votes')
+    user = models.ForeignKey(User,
+                             verbose_name=_('user'),
+                             related_name='tagvotes')
+    vote = models.IntegerField()
 
     class Meta:
         # Enforce unique vote per user and tagged item
@@ -24,10 +28,8 @@ class TagVote(models.Model):
         return u'%s - %s [%d]' % (self.user, self.tagged_item, self.vote)
 
     def get_absolute_url(self):
-        # if you try moving this line to the top you'll get bitten the cyclic
-        # import monster. be warned!!!!
-        from knesset.laws.models import Vote
-        if self.tagged_item.content_type == ContentType.objects.get_for_model(Vote):
+        ct = ContentType.objects.get(app_label='laws', model='vote')
+        if self.tagged_item.content_type == ct:
             return reverse('vote-tag',
                            kwargs={'tag':self.tagged_item.tag.name})
         else:

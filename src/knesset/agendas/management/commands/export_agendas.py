@@ -2,9 +2,9 @@ import os, csv
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
-from knesset.mks.models import Member,Party
-from knesset.laws.models import Vote,VoteAction
-from knesset.agendas.models import Agenda, AgendaVote
+from mks.models import Member,Party
+from laws.models import Vote,VoteAction
+from agendas.models import Agenda, AgendaVote
 
 class Command(NoArgsCommand):
 

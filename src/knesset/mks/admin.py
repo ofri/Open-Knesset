@@ -5,15 +5,14 @@ from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes import generic
 from django.db.models import Q
 
-from knesset.mks.models import *
-from knesset.links.models import Link
-from knesset.video.models import Video
-
+from models import *
+from links.models import Link
+from video.models import Video
 
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 1
-    
+
 class MemberLinksInline(generic.GenericTabularInline):
     model = Link
     ct_fk_field = 'object_pk'
@@ -57,7 +56,6 @@ class MemberAdmin(admin.ModelAdmin):
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'
 
-    
     def change_view(self, request, object_id, extra_context=None):
         m = Member.objects.get(id=object_id)
         my_context = {

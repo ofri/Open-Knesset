@@ -1,5 +1,5 @@
 from django.core.management.base import  CommandError, NoArgsCommand
-from knesset.links.models import Link
+from links.models import Link
 
 class Command(NoArgsCommand):
     help = 'Deactivate duplicated links compared by URL and content object'

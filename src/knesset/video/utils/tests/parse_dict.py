@@ -1,5 +1,5 @@
 from django.test import TestCase
-from knesset.video.utils.parse_dict import parse_dict, validate_dict
+from video.utils.parse_dict import parse_dict, validate_dict
 
 class testParseDict(TestCase):
 
@@ -16,7 +16,7 @@ class testParseDict(TestCase):
         self.assertFalse(validate_dict(h,{'id':{'$t':'test','type':'text2'}}))
         h={'published':None}
         self.assertFalse(validate_dict(h,['published']))
-        
+
     def testParseDict(self):
         self.assertEqual(parse_dict('xxx','yyy'),None)
         self.assertEqual(parse_dict('xxx','yyy',default='a'),'a')

@@ -1,0 +1,255 @@
+{% extends "site_base.html" %}
+{% load lookup i18n tagging_tags laws_tags bills_tags common_visual_elements links_tags comments user_tags hitcount_tags committees_tags %}
+{% load static from staticfiles %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block keywords %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
+
+{% block extrahead %}
+    {% if agenda.image %}
+        <meta property="og:image" content="{{agenda.image.url}}"/>
+        <meta name="thumbnail" content="{{agenda.image.url}}" />
+    {% endif %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
+        });
+    </script>
+{% endblock %}
+{% block subnav %}
+    <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>
+{% endblock %}
+{% block divcontent %}
+    <ul class="actions">
+        <li><span id="watch" class="awesome-button medium"></span></li>
+        {% if user in object.editors.all %}
+            <li><a class="awesome-button medium" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a></li>
+        {% endif %}
+    </ul>
+    <h1>{{ object }}</h1>
+    <div id="agenda-info">
+        <div>
+            <h3>{% trans "Edited by" %}</h3>
+            {% for editor in object.editors.all %}
+                {% user editor %}
+            {% endfor %}
+        </div>
+        <div style="margin-bottom:4em;">
+            <h2> {% trans "Description" %}</h2>
+            {{ object.description|urlize|linebreaks }}
+        </div>
+        <div>
+        {% if object.is_public %}
+            <iframe width="600" height="400" src="http://ydaniv.github.com/ok-agenda-viz/?agenda_id={{object.id}}"></iframe>
+        {% else %}
+            <p>{% trans 'Note: This agenda is private. It is only viewable by its editors. If you feel this agenda should be made public, content us at mail@oknesset.org' %}</p>
+        {% endif %}
+        </div>
+        <div style="display:inline-block">
+            <h3>{% trans "Members" %}</h3>
+            <div class="list-wrap">
+            {% if not all_mks %}
+                <a href="?all_mks">{% trans 'Click here to see the full list.' %}</a>
+            {% endif %}
+                <table>
+                {% if all_mks %}
+                    <tr>
+                        <td colspan="3" style="text-align:center">{% trans 'Agenda MKs' %}</td>
+                    </tr>
+                    {% for selected_mk_id in all_mks_ids %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
+                        <tr>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
+                            <td>
+                                <div id="selected_mk_{{ selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
+                            </td>
+			{% endwith %}
+			{% endwith %}
+                        </tr>
+			{% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
+                    </tr>
+                    {% for selected_mk_id in mks_top %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
+                        <tr>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
+                            <td>
+                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
+                            </td>
+			{% endwith %}
+			{% endwith %}
+                        </tr>
+			{% endwith %}
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
+                    </tr>
+                    {% for selected_mk_id in mks_bottom %}
+			{% with members|lookup:selected_mk_id as selected_mk %}
+                        <tr>
+			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
+			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
+                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
+                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
+                            <td>
+                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
+                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
+                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
+                            </td>
+			{% endwith %}
+			{% endwith %}
+                        </tr>
+			{% endwith %}
+                    {% endfor %}
+                {% endif %}
+                </table>
+            </div>
+        </div>
+        <div style="display:inline-block; margin-right:4em;">
+            <h3>{% trans "Parties" %}</h3>
+            <p>{% trans 'Click the # to highlight MKs from this party' %}</p>
+            <div class="list-wrap">
+                <table>
+                {% for selected_party_id in agendaTopParties %}
+		{% with parties|lookup:selected_party_id as selected_party %}
+                    <tr>
+                        <td><a id="party-highlight-{{selected_party.id}}" href="#">#</a><a class="item dontwrap" id="party-link-{{ selected_party.id }}" href="{% url party-detail selected_party.id %}">{{ selected_party }}</a></td>
+			{% with agenda_party_values|lookup:selected_party.id as selected_party_score %}
+                        <td class="numeric">{{selected_party_score|floatformat:"0"}}%</td>
+                        <td>
+                            <div id="selected_party_{{ selected_party.id }}_percentile" class="percentile {% if selected_party_score < 0 %}percentile_against{% endif %}"></div>
+                            <script>
+                                set_percentile('selected_party_{{ selected_party.id }}',({{ selected_party_score }}+100)/2);
+                                $('#party-highlight-{{selected_party.id}}').click(function(){
+                                    $('.party-{{selected_party.id}}').toggleClass('highlight');
+                                    $('#party-highlight-{{selected_party.id}}').toggleClass('highlight');
+                                    return false;
+                                });
+                            </script>
+                        </td>
+			{% endwith %}
+                        </tr>
+		{% endwith %}
+                {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <div class="item-list">
+
+        <h2> {% trans "Ascribed Votes" %}</h2>
+        <table id="agenda-votes">
+            {% for agendavote in agenda_votes %}
+                <tr>
+                    <td>
+                        <div class="agenda-importance">{{agendavote.get_importance_display}}</div>
+                        <div class="agenda-score{% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">
+                            {{ agendavote.get_score_display }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item {% cycle "alt" "normal" %}">
+                            {% vote_list_item agendavote.vote watched_members %}
+                            <span class="reasoning">
+                                {{ agendavote.reasoning|urlizetrunc:"30" }}
+                            </span>
+                        </div>
+                        {% get_comment_count for agendavote as comment_count %}
+                        <a href="{% url agenda-vote-detail agendavote.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
+                    </td>
+                </tr>
+            {% empty %}
+                {% trans "No results found" %}
+            {% endfor %}
+        </table>
+        </div>
+
+        <div class="item-list">
+            <h2> {% trans "Ascribed Bills" %}</h2>
+            <table id="agenda-bills">
+                {% for agendabill in object.agendabills.all %}
+                    <tr>
+                        <td>
+                            <div class="agenda-importance">{{agendabill.get_importance_display}}</div>
+                            <div class="agenda-score{% if agendabill.score > 0 %} positive{% endif %}{% if agendabill.score < 0 %} negative{% endif %}">
+                                {{ agendabill.get_score_display }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="item {% cycle "alt" "normal" %}">
+                                {% bill_list_item agendabill.bill %}
+                                <span class="reasoning">
+                                    {{ agendabill.reasoning|urlizetrunc:"30" }}
+                                </span>
+                            </div>
+                        {% get_comment_count for agendabill as comment_count %}
+                        <a href="{% url agenda-bill-detail agendabill.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    {% trans "No results found" %}
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="item-list">
+            <h2> {% trans "Ascribed Committee Meetings" %}</h2>
+            <table id="agenda-meetings">
+                {% for agendameeting in object.agendameetings.all %}
+                    <tr>
+                        <td>
+                            <div class="agenda-score positive">
+                                {{ agendameeting.get_score_display }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="item {% cycle "alt" "normal" %}">
+                                {% committee_meeting_list_item agendameeting.meeting %}
+                                <span class="reasoning">
+                                    {{ agendameeting.reasoning }}
+                                </span>
+                            </div>
+                            {% get_comment_count for agendameeting as comment_count %}
+                            <a href="{% url agenda-meeting-detail agendameeting.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    {% trans "No results found" %}
+                {% endfor %}
+            </table>
+        </div>
+    </div> {# id="agenda-info" #}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
+
+{% block footer %}
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+--></script>
+{% endblock %}
+
+

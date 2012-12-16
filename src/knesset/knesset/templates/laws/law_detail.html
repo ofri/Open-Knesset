@@ -1,0 +1,55 @@
+{% extends "site_base.html" %}
+{% load i18n laws_tags %} 
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }},{{ keywords }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+{% block nav-laws %}class="selected"{% endblock %}
+{% block divcontent %}
+<h2>{{ object.title }}</h2>  
+    <h3>{% trans 'Private Bills' %}</h3>
+    {% for pp in pps %}
+        p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 
+        {% trans 'Proposed by' %}:
+        {% for proposer in pp.proposers.all %}
+            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+        {% endfor %}<br>
+
+        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <br>
+        <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <br>
+
+        <br><br>
+    {% empty %}
+        None
+    {% endfor %}
+    <h3>{% trans 'Knesset Bills' %}</h3>
+    {% for kp in kps %}
+        {{ kp.title }} <br>
+        <a href="{{ kp.source_url }}">{% trans 'Bill on knesset website' %}</a><br>         
+        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in kp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <br>
+        <span>{% trans 'Votes' %}:</span>  {% for v in kp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <br>
+        {% if kp.originals.count %}
+            {% trans 'Based on' %}: 
+            {% for pp in kp.originals.all %} <div class="inline_bill">
+                p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 
+                {% trans 'Proposed by' %}:
+                {% for proposer in pp.proposers.all %}
+                    <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+                {% endfor %}<br>
+
+                <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+                <br>
+                <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <br><br>
+        
+    {% empty %}
+        None
+    {% endfor %}    
+
+{% endblock %}

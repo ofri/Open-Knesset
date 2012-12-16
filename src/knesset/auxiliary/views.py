@@ -1,5 +1,4 @@
-import csv
-import random
+import csv, random, tagging, logging
 from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -11,25 +10,22 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, \
     HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
-import tagging
-from actstream import action
-from actstream.models import Action
-from knesset.mks.models import Member
-from knesset.laws.models import Vote,Bill
-from knesset.committees.models import Topic, CommitteeMeeting
-from tagging.models import Tag, TaggedItem
-from annotatetext.views import post_annotation as annotatetext_post_annotation
-from annotatetext.models import Annotation
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import BaseListView
 from django.views.generic.list import ListView
 from django.contrib.comments.models import Comment
+from actstream import action
+from actstream.models import Action
+from mks.models import Member
+from laws.models import Vote, Bill, get_debated_bills
+from committees.models import Topic, CommitteeMeeting, PUBLIC_TOPIC_STATUS
+from agendas.models import Agenda
+from tagging.models import Tag, TaggedItem
+from annotatetext.views import post_annotation as annotatetext_post_annotation
+from annotatetext.models import Annotation
 from knesset.utils import notify_responsible_adult, main_actions
-from knesset.committees.models import PUBLIC_TOPIC_STATUS
-from knesset.laws.models import get_debated_bills
 
-import logging
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
 def help_page(request):
@@ -51,9 +47,10 @@ def help_page(request):
 def add_previous_comments(comments):
     previous_comments = set()
     for c in comments:
-        c.previous_comments = Comment.objects.filter(object_pk=c.object_pk,
-                                                     content_type=c.content_type,
-                                                     submit_date__lt=c.submit_date)
+        c.previous_comments = Comment.objects.filter(
+            object_pk=c.object_pk,
+            content_type=c.content_type,
+            submit_date__lt=c.submit_date).select_related('user')
         previous_comments.update(c.previous_comments)
         c.is_comment = True
     comments = [c for c in comments if c not in previous_comments]
@@ -85,20 +82,24 @@ def main(request):
     if not context:
         context = {}
         context['title'] = _('Home')
-        actions = list(main_actions()[:10])
-
-        annotations = get_annotations(
-            annotations=[a.target for a in actions if a.verb != 'comment-added'],
-            comments=[x.target for x in actions if x.verb == 'comment-added'])
-        context['annotations'] = annotations
-        b = get_debated_bills()
-        if b:
-            context['bill'] = get_debated_bills()[0]
-        else:
-            context['bill'] = None
-        context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
-                                         .order_by('-modified')\
-                                         .select_related('creator')[:10]
+        #actions = list(main_actions()[:10])
+        #
+        #annotations = get_annotations(
+        #    annotations=[a.target for a in actions if a.verb != 'comment-added'],
+        #    comments=[x.target for x in actions if x.verb == 'comment-added'])
+        #context['annotations'] = annotations
+        #b = get_debated_bills()
+        #if b:
+        #    context['bill'] = get_debated_bills()[0]
+        #else:
+        #    context['bill'] = None
+        #public_agenda_ids = Agenda.objects.filter(is_public=True
+        #                                         ).values_list('id',flat=True)
+        #if len(public_agenda_ids) > 0:
+        #    context['agenda_id'] = random.choice(public_agenda_ids)
+        #context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
+        #                                 .order_by('-modified')\
+        #                                 .select_related('creator')[:10]
         context['has_search'] = True # disable the base template search
         cache.set('main_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
@@ -226,7 +227,7 @@ def create_tag_and_add_to_item(request, app, object_type, object_id):
 
 
 def calculate_cloud_from_models(*args):
-    from tagging.models import Tag 
+    from tagging.models import Tag
     cloud = Tag._default_manager.cloud_for_model(args[0])
     for model in args[1:]:
         for tag in Tag._default_manager.cloud_for_model(model):

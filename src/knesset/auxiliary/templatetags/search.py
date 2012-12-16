@@ -1,7 +1,7 @@
 from django import template
 from django.core import urlresolvers
 from django.conf import settings
-from knesset.auxiliary.forms import SearchForm
+from auxiliary.forms import SearchForm
 
 register = template.Library()
 

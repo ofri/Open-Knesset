@@ -20,7 +20,7 @@ from actstream.models import action
 from mks.models import Member, Party
 from tagvotes.models import TagVote
 from knesset.utils import slugify_name
-from knesset.laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
+from laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
                                        BILL_AGRR_STAGES)
 
 logger = logging.getLogger("open-knesset.laws.models")

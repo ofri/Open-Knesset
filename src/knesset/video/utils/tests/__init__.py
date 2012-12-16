@@ -6,9 +6,9 @@ from mms import testMms
 
 from django.test import TestCase
 import collections
-from knesset.video.utils import build_url, get_videos_queryset
-from knesset.mks.models import Member
-from knesset.video.models import Video
+from video.utils import build_url, get_videos_queryset
+from mks.models import Member
+from video.models import Video
 
 class TestUtils(TestCase):
 

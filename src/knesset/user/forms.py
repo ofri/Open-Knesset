@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
-from knesset.mks.models import GENDER_CHOICES, Party
-from knesset.user.models import NOTIFICATION_PERIOD_CHOICES
+from mks.models import GENDER_CHOICES, Party
+from models import NOTIFICATION_PERIOD_CHOICES
 
 
 class RegistrationForm(UserCreationForm):
@@ -32,6 +32,18 @@ class RegistrationForm(UserCreationForm):
             profile.party = self.cleaned_data['party']
             profile.save()
         return user
+
+    def clean_email(self):
+        "Can't use already existing emails for registration"
+
+        email = self.cleaned_data['email']
+        exists = User.objects.filter(email=email).count()
+
+        if exists:
+            raise forms.ValidationError(_('This email is already taken'))
+
+        return email
+
 
 class EditProfileForm(forms.Form):
     email = forms.EmailField(required=False ,label=_(u'email address'),

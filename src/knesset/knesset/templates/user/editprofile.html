@@ -1,0 +1,93 @@
+{% extends "site_base.html" %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
+{% block extratitle %}{% trans 'User Profile' %}{% endblock %}
+{% block header %}<h1>{% trans 'User Profile' %}</h1>{% endblock %}
+{% block content %}
+<form action="." method="post">{% csrf_token %}
+    <table>
+    <tr>
+        <th><label>{% trans "Avatar" %}</label></th>
+        <td>
+            {% avatar request.user 75 %}
+            <a href="{% url avatar_change %}">{% trans "Change your avatar" %}</a>
+        </td>
+    </tr>
+    {{ edit_form }}
+    <tr>
+        <th><label>{% trans "Following Members" %}:</label></th>
+        <td>
+            {% for member in request.user.get_profile.members %}
+                <a class="item" id="following-member-{{member.id}}" href="{{member.get_absolute_url}}">
+                <img class="unfollow" id="unfollow-member-{{member.id}}" src="{% static "img/X.png" %}" />
+                {{member}}
+                </a>
+            {% endfor %}
+        </td>
+    </tr>
+    {% for bill in request.user.get_profile.bills %}
+    <tr>
+        {% if forloop.first %}
+            <th><label>{% trans "Following Bills" %}:</label></th>
+        {% else %}
+            <th></th>
+        {% endif %}
+        <td>
+           <a class="item" id="following-bill-{{bill.id}}" href="{{ bill.get_absolute_url }}">
+            <img class="unfollow" id="unfollow-bill-{{ bill.id }}" src="{% static "img/X.png" %}" />
+            {{ bill }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    {% for meeting in request.user.get_profile.meetings %}
+    <tr>
+        {% if forloop.first %}
+            <th><label>{% trans "Following Meetings" %}:</label></th>
+        {% else %}
+            <th></th>
+        {% endif %}
+        <td>
+           <a class="item" id="following-meeting-{{meeting.id}}" href="{{ meeting.get_absolute_url }}">
+            <img class="unfollow" id="unfollow-meeting-{{ meeting.id }}" src="{% static "img/X.png" %}" />
+            {{ meeting }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    <input type="submit" name="save" value="{% trans 'save' %}" />
+</form>
+<br/>
+{% if not edit_form.valid_email %}
+    {% if not edit_form.has_email %}
+        {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address.' %}
+    {% else %}
+        {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it' %}
+        <form action="{% url send-validation-email %}" method="post">{% csrf_token %}
+            <input type="submit" name="send validation email" value="{% trans 'send validation email' %}" />
+        </form>
+    {% endif %}
+{% else %}
+    {% trans 'Your email has been validated, so you can edit stuff!' %}
+{% endif %}
+<script>
+    $(document).ready( function() {
+        $('.unfollow').click(function(evt){
+            evt.stopPropagation()
+            var id_parts = /unfollow-(.*)-(\d+)/.exec(this.id);
+            var object_id = id_parts[2]
+            var what = id_parts[1]
+            jQuery.ajax({
+                type: 'POST',
+                url: '{% url user-follow-unfollow %}',
+                data: {what: what, id: object_id, verb:'unfollow'},
+                context: $('#following-' + what + '-' + object_id),
+                success: function () {
+                    this.remove();
+                },
+            })
+            return (false);
+        })
+    })
+</script>
+
+{% endblock %}
+{% block social %} {% endblock %}

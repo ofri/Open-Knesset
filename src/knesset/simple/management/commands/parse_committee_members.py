@@ -5,8 +5,8 @@ import re
 import logging
 logger = logging.getLogger("open-knesset.parse_committee_members")
 
-from knesset.mks.models import Member
-from knesset.committees.models import Committee 
+from mks.models import Member
+from committees.models import Committee 
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):

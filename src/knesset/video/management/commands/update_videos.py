@@ -5,12 +5,12 @@ from django.conf import settings
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
 from sub_commands import SubCommand, Timer, Logger, TimeoutException, SubCommandErrorException
-from knesset.video.management.commands.sub_commands.UpdateMembersAboutVideo import UpdateMembersAboutVideo
-from knesset.video.management.commands.sub_commands.UpdateMembersRelatedVideos import UpdateMembersRelatedVideos
-from knesset.video.management.commands.sub_commands.UpdateCommitteesVideos import UpdateCommitteesVideos
-from knesset.video.management.commands.sub_commands.DownloadCommitteesVideos import DownloadCommitteesVideos
-from knesset.video.management.commands.sub_commands.UploadCommitteesVideos import UploadCommitteesVideos
-from knesset.video.management.commands.sub_commands.GetYoutubeToken import GetYoutubeToken
+from video.management.commands.sub_commands.UpdateMembersAboutVideo import UpdateMembersAboutVideo
+from video.management.commands.sub_commands.UpdateMembersRelatedVideos import UpdateMembersRelatedVideos
+from video.management.commands.sub_commands.UpdateCommitteesVideos import UpdateCommitteesVideos
+from video.management.commands.sub_commands.DownloadCommitteesVideos import DownloadCommitteesVideos
+from video.management.commands.sub_commands.UploadCommitteesVideos import UploadCommitteesVideos
+from video.management.commands.sub_commands.GetYoutubeToken import GetYoutubeToken
 
 class Command(NoArgsCommand,SubCommand):
 
