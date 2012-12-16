@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Open Knesset'
+project = u'Open Knesset API and embedding'
 copyright = u'2011, 2012 The Public Knowledge Workshop'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'openknesset', u'OpenKnesset Documentation',
+    ('index', 'openknesset', u'OpenKnesset API and Embedding Documentation',
      [u'Hasadna'], 1)
 ]
 
@@ -227,7 +227,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'OpenKnesset', u'OpenKnesset Documentation',
+  ('index', 'OpenKnesset', u'OpenKnesset API and Embedding Documentation',
    u'Hasadna', 'OpenKnesset', 'One line description of project.',
    'Miscellaneous'),
 ]
