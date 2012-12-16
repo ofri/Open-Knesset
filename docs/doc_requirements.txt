@@ -1,0 +1,4 @@
+# The dependencies for building the documents
+
+sphinx
+sphinx-html
