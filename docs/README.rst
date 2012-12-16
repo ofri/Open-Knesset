@@ -1,5 +1,5 @@
-The build the docs, you'll need ``sphinx`` and ``sphinx-html``, with the
-virtualenv activated, do::
+The build the docs, you'll need ``sphinx`` and ``sphinx-html``. With the
+virtualenv activated, run::
 
     pip install -r doc_requirements.txt
 
