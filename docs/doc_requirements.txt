@@ -1,3 +1,0 @@
-# The dependencies for building the documents
-
-sphinx
