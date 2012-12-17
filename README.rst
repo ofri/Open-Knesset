@@ -20,6 +20,7 @@ Get the code
   This creates a copy of the project on your local machine.
 
 If you haven't done so already:
+
 - ``git config --local user.name "Your Name"``
 - ``git config --local user.email "your@email.com"``
 
@@ -46,18 +47,20 @@ Installation process
 - ``bin/django createsuperuser`` # to create your superuser account
 - ``bin/django runserver``
 - ``vi src/knesset/local_settings.py`` 
-    create your local setting file to store a bunch of things that you do NOT
-    want to push to everyone # NOTE: NEVER push settings.py with local changes!
+  create your local setting file to store a bunch of things that you do NOT
+  want to push to everyone # NOTE: NEVER push settings.py with local changes!
 - sample input for local_settings.py: ``DATABASE_NAME = '<your-local-path>dev.db'``  # Or path to database file if using sqlite3.
 
 .. note::
     at this point the bills view is missing bills names. To fix this you can run
     the time intensive:
 
-    - bin/django shell_plus
-    - for bill in Bill.objects.all(): bill.save()
+    - ``bin/django shell_plus``
+    - ``for bill in Bill.objects.all(): bill.save()``
+
     or run this for just several bills:
-    - for bill in Bill.objects.all()[:100]: bill.save()
+
+    - ``for bill in Bill.objects.all()[:100]: bill.save()``
 
 Trouble?
 -------------
