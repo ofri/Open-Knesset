@@ -38,17 +38,19 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-BUILDOUT_ROOT = os.path.abspath(
-    os.path.join(PROJECT_ROOT, os.path.pardir, os.path.pardir, os.path.pardir))
-DATA_ROOT = os.path.join(BUILDOUT_ROOT, 'data', '')
+PROJECT_ROOT = os.path.abspath(os.path.join(
+    os.path.dirname(__file__),
+    os.path.pardir
+))
+
+DATA_ROOT = os.path.join(PROJECT_ROOT, 'data', '')
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(BUILDOUT_ROOT, 'media', '')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media', '')
 
 # Absolute path to location of collected static files
-STATIC_ROOT = os.path.join(BUILDOUT_ROOT, 'static_root', '')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static_root', '')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -107,7 +109,7 @@ TEMPLATE_DIRS = (
 )
 
 STATICFILES_DIRS = (
-    os.path.join(BUILDOUT_ROOT, 'static'),  # Finding current static files
+    os.path.join(PROJECT_ROOT, 'static'),  # Finding current static files
 )
 
 LOCALE_PATHS = (
