@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 class Command(NoArgsCommand):
 
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'email@example.com')
-    prefix = 'http://oknesset.org'
+    prefix = 'https://oknesset.org'
     lang = getattr(settings, 'LANGUAGE_CODE', 'he')
 
     def handle_noargs(self, **options):
