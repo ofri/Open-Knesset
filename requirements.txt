@@ -6,8 +6,6 @@
 # mimeparse - Looks like a requirement by tastypie, will be auto installed
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
-# sphinx - for building documentation
-# sphinx-html - for building documentation
 
 Django==1.4.3
 PIL
