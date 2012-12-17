@@ -5,7 +5,7 @@ build/
 dist/
 downloads/
 src/Open_Knesset.egg-info/
-src/knesset/local_settings.py
+local_*settings.py
 open-knesset.log
 src/knesset/whoosh_index/
 develop-eggs/
