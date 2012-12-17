@@ -3,7 +3,7 @@
 
 --find-links http://download.savannah.gnu.org/releases/mimms/
 
-mimms==3.2.1
+mimms>=3.2
 
 # Temporary, until pyth release a new pypi with pull #16
 -e git://github.com/brendonh/pyth.git#egg=pyth
