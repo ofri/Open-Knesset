@@ -35,8 +35,6 @@ django-ratings
 -e git://github.com/hasadna/django-backlinks.git#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git#egg=django-piston
-# Temporary, until pyth release a new pypi with pull #16
--e git://github.com/brendonh/pyth.git#egg=pyth
 django-debug-toolbar>=0.8.3
 nose
 django-nose
