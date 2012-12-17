@@ -82,9 +82,14 @@ class AgendaResource(BaseResource):
         include_absolute_url = True
         excludes = ['is_public']
         list_fields = ['name', 'id', 'description', 'public_owner_name']
+        filtering = {
+            "date":["from","to"],
+        }
 
     def dehydrate_members(self, bundle):
-        mks_values = dict(bundle.obj.get_mks_values())
+        fromdate = bundle.request.GET.get('date__from',None)
+        todate   = bundle.request.GET.get('date__to',None)
+        mks_values = dict(bundle.obj.get_mks_values(fromdate,todate))
         members = []
         for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
             # TODO: this sucks, performance wise

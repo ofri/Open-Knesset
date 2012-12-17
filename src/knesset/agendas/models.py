@@ -179,7 +179,7 @@ class AgendaManager(models.Manager):
     def get_mks_values(self):
         mks_values = cache.get('agendas_mks_values')
         if not mks_values:
-            q = queries.agendas_mks_grade()
+            q = queries.getAllAgendaMkVotes()
             # outer join - add missing mks to agendas
             newAgendaMkVotes = {}
             # generates a set of all the current mk ids that have ever voted for any agenda

@@ -4,9 +4,17 @@ from django.core.cache import cache
 from itertools import groupby
 from operator import itemgetter
 
-def getAllAgendaPartyVotes():
-    results = cache.get('AllAgendaPartyVotes')
+import time
+
+def getAllAgendaPartyVotes(fromdate=None,todate=None):
+    results = None
+    if (not fromdate is None) and (not todate is None):
+      results = cache.get('AllAgendaPartyVotes')
     if not results:
+        if fromdate is None:
+          fromdate = 0
+        if todate is None:
+          todate = int(time.time())
         cursor = connection.cursor()
         cursor.execute(PARTY_QUERY)
         results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3])),list(group))),
@@ -69,10 +77,13 @@ FROM   (SELECT agid                   agendaid,
 ORDER BY agendaid,score desc"""
 
 def getAllAgendaMkVotes():
-    cursor = connection.cursor()
-    cursor.execute(MK_QUERY)
-    results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3]),int(g[4])),list(group))),
-                       groupby(cursor.fetchall(),key=itemgetter(0))))
+    results = cache.get('AllAgendaMemberVotes')
+    if not results:
+        cursor = connection.cursor()
+        cursor.execute(MK_QUERY)
+        results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3]),int(g[4])),list(group))),
+                           groupby(cursor.fetchall(),key=itemgetter(0))))
+        cache.set('AllAgendaMemberVotes', results, 1800)
     return results
 
 MK_QUERY = """
