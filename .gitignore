@@ -14,6 +14,6 @@ develop-eggs/
 *.db
 *~
 nosetests.xml
-src/knesset/templates/last_build.txt
+knesset/templates/last_build.txt
 static/avatars
 data/committee_mms_videos
