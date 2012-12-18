@@ -30,7 +30,10 @@ Prerequisites
 ----------------
 
 - Python 2.x (including dev files)
-- python-setuptools
+- setuptools
+- virtualenv
+- pip
+- git
 
 In Ubuntu this can be done with::
 
