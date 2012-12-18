@@ -26,7 +26,7 @@ is Python_ and Django_ based.
 Contents:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     environment/index
 
