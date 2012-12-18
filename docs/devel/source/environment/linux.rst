@@ -22,3 +22,6 @@ Fedora
 
     sudo yum groupinstall "Development Tools" "Development Libraries"
     sudo yum install git python python-devel python-setuptools python-virtualenv python-pip libjpeg-turbo-devel libpng-devel libxml2-devel libxslt-devel
+
+
+Once done, proceed to :ref:`github`.

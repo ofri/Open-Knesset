@@ -16,3 +16,4 @@ The section will guide you on:
     :maxdepth: 2
 
     requirements
+    github
