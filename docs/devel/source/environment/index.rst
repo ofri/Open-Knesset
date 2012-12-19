@@ -15,6 +15,8 @@ The section will guide you on:
 .. toctree::
     :maxdepth: 2
 
+    linux
+    windows
+
     requirements
-    github
     virtualenv

@@ -28,6 +28,7 @@ Contents:
 .. toctree::
     :maxdepth: 3
 
+    github
     environment/index
 
 Indices and tables

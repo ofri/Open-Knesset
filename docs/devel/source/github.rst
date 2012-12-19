@@ -1,11 +1,11 @@
-.. _github:
-
 ========================
 GitHub and Source Code
 ========================
 
-The Open Knesset code is hosted on GitHub, and uses ``git`` for distributed
+The Open Knesset code is hosted on GitHub_, and uses ``git`` for distributed
 version control.
+
+.. _GitHub: https://github.com/
 
 Create a GitHub account
 ============================
