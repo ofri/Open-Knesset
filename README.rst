@@ -1,4 +1,9 @@
 
+.. warning::
+
+    The repository state, docs and steps for the build environment are  in flux
+    and changing to virutalenv.
+
 .. contents::
 
 Installation
