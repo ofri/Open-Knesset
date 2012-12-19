@@ -17,6 +17,3 @@ The section will guide you on:
 
     linux
     windows
-
-    requirements
-    virtualenv
