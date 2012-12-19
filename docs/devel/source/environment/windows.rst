@@ -76,8 +76,8 @@ Run the installer, it'll start and download the rest of the needed packages:
 .. _GitHub for Windows: http://windows.github.com
 
 Run the GitHub program (you should have an icon on the desktop), and sign in
-with your username and password. This should also extract git, and create an ssh
-keys and upload the public one to GitHub.
+with your username and password. This should also extract git, and create a ssh
+key and upload the public part to GitHub.
 
 
 Creating and Activating the virtualenv
