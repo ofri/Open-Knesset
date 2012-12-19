@@ -61,7 +61,7 @@ In Linux we'll source the activation script (to set env vars):
     cd oknesset/
     . bin/activate
 
-Note the changed prompt with includes the virtualenv's name.
+Note the changed prompt which includes the virtualenv's name.
 
 
 Getting the Source Code (a.k.a Cloning)

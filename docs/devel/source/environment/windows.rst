@@ -90,7 +90,7 @@ already configured, in the shell::
     C:\Python27\Scripts\virtualenv --distribute --system-site-packages oknesset
 
 We need to `activate` the virtual environment (it mainly modifies the paths so
-that correct packages and bin directories will be found) each time we wish to
+that correct `Lib` and `Scripts` directories will be found) each time we wish to
 work on the code. ::
 
     cd oknesset

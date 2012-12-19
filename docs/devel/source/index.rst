@@ -10,7 +10,8 @@ Open Knesset's aim is making the israeli Knesset more transparent. The project
 is Python_ and Django_ based.
 
 .. note::
-    This guide is for developers who wish to work on Open Knesset's code.
+    This guide is for developers working on Open Knesset's code.
+
     For 3rd party applications and services developers, please see the API
     documentation.
 
