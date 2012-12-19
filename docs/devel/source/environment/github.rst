@@ -26,3 +26,5 @@ the `Open Knesset repository`_ and fork the project.
 .. _Open Knesset repository: https://github.com/hasadna/Open-Knesset
 
 .. image:: oknesset_fork.png
+
+And select the folder *c:\oknesset*

@@ -77,9 +77,7 @@ Note the change prompt with includes the virtualenv's name.
 MS Windows
 ----------
 
-We'll run the activation script:
-
-.. code-block:: sh
+We'll run the activation script::
 
     cd oknesset
     Scripts\activate
@@ -87,5 +85,69 @@ We'll run the activation script:
 Note the change prompt with includes the virtualenv's name.
 
 
-Clonging the forked repo
-============================
+
+Getting the Source Code (a.k.a Cloning)
+=========================================
+
+Now we'll clone the forked repository into the virutalenv.
+
+Linux
+-------
+
+Make sure you're in the `oknesset` directory and run::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+Replace `your-username` with the username you've registered at git hub.
+
+.. note::
+
+    You can also clone with ssh keys, in that case follow the
+    `github guide on ssh keys`_. Once you've done that, you're clone command
+    will look like::
+
+        git@github.com:your-username/Open-Knesset.git
+
+.. _github guide on ssh keys: https://help.github.com/articles/generating-ssh-keys#platform-linux
+
+
+Proceed to :ref:`install_requirements`.
+
+Windows
+---------
+
+Run the GitHub program (you should have an icon on the desktop), and sign in
+with your username and password. This should also extract git.
+
+Select your GitHub profile, right click your Open-Knesset fork and select
+*clone to*:
+
+.. image:: github_win_clone.png
+
+
+Select the folder *c:\oknesset*. This should clone the Open-Knesset repo into
+the virtualenv we've created. If anything went ok, You should have something
+similar to this:
+
+.. image:: oknesset_dir_win.png
+
+
+.. _install_requirements:
+
+Installing requirements
+=============================
+
+In the terminal or command window activated, inside the *oknesset* directory,
+run:
+
+.. code-block:: sh
+
+    pip install -r Open-Knesset/requirements.txt
+
+For windows, this needs to be done from the *Git shell* which will provide the
+git toolchain in the path (you should have an icon on the desktop), launch it, 
+and::
+
+    cd c:\oknesset
+    Scripts/activate
+    pip install -r Open-Knesset\requirements.txt

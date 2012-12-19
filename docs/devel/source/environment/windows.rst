@@ -72,6 +72,4 @@ Run the installer, it'll start and download the rest of the needed packages:
 
 .. _GitHub for Windows: http://windows.github.com
 
-
-
 Proceed to :ref:`github`
