@@ -1,60 +1,130 @@
 
 .. warning::
 
-    The repository state, docs and steps for the build environment are  in flux
+    The repository state, docs and steps for the build environment are in flux
     and changing to virutalenv.
+
+
+.. important::
+
+    This document contains quick start instruction. For more details, please see
+    the `Open Knesset developers documentation`_
+
+.. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 
 .. contents::
 
 Installation
 ==============
 
-Get the code
--------------
+GitHub
+---------
 
-- Make sure you have git installed, and have an account on github.com and you're
-  logged in.
-- see http://linux.yyz.us/git-howto.html for a short list of options with
-  git and github.com help for more.
+- Make sure you have an account on GitHub_, and you're logged in.
 - Fork the repository_ (top right of page). This creates a copy of the
   repository under your user.
-- Clone the repository::
+- See http://linux.yyz.us/git-howto.html for a short list of options with
+  git and github.com help for more.
 
-    git clone https://github.com/your-username/Open-Knesset.git 
-    
-  This creates a copy of the project on your local machine.
-
-If you haven't done so already:
-
-- ``git config --local user.name "Your Name"``
-- ``git config --local user.email "your@email.com"``
-
+.. _GitHib: https://github.com
 .. _repository: https://github.com/hasadna/Open-Knesset
 
-Prerequisites
-----------------
 
-- Python 2.x (including dev files)
-- setuptools
-- virtualenv
-- pip
-- git
+Linux
+-----------
 
-In Ubuntu this can be done with::
+- Install initial requirements (since we're gonna comile PIL into the environemnt,
+  we'll also need development tools):
+  
+  Debian and derivatives like Ubuntu and Mint
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  .. code-block:: sh
+  
+      sudo apt-get install build-essential git python python-dev python-setuptools python-virtualenv python-pip
+      sudo apt-get build-dep python-imaging
+      sudo apt-get build-dep python-lxml
+  
+  
+  Fedora
+  ~~~~~~~~~~~
+  
+  .. code-block:: sh
+  
+      sudo yum groupinstall "Development Tools" "Development Libraries"
+      sudo yum install git python python-devel python-setuptools python-virtualenv python-pip libjpeg-turbo-devel libpng-devel libxml2-devel libxslt-devel
 
-    sudo apt-get install python python-dev python-setuptools python-lxml
+
+- If you haven't done so already:
+
+  - ``git config --local user.name "Your Name"``
+  - ``git config --local user.email "your@email.com"``
+
+- Create the virtual environment. In the terminal cd to the directory ypu want
+  the environment create it and run ``virtualenv oknesset``.
+
+- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
+  prompt which includes the virtualenv's name.
+
+- Clone the repository::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+  This creates a copy of the project on your local machine.
+
+- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
+  and wait ...
+
+MS Windows
+-----------
+
+- `Download the latest Python 2.7`_ MSI installer matching your architecture
+  (32 or 64 bit). As of this writing, the latest one is `2.7.3`_. Install it.
+- `Download distribute`_ for your architecture and install it.
+- Open command windows and::
+
+    cd c:\Python27\Scripts
+    easy_install pip virtualenv
+
+- Download and install the installers matching your architecture for PIL_
+  and lxml_ (version 2.3.x).
+- Download and install `GitHub for Windows`_.
+- Run the GitHub program (should have an icon on the desktop). Sign in
+  with your username and password.
+- Run `Git Shell` (should have an icon on desktop). In that shell create the
+  virtualenv::
+
+    cd C:\
+    C:\Python27\Scripts\virtualenv --distribute --system-site-packages oknesset
+- Still in that shell activate the virutalenv::
+
+    cd oknesset
+    Scripts\activate
+
+  Note the changed prompt with includes the virtualenv's name.
+- Clone the repository. In the `oknesset` directory and run
+  ``git clone git@github.com:your-name/Open-Knesset.git``
+- Install requirements: ``pip install -r Open-Knesset\requirements.txt`` and
+  wait.
+
+.. _Download distribute: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute- 
+.. _2.7.3: http://www.python.org/download/releases/2.7.3/
+.. _Download the latest Python 2.7: http://python.org/download/releases/
+.. _PIL: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pil
+.. _lxml: http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+.. _GitHub for Windows: http://windows.github.com
+
+
 
 Installation process
 -----------------------
 
-- ``python bootstrap.py``
-- ``bin/buildout`` (if you have a problem, see "Trouble?" below)
-- ``bin/test``
-- ``bin/django syncdb --migrate``     # do not create a superuser account
-- ``bin/django loaddata dev``
-- ``bin/django createsuperuser`` # to create your superuser account
-- ``bin/django runserver``
-- ``vi src/knesset/local_settings.py`` 
+- ``./manage.py test``
+- ``./manage.py syncdb --migrate`` # do not create a superuser account
+- ``./manage.py loaddata dev``
+- ``./manage.py createsuperuser`` # to create your superuser account
+- ``./manage.py runserver``
+- ``vi knesset/local_settings.py`` 
   create your local setting file to store a bunch of things that you do NOT
   want to push to everyone # NOTE: NEVER push settings.py with local changes!
 - sample input for local_settings.py: ``DATABASE_NAME = '<your-local-path>dev.db'``  # Or path to database file if using sqlite3.
@@ -63,7 +133,7 @@ Installation process
     at this point the bills view is missing bills names. To fix this you can run
     the time intensive:
 
-    - ``bin/django shell_plus``
+    - ``./manage.py shell_plus``
     - ``for bill in Bill.objects.all(): bill.save()``
 
     or run this for just several bills:
@@ -75,22 +145,7 @@ Trouble?
 
 - Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
 - currently using MySQL as the database engine is not supported
-- on bin/buildout, problems with getting distribution for 'PIL' can be fixed
-  by installing the python-dev package
 
-Windows
---------------
-
-Prerequisites:
-
-- Download and install Python 2.7 from http://www.python.org/download/windows/
-- Download and install git by following http://help.github.com/win-git-installation/
-- Generate an ssh key to your git account by following http://help.github.com/msysgit-key-setup/
-
-Running the installation instructions:
-
-- open command line change dir to the Open-Knesset folder
-- run the installation instructions above (Without the $ ofcourse and with backslashes)
 
 Working process
 ===================
@@ -141,7 +196,7 @@ the code.
 After you code
 ~~~~~~~~~~~~~~~~
 
-- ``bin/test`` # make sure you didn't break anything
+- ``./manage.py test`` # make sure you didn't break anything
 - ``git status`` # to see what changes you made
 - ``git diff filename`` # to see what changed in a specific file
 - ``git add filename`` # for each file you changed/added.
