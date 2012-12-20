@@ -36,8 +36,7 @@ Linux
 - Install initial requirements (since we're gonna comile PIL into the environemnt,
   we'll also need development tools):
   
-  Debian and derivatives like Ubuntu and Mint
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  **Debian and derivatives like Ubuntu and Mint**
   
   .. code-block:: sh
   
@@ -46,8 +45,7 @@ Linux
       sudo apt-get build-dep python-lxml
   
   
-  Fedora
-  ~~~~~~~~~~~
+  **Fedora**
   
   .. code-block:: sh
   
