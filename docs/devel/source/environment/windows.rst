@@ -126,7 +126,7 @@ And wait ... See an example in the following screenshot:
 Running Tests
 ==============
 
-With the virtualenv activated, enter the `Open-Knesset` directory, end run the
+With the virtualenv activated, enter the `Open-Knesset` directory, and run the
 tests:
 
 .. code-block:: sh
