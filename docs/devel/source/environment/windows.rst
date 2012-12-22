@@ -122,3 +122,14 @@ inside the *oknesset* directory, run:
 And wait ... See an example in the following screenshot:
 
 .. image:: git_shell.png
+
+Running Tests
+==============
+
+With the virtualenv activated, enter the `Open-Knesset` directory, end run the
+tests:
+
+.. code-block:: sh
+
+    cd Open-Knesset
+    python manage.py test

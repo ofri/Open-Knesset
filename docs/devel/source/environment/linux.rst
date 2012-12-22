@@ -96,3 +96,15 @@ run:
     pip install -r Open-Knesset/requirements.txt
     
 And wait ...
+
+
+Running Tests
+==============
+
+With the virtualenv activated, enter the `Open-Knesset` directory, and run the
+tests:
+
+.. code-block:: sh
+
+    cd Open-Knesset
+    ./manage.py test
