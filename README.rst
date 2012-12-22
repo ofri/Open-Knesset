@@ -72,6 +72,11 @@ Linux
 
 - Install required packages: ``pip install -r Open-Knesset/requirements.txt``
   and wait ...
+- Run the tests::
+
+    cd Open-Knesset
+    ./manage.py test
+    
 
 MS Windows
 -----------
@@ -104,6 +109,10 @@ MS Windows
   ``git clone git@github.com:your-name/Open-Knesset.git``
 - Install requirements: ``pip install -r Open-Knesset\requirements.txt`` and
   wait.
+- Run the tests::
+
+    cd Open-Knesset
+    python manage.py test
 
 .. _Download distribute: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute- 
 .. _2.7.3: http://www.python.org/download/releases/2.7.3/
