@@ -25,7 +25,12 @@ Running Tests
 Download the Development DB
 ===============================
 
-Download and extract dev.db from (TBD). Place it in the `Open-Knesset` directory.
+Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller). **Place it in
+the `Open-Knesset` directory**.
+
+
+.. _dev.db.zip: http://oknesset-devdb.s3.amazonaws.com/dev.db.zip
+.. _dev.db.bz2: http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
 
 To make sure everything is up to date, run the database schema migrations:
 
