@@ -122,6 +122,18 @@ MS Windows
 .. _GitHub for Windows: http://windows.github.com
 
 
+After basic installation: Tests and initial db
+=================================================
+
+.. note:: MS Windows users: repleace ``./manage.py`` with ``python manage.py``.
+
+- Run the tests: ``./manage.py test``
+- Download and extract dev.db (TODO: Provide a link) into the ``Open-Knesset``
+  directory
+- Make sure db schema is upated: ``./manage.py migrate``
+- Create a superuser if needed: ``./manage.py createsuperuser``
+
+
 
 Installation process
 -----------------------
