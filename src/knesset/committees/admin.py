@@ -1,9 +1,8 @@
 from django.contrib.contenttypes.generic import GenericTabularInline
-from knesset.committees.models import *
-from knesset.video.models import Video
 from django.db.models import Q
-
 from django.contrib import admin
+from video.models import Video
+from models import *
 
 class CommitteeRelatedVideosInline(generic.GenericTabularInline):
     model = Video

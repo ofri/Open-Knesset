@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-13 21:49+0200\n"
-"PO-Revision-Date: 2012-10-13 22:23+0200\n"
+"PO-Revision-Date: 2012-11-12 21:59+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -901,7 +901,7 @@ msgstr "מפלגה"
 #: templates/base.html:118
 #: templates/agendas/agenda_detail.html:126
 msgid "Parties"
-msgstr "מפלגות"
+msgstr "סיעות"
 
 #: mks/models.py:124
 #: templates/mks/party_list.html:19

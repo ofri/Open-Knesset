@@ -8,9 +8,9 @@ from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from knesset.agendas.models import Agenda
-from knesset.mks.models import Member
-from knesset.laws.models import  Vote
+from agendas.models import Agenda
+from mks.models import Member
+from laws.models import  Vote
 from management.commands import notify
 from actstream import follow, action
 

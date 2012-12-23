@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.management.base import NoArgsCommand, CommandError
 from django.utils import simplejson
 
-from knesset.mmm.models import Document
+from mmm.models import Document
 from knesset.settings import DATA_ROOT
 
 

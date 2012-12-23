@@ -1,7 +1,7 @@
 
 from south.db import db
 from django.db import models
-from knesset.committees.models import *
+from committees.models import *
 
 class Migration:
     

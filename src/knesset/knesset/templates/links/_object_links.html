@@ -1,0 +1,22 @@
+{% load i18n %}
+{% if links %}
+    <ul class="links">
+    {% for link in links %}
+        {% if link.active %}
+        <li><a href="{{ link.url|safe }}" target="_blank">
+            {% if link.link_type %}
+                &nbsp;
+                {% if link.link_type.image %}
+                    <img src="{{MEDIA_URL}}{{link.link_type.image}}" alt="{% trans link.link_type.title %}">
+                {% else %}
+                    ({% trans link.link_type.title %})
+                {% endif %}
+            {% endif %}
+            {{ link.title }}
+        </a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    {% trans 'none' %}
+{% endif %}

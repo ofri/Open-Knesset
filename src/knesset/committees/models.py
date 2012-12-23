@@ -7,20 +7,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
-
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from tagging.models import Tag
 from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
 
-import urllib2
-from BeautifulSoup import BeautifulSoup
-
-
-COMMITTEE_PROTOCOL_PAGINATE_BY = 400
+COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
 logger = logging.getLogger("open-knesset.committees.models")
 
@@ -95,7 +92,7 @@ class Committee(models.Model):
 
         trans = { #key is our id, val is knesset id
             1:'1', #כנסת
-            2:'3', #כלכלה 
+            2:'3', #כלכלה
             3:'27', #עליה
             4:'5', #הפנים
             5:'6', #החוקה
@@ -127,7 +124,6 @@ def legitimate_header(line):
 
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
-    # TODO: do we really need a date string? can't we just format date?
     date_string = models.CharField(max_length=256)
     date = models.DateField()
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
@@ -145,8 +141,14 @@ class CommitteeMeeting(models.Model):
         return truncate_words (self.topics, 12)
 
     def __unicode__(self):
-        return (u"%s - %s" % (self.committee.name,
-                                self.title())).replace("&nbsp;", u"\u00A0")
+        cn = cache.get('committee_%d_name' % self.committee_id)
+        if not cn:
+            cn = self.committee.name
+            cache.set('committee_%d_name' % self.committee_id,
+                      cn,
+                      settings.LONG_CACHE_TIME)
+        return (u"%s - %s" % (cn,
+                              self.title())).replace("&nbsp;", u"\u00A0")
 
     @models.permalink
     def get_absolute_url(self):
@@ -222,6 +224,9 @@ class CommitteeMeeting(models.Model):
         """
             returns any background material for the committee meeting, or [] if none
         """
+        import urllib2
+        from BeautifulSoup import BeautifulSoup
+
         time = re.findall(r'(\d\d:\d\d)',self.date_string)[0]
         date = self.date.strftime('%d/%m/%Y')
         cid = self.committee.get_knesset_id()
@@ -232,13 +237,13 @@ class CommitteeMeeting(models.Model):
             bgdata = BeautifulSoup(data.read()).findAll('a')
 
             for i in bgdata:
-                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string}) 
+                bg_links.append( {'url': 'http://www.knesset.gov.il'+i['href'], 'title': i.string})
 
         return bg_links
 
     @property
     def bg_material(self):
-        return Link.objects.filter(object_pk=self.id, 
+        return Link.objects.filter(object_pk=self.id,
                     content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
 
 
@@ -255,6 +260,9 @@ class ProtocolPart(models.Model):
     objects = ProtocolPartManager()
 
     annotatable = True
+
+    class Meta:
+        ordering = ('order','id')
 
     def get_absolute_url(self):
         if self.order == 1:

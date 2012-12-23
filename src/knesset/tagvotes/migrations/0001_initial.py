@@ -1,7 +1,7 @@
 
 from south.db import db
 from django.db import models
-from knesset.tagvotes.models import *
+from tagvotes.models import *
 
 class Migration:
     

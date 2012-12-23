@@ -10,9 +10,9 @@ from django.core.management.base import BaseCommand
 from django.contrib.contenttypes.models import ContentType
 from dateutil import zoneinfo
 
-from knesset.mks.models import Member
-from knesset.committees.models import Committee
-from knesset.events.models import Event
+from mks.models import Member
+from committees.models import Committee
+from events.models import Event
 
 # NB: All dates scraped from the knesset site are assumed to be in timezone Israel.
 isr_tz = zoneinfo.gettz('Israel')

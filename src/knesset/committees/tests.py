@@ -7,9 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from annotatetext.models import Annotation
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
-from knesset.laws.models import Bill
-from knesset.mks.models import Member
-from knesset.links.models import LinkType
+from laws.models import Bill
+from mks.models import Member
+from links.models import LinkType
 from models import *
 
 just_id = lambda x: x.id

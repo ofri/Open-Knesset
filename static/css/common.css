@@ -8,6 +8,10 @@ Copyright (c) 2005 Lawrence Journal-World. Please don't steal.
 
 body { margin:0; padding:0; background-color:#FFFFFF; color:black; }
 body, th, td { font:12px/1.4em Verdana,sans-serif; }
+
+html.rtl body { direction: rtl; }
+
+
 #container { width:90%; margin: 0 auto;}
 #homepage #container { max-width:100em; }
 
@@ -46,6 +50,8 @@ a:hover { text-decoration:underline;}
                  -moz-border-radius:0.8em 0.8em 0em 0em;
                  -webkit-border-radius:0.8em 0.8em 0em 0em;
                  border-radius:0.8em 0.8em 0em 0em;}
+html.rtl #nav-global li { float:right; }
+
 #nav-global a { display:block; float:left; padding:1em 16px 9px 16px;}
 #nav-global a:hover { color:#0d204a; }
 #nav-global li:hover { bottom: 1px solid #000; padding-bottom: 0px;
@@ -653,6 +659,7 @@ div.post {margin-top:1em; padding-top:1em; border-top: 1px solid #888;
 .details ul { padding-right: 0.5em; }
 .details li { list-style-type:none; }
 .member-photo { padding-top:0.7em; display:inline-block; }
+html.rtl #member-photo { float:right; margin:0.5em;}
 .member-header { padding-right:1em; display:inline-block; }
 .pagination {padding:1em 0; margin-top: 1em; text-align:center; }
 
@@ -828,6 +835,17 @@ a.permalink { font-size: 0.8em; padding: 0 4px 0 4px; text-decoration: none; vis
 .item-list a span.public-owner-name {
     font-weight:normal;
 }
+.item .agenda-image img { width:100px }
+.item .agenda-image {
+    float:right;
+    margin: 5px 5px 5px 10px;
+}
+.add { clear:both }
+.ascribed-agendas img { float:left; width:100px; margin-top:0.5em}
+.ascribed-agendas .ascribed-agenda-link { display:block }
+.ascribed-agendas .ascribed-agenda-link a { padding:0 }
+.ascribed-agendas .ascribed-agenda-label { display:inline-block; width:5em }
+.mk-agenda-image { width:100px }
 
 select#id_agenda {max-width:100%}
 .comittee_member_detail {
@@ -1074,6 +1092,11 @@ color: #7891AB;
 border-radius:.5em;
 padding: .5em;
 box-shadow: 2px 2px 9px rgba(17, 15, 15, 0.63);
+}
+
+/*This is used to avoid display and imidiate hide on a slow page rendering.. */
+.help-section-extended{
+display: none;
 }
 
 /* help texts*/

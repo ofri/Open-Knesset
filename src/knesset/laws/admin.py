@@ -1,4 +1,4 @@
-from knesset.laws.models import Vote,Law,PrivateProposal,KnessetProposal,GovProposal,Bill,GovLegislationCommitteeDecision
+from models import Vote,Law,PrivateProposal,KnessetProposal,GovProposal,Bill,GovLegislationCommitteeDecision
 
 from django.contrib import admin
 

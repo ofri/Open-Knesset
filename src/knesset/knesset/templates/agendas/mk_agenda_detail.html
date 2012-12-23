@@ -1,0 +1,57 @@
+{% extends "site_base.html" %}
+{% load i18n tagging_tags laws_tags common_visual_elements links_tags comments user_tags hitcount_tags %}
+{% load static from staticfiles %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ object.name }}, {{ member }}{% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-agendas %}class="selected"{% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+{% endblock %}
+{% block divcontent %}
+    <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
+    <div id="agenda-info">
+        <div class="item-list">
+        <h2>{% trans 'Overall score' %} <span class="numeric" style="display:inline-block;font-weight:bold;">{{score|floatformat:"0"}}%</span></h2>
+            <div id="member_percentile" class="percentile {% if score < 0 %}percentile_against{% endif %}"></div>
+            <script>set_percentile('member',({{ score }}+100)/2);</script>
+
+        <h2>{% trans 'Score details' %}</h2>
+        <table id="agenda-votes">
+
+            {% for agendavote in related_votes %}
+                <tr>
+                    <td>
+                        <div class="agenda-importance">{{agendavote.get_importance_display}}</div>
+                        <div class="agenda-score{% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">
+                            {{ agendavote.get_score_display }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item">
+                            <a id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
+                                {{ agendavote.vote.title }}<br/>
+                            </a>
+                            <span class="agenda-mk-vote {% if agendavote.voteaction.type == 'for' %} positive{% endif %}{% if agendavote.voteaction.type = 'against' %} negative{% endif %}">{{ member.name }} {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}</span>
+
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                {% trans "No results found" %}
+            {% endfor %}
+        </table>
+    </div> {# id="agenda-info" #}
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
+
+{% block footer %}
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+--></script>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 from django.core.management.base import NoArgsCommand
 from optparse import make_option
-from knesset.video.management.commands.sub_commands.AddVideo import AddVideo
+from video.management.commands.sub_commands.AddVideo import AddVideo
 
 class Command(NoArgsCommand):
 
@@ -17,7 +17,7 @@ class Command(NoArgsCommand):
             help="set the object id that the video will be related to"),
         make_option('--sticky',action='store_true',dest='is_sticky',
             help="set the video as sticky"),
-    )  
+    )
 
     def handle_noargs(self, **options):
         if options.get('list-types',False):
@@ -26,5 +26,5 @@ youtube - http://www.youtube.com/watch?v=2sASREICzqY"""
         else:
             av=AddVideo(options)
             av.run()
-            print av.ans                
+            print av.ans
 

@@ -1,10 +1,10 @@
 # encoding: utf-8
-from knesset.mks.models import Member
-from knesset.video.utils import get_videos_queryset
-from knesset.video.utils.youtube import GetYoutubeVideos
-from knesset.video.management.commands.sub_commands import SubCommand
-from knesset.video.utils.parse_dict import validate_dict
-from knesset.video.models import Video
+from mks.models import Member
+from video.utils import get_videos_queryset
+from video.utils.youtube import GetYoutubeVideos
+from video.management.commands.sub_commands import SubCommand
+from video.utils.parse_dict import validate_dict
+from video.models import Video
 
 class UpdateMembersAboutVideo(SubCommand):
 

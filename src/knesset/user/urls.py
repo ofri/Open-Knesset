@@ -8,7 +8,7 @@ user_annotated_items = PublicUserProfile.as_view(template_name='user/annotated_i
 user_followed_topics = PublicUserProfile.as_view(template_name='user/followed_topics.html')
 
 # views coded in this app
-urlpatterns = patterns('knesset.user.views',
+urlpatterns = patterns('user.views',
     url(r'^create/$', 'create_user', name ='register'),
     url(r'^edit-profile/$', 'edit_profile', name='edit-profile'),
     url(r'^follow/$', 'user_follow_unfollow', name='user-follow-unfollow'),
@@ -25,7 +25,7 @@ urlpatterns += patterns('django.contrib.auth.views',
     )
 
 urlpatterns += patterns('',
-    (r'^registration/', include('knesset.accounts.urls')),
+    (r'^registration/', include('accounts.urls')),
     url(r'^(?P<pk>\d+)/$', user_public_profile, name='public-profile'),
     url(r'^(?P<pk>\d+)/topic/$', user_followed_topics, name='user-followed-topics'),
     url(r'^(?P<slug>.+)/tagged/$', user_tagged_items, name='user-tagged-items'),

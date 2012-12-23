@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
-from knesset.hashnav import ListView, DetailView
+from hashnav import ListView, DetailView
 from models import Person
 from views import PersonListView,PersonDetailView
 

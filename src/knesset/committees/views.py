@@ -17,12 +17,12 @@ from tagging.models import TaggedItem, Tag
 from tagging.utils import get_tag
 import tagging
 from actstream import action
-from knesset.hashnav import ListView, DetailView, method_decorator
-from knesset.laws.models import Bill, PrivateProposal
-from knesset.mks.models import Member
-from knesset.events.models import Event
+from hashnav import ListView, DetailView, method_decorator
+from laws.models import Bill, PrivateProposal
+from mks.models import Member
+from events.models import Event
 from knesset.utils import clean_string
-from knesset.links.models import Link
+from links.models import Link
 from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
 import models
 from forms import EditTopicForm, LinksFormset

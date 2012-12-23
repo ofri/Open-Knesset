@@ -13,9 +13,8 @@ from django.utils import simplejson as json
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 
-from knesset.laws.models import Vote,Law, Bill,KnessetProposal
-from knesset.mks.models import Member, Party, Membership
-
+from laws.models import Vote,Law, Bill,KnessetProposal
+from mks.models import Member, Party, Membership
 
 just_id = lambda x: x.id
 APP='laws'

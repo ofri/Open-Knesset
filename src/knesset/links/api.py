@@ -1,9 +1,8 @@
-from knesset.api.resources.base import BaseResource
-from links.models import Link
+from apis.resources.base import BaseResource
+from models import Link
 
 class LinkResource(BaseResource):
-    ''' Party API
-    TBD: create a party app
+    ''' Link API
     '''
     class Meta:
         queryset = Link.objects.select_related('link_type')

@@ -5,7 +5,7 @@ from south.v2 import DataMigration
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
-from knesset.committees.models import CommitteeMeeting,ProtocolPart
+from committees.models import CommitteeMeeting,ProtocolPart
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):

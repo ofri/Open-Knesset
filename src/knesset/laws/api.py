@@ -1,10 +1,12 @@
 '''
 API for the laws app
 '''
+import logging
+
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
-from knesset.api.resources.base import BaseResource
+from apis.resources.base import BaseResource
 from mks.models import Member, Party
 from mks.api import MemberResource
 from video.utils import get_videos_queryset
@@ -12,6 +14,10 @@ from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
 from models import Law, Bill, Vote
+
+from simple.management.commands.syncdata_globals import p_explanation
+
+logger = logging.getLogger("open-knesset.laws.api")
 
 class LawResource(BaseResource):
     class Meta(BaseResource.Meta):
@@ -55,30 +61,36 @@ class BillResource(BaseResource):
         exclude_from_list_view = ['proposers', 'explanation', 'legal_code',
         'pre_votes', 'first_vote', 'approval_vote']
         include_absolute_url = True
+        limit = 20
 
     explanation = fields.CharField()
     legal_code = fields.CharField()
     proposers = fields.ToManyField(MemberResource,
                     'proposers',
-                    full=True)
+                    full=False)
     pre_votes = fields.ToManyField(VoteResource,
                     'pre_votes',
                     null=True,
-                    full=True)
+                    full=False)
 
     first_vote = fields.ToOneField(VoteResource,
                     'first_vote',
                     null=True,
-                    full=True)
+                    full=False)
 
     approval_vote = fields.ToOneField(VoteResource,
                     'approval_vote',
                     null=True,
-                    full=True)
+                    full=False)
 
 
     def dehydrate_explanation(self, bundle):
-        return self.get_src_parts(bundle)[1]
+        result = None
+        try:
+            result = self.get_src_parts(bundle)[1]
+        except:
+            logging.error('Got exception dehydrating explanation')
+            return ""
 
     def dehydrate_legal_code(self, bundle):
         return self.get_src_parts(bundle)[0]
@@ -91,7 +103,6 @@ class BillResource(BaseResource):
             return bundle.src_parts
         except AttributeError:
             parts = ['','']
-            from simple.management.commands.syncdata import p_explanation
             bill = bundle.obj
             try:
                 ps = bill.proposals.order_by('-date')[0]

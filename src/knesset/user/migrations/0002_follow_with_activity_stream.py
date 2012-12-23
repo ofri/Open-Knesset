@@ -5,7 +5,7 @@ from south.v2 import DataMigration
 from django.db import models
 from actstream import follow
 from django.contrib.auth.models import User
-from knesset.mks.models import Party, Member
+from mks.models import Party, Member
 
 class Migration(DataMigration):
 

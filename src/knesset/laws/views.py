@@ -1,4 +1,6 @@
 #encoding: utf-8
+import urllib, urllib2, difflib, logging, datetime
+from time import mktime
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.utils import simplejson as json
@@ -22,21 +24,13 @@ import tagging
 import voting
 from actstream import action
 from knesset.utils import limit_by_request, notify_responsible_adult
-from knesset.laws.models import *
-from knesset.mks.models import Member
-from knesset.tagvotes.models import TagVote
-from knesset.hashnav import DetailView, ListView
-from knesset.agendas.models import Agenda,UserSuggestedVote
-
-import urllib
-import urllib2
-import difflib
-import logging
-import datetime
-from time import mktime
-
+from mks.models import Member
+from tagvotes.models import TagVote
+from hashnav import DetailView, ListView
+from agendas.models import Agenda,UserSuggestedVote
+from auxiliary.views import CsvView
 from forms import VoteSelectForm, BillSelectForm
-from knesset.auxiliary.views import CsvView
+from models import *
 
 logger = logging.getLogger("open-knesset.laws.views")
 

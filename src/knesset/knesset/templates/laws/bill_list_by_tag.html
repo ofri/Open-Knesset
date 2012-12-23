@@ -1,0 +1,34 @@
+{% extends "site_base.html" %}
+{% load i18n laws_tags bills_tags %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-laws %}class="selected"{% endblock %}
+{% block divcontent %}
+    {% with object_list|length as count %}
+        {% if member %}
+            <h1>{% blocktrans %}{{ count }} Bills tagged <a href="{{ tag_url }}">{{ tag }}</a> by <a href="{{ member_url }}">{{ member }}</a>{% endblocktrans %}</h1>
+        {% else %}
+            <h1>{% blocktrans %}{{ count }} Bills tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
+        {% endif %}
+    {% endwith %}
+    <a href="{% url bill-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
+	<div class="item-list">
+        {% for o in object_list %}
+            <div class="item {% cycle "normal" "alt" %}">
+                {% bill_list_item o %}
+            </div>
+        {% empty %}
+            {% trans "No results found" %}
+        {% endfor %}
+	</div>
+	<div><h2>{% blocktrans %}MKs that proposed bill related to {{ tag }}{% endblocktrans %}</h2>
+	<div class="tags cloud">
+	{% for mk in members %}
+	<a href="{% url bill-tag tag=tag %}?member={{mk.id}}" class="level{{ mk.font_size }}">{{ mk }}</a>
+	{% endfor %}</div>
+	</div>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}

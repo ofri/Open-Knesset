@@ -4,6 +4,7 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from django.contrib.auth.models import User
@@ -45,6 +46,9 @@ class AgendaVote(models.Model):
     importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
 
+    def detail_view_url(self):
+        return reverse('agenda-vote-detail', args=[self.pk])
+
     def get_score_header(self):
         return _('Position')
     def get_importance_header(self):
@@ -54,7 +58,7 @@ class AgendaVote(models.Model):
         unique_together= ('agenda', 'vote')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.vote)
+        return u"%s %s" % (self.agenda,self.vote)
 
 class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
@@ -62,6 +66,9 @@ class AgendaMeeting(models.Model):
                                 related_name='agendacommitteemeetings')
     score = models.FloatField(default=0.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True)
+
+    def detail_view_url(self):
+        return reverse('agenda-meeting-detail', args=[self.pk])
 
     def get_score_header(self):
         return _('Importance')
@@ -72,7 +79,7 @@ class AgendaMeeting(models.Model):
         unique_together = ('agenda', 'meeting')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.meeting)
+        return u"%s %s" % (self.agenda,self.meeting)
 
 class AgendaBill(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendabills')
@@ -80,6 +87,9 @@ class AgendaBill(models.Model):
     score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
     importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True)
+
+    def detail_view_url(self):
+        return reverse('agenda-bill-detail', args=[self.pk])
 
     def get_score_header(self):
         return _('Position')
@@ -90,7 +100,7 @@ class AgendaBill(models.Model):
         unique_together = ('agenda', 'bill')
 
     def __unicode__(self):
-        return "%s %s" % (self.agenda,self.bill)
+        return u"%s %s" % (self.agenda,self.bill)
 
 def get_top_bottom(lst, top, bottom):
     """
@@ -142,13 +152,17 @@ class AgendaManager(models.Manager):
 
     def get_relevant_for_user(self, user):
         if user == None or not user.is_authenticated():
-            agendas = Agenda.objects.filter(is_public=True).order_by('-num_followers')
+            agendas = Agenda.objects.filter(is_public=True)\
+                                    .order_by('-num_followers')\
+                                    .prefetch_related('agendavotes')
         elif user.is_superuser:
-            agendas = Agenda.objects.all().order_by('-num_followers')
+            agendas = Agenda.objects.all().order_by('-num_followers')\
+                                          .prefetch_related('agendavotes')
         else:
             agendas = Agenda.objects.filter(Q(is_public=True) |
                                             Q(editors=user))\
                                     .order_by('-num_followers')\
+                                    .prefetch_related('agendavotes')\
                                     .distinct()
         return agendas
 
@@ -173,16 +187,23 @@ class AgendaManager(models.Manager):
             allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
             for agendaId,agendaVotes in q.items():
                 # the newdict will have 0's for each mkid, the update will change the value for known mks
-                newDict = {}.fromkeys(allMkIds,(0,0))
-                newDict.update(dict(map(lambda (mkid,score,volume):(mkid,(score,volume)),agendaVotes)))
+                newDict = {}.fromkeys(allMkIds,(0,0,0))
+                newDict.update(dict(map(lambda (mkid,score,volume,numvotes):(mkid,(score,volume,numvotes)),agendaVotes)))
                 newAgendaMkVotes[agendaId]=newDict.items()
             mks_values = {}
             for agenda_id, scores in newAgendaMkVotes.items():
                 mks_values[agenda_id] = \
-                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1])),
+                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1], numvotes=x[1][1][2])),
                         enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
             cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
+
+    def get_all_party_values(self):
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
+            cache.set('AllAgendaPartyVotes',allAgendaPartyVotes,1800)
+        return allAgendaPartyVotes
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
@@ -192,6 +213,7 @@ class Agenda(models.Model):
     public_owner_name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
     num_followers = models.IntegerField(default=0)
+    image = models.ImageField(blank=True, null=True, upload_to='agendas')
 
     objects = AgendaManager()
 
@@ -201,7 +223,7 @@ class Agenda(models.Model):
         unique_together = (("name", "public_owner_name"),)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
+        return u"%s %s %s" % (self.name,_('edited by'),self.public_owner_name)
 
     @models.permalink
     def get_absolute_url(self):
@@ -215,21 +237,22 @@ class Agenda(models.Model):
         # Find all votes that
         #   1) This agenda is ascribed to
         #   2) the member participated in and either voted for or against
-        for_score = sum(
-                AgendaVote.objects.filter(
-                    agenda=self,
-                    vote__voteaction__member=member,
-                    vote__voteaction__type="for").extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
-        against_score = sum(
-                AgendaVote.objects.filter(
-                    agenda=self,
-                    vote__voteaction__member=member,
-                    vote__voteaction__type="against").extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}).values_list('weighted_score',flat=True))
+        qs = AgendaVote.objects.filter(
+            agenda = self,
+            vote__voteaction__member = member,
+            vote__voteaction__type__in=['for','against']).extra(
+                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}
+            ).values_list('weighted_score','vote__voteaction__type')
 
-        max_score = sum([abs(x['score']*x['importance']) for x in
-                         self.agendavotes.values('score','importance')])
+        for_score = against_score = 0
+        for score, action_type in qs:
+            if action_type == 'against':
+                against_score += score
+            else:
+                for_score += score
+
+        max_score = sum([abs(x.score*x.importance) for x in
+                         self.agendavotes.all()])
         if max_score > 0:
             return (for_score - against_score) / max_score * 100
         else:
@@ -298,6 +321,13 @@ class Agenda(models.Model):
     def get_mks_values(self):
         mks_grade = Agenda.objects.get_mks_values()
         return mks_grade.get(self.id,[])
+
+    def get_party_values(self):
+        party_grades = Agenda.objects.get_all_party_values()
+        return party_grades.get(self.id,[])
+
+    def get_all_party_values(self):
+        return Agenda.objects.get_all_party_values()
 
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))

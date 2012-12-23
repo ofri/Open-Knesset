@@ -1,19 +1,17 @@
 import logging
 
 from django.db import models
-from django.utils import simplejson
 from django.core.exceptions import ObjectDoesNotExist
 
-from knesset.mks.models import Member
-from knesset.committees.models import Committee
+from mks.models import Member
+from committees.models import Committee
 from fuzzy_match import fuzzy_match
-
 
 logger = logging.getLogger("open-knesset.mmm.models")
 
 def text_lookup(Model, text):
     """receives a text and a Model and returns a list of Model objects found in the text"""
-    
+
     result = []
 
     for m in Model.objects.all():
@@ -23,7 +21,7 @@ def text_lookup(Model, text):
             if fuzzy_match(m.name, text):
                 logger.warning('No exact match found. Performing fuzzy matching!')
                 result.append(m.id)
-    
+
     return result
 
 #from json helper function
@@ -77,9 +75,9 @@ class Document(models.Model):
     author_names = models.CharField(max_length=500, blank=True)
 
     objects = DocumentManager()
-        
+
 
     def __unicode__(self):
         return self.title
-    
+
 

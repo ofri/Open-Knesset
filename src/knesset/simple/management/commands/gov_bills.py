@@ -3,8 +3,8 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from django.db.models import Max
 
-from knesset.simple.management.commands import parse_laws
-from knesset.laws.models import GovProposal
+from simple.management.commands import parse_laws
+from laws.models import GovProposal
 
 def parse_gov_laws(use_last_booklet):
     booklet = 0
