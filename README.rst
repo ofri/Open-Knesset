@@ -137,13 +137,6 @@ After basic installation: Tests and initial db
 
 
 
-Trouble?
--------------
-
-- Some of the mirrors are flaky so you might need to run the buildout several times until all downloads succeed.
-- currently using MySQL as the database engine is not supported
-
-
 Working process
 ===================
 
@@ -204,3 +197,12 @@ After you code
 - Go to github.com and send a "pull request" so your code will be reviewed and
   pulled into the main branch, make sure the base repo is
   **hasadna/Open-Knesset**.
+
+
+Known issues
+-------------
+
+- Some of the mirrors may be flaky so you might need to install requirements.txt
+  several times until all downloads succeed.
+- Currently using MySQL as the database engine is not supported
+
