@@ -26,7 +26,7 @@ Python
 .. figure:: t_python27_win.png
     :alt: Python 2.7 install
     :align: right
-    :target: python27_win.png
+    :target: ../_static/python27_win.png
     
     Python 2.7 install (click to enlarge)
 
@@ -50,7 +50,7 @@ distribute
 .. figure:: t_distribute_win.png
     :alt: distribute installer
     :align: right
-    :target: distribute_win.png
+    :target: ../_static/distribute_win.png
     
     distribute install (click to enlarge)
 
@@ -94,7 +94,7 @@ git and GitHub tools
 .. figure:: t_github_tools_win.png
     :alt: GitHub tools installer
     :align: right
-    :target: github_tools_win.png
+    :target: ../_static/github_tools_win.png
     
     GitHub tools install (click to enlarge)
 
