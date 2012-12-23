@@ -147,7 +147,14 @@ Let's describe some development workflow.
 Before you code
 ----------------
 
-Get your branch updated with the changes done by others. Please do this every time before you start developing:
+.. important::
+
+    - MS Windows users: replace ``./manage.py`` with ``python manage.py``
+    - Run the manage.py commands from the `Open-Knesset` directory, with the
+      **virtualenv activated**.
+
+Get your branch updated with the changes done by others.
+Please do this every time before you start developing.
 
 - ``cd Open-Knesset``
 - ``git pull git@github.com:hasadna/Open-Knesset.git master``
