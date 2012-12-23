@@ -8,6 +8,15 @@ Installing Initial Requirements
 On MS Windows the process is more manual. We'll start by downloading and
 installing Python and some packages.
 
+.. important::
+
+    The documentation here assumes you'll accept defaults:
+
+    - Python installed into C:\Python27
+    - Virtualenv will be created at C:\oknesset
+
+    If you've changed those, please adjust the instructions accrodingly.
+
 Python and packages
 --------------------
 
@@ -25,6 +34,8 @@ doing and wish to, adjust them):
 
 .. image:: python27_win.png
  
+
+
 distribute
 ~~~~~~~~~~~~~~~
 
