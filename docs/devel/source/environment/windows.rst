@@ -23,28 +23,43 @@ Python and packages
 Python
 ~~~~~~~~
 
+.. figure:: t_python27_win.png
+    :alt: Python 2.7 install
+    :align: right
+    :target: python27_win.png
+    
+    Python 2.7 install (click to enlarge)
+
 `Download the latest Python 2.7`_ MSI installer matching your architecture
 (32 or 64 bit). As of this writing, the latest one is `2.7.3`_.
 
 .. _2.7.3: http://www.python.org/download/releases/2.7.3/
 .. _Download the latest Python 2.7: http://python.org/download/releases/
 
-Once downloaded, run the installer, and accept defaults (if you know what you're
-doing and wish to, adjust them):
+Once downloaded, run the installer, and accept defaults.
 
-.. image:: python27_win.png
- 
+.. important::
+
+    The docmentation assumes you've installed to the default ``C:\Python27``. If
+    it's not the case, please adjust accordingly.
 
 
 distribute
 ~~~~~~~~~~~~~~~
 
+.. figure:: t_distribute_win.png
+    :alt: distribute installer
+    :align: right
+    :target: distribute_win.png
+    
+    distribute install (click to enlarge)
+
 distribute replaces setuptools and makes our windows install simpler (as 
-setuptools for python2.7 on windows has problems on 64bit).
+setuptools for python2.7 on windows has problems on 64bit platforms and needs a
+different installation method).
 
 `Download distribute`_ for your architecture and install it.
 
-.. image:: distribute_win.png
 
 .. _Download distribute: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
 
@@ -76,13 +91,20 @@ Download and install the installers matching your architecture for:
 git and GitHub tools
 =======================
 
+.. figure:: t_github_tools_win.png
+    :alt: GitHub tools installer
+    :align: right
+    :target: github_tools_win.png
+    
+    GitHub tools install (click to enlarge)
+
+
 The Open Knesset code is hosted on GitHub, and uses ``git`` for distributed
 version control. The easiest way to install them on windows is with
 `GitHub for Windows`_ (download from the top right corner).
 
 Run the installer, it'll start and download the rest of the needed packages:
 
-.. image:: github_tools_win.png
 
 .. _GitHub for Windows: http://windows.github.com
 
