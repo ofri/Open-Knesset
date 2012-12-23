@@ -12,10 +12,10 @@ installing Python and some packages.
 
     The documentation here assumes you'll accept defaults:
 
-    - Python installed into C:\Python27
-    - Virtualenv will be created at C:\oknesset
+    - Python installed into ``C:\Python27``
+    - Virtualenv will be created at ``C:\oknesset``
 
-    If you've changed those, please adjust the instructions accrodingly.
+    If you've changed those, please adjust the instructions accordingly.
 
 Python and packages
 --------------------
