@@ -15,6 +15,12 @@ is Python_ and Django_ based.
     For 3rd party applications and services developers, please see the API
     documentation.
 
+.. important::
+
+    If not done already, please subscribe to the
+    `Open Knesset Developers group`_.
+
+
 .. todo::
 
     Link to the API docs once on ReadTheDocs
@@ -22,7 +28,7 @@ is Python_ and Django_ based.
 
 .. _Python: http://www.python.org/
 .. _Django: https://www.djangoproject.com/
-
+.. _Open Knesset Developers group: https://groups.google.com/forum/#!forum/oknesset-dev
 
 Contents:
 
@@ -31,6 +37,7 @@ Contents:
 
     github
     environment/index
+    workflow
 
 Indices and tables
 ==================

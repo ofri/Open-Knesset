@@ -9,7 +9,7 @@ an initial development db.
 
 .. important::
 
-    - MS Windows users: repleace ``./manage.py`` with ``python manage.py``
+    - MS Windows users: replace ``./manage.py`` with ``python manage.py``
     - Run the manage.py commands from the `Open-Knesset` directory, with the
       virtualenv activated.
 
@@ -68,3 +68,6 @@ put in that file:
 .. code-block:: python
 
     INTERNAL_IPS = ('127.0.0.1',)
+
+
+We're cool ? Time for some :ref:`devel_workflow`.
