@@ -128,8 +128,8 @@ After basic installation: Tests and initial db
 .. note:: MS Windows users: repleace ``./manage.py`` with ``python manage.py``.
 
 - Run the tests: ``./manage.py test``
-- Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller) into the
-  ``Open-Knesset`` directory
+- Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller), place dev.db
+  into the ``Open-Knesset`` directory
 - Make sure db schema is upated: ``./manage.py migrate``
 - Create a superuser if needed: ``./manage.py createsuperuser``
 - To run the development server: ``./manage.py runserver``. Once done, you can
