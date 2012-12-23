@@ -199,7 +199,8 @@ After you code
 - ``git add filename`` # for each file you changed/added.
 - ``git commit -m "commit message"``
   
-  Please write a sensible commit message, and include "fix#: [number]" of the
-  issue number you're working on (if any).
+  Please write a sensible commit message, and include "fix#: [number]" of the issue number you're working on (if any).
 - ``git push`` # push changes to git repo
-- go to github.com and send a "pull request" so your code will be reviewed and pulled into the main branch, make sure the base repo is *hasadna/Open-Knesset*.
+- Go to github.com and send a "pull request" so your code will be reviewed and
+  pulled into the main branch, make sure the base repo is
+  **hasadna/Open-Knesset**.
