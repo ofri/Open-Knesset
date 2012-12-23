@@ -94,8 +94,8 @@ key and upload the public part to GitHub.
 Creating and Activating the virtualenv
 ===========================================
 
-From the desktop (or programs menu) run the `Git Shell`, it's a shell with git
-already configured, in the shell::
+From the desktop (or programs menu) run `Git Shell` |gitshell|, it's a shell
+with git already configured, in the shell::
 
     cd C:\
     C:\Python27\Scripts\virtualenv --distribute --system-site-packages oknesset
@@ -108,6 +108,8 @@ work on the code. ::
     Scripts\activate
 
 Note the changed prompt with includes the virtualenv's name.
+
+.. |gitshell| image:: git_shell_icon.png
 
 
 Getting the Source Code (a.k.a Cloning)
