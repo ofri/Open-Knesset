@@ -1,7 +1,7 @@
 .. _tests_develdb:
 
 =============================================
-Initial Testing and Development Database
+Initial Testing, Development DB & Server
 =============================================
 
 After you've installed the base environment, it's time to run the tests and get
@@ -40,3 +40,31 @@ You might want to create your own superuser:
 .. code-block:: sh
 
     ./manage.py createsuperuser
+
+
+Running the Development server
+=====================================
+
+To run the development server:
+
+.. code-block:: sh
+
+    ./manage.py runserver
+
+Once done, you can access it via http://localhost:8000 .
+
+
+Enable django-debug-toolbar
+==============================
+
+.. todo:: Expand on this
+
+Create `local_settings.py` in the `knesset` directory (where `settings.py` is
+located). To enable the `django-debug-toolbar`_ on the local developement address,
+put in that file:
+
+.. _django-debug-toolbar: http://pypi.python.org/pypi/django-debug-toolbar
+
+.. code-block:: python
+
+    INTERNAL_IPS = ('127.0.0.1',)

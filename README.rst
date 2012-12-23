@@ -132,16 +132,13 @@ After basic installation: Tests and initial db
   directory
 - Make sure db schema is upated: ``./manage.py migrate``
 - Create a superuser if needed: ``./manage.py createsuperuser``
-
+- To run the development server: ``./manage.py runserver``. Once done, you can
+  access it via http://localhost:8000
 
 
 Installation process
 -----------------------
 
-- ``./manage.py test``
-- ``./manage.py syncdb --migrate`` # do not create a superuser account
-- ``./manage.py loaddata dev``
-- ``./manage.py createsuperuser`` # to create your superuser account
 - ``./manage.py runserver``
 - ``vi knesset/local_settings.py`` 
   create your local setting file to store a bunch of things that you do NOT
