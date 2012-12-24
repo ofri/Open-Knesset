@@ -11,7 +11,7 @@ the project. The following describes various scenarios.
 
     - MS Windows users: replace ``./manage.py`` with ``python manage.py``
     - Run the manage.py commands from the `Open-Knesset` directory, with the
-      virtualenv activated.
+      **virtualenv activated**.
 
 
 Before Coding

@@ -128,13 +128,15 @@ After basic installation: Tests and initial db
 .. note:: MS Windows users: repleace ``./manage.py`` with ``python manage.py``.
 
 - Run the tests: ``./manage.py test``
-- Download and extract dev.db (TODO: Provide a link) into the ``Open-Knesset``
-  directory
+- Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller), place dev.db
+  into the ``Open-Knesset`` directory
 - Make sure db schema is upated: ``./manage.py migrate``
 - Create a superuser if needed: ``./manage.py createsuperuser``
 - To run the development server: ``./manage.py runserver``. Once done, you can
   access it via http://localhost:8000
 
+.. _dev.db.zip: http://oknesset-devdb.s3.amazonaws.com/dev.db.zip
+.. _dev.db.bz2: http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
 
 
 Working process
@@ -145,7 +147,14 @@ Let's describe some development workflow.
 Before you code
 ----------------
 
-Get your branch updated with the changes done by others. Please do this every time before you start developing:
+.. important::
+
+    - MS Windows users: replace ``./manage.py`` with ``python manage.py``
+    - Run the manage.py commands from the `Open-Knesset` directory, with the
+      **virtualenv activated**.
+
+Get your branch updated with the changes done by others.
+Please do this every time before you start developing.
 
 - ``cd Open-Knesset``
 - ``git pull git@github.com:hasadna/Open-Knesset.git master``
