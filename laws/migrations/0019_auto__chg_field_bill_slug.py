@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.alter_column('laws_bill', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=1000))
 
         # Adding index on 'Bill', fields ['slug']
-        db.create_index('laws_bill', ['slug'])
+        # db.create_index('laws_bill', ['slug'])
 
 
     def backwards(self, orm):

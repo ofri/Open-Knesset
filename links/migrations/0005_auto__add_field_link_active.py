@@ -12,14 +12,14 @@ class Migration(SchemaMigration):
         db.add_column('links_link', 'active', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
 
         # set 'active' field  of all links to  'true'
-        for l in orm.Link.objects.all():
-            l.active = True
-            l.save()
+        # for l in orm.Link.objects.all():
+        #    l.active = True
+        #    l.save()
 
         # set links to 'parlament.co.il' inactive
-        for l in orm.Link.objects.filter(url__contains='parlament.co.il'):
-            l.active = False
-            l.save()
+        # for l in orm.Link.objects.filter(url__contains='parlament.co.il'):
+        #    l.active = False
+        #    l.save()
 
     def backwards(self, orm):
         

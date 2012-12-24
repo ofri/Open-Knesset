@@ -23,18 +23,18 @@ django-social-auth
 oauth==1.0.1
 python-dateutil==1.5
 python-memcached
--e git://github.com/openid/python-openid.git#egg=python-openid
+-e git+http://github.com/openid/python-openid.git#egg=python-openid
 django-tastypie==0.9.11
 django-ratings
--e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
--e git://github.com/hasadna/django-activity-stream.git#egg=django-activity-stream
--e git://github.com/hasadna/django-planet.git#egg=django-planet
--e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
--e git://github.com/pinax/django-mailer.git#egg=django-mailer
--e git://github.com/hasadna/django-avatar.git#egg=django-avatar
--e git://github.com/hasadna/django-backlinks.git#egg=django-backlinks
--e git://github.com/spreeker/django-voting2.git#egg=django-voting2
--e git://github.com/hasadna/django-piston.git#egg=django-piston
+-e git+http://github.com/thornomad/django-hitcount.git#egg=django-hitcount
+-e git+http://github.com/hasadna/django-activity-stream.git#egg=django-activity-stream
+-e git+http://github.com/hasadna/django-planet.git#egg=django-planet
+-e git+http://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
+-e git+http://github.com/pinax/django-mailer.git#egg=django-mailer
+-e git+http://github.com/hasadna/django-avatar.git#egg=django-avatar
+-e git+http://github.com/hasadna/django-backlinks.git#egg=django-backlinks
+-e git+http://github.com/spreeker/django-voting2.git#egg=django-voting2
+-e git+http://github.com/hasadna/django-piston.git#egg=django-piston
 django-debug-toolbar>=0.8.3
 nose
 django-nose
