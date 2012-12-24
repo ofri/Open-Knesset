@@ -7,8 +7,7 @@ before_install:
   - sudo apt-get install -qq poppler-data poppler-utils python-dev python-imaging python-setuptools python-pdftools python-lxml
   - sudo pip install simplejson
 install:
-  - python bootstrap.py
-  - bin/buildout
+  - pip install -r requirements.txt --use-mirrors
 # command to run tests, e.g. python setup.py test
 script:
-  - bin/test
+  - ./manage.py test

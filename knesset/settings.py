@@ -38,17 +38,19 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-BUILDOUT_ROOT = os.path.abspath(
-    os.path.join(PROJECT_ROOT, os.path.pardir, os.path.pardir, os.path.pardir))
-DATA_ROOT = os.path.join(BUILDOUT_ROOT, 'data', '')
+PROJECT_ROOT = os.path.abspath(os.path.join(
+    os.path.dirname(__file__),
+    os.path.pardir
+))
+
+DATA_ROOT = os.path.join(PROJECT_ROOT, 'data', '')
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(BUILDOUT_ROOT, 'media', '')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media', '')
 
 # Absolute path to location of collected static files
-STATIC_ROOT = os.path.join(BUILDOUT_ROOT, 'static_root', '')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static_root', '')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -107,7 +109,7 @@ TEMPLATE_DIRS = (
 )
 
 STATICFILES_DIRS = (
-    os.path.join(BUILDOUT_ROOT, 'static'),  # Finding current static files
+    os.path.join(PROJECT_ROOT, 'static'),  # Finding current static files
 )
 
 LOCALE_PATHS = (
@@ -209,15 +211,15 @@ logger.addHandler(h)
 GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
-GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev'] # override this in prod server
+GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev']  # override this in prod server
 
 # you need to generate a token and put it in local_settings.py
 # to generate a token run: bin/django update_videos --get-youtube-token
-YOUTUBE_AUTHSUB_TOKEN=''
+YOUTUBE_AUTHSUB_TOKEN = ''
 
 # you need to get a developer key and put it in local_settings.py
 # to get a developer key goto: http://code.google.com/apis/youtube/dashboard
-YOUTUBE_DEVELOPER_KEY=''
+YOUTUBE_DEVELOPER_KEY = ''
 
 CACHES = {
     'default': {
@@ -225,30 +227,32 @@ CACHES = {
     }
 }
 
-LONG_CACHE_TIME = 18000 # 5 hours
+LONG_CACHE_TIME = 18000  # 5 hours
 
-ANNOTATETEXT_FLAGS = (gettext('Statement'),
-                    gettext('Funny :-)'),
-                    gettext('False fact'),
-                    gettext('Source?'),
-                    gettext('Found source'),
-                    gettext('Cross reference'),
-                    gettext('Important'),
-                    gettext('Formatting/Error!'),
-                    gettext('Comment'),)
+ANNOTATETEXT_FLAGS = (
+    gettext('Statement'),
+    gettext('Funny :-)'),
+    gettext('False fact'),
+    gettext('Source?'),
+    gettext('Found source'),
+    gettext('Cross reference'),
+    gettext('Important'),
+    gettext('Formatting/Error!'),
+    gettext('Comment'),
+)
 
 AUTO_GENERATE_AVATAR_SIZES = (75, 48)
 
-HITCOUNT_KEEP_HIT_ACTIVE = { 'hours': 1 }
+HITCOUNT_KEEP_HIT_ACTIVE = {'hours': 1}
 HITCOUNT_HITS_PER_IP_LIMIT = 0
-HITCOUNT_EXCLUDE_USER_GROUP = ( )
+HITCOUNT_EXCLUDE_USER_GROUP = ()
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-xunit']
 
 
 SERIALIZATION_MODULES = {
-    'oknesset' : 'auxiliary.serializers'
+    'oknesset': 'auxiliary.serializers'
 }
 
 API_LIMIT_PER_PAGE = 1000

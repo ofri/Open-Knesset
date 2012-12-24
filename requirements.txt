@@ -5,14 +5,10 @@
 #
 # mimeparse - Looks like a requirement by tastypie, will be auto installed
 # mimms - Video download
-# PIL - needed, but will cause problems for windows devs with virtualenv, will
-#       be handled later
-# pyth - scraping
 # poppler - required only for simple/management/parse_government_bill,
-# sphinx - for building documentation
-# sphinx-html - for building documentation
 
 Django==1.4.3
+PIL
 South==0.7.6
 django-extensions==1.0.1
 django-pagination==1.0.7
