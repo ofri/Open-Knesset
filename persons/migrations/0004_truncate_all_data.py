@@ -9,11 +9,6 @@ from django.core import management
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        # dump persons data to file
-        with open('persons_dump.json', 'wt') as f:
-            management.call_command('dumpdata','persons',
-                                    interactive=False,
-                                    stdout=f)
         # dump references to person that exist in committess app
         data = orm['committees.ProtocolPart'].objects.filter(speaker__isnull=False).values('id','speaker')
         with open('committee_protocol_parts_speakers.json', 'wt') as f:
