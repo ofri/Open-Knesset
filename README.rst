@@ -75,7 +75,7 @@ Linux
 - Run the tests::
 
     cd Open-Knesset
-    ./manage.py test
+    python manage.py test
     
 
 MS Windows
@@ -125,14 +125,14 @@ MS Windows
 After basic installation: Tests and initial db
 =================================================
 
-.. note:: MS Windows users: repleace ``./manage.py`` with ``python manage.py``.
+.. note:: Linux users: you can replace ``python manage.py`` with ``./manage.py``.
 
-- Run the tests: ``./manage.py test``
+- Run the tests: ``python manage.py test``
 - Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller), place dev.db
   into the ``Open-Knesset`` directory
-- Make sure db schema is upated: ``./manage.py migrate``
-- Create a superuser if needed: ``./manage.py createsuperuser``
-- To run the development server: ``./manage.py runserver``. Once done, you can
+- Make sure db schema is upated: ``python manage.py migrate``
+- Create a superuser if needed: ``python manage.py createsuperuser``
+- To run the development server: ``python manage.py runserver``. Once done, you can
   access it via http://localhost:8000
 
 .. _dev.db.zip: http://oknesset-devdb.s3.amazonaws.com/dev.db.zip
@@ -149,7 +149,7 @@ Before you code
 
 .. important::
 
-    - MS Windows users: replace ``./manage.py`` with ``python manage.py``
+    - Linux users: you can replace ``python manage.py`` with ``./manage.py``
     - Run the manage.py commands from the `Open-Knesset` directory, with the
       **virtualenv activated**.
 
@@ -159,9 +159,9 @@ Please do this every time before you start developing.
 - ``cd Open-Knesset``
 - ``git pull git@github.com:hasadna/Open-Knesset.git master``
 - ``pip install -r requirements.txt``  # only needed if the file requirements.txt was changed; but can't hurt you if you run it every time.
-- ``./manage.py migrate``              # do not create a superuser account
-- ``./manage.py test``                 # if there are any failures, contact the other developers to see if that's something you should worry about.
-- ``./manage.py runserver``            # now you can play with the site using your browser
+- ``python manage.py migrate``              # do not create a superuser account
+- ``python manage.py test``                 # if there are any failures, contact the other developers to see if that's something you should worry about.
+- ``python manage.py runserver``            # now you can play with the site using your browser
 
 When you code
 ---------------
@@ -171,7 +171,7 @@ General
 
 - Write tests for everything that you write.
 - Keep performance in mind - test the number of db queries your code performs
-  using ``./manage.py runserver`` and access a page that runs the code you
+  using ``python manage.py runserver`` and access a page that runs the code you
   changed. See the output of the dev-server before and after your change.
 
 Adding a field to existing model
@@ -195,7 +195,7 @@ the code.
 After you code
 ~~~~~~~~~~~~~~~~
 
-- ``./manage.py test`` # make sure you didn't break anything
+- ``python manage.py test`` # make sure you didn't break anything
 - ``git status`` # to see what changes you made
 - ``git diff filename`` # to see what changed in a specific file
 - ``git add filename`` # for each file you changed/added.

@@ -49,6 +49,9 @@ Once in that directory:
     .. code-block:: sh
 
         virtualenv -p python2 oknesset
+
+    To check which is the default interpreter virtualenv will use, run
+    ``virtualenv -h`` and check in the output the default for `-p` flag.
     
 We need to `activate` the virtual environment (it mainly modifies the paths so
 that correct packages and bin directories will be found) each time we wish to
@@ -77,7 +80,7 @@ Replace `your-username` with the username you've registered at git hub.
 .. note::
 
     You can also clone with ssh keys, in that case follow the
-    `github guide on ssh keys`_. Once you've done that, you're clone command
+    `github guide on ssh keys`_. Once you've done that, your clone command
     will look like::
 
         git@github.com:your-username/Open-Knesset.git
