@@ -125,7 +125,7 @@ MS Windows
 After basic installation: Tests and initial db
 =================================================
 
-.. note:: Linux users: you replace ``python manage.py`` with ``./manage.py``.
+.. note:: Linux users: you can replace ``python manage.py`` with ``./manage.py``.
 
 - Run the tests: ``python manage.py test``
 - Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller), place dev.db
@@ -149,7 +149,7 @@ Before you code
 
 .. important::
 
-    - MS Windows users: replace ``python manage.py`` with ``python manage.py``
+    - Linux users: you can replace ``python manage.py`` with ``./manage.py``
     - Run the manage.py commands from the `Open-Knesset` directory, with the
       **virtualenv activated**.
 
