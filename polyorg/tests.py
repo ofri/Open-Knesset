@@ -22,11 +22,15 @@ class CreationTest(TestCase):
         """
         Tests the creation of CandiateList and it's basic methods
         """
-        cl = CandidatesList.objects.create(name="Imagine", ballot="I")
+        cl1 = CandidatesList.objects.create(name="Imagine", ballot="I")
         for p, i in zip(self.persons, range(1,len(self.persons)+1)):
-            Candidate.objects.create(candidates_list=cl, person=p, ordinal=i)
-        cl.save()
-        cl.delete()
+            Candidate.objects.create(candidates_list=cl1, person=p, ordinal=i)
+        cl1.save()
+        cl2 = CandidatesList(name="Think", ballot="T", surplus_partner=cl1)
+        cl2.save()
+        self.assertEqual(cl1.surplus_partner, cl2)
+        cl1.delete()
+        cl2.delete()
 
     def teardown(self):
         for p in self.persons: p.delete()
