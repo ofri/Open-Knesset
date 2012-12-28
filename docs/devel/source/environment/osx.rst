@@ -27,7 +27,7 @@ Install pip and virtualenv
 Install basic dependencies
 ========================================
 
-Install homebrew
+Install homebrew:
 
 .. code-block:: sh
 
@@ -39,7 +39,7 @@ Install python libraries dependencies:
 
     brew install jpeg libpng libxml2 libxslt
     
-Add locale settings (in case you're not UTF-8): Put in your bashrc:
+Add locale settings (in case you're not UTF-8), in your ``~/.bashrc``:
 
 
 .. code-block:: bash
@@ -59,7 +59,4 @@ And source them (to have them updated in the current shell):
 
     source ~/.bashrc
 
-    
-        
-        
 
