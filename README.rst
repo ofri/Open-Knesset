@@ -1,7 +1,7 @@
 .. important::
 
     This document contains quick start instruction.
-    **For more details, please see the `Open Knesset developers documentation`_**
+    **For more details, please see the `Open Knesset developers documentation`_ **
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 
