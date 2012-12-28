@@ -38,6 +38,7 @@ Contents:
     github
     environment/index
     workflow
+    ide
 
 Indices and tables
 ==================
