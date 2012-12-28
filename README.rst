@@ -228,8 +228,11 @@ Adding a field to existing model
 We use south to manage database migration. The work process looks something like:
 
 - add the field you want to model sample_model in app sample_app
-- bin/django schemamigration sample_app --auto # this generates a new migration under src/knesset/sample_app/migrations. You should review it to make sure it does what you expect.
-- bin/django syncdb --migrate # run the migration.
+- ``python manage.py schemamigration sample_app --auto`` this generates a new
+  migration under `src/knesset/sample_app/migrations`. You should review it to
+  make sure it does what you expect.
+- ``python manage.py --migrate`` To run un the migration (make the changes on
+  the db).
 - don't forget to git add/commit the migration file.
 
 Updating the translation strings
