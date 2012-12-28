@@ -284,8 +284,12 @@ class CsvView(BaseListView):
       * queryset -- the query performed on the model; defaults to all.
       * filename -- the name of the resulting CSV file (e.g., "info.csv").
       * list_display - a list (or tuple) of tuples, where the first item in
-        each tuple is the attribute (or the method) on the model to display and
+        each tuple is the attribute (or the method) to display and
         the second item is the title of that column.
+
+        The attribute can be a attribute on the CsvView child or the model
+        instance itself. If it's a callable it'll be called with (obj, attr)
+        for the CsvView attribute or without params for the model attribute.
     """
 
     filename = None
