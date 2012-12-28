@@ -58,9 +58,13 @@ distribute replaces setuptools and makes our windows install simpler (as
 setuptools for python2.7 on windows has problems on 64bit platforms and needs a
 different installation method).
 
-`Download distribute`_ for your architecture and install it. If the installation 
-complains that "Python was not found in the registry", you probably have 32-bit 
-python installed, so you should select the 32-bit distribute package.
+`Download distribute`_ for your architecture and install it.
+
+.. note::
+
+    If the installation complains that "Python was not found in the registry",
+    you probably have 32-bit python installed, so you should select the 32-bit
+    distribute (and other binary) package.
 
 
 .. _Download distribute: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
@@ -124,12 +128,19 @@ with git already configured, in the shell::
     cd C:\
     C:\Python27\Scripts\virtualenv --distribute --system-site-packages oknesset
 
-If this command fails, you probably have an older virtualenv installed.
-The quickest work-around is to replace it with the latest version::
 
-    cd C:\Python27\Lib\site-packages
-    del .\virtualenv*
-    ..\..\Scripts\easy_install.exe virtualenv
+.. note::
+    If this command fails:
+    
+    * You probably have an older virtualenv installed.
+      The quickest work-around is to replace it with the latest version::
+
+          cd C:\Python27\Lib\site-packages
+          del .\virtualenv*
+          ..\..\Scripts\easy_install.exe virtualenv
+
+    * Another problem may be that you had PYTHONPATH environment variable
+      configured, in that case, unset it.
 
 We need to `activate` the virtual environment (it mainly modifies the paths so
 that correct `Lib` and `Scripts` directories will be found) each time we wish to
