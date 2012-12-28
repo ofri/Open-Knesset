@@ -1,7 +1,7 @@
 # encoding: utf-8
 import logging, csv
 from collections import namedtuple
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 logger = logging.getLogger("open-knesset.polyorg.import_candidatelist")
 
