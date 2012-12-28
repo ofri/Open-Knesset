@@ -60,3 +60,64 @@ And source them (to have them updated in the current shell):
     source ~/.bashrc
 
 
+Creating and Activating the virtualenv
+===========================================
+
+Navigate in a terminal to the directory you want the
+environment created in (usually under your home directory). We'll name the
+created environment ``oknesset``. 
+
+Once in that directory:
+
+.. code-block:: sh
+
+    virtualenv oknesset
+
+We need to `activate` the virtual environment (it mainly modifies the paths so
+that correct packages and bin directories will be found) each time we wish to
+work on the code.
+
+To do it, we'll source the activation script (to set env vars):
+
+.. code-block:: sh
+
+    cd oknesset/
+    . bin/activate
+
+Note the changed prompt which includes the virtualenv's name.
+
+
+Getting the Source Code (a.k.a Cloning)
+=========================================
+
+Now we'll clone the forked repository into the virutalenv.  Make sure you're in
+the `oknesset` directory and run::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+Replace `your-username` with the username you've registered at git hub.
+
+.. note::
+
+    You can also clone with ssh keys, in that case follow the
+    `github guide on ssh keys`_. Once you've done that, your clone command
+    will look like::
+
+        git@github.com:your-username/Open-Knesset.git
+
+.. _github guide on ssh keys: https://help.github.com/articles/generating-ssh-keys#platform-mac
+
+
+Installing requirements
+=============================
+
+Still in the terminal with the virtualenv activated, inside the *oknesset* directory,
+run:
+
+.. code-block:: sh
+
+    pip install -r Open-Knesset/requirements.txt
+    
+And wait ...
+
+Once done, proceed to :ref:`tests_develdb`.
