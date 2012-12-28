@@ -58,7 +58,7 @@ Linux
   - ``git config --local user.name "Your Name"``
   - ``git config --local user.email "your@email.com"``
 
-- Create the virtual environment. In the terminal cd to the directory ypu want
+- Create the virtual environment. In the terminal cd to the directory you want
   the environment create it and run ``virtualenv oknesset``.
 
 - Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
@@ -120,6 +120,54 @@ MS Windows
 .. _PIL: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pil
 .. _lxml: http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
 .. _GitHub for Windows: http://windows.github.com
+
+
+OS X
+--------
+
+- Install command line tools. Goto https://developer.apple.com/downloads, 
+  Search for "command line tools", download and install the version right for
+  your OS
+- Install pip and virtualenv::
+
+    sudo easy_install pip
+    sudo pip install virtualenv
+- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install binary python libraries build dependencies:
+  ``brew install jpeg libpng libxml2 libxslt``
+- We need UTF-8, Add locale settings (in case you're not UTF-8),
+  put in your ``~/.bashrc``::
+
+    export LANG="en_US.UTF-8"
+    export LC_COLLATE="en_US.UTF-8"
+    export LC_CTYPE="en_US.UTF-8"
+    export LC_MESSAGES="en_US.UTF-8"
+    export LC_MONETARY="en_US.UTF-8"
+    export LC_NUMERIC="en_US.UTF-8"
+    export LC_TIME="en_US.UTF-8"
+    export LC_ALL=
+
+  Once done, source them (to have them updated in the current shell):
+  ``source ~/.bashrc``
+- Create the virtual environment. In the terminal cd to the directory you want
+  the environment create it and run ``virtualenv oknesset``.
+
+- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
+  prompt which includes the virtualenv's name.
+
+- Clone the repository::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+  This creates a copy of the project on your local machine.
+
+- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
+  and wait ...
+- Run the tests::
+
+    cd Open-Knesset
+    python manage.py test
+
 
 
 After basic installation: Tests and initial db

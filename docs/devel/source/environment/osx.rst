@@ -13,7 +13,7 @@ Command Line Tools
 =====================
 
 * Go to https://developer.apple.com/downloads
-* Search for command line tools
+* Search for "command line tools"
 * Download and install the version right for your OS
 
 Install pip and virtualenv
@@ -33,7 +33,7 @@ Install homebrew:
 
     ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
 
-Install python libraries dependencies:
+Install binary python libraries build dependencies:
 
 .. code-block:: sh
 
