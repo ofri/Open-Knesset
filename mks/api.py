@@ -18,6 +18,9 @@ from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
 
+from django.db.models import Count
+
+
 
 class PartyResource(BaseResource):
     ''' Party API
@@ -188,7 +191,12 @@ class MemberResource(BaseResource):
                     null = True)
     bills_uri = fields.CharField()
     agendas_uri = fields.CharField()
-           
+    committees = fields.ListField()
+
+    def dehydrate_committees (self, bundle):
+        temp_list = bundle.obj.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
+        return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
+
     def dehydrate_bills_uri(self, bundle):
         return '%s?%s' % (reverse('api_dispatch_list', kwargs={'resource_name': 'bill',
                                                     'api_name': 'v2', }),
