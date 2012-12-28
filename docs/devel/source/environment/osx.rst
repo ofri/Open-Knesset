@@ -39,7 +39,7 @@ Install python libraries dependencies:
 
     brew install jpeg libpng libxml2 libxslt
     
-Add locale settings (in case you're not UTF-8), in your ``~/.bashrc``:
+Add locale settings (in case you're not UTF-8), put in your ``~/.bashrc``:
 
 
 .. code-block:: bash
