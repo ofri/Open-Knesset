@@ -8,16 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'CandidatesList'
-        db.create_table('polyorg_candidateslist', (
+        # Adding model 'CandidateList'
+        db.create_table('polyorg_candidatelist', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=80)),
             ('ballot', self.gf('django.db.models.fields.CharField')(max_length=4)),
             ('number_of_seats', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('surplus_partner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.CandidatesList'], null=True, blank=True)),
+            ('surplus_partner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.CandidateList'], null=True, blank=True)),
             ('mpg_html_report', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
-        db.send_create_signal('polyorg', ['CandidatesList'])
+        db.send_create_signal('polyorg', ['CandidateList'])
 
         # Adding model 'Party'
         db.create_table('polyorg_party', (
@@ -30,7 +30,7 @@ class Migration(SchemaMigration):
         # Adding model 'Candidate'
         db.create_table('polyorg_candidate', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('candidates_list', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.CandidatesList'])),
+            ('candidates_list', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.CandidateList'])),
             ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['persons.Person'])),
             ('ordinal', self.gf('django.db.models.fields.IntegerField')()),
             ('party', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.Party'], null=True, blank=True)),
@@ -40,8 +40,8 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Deleting model 'CandidatesList'
-        db.delete_table('polyorg_candidateslist')
+        # Deleting model 'CandidateList'
+        db.delete_table('polyorg_candidatelist')
 
         # Deleting model 'Party'
         db.delete_table('polyorg_party')
@@ -181,22 +181,22 @@ class Migration(SchemaMigration):
         },
         'polyorg.candidate': {
             'Meta': {'object_name': 'Candidate'},
-            'candidates_list': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidatesList']"}),
+            'candidates_list': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidateList']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ordinal': ('django.db.models.fields.IntegerField', [], {}),
             'party': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.Party']", 'null': 'True', 'blank': 'True'}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['persons.Person']"}),
             'votes': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
         },
-        'polyorg.candidateslist': {
-            'Meta': {'object_name': 'CandidatesList'},
+        'polyorg.candidatelist': {
+            'Meta': {'object_name': 'CandidateList'},
             'ballot': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
             'candidates': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['persons.Person']", 'null': 'True', 'through': "orm['polyorg.Candidate']", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mpg_html_report': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'surplus_partner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidatesList']", 'null': 'True', 'blank': 'True'})
+            'surplus_partner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidateList']", 'null': 'True', 'blank': 'True'})
         },
         'polyorg.party': {
             'Meta': {'object_name': 'Party'},
