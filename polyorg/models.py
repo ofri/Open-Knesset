@@ -18,6 +18,11 @@ class CandidatesList(models.Model):
         if self.surplus_partner:
             self.surplus_partner.surplus_partner = self
 
+    @property
+    def member_ids(self):
+        ''' return a list of all members id in the party '''
+        mks = Candidate.objects.filter(candidates_list=self, person__mk__isnull=False)
+        return mks.values_list('person__mk__id', flat=True)
 
 class Party(models.Model):
     name        = models.CharField(max_length=64)

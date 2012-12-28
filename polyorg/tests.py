@@ -26,6 +26,7 @@ class CreationTest(TestCase):
         for p, i in zip(self.persons, range(1,len(self.persons)+1)):
             Candidate.objects.create(candidates_list=cl1, person=p, ordinal=i)
         cl1.save()
+        self.assertFalse(cl1.member_ids)
         cl2 = CandidatesList(name="Think", ballot="T", surplus_partner=cl1)
         cl2.save()
         self.assertEqual(cl1.surplus_partner, cl2)
