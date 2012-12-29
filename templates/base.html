@@ -72,9 +72,6 @@
     </header>
     <div id="helptextcontainer"></div>
     <div id="container">
-        <h1 id="main-logo" ><a href="{% url main %}"><img src ="/static/img/oknesset-logo-small.png"   alt="{% trans "Open Knesset" %}"/></a></h1>
-        <div class="app-link"><a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a></div>
-        <div class="app-link"><a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a></div>
         <div id="accounts">
             {% if user.is_authenticated %}
                 <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a> |
@@ -86,7 +83,6 @@
         </div>
         <div id="header">
             <ul id="nav-global">
-                <li id="nav-main" {% block nav-main-page %} {% endblock %} > <a href="{% url main%}">{% trans 'Main' %}</a> </li>
                 <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
                 <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
                 <li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
@@ -140,9 +136,23 @@
             {% endblock %}
         </div>
         <!-- END #content -->
-        <div id="footer">
-            <p><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></p>
-        </div>
+        <footer id="app-footer" class="container">
+            <div class="row">
+                <div class="span3">
+                    <ul id="nav-global">
+                        <li id="laws"> <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
+                        <li id="nav-tags"><a href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
+                        <li id="nav-planet"><a href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
+                        <li id="nav-about"><a href="{% url about %}">{% trans 'About' %}</a> </li>
+                    </ul>
+                </div>
+                <div class="span7"><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></div>
+                <div class="span2">
+                    <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a>
+                    <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a>
+                </div>
+            </div>
+        </footer>
         <!-- END #footer -->
     </div>
 <!-- JS Placed at the end of the document so the pages load faster -->
