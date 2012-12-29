@@ -9,7 +9,7 @@ from links.api import LinkResource
 from laws.api import BillResource, LawResource, VoteResource
 from agendas.api import AgendaResource, AgendaTodoResource
 from committees.api import CommitteeResource, CommitteeMeetingResource, ProtocolPartResource
-from post.api import PostResource
+from auxiliary.api import PostResource
 
 v2_api = Api(api_name='v2')
 
