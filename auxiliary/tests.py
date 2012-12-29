@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
-from laws.models import Vote, VoteAction, Bill
+from laws.models import Vote, VoteAction, Bill, Law
 from mks.models import Member,Party,WeeklyPresence
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
@@ -22,16 +22,23 @@ class TagResourceTest(TestCase):
         self.tags = []
         self.tags.append(Tag.objects.create(name = 'tag1'))
         self.tags.append(Tag.objects.create(name = 'tag2'))
+        self.tags.append(Tag.objects.create(name = 'tag3'))
 
         self.vote = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         ctype = ContentType.objects.get_for_model(Vote)
         TaggedItem._default_manager.get_or_create(tag=self.tags[0], content_type=ctype, object_id=self.vote.id)
         TaggedItem._default_manager.get_or_create(tag=self.tags[1], content_type=ctype, object_id=self.vote.id)
+        self.law = Law.objects.create(title='law 1')
         self.bill = Bill.objects.create(stage='1',
                                           stage_date=datetime.date.today(),
                                           title='bill 1',
-                                          law=None)
+                                          law=self.law)
+        self.bill2 = Bill.objects.create(stage='2',
+                                          stage_date=datetime.date.today(),
+                                          title='bill 2',
+                                          law=self.law)
         Tag.objects.add_tag(self.bill, 'tag1')
+        Tag.objects.add_tag(self.bill2, 'tag3')
 
     def _reverse_api(self, name, **args):
         args.update(dict(api_name='v2', resource_name='tag'))
@@ -41,7 +48,7 @@ class TagResourceTest(TestCase):
         res = self.client.get(self._reverse_api('api_dispatch_list'))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)['objects']
-        self.assertEqual(len(res_json), 2)
+        self.assertEqual(len(res_json), 3)
         self.assertEqual(set([x['name'] for x in res_json]), set(Tag.objects.values_list('name',flat=True)))
 
     def test_api_tag(self):
@@ -60,6 +67,15 @@ class TagResourceTest(TestCase):
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)['objects']
         self.assertEqual(len(res_json), 2)
+
+    def test_api_tag_for_vote(self):
+        res = self.client.get(self._reverse_api('related-tags', app_label='laws', 
+                                                object_type='law', object_id=self.law.id, related_name='bills'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 2)
+        received_tags = set(Tag.objects.get(pk=x) for x in (res_json[0]['id'], res_json[1]['id']))
+        self.assertEqual(received_tags, set([self.tags[0], self.tags[2]]))
 
 class InternalLinksTest(TestCase):
 
