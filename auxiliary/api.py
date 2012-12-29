@@ -37,7 +37,29 @@ class TagResource(BaseResource):
     def override_urls(self):
         return [
             url(r'^(?P<resource_name>%s)/(?P<app_label>\w+)/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$' % self._meta.resource_name, self.wrap_view('get_object_tags'), name='tags-for-object'),
+            url(r'^(?P<resource_name>%s)/(?P<app_label>\w+)/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/(?P<related_name>[_a-zA-Z]\w*)/$' % self._meta.resource_name, self.wrap_view('get_related_tags'), name='related-tags'),
         ]
+
+    def _create_response(self, request, objects):
+        bundles = [] 
+        for result in objects:
+            bundle = self.build_bundle(obj=result, request=request)
+            bundle = self.full_dehydrate(bundle)
+            bundles.append(bundle)
+
+        return self.create_response(request, {'objects': bundles})
+
+    def get_related_tags(self, request, **kwargs):
+        """ Can be used to get all tags used by all CommitteeMeetings of a specific committee
+        """
+        # FIXME handle exception?
+        ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
+        container = ctype.get_object_for_this_type(pk=kwargs['object_id'])
+
+        related_objects = getattr(container, kwargs['related_name']).all()
+        tags = Tag.objects.usage_for_queryset(related_objects)
+
+        return self._create_response(request, tags)
 
     def get_object_tags(self, request, **kwargs):
         ctype = None
@@ -47,10 +69,6 @@ class TagResource(BaseResource):
             pass
 
         tags_ids = TaggedItem.objects.filter(object_id=kwargs['object_id']).filter(content_type=ctype).values_list('tag', flat=True)
-        objects = [] 
-        for result in Tag.objects.filter(id__in=tags_ids):
-            bundle = self.build_bundle(obj=result, request=request)
-            bundle = self.full_dehydrate(bundle)
-            objects.append(bundle)
+        tags = Tag.objects.filter(id__in=tags_ids)
+        return self._create_response(request, tags)
 
-        return self.create_response(request, {'objects': objects})
