@@ -359,8 +359,22 @@ class WeeklyPresence(models.Model):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
 
     def save(self,**kwargs):
-        super(WeeklyPresence,self).save(**kwargs)
+        super(WeeklyPresence, self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
 
+
+class HourlyPresence(models.Model):
+    member      = models.ForeignKey('Member')
+    date_start        = models.DateTimeField(blank=True, null=True) # contains the datetime of a of the day (actually monday)
+    date_end        = models.DateTimeField(blank=True, null=True) # contains the date of the day (actually monday)
+
+    def __unicode__(self):
+        return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+
+    def save(self,**kwargs):
+        super(HourlyPresence,self).save(**kwargs)
+        self.member.recalc_average_weekly_presence_hours()
+		
+		
 # force signal connections
 from listeners import *

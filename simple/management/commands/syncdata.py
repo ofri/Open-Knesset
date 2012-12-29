@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
-from mks.models import Member,Party,Membership,WeeklyPresence
+from mks.models import Member,Party,Membership,WeeklyPresence,HourlyPresence
 from persons.models import Person,PersonAlias
 from laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
      KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
@@ -57,6 +57,8 @@ class Command(NoArgsCommand):
             help="online update of data."),
         make_option('--committees', action='store_true', dest='committees',
             help="online update of committees data."),
+        make_option('--presence', action="store_true", dest='presence',
+            help="update of presence data")
 
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
@@ -987,6 +989,28 @@ class Command(NoArgsCommand):
             f.write("%d\t%s\t%s\n" % (m.id, m.name.encode('utf-8'), m.current_party.__unicode__().encode('utf-8') if m.current_party != None else ''))
         f.close()
 
+    def update_presence_hourly(self):
+        logger.debug("update hourly presence")
+        try:
+            presence = parse_presence.parse_presence_hourly(filename=os.path.join(DATA_ROOT, 'presence.txt.gz'))
+        except IOError:
+            logger.error('Can\'t find presence file')
+            return
+        
+        for m in Member.objects.all():
+            if m.id not in presence:
+                logger.error('member %s (id=%d) not found in presence data', m.name, m.id)
+                continue
+            
+            to_create = []
+            for n, p in enumerate(presence[m.id]):
+                to_create.append(HourlyPresence(member=m, date_start=p[0], date_end=p[1]))
+                if n%100 == 0:
+                    HourlyPresence.objects.bulk_create(to_create)
+                    to_create = []
+            
+            HourlyPresence.objects.bulk_create(to_create)
+            
     def update_presence(self):
         logger.debug("update presence")
         try:
@@ -1463,6 +1487,7 @@ class Command(NoArgsCommand):
         update = options.get('update', False)
         laws = options.get('laws',False)
         committees = options.get('committees', False)
+        presence = options.get('presence', False)
         
         if all_options:
             download = True
@@ -1516,7 +1541,11 @@ class Command(NoArgsCommand):
             self.get_protocols()
             logger.debug('finished committees update')
 
-
+        if presence:
+            print "updating presence"
+            #self.update_presence()
+            self.update_presence_hourly()
+            
 def iso_year_start(iso_year):
     "The gregorian calendar date of the first day of the given ISO year"
     fourth_jan = datetime.date(iso_year, 1, 4)
