@@ -358,43 +358,6 @@ class PartyHandler(BaseHandler):
     def members(cls,party):
         return party.members.values_list('id',flat=True)
 
-class TagHandler(BaseHandler):
-    fields = ('id', 'name', 'number_of_items')
-    allowed_methods = ('GET',)
-    model = Tag
-
-    def read(self, request, **kwargs):
-        id = None
-        if 'id' in kwargs:
-            id = kwargs['id']
-        if id:
-            try:
-                return Tag.objects.get(pk=id)
-            except Tag.DoesNotExist:
-                return rc.NOT_FOUND
-        object_id = None
-        ctype = None
-        if 'object_id' in kwargs and 'object_type' in kwargs:
-            object_id = kwargs['object_id']
-            try:
-                ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
-            except ContentType.DoesNotExist:
-                pass
-        if object_id and ctype:
-            tags_ids = TaggedItem.objects.filter(object_id=object_id).filter(content_type=ctype).values_list('tag', flat=True)
-            return Tag.objects.filter(id__in=tags_ids)
-
-        vote_tags = Tag.objects.usage_for_model(Vote)
-        bill_tags = Tag.objects.usage_for_model(Bill)
-        cm_tags = Tag.objects.usage_for_model(CommitteeMeeting)
-        all_tags = list(set(vote_tags).union(bill_tags).union(cm_tags))
-        all_tags.sort(key=attrgetter('name'))
-        return all_tags
-
-    @classmethod
-    def number_of_items(self, tag):
-        return tag.items.count()
-
 class AgendaHandler(BaseHandler):
     # TODO: Once we have user authentication over the API,
     #       need to expose not only public agendas.

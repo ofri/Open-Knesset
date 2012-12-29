@@ -13,6 +13,53 @@ from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
 from auxiliary.views import CsvView
+from django.core import cache
+
+class TagResourceTest(TestCase):
+    
+    def setUp(self):
+        cache.cache.clear()
+        self.tags = []
+        self.tags.append(Tag.objects.create(name = 'tag1'))
+        self.tags.append(Tag.objects.create(name = 'tag2'))
+
+        self.vote = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
+        ctype = ContentType.objects.get_for_model(Vote)
+        TaggedItem._default_manager.get_or_create(tag=self.tags[0], content_type=ctype, object_id=self.vote.id)
+        TaggedItem._default_manager.get_or_create(tag=self.tags[1], content_type=ctype, object_id=self.vote.id)
+        self.bill = Bill.objects.create(stage='1',
+                                          stage_date=datetime.date.today(),
+                                          title='bill 1',
+                                          law=None)
+        Tag.objects.add_tag(self.bill, 'tag1')
+
+    def _reverse_api(self, name, **args):
+        args.update(dict(api_name='v2', resource_name='tag'))
+        return reverse(name, kwargs=args)
+
+    def test_api_tag_list(self):
+        res = self.client.get(self._reverse_api('api_dispatch_list'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 2)
+        self.assertEqual(set([x['name'] for x in res_json]), set(Tag.objects.values_list('name',flat=True)))
+
+    def test_api_tag(self):
+        res = self.client.get(self._reverse_api('api_dispatch_detail', pk = self.tags[0].id))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json['name'], self.tags[0].name)
+
+    def test_api_tag_not_found(self):
+        res = self.client.get(self._reverse_api('api_dispatch_detail', pk = 12345))
+        self.assertEqual(res.status_code, 404)
+
+    def test_api_tag_for_vote(self):
+        res = self.client.get(self._reverse_api('tags-for-object', app_label='laws', 
+                                                object_type='vote', object_id=self.vote.id))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 2)
 
 class InternalLinksTest(TestCase):
 
