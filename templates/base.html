@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load i18n search %}{% load static from staticfiles %}
+<!DOCTYPE html>{% load i18n search avatar_tags %}{% load static from staticfiles %}
 <html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}" class="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
 <head>
     <meta charset="utf-8" >
@@ -49,14 +49,20 @@
         </div>
 
         <div id="login" class="span3 dropdown">
+          {% if user.is_authenticated %}
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <b class="caret"></b>
-            <img src="../img/user-pic.png" alt="user-pic" width="36" height="36" />
+            <span class="user-pic">
+                {% avatar user 36%}
+            </span>
           </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <li><a href="#">הגדרות</a></li>
-            <li><a href="#">יציאה</a></li>
+            <li><a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a></li>
+            <li><a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a></li>
           </ul>
+          {% else %}
+              <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
+          {% endif %}
         </div>
       </div>
 
@@ -72,15 +78,6 @@
     </header>
     <div id="helptextcontainer"></div>
     <div id="container">
-        <div id="accounts">
-            {% if user.is_authenticated %}
-                <a href="{{user.get_profile.get_absolute_url}}">{% trans 'Logged in as ' %} {{ user }}</a> |
-                <a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a> |
-                <a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a>
-            {% else %}
-                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
-            {% endif %}
-        </div>
         <div id="header">
             <ul id="nav-global">
                 <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
