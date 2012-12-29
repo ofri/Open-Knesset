@@ -6,6 +6,7 @@
   border-bottom: 2px solid @darkgray;
 
   #logo{
+  	margin-top: -18px;
     img{
       float: right;
       margin-left: 10px;
@@ -13,6 +14,9 @@
     span{
       padding: 29px 0 0;
       display: block;
+      font-size: 20px;
+      color: @textColor;
+      font-weight: 700;
       }
   }
   
@@ -74,17 +78,27 @@
 
   .form-search {
     position: relative;
+    
+    input.search-query{
+	    height: 30px;
+	    .border-radius(19px);
+    }
 
     button{
       background: transparent;
       border:none;
       position: absolute;
-      left: -12px;
-      top: 5px;
+			left: -9px;
+			top: 11px;
+			opacity: 0.5;
+			&:hover{
+				opacity: 1;
+			}
     }
   }
 }
 
 .breadcrumb{
 	background: none;
+	margin: 10px 0;
 }
