@@ -248,7 +248,7 @@ class BillDetailView (DetailView):
         context['tags'] = list(bill.tags)
         context['budget_ests'] = list(bill.budget_ests.all())
         if self.request.user:
-            context['user_has_be'] = bill.budget_ests.filter(estimator=self.request.user).count()
+            context['user_has_be'] = bill.budget_ests.filter(estimator__username=str(self.request.user)).count()
         if 'budget_ests_form' in kwargs:
             context['budget_ests_form'] = kwargs['budget_ests_form']
         else:
