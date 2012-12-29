@@ -14,6 +14,8 @@ from mks.api import MemberResource
 class CommitteeResource(BaseResource):
     ''' Committee API
     '''
+    recent_meetings = fields.ListField()
+    future_meetings = fields.ListField()
 
     meetings = fields.ToManyField('committees.api.CommitteeMeetingResource', 'meetings')
 
@@ -21,6 +23,18 @@ class CommitteeResource(BaseResource):
         queryset = Committee.objects.all()
         allowed_methods = ['get']
         include_absolute_url = True
+
+    def dehydrate_recent_meetings(self, bundle):
+        return [ { 'url': x.get_absolute_url(),
+                   'title': x.title(),
+                   'date': x.date }
+                for x in bundle.obj.recent_meetings() ]
+
+    def dehydrate_future_meetings(self, bundle):
+        return [ { 'title': x.what,
+                   'date': x.when }
+                for x in bundle.obj.future_meetings() ]
+
 
 class CommitteeMeetingResource(BaseResource):
     ''' Committee Meeting API
