@@ -81,7 +81,7 @@ MS Windows
 
     cd c:\Python27\Scripts
     easy_install pip virtualenv
-	pip install virtualenv
+    pip install virtualenv
 
 - Download and install the installers matching your architecture for PIL_
   and lxml_ (version 2.3.x).
