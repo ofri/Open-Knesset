@@ -2,63 +2,74 @@
 -------------------------------------------------- */
 
 #app-header{
-	padding: 12px 0 0;
-	border-bottom: 2px solid @darkgray;
+  padding: 12px 0 0;
+  border-bottom: 2px solid @darkgray;
 
-	#logo{
-		img{
-			float: right;
-			margin-left: 10px;
-			}
-		span{
-			padding: 29px 0 0;
-			display: block;
-			}
-	}
-	
-	#login{
-		>a{			
-			float: left;
-			display: block;
-		}
-		.dropdown-menu{
-			left: 0;
-			right: auto;
-		}
-	}
-	
-	.nav-pills{
-		margin-bottom: 0;
-		li{
-			width: 20%;
-			margin-left: -1px;
-			border-left: 1px solid @lightgray;
-			a{
-				padding-bottom: 12px;
-				text-align: center;
-				margin: 0 30px;
-				.border-radius(0);
-				color: @darkgray;
-				font-size: 20px;
-				&:hover{
-					padding-bottom: 8px;
-					border-bottom: 4px solid @darkgray;
-				}
-			}
-		&.active{
-			a{
-				background: none;
-				padding-bottom: 8px;
-				border-bottom: 4px solid @darkgray;
-				color: @darkgray;
-				font-weight: 700;
-				&:hover{
-					background: none;
-					color: inherit;
-				}
-			}
-			
-		}
-		}
-	}
+  #logo{
+    img{
+      float: right;
+      margin-left: 10px;
+      }
+    span{
+      padding: 29px 0 0;
+      display: block;
+      }
+  }
+  
+  #login{
+    >a{      
+      float: left;
+      display: block;
+      &:hover{
+        text-decoration: none;
+      }
+    }
+    .dropdown-menu{
+      left: 0;
+      right: auto;
+    }
+    .user-pic{
+      .border-radius(50%);
+      border:2px solid @linkColor;
+      display: inline-block;
+      width:36px;
+      height:36px;
+      overflow: hidden;
+    }
+  }
+  
+  .nav-pills{
+    margin-bottom: 0;
+    li{
+      width: 20%;
+      margin-left: -1px;
+      border-left: 1px solid @lightgray;
+      a{
+        padding-bottom: 12px;
+        text-align: center;
+        margin: 0 30px;
+        .border-radius(0);
+        color: @darkgray;
+        font-size: 20px;
+        &:hover{
+          padding-bottom: 8px;
+          border-bottom: 4px solid @darkgray;
+        }
+      }
+    &.active{
+      a{
+        background: none;
+        padding-bottom: 8px;
+        border-bottom: 4px solid @darkgray;
+        color: @darkgray;
+        font-weight: 700;
+        &:hover{
+          background: none;
+          color: inherit;
+        }
+      }
+      
+    }
+    }
+  }
 }
