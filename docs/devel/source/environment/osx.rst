@@ -1,30 +1,63 @@
-===========
-Linux
-===========
+=======
+OS X
+=======
 
-Installing Initial Requirements
-=================================
+.. important::
 
-On Linux we'll be creating a clean virtualenv, so in addtion we'll need
-developer tools (to compile PIL, lxml etc).
+    The info here is based on the post
+    `Fixing Python, virtualenv and pip on Mountain Lion`_
+    
+.. _Fixing Python, virtualenv and pip on Mountain Lion: http://blog.dyve.net/fixing-python-virtualenv-and-pip-on-mountain
 
-Debian and derivatives like Ubuntu and Mint
---------------------------------------------
+Command Line Tools
+=====================
 
-.. code-block:: sh
+* Go to https://developer.apple.com/downloads
+* Search for "command line tools"
+* Download and install the version right for your OS
 
-    sudo apt-get install build-essential git python python-dev python-setuptools python-virtualenv python-pip
-    sudo apt-get build-dep python-imaging
-    sudo apt-get build-dep python-lxml
-
-
-Fedora
------------
+Install pip and virtualenv
+========================================
 
 .. code-block:: sh
 
-    sudo yum groupinstall "Development Tools" "Development Libraries"
-    sudo yum install git python python-devel python-setuptools python-virtualenv python-pip libjpeg-turbo-devel libpng-devel libxml2-devel libxslt-devel
+    sudo easy_install pip
+    sudo pip install virtualenv
+
+Install basic dependencies
+========================================
+
+Install homebrew:
+
+.. code-block:: sh
+
+    ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
+
+Install binary python libraries build dependencies:
+
+.. code-block:: sh
+
+    brew install jpeg libpng libxml2 libxslt
+    
+Add locale settings (in case you're not UTF-8), put in your ``~/.bashrc``:
+
+
+.. code-block:: bash
+
+    export LANG="en_US.UTF-8"
+    export LC_COLLATE="en_US.UTF-8"
+    export LC_CTYPE="en_US.UTF-8"
+    export LC_MESSAGES="en_US.UTF-8"
+    export LC_MONETARY="en_US.UTF-8"
+    export LC_NUMERIC="en_US.UTF-8"
+    export LC_TIME="en_US.UTF-8"
+    export LC_ALL=
+
+And source them (to have them updated in the current shell):
+
+.. code-block:: sh
+
+    source ~/.bashrc
 
 
 Creating and Activating the virtualenv
@@ -40,24 +73,11 @@ Once in that directory:
 
     virtualenv oknesset
 
-.. warning::
-
-    In case you have both Python 2 and 3 installed, please make sure the virtualenv
-    is created with Python 2. If that's not the case, pass the correct python
-    executable to the virtualenv command. e.g:
-
-    .. code-block:: sh
-
-        virtualenv -p python2 oknesset
-
-    To check which is the default interpreter virtualenv will use, run
-    ``virtualenv -h`` and check in the output the default for `-p` flag.
-    
 We need to `activate` the virtual environment (it mainly modifies the paths so
 that correct packages and bin directories will be found) each time we wish to
 work on the code.
 
-In Linux we'll source the activation script (to set env vars):
+To do it, we'll source the activation script (to set env vars):
 
 .. code-block:: sh
 
@@ -85,7 +105,7 @@ Replace `your-username` with the username you've registered at git hub.
 
         git@github.com:your-username/Open-Knesset.git
 
-.. _github guide on ssh keys: https://help.github.com/articles/generating-ssh-keys#platform-linux
+.. _github guide on ssh keys: https://help.github.com/articles/generating-ssh-keys#platform-mac
 
 
 Installing requirements

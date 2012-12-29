@@ -284,8 +284,12 @@ class CsvView(BaseListView):
       * queryset -- the query performed on the model; defaults to all.
       * filename -- the name of the resulting CSV file (e.g., "info.csv").
       * list_display - a list (or tuple) of tuples, where the first item in
-        each tuple is the attribute (or the method) on the model to display and
+        each tuple is the attribute (or the method) to display and
         the second item is the title of that column.
+
+        The attribute can be a attribute on the CsvView child or the model
+        instance itself. If it's a callable it'll be called with (obj, attr)
+        for the CsvView attribute or without params for the model attribute.
     """
 
     filename = None
@@ -310,12 +314,16 @@ class CsvView(BaseListView):
             writer.writerow([unicode(item).encode('utf8') for item in row])
         return response
 
-    @staticmethod
-    def get_display_attr(obj, attr):
+    def get_display_attr(self, obj, attr):
         """Return the display string for an attr, calling it if necessary."""
-        display_attr = getattr(obj, attr)
-        if hasattr(display_attr, '__call__'):
-            display_attr = display_attr()
+        display_attr =  getattr(self, attr, None)
+        if display_attr is not None:
+            if callable(display_attr):
+                display_attr = display_attr(obj,attr)
+        else:
+            display_attr = getattr(obj, attr)
+            if callable(display_attr):
+                display_attr = display_attr()
         if display_attr is None:
             return ""
         return display_attr
