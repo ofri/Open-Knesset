@@ -9,13 +9,19 @@
 	 {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
 {% block divcontent %}
-    <div class="list-wrap">
-      <ul class="candidates-list">
-        {% for o in object_list %}
-        <li><a href="{{ o.get_absolute_url}}">
-          <span class="ballot">{{o.ballot}}</span>{{o.name}}
-        </a></li>
-        {% endfor %}
-      </ul>
-    </div>
+<div id="candidate-lists-container">
+    {% for o in object_list %}
+    <a href="{% url candidate-list-detail o.id %}">
+        <div class="element">
+            <h2 class="name">
+                {{o.name}}
+            </h2>
+
+            <h3 class="symbol">
+                {{o.ballot}}
+            </h3>
+        </div>
+    </a>
+    {% endfor %}
+</div>
 {% endblock %}

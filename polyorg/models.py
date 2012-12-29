@@ -16,6 +16,9 @@ class CandidateList(models.Model):
         if self.surplus_partner:
             self.surplus_partner.surplus_partner = self
 
+    def getHeadName(self):
+        return Candidate.objects.get(candidates_list=self, ordinal=1).person.name
+
     @property
     def member_ids(self):
         ''' return a list of all members id in the party '''
@@ -24,7 +27,7 @@ class CandidateList(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('candidates-lists-detail', [self.id])
+        return ('candidate-list-detail', [self.id])
 
     def __unicode__(self):
         return self.name
@@ -39,6 +42,9 @@ class Candidate(models.Model):
     ordinal = models.IntegerField(_('Ordinal'))
     party = models.ForeignKey(Party, blank=True, null=True)
     votes = models.IntegerField(_('Elected by #'), null=True, blank=True, help_text=_('How many people voted for this person'))
-    
+
+    class Meta:
+        ordering = ('ordinal',)
+
     def __unicode__(self):
         return self.person.name
