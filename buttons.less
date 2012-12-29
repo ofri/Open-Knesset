@@ -26,3 +26,40 @@
 		background: @textColor;	
 	}
 }
+
+.btn-expand{
+	font-size: 13px;
+	width: 190px;
+	height: 20px;
+	.border-radius(0 0 4px 4px);
+	.box-shadow(@shadow);
+	display: block;
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  margin-left:-95px;
+	background: @white;
+  color: lighten(@textColor,20%);
+  border: none;
+  &:hover{
+		background: lighten(@textColor, 60%);
+	  color: @textColor;	  
+  }
+}
+
+.btn-more{
+	font-size: 15px;
+	float: left;
+	.clearfix;
+	margin-bottom: 20px;	
+	margin-left: -10px;
+	.border-radius(0);
+	text-shadow: none;
+	background: lighten(@textColor, 60%);
+  color: lighten(@textColor,20%);
+  border: none;
+  &:hover{
+		background: lighten(@textColor, 50%);
+	  color: lighten(@textColor,10%);	  
+  }
+}
