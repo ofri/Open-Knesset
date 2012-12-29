@@ -369,7 +369,7 @@ class HourlyPresence(models.Model):
     date_end        = models.DateTimeField(blank=True, null=True) # contains the date of the day (actually monday)
 
     def __unicode__(self):
-        return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
+        return "%s %s %s" % (self.member.name, str(self.date_start), str(self.date_end))
 
     def save(self,**kwargs):
         super(HourlyPresence,self).save(**kwargs)
