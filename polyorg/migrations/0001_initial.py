@@ -16,6 +16,7 @@ class Migration(SchemaMigration):
             ('number_of_seats', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('surplus_partner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['polyorg.CandidateList'], null=True, blank=True)),
             ('mpg_html_report', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('img_url', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
         ))
         db.send_create_signal('polyorg', ['CandidateList'])
 
@@ -193,6 +194,7 @@ class Migration(SchemaMigration):
             'ballot': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
             'candidates': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['persons.Person']", 'null': 'True', 'through': "orm['polyorg.Candidate']", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'mpg_html_report': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),

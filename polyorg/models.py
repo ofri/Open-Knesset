@@ -10,6 +10,7 @@ class CandidateList(models.Model):
                 help_text=_('The list with which is the surplus votes partner'))
     mpg_html_report = models.TextField(_('MPG report'), blank=True, null=True,
                 help_text=_('The MPG report on the list, can use html'))
+    img_url = models.URLField(blank=True, verify_exists=False)
 
     def save(self, *args, **kwargs):
         super(CandidateList, self).save()
