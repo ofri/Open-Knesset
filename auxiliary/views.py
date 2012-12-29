@@ -259,6 +259,27 @@ class TagDetail(DetailView):
     model = Tag
     template_name = 'auxiliary/tag_detail.html'
     slug_field = 'name'
+
+    def create_tag_cloud(self, tag, limit=30):
+        """
+        Create tag could for tag <tag>. Returns only the <limit> most tagged members
+        """
+
+        mk_taggeds = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag)]
+        mk_taggeds += [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag)]
+        mk_taggeds += [cm.mks_attended.all() for cm in TaggedItem.objects.get_by_model(CommitteeMeeting, tag)]
+        d = {}
+        for tagged in mk_taggeds:
+            for p in tagged:
+                d[p] = d.get(p,0)+1
+        # now d is a dict: MK -> number of tagged in Bill, Vote and CommitteeMeeting in this tag
+        mks = dict(sorted(d.items(),lambda x,y:cmp(y[1],x[1]))[:limit])
+        # Now only the most tagged are in the dict (up to the limit param)
+        for mk in mks:
+            mk.count = d[mk]
+        mks = tagging.utils.calculate_cloud(mks)
+        return mks
+
     def get_context_data(self, **kwargs):
         context = super(TagDetail, self).get_context_data(**kwargs)
         tag = context['object']
@@ -274,8 +295,8 @@ class TagDetail(DetailView):
         cms = [ti.object for ti in
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
+        context['members'] = self.create_tag_cloud(tag)
         return context
-
 
 class CsvView(BaseListView):
     """A view which generates CSV files with information for a model queryset.
@@ -284,8 +305,12 @@ class CsvView(BaseListView):
       * queryset -- the query performed on the model; defaults to all.
       * filename -- the name of the resulting CSV file (e.g., "info.csv").
       * list_display - a list (or tuple) of tuples, where the first item in
-        each tuple is the attribute (or the method) on the model to display and
+        each tuple is the attribute (or the method) to display and
         the second item is the title of that column.
+
+        The attribute can be a attribute on the CsvView child or the model
+        instance itself. If it's a callable it'll be called with (obj, attr)
+        for the CsvView attribute or without params for the model attribute.
     """
 
     filename = None
@@ -310,12 +335,16 @@ class CsvView(BaseListView):
             writer.writerow([unicode(item).encode('utf8') for item in row])
         return response
 
-    @staticmethod
-    def get_display_attr(obj, attr):
+    def get_display_attr(self, obj, attr):
         """Return the display string for an attr, calling it if necessary."""
-        display_attr = getattr(obj, attr)
-        if hasattr(display_attr, '__call__'):
-            display_attr = display_attr()
+        display_attr =  getattr(self, attr, None)
+        if display_attr is not None:
+            if callable(display_attr):
+                display_attr = display_attr(obj,attr)
+        else:
+            display_attr = getattr(obj, attr)
+            if callable(display_attr):
+                display_attr = display_attr()
         if display_attr is None:
             return ""
         return display_attr

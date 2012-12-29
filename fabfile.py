@@ -52,7 +52,7 @@ def deploy_web(buildout=False):
             _git_pull()
             if buildout:
                 _install_requirements()
-            virtualenv('./manage collectstatic --noinput')
+            virtualenv('./manage.py collectstatic --noinput')
             _update_commit()
         #_chown('www-data')
     restart_oknesset()

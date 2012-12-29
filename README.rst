@@ -1,14 +1,7 @@
-
-.. warning::
-
-    The repository state, docs and steps for the build environment are in flux
-    and changing to virutalenv.
-
-
 .. important::
 
-    This document contains quick start instruction. For more details, please see
-    the `Open Knesset developers documentation`_
+    This document contains quick start instruction.
+    For more details, **please see** the `Open Knesset developers documentation`_ 
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 
@@ -58,7 +51,7 @@ Linux
   - ``git config --local user.name "Your Name"``
   - ``git config --local user.email "your@email.com"``
 
-- Create the virtual environment. In the terminal cd to the directory ypu want
+- Create the virtual environment. In the terminal cd to the directory you want
   the environment create it and run ``virtualenv oknesset``.
 
 - Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
@@ -87,7 +80,8 @@ MS Windows
 - Open command windows and::
 
     cd c:\Python27\Scripts
-    easy_install pip virtualenv
+    easy_install pip
+    pip install virtualenv
 
 - Download and install the installers matching your architecture for PIL_
   and lxml_ (version 2.3.x).
@@ -105,6 +99,7 @@ MS Windows
     Scripts\activate
 
   Note the changed prompt with includes the virtualenv's name.
+- If you haven't already forked the repository (top right of page), do so. 
 - Clone the repository. In the `oknesset` directory and run
   ``git clone git@github.com:your-name/Open-Knesset.git``
 - Install requirements: ``pip install -r Open-Knesset\requirements.txt`` and
@@ -120,6 +115,54 @@ MS Windows
 .. _PIL: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pil
 .. _lxml: http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
 .. _GitHub for Windows: http://windows.github.com
+
+
+OS X
+--------
+
+- Install command line tools. Goto https://developer.apple.com/downloads, 
+  Search for "command line tools", download and install the version right for
+  your OS
+- Install pip and virtualenv::
+
+    sudo easy_install pip
+    sudo pip install virtualenv
+- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install binary python libraries build dependencies:
+  ``brew install jpeg libpng libxml2 libxslt``
+- We need UTF-8, Add locale settings (in case you're not UTF-8),
+  put in your ``~/.bashrc``::
+
+    export LANG="en_US.UTF-8"
+    export LC_COLLATE="en_US.UTF-8"
+    export LC_CTYPE="en_US.UTF-8"
+    export LC_MESSAGES="en_US.UTF-8"
+    export LC_MONETARY="en_US.UTF-8"
+    export LC_NUMERIC="en_US.UTF-8"
+    export LC_TIME="en_US.UTF-8"
+    export LC_ALL=
+
+  Once done, source them (to have them updated in the current shell):
+  ``source ~/.bashrc``
+- Create the virtual environment. In the terminal cd to the directory you want
+  the environment create it and run ``virtualenv oknesset``.
+
+- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
+  prompt which includes the virtualenv's name.
+
+- Clone the repository::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+  This creates a copy of the project on your local machine.
+
+- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
+  and wait ...
+- Run the tests::
+
+    cd Open-Knesset
+    python manage.py test
+
 
 
 After basic installation: Tests and initial db
@@ -180,8 +223,11 @@ Adding a field to existing model
 We use south to manage database migration. The work process looks something like:
 
 - add the field you want to model sample_model in app sample_app
-- bin/django schemamigration sample_app --auto # this generates a new migration under src/knesset/sample_app/migrations. You should review it to make sure it does what you expect.
-- bin/django syncdb --migrate # run the migration.
+- ``python manage.py schemamigration sample_app --auto`` this generates a new
+  migration under `src/knesset/sample_app/migrations`. You should review it to
+  make sure it does what you expect.
+- ``python manage.py --migrate`` To run un the migration (make the changes on
+  the db).
 - don't forget to git add/commit the migration file.
 
 Updating the translation strings
