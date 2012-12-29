@@ -109,13 +109,18 @@ class AgendaResource(BaseResource):
         return members
 
     def dehydrate_parties(self, bundle):
+        fromdate = bundle.request.GET.get('date__from',None)
+        todate   = bundle.request.GET.get('date__to',None)
         party_values = dict(map(lambda party_data:(party_data[0],(party_data[1],party_data[2])),
-                            bundle.obj.get_party_values()))
-        return [
-            dict(name=x.name, score=party_values[x.pk][0], volume=party_values[x.pk][1],
-                 absolute_url=x.get_absolute_url())
-            for x in Party.objects.all()
-        ]
+                            bundle.obj.get_party_values(fromdate,todate)))
+        parties = []
+        for party in Party.objects.all():
+            if party.pk in party_values:
+                parties.append(dict(name=party.name, 
+                                    score=party_values[party.pk][0], 
+                                    volume=party_values[party.pk][1],
+                                    absolute_url=party.get_absolute_url()))
+        return parties
 
     def dehydrate_votes(self, bundle):
         return [

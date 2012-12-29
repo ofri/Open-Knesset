@@ -4,22 +4,32 @@ from django.core.cache import cache
 from itertools import groupby
 from operator import itemgetter
 
-import time
+import time,datetime
 
 def getAllAgendaPartyVotes(fromdate=None,todate=None):
     results = None
-    if (not fromdate is None) and (not todate is None):
-      results = cache.get('AllAgendaPartyVotes')
+    isFullQuery = (fromdate is None) and (todate is None)
+    if isFullQuery:
+        results = cache.get('AllAgendaPartyVotes')
     if not results:
-        if fromdate is None:
-          fromdate = 0
-        if todate is None:
-          todate = int(time.time())
+        try:
+            if fromdate is None:
+                fromdate = 0
+            fromdt = datetime.datetime.utcfromtimestamp(float(fromdate))
+        except ValueError:
+            fromdt = datetime.datetime.utcfromtimestamp(float(0))
+        try:
+            if todate is None:
+                todate = time.time()
+            todt = datetime.datetime.utcfromtimestamp(float(todate))
+        except ValueError:
+            todt = datetime.datetime.utcfromtimestamp(float(time.time()))          
         cursor = connection.cursor()
-        cursor.execute(PARTY_QUERY)
+        cursor.execute(PARTY_QUERY,[fromdt,todt,fromdt,todt])
         results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3])),list(group))),
                            groupby(cursor.fetchall(),key=itemgetter(0))))
-        cache.set('AllAgendaPartyVotes', results, 1800)
+        if (not fromdate is None) and (not todate is None):
+            cache.set('AllAgendaPartyVotes', results, 1800)
     return results
 
 PARTY_QUERY = """
@@ -31,11 +41,14 @@ FROM   (SELECT agid                   agendaid,
                m.id                   partyid,
                sc * m.number_of_seats totalscore,
                numvotes * m.number_of_seats totalvolume
-        FROM   (SELECT agenda_id               agid,
-                       SUM(abs(score * importance)) sc,
+        FROM   (SELECT a.agenda_id               agid,
+                       SUM(abs(a.score * a.importance)) sc,
                        COUNT(*) numvotes
-                FROM   agendas_agendavote
-                GROUP  BY agenda_id) agendavalues
+                FROM   agendas_agendavote a
+                JOIN   laws_vote v
+                  ON   a.vote_id = v.id
+               WHERE   v.time BETWEEN %s and %s
+                GROUP  BY a.agenda_id) agendavalues
                left outer join mks_party m
                  on 1=1) a
        left outer join (SELECT agenda_id, 
@@ -64,10 +77,13 @@ FROM   (SELECT agid                   agendaid,
                                    GROUP  BY m.current_party_id, 
                                              v.vote_id, 
                                              v.TYPE) p 
-                                  inner join (SELECT vote_id, 
-                                                     agenda_id, 
-                                                     score * importance as VALUE 
-                                              FROM   agendas_agendavote) a 
+                                  INNER JOIN (SELECT a.vote_id, 
+                                                     a.agenda_id, 
+                                                     a.score * a.importance as VALUE 
+                                              FROM   agendas_agendavote a
+                                              JOIN   laws_vote v
+                                                ON   a.vote_id = v.id
+                                             WHERE   v.time BETWEEN %s and %s) a 
                                     ON p.voteid = a.vote_id) b  
                    GROUP  BY agenda_id, 
                              partyid 
@@ -76,14 +92,30 @@ FROM   (SELECT agid                   agendaid,
             AND a.partyid = v.partyid 
 ORDER BY agendaid,score desc"""
 
-def getAllAgendaMkVotes():
-    results = cache.get('AllAgendaMemberVotes')
+def getAllAgendaMkVotes(fromdate=None,todate=None):
+    results = None
+    isFullQuery = (fromdate is None) and (todate is None)
+    if isFullQuery:
+        results = cache.get('AllAgendaMemberVotes')
     if not results:
+        try:
+            if fromdate is None:
+                fromdate = 0
+            fromdt = datetime.datetime.utcfromtimestamp(float(fromdate))
+        except ValueError:
+            fromdt = datetime.datetime.utcfromtimestamp(float(0))
+        try:
+            if todate is None:
+                todate = time.time()
+            todt = datetime.datetime.utcfromtimestamp(float(todate))
+        except ValueError:
+            todt = datetime.datetime.utcfromtimestamp(float(time.time()))          
         cursor = connection.cursor()
-        cursor.execute(MK_QUERY)
+        cursor.execute(MK_QUERY,[fromdt,todt,fromdt,todt])
         results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3]),int(g[4])),list(group))),
                            groupby(cursor.fetchall(),key=itemgetter(0))))
-        cache.set('AllAgendaMemberVotes', results, 1800)
+        if isFullQuery:        
+            cache.set('AllAgendaMemberVotes', results, 1800)
     return results
 
 MK_QUERY = """
@@ -96,11 +128,14 @@ SELECT a.agendaid,
                   NUMERIC),0.0), 2
        ) volume,
        CAST(Coalesce(v.numvotes,0) AS NUMERIC) numvotes 
-FROM   (SELECT agenda_id                    agendaid, 
-               SUM(Abs(score * importance)) totalscore,
+FROM   (SELECT a.agenda_id                    agendaid, 
+               SUM(Abs(a.score * a.importance)) totalscore,
                COUNT(*) numvotes
-        FROM   agendas_agendavote 
-        GROUP  BY agenda_id) a 
+        FROM   agendas_agendavote a
+        JOIN   laws_vote v
+          ON   a.vote_id = v.id
+       WHERE   v.time BETWEEN %s and %s
+        GROUP  BY a.agenda_id) a 
        LEFT OUTER JOIN (SELECT agenda_id, 
                                memberid, 
                                SUM(forvotes) - SUM(againstvotes) totalvotevalue,
@@ -128,11 +163,15 @@ FROM   (SELECT agenda_id                    agendaid,
                                         GROUP  BY m.id, 
                                                   v.vote_id, 
                                                   v.TYPE) p 
-                                       INNER JOIN (SELECT vote_id, 
-                                                          agenda_id, 
-                                                          score * importance AS 
+                                       INNER JOIN (SELECT a.vote_id, 
+                                                          a.agenda_id, 
+                                                          a.score * a.importance AS 
                                                           VALUE 
-                                                   FROM   agendas_agendavote) a 
+                                                   FROM   agendas_agendavote a
+                                                   JOIN   laws_vote v
+                                                     ON   a.vote_id = v.id
+                                                  WHERE   v.time BETWEEN %s and %s
+                                                   ) a 
                                          ON p.voteid = a.vote_id) b 
                         GROUP  BY agenda_id, 
                                   memberid) v 
