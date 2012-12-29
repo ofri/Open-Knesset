@@ -6,6 +6,8 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.db.models import Count
 from django.core.cache import cache
 from django.conf import settings
@@ -774,7 +776,7 @@ class BillBudgetEstimation(models.Model):
     summary = models.TextField(null=True,blank=True)
 
     def as_p(self):
-        return ("<p><label><b>%s</b></label> %s</p>\n" * 7) % \
+        return mark_safe(("<p><label><b>%s</b></label> %s</p>\n" * 7) % \
             (
             #leave this; the lazy translator does not evaluate for some reason.
             _('Estimation of').format(),
@@ -790,7 +792,7 @@ class BillBudgetEstimation(models.Model):
             _('Yearly costs to external bodies:').format(),
             get_thousands_string(self.yearly_ext),
             _('Summary of the estimation:').format(),
-            self.summary if self.summary else "",)
+            escape(self.summary if self.summary else "",)))
 
 def get_thousands_string(f):
     """
