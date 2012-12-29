@@ -303,9 +303,10 @@ class BillHandler(BaseHandler, HandlerExtensions):
                 bill_ids = bill_ids.order_by('-totalvotes')
                 bill_ids = [x['object_id'] for x in bill_ids]
                             
-            # create the list of bill ids we want to return
+            # create the list of bills we want to return
             bill_ids = bill_ids[page_len*page_num:page_len*(page_num +1)]
-            return [Bill.objects.get(pk=x) for x in bill_ids]
+            sorted_qs = [qs.get(pk=x) for x in bill_ids]
+            return sorted_qs
 
     @classmethod
     def stage_text(self, bill):
