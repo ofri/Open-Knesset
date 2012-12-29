@@ -1,0 +1,50 @@
+.agenda-mini{
+	border-bottom: 1px solid @borderColor;
+	header{
+		.clearfix;
+		img{
+			float: right;
+			display: block;
+			margin: 0 0 10px 10px;
+			.border-radius(5px);
+			.box-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+		}
+		h3{
+			//display: inline;
+			float: right;
+			letter-spacing: 0;
+			font-weight: normal;
+			line-height: 1.45em;
+			margin: -5px 0 0;
+			span{
+				display: block;
+			font-weight: 700;
+			}
+		}
+	}
+}
+
+.agenda-pie{
+	width: 88px;
+	height: 88px;
+	border: 1px solid #a9a6a6;
+	.border-radius(50%);
+	margin: 35px auto;
+	.agenda-percent{
+		color: @textColor;
+		display: block;
+		margin: 32px auto;
+		text-align: center;
+		font-weight: 700;
+		line-height: 1.2em;
+		font-size: 12px;
+		.agenda-percent-num{
+			display: block;
+			font-size: 20px;
+			span{
+				font-weight: normal;
+				color: lighten(@textColor,10%);
+			}
+		}
+	}
+}
