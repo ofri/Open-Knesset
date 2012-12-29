@@ -1157,3 +1157,5 @@ display: none;
 .content-footer form input:hover{
     cursor: pointer;
 }
+
+#id_search_page_q { background-image: none !important  }
