@@ -18,16 +18,19 @@
 {% block divcontent %}
     <div id="candidate-list-container">
         <div class="list-wrap">
-            <div>
-                <h1>{{object.ballot}}</h1>
+            <div class="element ballot">
+                <br/><br/><br/>
+                <b style="vertical-align:bottom">{{object.ballot}}</b>
             </div>
-            <h2>{{object.name}} {% trans 'head by'%} {{head}}</h2>
+            <div class="element element-meta">
+                <h2>{{object.name}} {% trans 'head by'%} {{head}}</h2>
+            </div>
             <div class="details">
                 <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
             </div> <br/><br/>
   {% if agendas %}
-            <div class="element">
+            <div class="element element-meta">
               <table>
               {% for a in agendas %}
                 <tr>
@@ -43,7 +46,7 @@
             </div>
   {% endif %}
   {% if stats %}
-    <div class="element">
+    <div class="element element-meta">
       {% trans 'Votes per member' %} {{stats.votes_per_seat}}
     </div>
             {% for o in candidates %}
@@ -54,7 +57,9 @@
             {% endif %}
                    <h2 class="name">{{o.person.name}}</h2>
                    <br/>
-                   <img src={{o.person.img_url}} alt="">
+                   {% if o.person.img_url != "" %}
+                       <img src={{o.person.img_url}} alt="">
+                   {% endif %}
                    <h3 class="number">{{o.ordinal}}</h3>
                    <br/>
                 </div>
