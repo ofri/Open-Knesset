@@ -7,9 +7,9 @@
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/jquery-1.7.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
 {% endblock %}
 {% block nav-parties %}class="selected"{% endblock %}
 {% block help-section %}
@@ -26,6 +26,26 @@
                 <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
             </div> <br/><br/>
+  {% if agendas %}
+            <div class="element">
+              <table>
+              {% for a in agendas %}
+                <tr>
+                  <td><a href="{{ a.url }}">{{a.name}}</a></td>
+                  <td class="numeric">{{a.score|floatformat:"0"}}%</td>
+                  <td>
+                      <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
+                      <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>                            
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+  {% endif %}
+  {% if stats %}
+    <div class="element">
+      {% trans 'Votes per member' %} {{stats.votes_per_seat}}
+    </div>
             {% for o in candidates %}
             {% if o.ordinal == 1 %}
                 <div class="element leader">
@@ -40,26 +60,7 @@
                 </div>
             {% endfor %}
         </div>
-      {% if agendas %}
-      <table>
-      {% for a in agendas %}
-        <tr>
-          <td><a href="{{ a.url }}">{{a.name}}</td>
-          <td class="numeric">{{a.score|floatformat:"0"}}%</td>
-          <td>
-              <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
-              <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>                            
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
     </div>
-  {% endif %}
-  {% if stats %}
-    <div class="stats">
-      {% trans 'Votes per member' %} {{stats.votes_per_seat}}
-    </div>
-  {% endif %}
     <script type="text/javascript">
         $('#candidate-list-container').isotope({
             transformsEnabled: false,
@@ -67,4 +68,5 @@
             layoutMode : 'fitRows'
                                 })
     </script>
+  {% endif %}
 {% endblock %}
