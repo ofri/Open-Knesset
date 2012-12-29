@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count
 from django.core.cache import cache
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -756,5 +757,68 @@ class GovLegislationCommitteeDecision(models.Model):
 
     def get_absolute_url(self):
         return self.bill.get_absolute_url()
+
+class BillBudgetEstimation(models.Model):
+    
+    class Meta:
+        unique_together = (("bill","estimator"),)
+
+    bill = models.ForeignKey("Bill", related_name="budget_ests")
+    # costs are in thousands NIS
+    one_time_gov = models.IntegerField(blank=True, null=True)
+    yearly_gov = models.IntegerField(blank=True, null=True)
+    one_time_ext = models.IntegerField(blank=True, null=True)
+    yearly_ext = models.IntegerField(blank=True, null=True)
+    estimator = models.ForeignKey(User, related_name="budget_ests", blank=True, null=True)
+    time = models.DateTimeField(auto_now=True)
+    summary = models.TextField(null=True,blank=True)
+
+    def as_p(self):
+        return ("<p><label> %s </label> %s</p>\n" * 7) % \
+            (
+            #FIXME: this breaks. why?
+            _('Estimated by'),
+            self.estimator.username,
+            _('Estimated on'),
+            self.time,
+            _('One-time costs to government'),
+            get_thousands_string(self.one_time_gov),
+            _('Yearly costs to government'),
+            get_thousands_string(self.yearly_gov),
+            _('One-time costs to external bodies'),
+            get_thousands_string(self.one_time_ext),
+            _('Yearly costs to external bodies'),
+            get_thousands_string(self.yearly_ext),
+            _('Summary of the estimation'),
+            self.summary if self.summary else "",)
+
+    def as_table(self):
+        
+        return """<tr>
+<td>%s</td>
+<td>%s</td>
+<td>%s</td>
+<td>%s</td>
+<td>%s</td>
+<td>%s</td>
+<td>%s</td>
+</tr>""" % (get_thousands_string(self.one_time_gov),
+get_thousands_string(self.yearly_gov),
+get_thousands_string(self.one_time_ext),
+get_thousands_string(self.yearly_ext),
+self.summary if self.summary else "",
+self.estimator.username,
+self.time)
+
+def get_thousands_string(f):
+    """
+    Get a nice string representation of a field of 1000's of NIS, which is int or None.
+    """
+    if f is None:
+        return "N/A"
+    elif f == 0:
+        return "0 NIS"
+    else:
+        return "%d000 NIS" % f
 
 from listeners import *

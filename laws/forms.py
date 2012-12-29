@@ -11,6 +11,22 @@ STAGE_CHOICES = (
     ('all', _('All')),
 )
 
+class BudgetEstimateForm(forms.Form):
+    """Form for submitting the budget estimation of a given bill, for a few
+    types of budget."""
+
+    be_one_time_gov = forms.IntegerField(label=_('One-time costs to government'), required=False)
+    be_yearly_gov = forms.IntegerField(label=_('Yearly costs to government'), required=False)
+    be_one_time_ext = forms.IntegerField(label=_('One-time costs to external bodies'), required=False)
+    be_yearly_ext = forms.IntegerField(label=_('Yearly costs to external bodies'), required=False)
+    be_summary = forms.CharField(label=_('Summary of the estimation'),widget=forms.Textarea,required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        super(BudgetEstimateForm, self).__init__(*args, **kwargs)
+
+        #TODO: add code that loads user's last estimation.
+        #self.fields['tagged'].choices = new_choices
+
 class VoteSelectForm(forms.Form):
     """Votes filtering form"""
 
