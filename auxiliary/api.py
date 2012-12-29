@@ -1,10 +1,6 @@
 '''
 Api for auxilliary packages
 '''
-from tastypie.api import Api
-from tastypie.constants import ALL
-from tastypie.bundle import Bundle
-import tastypie.fields as fields
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType
 from django.conf.urls.defaults import url
