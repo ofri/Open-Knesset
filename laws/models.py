@@ -774,41 +774,23 @@ class BillBudgetEstimation(models.Model):
     summary = models.TextField(null=True,blank=True)
 
     def as_p(self):
-        return ("<p><label> %s </label> %s</p>\n" * 7) % \
+        return ("<p><label><b>%s</b></label> %s</p>\n" * 7) % \
             (
-            #FIXME: this breaks. why?
-            _('Estimated by'),
-            self.estimator.username,
-            _('Estimated on'),
+            #leave this; the lazy translator does not evaluate for some reason.
+            _('Estimation of').format(),
+            "<b>%s</b>" % self.estimator.username,
+            _('Estimated on:').format(),
             self.time,
-            _('One-time costs to government'),
+            _('One-time costs to government:').format(),
             get_thousands_string(self.one_time_gov),
-            _('Yearly costs to government'),
+            _('Yearly costs to government:').format(),
             get_thousands_string(self.yearly_gov),
-            _('One-time costs to external bodies'),
+            _('One-time costs to external bodies:').format(),
             get_thousands_string(self.one_time_ext),
-            _('Yearly costs to external bodies'),
+            _('Yearly costs to external bodies:').format(),
             get_thousands_string(self.yearly_ext),
-            _('Summary of the estimation'),
+            _('Summary of the estimation:').format(),
             self.summary if self.summary else "",)
-
-    def as_table(self):
-        
-        return """<tr>
-<td>%s</td>
-<td>%s</td>
-<td>%s</td>
-<td>%s</td>
-<td>%s</td>
-<td>%s</td>
-<td>%s</td>
-</tr>""" % (get_thousands_string(self.one_time_gov),
-get_thousands_string(self.yearly_gov),
-get_thousands_string(self.one_time_ext),
-get_thousands_string(self.yearly_ext),
-self.summary if self.summary else "",
-self.estimator.username,
-self.time)
 
 def get_thousands_string(f):
     """
