@@ -1,0 +1,50 @@
+{% extends "site_base.html" %}
+{% load i18n links_tags %}
+{% load i18n i18ninclude %}
+{% load common_visual_elements %}
+{% load static from staticfiles %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+{% endblock %}
+{% block nav-parties %}class="selected"{% endblock %}
+{% block help-section %}
+	 {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
+{% endblock %}
+{% block divcontent %}
+    <div id="candidate-list-container">
+        <div class="list-wrap">
+            <div>
+                <h1>{{object.ballot}}</h1>
+            </div>
+            <h2>{{object.name}} {% trans 'head by'%} {{head}}</h2>
+            <div class="details">
+                <h3>{% trans "Links" %}</h3>
+                {% object_links object %}
+            </div> <br/><br/>
+            {% for o in candidates %}
+            {% if o.ordinal == 1 %}
+                <div class="element leader">
+            {% else %}
+               <div class="element">
+            {% endif %}
+                   <h2 class="name">{{o.person.name}}</h2>
+                   <br/>
+                   <img src={{o.person.img_url}} alt="">
+                   <h3 class="number">{{o.ordinal}}</h3>
+                   <br/>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#candidate-list-container').isotope({
+            transformsEnabled: false,
+            itemSelector: '.element',
+            layoutMode : 'fitRows'
+                                })
+    </script>
+{% endblock %}
