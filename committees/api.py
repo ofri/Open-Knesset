@@ -15,6 +15,8 @@ class CommitteeResource(BaseResource):
     ''' Committee API
     '''
 
+    meetings = fields.ToManyField('committees.api.CommitteeMeetingResource', 'meetings')
+
     class Meta:
         queryset = Committee.objects.all()
         allowed_methods = ['get']
