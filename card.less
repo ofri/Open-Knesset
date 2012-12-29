@@ -4,11 +4,12 @@
   margin: -1px;
   .border-radius(5px);
   .box-shadow(@shadow);
+  position: relative;
 }
 
 .card-list{
 	margin-bottom: 55px;
-	
+
 	h2{
 		float: right;
 		padding: 5px 30px 5px 5px;
@@ -56,6 +57,9 @@
 		height: 20px;
 		.border-radius(0 0 4px 4px);
 		display: block;
-		margin: 0 auto -20px;
+        position: absolute;
+        bottom: -22px;
+        left: 50%;
+        margin-left:-95px;
 	}
 }
