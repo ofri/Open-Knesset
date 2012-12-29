@@ -67,9 +67,7 @@
       </div>
 
       <ul class="nav nav-pills">
-        <li class="active">
-          <a href="#">חכים וסיעות</a>
-        </li>
+        <li><a href="#">חכים וסיעות</a></li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
         <li><a href="#">מליאה</a></li>
@@ -77,78 +75,64 @@
       </ul>
     </header>
     <div id="helptextcontainer"></div>
-    <div id="container">
-        <div id="header">
-            <ul id="nav-global">
-                <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-                <li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
-                <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-                <li id="nav-tags" {% block nav-tags %} {% endblock %} > <a href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
-                <li id="nav-planet" {% block nav-planet %} {% endblock %} > <a href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
-                <li id="nav-about" {% block nav-about %} {% endblock %} > <a href="{% url about %}">{% trans 'About' %}</a> </li>
-            </ul>
-
-        </div>
-        <!-- END Header -->
-        <div id="columnwrap">
-            {% block columnwrap %}
-                <div id="cse" class="main" style="display:none;"></div>
-                <div id="content-main" class="main">
-                    {% block content-main %}{% endblock %}
-                    <div class="clear"></div>
-                    {% block social %}
-                    <div class="content-footer">
-                        {% if not debug %}
-                        <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
-                             | <input type="hidden" value="_s-xclick" name="cmd">
-                            <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
-                            <input type="submit" name="submit" value="תרמו לנו!">
-                            <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
-                        </form> 
-                            <!-- AddToAny BEGIN -->
-                            <div class="a2a_kit a2a_default_style">
-                            <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
-                            <span class="a2a_divider"></span>
-                            <a class="a2a_button_email"></a>
-                            <a class="a2a_button_facebook"></a>
-                            <a class="a2a_button_twitter"></a>
-                            <a class="a2a_button_google_plus"></a>
-                            <a class="a2a_button_delicious"></a>
-                            <a class="a2a_button_digg"></a>
-                            </div>
-                            <script type="text/javascript">
-                            var a2a_config = a2a_config || {};
-                            a2a_config.locale = "he";
-                            </script>
-                            <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
-                            <!-- AddToAny END -->
-                        {% endif %}
+    <section class="container">
+        <div id="cse" class="main" style="display:none;"></div>
+        <div id="content-main" class="main">
+            {% block content-main %}{% endblock %}
+            <div class="clear"></div>
+            {% block social %}
+            <div class="content-footer">
+                {% if not debug %}
+                <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+                        | <input type="hidden" value="_s-xclick" name="cmd">
+                    <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+                    <input type="submit" name="submit" value="תרמו לנו!">
+                    <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+                </form> 
+                    <!-- AddToAny BEGIN -->
+                    <div class="a2a_kit a2a_default_style">
+                    <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
+                    <span class="a2a_divider"></span>
+                    <a class="a2a_button_email"></a>
+                    <a class="a2a_button_facebook"></a>
+                    <a class="a2a_button_twitter"></a>
+                    <a class="a2a_button_google_plus"></a>
+                    <a class="a2a_button_delicious"></a>
+                    <a class="a2a_button_digg"></a>
                     </div>
-                    {% endblock %}
-                </div>
-                <!-- END #content-main -->
+                    <script type="text/javascript">
+                    var a2a_config = a2a_config || {};
+                    a2a_config.locale = "he";
+                    </script>
+                    <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+                    <!-- AddToAny END -->
+                {% endif %}
+            </div>
             {% endblock %}
         </div>
-        <!-- END #content -->
-        <footer id="app-footer" class="container">
-            <div class="row">
-                <div class="span3">
-                    <ul id="nav-global">
-                        <li id="laws"> <a href="{% url bill-list %}">{% trans 'Bills' %}</a> </li>
-                        <li id="nav-tags"><a href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
-                        <li id="nav-planet"><a href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
-                        <li id="nav-about"><a href="{% url about %}">{% trans 'About' %}</a> </li>
-                    </ul>
-                </div>
-                <div class="span7"><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></div>
-                <div class="span2">
-                    <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a>
-                    <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a>
-                </div>
+        <!-- END #content-main -->
+    </section>
+    <!-- END #content -->
+    <footer id="app-footer" class="container">
+        <div class="row">
+            <div class="span3">
+                <ul id="nav-global">
+                    <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
+                    <li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
+                    <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
+                    <li id="nav-tags"><a href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
+                    <li id="nav-planet"><a href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
+                    <li id="nav-about"><a href="{% url about %}">{% trans 'About' %}</a> </li>
+                </ul>
             </div>
-        </footer>
-        <!-- END #footer -->
-    </div>
+            <div class="span7"><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></div>
+            <div class="span2">
+                <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a>
+                <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a>
+            </div>
+        </div>
+    </footer>
+    <!-- END #footer -->
 <!-- JS Placed at the end of the document so the pages load faster -->
     <script src="{% static "js/jquery-1.8.3.min.js" %}"></script>
     <script src="{% static "js/bootstrap-transition.js" %}"></script>
