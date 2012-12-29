@@ -471,6 +471,7 @@ class VoteCsvView(CsvView):
                     ('votes_count', _('Votes Count')),
                     ('for_votes_count', _('For')),
                     ('against_votes_count', _('Against')),
+                    ('non_votes_count', _('Non vote')),
                     ('against_party', _('Votes Against Party')),
                     ('against_coalition', _('Votes Against Coalition')),
                     ('against_opposition', _('Votes Against Opposition')),
@@ -503,6 +504,7 @@ class VoteDetailView(DetailView):
 
         for_votes = vote.for_votes().select_related('member','member__current_party')
         against_votes = vote.against_votes().select_related('member','member__current_party')
+        non_votes = vote.non_votes().select_related('member','member__current_party')
 
         try:
             next_v = vote.get_next_by_time()
@@ -519,6 +521,7 @@ class VoteDetailView(DetailView):
              'bills':related_bills,
              'for_votes':for_votes,
              'against_votes':against_votes,
+             'non_votes': non_votes,
              'next_v':next_v,
              'prev_v':prev_v,
              'tags':vote.tags,

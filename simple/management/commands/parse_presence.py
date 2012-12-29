@@ -1,19 +1,51 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import gzip
 
 WORKING_HOURS_PER_WEEK = 48.0
+
+def parse_presence_hourly(filename=None):
+    if filename==None:
+        filename = 'presence.txt.gz'
+    
+    member_totals = dict()
+    f = gzip.open(filename,'r')
+    
+    for line in f:
+        data = line.strip().split(',')
+        time = datetime.strptime(data[0], '%Y-%m-%d %H:%M:%S')
+        try:
+            if len(data[-1]):
+                mks_present = map(int, data[1:])
+        except ValueError:
+            print "Problem while parsing presence file. Line: %s\n" % data
+            
+        # for each mks, hold tuple (presence start, presence stop)
+        
+        for m in mks_present:
+            if m == 201:
+                pass
+            if m in member_totals:
+                last_start_end = member_totals[m][-1]
+                if time - last_start_end[1] < timedelta(0, 30*60, 0):
+                    member_totals[m][-1] = (last_start_end[0], time)
+                else:
+                    member_totals[m].append( (time, time) )
+            else:
+                member_totals[m] = [(time, time)]
+    
+    return member_totals
 
 def parse_presence(filename=None):
     """Parse the presence reports text file.
        filename is the reports file to parse. defaults to 'presence.txt'
        Will throw an IOError if the file is not found, or can't be read
-       Returns a tuple (member_totals, not_enough_data)
+       Returns a tuple (member_totals, enough_data)
        member_totals is a dict with member ids as keys, and a list of (week_timestamp, weekly hours) for this member as values
        enough_data is a list of week timestamps in which we had enough data to compute weekly hours
        a timestamp is a tuple (year, iso week number)
     """
     if filename==None:
-        filename = 'presence.txt'
+        filename = 'presence.txt.gz'
     member_totals = dict()
     totals = dict()
     total_time = 0.0

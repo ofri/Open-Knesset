@@ -125,6 +125,25 @@
                 {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk-against"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
             {% endif %}
         </div>
+        <div>
+            <h3>{% trans "Present but did not vote" %}</h3>
+            {% if vote.non_votes_count %}
+                {% blocktrans count non_votes|length as counter %}
+                {{ counter }} MK
+                {% plural %}
+                {{ counter }} MKs
+                {% endblocktrans %}
+                <div>
+                {% for m in non_votes %}
+                    {% mk_card m.member  %}
+                &nbsp;
+                {% endfor %}
+                </div>
+            {% else %}
+                {% trans 'none' %}
+            {% endif %}
+        </div>
+
 
         <h3>{% trans 'Bill' %}</h3>
         <ul class="items">
