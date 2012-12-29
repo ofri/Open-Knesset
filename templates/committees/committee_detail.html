@@ -12,7 +12,7 @@
 </script>
 {% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-committees %}class="selected"{% endblock %}
+{% block nav-committees %}class="active"{% endblock %}
 {% block header %}
     <ul id="breadcrumbs"> 
         <li class="first"><a href="{% url committee-list %}">{% trans "Committees" %}</a></li>
