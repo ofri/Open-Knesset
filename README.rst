@@ -1,14 +1,7 @@
-
-.. warning::
-
-    The repository state, docs and steps for the build environment are in flux
-    and changing to virutalenv.
-
-
 .. important::
 
-    This document contains quick start instruction. For more details, please see
-    the `Open Knesset developers documentation`_
+    This document contains quick start instruction.
+    For more details, **please see** the `Open Knesset developers documentation`_ 
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 
