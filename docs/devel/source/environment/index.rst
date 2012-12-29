@@ -17,4 +17,5 @@ The section will guide you on:
 
     linux
     windows
+    osx
     tests_db

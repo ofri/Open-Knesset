@@ -60,6 +60,12 @@ different installation method).
 
 `Download distribute`_ for your architecture and install it.
 
+.. note::
+
+    If the installation complains that "Python was not found in the registry",
+    you probably have 32-bit python installed, so you should select the 32-bit
+    distribute (and other binary) package.
+
 
 .. _Download distribute: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
 
@@ -122,6 +128,20 @@ with git already configured, in the shell::
     cd C:\
     C:\Python27\Scripts\virtualenv --distribute --system-site-packages oknesset
 
+
+.. note::
+    If this command fails:
+    
+    * You probably have an older virtualenv installed.
+      The quickest work-around is to replace it with the latest version::
+
+          cd C:\Python27\Lib\site-packages
+          del .\virtualenv*
+          ..\..\Scripts\easy_install.exe virtualenv
+
+    * Another problem may be that you had PYTHONPATH environment variable
+      configured, in that case, unset it.
+
 We need to `activate` the virtual environment (it mainly modifies the paths so
 that correct `Lib` and `Scripts` directories will be found) each time we wish to
 work on the code. ::
@@ -137,12 +157,16 @@ Note the changed prompt with includes the virtualenv's name.
 Getting the Source Code (a.k.a Cloning)
 =========================================
 
+First, we need to fork the `Open-Knesset repository`_ on github.
+
 Now we'll clone the forked repository into the virutalenv.  Make sure you're in
 the `oknesset` directory and run::
 
     git clone git@github.com:your-name/Open-Knesset.git
 
 Replace `your-username` with the username you've registered at git hub.
+
+.. _Open-Knesset repository: https://github.com/hasadna/Open-Knesset
 
 Installing requirements
 =============================
