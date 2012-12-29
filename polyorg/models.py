@@ -25,7 +25,7 @@ class CandidateList(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('candidates-lists-detail', [self.id])
-       
+
     def __unicode__(self):
         return self.name
 

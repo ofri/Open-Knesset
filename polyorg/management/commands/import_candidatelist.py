@@ -10,7 +10,7 @@ from django.db import transaction
 
 logger = logging.getLogger("open-knesset.polyorg.import_candidatelist")
 
-CandidateTuple = namedtuple('CandidateTuple', ['comments', 'mqg', 'manifest_url', 'party_website', 'image_url', 'mk_id', 'ordinal', 'name', 'ballot', 'list'])
+CandidateTuple = namedtuple('CandidateTuple', ['comments', 'wikipedia', 'mqg', 'manifest_url', 'party_website', 'image_url', 'mk_id', 'ordinal', 'name', 'ballot', 'list'])
 
 class Command(BaseCommand):
     def _list_by_cnd(self, cnd):

@@ -1,0 +1,37 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load i18n i18ninclude %}
+{% load common_visual_elements %}
+{% load static from staticfiles %}
+{% block extratitle %}{{ title }}{% endblock %}
+{% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+{% endblock %}
+{% block nav-parties %}class="selected"{% endblock %}
+{% block help-section %}
+	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
+{% endblock %}
+{% block divcontent %}
+  {% if agendas %}
+    <div class="list-wrap">
+      <table>
+      {% for a in agendas %}
+        <tr>
+          <td><a href="{{ a.url }}">{{a.name}}</td>
+          <td class="numeric">{{a.score|floatformat:"0"}}%</td>
+          <td>
+              <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
+              <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>                            
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% endif %}
+  {% if stats %}
+    <div class="stats">
+      {% trans 'Votes per member' %} {{stats.votes_per_seat}}
+    </div>
+  {% endif %}
+{% endblock %}

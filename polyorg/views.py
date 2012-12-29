@@ -2,6 +2,7 @@
 from django.views.generic import ListView
 from django.utils.translation import ugettext as _
 from hashnav.detail import DetailView
+from agendas.models import Agenda
 from polyorg.models import CandidateList
 
 class CandidateListListView(ListView):
@@ -10,10 +11,21 @@ class CandidateListListView(ListView):
 class CandidateListDetailView(DetailView):
     model = CandidateList
 
-    '''
-    TODO: get the agenda tanking for list to work
     def get_context_data (self, **kwargs):
         context = super(CandidateListDetailView, self).get_context_data(**kwargs)
+        cl = context['object']
+        agendas = []
+        if cl.member_ids:
+            for a in Agenda.objects.filter(is_public=True):
+                agendas.append({'id': a.id, 
+                                'name': a.name,
+                                'url': a.get_absolute_url(),
+                                'score': a.candidate_list_score(cl)})
+            context['agendas'] = agendas
+            context['stats'] = cl.voting_statistics
+        return context
+        
+        '''
         candidate_list = context['object']
         context['maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
 
@@ -36,6 +48,6 @@ class CandidateListDetailView(DetailView):
         agendas.sort(key=attrgetter('score'), reverse=True)
 
         context.update({'agendas':agendas})
+        '''
         return context
-    '''
 

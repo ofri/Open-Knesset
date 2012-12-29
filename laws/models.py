@@ -37,13 +37,13 @@ class CandidateListVotingStatistics(models.Model):
     candidates_list = models.OneToOneField('polyorg.CandidateList',related_name='voting_statistics')
 
     def votes_against_party_count(self):
-        return VoteAction.objects.filter(member__id__in=candidates_list.member_ids, against_party=True).count()
+        return VoteAction.objects.filter(member__id__in=self.candidates_list.member_ids, against_party=True).count()
 
     def votes_count(self):
-        return VoteAction.objects.filter(member__id__in=candidates_list.member_ids).exclude(type='no-vote').count()
+        return VoteAction.objects.filter(member__id__in=self.candidates_list.member_ids).exclude(type='no-vote').count()
 
     def votes_per_seat(self):
-        return round(float(self.votes_count()) / len(candidates_list.member_ids))
+        return round(float(self.votes_count()) / len(self.candidates_list.member_ids))
 
     def discipline(self):
         total_votes = self.votes_count()
@@ -52,9 +52,6 @@ class CandidateListVotingStatistics(models.Model):
             return round(100.0*(total_votes-votes_against_party)/total_votes,1)
         else:
             return _('N/A')
-
-    def __unicode__(self):
-        return "%s" % self.party.name
 
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
