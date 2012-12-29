@@ -56,20 +56,31 @@
           border-bottom: 4px solid @darkgray;
         }
       }
-    &.active{
-      a{
-        background: none;
-        padding-bottom: 8px;
-        border-bottom: 4px solid @darkgray;
-        color: @darkgray;
-        font-weight: 700;
-        &:hover{
+      &.active{
+        a{
           background: none;
-          color: inherit;
+          padding-bottom: 8px;
+          border-bottom: 4px solid @darkgray;
+          color: @darkgray;
+          font-weight: 700;
+          &:hover{
+            background: none;
+            color: inherit;
+          }
         }
       }
-      
     }
+  }
+
+  .form-search {
+    position: relative;
+
+    button{
+      background: transparent;
+      border:none;
+      position: absolute;
+      left: -12px;
+      top: 5px;
     }
   }
 }
