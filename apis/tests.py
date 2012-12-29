@@ -11,6 +11,7 @@ from committees.models import Committee
 from events.models import Event
 from django.utils import simplejson as json
 from django.core import cache
+from voting.models import Vote as UserVote
 
 class TestAPIV2(TestCase):
     """
@@ -64,6 +65,16 @@ class ApiViewsTest(TestCase):
                                           law=self.law_1)
         self.bill_2.proposers.add(self.mks[1])
         self.bill_2.proposers.add(self.mks[2])
+        
+        # add user votings for the bills
+        self.users = []
+        for i in xrange(4):
+            self.users.append(User.objects.create_user('user%d'%i, 'user%d@example.com'%i, 'test'))
+
+        for i in xrange(4):
+            UserVote.objects.record_vote(self.users[i], self.bill_1, +1)
+        for i in xrange(4):
+            UserVote.objects.record_vote(self.users[i], self.bill_2, +1 if i%2 == 0 else -1)
 
     def test_api_member_list(self):
         res = self.client.get(reverse('member-handler'))
@@ -134,6 +145,24 @@ class ApiViewsTest(TestCase):
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json), 1)
         self.assertEqual(len(res_json[0]['proposing_mks']), 1)
+        
+    def test_api_bill_list_popular_without_type(self):
+        res = self.client.get(reverse('popular-bills-handler',kwargs={'popular': True}))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 2)
+    
+    def test_api_bill_list_popular_with_type(self):
+        res = self.client.get('%s?type=positive' % reverse('popular-bills-handler',kwargs={'popular': True}))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 1)
+        self.assertEqual(res_json[0]['bill_title'], u"%s, %s" % (self.bill_1.law.title, self.bill_1.title))
+        
+        res = self.client.get('%s?type=negative' % reverse('popular-bills-handler',kwargs={'popular': True}))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json), 0)
 
     def test_api_tag_list(self):
         res = self.client.get(reverse('tag-handler'))
