@@ -265,7 +265,10 @@ class TagDetail(DetailView):
         Create tag could for tag <tag>. Returns only the <limit> most tagged members
         """
 
-        mk_limit = int(self.request.GET.get('limit',limit))
+        try:
+            mk_limit = int(self.request.GET.get('limit',limit))
+        except ValueError:
+            mk_limit = limit
         mk_taggeds = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag)]
         mk_taggeds += [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag)]
         mk_taggeds += [cm.mks_attended.all() for cm in TaggedItem.objects.get_by_model(CommitteeMeeting, tag)]
