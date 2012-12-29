@@ -25,6 +25,9 @@ class CandidateList(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('candidates-lists-detail', [self.id])
+       
+    def __unicode__(self):
+        return self.name
 
 class Party(models.Model):
     name        = models.CharField(max_length=64)
@@ -36,3 +39,6 @@ class Candidate(models.Model):
     ordinal = models.IntegerField(_('Ordinal'))
     party = models.ForeignKey(Party, blank=True, null=True)
     votes = models.IntegerField(_('Elected by #'), null=True, blank=True, help_text=_('How many people voted for this person'))
+    
+    def __unicode__(self):
+        return self.person.name
