@@ -4,6 +4,8 @@ Api for auxilliary packages
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType
 from django.conf.urls.defaults import url
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from apis.resources.base import BaseResource
 from laws.models import Vote, Bill
@@ -48,11 +50,18 @@ class TagResource(BaseResource):
     def get_related_tags(self, request, **kwargs):
         """ Can be used to get all tags used by all CommitteeMeetings of a specific committee
         """
-        # FIXME handle exception?
-        ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
-        container = ctype.get_object_for_this_type(pk=kwargs['object_id'])
+        try:
+            ctype = ContentType.objects.get_by_natural_key(kwargs['app_label'], kwargs['object_type'])
+        except ContentType.DoesNotExist:
+            raise Http404('Object type not found.')
 
-        related_objects = getattr(container, kwargs['related_name']).all()
+        model = ctype.model_class()
+        container = get_object_or_404(model, pk=kwargs['object_id'])
+        try:
+            related_objects = getattr(container, kwargs['related_name']).all()
+        except AttributeError:
+            raise Http404('Related name not found.')
+
         tags = Tag.objects.usage_for_queryset(related_objects)
 
         return self._create_response(request, tags)
