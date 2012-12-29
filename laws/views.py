@@ -252,7 +252,7 @@ class BillDetailView (DetailView):
         if 'budget_ests_form' in kwargs:
             context['budget_ests_form'] = kwargs['budget_ests_form']
         else:
-            context['budget_ests_form'] = BudgetEstimateForm(self.request.user)
+            context['budget_ests_form'] = BudgetEstimateForm(bill,self.request.user)
         return context
 
     @method_decorator(login_required)
@@ -288,7 +288,7 @@ class BillDetailView (DetailView):
             except BillBudgetEstimation.DoesNotExist:
                 budget_est = BillBudgetEstimation(bill=bill,estimator=request.user)
             #FIXME: breakage! sanitize!
-            form = BudgetEstimateForm(request.user,request.POST)
+            form = BudgetEstimateForm(bill,request.user,request.POST)
             if form.is_valid():
                 budget_est.one_time_gov = form.cleaned_data['be_one_time_gov']
                 budget_est.yearly_gov = form.cleaned_data['be_yearly_gov']
