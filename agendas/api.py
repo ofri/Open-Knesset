@@ -120,6 +120,11 @@ class AgendaResource(BaseResource):
                                     score=party_values[party.pk][0], 
                                     volume=party_values[party.pk][1],
                                     absolute_url=party.get_absolute_url()))
+            else:
+                parties.append(dict(name=party.name,
+                                    score=0,
+                                    volume=0,
+                                    absolute_url=party.get_absolute_url()))
         return parties
 
     def dehydrate_votes(self, bundle):

@@ -322,6 +322,9 @@ class Agenda(models.Model):
         mks_grade = Agenda.objects.get_mks_values(fromdate,todate)
         return mks_grade.get(self.id,[])
 
+    def get_all_mks_values(self,fromdate=None,todate=None):
+        return Agenda.objects.get_mks_values(fromdate,todate)
+
     def get_party_values(self,fromdate=None,todate=None):
         party_grades = Agenda.objects.get_all_party_values(fromdate,todate)
         return party_grades.get(self.id,[])
