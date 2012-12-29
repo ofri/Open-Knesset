@@ -80,7 +80,7 @@ MS Windows
 - Open command windows and::
 
     cd c:\Python27\Scripts
-    easy_install pip virtualenv
+    easy_install pip
     pip install virtualenv
 
 - Download and install the installers matching your architecture for PIL_
