@@ -8,6 +8,9 @@ from polyorg.models import CandidateList, Candidate
 class CandidateListListView(ListView):
     model = CandidateList
 
+    def get_queryset(self):
+        return self.model.objects.all().order_by('ballot')
+
 class CandidateListDetailView(DetailView):
     model = CandidateList
 

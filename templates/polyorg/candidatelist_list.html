@@ -2,14 +2,24 @@
 {% load i18n %}
 {% load i18n i18ninclude %}
 {% load common_visual_elements %}
+{% load static from staticfiles %}
 {% block extratitle %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
+{% block description %}{% trans "Candidate list for the comming elections" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/jquery-1.7.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+{% endblock %}
+{% block nav-elections %}class="selected"{% endblock %}
 {% block help-section %}
-	 {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
+	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
 {% block divcontent %}
 <div id="candidate-lists-container">
+    <h1>{% trans "Candidate list for the comming elections" %}</h1>
+    <div class="element" style="background-color:white; width:500px; height:580px">
+      <iframe src="https://kalpi.elections.gov.il/" style="margin-top: 10px;border:0;width:500px; height:570px"></iframe>
+    </div>
     {% for o in object_list %}
     <a href="{% url candidate-list-detail o.id %}">
         <div class="element">
@@ -23,5 +33,12 @@
         </div>
     </a>
     {% endfor %}
+    <script type="text/javascript">
+        $('#candidate-list-container').isotope({
+            transformsEnabled: false,
+            itemSelector: '.element',
+            layoutMode : 'fitRows'
+                                })
+    </script>
 </div>
 {% endblock %}
