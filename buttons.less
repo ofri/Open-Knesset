@@ -1,6 +1,10 @@
+.btn-big-margins {
+  margin: 10px;
+}
+
 .btn-big {
   .btn-block;
-  margin: 10px;
+  .btn-big-margins;
   padding: 6px;
   width: 90%;
   background: @buttonBackgroundColor;
@@ -62,4 +66,11 @@
 		background: lighten(@textColor, 50%);
 	  color: lighten(@textColor,10%);	  
   }
+}
+
+.btn-contact {
+  .btn-big-margins;
+  display: block;
+  background: white;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 3px 2px rgba(0, 0, 0, .05);
 }
