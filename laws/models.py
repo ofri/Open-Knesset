@@ -17,7 +17,7 @@ from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action
 
-from mks.models import Member, Party
+from mks.models import Member, Party, HourlyPresence
 from tagvotes.models import TagVote
 from knesset.utils import slugify_name
 from laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
@@ -185,6 +185,7 @@ class Vote(models.Model):
     votes_count = models.IntegerField(null=True, blank=True)
     for_votes_count = models.IntegerField(null=True, blank=True)
     against_votes_count = models.IntegerField(null=True, blank=True)
+    non_votes_count = models.IntegerField(null=True, blank=True)
     importance = models.FloatField(default=0.0)
     controversy = models.IntegerField(null=True, blank=True)
     against_party  = models.IntegerField(null=True, blank=True)
@@ -224,6 +225,9 @@ class Vote(models.Model):
     def against_votes(self):
         return VoteAction.objects.filter(vote=self, type='against')
 
+    def non_votes(self):
+        return VoteAction.objects.filter(vote=self, type='no-vote')
+    
     def against_party_votes(self):
         return self.votes.filter(voteaction__against_party=True)
 
@@ -357,16 +361,35 @@ class Vote(models.Model):
 
             va.save()
 
+        self.update_non_votes()
+        
         self.against_party = against_party_count
         self.against_coalition = against_coalition_count
         self.against_opposition = against_opposition_count
         self.against_own_bill = against_own_bill_count
-        self.votes_count = VoteAction.objects.filter(vote=self).count()
+        self.votes_count = VoteAction.objects.filter(vote=self).exclude(type='no-vote').count()
         self.for_votes_count = VoteAction.objects.filter(vote=self,type='for').count()
         self.against_votes_count = VoteAction.objects.filter(vote=self,type='against').count()
+        self.non_votes_count = VoteAction.objects.filter(vote=self,type='no-vote').count()
         self.controversy = min(self.for_votes_count or 0,
                                self.against_votes_count or 0)
         self.save()
+    
+    def update_non_votes(self):
+        hp = HourlyPresence.objects.filter(date_start__lt = self.time,
+                                      date_end__gt = self.time)
+        
+        present_members = set([p.member for p in hp])
+        voting_members = set([v for v in self.votes.all()])
+        
+        to_create = []
+        for i, slacker in enumerate(present_members - voting_members):
+            to_create.append(VoteAction(vote = self, member = slacker, type = 'no-vote'))
+            if i%100 == 0:
+                VoteAction.objects.bulk_create(to_create)
+                to_create = []
+        VoteAction.objects.bulk_create(to_create)
+        
 
 class TagForm(forms.Form):
     tags = TagField()

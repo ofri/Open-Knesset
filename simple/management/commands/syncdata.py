@@ -1010,6 +1010,8 @@ class Command(NoArgsCommand):
                     to_create = []
             
             HourlyPresence.objects.bulk_create(to_create)
+        for v in Vote.objects.all():
+            v.update_vote_properties()
             
     def update_presence(self):
         logger.debug("update presence")
