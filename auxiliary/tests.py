@@ -68,7 +68,7 @@ class TagResourceTest(TestCase):
         res_json = json.loads(res.content)['objects']
         self.assertEqual(len(res_json), 2)
 
-    def test_api_tag_for_vote(self):
+    def test_api_related_tags(self):
         res = self.client.get(self._reverse_api('related-tags', app_label='laws', 
                                                 object_type='law', object_id=self.law.id, related_name='bills'))
         self.assertEqual(res.status_code, 200)
