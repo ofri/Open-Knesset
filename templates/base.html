@@ -29,7 +29,6 @@
     <![endif]-->
     {% block extracss %} {% endblock %}
     <link rel="shortcut icon" href="{% static "img/favicon.png" %}" />
-    {% block extrajs %}{% endblock %}
     {% block extrahead %}{% endblock %}
 </head>
 <body>
@@ -67,7 +66,8 @@
       </div>
 
       <ul class="nav nav-pills">
-        <li><a href="#">חכים וסיעות</a></li>
+        <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a
+            href="{% url party-list %}">{% trans "Members and Parties" %}</a> </li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
         <li><a href="#">מליאה</a></li>
@@ -124,10 +124,6 @@
             <div class="span3">
                 <ul id="nav-global">
                     <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-                    <li id="nav-members" {% block nav-members %} {% endblock %} > <a href="{% url member-list %}">{% trans 'Members' %}</a> </li>
-                    <li id="nav-parties" {% block nav-parties %} {% endblock %} > <a href="{% url party-list %}">{% trans 'Parties' %}</a> </li>
-                    <li id="nav-tags"><a href="{% url tags-list %}">{% trans 'Tags' %}</a> </li>
-                    <li id="nav-planet"><a href="{% url planet_index %}">{% trans 'Posts' %}</a> </li>
                     <li id="nav-about"><a href="{% url about %}">{% trans 'About' %}</a> </li>
                 </ul>
             </div>
@@ -201,6 +197,7 @@
         })();
     {% endif %}
     </script>
+    {% block extrajs %}{% endblock %}
     {% block footer %}
     {% endblock %}
     </body>
