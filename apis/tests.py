@@ -67,7 +67,7 @@ class ApiViewsTest(TestCase):
                                           stage_date=datetime.date.today()-datetime.timedelta(10),
                                           title='bill 4',
                                           law=self.law_1)
-        
+
         # add user votings for the bills
         self.users = []
         for i in xrange(4):
@@ -149,7 +149,7 @@ class ApiViewsTest(TestCase):
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json), 1)
         self.assertEqual(len(res_json[0]['proposing_mks']), 1)
-        
+
     def test_api_bill_list_popular_without_type(self):
         res = self.client.get(reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
@@ -159,7 +159,7 @@ class ApiViewsTest(TestCase):
                          set([u"%s, %s" % (self.bill_1.law.title, self.bill_1.title),
                              u"%s, %s" % (self.bill_3.law.title, self.bill_3.title)]))
         self.assertEqual(res_json[2]['bill_title'], u"%s, %s" % (self.bill_2.law.title, self.bill_2.title))
-    
+
     def test_api_bill_list_popular_with_type(self):
         res = self.client.get('%s?type=positive' % reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
@@ -167,7 +167,7 @@ class ApiViewsTest(TestCase):
         self.assertEqual(len(res_json), 2)
         self.assertEqual(res_json[0]['bill_title'], u"%s, %s" % (self.bill_1.law.title, self.bill_1.title))
         self.assertEqual(res_json[1]['bill_title'], u"%s, %s" % (self.bill_2.law.title, self.bill_2.title))
-        
+
         res = self.client.get('%s?type=negative' % reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)
@@ -198,8 +198,6 @@ class ApiViewsTest(TestCase):
         for i in range(self.num_mks):
             self.mks[i].delete()
             self.voteactions[i].delete()
-        for t in self.tags:
-            t.delete()
         self.agenda.delete()
         self.private_agenda.delete()
 
