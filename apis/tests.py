@@ -44,12 +44,6 @@ class ApiViewsTest(TestCase):
             mk = Member.objects.create(name='mk %d' % i,current_party=self.party_1)
             self.mks.append(mk)
             self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
-        self.tags = []
-        self.tags.append(Tag.objects.create(name = 'tag1'))
-        self.tags.append(Tag.objects.create(name = 'tag2'))
-        ctype = ContentType.objects.get_for_model(Vote)
-        TaggedItem._default_manager.get_or_create(tag=self.tags[0], content_type=ctype, object_id=self.vote_1.id)
-        TaggedItem._default_manager.get_or_create(tag=self.tags[1], content_type=ctype, object_id=self.vote_1.id)
         self.agenda = Agenda.objects.create(name="agenda 1 (public)", public_owner_name="owner", is_public=True)
         self.private_agenda = Agenda.objects.create(name="agenda 2 (private)", public_owner_name="owner")
         self.law_1 = Law.objects.create(title='law 1')
@@ -178,31 +172,6 @@ class ApiViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json), 0)
-
-    def test_api_tag_list(self):
-        res = self.client.get(reverse('tag-handler'))
-        self.assertEqual(res.status_code, 200)
-        res_json = json.loads(res.content)
-        self.assertEqual(len(res_json), 2)
-        self.assertEqual(set([x['name'] for x in res_json]), set(Tag.objects.values_list('name',flat=True)))
-
-    def test_api_tag(self):
-        res = self.client.get(reverse('tag-handler', args=[self.tags[0].id]))
-        self.assertEqual(res.status_code, 200)
-        res_json = json.loads(res.content)
-        self.assertEqual(res_json['name'], self.tags[0].name)
-
-    def test_api_tag_not_found(self):
-        res = self.client.get(reverse('tag-handler', args=[123456]))
-        self.assertEqual(res.status_code, 404)
-
-    def test_api_tag_for_vote(self):
-        res = self.client.get(reverse('tag-handler',
-                                      args=['laws', 'vote',
-                                            self.vote_1.id]))
-        self.assertEqual(res.status_code, 200)
-        res_json = json.loads(res.content)
-        self.assertEqual(len(res_json), 2)
 
     def test_api_agenda_list(self):
         res = self.client.get(reverse('agenda-handler'))
