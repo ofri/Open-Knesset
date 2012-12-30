@@ -139,9 +139,37 @@ class AgendaVoteDetailView (DetailView):
     model = AgendaVote
     template_name = 'agendas/agenda_vote_detail.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaVoteDetailView , self).get_context_data(*args, **kwargs)
+        agendavote = context['object']
+        vote = agendavote.vote
+        agenda = agendavote.agenda
+        try:
+            context['title'] = _("Comments on agenda %(agenda)s vote %(vote)s") % {
+                  'vote':vote.title,
+                  'agenda':agenda.name}
+        except AttributeError:
+            context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d vote %d' % (agenda.id,vote.id))
+        return context
+
 class AgendaMeetingDetailView (DetailView):
     model = AgendaMeeting
     template_name = 'agendas/agenda_meeting_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaMeetingDetailView , self).get_context_data(*args, **kwargs)
+        agendameeting = context['object']
+        meeting = agendameeting.meeting
+        agenda = agendameeting.agenda
+        try:
+            context['title'] = _("Comments on agenda %(agenda)s meeting %(meeting)s") % {
+                  'meeting':meeting,
+                  'agenda':agenda.name}
+        except AttributeError:
+            context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d meeting %d' % (agenda.id,meeting.id))
+        return context
 
 class AgendaBillDetailView (DetailView):
     model = AgendaBill
