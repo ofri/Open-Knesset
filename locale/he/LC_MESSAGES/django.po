@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-29 20:58+0200\n"
-"PO-Revision-Date: 2012-12-29 20:59+0200\n"
+"POT-Creation-Date: 2012-12-29 21:22+0200\n"
+"PO-Revision-Date: 2012-12-29 21:24+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -1212,17 +1212,17 @@ msgstr ""
 msgid "The MPG report on the list, can use html"
 msgstr ""
 
-#: polyorg/models.py:42
+#: polyorg/models.py:43
 #, fuzzy
 msgid "Ordinal"
 msgstr "שולי"
 
-#: polyorg/models.py:44
+#: polyorg/models.py:45
 #, fuzzy
 msgid "Elected by #"
 msgstr "בעריכת"
 
-#: polyorg/models.py:44
+#: polyorg/models.py:45
 msgid "How many people voted for this person"
 msgstr ""
 
@@ -1336,7 +1336,7 @@ msgstr "אודות"
 #: templates/planet/tags/cloud.html:5
 #: templates/planet/tags/detail.html:6
 #: templates/polyorg/candidatelist_detail.html:7
-#: templates/polyorg/candidatelist_list.html:6
+#: templates/polyorg/candidatelist_list.html:7
 #: templates/video/video_list.html:5
 msgid "Open Knesset - Opening the Knesset to the public"
 msgstr "כנסת פתוחה - פותחים את הכנסת לציבור"
@@ -1370,9 +1370,8 @@ msgid "Main"
 msgstr "ראשי"
 
 #: templates/base.html:100
-#, fuzzy
 msgid "Election"
-msgstr "פעולה"
+msgstr "בחירות !!!"
 
 #: templates/base.html:102
 msgid "Past Votes"
@@ -2319,7 +2318,7 @@ msgstr "הדירוג שלך"
 #: templates/laws/vote_detail.html:17
 #: templates/mks/member_detail.html:355
 #: templates/mks/party_detail.html:68
-#: templates/polyorg/candidatelist_detail.html:26
+#: templates/polyorg/candidatelist_detail.html:29
 msgid "Links"
 msgstr "קישורים"
 
@@ -3262,17 +3261,18 @@ msgstr "ח\"כים המדברים על זה"
 msgid "Tags list"
 msgstr "רשימת תגיות"
 
-#: templates/polyorg/candidatelist_detail.html:24
+#: templates/polyorg/candidatelist_detail.html:26
 #, fuzzy
 msgid "head by"
 msgstr "בעריכת"
 
-#: templates/polyorg/candidatelist_detail.html:47
+#: templates/polyorg/candidatelist_detail.html:50
 #, fuzzy
 msgid "Votes per member"
 msgstr "הצבעות של %(member)s לפי נושא"
 
-#: templates/polyorg/candidatelist_list.html:13
+#: templates/polyorg/candidatelist_list.html:7
+#: templates/polyorg/candidatelist_list.html:19
 msgid "Candidate list for the comming elections"
 msgstr "רשימות מועמדים לבחירות הקרובות"
 

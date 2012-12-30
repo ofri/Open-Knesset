@@ -11,7 +11,7 @@
     <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
 {% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
+{% block nav-elections %}class="selected"{% endblock %}
 {% block help-section %}
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
@@ -25,7 +25,7 @@
             <div class="element element-meta">
                 <h2>{{object.name}} {% trans 'head by'%} {{head}}</h2>
             </div>
-            <div class="details">
+            <div class="element element-meta">
                 <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
             </div> <br/><br/>
