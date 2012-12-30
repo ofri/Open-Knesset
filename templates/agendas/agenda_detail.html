@@ -8,6 +8,11 @@
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
+        });
+    </script>
 {% endblock %}
 {% block nav-agendas %}class="active"{% endblock %}
 
@@ -16,11 +21,6 @@
         <meta property="og:image" content="{{agenda.image.url}}"/>
         <meta name="thumbnail" content="{{agenda.image.url}}" />
     {% endif %}
-    <script type="text/javascript">
-        $(document).ready(function() {
-                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
-        });
-    </script>
 {% endblock %}
 {% block subnav %}
     <a class="button" href="{% url agenda-list %}">{% trans "All Agendas" %}</a>

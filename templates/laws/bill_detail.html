@@ -1,14 +1,14 @@
 {% extends "site_base.html" %}
 {% load i18n laws_tags bills_tags mks_tags links_tags voting_tags agendas_tags i18ninclude %}
 {% load static from staticfiles %}
+{% block extracss %}
+    <link href="{% static "css/jquery.autocomplete.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
     <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
-{% endblock %}
-{% block extrahead %}
     <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
-    <link href="{% static "css/jquery.autocomplete.css" %}" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
