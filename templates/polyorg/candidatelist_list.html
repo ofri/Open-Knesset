@@ -15,30 +15,34 @@
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
 {% block divcontent %}
-<div id="candidate-lists-container">
     <h1>{% trans "Candidate list for the comming elections" %}</h1>
-    <div class="element" style="background-color:white; width:500px; height:580px">
-      <iframe src="https://kalpi.elections.gov.il/" style="margin-top: 10px;border:0;width:500px; height:570px"></iframe>
-    </div>
+    <div id="candidate-lists">
     {% for o in object_list %}
-    <a href="{% url candidate-list-detail o.id %}">
-        <div class="element">
-            <h2 class="name">
+      {% if forloop.counter == 6 %}
+        <div class="candidate-list-element" style="float:left; background-color:white; width:500px; height:580px">
+          <iframe src="https://kalpi.elections.gov.il/" style="margin-top: 10px;border:0;width:500px; height:570px"></iframe>
+        </div>
+      {% endif %}
+      <a href="{% url candidate-list-detail o.id %}">
+        <div class="candidate-list-element ballot">
+            <h1>
+                {{o.ballot}}
+            </h1>
+            <h2>
                 {{o.name}}
             </h2>
 
-            <h3 class="symbol">
-                {{o.ballot}}
-            </h3>
         </div>
-    </a>
+      </a>
     {% endfor %}
+    </div>
     <script type="text/javascript">
-        $('#candidate-list-container').isotope({
+      $(document).ready( function () {
+          $('#candidate-lists').isotope({
             transformsEnabled: false,
-            itemSelector: '.element',
-            layoutMode : 'fitRows'
-                                })
+            itemSelector: '.candidate-list-element',
+            layoutMode : 'masonry'
+          })
+      });
     </script>
-</div>
 {% endblock %}

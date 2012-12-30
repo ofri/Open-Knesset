@@ -1207,11 +1207,25 @@ display: none;
     transition-duration: 0s;
 }
 
+.ballot {
+    width: 170px;
+    height: 220px;
+    margin: 5px;
+    float: right;
+    overflow: hidden;
+    position: relative;
+    background-color: white;
+    color: #222;
+    border: 2px solid;
+}
+.ballot h1, .ballot h2 { text-align:center;}
+.ballot h1 {font-size: 4em;}
+.ballot h2 {position: absolute; bottom:0.2em; padding: 0 0.4em;}
 .element {
     width: 250px;
     height: 110px;
     margin: 5px;
-    float: left;
+    float: right;
     overflow: hidden;
     position: relative;
     background: #90ee90;
@@ -1243,7 +1257,7 @@ display: none;
     top: 0.4em;
     font-size: 3.8em;
     line-height: 1.0em;
-    color: #FFF;
+    color: #fff;
 }
 .element.large .symbol {
     font-size: 4.5em;
@@ -1275,13 +1289,6 @@ display: none;
 
 .leader {
     background: #add8e6
-}
-
-.ballot {
-    height: 220px;
-    background: #ffffff;
-    font-size: 15.0em;
-    text-align: center;
 }
 
 .element-meta {
