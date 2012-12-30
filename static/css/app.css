@@ -5192,6 +5192,9 @@ body {
   padding: 12px 0 0;
   border-bottom: 2px solid #222222;
 }
+#app-header #logo {
+  margin-top: -18px;
+}
 #app-header #logo img {
   float: right;
   margin-left: 10px;
@@ -5199,6 +5202,9 @@ body {
 #app-header #logo span {
   padding: 29px 0 0;
   display: block;
+  font-size: 20px;
+  color: #464545;
+  font-weight: 700;
 }
 #app-header #login > a {
   float: left;
@@ -5257,15 +5263,26 @@ body {
 #app-header .form-search {
   position: relative;
 }
+#app-header .form-search input.search-query {
+  height: 30px;
+  -webkit-border-radius: 19px;
+  -moz-border-radius: 19px;
+  border-radius: 19px;
+}
 #app-header .form-search button {
   background: transparent;
   border: none;
   position: absolute;
-  left: -12px;
-  top: 5px;
+  left: -9px;
+  top: 11px;
+  opacity: 0.5;
+}
+#app-header .form-search button:hover {
+  opacity: 1;
 }
 .breadcrumb {
   background: none;
+  margin: 10px 0;
 }
 h1 {
   font-size: 42px;
@@ -5384,6 +5401,116 @@ h4 {
   position: relative;
   right: -10px;
   top: -1px;
+}
+.card-main-party {
+  margin-bottom: 10px;
+}
+.card-main-party [class*='span'] {
+  min-height: 144px;
+  position: relative;
+}
+.card-main-party [class*='span'] + [class*='span']::before {
+  content: '';
+  display: block;
+  width: 1px;
+  background: #e6e6e6;
+  position: absolute;
+  top: 0;
+  bottom: -15px;
+  right: -15px;
+}
+.card-main-party ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-main-party ul li {
+  display: inline-block;
+}
+.card-main-party .social-links ul {
+  position: absolute;
+  bottom: 13px;
+}
+.card-main-party .mp-details .links {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.card-main-party .mp-details .links li + li {
+  padding-right: 15px;
+}
+.card-main-party .mp-details .links li + li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  background: #464545;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  position: relative;
+  right: -10px;
+  top: -1px;
+}
+.card-party-members {
+  margin-bottom: 35px;
+  counter-reset: memberNum;
+}
+.card-party-members > div {
+  margin: 9px;
+}
+.card-party-members > div .party-member-photo {
+  counter-increment: memberNum;
+  position: relative;
+  height: 80px;
+  width: 60px;
+  display: inline-block;
+  margin: 9px;
+}
+.card-party-members > div .party-member-photo .party-member-info {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  margin: -1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  position: relative;
+  display: none;
+  z-index: 1;
+  position: absolute;
+  top: 80px;
+  width: 405px;
+  height: 208px;
+}
+.card-party-members > div .party-member-photo .party-member-info .party-member-info-photo {
+  position: absolute;
+  border: 1px solid #e6e6e6;
+  height: 177px;
+  width: 130px;
+  top: 14px;
+  right: 10px;
+}
+.card-party-members > div .party-member-photo .party-member-info .party-member-info-text {
+  height: 160px;
+  border-bottom: 1px solid #e6e6e6;
+}
+.card-party-members > div .party-member-photo .party-member-info .party-member-info-links {
+  height: 47px;
+  background: #f6f6f6;
+}
+.card-party-members > div .party-member-photo:hover .party-member-info {
+  display: block;
+}
+.card-party-members > div .party-member-photo:after {
+  content: counter(memberNum);
+  position: absolute;
+  bottom: 2px;
+  left: 3px;
+  color: white;
 }
 .sidebar {
   background: #fcfcfc;
@@ -5516,6 +5643,9 @@ h4 {
 .note-worthy-good header h3 span {
   color: #3ac8a8;
 }
+.btn-big-margins {
+  margin: 10px;
+}
 .btn-big {
   display: block;
   width: 100%;
@@ -5609,4 +5739,10 @@ h4 {
 .btn-more:hover {
   background: #c5c5c5;
   color: #605e5e;
+}
+.btn-contact {
+  margin: 10px;
+  display: block;
+  background: white;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 3px 2px rgba(0, 0, 0, 0.05);
 }

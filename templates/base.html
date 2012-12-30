@@ -35,7 +35,7 @@
 <body>
     <header id="app-header" class="container">
 {% if debug %}
-    <div class="row"><div class="span12"><div class="alert alert-error">{% trans 'This is a development server, all data in it should be considered fictional.  users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div></div></div>
+      <div class="row"><div class="span12"><div class="alert alert-error">{% trans 'This is a development server, all data in it should be considered fictional.  users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div></div></div>
 {% endif %}
       <div class="row">
         <div id="logo" class="span4">
@@ -76,6 +76,12 @@
     </header>
     <div id="helptextcontainer"></div>
     <section class="container">
+{% if not hide_crumbs %}
+        <ul class="breadcrumb">
+            <li><a class="home-icon" href="{% url main %}">{% trans "Homepage" %}</a> <span class="divider">/</span></li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+{% endif %}
         <div id="cse" class="main" style="display:none;"></div>
         <div id="content-main" class="main">
             {% block content-main %}{% endblock %}
