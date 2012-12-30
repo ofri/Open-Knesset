@@ -192,7 +192,7 @@ class Member(models.Model):
 
     def average_votes_per_month(self):
         return self.voting_statistics.average_votes_per_month()
-        
+
     def is_female(self):
         return self.gender=='F'
 
@@ -317,6 +317,18 @@ class Member(models.Model):
         else:
             return ugettext('Past Member (male)')
 
+    @property
+    def coalition_status(self):
+        """Current Coalition/Opposition member, or past member. Good for usage
+        with Django's yesno filters
+
+        :returns: True - Coalition, False - Opposition, None: Past member
+        """
+        if not self.is_current:
+            return None
+
+        return self.current_party.is_coalition
+
     def recalc_bill_statistics(self):
         self.bills_stats_proposed = self.bills.count()
         self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
@@ -348,6 +360,11 @@ class Member(models.Model):
             except KeyError:
                 pass
         return out
+
+    @property
+    def firstname(self):
+        """return the first name of the member"""
+        return self.name.split()[0]
 
 
 class WeeklyPresence(models.Model):
