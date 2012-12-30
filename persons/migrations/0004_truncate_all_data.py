@@ -9,6 +9,8 @@ from django.core import management
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        '''
+        This migration doesn't work and I'm not sure we need it
         # dump references to person that exist in committess app
         data = orm['committees.ProtocolPart'].objects.filter(speaker__isnull=False).values('id','speaker')
         with open('committee_protocol_parts_speakers.json', 'wt') as f:
@@ -21,12 +23,15 @@ class Migration(DataMigration):
         orm['persons.Title'].objects.all().delete()
         orm['persons.Role'].objects.all().delete()
         orm['persons.ProcessedProtocolPart'].objects.all().delete()
+        '''
 
     def backwards(self, orm):
+        '''
         if orm['persons.Person'].objects.count():
             print "Warning: persons table is not empty"
         management.call_command('loaddata','persons_dump.json',
                                 interactive=False)
+        '''
         #with open('committee_protocol_parts_speakers.json', 'rt') as f:
         #    data = json.load(f)
         #l = len(data)
