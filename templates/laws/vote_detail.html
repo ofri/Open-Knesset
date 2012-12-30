@@ -6,11 +6,13 @@
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
-{% block extrahead %}
+{% block extracss %}
+    <link href="{% static "css/jquery-ui-1.8.4.custom.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock %}
+{% block extrajs %}
     <script type="text/javascript" src="{% static "js/jquery-1.4.2.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery-ui-1.8.4.custom.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
-    <link href="{% static "css/jquery-ui-1.8.4.custom.css" %}" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
 {% block title %} {{ vote.title }} {% endblock %}
 {% block secondary %}

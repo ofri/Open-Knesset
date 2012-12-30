@@ -4,25 +4,8 @@
 {% block keywords %}{{% trans "Videos" %}{% endblock %}
 {% block description %}{% trans "Videos" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
-{% block extrahead %}
+{% block extrajs %}
 	{% video_init %}
-	<style>
-		.videolist_item {
-			height:90px;
-		}
-		.videolist_item .videolist_player {
-			float:right;
-			padding-left:15px;
-			margin-left:15px;
-			border-left:1px dashed black;
-		}
-		.videolist_item .videolist_details img {
-			 vertical-align:middle;
-		}
-		.videolist_item .date-item {
-			width:30px;
-		}
-	</style>
 	<script type='text/javascript'>
 		(function(){
 			/** view **/
@@ -127,6 +110,26 @@
 			};
 		})();
 	</script>
+{% endblock %}
+
+{% block extrahead %}
+	<style>
+		.videolist_item {
+			height:90px;
+		}
+		.videolist_item .videolist_player {
+			float:right;
+			padding-left:15px;
+			margin-left:15px;
+			border-left:1px dashed black;
+		}
+		.videolist_item .videolist_details img {
+			 vertical-align:middle;
+		}
+		.videolist_item .date-item {
+			width:30px;
+		}
+	</style>
 {% endblock %}
 
 {% block divcontent %}
