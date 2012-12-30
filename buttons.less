@@ -1,12 +1,15 @@
 .btn-big-margins {
-  margin: 10px;
+  margin: 10px auto;
 }
 
-.btn-big {
+.btn-big{
   .btn-block;
-  .btn-big-margins;
-  padding: 6px;
   width: 90%;
+  .btn-big-margins;
+}
+
+.btn-primary {
+  padding: 6px;
   background: @buttonBackgroundColor;
   color: @white;
   border: 2px solid darken(@buttonBackgroundColor, 20%);
@@ -69,8 +72,33 @@
 }
 
 .btn-contact {
-  .btn-big-margins;
-  display: block;
   background: white;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 3px 2px rgba(0, 0, 0, .05);
+}
+
+.social-links{
+	bottom: 0px;
+	position: absolute;
+	width: 100%;
+	h5{
+  	font-weight: normal;
+  	color: lighten(@textColor, 50%);
+  	margin: 8px 0 0;
+		float: right;
+	}
+	ul{
+	    margin-right: -10px;
+	    li{
+	    	float: right;
+	    	a{
+	    		display: block;
+	    		overflow: hidden;
+	    		text-indent: -30000em;
+	    		width: 32px; height: 32px;
+	    		opacity: 0.7;
+	    		&:hover{ opacity: 1}
+	    	}
+	    	
+	    } ////////////////////////////////////////// REMOVE //////
+  }
 }
