@@ -8,6 +8,11 @@
     <a class="button" href="{% url agenda-detail object.agenda.id %}">{% trans "Agenda" %} {{ object.agenda }}</a>
 {% endblock %}
 {% block divcontent %}
-    <h1>{{ object.bill }}</h1>
+    <div class="item normal">
+        {% bill_list_item object.bill %}
+        <span class="reasoning">
+            {{ object.reasoning|urlizetrunc:"30" }}
+        </span>
+    </div>
     {% include 'comments/object_comment_list.html' %}
 {% endblock %} {# divcontent #}

@@ -2,7 +2,7 @@
 {% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
-{% block extrahead %}
+{% block extrajs %}
 <script type="text/javascript" src="{% static "js/tooltip.js" %}"></script>
 <script>
     function set_percent(id,value) {
