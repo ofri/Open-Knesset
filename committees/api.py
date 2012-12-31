@@ -14,10 +14,8 @@ from mks.api import MemberResource
 class CommitteeResource(BaseResource):
     ''' Committee API
     '''
-    #recent_meetings = fields.ListField()
+    recent_meetings = fields.ListField()
     future_meetings = fields.ListField()
-
-    meetings = fields.ToManyField('committees.api.CommitteeMeetingResource', 'meetings')
 
     class Meta:
         queryset = Committee.objects.all()
