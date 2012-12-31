@@ -324,6 +324,14 @@ class Member(models.Model):
         return [x.strip() for x in self.get_role.split(',')]
 
     @property
+    def is_minister(self):
+        """Check if one of the roles starts with minister"""
+
+        # TODO Once we have roles table change this
+        minister = ugettext('Minister')
+        return any(x.startswith(minister) for x in self.roles)
+
+    @property
     def coalition_status(self):
         """Current Coalition/Opposition member, or past member. Good for usage
         with Django's yesno filters

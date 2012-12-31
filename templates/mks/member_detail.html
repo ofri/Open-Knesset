@@ -121,22 +121,45 @@
           data-toggle="oktoggle" data-text="{% trans "Personal Information" %} +|{% trans "Collapse" %} -">{% trans "Personal Information" %} +</a>
     </section>
     <div class="row">
-            <div class="cards span9">
-                <section class="card card-list card-list-latest">
+        <div class="cards span9">
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>פעילות אחרונה</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                {% for action in actions|slice:":2" %}
+                    {% display_action action %}
+                {% endfor %}
+                </ul>
+                <footer>
+            <a class="btn btn-mini btn-expand">עוד +</a>
+                </footer>
+            </section>
+{% if not object.is_minister %}
+            <section class="card card-list card-list-latest">
                     <header>
-                       <h2>פעילות אחרונה</h2>
-                       <a class="btn btn-mini btn-question" href="#">?</a>
+                        <h2>חקיקה</h2>
+                        <a class="btn btn-mini btn-question" href="#">?</a>
                     </header>
                     <ul>
-                    {% for action in actions|slice:":2" %}
-                        {% display_action action %}
-                    {% endfor %}
+                        <li>
+                        <p class="item-action">הגיש הצעת חוק</p>
+                        <p class="item-title"><a href="#">חוק גנים לאומיים תיקון - היתר לניהול אתר הנצחה ממלכתי גבעת התחמושת</a></p>
+                        <p class="item-context">אתמול ב<a href="#">ועדת החינוך התרבות והספורט</a></p>
+                        </li>
+                        <li>
+                        <p class="item-action">הגיש הצעת חוק</p>
+                        <p class="item-title"><a href="#">חוק הגנה על הורים בעת שמירה על שלום ילדיהם הקטינים תיקוני חקיקה</a></p>
+                        <p class="item-context">יום רביעי, ה-25 ביולי, ב<a href="#">מליאה</a></p>
+                        </li>
                     </ul>
                     <footer>
-               <a class="btn btn-mini btn-expand">עוד +</a>
+                        <a class="btn btn-mini btn-expand">עוד +</a>
                     </footer>
                 </section>
-            </div>
+{% endif %}
+        </div>
     </div>
     <ul class="actions">
         <li>

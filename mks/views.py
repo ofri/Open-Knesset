@@ -301,10 +301,11 @@ class MemberDetailView(DetailView):
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
-            actions = actor_stream(member).filter(
-                verb__in=verbs)
+            actions = actor_stream(member).filter(verb__in=verbs)
+
             for a in actions:
                 a.actor = member
+
             cached_context = {'watched_member': watched,
                 'actions':actions,
                 'verbs_form': verbs_form,
