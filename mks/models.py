@@ -318,6 +318,12 @@ class Member(models.Model):
             return ugettext('Past Member (male)')
 
     @property
+    def roles(self):
+        """Roles list (splitted by comma)"""
+
+        return [x.strip() for x in self.get_role.split(',')]
+
+    @property
     def coalition_status(self):
         """Current Coalition/Opposition member, or past member. Good for usage
         with Django's yesno filters

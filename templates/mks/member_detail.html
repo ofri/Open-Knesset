@@ -71,7 +71,17 @@
                 {{ object.current_party.name }}
                 <strong>({{object.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})</strong>
             </p>
-            <p>יו"ר בוועדת החינוך, התרבות והספורט | יו"ר הועדה לשלום הילד | <a href="#">עוד +</a></p>
+            <p>
+                {% for role in object.roles|slice:":2" %}
+                {% if not forloop.first %} | {% endif %} {{ role }}
+                {% endfor %}
+                {% if object.roles|length > 2 %}
+                <span id="member-extra-roles" style="display:none">
+                    {% for role in object.roles|slice:"2:" %} | {{ role }} {% endfor %}
+                </span>
+                | <a href="#" data-target="#member-extra-roles" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
+                {% endif %}
+            </p>
             <div class="social-links">
               <h5>{% blocktrans with firstname=member.firstname %}{{firstname}} around the net{% endblocktrans %}:</h5>
               <ul class="text-center">
@@ -333,6 +343,7 @@
                                 </tr>
                             </table>
                             <br/>
+                            {% comment %}
                             <h3>{% trans "Attendance" %}</h3>
                             <table>
                                 <tr>
@@ -395,6 +406,7 @@
 
                             </table>
                             <br />
+                            {% endcomment %}
                             <h3>{% trans "MMM Documents" %}</h3>
                             <table>
                             	<tr>
@@ -435,6 +447,8 @@
                         </div>  <br/>
 
 {% endcache %}
+{% comment %}
+    
                         <div>
                             <h3>{% trans "Agendas" %}</h3>
                             <div class="list-wrap">
@@ -459,6 +473,7 @@
                             </div>
                         </div>
 
+{% endcomment %}
                     </td>
                 </tr>
             </tbody>
