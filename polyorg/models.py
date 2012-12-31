@@ -11,6 +11,10 @@ class CandidateList(models.Model):
     mpg_html_report = models.TextField(_('MPG report'), blank=True, null=True,
                 help_text=_('The MPG report on the list, can use html'))
     img_url = models.URLField(blank=True, verify_exists=False)
+    youtube_user = models.CharField(_('YouTube user'), max_length = 80, null=True, blank=True)
+    wikipedia_page = models.CharField(_('Wikipedia page'), max_length = 80, null=True, blank=True)
+    twitter_account = models.CharField(_('Twitter account'), max_length = 80, null=True, blank=True)
+    facebook_url = models.URLField(blank=True, verify_exists=True, null=True)
 
     def save(self, *args, **kwargs):
         super(CandidateList, self).save()

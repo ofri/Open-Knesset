@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-29 21:22+0200\n"
-"PO-Revision-Date: 2012-12-29 21:24+0200\n"
+"POT-Creation-Date: 2012-12-31 12:00+0200\n"
+"PO-Revision-Date: 2012-12-31 12:01+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -157,6 +157,7 @@ msgstr "אג'נדה"
 #: templates/agendas/agenda_list.html:9
 #: templates/mks/member_detail.html:380
 #: templates/mks/party_detail.html:49
+#: templates/polyorg/candidatelist_detail.html:41
 msgid "Agendas"
 msgstr "אג'נדות"
 
@@ -2318,7 +2319,7 @@ msgstr "הדירוג שלך"
 #: templates/laws/vote_detail.html:17
 #: templates/mks/member_detail.html:355
 #: templates/mks/party_detail.html:68
-#: templates/polyorg/candidatelist_detail.html:29
+#: templates/polyorg/candidatelist_detail.html:36
 msgid "Links"
 msgstr "קישורים"
 
@@ -3261,18 +3262,16 @@ msgstr "ח\"כים המדברים על זה"
 msgid "Tags list"
 msgstr "רשימת תגיות"
 
-#: templates/polyorg/candidatelist_detail.html:26
-#, fuzzy
-msgid "head by"
-msgstr "בעריכת"
+#: templates/polyorg/candidatelist_detail.html:68
+msgid "more"
+msgstr "עוד"
 
-#: templates/polyorg/candidatelist_detail.html:50
-#, fuzzy
-msgid "Votes per member"
-msgstr "הצבעות של %(member)s לפי נושא"
+#: templates/polyorg/candidatelist_detail.html:69
+msgid "less"
+msgstr "פחות"
 
 #: templates/polyorg/candidatelist_list.html:7
-#: templates/polyorg/candidatelist_list.html:19
+#: templates/polyorg/candidatelist_list.html:18
 msgid "Candidate list for the comming elections"
 msgstr "רשימות מועמדים לבחירות הקרובות"
 
@@ -3663,6 +3662,14 @@ msgstr "שבועי"
 #: user/views.py:122
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#, fuzzy
+#~ msgid "head by"
+#~ msgstr "בעריכת"
+
+#, fuzzy
+#~ msgid "Votes per member"
+#~ msgstr "הצבעות של %(member)s לפי נושא"
 
 #~ msgid "Latest Annotations and comments"
 #~ msgstr "הארות ותגובות אחרונות"

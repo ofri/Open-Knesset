@@ -16,62 +16,111 @@
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
 {% block divcontent %}
-    <div id="candidate-list-container">
-        <div class="list-wrap">
-            <div class="element ballot">
-                <br/><br/><br/>
-                <b style="vertical-align:bottom">{{object.ballot}}</b>
-            </div>
-            <div class="element element-meta">
-                <h2>{{object.name}} {% trans 'head by'%} {{head}}</h2>
-            </div>
-            <div class="element element-meta">
-                <h3>{% trans "Links" %}</h3>
-                {% object_links object %}
-            </div> <br/><br/>
-  {% if agendas %}
-            <div class="element element-meta">
-              <table>
-              {% for a in agendas %}
-                <tr>
-                  <td><a href="{{ a.url }}">{{a.name}}</a></td>
-                  <td class="numeric">{{a.score|floatformat:"0"}}%</td>
-                  <td>
-                      <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
-                      <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>                            
-                  </td>
-                </tr>
-                {% endfor %}
-              </table>
-            </div>
-  {% endif %}
-  {% if stats %}
-    <div class="element element-meta">
-      {% trans 'Votes per member' %} {{stats.votes_per_seat}}
-    </div>
+    <div id="candidate-list">
             {% for o in candidates %}
+              <div class="candidate-list-item person {% if o.ordinal == 1 %}leader{% endif %}">
+                <h2>{{o.person.name}}</h2>
+                {% if o.person.img_url %}
+                  <img src="{{o.person.img_url}}" alt="{{o.person.name}}">
+                {% endif %}
+                <h3>{{o.ordinal}}</h3>
+              </div>
             {% if o.ordinal == 1 %}
-                <div class="element leader">
-            {% else %}
-               <div class="element">
-            {% endif %}
-                   <h2 class="name">{{o.person.name}}</h2>
-                   <br/>
-                   {% if o.person.img_url != "" %}
-                       <img src={{o.person.img_url}} alt="">
-                   {% endif %}
-                   <h3 class="number">{{o.ordinal}}</h3>
-                   <br/>
+              {% if object.wikipedia_page %}
+                <div class="candidate-list-item wikipedia" wikipedia-page="{{object.wikipedia_page}}">
                 </div>
+              {% endif %}
+              <div class="candidate-list-item ballot">
+                <h1>{{object.ballot}}</h1>
+                <h2>{{object.name}}</h2>
+              </div>
+              {% endif %}
+            {% if o.ordinal == 4 %}
+                {% comment %}
+                <div class="candidate-list-item links">
+                    <h3>{% trans "Links" %}</h3>
+                    {% object_links object %}
+                </div>
+                {% endcomment %}
+                {% if agendas %}
+                <div class="candidate-list-item expandable-item candidate-list-agendas">
+                  <h2>{% trans "Agendas" %}</h2>
+                  <table>
+                  {% for a in agendas %}
+                    <tr {% if forloop.counter >= 6 %}class="more-item"{% endif %}>
+                      <td style="width: 20em;"><a href="{{ a.url }}">{{a.name}}</a></td>
+                      <td class="numeric">{{a.score|floatformat:"0"}}%</td>
+                      <td>
+                          <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
+                          <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+                {% endif %}
+                {% comment %}
+                <!-- needs more stats before we can display -->
+                {% if stats %}
+                <div class="candidate-list-item candidate-list-stats">
+                  {% trans 'Votes per member' %} {{stats.votes_per_seat}}
+                </div>
+                {% endif %}
+                {% endcomment %}
+              {% endif %}
+              {% if object.facebook_url and o.ordinal == 8 %}
+                <div class="candidate-list-item">
+                    <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=292&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:558px;" allowTransparency="true"></iframe>
+                </div>
+              {% endif %}
             {% endfor %}
-        </div>
-    </div>
+          </div>
+    <a class="more-button" style="display:hidden;">{% trans "more" %}</a>
+    <a class="less-button" style="display:hidden;">{% trans "less" %}</a>
     <script type="text/javascript">
-        $('#candidate-list-container').isotope({
+      $(document).ready( function () {
+          var less_button = $('.less-button');
+          less_button.click(function () {
+            var item = $(this).parent();
+            item.find('.more-item').hide()
+            $(this).hide()
+            item.children('.more-button').show();
+            $('#candidate-list').isotope('reLayout');
+          })
+          var more_button = $('.more-button');
+          more_button.click(function () {
+            var item = $(this).parent();
+            item.find('.more-item').show()
+            $(this).hide()
+            var less = item.children('.less-button')
+            if (less.length==0)
+              item.append(less_button);
+            less_button.show();
+            $('#candidate-list').isotope('reLayout');
+          });
+          $('.expandable-item').append(more_button);
+          $('.expandable-item .more-button').show();
+          var wikipedia = $('.wikipedia');
+          if (wikipedia.length > 0) {
+            $.getJSON("http://he.wikipedia.org/w/api.php?action=parse&format=json&callback=?",
+                {page:wikipedia.attr('wikipedia-page'), prop:'text'},
+                function(data) {
+                  wikipedia.html(data.parse.text['*']);
+                  // all links are relative, got to make them absolute
+                  wikipedia.find('a').each(function() {
+                    var cur = $(this).attr('href');
+                    $(this).attr('href', 'http://he.wikipedia.org'+cur);
+                  });
+                  wikipedia.children().hide();
+                  wikipedia.children('table').first().show();
+                  $('#candidate-list').isotope('reLayout');
+                });
+          };
+          $('#candidate-list').isotope({
             transformsEnabled: false,
-            itemSelector: '.element',
-            layoutMode : 'fitRows'
-                                })
+            itemSelector: '.candidate-list-item',
+            masonry: { columnWidth: 40 },
+           });
+      });
     </script>
-  {% endif %}
 {% endblock %}

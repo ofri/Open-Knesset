@@ -1221,32 +1221,24 @@ display: none;
 .ballot h1, .ballot h2 { text-align:center;}
 .ballot h1 {font-size: 4em;}
 .ballot h2 {position: absolute; bottom:0.2em; padding: 0 0.4em;}
-.element {
-    width: 250px;
-    height: 110px;
+.person {
     margin: 5px;
+    padding:5px;
     float: right;
     overflow: hidden;
     position: relative;
-    background: #90ee90;
+    background: white;
     color: #222;
+    border: 1px solid;
     -webkit-border-top-right-radius: 1.2em;
     -moz-border-radius-topright: 1.2em;
     border-top-right-radius: 1.2em;
 }
+.person h3 { position:absolute; top:0; left:0; margin:0;}
+.wikiepdia dl {display:none;}
 
-.element.alkali          { background: #F00; background: hsl(   0, 100%, 50%); }
-.element.alkaline-earth  { background: #F80; background: hsl(  36, 100%, 50%); }
-.element.lanthanoid      { background: #FF0; background: hsl(  72, 100%, 50%); }
-.element.actinoid        { background: #0F0; background: hsl( 108, 100%, 50%); }
-.element.transition      { background: #0F8; background: hsl( 144, 100%, 50%); }
-.element.post-transition { background: #0FF; background: hsl( 180, 100%, 50%); }
-.element.metalloid       { background: #08F; background: hsl( 216, 100%, 50%); }
-.element.other.nonmetal  { background: #00F; background: hsl( 252, 100%, 50%); }
-.element.halogen         { background: #F0F; background: hsl( 288, 100%, 50%); }
-.element.noble-gas       { background: #F08; background: hsl( 324, 100%, 50%); }
-
-
+.more-item {display:none;}
+.more-button, .less-button {display:none; float:left;}
 .element * {
     position: absolute;
     margin: 0;
@@ -1295,3 +1287,4 @@ display: none;
     height: 220px;
     background: #b0c4de
 }
+.candidate-list-agendas { width:385; }

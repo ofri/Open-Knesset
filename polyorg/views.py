@@ -21,7 +21,7 @@ class CandidateListDetailView(DetailView):
         context['candidates'] = Candidate.objects.filter(candidates_list=cl).order_by('ordinal')
         agendas = []
         if cl.member_ids:
-            for a in Agenda.objects.filter(is_public=True):
+            for a in Agenda.objects.filter(is_public=True).order_by('-num_followers'):
                 agendas.append({'id': a.id, 
                                 'name': a.name,
                                 'url': a.get_absolute_url(),
