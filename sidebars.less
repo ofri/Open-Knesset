@@ -21,5 +21,56 @@
 				border-bottom: none;
 			}
 	  }
+  } 
+  
+  &.sidebar-agendas{
+	  
   }
+}
+
+.agenda-mini{
+	header{
+		.clearfix;
+		img{
+			float: right;
+			display: block;
+			margin: 0 0 10px 20px;
+		}
+		h3{
+			//display: inline;
+			float: right;
+			letter-spacing: 0;
+			font-weight: normal;
+			line-height: 1.5em;
+			margin: -5px 0 0;
+			span{
+				display: block;
+			font-weight: 700;
+			}
+		}
+	}
+}
+
+.agenda-pie{
+	width: 88px;
+	height: 88px;
+	border: 1px solid #a9a6a6;
+	.border-radius(50%);
+	margin: 20px auto;
+}
+
+.arc path {
+  opacity: .9;
+}
+
+.good {
+  fill: @goodColor;
+}
+
+.bad {
+  fill: @badColor;
+}
+
+.no-vote {
+  fill: none;
 }
