@@ -82,6 +82,21 @@
                 | <a href="#" data-target="#member-extra-roles" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
                 {% endif %}
             </p>
+            <div id="member-details" style="display:none">
+                {% if object.date_of_death %}
+                <div>{% trans "date of death" %} - {{ object.date_of_death }}</div>
+                {% else %}
+                <div>{% trans "age" %} - {{ object.date_of_birth|timesince }}</div>
+                {% endif %}
+                <div>{% trans "place of birth" %} - {{ object.place_of_birth }}</div>
+                {% if object.year_of_aliyah %}
+                <div>{% trans "year of aliyah" %} - {{ object.year_of_aliyah }}</div>
+                {% endif %}
+                {% if not object.date_of_death %}
+                <div>{% trans "family status" %} - {{ object.family_status }}</div>
+                <div>{% trans "place of residence" %} - {{ object.place_of_residence}}</div>
+                {% endif %}
+            </div>
             <div class="social-links">
               <h5>{% blocktrans with firstname=member.firstname %}{{firstname}} around the net{% endblocktrans %}:</h5>
               <ul class="text-center">
@@ -102,7 +117,8 @@
           </div>
         </div>
       </div>
-      <a class="btn btn-mini btn-expand">פרטים אישיים +</a>
+      <a href="#" class="btn btn-mini btn-expand" data-target="#member-details"
+          data-toggle="oktoggle" data-text="{% trans "Personal Information" %} +|{% trans "Collapse" %} -">{% trans "Personal Information" %} +</a>
     </section>
     <ul class="actions">
         <li>

@@ -102,6 +102,7 @@
   * ================= */
 
   $(document).on('click.oktoggle.data-api', '[data-toggle=oktoggle]', function (e) {
+    e.preventDefault();
     var $this = $(this), href
       , target = $this.attr('data-target')
         || e.preventDefault()
