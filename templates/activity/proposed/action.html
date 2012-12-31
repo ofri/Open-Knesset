@@ -1,4 +1,5 @@
 {% load i18n %}
+{% comment %}
 {% if action.actor.get_absolute_url %}<a class="action-actor" href="{{ action.actor.get_absolute_url }}">{{ action.actor }}</a>
 {% else %}<span class="action-actor">{{ action.actor }}</span>{% endif %}
 {% if action.actor.is_female %}
@@ -16,3 +17,19 @@
         {{ action.target }}
     {% endif %}
 {% endwith %}
+{% endcomment %}
+    <li>
+      <p class="item-action">
+          {{action.actor.is_female|yesno:"הגישה,הגיש"}} הצעת חוק
+      </p>
+      <p class="item-title">
+{% with action.target.bill as bill %}
+    {% if bill %}
+        <a href="{{ bill.get_absolute_url }}">{{ bill }}</a>
+    {% else %}
+        {{ action.target }}
+    {% endif %}
+    </p>
+{% endwith %}
+    <p class="item-context">{{ action.timestamp|timesince }}</p>
+    </li>

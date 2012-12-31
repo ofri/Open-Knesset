@@ -120,6 +120,24 @@
       <a href="#" class="btn btn-mini btn-expand" data-target="#member-details"
           data-toggle="oktoggle" data-text="{% trans "Personal Information" %} +|{% trans "Collapse" %} -">{% trans "Personal Information" %} +</a>
     </section>
+    <div class="row">
+            <div class="cards span9">
+                <section class="card card-list card-list-latest">
+                    <header>
+                       <h2>פעילות אחרונה</h2>
+                       <a class="btn btn-mini btn-question" href="#">?</a>
+                    </header>
+                    <ul>
+                    {% for action in actions|slice:":2" %}
+                        {% display_action action %}
+                    {% endfor %}
+                    </ul>
+                    <footer>
+               <a class="btn btn-mini btn-expand">עוד +</a>
+                    </footer>
+                </section>
+            </div>
+    </div>
     <ul class="actions">
         <li>
         <li><a href="{% url member-activity-feed object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
@@ -425,7 +443,7 @@
                             {% endcomment %}
                             <h3>{% trans "MMM Documents" %}</h3>
                             <table>
-                            	<tr>
+                                <tr>
                                     <td style="width:140px;">{% trans "Number of MMM documents ordered" %}</td>
                                     <td style="width:200px;"><a href="{% url member-mmms object.id %}">{{ object.mmm_documents.count }}</a></td>
                                 </tr>
