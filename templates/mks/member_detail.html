@@ -48,11 +48,54 @@
 {% block description %} {% with object.name as name %} {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.   Information about {{ name }} for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public. {% endblocktrans %} {% endwith %} {% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
 
+ {% block breadcrumbs %}
+            <li><a href="{% url party-list  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a> <span class="divider">/</span></li>
+            <li class="active">{{ object.name }}</li>
+ {% endblock %}
+
+
 {% block divcontent %}
 {% cache 14400 mks_detail object.id request.page request.get_full_path %}
+    <section class="card card-main">
+      <div class="row">
+        <div class="span2"><div class="spacer"><img src="{{ object.img_url }}" alt="{{object.name}}"/></div>
+        </div>
+
+        <div class="span7 card-details">
+          <div class="spacer fill">
+            <header>
+            <h1>{{object.name}}</h1>
+            </header>
+            <p>
+                {{ object.current_party.name }}
+                <strong>({{object.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})</strong>
+            </p>
+            <p>יו"ר בוועדת החינוך, התרבות והספורט | יו"ר הועדה לשלום הילד | <a href="#">עוד +</a></p>
+            <div class="social-links">
+              <h5>{% blocktrans with firstname=member.firstname %}{{firstname}} around the net{% endblocktrans %}:</h5>
+              <ul class="text-center">
+                <li><a href="#" class="icon sprite-website" rel="tooltip" title="האתר של זבולון">אתר</a></li>
+                <li><a href="#" class="icon sprite-wiki" rel="tooltip" title="זבולון בויקיפדיה">ויקיפדיה</a></li>
+                <li><a href="#" class="icon sprite-facebook" rel="tooltip" title="זבולון בפייסבוק">פייסבוק</a></li>
+                <li><a href="#" class="icon sprite-twitter" rel="tooltip" title="זבולון בטוויטר">טוויטר</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="span3 social-details">
+          <div class="spacer actions-panel">
+            <a id="watch" class="btn btn-big btn-primary"></a>
+            <p class="text-center">1,123 עוקבים</p>
+            <a class="btn btn-big btn-contact">צרו קשר</a>
+          </div>
+        </div>
+      </div>
+      <a class="btn btn-mini btn-expand">פרטים אישיים +</a>
+    </section>
     <ul class="actions">
         <li>
-        <li><span id="watch" class="awesome-button medium"></span></li>
         <li><a href="{% url member-activity-feed object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
     </ul>
     <div class="member-photo">
