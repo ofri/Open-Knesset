@@ -191,6 +191,26 @@
                     <a class="btn btn-mini btn-expand">עוד +</a>
                 </footer>
             </section>
+            {% if mmm_documents %}
+            <section class="card card-list card-list-latest">
+                <header>
+                <h2>{% trans "M.M.M Documents" %}</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                {% for doc in mmm_documents|slice:":2" %}
+                    <li>
+                        <p class="item-title"><a href="{{ doc.url }}">{{ doc.title }}</a></p>
+                        <p class="item-context">{{ doc.publication_date|timesince }}</p>
+                    </li>
+                {% endfor %}
+                </ul>
+                <footer>
+                    <a class="btn btn-mini btn-expand">עוד +</a>
+                </footer>
+            </section>
+                
+            {% endif %}
         </div>
     </div>
     <ul class="actions">

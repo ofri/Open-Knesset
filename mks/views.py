@@ -311,10 +311,13 @@ class MemberDetailView(DetailView):
 
             committee_actions =  actor_stream(member).filter(verb='attended')
 
+            mmm_documents = member.mmm_documents.all()
+
             cached_context = {'watched_member': watched,
                 'actions':actions,
                 'legislation_actions': legislation_actions,
                 'committee_actions': committee_actions,
+                'mmm_documents': mmm_documents,
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
                 'bills_tags':bills_tags,
