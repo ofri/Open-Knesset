@@ -143,16 +143,9 @@
                         <a class="btn btn-mini btn-question" href="#">?</a>
                     </header>
                     <ul>
-                        <li>
-                        <p class="item-action">הגיש הצעת חוק</p>
-                        <p class="item-title"><a href="#">חוק גנים לאומיים תיקון - היתר לניהול אתר הנצחה ממלכתי גבעת התחמושת</a></p>
-                        <p class="item-context">אתמול ב<a href="#">ועדת החינוך התרבות והספורט</a></p>
-                        </li>
-                        <li>
-                        <p class="item-action">הגיש הצעת חוק</p>
-                        <p class="item-title"><a href="#">חוק הגנה על הורים בעת שמירה על שלום ילדיהם הקטינים תיקוני חקיקה</a></p>
-                        <p class="item-context">יום רביעי, ה-25 ביולי, ב<a href="#">מליאה</a></p>
-                        </li>
+                    {% for action in legistlation_actions|slice:":2" %}
+                        {% display_action action %}
+                    {% endfor %}
                     </ul>
                     <footer>
                         <a class="btn btn-mini btn-expand">עוד +</a>

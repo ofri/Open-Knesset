@@ -301,13 +301,17 @@ class MemberDetailView(DetailView):
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
-            actions = actor_stream(member).filter(verb__in=verbs)
+            actions = actor_stream(member)
 
             for a in actions:
                 a.actor = member
 
+            legistlation_actions =  actor_stream(member).filter(verb__in=
+                    ('proposed', 'joined'))
+
             cached_context = {'watched_member': watched,
                 'actions':actions,
+                'legistlation_actions': legistlation_actions,
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
                 'bills_tags':bills_tags,
