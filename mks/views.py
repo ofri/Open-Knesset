@@ -249,10 +249,6 @@ class MemberDetailView(DetailView):
             self.calc_bill_stats(member,bills_statistics,'first')
             self.calc_bill_stats(member,bills_statistics,'approved')
 
-            bills_tags = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
-            #bills_tags.sort(key=lambda x:x.count,reverse=True)
-            bills_tags = calculate_cloud(bills_tags)
-
             if self.request.user.is_authenticated():
                 agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
             else:
@@ -320,7 +316,6 @@ class MemberDetailView(DetailView):
                 'mmm_documents': mmm_documents,
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
-                'bills_tags':bills_tags,
                 'agendas':agendas,
                 'presence':presence,
                 'current_knesset_start_date': date(2009, 2, 24),
