@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-31 12:00+0200\n"
-"PO-Revision-Date: 2012-12-31 12:01+0200\n"
+"POT-Creation-Date: 2013-01-01 13:57+0200\n"
+"PO-Revision-Date: 2013-01-01 13:59+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -157,7 +157,7 @@ msgstr "אג'נדה"
 #: templates/agendas/agenda_list.html:9
 #: templates/mks/member_detail.html:380
 #: templates/mks/party_detail.html:49
-#: templates/polyorg/candidatelist_detail.html:41
+#: templates/polyorg/candidatelist_detail.html:57
 msgid "Agendas"
 msgstr "אג'נדות"
 
@@ -1213,17 +1213,28 @@ msgstr ""
 msgid "The MPG report on the list, can use html"
 msgstr ""
 
-#: polyorg/models.py:43
-#, fuzzy
-msgid "Ordinal"
-msgstr "שולי"
+#: polyorg/models.py:14
+msgid "YouTube user"
+msgstr ""
 
-#: polyorg/models.py:45
+#: polyorg/models.py:15
+msgid "Wikipedia page"
+msgstr "שם עמוד ויקיפדיה"
+
+#: polyorg/models.py:16
+msgid "Twitter account"
+msgstr "חשבון טוויטר"
+
+#: polyorg/models.py:47
+msgid "Ordinal"
+msgstr "מיקום"
+
+#: polyorg/models.py:49
 #, fuzzy
 msgid "Elected by #"
 msgstr "בעריכת"
 
-#: polyorg/models.py:45
+#: polyorg/models.py:49
 msgid "How many people voted for this person"
 msgstr ""
 
@@ -2319,7 +2330,6 @@ msgstr "הדירוג שלך"
 #: templates/laws/vote_detail.html:17
 #: templates/mks/member_detail.html:355
 #: templates/mks/party_detail.html:68
-#: templates/polyorg/candidatelist_detail.html:36
 msgid "Links"
 msgstr "קישורים"
 
@@ -3262,11 +3272,15 @@ msgstr "ח\"כים המדברים על זה"
 msgid "Tags list"
 msgstr "רשימת תגיות"
 
-#: templates/polyorg/candidatelist_detail.html:68
+#: templates/polyorg/candidatelist_detail.html:37
+msgid "Wikipedia"
+msgstr "ויקיפדיה"
+
+#: templates/polyorg/candidatelist_detail.html:89
 msgid "more"
 msgstr "עוד"
 
-#: templates/polyorg/candidatelist_detail.html:69
+#: templates/polyorg/candidatelist_detail.html:90
 msgid "less"
 msgstr "פחות"
 
@@ -4416,9 +4430,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "Login via"
 #~ msgstr "הזדהה באמצעות"
-
-#~ msgid "Twitter"
-#~ msgstr "טוויטר"
 
 #~ msgid "Yahoo"
 #~ msgstr "יאהו"

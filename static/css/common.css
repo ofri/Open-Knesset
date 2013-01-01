@@ -1235,10 +1235,12 @@ display: none;
     border-top-right-radius: 1.2em;
 }
 .person h3 { position:absolute; top:0; left:0; margin:0;}
-.wikiepdia dl {display:none;}
+.person img {height:110px;}
+.wikipedia { max-width: 600px;}
+.wikipedia dl {display:none;}
 
 .more-item {display:none;}
-.more-button, .less-button {display:none; float:left;}
+.more-button, .less-button {clear:both; display:none; float:left;}
 .element * {
     position: absolute;
     margin: 0;

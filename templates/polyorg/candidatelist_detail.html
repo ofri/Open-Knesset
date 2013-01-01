@@ -18,6 +18,9 @@
 {% block divcontent %}
     <div id="candidate-list">
             {% for o in candidates %}
+              {% if o.person.mk %}
+              <a href="{{o.person.mk.get_absolute_url}}">
+              {% endif %}
               <div class="candidate-list-item person {% if o.ordinal == 1 %}leader{% endif %}">
                 <h2>{{o.person.name}}</h2>
                 {% if o.person.img_url %}
@@ -25,9 +28,15 @@
                 {% endif %}
                 <h3>{{o.ordinal}}</h3>
               </div>
+              {% if o.person.mk %}
+              </a>
+              {% endif %}
             {% if o.ordinal == 1 %}
               {% if object.wikipedia_page %}
-                <div class="candidate-list-item wikipedia" wikipedia-page="{{object.wikipedia_page}}">
+              <div class="candidate-list-item">
+                  <h1>{% trans 'Wikipedia' %} </h1>
+                  <div class=" wikipedia" wikipedia-page="{{object.wikipedia_page}}">
+                  </div>
                 </div>
               {% endif %}
               <div class="candidate-list-item ballot">
@@ -111,8 +120,13 @@
                     var cur = $(this).attr('href');
                     $(this).attr('href', 'http://he.wikipedia.org'+cur);
                   });
-                  wikipedia.children().hide();
-                  wikipedia.children('table').first().show();
+                  // remove the edit button, make all items but the table a more item
+                  // and hide them
+                  wikipedia.find('.editsection').remove()
+                  wikipedia.children(':not(dl)').addClass('more-item').hide();
+                  wikipedia.children('table').first().removeClass('more-item').show();
+                  // add the more button
+                  wikipedia.append(more_button);
                   $('#candidate-list').isotope('reLayout');
                 });
           };
@@ -123,4 +137,4 @@
            });
       });
     </script>
-{% endblock %}
+:{% endblock %}
