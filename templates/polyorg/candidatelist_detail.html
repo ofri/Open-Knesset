@@ -77,7 +77,12 @@
                 {% endif %}
                 {% endcomment %}
               {% endif %}
-              {% if object.facebook_url and o.ordinal == 8 %}
+              {% if object.youtube_user and o.ordinal == 8 %}
+                <div class="candidate-list-item">
+                  <iframe width="390" height="320" src="http://www.youtube.com/embed/?listType=user_uploads&list={{object.youtube_user}}&showinfo=1" frameborder="0" allowfullscreen></iframe>
+                </div>
+              {% endif %}
+              {% if object.facebook_url and o.ordinal == 10 %}
                 <div class="candidate-list-item">
                     <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=292&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:558px;" allowTransparency="true"></iframe>
                 </div>
