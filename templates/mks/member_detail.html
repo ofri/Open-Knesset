@@ -113,7 +113,9 @@
           <div class="spacer actions-panel">
             <a id="watch" class="btn btn-big btn-primary"></a>
             <p class="text-center">1,123 עוקבים</p>
+            {% if object.is_current %}
             <a href="#contact-information-modal" class="btn btn-big btn-contact" role="button" data-toggle="modal">{% trans "Contact Information" %}</a>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -121,6 +123,7 @@
           data-toggle="oktoggle" data-text="{% trans "Personal Information" %} +|{% trans "Collapse" %} -">{% trans "Personal Information" %} +</a>
     </section>
 
+    {% if object.is_current %}
     <!-- Contact information modal -->
     <div id="contact-information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
         <div class="modal-header">
@@ -137,7 +140,8 @@
                 <ul>
                     <li>מי שמטפל בפניות הציבור הם העוזרים הפרלמנטריים של הח"כים, ולא הח"כים עצמם.</li>
                     <li>שיחות טלפון מומלץ לבצע בימים ב'-ד', בין השעות 8:00 בבוקר ועד 17:00. אלו השעות שבהן העוזרים נמצאים יותר בלשכה.</li>
-                    <li>אימיילים עדיף לשלוח בימים א' ו-ה'.</li><li>הנחיות נוספות לכתיבת פנייה אפקטיבית לנבחרי ציבור ניתן למצוא ב<a href="http://www.shelly.org.il/node/1678" target="_blank">פוסט הזה של שלי יחימוביץ'</a>.</li>
+                    <li>אימיילים עדיף לשלוח בימים א' ו-ה'.</li>
+                    <li>הנחיות נוספות לכתיבת פנייה אפקטיבית לנבחרי ציבור ניתן למצוא ב<a href="http://www.shelly.org.il/node/1678" target="_blank">פוסט הזה של שלי יחימוביץ'</a>.</li>
                 </ul>
             </p>
         </div>
@@ -145,6 +149,7 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
+    {% endif %}
     <div class="row">
         <div class="cards span9">
             <section class="card card-list card-list-latest">
@@ -213,6 +218,7 @@
             {% endif %}
         </div>
     </div>
+{% comment %}
     <ul class="actions">
         <li>
         <li><a href="{% url member-activity-feed object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
@@ -307,27 +313,7 @@
                         </div>
                         <br/>
 
-                        {% if object.is_current %}
-                        <div>
-                            <h3> {% trans "Contact Information" %}</h3>
-                            <table>
-                                <tr>
-                                    <td>{% trans "phone" %}</td>
-                                    <td>{{ object.phone }}</td>
-                                </tr>
-                                {% if object.fax %}
-                                    <tr>
-                                        <td>{% trans "fax" %}</td>
-                                        <td>{{ object.fax }}</td>
-                                    </tr>
-                                {% endif %}
-                                <tr>
-                                    <td>{% trans "e-mail address" %}</td>
-                                    <td><a class="bold-link" href="mailto:{{object.email}}">{{ object.email }}</a></td>
-                                </tr>
-                            </table>
-                        </div> <br/>
-                        {% endif %}
+
                         <div>
                             <h3>{% trans "Votes" %}</h3>
                             <table>
@@ -452,7 +438,6 @@
                                 </tr>
                             </table>
                             <br/>
-                            {% comment %}
                             <h3>{% trans "Attendance" %}</h3>
                             <table>
                                 <tr>
@@ -515,14 +500,6 @@
 
                             </table>
                             <br />
-                            {% endcomment %}
-                            <h3>{% trans "MMM Documents" %}</h3>
-                            <table>
-                                <tr>
-                                    <td style="width:140px;">{% trans "Number of MMM documents ordered" %}</td>
-                                    <td style="width:200px;"><a href="{% url member-mmms object.id %}">{{ object.mmm_documents.count }}</a></td>
-                                </tr>
-                            </table>
                         </div>
                         <br/>
 
@@ -551,8 +528,6 @@
                         {% endif %}
 
 
-{% endcache %}
-{% comment %}
     
                         <div>
                             <h3>{% trans "Agendas" %}</h3>
@@ -578,7 +553,6 @@
                             </div>
                         </div>
 
-{% endcomment %}
                     </td>
                 </tr>
             </tbody>
@@ -587,32 +561,6 @@
         <br/>
 
 {% cache 14400 mks_detail_activities object.id request.page request.get_full_path %}
-        <div class="activities">
-            <form class="select" method="get" action=".">
-                <input class="awesome-button medium" type="submit" style="float:left;" value="{% trans "Refresh" %}">
-                {{verbs_form}}
-            </form>
-            <div style="clear:both;"></div>
-            {% autopaginate actions %}
-                {% for action in actions %}
-                    {% with action.timestamp|timesince as since %}
-                        {% ifchanged %}<h3>{% trans "before" %}&nbsp;{{ since }}</h3>{% endifchanged %}
-                    {% endwith %}
-                    <p>
-                        {% display_action action %}
-                    </p>
-                {% empty %}
-                    <p>
-                    {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
-                    </p>
-                {% endfor %}
-            {% paginate %}
-        </div>
-
-
-    </div>
-
-    <br/>
     {% if object.backlinks_enabled %}
         <div style="clear:both;">
         {% backlinks_for_model object as entry_pings %}
@@ -647,6 +595,7 @@
     {% endif %}
     <br />
     <div style="clear:both;"></div>
+{% endcomment %}
 {% endcache %}
 
 {% endblock %}

@@ -8,14 +8,11 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView
 from django.core.cache import cache
 from django.utils import simplejson as json
-from tagging.models import Tag
-from tagging.utils import calculate_cloud
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 
 from hashnav.detail import DetailView
 from models import Member, Party
-from forms import VerbsForm
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
@@ -211,37 +208,28 @@ class MemberDetailView(DetailView):
                               stattype,
                               '%s_percentile' % stattype)
 
-
-    def get_context_data (self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
-        verbs = None
-        if 'verbs' in self.request.GET:
-            verbs_form = VerbsForm(self.request.GET)
-            if verbs_form.is_valid():
-                verbs = verbs_form.cleaned_data['verbs']
-        if verbs==None:
-            verbs = ('proposed', 'posted')
-            verbs_form = VerbsForm({'verbs': verbs})
+
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
             cached_context = None
         else:
             watched = False
-            cached_context = cache.get('mk_%d_%s' % (member.id,
-                                                     '_'.join(verbs)))
+            cached_context = cache.get('mk_%d' % member.id)
 
         if cached_context is None:
             presence = {}
             self.calc_percentile(member, presence,
                                  'average_weekly_presence_hours',
                                  'average_weekly_presence_hours',
-                                 'average_weekly_presence_hours_percentile' )
+                                 'average_weekly_presence_hours_percentile')
             self.calc_percentile(member, presence,
                                  'average_monthly_committee_presence',
                                  'average_monthly_committee_presence',
-                                 'average_monthly_committee_presence_percentile' )
+                                 'average_monthly_committee_presence_percentile')
 
             bills_statistics = {}
             self.calc_bill_stats(member,bills_statistics,'proposed')
@@ -309,28 +297,29 @@ class MemberDetailView(DetailView):
 
             mmm_documents = member.mmm_documents.all()
 
-            cached_context = {'watched_member': watched,
-                'actions':actions,
+            cached_context = {
+                'watched_member': watched,
+                'actions': actions,
                 'legislation_actions': legislation_actions,
                 'committee_actions': committee_actions,
                 'mmm_documents': mmm_documents,
-                'verbs_form': verbs_form,
-                'bills_statistics':bills_statistics,
-                'agendas':agendas,
-                'presence':presence,
+                'bills_statistics': bills_statistics,
+                'agendas': agendas,
+                'presence': presence,
                 'current_knesset_start_date': date(2009, 2, 24),
-                'factional_discipline':factional_discipline,
-                'votes_against_own_bills':votes_against_own_bills,
-                'general_discipline':general_discipline,
-                'about_video_embed_link':about_video_embed_link,
-                'about_video_image_link':about_video_image_link,
-                'related_videos':related_videos,
-                'num_related_videos':related_videos.count()
-               }
+                'factional_discipline': factional_discipline,
+                'votes_against_own_bills': votes_against_own_bills,
+                'general_discipline': general_discipline,
+                'about_video_embed_link': about_video_embed_link,
+                'about_video_image_link': about_video_image_link,
+                'related_videos': related_videos,
+                'num_related_videos': related_videos.count()
+            }
+
             if not self.request.user.is_authenticated():
-                cache.set('mk_%d_%s' % (member.id, '_'.join(verbs)),
-                                        cached_context,
-                                        settings.LONG_CACHE_TIME)
+                cache.set('mk_%d' % member.id, cached_context,
+                          settings.LONG_CACHE_TIME)
+
         context.update(cached_context)
         return context
 
