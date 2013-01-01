@@ -5300,6 +5300,10 @@ h4 {
   font-size: 12px;
   letter-spacing: 1px;
 }
+ul,
+ol {
+  margin: 0px 25px 10px 0px;
+}
 .card {
   background: #ffffff;
   border: 1px solid #e6e6e6;
@@ -5557,6 +5561,55 @@ h4 {
 }
 .sidebar ul li:last-child {
   border-bottom: none;
+}
+.agenda-mini header {
+  *zoom: 1;
+}
+.agenda-mini header:before,
+.agenda-mini header:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.agenda-mini header:after {
+  clear: both;
+}
+.agenda-mini header img {
+  float: right;
+  display: block;
+  margin: 0 0 10px 20px;
+}
+.agenda-mini header h3 {
+  float: right;
+  letter-spacing: 0;
+  font-weight: normal;
+  line-height: 1.5em;
+  margin: -5px 0 0;
+}
+.agenda-mini header h3 span {
+  display: block;
+  font-weight: 700;
+}
+.agenda-pie {
+  width: 88px;
+  height: 88px;
+  border: 1px solid #a9a6a6;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  margin: 20px auto;
+}
+.arc path {
+  opacity: .9;
+}
+.good {
+  fill: #3ac8a8;
+}
+.bad {
+  fill: #ec6752;
+}
+.no-vote {
+  fill: none;
 }
 .sidebar-agendas {
   padding: 10px 10px 40px;
