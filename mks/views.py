@@ -8,8 +8,10 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView
 from django.core.cache import cache
 from django.utils import simplejson as json
+from django.contrib.contenttypes.models import ContentType
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
+from actstream.models import Follow
 
 from hashnav.detail import DetailView
 from models import Member, Party
@@ -297,8 +299,12 @@ class MemberDetailView(DetailView):
 
             mmm_documents = member.mmm_documents.all()
 
+            content_type = ContentType.objects.get_for_model(Member)
+            num_followers = Follow.objects.filter(object_id=member.pk, content_type=content_type).count()
+
             cached_context = {
                 'watched_member': watched,
+                'num_followers': num_followers,
                 'actions': actions,
                 'legislation_actions': legislation_actions,
                 'committee_actions': committee_actions,
