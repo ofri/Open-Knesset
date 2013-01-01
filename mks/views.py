@@ -306,12 +306,15 @@ class MemberDetailView(DetailView):
             for a in actions:
                 a.actor = member
 
-            legistlation_actions =  actor_stream(member).filter(verb__in=
-                    ('proposed', 'joined'))
+            legislation_actions =  actor_stream(member).filter(
+                verb__in= ('proposed', 'joined'))
+
+            committee_actions =  actor_stream(member).filter(verb='attended')
 
             cached_context = {'watched_member': watched,
                 'actions':actions,
-                'legistlation_actions': legistlation_actions,
+                'legislation_actions': legislation_actions,
+                'committee_actions': committee_actions,
                 'verbs_form': verbs_form,
                 'bills_statistics':bills_statistics,
                 'bills_tags':bills_tags,

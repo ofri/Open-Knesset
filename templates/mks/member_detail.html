@@ -138,20 +138,34 @@
             </section>
 {% if not object.is_minister %}
             <section class="card card-list card-list-latest">
-                    <header>
-                        <h2>חקיקה</h2>
-                        <a class="btn btn-mini btn-question" href="#">?</a>
-                    </header>
-                    <ul>
-                    {% for action in legistlation_actions|slice:":2" %}
-                        {% display_action action %}
-                    {% endfor %}
-                    </ul>
-                    <footer>
-                        <a class="btn btn-mini btn-expand">עוד +</a>
-                    </footer>
-                </section>
+                <header>
+                    <h2>חקיקה</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                {% for action in legislation_actions|slice:":2" %}
+                    {% display_action action %}
+                {% endfor %}
+                </ul>
+                <footer>
+                    <a class="btn btn-mini btn-expand">עוד +</a>
+                </footer>
+            </section>
 {% endif %}
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>ועדות</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                {% for action in committee_actions|slice:":2" %}
+                    {% display_action action %}
+                {% endfor %}
+                </ul>
+                <footer>
+                    <a class="btn btn-mini btn-expand">עוד +</a>
+                </footer>
+            </section>
         </div>
     </div>
     <ul class="actions">
