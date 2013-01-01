@@ -107,13 +107,15 @@
             less_button.show();
             $('#candidate-list').isotope('reLayout');
           });
-          $('.expandable-item').append(more_button);
+          $('.expandable-item').each(function () {
+              $(this).append(more_button.clone(true)) });
           $('.expandable-item .more-button').show();
           var wikipedia = $('.wikipedia');
           if (wikipedia.length > 0) {
             $.getJSON("http://he.wikipedia.org/w/api.php?action=parse&format=json&callback=?",
                 {page:wikipedia.attr('wikipedia-page'), prop:'text'},
                 function(data) {
+                  var wikipedia = $('.wikipedia');
                   wikipedia.html(data.parse.text['*']);
                   // all links are relative, got to make them absolute
                   wikipedia.find('a').each(function() {
@@ -127,6 +129,7 @@
                   wikipedia.children('table').first().removeClass('more-item').show();
                   // add the more button
                   wikipedia.append(more_button);
+                  more_button.show();
                   $('#candidate-list').isotope('reLayout');
                 });
           };
