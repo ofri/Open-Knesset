@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-03 18:22+0200\n"
-"PO-Revision-Date: 2013-01-03 18:25+0200\n"
+"POT-Creation-Date: 2013-01-03 18:52+0200\n"
+"PO-Revision-Date: 2013-01-03 18:53+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -286,6 +286,7 @@ msgstr "נמחקה"
 #: templates/committees/flatpages.html:3 templates/committees/flatpages.html:4
 #: templates/committees/flatpages.html:5
 #: templates/committees/topic_detail.html:15
+#: templates/mks/member_detail.html:203
 msgid "Committees"
 msgstr "ועדות"
 
@@ -1284,7 +1285,7 @@ msgstr "כניסה לחשבון"
 msgid "Members and Parties"
 msgstr "חכים וסיעות"
 
-#: templates/base.html:70
+#: templates/base.html:70 templates/mks/member_detail.html:184
 msgid "Legislation"
 msgstr "חקיקה"
 
@@ -2795,6 +2796,10 @@ msgstr "כרטיס ביקור מערוץ הכנסת"
 msgid "%(firstname)s around the net"
 msgstr "%(firstname)s ברשת"
 
+#: templates/mks/member_detail.html:121
+msgid "Followers"
+msgstr "עוקבים"
+
 #: templates/mks/member_detail.html:123 templates/mks/member_detail.html:137
 msgid "Contact Information"
 msgstr "צרו קשר"
@@ -2811,10 +2816,14 @@ msgstr "צמצם"
 msgid "Close"
 msgstr "סגור"
 
+#: templates/mks/member_detail.html:165
+msgid "Recent actions"
+msgstr "פעולות אחרונות"
+
 #: templates/mks/member_detail.html:174 templates/mks/member_detail.html:193
 #: templates/mks/member_detail.html:212 templates/mks/member_detail.html:231
 msgid "Loading"
-msgstr ""
+msgstr "טוען"
 
 #: templates/mks/member_detail.html:222
 #: templates/mmm/committee_mmm_docs.html:6
@@ -4809,9 +4818,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "Models available in the %(name)s application."
 #~ msgstr "מודלים זמינים ביישום %(name)s."
-
-#~ msgid "Recent Actions"
-#~ msgstr "פעולות אחרונות"
 
 #~ msgid "None available"
 #~ msgstr "לא נמצאו"

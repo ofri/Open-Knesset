@@ -118,7 +118,7 @@
         <div class="span3 social-details">
           <div class="spacer actions-panel">
             <a id="watch" class="btn btn-big btn-primary"></a>
-            <p class="text-center">{{num_followers}} עוקבים</p>
+            <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
             {% if object.is_current %}
             <a href="#contact-information-modal" class="btn btn-big btn-contact" role="button" data-toggle="modal">{% trans "Contact Information" %}</a>
             {% endif %}
@@ -162,7 +162,7 @@
         <div class="cards span9">
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>פעילות אחרונה</h2>
+                    <h2>{% trans "Recent actions" %}</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
                 <ul id="recent-actions">
@@ -181,7 +181,7 @@
 {% if not object.is_minister %}
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>חקיקה</h2>
+                    <h2>{% trans "Legislation" %}</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
                 <ul id="recent-legislation">
@@ -200,7 +200,7 @@
 {% endif %}
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>ועדות</h2>
+                    <h2>{% trans "Committees" %}</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
                 <ul id="recent-committees">
