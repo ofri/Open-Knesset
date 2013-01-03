@@ -229,6 +229,20 @@
 	 		<aside class="sidebar sidebar-agendas">
 	 			<h2>{% trans "Notable agendas" %}</h2>
 	 			<a class="btn btn-mini btn-question" href="#">?</a>
+                <ul>
+                {% for agenda in agendas %}
+                <li class="agenda-mini">
+                    <header>
+                        {% if agenda.image %}<img src="{{agenda.image.url}}" alt="{{agenda.name}}" width="30" height="30">{% endif %}
+                        <h3><span>{{agenda.name}}</span> {% trans "edited by" %} <a href="#">{{agenda.public_owner_name}}</a></h3>
+                    </header>
+                    <div class="agenda-pie">
+                        <!-- <span class="agenda-percent"><span class="agenda-percent-num">56<span>%</span></span>התאמה</span> -->
+                    </div>
+                </li>
+                {% endfor %}
+                </ul>
+	 			<a href="#" class="btn btn-more">עוד אג'נדות</a>
             </aside>
         </div>
     </div>
