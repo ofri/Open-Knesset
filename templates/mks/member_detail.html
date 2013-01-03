@@ -165,13 +165,17 @@
                     <h2>פעילות אחרונה</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
-                <ul>
-                {% for action in actions|slice:":2" %}
-                    {% display_action action %}
-                {% endfor %}
+                <ul id="recent-actions">
+                {% for action in actions %}{% display_action action %}{% endfor %}
                 </ul>
                 <footer>
-            <a class="btn btn-mini btn-expand">עוד +</a>
+                {% if actions_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-actions" 
+                    data-url="{% url member-more-actions object.pk %}"
+                    data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+                {% endif %}
                 </footer>
             </section>
 {% if not object.is_minister %}
@@ -180,13 +184,17 @@
                     <h2>חקיקה</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
-                <ul>
-                {% for action in legislation_actions|slice:":2" %}
-                    {% display_action action %}
-                {% endfor %}
+                <ul id="recent-legislation">
+                {% for action in legislation_actions %}{% display_action action %}{% endfor %}
                 </ul>
                 <footer>
-                    <a class="btn btn-mini btn-expand">עוד +</a>
+                {% if legislation_actions_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-legislation" 
+                    data-url="{% url member-more-legislation object.pk %}"
+                    data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+                {% endif %}
                 </footer>
             </section>
 {% endif %}
@@ -195,13 +203,17 @@
                     <h2>ועדות</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
-                <ul>
-                {% for action in committee_actions|slice:":2" %}
-                    {% display_action action %}
-                {% endfor %}
+                <ul id="recent-committees">
+                {% for action in committee_actions %}{% display_action action %}{% endfor %}
                 </ul>
                 <footer>
-                    <a class="btn btn-mini btn-expand">עוד +</a>
+                {% if committee_actions_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-committees" 
+                    data-url="{% url member-more-committees object.pk %}"
+                    data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+                {% endif %}
                 </footer>
             </section>
             {% if mmm_documents %}
@@ -210,16 +222,18 @@
                 <h2>{% trans "M.M.M Documents" %}</h2>
                     <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
-                <ul>
-                {% for doc in mmm_documents|slice:":2" %}
-                    <li>
-                        <p class="item-title"><a href="{{ doc.url }}">{{ doc.title }}</a></p>
-                        <p class="item-context">{{ doc.publication_date|timesince }}</p>
-                    </li>
-                {% endfor %}
+                <ul id="recent-mmm">
+                {% include "mks/mmm_partials.html" with object_list=mmm_documents %}
                 </ul>
                 <footer>
-                    <a class="btn btn-mini btn-expand">עוד +</a>
+                {% if mmm_documents_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-mmm" 
+                    data-url="{% url member-more-mmm object.pk %}"
+                    data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
                 </footer>
             </section>
                 

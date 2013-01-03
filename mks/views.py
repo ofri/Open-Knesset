@@ -9,6 +9,7 @@ from django.views.generic import ListView
 from django.core.cache import cache
 from django.utils import simplejson as json
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 from actstream.models import Follow
@@ -24,6 +25,7 @@ from video.utils import get_videos_queryset
 from datetime import date, timedelta
 
 import logging
+from auxiliary.views import GetMoreView
 
 
 logger = logging.getLogger("open-knesset.mks")
@@ -176,6 +178,7 @@ class MemberCsvView(CsvView):
 class MemberDetailView(DetailView):
 
     queryset = Member.objects.select_related('current_party', 'voting_statistics')
+    MEMBER_INITIAL_DATA = 2
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         # store in instance var if needed, no need to access cache for each
@@ -292,10 +295,10 @@ class MemberDetailView(DetailView):
             for a in actions:
                 a.actor = member
 
-            legislation_actions =  actor_stream(member).filter(
-                verb__in= ('proposed', 'joined'))
+            legislation_actions = actor_stream(member).filter(
+                verb__in=('proposed', 'joined'))
 
-            committee_actions =  actor_stream(member).filter(verb='attended')
+            committee_actions = actor_stream(member).filter(verb='attended')
 
             mmm_documents = member.mmm_documents.all()
 
@@ -305,10 +308,14 @@ class MemberDetailView(DetailView):
             cached_context = {
                 'watched_member': watched,
                 'num_followers': num_followers,
-                'actions': actions,
-                'legislation_actions': legislation_actions,
-                'committee_actions': committee_actions,
-                'mmm_documents': mmm_documents,
+                'actions_more': actions.count() > self.MEMBER_INITIAL_DATA,
+                'actions': actions[:self.MEMBER_INITIAL_DATA],
+                'legislation_actions_more': legislation_actions.count() > self.MEMBER_INITIAL_DATA,
+                'legislation_actions': legislation_actions[:self.MEMBER_INITIAL_DATA],
+                'committee_actions_more': committee_actions.count() > self.MEMBER_INITIAL_DATA,
+                'committee_actions': committee_actions[:self.MEMBER_INITIAL_DATA],
+                'mmm_documents_more': mmm_documents.count() > self.MEMBER_INITIAL_DATA,
+                'mmm_documents': mmm_documents[:self.MEMBER_INITIAL_DATA],
                 'bills_statistics': bills_statistics,
                 'agendas': agendas,
                 'presence': presence,
@@ -319,7 +326,8 @@ class MemberDetailView(DetailView):
                 'about_video_embed_link': about_video_embed_link,
                 'about_video_image_link': about_video_image_link,
                 'related_videos': related_videos,
-                'num_related_videos': related_videos.count()
+                'num_related_videos': related_videos.count(),
+                'INITIAL_DATA': self.MEMBER_INITIAL_DATA,
             }
 
             if not self.request.user.is_authenticated():
@@ -639,3 +647,41 @@ def mk_is_backlinkable(url, entry):
     return False
 
 mk_detail = default_server.register_view(MemberDetailView.as_view(), get_mk_entry, mk_is_backlinkable)
+
+
+class MemeberMoreActionsView(GetMoreView):
+    """Get partially rendered member actions content for AJAX calls to 'More'"""
+
+    paginate_by = 10
+    template_name = 'mks/action_partials.html'
+
+    def get_queryset(self):
+        member = get_object_or_404(Member, pk=self.kwargs['pk'])
+        actions = actor_stream(member)
+        return actions
+
+
+class MemeberMoreLegislationView(MemeberMoreActionsView):
+    """Get partially rendered member legislation actions content for AJAX calls to 'More'"""
+
+    def get_queryset(self):
+        actions = super(MemeberMoreLegislationView, self).get_queryset()
+        return actions.filter(verb__in=('proposed', 'joined'))
+
+
+class MemeberMoreCommitteeView(MemeberMoreActionsView):
+    """Get partially rendered member committee actions content for AJAX calls to 'More'"""
+
+    def get_queryset(self):
+        actions = super(MemeberMoreCommitteeView, self).get_queryset()
+        return actions.filter(verb='attended')
+
+
+class MemeberMoreMMMView(MemeberMoreActionsView):
+    """Get partially rendered member mmm documents content for AJAX calls to 'More'"""
+
+    template_name = "mks/mmm_partials.html"
+
+    def get_queryset(self):
+        member = get_object_or_404(Member, pk=self.kwargs['pk'])
+        return member.mmm_documents.all()
