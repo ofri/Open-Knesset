@@ -21,6 +21,11 @@ class PersonAlias(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.name, self.person.name)
 
+GENDER_CHOICES = (
+    (u'M', _('Male')),
+    (u'F', _('Female')),
+)
+
 class Person(models.Model):
     name = models.CharField(max_length=64)
     mk = models.ForeignKey('mks.Member', blank=True, null=True, related_name='person')

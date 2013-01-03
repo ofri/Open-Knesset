@@ -1,13 +1,12 @@
 {% extends "site_base.html" %}
 {% load i18n links_tags mks_tags common_visual_elements %}{% load static from staticfiles %}
-{% block extrahead %}
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
-            type="text/javascript"></script>
+{% block extrajs %}
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}" type="text/javascript"></script>
     <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
 {% endblock %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
+{% block nav-parties %}class="active"{% endblock %}
 {% block divcontent %}
     <h2><a href=".">{{ object.name }}</a></h2>
     <div class="list-wrap">

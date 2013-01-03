@@ -30,6 +30,12 @@ just_id = lambda x: x.id
 class MemberViewsTest(TestCase):
 
     def setUp(self):
+        # make sure cache is clean, to prevent some failing tests with
+        # unexpected caches
+        from django.core.cache import cache
+
+        cache.clear()
+
         self.party_1 = Party.objects.create(name='party 1')
         self.party_2 = Party.objects.create(name='party 2')
         self.mk_1 = Member.objects.create(name='mk_1',

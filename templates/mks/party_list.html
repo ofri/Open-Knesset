@@ -4,7 +4,7 @@
 {% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
+{% block nav-parties %}class="active"{% endblock %}
 {% block help-section %}
 	 {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
 {% endblock %}

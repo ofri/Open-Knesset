@@ -29,7 +29,7 @@ from tagvotes.models import TagVote
 from hashnav import DetailView, ListView
 from agendas.models import Agenda,UserSuggestedVote
 from auxiliary.views import CsvView
-from forms import VoteSelectForm, BillSelectForm
+from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
 from models import *
 
 logger = logging.getLogger("open-knesset.laws.views")
@@ -174,6 +174,57 @@ def votes_to_bar_widths(v_count, v_for, v_against):
     width_against = T-width_for
     return (width_for, width_against)
 
+class BillCsvView(CsvView):
+    model = Bill
+    filename = 'bills.csv'
+    list_display = (('full_title', _('Full Title')),
+                    ('popular_name', _('Popular Name')),
+                    ('get_stage_display', _('Stage')),
+                    ('stage_date', _('Stage Date')),
+                    ('pre_votes', _('Pre-Votes')),
+                    ('first_committee_meetings', _('First Committee Meetings')),
+                    ('first_vote', _('First Vote')),
+                    ('second_committee_meetings', _('Second Committee Meetings')),
+                    ('approval_vote', _('Approval Vote')),
+                    ('proposers', _('Proposers')),
+                    ('joiners', _('Joiners')))
+    
+    def community_meeting_gen(self, obj, attr):
+        '''
+        A helper function to compute presentation of community meetings url list, space separated
+        : param obj: The object instance
+        : param attr: The object attribute
+        
+        : return : A string with the urls comma-separated
+        '''
+        host = self.request.build_absolute_uri("/")
+        return " ".join(host + row.get_absolute_url() for row in getattr(obj, attr).all())
+    
+    def members_gen(self, obj, attr):
+        '''
+        A helper function to compute presentation of members, comma separated
+        : param obj: The object instance
+        : param attr: The object attribute
+        
+        : return : A string with the urls comma-separated
+        '''
+        return ", ".join(row.name for row in getattr(obj, attr).all())
+    
+    def proposers(self, obj, attr):
+        return self.members_gen(obj ,attr)
+
+    def joiners(self, obj, attr):
+        return self.members_gen(obj, attr)
+
+    def first_committee_meetings(self, obj, attr):
+        return self.community_meeting_gen(obj, attr)
+    
+    def second_committee_meetings(self, obj, attr):
+        return self.community_meeting_gen(obj, attr)
+    
+    def pre_votes(self, obj, attr):
+        return self.community_meeting_gen(obj, attr)
+    
 class BillDetailView (DetailView):
     allowed_methods = ['get', 'post']
     model = Bill
@@ -246,6 +297,13 @@ class BillDetailView (DetailView):
         context['party_voting_score'] = party_voting_score
         context['user_party_voting_score'] = user_party_voting_score
         context['tags'] = list(bill.tags)
+        context['budget_ests'] = list(bill.budget_ests.all())
+        if self.request.user:
+            context['user_has_be'] = bill.budget_ests.filter(estimator__username=str(self.request.user)).count()
+        if 'budget_ests_form' in kwargs:
+            context['budget_ests_form'] = kwargs['budget_ests_form']
+        else:
+            context['budget_ests_form'] = BudgetEstimateForm(bill,self.request.user)
         return context
 
     @method_decorator(login_required)
@@ -255,27 +313,55 @@ class BillDetailView (DetailView):
         if not object_id:
             return HttpResponseBadRequest()
 
-
-        vote = None
         bill = get_object_or_404(Bill, pk=object_id)
         user_input_type = request.POST.get('user_input_type')
-        if user_input_type == 'approval vote':
+        vote_types = ['approval vote','first vote','pre vote']
+        if user_input_type in vote_types:
+            i = vote_types.index(user_input_type)
             vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.approval_vote = vote
+            if i == 0:
+                bill.approval_vote = vote
+            elif i == 1:
+                bill.first_vote = vote
+            elif i == 2:
+                bill.pre_votes.add(vote)
+            else:
+                #FIXME: maybe different response.
+                return HttpResponseRedirect(".")
             bill.update_stage()
-        if user_input_type == 'first vote':
-            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.first_vote = vote
-            bill.update_stage()
-        if user_input_type == 'pre vote':
-            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.pre_votes.add(vote)
-            bill.update_stage()
+            action.send(request.user, verb='added-vote-to-bill',
+                    description=vote,
+                    target=bill,
+                    timestamp=datetime.datetime.now())
+        elif user_input_type == 'budget_est':
+            try:
+                budget_est = BillBudgetEstimation.objects.get(bill=bill,estimator=request.user)
+            except BillBudgetEstimation.DoesNotExist:
+                budget_est = BillBudgetEstimation(bill=bill,estimator=request.user)
+            #FIXME: breakage! sanitize!
+            form = BudgetEstimateForm(bill,request.user,request.POST)
+            if form.is_valid():
+                budget_est.one_time_gov = form.cleaned_data['be_one_time_gov']
+                budget_est.yearly_gov = form.cleaned_data['be_yearly_gov']
+                budget_est.one_time_ext = form.cleaned_data['be_one_time_ext']
+                budget_est.yearly_ext = form.cleaned_data['be_yearly_ext']
+                budget_est.summary = form.cleaned_data['be_summary']
+                budget_est.save()
+            else:
+                return self.get(request,budget_ests_form=form)
+            #botg = request.POST.get('be_one_time_gov')
+            #byg = request.POST.get('be_yearly_gov')
+            #bote = request.POST.get('be_one_time_ext')
+            #bye = request.POST.get('be_yearly_ext')
+            #bs = request.POST.get('be_summary')
+            #budget_est.one_time_gov = int(botg) if botg != "" else None
+            #budget_est.yearly_gov = int(byg) if byg != "" else None
+            #budget_est.one_time_ext = int(bote) if bote != "" else None
+            #budget_est.yearly_ext = int(bye) if bye != "" else None
+            #budget_est.summary = bs if bs != "" else None
+        else:
+            return HttpResponseBadRequest()
 
-        action.send(request.user, verb='added-vote-to-bill',
-                description=vote,
-                target=bill,
-                timestamp=datetime.datetime.now())
         return HttpResponseRedirect(".")
 
 _('added-vote-to-bill')

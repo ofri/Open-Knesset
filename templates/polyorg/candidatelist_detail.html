@@ -5,11 +5,8 @@
 {% load static from staticfiles %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block extrajs %}
-    <script type="text/javascript" src="{% static "js/jquery-1.7.1.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
 {% endblock %}
 {% block nav-elections %}class="selected"{% endblock %}
 {% block help-section %}
@@ -60,8 +57,12 @@
                       <td style="width: 20em;"><a href="{{ a.url }}">{{a.name}}</a></td>
                       <td class="numeric">{{a.score|floatformat:"0"}}%</td>
                       <td>
-                          <div id="agenda_{{ a.id }}_percentile" class="percentile {% if a.score < 0 %}percentile_against{% endif %}"></div>
-                          <script>set_percentile('agenda_{{ a.id }}',({{ a.score }}+100)/2);</script>
+                        {% comment %}
+                        <!-- a nice graphics to show the score -->
+                        <div class="agenda-score progress">
+                          <div class="agenda-marker" data-score="{{a.score}}"></div>
+                        </div>
+                        {% endcomment %}
                       </td>
                     </tr>
                     {% endfor %}
@@ -91,6 +92,10 @@
           </div>
     <a class="more-button" style="display:hidden;">{% trans "more" %}</a>
     <a class="less-button" style="display:hidden;">{% trans "less" %}</a>
+{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
     <script type="text/javascript">
       $(document).ready( function () {
           var less_button = $('.less-button');
@@ -145,4 +150,4 @@
            });
       });
     </script>
-:{% endblock %}
+{% endblock %}
