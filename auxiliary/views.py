@@ -366,9 +366,13 @@ class CsvView(BaseListView):
 class GetMoreView(ListView):
     """A base view for feeding data to 'get more...' type of links
 
-    Will return a json result, with partial of rendered template under content,
-    and key of current, total.
-
+    Will return a json result, with partial of rendered template:
+    {
+        "content": "....",
+        "current": current_patge number
+        "total": total_pages
+        "has_next": true if next page exists
+    }
     We'll paginate the response. Since Get More link targets may already have
     initial data, we'll look for `initial` GET param, and take it into
     consdiration, completing to page size.
@@ -392,8 +396,16 @@ class GetMoreView(ListView):
         """We'll take the rendered content, and shove it into json"""
 
         tmpl_response = super(GetMoreView, self).render_to_response(
-            context, **response_kwargs)
-        result = {'content': tmpl_response.render()}
+            context, **response_kwargs).render()
+
+        page = context['page_obj']
+
+        result = {
+            'content': tmpl_response.content,
+            'total': context['paginator'].num_pages,
+            'current': page.number,
+            'has_next': page.has_next(),
+        }
 
         return HttpResponse(json.dumps(result, ensure_ascii=False),
                             content_type='application/json')
