@@ -96,6 +96,12 @@
                 <div>{% trans "family status" %} - {{ object.family_status }}</div>
                 <div>{% trans "place of residence" %} - {{ object.place_of_residence}}</div>
                 {% endif %}
+                {% if about_video_embed_link != '' and about_video_image_link != '' %}
+                <div>
+                    <h3>{% trans "MK video (knesset channel)" %}</h3>
+                    {% video_player 400 300 about_video_embed_link about_video_image_link %}
+                </div>
+                {% endif %}
             </div>
             <div class="social-links">
               <h5>{% blocktrans with firstname=member.firstname %}{{firstname}} around the net{% endblocktrans %}:</h5>
@@ -136,14 +142,16 @@
              <p>{% trans "fax" %} - {{ object.fax }}</p>
              {% endif %}
              <p>{% trans "e-mail address" %} - {{object.email|urlize}}</p>
-             <p>טיפים ליצירת קשר
-                <ul>
-                    <li>מי שמטפל בפניות הציבור הם העוזרים הפרלמנטריים של הח"כים, ולא הח"כים עצמם.</li>
-                    <li>שיחות טלפון מומלץ לבצע בימים ב'-ד', בין השעות 8:00 בבוקר ועד 17:00. אלו השעות שבהן העוזרים נמצאים יותר בלשכה.</li>
-                    <li>אימיילים עדיף לשלוח בימים א' ו-ה'.</li>
-                    <li>הנחיות נוספות לכתיבת פנייה אפקטיבית לנבחרי ציבור ניתן למצוא ב<a href="http://www.shelly.org.il/node/1678" target="_blank">פוסט הזה של שלי יחימוביץ'</a>.</li>
-                </ul>
-            </p>
+             <div class="alert alert-info">
+                <p>טיפים ליצירת קשר
+                    <ul>
+                        <li>מי שמטפל בפניות הציבור הם העוזרים הפרלמנטריים של הח"כים, ולא הח"כים עצמם.</li>
+                        <li>שיחות טלפון מומלץ לבצע בימים ב'-ד', בין השעות 8:00 בבוקר ועד 17:00. אלו השעות שבהן העוזרים נמצאים יותר בלשכה.</li>
+                        <li>אימיילים עדיף לשלוח בימים א' ו-ה'.</li>
+                        <li>הנחיות נוספות לכתיבת פנייה אפקטיבית לנבחרי ציבור ניתן למצוא ב<a href="http://www.shelly.org.il/node/1678" target="_blank">פוסט הזה של שלי יחימוביץ'</a>.</li>
+                    </ul>
+                </p>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
