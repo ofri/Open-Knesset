@@ -88,12 +88,6 @@
             {% block social %}
             <div class="content-footer">
                 {% if not debug %}
-                <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
-                        | <input type="hidden" value="_s-xclick" name="cmd">
-                    <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
-                    <input type="submit" name="submit" value="תרמו לנו!">
-                    <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
-                </form> 
                     <!-- AddToAny BEGIN -->
                     <div class="a2a_kit a2a_default_style">
                     <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
@@ -120,16 +114,64 @@
     <!-- END #content -->
     <footer id="app-footer" class="container">
         <div class="row">
-            <div class="span3">
-                <ul id="nav-global">
-                    <li id="nav-past-votes" {% block nav-votes %} {% endblock %} > <a href="{% url vote-list %}">{% trans 'Past Votes' %}</a> </li>
-                    <li id="nav-about"><a href="{% url about %}">{% trans 'About' %}</a> </li>
+            <nav class="span8">
+                <ul class="nav nav-pills">
+                    <li><a class="home-icon" href="{% url main %}">{% trans "Homepage" %}</a></li>
+                    <li><a href="{% url party-list %}">{% trans "Members and Parties" %}</a></li>
+                    <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
+                    <li><a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
+                    <li><a href="#">מליאה</a></li>
+                    <li><a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
                 </ul>
+            </nav>
+            <div class="span4">
+                Search goes here
             </div>
-            <div class="span7"><a href="{% url about %}">{% trans 'Some rights reserved.' %}</a></div>
-            <div class="span2">
-                <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="51" width="41px"></a>
-                <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="51" width="34px"></a>
+        </div>
+        <div class="row about">
+            <div class="span4">
+                <div class="about-oknesset">
+                <h3>{% trans "Open Knesset is a project aimed to expose Knesset's actions to the public" %}</h3>
+                <p>
+                {% blocktrans %}All the information comes from the Knesset's site.
+                This site is maintained by volunteers and is not supported by
+                any political party ...{% endblocktrans %}
+                <a href="{% url about %}">{% trans "Read more" %}</a>
+                </p>
+                </div>
+                <div class="follow-oknesset">
+                    <h3>{% trans "Follow Open Knesset" %}:</h3>
+                    Social buttons go here
+                </div>
+            </div>
+            <div class="span4 offset4 hasadna">
+                <h3>
+                    <img src="{% static "img/sadna30x30.png" %}" alt="{% trans "The Public Knowledge Workshop" %}">
+                    <span>{% trans "Project of" %}</span>{% trans "The Public Knowledge Workshop" %}
+                </h3>
+                <ul>
+                    <li><a
+                        href="http://www.hasadna.org.il/projects/%D7%94%D7%AA%D7%A7%D7%A6%D7%99%D7%91-%D7%94%D7%A4%D7%AA%D7%95%D7%97/" target="_blank">{% trans "Open Budget" %}</a></li>
+                    <li><a href="http://www.hasadna.org.il/projects/%D7%A4%D7%95%D7%AA%D7%97%D7%99%D7%9D-%D7%90%D7%AA-%D7%95%D7%A2%D7%93%D7%AA-%D7%94%D7%9B%D7%A1%D7%A4%D7%99%D7%9D/" target="_blank">{% trans "Opening the finance committee" %}</a></li>
+                    <li><a href="http://www.hasadna.org.il/projects/%D7%9E%D7%A2%D7%A7%D7%91-%D7%98%D7%A8%D7%9B%D7%98%D7%A0%D7%91%D7%A8%D7%92/" target="_blank">{% trans "Traking Trachtenberg" %}</a></li>
+                    <li><a href="http://www.hasadna.org.il/projects/%D7%A8%D7%A9%D7%95%D7%99%D7%95%D7%AA-%D7%9E%D7%A7%D7%95%D7%9E%D7%99%D7%95%D7%AA-%D7%A4%D7%AA%D7%95%D7%97%D7%95%D7%AA/" target="_blank">{% trans "Open Local Authorities" %}</a></li>
+                </ul>
+                <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+                    <input type="hidden" value="_s-xclick" name="cmd">
+                    <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+                    <input type="submit" name="submit" value="{% trans "Donate to Hasadna" %}" class="btn  btn-big btn-large btn-primary">
+                    <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+                </form> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="span11">
+                {% trans "Some rights reserved. Using data from the site requires credit" %}
+                <a href="{% url about %}">{% trans "Details in the link" %}</a>
+            </div>
+            <div class="span1">
+                <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="32" width="25"></a>
+                <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="32" width="21"></a>
             </div>
         </div>
     </footer>

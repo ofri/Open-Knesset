@@ -5284,6 +5284,78 @@ body {
   background: none;
   margin: 10px 0;
 }
+#app-footer {
+  border-top: 4px solid #222222;
+  font-size: 14px;
+}
+#app-footer .row {
+  padding: 20px 0;
+}
+#app-footer .nav-pills {
+  margin-bottom: 0;
+}
+#app-footer .nav-pills li {
+  border-right: 1px solid #999999;
+}
+#app-footer .nav-pills li:first-child {
+  border: 0 none;
+}
+#app-footer .nav-pills li:first-child a {
+  margin-right: 0;
+}
+#app-footer .nav-pills li a {
+  font-weight: bold;
+  text-align: right;
+  margin: 0 20px;
+  padding: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  color: #222222;
+  font-size: 16px;
+}
+#app-footer .nav-pills li a:hover {
+  text-decoration: underline;
+}
+#app-footer .about {
+  margin-top: 20px;
+}
+#app-footer .about h3 {
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 0;
+}
+#app-footer .about-oknesset h3 {
+  border-bottom: 1px solid #999999;
+}
+#app-footer .follow-oknesset h3 {
+  margin-top: 40px;
+}
+#app-footer .hasadna h3 span {
+  display: block;
+  font-weight: normal;
+}
+#app-footer .hasadna h3 img {
+  float: right;
+  display: block;
+  margin: 8px 0 0 10px;
+}
+#app-footer .hasadna ul {
+  list-style: none;
+  margin-right: 0;
+  margin-bottom: 20px;
+}
+#app-footer .hasadna li {
+  border-bottom: 1px solid #999999;
+  padding: 3px;
+}
+#app-footer .hasadna a {
+  color: #464545;
+}
+#app-footer .hasadna form {
+  margin: 0;
+}
 h1 {
   font-size: 42px;
   letter-spacing: 1px;

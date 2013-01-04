@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-03 18:52+0200\n"
-"PO-Revision-Date: 2013-01-03 18:53+0200\n"
+"POT-Creation-Date: 2013-01-04 02:36+0200\n"
+"PO-Revision-Date: 2013-01-04 02:38+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -133,8 +133,9 @@ msgid "Agenda"
 msgstr "אג'נדה"
 
 #: agendas/models.py:222 agendas/urls.py:7 templates/base.html:73
-#: templates/agendas/agenda_list.html:7 templates/agendas/agenda_list.html:8
-#: templates/agendas/agenda_list.html:9 templates/mks/party_detail.html:48
+#: templates/base.html.py:124 templates/agendas/agenda_list.html:7
+#: templates/agendas/agenda_list.html:8 templates/agendas/agenda_list.html:9
+#: templates/mks/party_detail.html:48
 msgid "Agendas"
 msgstr "אג'נדות"
 
@@ -277,7 +278,7 @@ msgstr "בערעור"
 msgid "deleted"
 msgstr "נמחקה"
 
-#: committees/models.py:340 templates/base.html:71
+#: committees/models.py:340 templates/base.html:71 templates/base.html.py:122
 #: templates/committees/committee_detail.html:18
 #: templates/committees/committee_list.html:3
 #: templates/committees/committee_list.html:4
@@ -1228,7 +1229,6 @@ msgid "The project's mailing list is"
 msgstr "קבוצת הדיון נמצאת "
 
 #: templates/about.html:3 templates/about.html.py:4 templates/about.html:6
-#: templates/base.html:126
 msgid "About"
 msgstr "אודות"
 
@@ -1281,27 +1281,78 @@ msgstr "יציאה מהחשבון"
 msgid "login"
 msgstr "כניסה לחשבון"
 
-#: templates/base.html:69 templates/mks/member_detail.html:52
+#: templates/base.html:69 templates/base.html.py:120
+#: templates/mks/member_detail.html:52
 msgid "Members and Parties"
 msgstr "חכים וסיעות"
 
-#: templates/base.html:70 templates/mks/member_detail.html:184
+#: templates/base.html:70 templates/base.html.py:121
+#: templates/mks/member_detail.html:184
 msgid "Legislation"
 msgstr "חקיקה"
 
-#: templates/base.html:80
+#: templates/base.html:80 templates/base.html.py:119
 msgid "Homepage"
 msgstr "דף הבית"
 
-#: templates/base.html:125
-msgid "Past Votes"
-msgstr "הצבעות"
+#: templates/base.html:134
+msgid ""
+"Open Knesset is a project aimed to expose Knesset's actions to the public"
+msgstr "כנסת פתוחה הוא פרוייקט שמטרתו לחשוף את פעילות הכנסת לציבור"
 
-#: templates/base.html:129
-msgid "Some rights reserved."
+#: templates/base.html:136
+msgid ""
+"All the information comes from the Knesset's site.\n"
+"                This site is maintained by volunteers and is not supported "
+"by\n"
+"                any political party ..."
 msgstr ""
-"חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט "
-"וקישור לאתר."
+"כל המידע מגיע מאתר הכנסת. האתר מתוחזק על ידי מתנדבים ואינו נתמך ע\"י אף גוף "
+"מפלגתי ..."
+
+#: templates/base.html:139
+msgid "Read more"
+msgstr "קרא עוד"
+
+#: templates/base.html:143
+msgid "Follow Open Knesset"
+msgstr "עקבו אחר כנסת פתוחה"
+
+#: templates/base.html:149 templates/base.html.py:150
+msgid "The Public Knowledge Workshop"
+msgstr "הסדנא לידע ציבורי"
+
+#: templates/base.html:150
+msgid "Project of"
+msgstr "פרוייקט של"
+
+#: templates/base.html:154
+msgid "Open Budget"
+msgstr "התקציב הפתוח"
+
+#: templates/base.html:155
+msgid "Opening the finance committee"
+msgstr "פותחים את ועדת הכספים"
+
+#: templates/base.html:156
+msgid "Traking Trachtenberg"
+msgstr "מעקב: דו\"ח טרכטנברג"
+
+#: templates/base.html:157
+msgid "Open Local Authorities"
+msgstr "רשויות מקומיות פתוחות - בקרוב"
+
+#: templates/base.html:162
+msgid "Donate to Hasadna"
+msgstr "תרמו לסדנא"
+
+#: templates/base.html:169
+msgid "Some rights reserved. Using data from the site requires credit"
+msgstr "חלק מהזכויות שמורות. שימוש בנתונים מהאתר בכפוף לקרדיט"
+
+#: templates/base.html:170
+msgid "Details in the link"
+msgstr "פרטים בקישור"
 
 #: templates/help_base.html:5
 msgid "See more  ..."
@@ -3552,6 +3603,14 @@ msgstr "שבועי"
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
 
+#~ msgid "Some rights reserved."
+#~ msgstr ""
+#~ "חלק מהזכויות שמורות. פרטים בקישור. שימוש בנתונים מהאתר כפוף למתן קרדיט "
+#~ "וקישור לאתר."
+
+#~ msgid "Past Votes"
+#~ msgstr "הצבעות"
+
 #~ msgid "Joined"
 #~ msgstr "הצטרף/ה"
 
@@ -4260,10 +4319,6 @@ msgstr "פרופיל המשתמש עודכן"
 #, fuzzy
 #~ msgid "See all posts for this feed"
 #~ msgstr "רשימת מאמרים מלאה מפיד זה"
-
-#, fuzzy
-#~ msgid "Read more"
-#~ msgstr "להסיר"
 
 #, fuzzy
 #~ msgid "Read original post"
