@@ -77,6 +77,13 @@
                 {% endif %}
                 {% endcomment %}
               {% endif %}
+              {% if object.mpg_html_report and o.ordinal == 6 %}
+                <div class="candidate-list-item expandable-item" style="width:400px">
+                  <h1>{% trans "Report from MQG" %}</h1>
+                  <p class="hide-on-more">{{object.mpg_html_report|truncatewords_html:30|linebreaksbr}}</p>
+                  <p class="more-item">{{object.mpg_html_report|linebreaksbr}}</p>
+                </div>
+              {% endif %}
               {% if object.youtube_user and o.ordinal == 8 %}
                 <div class="candidate-list-item">
                   <iframe width="390" height="320" src="http://www.youtube.com/embed/?listType=user_uploads&list={{object.youtube_user}}&showinfo=1" frameborder="0" allowfullscreen></iframe>
@@ -99,12 +106,14 @@
             item.find('.more-item').hide()
             $(this).hide()
             item.children('.more-button').show();
+            item.find('.hide-on-more').show();
             $('#candidate-list').isotope('reLayout');
           })
           var more_button = $('.more-button');
           more_button.click(function () {
             var item = $(this).parent();
             item.find('.more-item').show()
+            item.find('.hide-on-more').hide();
             $(this).hide()
             var less = item.children('.less-button')
             if (less.length==0)
