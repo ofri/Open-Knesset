@@ -18,23 +18,29 @@
               {% if o.person.mk %}
               <a href="{{o.person.mk.get_absolute_url}}">
               {% endif %}
-              <div class="candidate-list-item person {% if o.ordinal == 1 %}leader{% endif %}">
-                <h2>{{o.person.name}}</h2>
+              <div class="card card-list candidate-list-item person">
+                <header>
+                <h2>{{o.ordinal}}</h2>
+              </header>
+                <h3>{{o.person.name}}</h3>
                 {% if o.person.img_url %}
                   <img src="{{o.person.img_url}}" alt="{{o.person.name}}">
                 {% endif %}
-                <h3>{{o.ordinal}}</h3>
               </div>
               {% if o.person.mk %}
               </a>
               {% endif %}
             {% if o.ordinal == 1 %}
               {% if object.wikipedia_page %}
-              <div class="candidate-list-item">
-                  <h1>{% trans 'Wikipedia' %} </h1>
-                  <div class=" wikipedia" wikipedia-page="{{object.wikipedia_page}}">
-                  </div>
+              <div class="card card-list candidate-list-item">
+                <header>
+                  <h2>{% trans 'Wikipedia' %} </h2>
+                </header>
+                <section>
+                <div class="wikipedia" wikipedia-page="{{object.wikipedia_page}}">
                 </div>
+                </section>
+              </div>
               {% endif %}
               <div class="candidate-list-item ballot">
                 <h1>{{object.ballot}}</h1>
@@ -49,24 +55,28 @@
                 </div>
                 {% endcomment %}
                 {% if agendas %}
-                <div class="candidate-list-item expandable-item candidate-list-agendas">
-                  <h2>{% trans "Agendas" %}</h2>
-                  <table>
-                  {% for a in agendas %}
-                    <tr {% if forloop.counter >= 6 %}class="more-item"{% endif %}>
-                      <td style="width: 20em;"><a href="{{ a.url }}">{{a.name}}</a></td>
-                      <td class="numeric">{{a.score|floatformat:"0"}}%</td>
-                      <td>
-                        {% comment %}
-                        <!-- a nice graphics to show the score -->
-                        <div class="agenda-score progress">
-                          <div class="agenda-marker" data-score="{{a.score}}"></div>
-                        </div>
-                        {% endcomment %}
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </table>
+                <div class="card card-list candidate-list-item expandable-item candidate-list-agendas">
+                  <header>
+                    <h2>{% trans "Agendas" %}</h2>
+                  </header>
+                  <section>
+                    <table>
+                    {% for a in agendas %}
+                      <tr {% if forloop.counter >= 6 %}class="more-item"{% endif %}>
+                        <td style="width: 20em;"><a href="{{ a.url }}">{{a.name}}</a></td>
+                        <td class="numeric">{{a.score|floatformat:"0"}}%</td>
+                        <td>
+                          {% comment %}
+                          <!-- a nice graphics to show the score -->
+                          <div class="agenda-score progress">
+                            <div class="agenda-marker" data-score="{{a.score}}"></div>
+                          </div>
+                          {% endcomment %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </table>
+                  </section>
                 </div>
                 {% endif %}
                 {% comment %}
@@ -79,26 +89,44 @@
                 {% endcomment %}
               {% endif %}
               {% if object.mpg_html_report and o.ordinal == 6 %}
-                <div class="candidate-list-item expandable-item" style="width:400px">
-                  <h1>{% trans "Report from MQG" %}</h1>
-                  <p class="hide-on-more">{{object.mpg_html_report|truncatewords_html:30|linebreaksbr}}</p>
-                  <p class="more-item">{{object.mpg_html_report|linebreaksbr}}</p>
+                <div class="card card-list candidate-list-item expandable-item" style="width:400px">
+                  <header>
+                  <h2>{% trans "Report from MQG" %}</h2>
+                  </header>
+                  <section>
+                    <p class="hide-on-more">{{object.mpg_html_report|truncatewords_html:30|linebreaksbr}}</p>
+                    <p class="more-item">{{object.mpg_html_report|linebreaksbr}}</p>
+                  </section>
                 </div>
               {% endif %}
               {% if object.youtube_user and o.ordinal == 8 %}
-                <div class="candidate-list-item">
-                  <iframe width="390" height="320" src="http://www.youtube.com/embed/?listType=user_uploads&list={{object.youtube_user}}&showinfo=1" frameborder="0" allowfullscreen></iframe>
+                <div class="card card-list candidate-list-item">
+                  <header>
+                    <h2>{% trans "Videos" %}</h2>
+                  </header>
+                  <section>
+                    <iframe width="390" height="320" src="http://www.youtube.com/embed/?listType=user_uploads&list={{object.youtube_user}}&showinfo=1" frameborder="0" allowfullscreen></iframe>
+                  </section>
                 </div>
               {% endif %}
               {% if object.facebook_url and o.ordinal == 10 %}
-                <div class="candidate-list-item">
+                <div class="card card-list candidate-list-item">
+                  <header>
+                    <h2>{% trans "Facebook" %}</h2>
+                  </header>
+                  <section>
                     <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=292&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:558px;" allowTransparency="true"></iframe>
+                  </section>
                 </div>
               {% endif %}
             {% endfor %}
           </div>
-    <a class="more-button" style="display:hidden;">{% trans "more" %}</a>
-    <a class="less-button" style="display:hidden;">{% trans "less" %}</a>
+                <footer class="more-button" style="display:hidden;">
+    <a class="btn btn-mini btn-expand">{% trans "more" %}&nbsp;+</a>
+                </footer>
+                <footer class="less-button" style="display:hidden;">
+    <a class="btn btn-mini btn-expand">{% trans "less" %}&nbsp;-</a>
+                </footer>
 {% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
@@ -128,7 +156,7 @@
           });
           $('.expandable-item').each(function () {
               $(this).append(more_button.clone(true)) });
-          $('.expandable-item .more-button').show();
+          $('.expandable-item').find('.more-button').show();
           var wikipedia = $('.wikipedia');
           if (wikipedia.length > 0) {
             $.getJSON("http://he.wikipedia.org/w/api.php?action=parse&format=json&callback=?",

@@ -68,27 +68,17 @@
     width: 150px;
     margin: 5px;
     text-align: center;
-    padding:5px;
     float: right;
     overflow: hidden;
     position: relative;
-    background: white;
-    color: #222;
-    border: 1px solid;
-    -webkit-border-top-right-radius: 1.2em;
-    -moz-border-radius-topright: 1.2em;
-    border-top-right-radius: 1.2em;
+    padding-bottom: 4px;
 }
-.person h3 { position:absolute; top:0; left:0; margin:0;}
+.person h3 { clear:both;}
 .person img {height:110px;}
-.wikipedia { max-width: 600px;}
+.wikipedia { max-width: 600px; }
 .wikipedia dl {display:none;}
 
 .more-item {display:none;}
-.more-button, .less-button {clear:both; display:none; float:left;}
-
-.leader {
-    background: #add8e6
-}
-
-.candidate-list-agendas { width:385; }
+.candidate-list-agendas { width:385px; }
+.candidate-list-agendas>table { clear:both; margin:0.5em; }
+section {clear:both; padding:0.5em;}
