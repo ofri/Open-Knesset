@@ -1158,7 +1158,6 @@ display: none;
     cursor: pointer;
 }
 
-
 .isotope-item {
     z-index: 2;
 }
@@ -1241,45 +1240,6 @@ display: none;
 
 .more-item {display:none;}
 .more-button, .less-button {clear:both; display:none; float:left;}
-.element * {
-    position: absolute;
-    margin: 0;
-}
-
-.element .symbol {
-    right: 0.2em;
-    top: 0.4em;
-    font-size: 3.8em;
-    line-height: 1.0em;
-    color: #fff;
-}
-.element.large .symbol {
-    font-size: 4.5em;
-}
-
-.element.fake .symbol {
-    color: #000;
-}
-
-.element .name {
-    left: 0.5em;
-    bottom: 1.6em;
-    font-size: 1.05em;
-}
-
-.element .weight {
-    font-size: 0.9em;
-    left: 0.5em;
-    bottom: 0.5em;
-}
-
-.element .number {
-    font-size: 1.25em;
-    font-weight: bold;
-    color: hsla(0,0%,0%,.5);
-    right: 0.5em;
-    top: 5.5em;
-}
 
 .leader {
     background: #add8e6
@@ -1290,3 +1250,4 @@ display: none;
     background: #b0c4de
 }
 .candidate-list-agendas { width:385; }
+#id_search_page_q { background-image: none !important  }

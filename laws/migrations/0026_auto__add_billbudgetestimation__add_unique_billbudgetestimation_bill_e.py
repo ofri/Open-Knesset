@@ -1,47 +1,38 @@
-# encoding: utf-8
-import datetime, sys
+# -*- coding: utf-8 -*-
+import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from django.utils import simplejson as json
-from django.core import management
 
-class Migration(DataMigration):
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        '''
-        This migration doesn't work and I'm not sure we need it
-        # dump references to person that exist in committess app
-        data = orm['committees.ProtocolPart'].objects.filter(speaker__isnull=False).values('id','speaker')
-        with open('committee_protocol_parts_speakers.json', 'wt') as f:
-            json.dump(list(data), f)
+        # Adding model 'BillBudgetEstimation'
+        db.create_table('laws_billbudgetestimation', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('bill', self.gf('django.db.models.fields.related.ForeignKey')(related_name='budget_ests', to=orm['laws.Bill'])),
+            ('one_time_gov', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('yearly_gov', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('one_time_ext', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('yearly_ext', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('estimator', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='budget_ests', null=True, to=orm['auth.User'])),
+            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('summary', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+        ))
+        db.send_create_signal('laws', ['BillBudgetEstimation'])
 
-        # delete all data
-        orm['committees.ProtocolPart'].objects.all().update(speaker=None)
-        orm['persons.Person'].objects.all().delete()
-        orm['persons.PersonAlias'].objects.all().delete()
-        orm['persons.Title'].objects.all().delete()
-        orm['persons.Role'].objects.all().delete()
-        orm['persons.ProcessedProtocolPart'].objects.all().delete()
-        '''
+        # Adding unique constraint on 'BillBudgetEstimation', fields ['bill', 'estimator']
+        db.create_unique('laws_billbudgetestimation', ['bill_id', 'estimator_id'])
+
 
     def backwards(self, orm):
-        '''
-        if orm['persons.Person'].objects.count():
-            print "Warning: persons table is not empty"
-        management.call_command('loaddata','persons_dump.json',
-                                interactive=False)
-        '''
-        #with open('committee_protocol_parts_speakers.json', 'rt') as f:
-        #    data = json.load(f)
-        #l = len(data)
-        #for i,d in enumerate(data):
-        #    if i%(1+(l/100))==0:
-        #        print ".",
-        #        sys.stdout.flush()
-        #    pp = orm['committees.ProtocolPart'].objects.get(pk=d['id'])
-        #    pp.speaker_id = d['speaker']
-        #    pp.save()
+        # Removing unique constraint on 'BillBudgetEstimation', fields ['bill', 'estimator']
+        db.delete_unique('laws_billbudgetestimation', ['bill_id', 'estimator_id'])
+
+        # Deleting model 'BillBudgetEstimation'
+        db.delete_table('laws_billbudgetestimation')
+
 
     models = {
         'auth.group': {
@@ -59,7 +50,7 @@ class Migration(DataMigration):
         },
         'auth.user': {
             'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 12, 10, 23, 39, 52, 323520)'}),
+            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
@@ -67,7 +58,7 @@ class Migration(DataMigration):
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 12, 10, 23, 39, 52, 323438)'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
@@ -96,31 +87,6 @@ class Migration(DataMigration):
             'topics': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'votes_mentioned': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'committee_meetings'", 'blank': 'True', 'to': "orm['laws.Vote']"})
         },
-        'committees.protocolpart': {
-            'Meta': {'ordering': "('order', 'id')", 'object_name': 'ProtocolPart'},
-            'body': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'header': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'meeting': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'parts'", 'to': "orm['committees.CommitteeMeeting']"}),
-            'order': ('django.db.models.fields.IntegerField', [], {}),
-            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'protocol_parts'", 'null': 'True', 'to': "orm['persons.Person']"})
-        },
-        'committees.topic': {
-            'Meta': {'object_name': 'Topic'},
-            'committees': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['committees.Committee']", 'symmetrical': 'False'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'editors': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'editing_topics'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.User']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'log': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'meetings': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']", 'null': 'True', 'blank': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'rating_score': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'rating_votes': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0', 'blank': 'True'}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '256'})
-        },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -139,6 +105,111 @@ class Migration(DataMigration):
             'which_pk': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'which_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_for_event'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
             'who': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['persons.Person']", 'symmetrical': 'False'})
+        },
+        'laws.bill': {
+            'Meta': {'ordering': "('-stage_date', '-id')", 'object_name': 'Bill'},
+            'approval_vote': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'bill_approved'", 'unique': 'True', 'null': 'True', 'to': "orm['laws.Vote']"}),
+            'first_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_first'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
+            'first_vote': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills_first'", 'null': 'True', 'to': "orm['laws.Vote']"}),
+            'full_title': ('django.db.models.fields.CharField', [], {'max_length': '2000', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'joiners': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_joined'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'law': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'to': "orm['laws.Law']"}),
+            'popular_name': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'blank': 'True'}),
+            'popular_name_slug': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'blank': 'True'}),
+            'pre_votes': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_pre_votes'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.Vote']"}),
+            'proposers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'second_committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'bills_second'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '1000'}),
+            'stage': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'stage_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
+        },
+        'laws.billbudgetestimation': {
+            'Meta': {'unique_together': "(('bill', 'estimator'),)", 'object_name': 'BillBudgetEstimation'},
+            'bill': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'budget_ests'", 'to': "orm['laws.Bill']"}),
+            'estimator': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'budget_ests'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'one_time_ext': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'one_time_gov': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'summary': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'yearly_ext': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'yearly_gov': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'laws.govlegislationcommitteedecision': {
+            'Meta': {'object_name': 'GovLegislationCommitteeDecision'},
+            'bill': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gov_decisions'", 'null': 'True', 'to': "orm['laws.Bill']"}),
+            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'source_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'stand': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'subtitle': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
+        },
+        'laws.govproposal': {
+            'Meta': {'object_name': 'GovProposal'},
+            'bill': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'gov_proposal'", 'unique': 'True', 'null': 'True', 'to': "orm['laws.Bill']"}),
+            'booklet_number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_govproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
+            'content_html': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'knesset_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'law': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'laws_govproposal_related'", 'null': 'True', 'to': "orm['laws.Law']"}),
+            'source_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'}),
+            'votes': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_govproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.Vote']"})
+        },
+        'laws.knessetproposal': {
+            'Meta': {'object_name': 'KnessetProposal'},
+            'bill': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'knesset_proposal'", 'unique': 'True', 'null': 'True', 'to': "orm['laws.Bill']"}),
+            'booklet_number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'committee': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'bills'", 'null': 'True', 'to': "orm['committees.Committee']"}),
+            'committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_knessetproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
+            'content_html': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'knesset_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'law': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'laws_knessetproposal_related'", 'null': 'True', 'to': "orm['laws.Law']"}),
+            'originals': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'knesset_proposals'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.PrivateProposal']"}),
+            'source_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'}),
+            'votes': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_knessetproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.Vote']"})
+        },
+        'laws.law': {
+            'Meta': {'object_name': 'Law'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'merged_into': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'duplicates'", 'null': 'True', 'to': "orm['laws.Law']"}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
+        },
+        'laws.membervotingstatistics': {
+            'Meta': {'object_name': 'MemberVotingStatistics'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'member': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'voting_statistics'", 'unique': 'True', 'to': "orm['mks.Member']"})
+        },
+        'laws.partyvotingstatistics': {
+            'Meta': {'object_name': 'PartyVotingStatistics'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'party': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'voting_statistics'", 'unique': 'True', 'to': "orm['mks.Party']"})
+        },
+        'laws.privateproposal': {
+            'Meta': {'object_name': 'PrivateProposal'},
+            'bill': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'proposals'", 'null': 'True', 'to': "orm['laws.Bill']"}),
+            'committee_meetings': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_privateproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['committees.CommitteeMeeting']"}),
+            'content_html': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'joiners': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'proposals_joined'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'knesset_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'law': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'laws_privateproposal_related'", 'null': 'True', 'to': "orm['laws.Law']"}),
+            'proposal_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'proposers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'proposals_proposed'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['mks.Member']"}),
+            'source_url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'}),
+            'votes': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'laws_privateproposal_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['laws.Vote']"})
         },
         'laws.vote': {
             'Meta': {'ordering': "('-time', '-id')", 'object_name': 'Vote'},
@@ -174,22 +245,6 @@ class Migration(DataMigration):
             'member': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mks.Member']"}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'vote': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['laws.Vote']"})
-        },
-        'links.link': {
-            'Meta': {'object_name': 'Link'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_link'", 'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'link_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['links.LinkType']", 'null': 'True', 'blank': 'True'}),
-            'object_pk': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '1000'})
-        },
-        'links.linktype': {
-            'Meta': {'object_name': 'LinkType'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         'mks.member': {
             'Meta': {'ordering': "['name']", 'object_name': 'Member'},
@@ -254,23 +309,6 @@ class Migration(DataMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['persons.Title']"})
         },
-        'persons.personalias': {
-            'Meta': {'object_name': 'PersonAlias'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['persons.Person']"})
-        },
-        'persons.processedprotocolpart': {
-            'Meta': {'object_name': 'ProcessedProtocolPart'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'protocol_part_id': ('django.db.models.fields.IntegerField', [], {})
-        },
-        'persons.role': {
-            'Meta': {'object_name': 'Role'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'roles'", 'to': "orm['persons.Person']"}),
-            'text': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'})
-        },
         'persons.title': {
             'Meta': {'object_name': 'Title'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -297,4 +335,4 @@ class Migration(DataMigration):
         }
     }
 
-    complete_apps = ['committees', 'persons']
+    complete_apps = ['laws']

@@ -3,7 +3,7 @@
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-laws %}class="selected"{% endblock %}
+{% block nav-laws %}class="active"{% endblock %}
 {% block help-section %}
 	{% i18ninclude "laws/bill_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
@@ -15,6 +15,13 @@
             </form>
         </div>
         <a target="_blank" href="http://hamishmar.org.il/?page_id=431">{% trans 'Explanation about the legislation process' %}</a><br>
+        <ul class="actions">
+            <li>
+                <span id="export-csv" class="awesome-button medium">
+                    <a href="./csv/?{{ query_string }}">{% trans 'Export data to Excel' %}</a>
+                </span>
+            </li>
+        </ul>	
 {% endblock %}
 {% block divcontent %}
     {% if member and not stage %}

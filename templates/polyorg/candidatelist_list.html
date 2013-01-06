@@ -5,10 +5,8 @@
 {% load static from staticfiles %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block description %}{% trans "Candidate list for the comming elections" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block extrajs %}
-    <script type="text/javascript" src="{% static "js/jquery-1.7.1.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery.jgrowl.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
 {% endblock %}
 {% block nav-elections %}class="selected"{% endblock %}
 {% block help-section %}
@@ -36,6 +34,9 @@
       </a>
     {% endfor %}
     </div>
+{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
     <script type="text/javascript">
       $(document).ready( function () {
           $('#candidate-lists').isotope({
