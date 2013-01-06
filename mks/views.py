@@ -300,7 +300,7 @@ class MemberDetailView(DetailView):
 
             committee_actions = actor_stream(member).filter(verb='attended')
 
-            mmm_documents = member.mmm_documents.all()
+            mmm_documents = member.mmm_documents.order_by('-publication_date')
 
             content_type = ContentType.objects.get_for_model(Member)
             num_followers = Follow.objects.filter(object_id=member.pk, content_type=content_type).count()
@@ -681,7 +681,8 @@ class MemeberMoreMMMView(MemeberMoreActionsView):
     """Get partially rendered member mmm documents content for AJAX calls to 'More'"""
 
     template_name = "mks/mmm_partials.html"
+    paginate_by = 10
 
     def get_queryset(self):
         member = get_object_or_404(Member, pk=self.kwargs['pk'])
-        return member.mmm_documents.all()
+        return member.mmm_documents.order_by('-publication_date')
