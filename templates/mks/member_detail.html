@@ -4,13 +4,11 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+    <script src="{% static "js/watch.js" %}"></script>
+    <script src="{% static "js/bars.js" %}"></script>
+    <script src="{% static "js/d3.js" %}"></script>
+    <script src="{% static "js/mk-pie.js" %}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
-        });
-
         function toggle_factional_discipline() {
             $(".factional_discipline_row").toggleClass("discipline_row");
             $(".factional_discipline_control").toggleClass("discipline_hide_control");
@@ -24,10 +22,15 @@
             $(".votes_against_own_bills_control").toggleClass("discipline_hide_control");
         }
 
-        $( function () {
-                $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
-                $(".general_discipline").click( function () { toggle_general_discipline(); } );
-                $(".votes_against_own_bills").click( function () { toggle_votes_against_own_bills(); } );
+        $(function() {
+            register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
+            $('.agenda-pie').each(function() {
+                var $this = $(this), data=$this.data();
+                console.log(data)
+            })
+            $(".factional_discipline").click( function () { toggle_factional_discipline(); } );
+            $(".general_discipline").click( function () { toggle_general_discipline(); } );
+            $(".votes_against_own_bills").click( function () { toggle_votes_against_own_bills(); } );
         });
     </script>
     {% video_init %}
@@ -244,17 +247,7 @@
 	 			<h2>{% trans "Notable agendas" %}</h2>
 	 			<a class="btn btn-mini btn-question" href="#">?</a>
                 <ul>
-                {% for agenda in agendas %}
-                <li class="agenda-mini">
-                    <header>
-                        {% if agenda.image %}<img src="{{agenda.image.url}}" alt="{{agenda.name}}" width="30" height="30">{% endif %}
-                        <h3><span>{{agenda.name}}</span> {% trans "edited by" %} <a href="#">{{agenda.public_owner_name}}</a></h3>
-                    </header>
-                    <div class="agenda-pie">
-                        <!-- <span class="agenda-percent"><span class="agenda-percent-num">56<span>%</span></span>התאמה</span> -->
-                    </div>
-                </li>
-                {% endfor %}
+                {% include "mks/agenda_partials.html" with object_list=agendas %}
                 </ul>
 	 			<a href="#" class="btn btn-more">עוד אג'נדות</a>
             </aside>

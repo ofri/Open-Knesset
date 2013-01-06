@@ -249,6 +249,7 @@ class MemberDetailView(DetailView):
             agendas = agendas['top'] + agendas['bottom']
             for agenda in agendas:
                 agenda.watched=False
+                agenda.totals = agenda.get_mks_totals(member)
             if self.request.user.is_authenticated():
                 watched_agendas = self.request.user.get_profile().agendas
                 for watched_agenda in watched_agendas:
