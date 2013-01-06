@@ -17,10 +17,17 @@
             padding     : 10,
             line_width  : 5,
             radius      : 300 / 2,
-            classes     : {
-                yes     : 'good',
-                no      : 'bad',
-                didnt   : 'no-vote'
+//            classes     : {
+//                'for'       : 'good',
+//                against     : 'bad',
+//                'abstain'   : 'neutral',
+//                'no-vote'   : 'no-vote'
+//            },
+            colors      : {
+                'for'       : '#3ac8a8', // goodColor
+                against     : '#ec6752', // badColor
+                'abstain'   : '#a9a6a6',
+                'no-vote'   : 'transparent'
             },
             sort        : null,
             value       : function (d) { return d.votes; }
@@ -70,14 +77,12 @@
                                 .data(this.pie(data))
                                 .enter().append('g')
                                 .attr('class', 'arc'),
-                classes = this.options.classes;
+                colors = this.options.colors;
 
             // arcs
             g.append('path')
                 .attr('d', this.arc)
-                .classed('good', function(d) { return classes[d.data.type] == 'good'; })
-                .classed('bad', function(d) { return classes[d.data.type] == 'bad'; })
-                .classed('no-vote', function(d) { return classes[d.data.type] == 'no-vote'; });
+                .style('fill', function(d) { return colors[d.data.type]; });
             return this;
         }
     };
