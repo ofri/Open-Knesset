@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models import Sum, Q
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.core.cache import cache
 from django.utils import simplejson as json
 from django.contrib.contenttypes.models import ContentType
@@ -687,3 +687,20 @@ class MemeberMoreMMMView(MemeberMoreActionsView):
     def get_queryset(self):
         member = get_object_or_404(Member, pk=self.kwargs['pk'])
         return member.mmm_documents.order_by('-publication_date')
+
+
+class PartiesMembersView(TemplateView):
+    """Index page for parties and members."""
+
+    template_name = 'mks/parties_members.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super(PartiesMembersView, self).get_context_data(**kwargs)
+
+        ctx['coalition'] = Party.objects.filter(is_coalition=True).annotate(
+            extra=Sum('number_of_seats')).order_by('-extra')
+        ctx['opposition'] = Party.objects.filter(is_coalition=False).annotate(
+            extra=Sum('number_of_seats')).order_by('-extra')
+        ctx['past_members'] = Member.objects.filter(is_current=False)
+
+        return ctx

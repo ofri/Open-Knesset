@@ -1,0 +1,42 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans "Members and Parties" %}{% endblock %}
+{% block description %}{% trans "Members and Parties" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-parties %}class="active"{% endblock %}
+{% block breadcrumbs %}
+            <li class="active">{% trans "Members and Parties" %}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <h1 class="span5">{% trans "Coalition" %}</h1>
+        <h1 class="span5">{% trans "Opposition" %}</h1>
+        <h2 class="span2">{% trans "Past MKs" %}</h2>
+    </div>
+    <div class="row">
+      <div class="cards span5">
+      {% for party in coalition  %}
+        <section class="card card-list card-list-latest">
+            <header><h2>{{party.name}} ({{party.extra}} {% trans "Seats" %})</h2></header>
+            <ul>
+            {% for member in party.all_members.all %}
+            <li>{{ member.name }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endfor %}
+      </div>
+      <div class="cards span5">
+      {% for party in opposition  %}
+        <section class="card card-list card-list-latest">
+            <header><h2>{{party.name}}</h2></header>
+            <ul>
+            {% for member in party.all_members.all %}
+            <li><a href="{{member.get_absolute_url}}">{{ member.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endfor %}
+      </div>
+    </div>
+{% endblock %}
