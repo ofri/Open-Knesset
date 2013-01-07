@@ -704,3 +704,11 @@ class PartiesMembersView(TemplateView):
         ctx['past_members'] = Member.objects.filter(is_current=False)
 
         return ctx
+
+
+class PartiesOverview(TemplateView):
+    """
+    An overwiew of all parties
+    """
+
+    template_name = "mks/parties_overview.html"
