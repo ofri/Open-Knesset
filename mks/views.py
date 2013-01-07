@@ -16,6 +16,7 @@ from actstream.models import Follow
 
 from hashnav.detail import DetailView
 from models import Member, Party
+from polyorg.models import CandidateList
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
@@ -712,3 +713,10 @@ class PartiesOverview(TemplateView):
     """
 
     template_name = "mks/parties_overview.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(PartiesOverview, self).get_context_data(**kwargs)
+
+        ctx['candidate_lists'] = CandidateList.objects.all()
+
+        return ctx

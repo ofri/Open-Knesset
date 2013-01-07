@@ -1,10 +1,36 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% block extratitle %}{% trans "Members and Parties" %}{% endblock %}
-{% block description %}{% trans "Members and Parties" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block description %}{% trans "Members and Parties" %} -
+    {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
-            <li class="active">{% trans "Members and Parties" %}</li>
+    <li class="active">{% trans "Members and Parties" %}</li>
+{% endblock %}
+
+
+{% block divcontent %}
+    <h1>{% trans "Candidate list for the comming elections" %}</h1>
+    <div id="candidate-lists">
+        {% for list in candidate_lists %}
+            <a href="{% url candidate-list-detail list.id %}">
+                <div class="candidate-list-element ballot">
+                    <h1>
+                        {{ list.ballot }}
+                    </h1>
+
+                    <h2>
+                        {{ list.name }}
+                    </h2>
+
+                    {% for person in list.candidates.all %}
+                        <div>{{ person.name }}</div>
+                        <div>{{ person.img_url }}</div>
+                    {% endfor %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {#{% block divcontent %}#}
