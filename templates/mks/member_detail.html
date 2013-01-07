@@ -58,9 +58,6 @@
     {% url member-trackback object_id=object.id as trackback_url %}
     {% trackback_rdf object.get_absolute_url object.title trackback_url True %}
 {% endif %}
-    <style>
-        .action-actor { display: none; }
-    </style>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
 {% endblock %}
 {% block description %} {% with object.name as name %} {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.   Information about {{ name }} for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public. {% endblocktrans %} {% endwith %} {% endblock %}
