@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
 {% endblock %}
 {% block nav-elections %}class="selected"{% endblock %}
+{% block breadcrumbs %}
+    <li class="active">{% trans "Candidate Lists" %}</li>
+{% endblock %}
 {% block help-section %}
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}

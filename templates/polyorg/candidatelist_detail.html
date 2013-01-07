@@ -12,6 +12,10 @@
 {% block help-section %}
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
+{% block breadcrumbs %}
+    <li><a href="{% url candidate-list-list %}">{% trans "Candidate Lists" %}</a> <span class="divider">/</span></li>
+    <li class="active">{{ object.name }}</li>
+{% endblock %}
 {% block divcontent %}
     <div id="candidate-list">
             {% for o in candidates %}
