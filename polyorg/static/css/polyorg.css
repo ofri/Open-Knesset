@@ -82,3 +82,4 @@
 .candidate-list-agendas { width:385px; }
 .candidate-list-agendas>table { clear:both; margin:0.5em; }
 section {clear:both; padding:0.5em;}
+.numeric {direction: ltr;}
