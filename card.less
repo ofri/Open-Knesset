@@ -1,31 +1,32 @@
 .card{
-  background: @white;
-  border: 1px solid @borderColor;
-  margin: -1px;
-  .border-radius(5px);
-  .box-shadow(@shadow);
-  position: relative;
+	background: @white;
+	border: 1px solid @borderColor;
+	margin: -1px;
+	.border-radius(5px);
+	.box-shadow(@shadow);
+	position: relative;
 }
 
 .card-list{
 	margin-bottom: 55px;
 
-	h2{
-		float: right;
-		padding: 5px 30px 5px 5px;
-		background: @textColor;
-		color: #fff;
-		margin: 0;
-		font-size: 20px;
-		padding: 2px 78px 2px 25px;
-		.border-radius(0 4px 0 0);
-		
-	}
-	.btn-question{
-		margin: 12px;
+	header {
+		.clearfix;
+		h2{
+			float: right;
+			padding: 5px 30px 5px 5px;
+			background: @textColor;
+			color: #fff;
+			margin: 0;
+			font-size: 20px;
+			padding: 2px 78px 2px 25px;
+			.border-radius(0 4px 0 0);
+		}
+		.btn-question{
+			margin: 12px;
+		}
 	}
 	ul{
-		clear: both;
 		margin: 0 20px;
 		list-style: none;
 		li{
@@ -49,6 +50,5 @@
 				border-bottom: none;
 			}
 		}
-		
 	}
 }
