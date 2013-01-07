@@ -1,69 +1,69 @@
 .card-main-party {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 
-  [class*='span']{
-    min-height: 144px;
-    position: relative;
+	[class*='span']{
+		min-height: 144px;
+		position: relative;
 
-    &+[class*='span']::before{
-      content: '';
-      display: block;
-      width:1px;
-      background: @borderColor;
-      position: absolute;
-      top:0;
-      bottom:-15px;
-      right:-15px;
-    }
-  }
+		&+[class*='span']::before{
+			content: '';
+			display: block;
+			width:1px;
+			background: @borderColor;
+			position: absolute;
+			top:0;
+			bottom:-15px;
+			right:-15px;
+		}
+	}
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    li {
-      display: inline-block;
-    }
-  }
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		li {
+			display: inline-block;
+		}
+	}
 
-  .card-details {
-  	.spacer{
-	  	padding-right: 5px;
-  	}
-  
-  	.social-links{
-	  	bottom:10px;
-  	}
+	.card-details {
+		.spacer{
+			padding-right: 5px;
+		}
+	
+		.social-links{
+			bottom:10px;
+		}
 
-    .links {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+		.links {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
 
-      li + li{
-        padding-right: 15px;
-        &::before {
-          content: '';
-          width:6px;
-          height:6px;
-          display: inline-block;
-          background: @textColor;
-          .border-radius(50%);
-          position: relative;
-          right:-10px;
-          top:-1px;
-        }
-      }
-    }
-  }
-    
-  .btn-contact{
-    position: absolute;
+			li + li{
+				padding-right: 15px;
+				&::before {
+					content: '';
+					width:6px;
+					height:6px;
+					display: inline-block;
+					background: @textColor;
+					.border-radius(50%);
+					position: relative;
+					right:-10px;
+					top:-1px;
+				}
+			}
+		}
+	}
+		
+	.btn-contact{
+		position: absolute;
 		bottom: 10px;
 		left: 30px;
 		width: 322px;
-  }
+	}
 }
 
 
@@ -89,7 +89,7 @@
 				position: absolute;
 				top: 80px;
 				width: 405px;
-				height: 208px;
+				height: 218px;
 				
 				.party-member-info-photo {
 					position: absolute;
@@ -103,16 +103,21 @@
 				.party-member-info-text {
 					height: 160px;
 					border-bottom: 1px solid @borderColor;
+					padding-right: 160px;
+
+					h3 { font-size: 16px; font-weight: 700	}
 				}
 				
 				.party-member-info-links {
 					height: 47px;
 					background: @lightergray;
+					padding-right: 160px;
 				}
 			}
 			
 			&:hover .party-member-info {
 				display: block;
+				.box-shadow(@shadow);
 				
 			}
 			
