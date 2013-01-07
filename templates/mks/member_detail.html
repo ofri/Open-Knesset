@@ -77,7 +77,7 @@
 {% cache 14400 mks_detail object.id request.page request.get_full_path %}
     <section class="card card-main">
       <div class="row">
-        <div class="span2"><div class="spacer"><img src="{{ object.img_url }}" alt="{{object.name}}"/></div>
+        <div class="span2"><div class="spacer"><img src="{{ object.highres_img_url }}" alt="{{object.name}}"/></div>
         </div>
 
         <div class="span7 card-details">
