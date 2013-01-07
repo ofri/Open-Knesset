@@ -1,7 +1,8 @@
 {% load i18n %}
     <li>
       <p class="item-action">
-          {{action.actor.is_female|yesno:"הגישה,הגיש"}} הצעת חוק
+      {{action.actor.is_female|yesno:_("PROPOSED (FEMALE),PROPOSED (MALE)")}}
+      {% trans "Bill" %}
       </p>
       <p class="item-title">
 {% with action.target.bill as bill %}

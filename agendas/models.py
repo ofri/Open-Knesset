@@ -1,6 +1,6 @@
 from itertools import chain
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Count
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
@@ -352,6 +352,14 @@ class Agenda(models.Model):
     def get_mks_values(self):
         mks_grade = Agenda.objects.get_mks_values()
         return mks_grade.get(self.id,[])
+
+    def get_mks_totals(self, member):
+        "Get count for each vote type for a specific member on this agenda"
+
+        # let's split qs to make it more readable
+        qs = VoteAction.objects.filter(member=member, vote__agendavotes__agenda=self)
+        qs = qs.values('type').annotate(total=Count('id'))
+        return qs
 
     def get_party_values(self):
         party_grades = Agenda.objects.get_all_party_values()

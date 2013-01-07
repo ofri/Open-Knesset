@@ -380,6 +380,16 @@ class Member(models.Model):
         """return the first name of the member"""
         return self.name.split()[0]
 
+    @property
+    def highres_img_url(self):
+        "Get higher res image for the member"
+
+        # TODO a hack for now, change later for url field
+        if not self.img_url:
+            return self.img_url
+
+        return self.img_url.replace('-s.jpg', '.jpg')
+
 
 class WeeklyPresence(models.Model):
     member      = models.ForeignKey('Member')

@@ -5284,6 +5284,78 @@ body {
   background: none;
   margin: 10px 0;
 }
+#app-footer {
+  border-top: 4px solid #222222;
+  font-size: 14px;
+}
+#app-footer .row {
+  padding: 20px 0;
+}
+#app-footer .nav-pills {
+  margin-bottom: 0;
+}
+#app-footer .nav-pills li {
+  border-right: 1px solid #999999;
+}
+#app-footer .nav-pills li:first-child {
+  border: 0 none;
+}
+#app-footer .nav-pills li:first-child a {
+  margin-right: 0;
+}
+#app-footer .nav-pills li a {
+  font-weight: bold;
+  text-align: right;
+  margin: 0 20px;
+  padding: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  color: #222222;
+  font-size: 16px;
+}
+#app-footer .nav-pills li a:hover {
+  text-decoration: underline;
+}
+#app-footer .about {
+  margin-top: 20px;
+}
+#app-footer .about h3 {
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 0;
+}
+#app-footer .about-oknesset h3 {
+  border-bottom: 1px solid #999999;
+}
+#app-footer .follow-oknesset h3 {
+  margin-top: 40px;
+}
+#app-footer .hasadna h3 span {
+  display: block;
+  font-weight: normal;
+}
+#app-footer .hasadna h3 img {
+  float: right;
+  display: block;
+  margin: 8px 0 0 10px;
+}
+#app-footer .hasadna ul {
+  list-style: none;
+  margin-right: 0;
+  margin-bottom: 20px;
+}
+#app-footer .hasadna li {
+  border-bottom: 1px solid #999999;
+  padding: 3px;
+}
+#app-footer .hasadna a {
+  color: #464545;
+}
+#app-footer .hasadna form {
+  margin: 0;
+}
 h1 {
   font-size: 42px;
   letter-spacing: 1px;
@@ -5319,23 +5391,34 @@ ol {
 .card-list {
   margin-bottom: 55px;
 }
-.card-list h2 {
+.card-list header {
+  *zoom: 1;
+}
+.card-list header:before,
+.card-list header:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.card-list header:after {
+  clear: both;
+}
+.card-list header h1,
+.card-list header h2 {
   float: right;
   padding: 5px 30px 5px 5px;
   background: #464545;
   color: #fff;
   margin: 0;
-  font-size: 20px;
   padding: 2px 78px 2px 25px;
   -webkit-border-radius: 0 4px 0 0;
   -moz-border-radius: 0 4px 0 0;
   border-radius: 0 4px 0 0;
 }
-.card-list .btn-question {
+.card-list header .btn-question {
   margin: 12px;
 }
 .card-list ul {
-  clear: both;
   margin: 0 20px;
   list-style: none;
 }
@@ -5502,7 +5585,7 @@ ol {
   position: absolute;
   top: 80px;
   width: 405px;
-  height: 208px;
+  height: 218px;
 }
 .card-party-members > div .party-member-photo .party-member-info .party-member-info-photo {
   position: absolute;
@@ -5515,13 +5598,22 @@ ol {
 .card-party-members > div .party-member-photo .party-member-info .party-member-info-text {
   height: 160px;
   border-bottom: 1px solid #e6e6e6;
+  padding-right: 160px;
+}
+.card-party-members > div .party-member-photo .party-member-info .party-member-info-text h3 {
+  font-size: 16px;
+  font-weight: 700;
 }
 .card-party-members > div .party-member-photo .party-member-info .party-member-info-links {
   height: 47px;
   background: #f6f6f6;
+  padding-right: 160px;
 }
 .card-party-members > div .party-member-photo:hover .party-member-info {
   display: block;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 .card-party-members > div .party-member-photo:after {
   content: counter(memberNum);
