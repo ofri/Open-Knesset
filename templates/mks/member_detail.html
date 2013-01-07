@@ -23,8 +23,8 @@
         }
 
         $(function() {
-            var MKPieChart= window.MKPieChart;
             register_watch({{object.id}}, 'member', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
+            var MKPieChart= window.MKPieChart;
 
             // init agenda-pie charts
             $('.agenda-pie').each(function () {
@@ -119,7 +119,7 @@
                 {% endif %}
             </div>
             <div class="social-links">
-              <h5>{% blocktrans with firstname=member.firstname %}{{firstname}} around the net{% endblocktrans %}:</h5>
+              <h5>{% blocktrans with name=member.firstname %}{{name}} around the net{% endblocktrans %}:</h5>
               <ul class="text-center">
                 <li><a href="#" class="icon sprite-website" rel="tooltip" title="האתר של זבולון">אתר</a></li>
                 <li><a href="#" class="icon sprite-wiki" rel="tooltip" title="זבולון בויקיפדיה">ויקיפדיה</a></li>
