@@ -5391,7 +5391,19 @@ ol {
 .card-list {
   margin-bottom: 55px;
 }
-.card-list h2 {
+.card-list header {
+  *zoom: 1;
+}
+.card-list header:before,
+.card-list header:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.card-list header:after {
+  clear: both;
+}
+.card-list header h2 {
   float: right;
   padding: 5px 30px 5px 5px;
   background: #464545;
@@ -5403,11 +5415,10 @@ ol {
   -moz-border-radius: 0 4px 0 0;
   border-radius: 0 4px 0 0;
 }
-.card-list .btn-question {
+.card-list header .btn-question {
   margin: 12px;
 }
 .card-list ul {
-  clear: both;
   margin: 0 20px;
   list-style: none;
 }
