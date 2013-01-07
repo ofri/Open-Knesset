@@ -76,29 +76,39 @@
         </div>
     </div>
 
-    <h2><a href=".">{{ object.name }}</a></h2>
-    <div class="list-wrap">
-        <h3>{% trans 'Statistics' %}</h3>
-        <div id="residence_map"></div>
-        <table id="party-info">
-            <tr>
-                <td>{% trans "Number of votes" %}</td>
-                <td>{{ object.voting_statistics.votes_count }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Average votes per MK" %}</td>
-                <td>{{ object.voting_statistics.votes_per_seat }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Factional discipline" %}</td>
-                <td>{{ object.voting_statistics.discipline }}%</td>
-            </tr>
-            <tr>
-                <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-                <td>{{ object.voting_statistics.coalition_discipline }}%</td>
-            </tr>
-        </table>
+    <div class="row">
+        <div class="cards span9">
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>{% trans "Statistics" %}</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                    <li class="row">
+                        <span class="span2">{% trans "Number of votes" %}</span>
+                        <span class="span4">{{ object.voting_statistics.votes_count }}</span>
+                    </li>
+                    <li class="row">
+                        <span class="span2">{% trans "Average votes per MK" %}</span>
+                        <span class="span4">{{ object.voting_statistics.votes_per_seat|floatformat:2 }}</span>
+                    </li>
+                    <li class="row">
+                        <span class="span2">{% trans "Factional discipline" %}</span>
+                        <span class="span4">{{ object.voting_statistics.discipline|floatformat:2 }}</span>
+                    </li>
+{% if object.is_coalition %}
+                    <li class="row">
+                        <span class="span2">{% trans "Coalition discipline" %}</span>
+                        <span class="span4">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}</span>
+                    </li>
+{% endif %}
+                </ul>
+            </section>
+        </div>
+    </div>
 
+    <div class="list-wrap">
+        <div id="residence_map"></div>
         <div>
             <h3>{% trans "Agendas" %}</h3>
             <div class="list-wrap">
