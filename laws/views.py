@@ -1,5 +1,5 @@
 #encoding: utf-8
-import urllib, urllib2, difflib, logging, datetime
+import urllib, urllib2, difflib, logging, datetime, os
 from time import mktime
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
@@ -16,6 +16,7 @@ from django.template import loader, RequestContext
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
+from django.core.files.storage import default_storage
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -501,12 +502,14 @@ class VoteListView(ListView):
 
         context['form'] = self._get_filter_form()
         context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = VoteCsvView.filename if default_storage.exists(VoteCsvView.filename) else None
         return context
 
 
 class VoteCsvView(CsvView):
     model = Vote
-    filename = 'votes.csv'
+    file_path_and_name = ['csv','votes.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('title', _('Title')),
                     ('vote_type', _('Vote Type')),
                     ('time', _('Time')),
@@ -527,7 +530,6 @@ class VoteCsvView(CsvView):
             options = {}
 
         return Vote.objects.filter_and_order(**options)
-
 
 class VoteDetailView(DetailView):
     model = Vote
