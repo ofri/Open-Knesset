@@ -1,5 +1,5 @@
 #encoding: utf-8
-import urllib, urllib2, difflib, logging, datetime
+import urllib, urllib2, difflib, logging, datetime, os
 from time import mktime
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
@@ -501,12 +501,14 @@ class VoteListView(ListView):
 
         context['form'] = self._get_filter_form()
         context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = VoteCsvView.filename
         return context
 
 
 class VoteCsvView(CsvView):
     model = Vote
-    filename = 'votes.csv'
+    file_path_and_name = ['csv','votes.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('title', _('Title')),
                     ('vote_type', _('Vote Type')),
                     ('time', _('Time')),
@@ -527,7 +529,6 @@ class VoteCsvView(CsvView):
             options = {}
 
         return Vote.objects.filter_and_order(**options)
-
 
 class VoteDetailView(DetailView):
     model = Vote
