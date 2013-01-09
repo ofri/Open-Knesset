@@ -5643,6 +5643,18 @@ ol {
 .sidebar h2:after {
   clear: both;
 }
+.sidebar header {
+  *zoom: 1;
+}
+.sidebar header:before,
+.sidebar header:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.sidebar header:after {
+  clear: both;
+}
 .sidebar ul {
   clear: both;
   list-style: none;
