@@ -12,25 +12,7 @@
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
                 $("#visible-bill-stage").html($("#"+div).html());
-                var options = {
-                     serviceUrl:'/vote/auto_complete/',
-                     minChars:2,
-                     maxHeight:400,
-                     width:600,
-                     deferRequestBy: 100, //miliseconds
-                     onSelect: function(value, data, me){
-                        me.siblings("input[name$='vote_id']").val(data);
-                        me.siblings("input[type$='submit']").removeAttr('disabled'); },
-                     };
 
-                $('.vote_input').each(function(item) {
-                     $(this).keydown(function() {
-                        $(this).siblings("input[name$='vote_id']").val('');
-                        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled');
-                     });
-                     $(this).autocomplete(options);
-
-                });
 
                 return true;
          }
@@ -154,23 +136,29 @@
                 {% endif %}
                 $(titles.node).attr("pointer-events","none");
 
-                var pos = $("#bill-canvas").position();
-                $(".bill-stage").css("position","absolute");
-                $(".bill-stage").css("top",pos.top + 200);
-                $(".bill-stage").css("visibility","hidden");
-                $("#visible-bill-stage").html($("#bill-initiation").html());
-                $(".proposal_content_text").hide();
-                $(".proposal_content_header").live('click', function(){$(this).next(".proposal_content_text").toggle();
-                                                            return false;});
+                var options = {
+                     serviceUrl:'/vote/auto_complete/',
+                     minChars:2,
+                     maxHeight:400,
+                     width:600,
+                     deferRequestBy: 100, //miliseconds
+                     onSelect: function(value, data, me){
+                        me.siblings("input[name$='vote_id']").val(data);
+                        me.siblings("input[type$='submit']").removeAttr('disabled');
+                     }
+                 };
+                $('.vote_input').each(function(item) {
+                     $(this).keydown(function() {
+                        $(this).siblings("input[name$='vote_id']").val('');
+                        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled');
+                     });
+                     $(this).autocomplete(options);
 
+                });
                 if (location.hash) {
                   // Can be '#' + one of the "bill-stage" class divs.
-                  show_only_vote_stage_div(location.hash.substring(1));
+                    $(location.hash).get(0).scrollIntoView();
                 }
-                $("#embed").click(function () {
-                    $("#embeddiv").toggle();
-                    return false;
-                    });
             });
     </script>
 {% endblock %}
@@ -610,14 +598,5 @@
             {% include 'comments/object_comment_list.html' %}
 
         </div><!-- secondary -->
-        <div class="primary">
-            <div id="visible-bill-stage">
-            </div>
-
-
-
-
-
-        </div>
     </div>
 {% endblock %}
