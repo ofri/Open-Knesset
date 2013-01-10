@@ -94,14 +94,19 @@
                     </li>
                     <li class="row">
                         <span class="span2">{% trans "Factional discipline" %}</span>
-                        <span class="span4">{{ object.voting_statistics.discipline|floatformat:2 }}</span>
+                        <span class="span4">{{ object.voting_statistics.discipline|floatformat:2 }}%</span>
                     </li>
-{% if object.is_coalition %}
+
                     <li class="row">
-                        <span class="span2">{% trans "Coalition discipline" %}</span>
-                        <span class="span4">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}</span>
+                        <span class="span2">
+                        {% if object.is_coalition %}
+                            {% trans "Coalition discipline" %}
+                        {% else %}
+                            {% trans "Opposition discipline" %}
+                        {% endif %}
+                        </span>
+                        <span class="span4">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}%</span>
                     </li>
-{% endif %}
                 </ul>
             </section>
         </div>
