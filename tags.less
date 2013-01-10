@@ -1,0 +1,19 @@
+.label {
+  // Important (red)
+  &.level6         { background-color: @errorText; font-size:200%; line-height:200%; }
+  &.level6[href]   { background-color: darken(@errorText, 10%); }
+  // Warnings (orange)
+  &.level5           { background-color: @orange; font-size:180%;  line-height:180%;}
+  &.level5[href]     { background-color: darken(@orange, 10%); }
+  // Success (green)
+  &.level4           { background-color: @successText; font-size:160%; line-height:160%; }
+  &.level4[href]     { background-color: darken(@successText, 10%); }
+  // Info (turquoise)
+  &.level3              { background-color: @infoText; font-size:140%; line-height:140%; }
+  &.level3[href]        { background-color: darken(@infoText, 10%); }
+  // Inverse (black)
+  &.level2           { background-color: @grayDark; font-size:120%; line-height:120% }
+  &.level2[href]     { background-color: darken(@grayDark, 10%); }
+}
+
+
