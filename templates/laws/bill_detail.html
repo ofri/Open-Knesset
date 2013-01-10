@@ -463,6 +463,43 @@
             </section>
 
         </div> <!-- span9 -->
+
+        <div class="span3">
+	 		<aside class="sidebar" id="tagging-container">
+                <header><h2>{% trans "Tags" %}</h2></header>
+                <p id="tags">
+                    {% if tags %}
+                        {% for t in tags %}
+                            <a class="label" id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <span id="no-tags-yet">{% trans "No tags yet" %}</span>
+                    {% endif %}
+                </p>
+                {% if user.is_authenticated %}
+                <div id="add_tags">
+                    <h3>{% trans "Edit Tags" %}</h3>
+                    <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+                    </span>
+                    <div id="create_tag" style='display:none'>
+                        {% if perms.tagging.add_tag %}
+                            <form id="create_tag_form" action="#">{% csrf_token %}
+                                <label for="tag">{% trans 'Create new tag' %}: </label>
+                                <input type="hidden" name="app_label" id="app_label" value="laws">
+                                <input type="hidden" name="object_type" value="bill">
+                                <input type="hidden" name="id" value="{{object.id}}">
+                                <input type="text" name="tag" id="tag">
+                                <input type="submit" value="{% trans 'Send' %}">
+                            </form>
+                        {% else %}
+                            {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </aside>
+        </div> <!-- span3 -->
+
     </div> <!-- row -->
     <div class="two_cols">
         <ul class="actions">
@@ -511,53 +548,6 @@
             </div>
             <h3>{% trans "Links" %}</h3>
                 {% object_links object %}
-            <div id="tagging-container">
-            {% if user.is_authenticated %}
-                <h3>{% trans "Tags" %}</h3>
-                <div id="tags">
-                    {% if tags %}
-                        {% for t in tags %}
-                            <a id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
-                        {% endfor %}
-                    {% else %}
-                        <span id="no-tags-yet">{% trans "No tags yet" %}</span>
-                    {% endif %}
-                </div>
-                <div id="add_tags">
-                    <span>{% trans "Edit Tags" %}</span>
-                    <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
-                    </span>
-                    <div id="create_tag" style='display:none'>
-                        {% if perms.tagging.add_tag %}
-                            <form id="create_tag_form" action="#">{% csrf_token %}
-                                <label for="tag">{% trans 'Create new tag' %}: </label>
-                                <input type="hidden" name="app_label" id="app_label" value="laws">
-                                <input type="hidden" name="object_type" value="bill">
-                                <input type="hidden" name="id" value="{{object.id}}">
-                                <input type="text" name="tag" id="tag">
-                                <input type="submit" value="{% trans 'Send' %}">
-                            </form>
-                        {% else %}
-                            {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                        {% endif %}
-                    </div>
-                </div>
-
-            {% else %}
-                <h3>{% trans "Tags" %}</h3>
-                {% if tags %}
-                    <div id="tags">
-                    {% for t in tags %}
-                       <a href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
-                    {% endfor %}
-                    </div>
-                {% else %}
-                    {% trans "No tags yet" %}<br />
-                {% endif %}
-
-                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to edit tags' %}</a>
-            {% endif %}
-            </div><!-- tagging -->
             <div class="secondary">
                 <h3>{% trans "Budget Estimations" %}</h3>
                 <div id="budget_ests">
