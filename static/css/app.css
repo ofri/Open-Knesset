@@ -5666,6 +5666,21 @@ ol {
 .sidebar ul li:last-child {
   border-bottom: none;
 }
+.sidebar.sidebar-comments {
+  *zoom: 1;
+}
+.sidebar.sidebar-comments:before,
+.sidebar.sidebar-comments:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.sidebar.sidebar-comments:after {
+  clear: both;
+}
+.sidebar.sidebar-comments li {
+  padding: 20px 0;
+}
 .agenda-mini header {
   *zoom: 1;
 }
