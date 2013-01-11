@@ -7,9 +7,10 @@
 		this.$source = $(source)
 		this.options = $.extend({}, $.fn.okmore.defaults, options)
 
-    this.initial = parseInt(this.options.initial);
-    this.page = parseInt(this.options.page);
-    this.total = parseInt(this.options.total);
+		this.initial = parseInt(this.options.initial);
+		this.page = parseInt(this.options.page);
+		this.total = parseInt(this.options.total);
+		this.callback = this.options.callback ? window[this.options.callback] : null;
 	}
 
 	OKMore.prototype = {
@@ -34,6 +35,8 @@
             this.$source.button('reset');
           }
           else {this.$source.remove()}
+
+		  if (this.callback) this.callback();
         });
 
 		}
@@ -61,7 +64,8 @@
   $.fn.okmore.defaults = {
     page: 0,
     initial: 2,
-    total: 999999
+    total: 999999,
+	callback: null
   }
 
   $.fn.okmore.Constructor = OKMore
