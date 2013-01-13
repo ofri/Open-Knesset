@@ -24,15 +24,6 @@
   </div>
   <div class="span5">
       <div class="visualization" data-ticks='{{ party_list|safe }}' data-info='{{ party_scores|safe }}'></div>
-      <!--script type="text/javascript">
-        $(function () {
-          var ticks = 
-          var data = 
-          $.plot($("#visualization-{{ agenda.id }}"),
-                [{data: data, bars: {show: true}, color: 1}],
-                { xaxis: { ticks: ticks }});
-          });
-        </script-->
   </div>
 </li>      
 {% endcache %}
