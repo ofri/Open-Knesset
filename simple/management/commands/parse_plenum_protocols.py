@@ -4,6 +4,7 @@ from django.core.management.base import NoArgsCommand
 from optparse import make_option
 from simple.management.commands.parse_plenum_protocols_subcommands.download import Download
 from simple.management.commands.parse_plenum_protocols_subcommands.parse import Parse
+from simple.management.commands.parse_plenum_protocols_subcommands.html_preview import HtmlPreview
 
 class Command(NoArgsCommand):
 
@@ -14,6 +15,8 @@ class Command(NoArgsCommand):
             help="download from the knesset's robots.txt file (only useful with the --download option)"),
         make_option('--parse',action='store_true',dest='parse',
             help="parse the downloaded protocols into machine-readable format"),
+        make_option('--html-preview',action='store_true',dest='htmlpreview',
+            help="create html preview files from the parsed json files"),
         make_option('--updatedb',action='store_true',dest='object-type',
             help="update the database with the parsed protocols"),
     )
@@ -23,6 +26,8 @@ class Command(NoArgsCommand):
             Download(options.get('verbosity',1),options.get('robots',False))
         elif options.get('parse',False):
             Parse(options.get('verbosity',1))
+        elif options.get('htmlpreview',False):
+            HtmlPreview(options.get('verbosity',1))
         else:
             print "invalid option, try --help"
 
