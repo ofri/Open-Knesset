@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView, TemplateView
 from django.core.cache import cache
-from django.utils import simplejson as json
+from django.utils import simplejson as json, simplejson
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from backlinks.pingback.server import default_server
@@ -717,6 +717,20 @@ class PartiesOverview(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(PartiesOverview, self).get_context_data(**kwargs)
 
-        ctx['candidate_lists'] = CandidateList.objects.all()
+        clists = [{'name': cl.name,
+                   'ballot': cl.ballot,
+                   'wikipedia_page': cl.wikipedia_page,
+                   'facebook_url': cl.facebook_url,
+                   'candidates': [{'name': candidate.name,
+                                   'img_url': candidate.img_url,
+                                   'gender': candidate.gender or 'X',
+                                   'mk':getattr(candidate, "mk") is not None,
+                                   'bills_stats_approved': candidate.mk.bills_stats_approved if candidate.mk else None,
+                                   'bills_stats_proposed': candidate.mk.bills_stats_proposed if candidate.mk else None,
+                                   'residence_centrality': candidate.residence_centrality
+                                  }
+                                  for candidate in cl.candidates.order_by('candidate__ordinal')[:10]]}
+                  for cl in CandidateList.objects.order_by('ballot')]
 
+        ctx['candidate_lists'] = simplejson.dumps(clists)
         return ctx
