@@ -1,6 +1,8 @@
 {% load i18n lookup user_tags bills_tags common_text_handling cache %}{% get_current_language as LANGUAGE_CODE %}
 {% cache 3600 agenda_list_item agenda.id LANGUAGE_CODE %}
 <li class="agenda-item row">
+  <div class="span12">
+    <div class="row">
   <div class="span5">
     {% if agenda.image %}<img src="{{agenda.image.url}}" />{% endif %}
     <p class="item-action">
@@ -22,8 +24,10 @@
     </p>
     <p class="item-context">{{ agenda.description|pretty_crop:200|urlize }}</p>
   </div>
-  <div class="span5">
+  <div class="span6">
       <div class="visualization" data-ticks='{{ party_list|safe }}' data-info='{{ party_scores|safe }}'></div>
-  </div>
+    </div>
+  </div> <!-- row -->
+  </div> <!-- span12 -->
 </li>      
 {% endcache %}
