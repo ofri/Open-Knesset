@@ -5569,6 +5569,14 @@ ol {
   display: inline-block;
   margin: 9px;
 }
+.card-party-members > div .party-member-photo .party-member-extra {
+  font-size: 12px;
+  text-align: center;
+}
+.card-party-members > div .party-member-photo .party-member-extra p,
+.card-party-members > div .party-member-photo .party-member-extra div {
+  margin: 0;
+}
 .card-party-members > div .party-member-photo .party-member-info {
   background: #ffffff;
   border: 1px solid #e6e6e6;

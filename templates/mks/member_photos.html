@@ -3,6 +3,7 @@
 {% for member in members %}
         <div class="party-member-photo">
           <a href="{{member.get_absolute_url}}"><img src="{{member.img_url}}"></a>
+          <div class="party-member-extra">{% block member_extra %}{% endblock %}</div>
           <div class="party-member-info">
             <div class="party-member-info-text">
               <h3><a href="{{member.get_absolute_url}}">{{member.name}}</a></h3>

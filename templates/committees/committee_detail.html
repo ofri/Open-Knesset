@@ -3,12 +3,6 @@
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block keywords %}{{ object.name }}{% endblock %}
 {% block extrajs %}
-<script>
-    function set_percent(id,value) {
-        $("#percent_"+id).css('background-position',((100-value))+"px 0px");
-        $("#percent_"+id).html(value+"%");
-    }
-</script>
     <script src="{% static "js/jquery.raty.min.js" %}"></script>
     <script>
         $.fn.raty.defaults.readOnly = true;
@@ -54,14 +48,15 @@
 {% block divcontent %}
     <section class="card card-main">
         <div class="row">
-            <div class="span8 card-details">
+            <div class="span6 card-details">
                 <div class="spacer fill">
                     <h1>{{object.name}}</h1>
                     <p>{{object.description|linebreaksbr}}</p>
                 </div>
             </div>
-            <div class="span4 social-details">
+            <div class="span6 social-details">
                 <div class="spacer fill">
+                    {% include "committees/committee_member_photos.html" %}
                 </div>
             </div>
         </div>
@@ -152,16 +147,4 @@
 
         </div> <!-- span4 -->
     </div>
-
-  <div class="main-column">
-    {% if members %}
-        <h3>{% trans 'Committee Members' %}</h3>
-        <div class="clear"></div>
-        <ul class="summaries">
-        {% for mk in members %}
-            <li> {% include "committees/_member_summary.html" %} </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-  </div>
 {% endblock %}

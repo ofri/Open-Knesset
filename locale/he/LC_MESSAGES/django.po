@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-07 15:56+0200\n"
-"PO-Revision-Date: 2013-01-07 15:57+0200\n"
+"PO-Revision-Date: 2013-01-13 12:35+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -2094,11 +2094,11 @@ msgstr "נוכחות:"
 
 #: templates/committees/_member_summary.html:11
 msgid "Chairperson"
-msgstr "יושב/ת ראש"
+msgstr "יו&quot;ר"
 
 #: templates/committees/_member_summary.html:14
 msgid "Replacement"
-msgstr "ממלא/ת מקום"
+msgstr "מ&quot;מ"
 
 #: templates/committees/_topics_summary.html:36
 msgid "No topics suggested yet"
