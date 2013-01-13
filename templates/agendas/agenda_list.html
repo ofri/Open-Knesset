@@ -1,52 +1,84 @@
 {% extends "site_base.html" %}
 {% load lookup i18n i18ninclude user_tags common_text_handling agendas_tags %}
 {% load static from staticfiles %}
-{% block help-section %}
-    {% i18ninclude "agendas/agenda_list_help.html" LANGUAGE_CODE %}
-{% endblock %}
 {% block extratitle %}{% trans "Agendas" %}{% endblock %}
 {% block keywords %}{{% trans "Agendas" %}{% endblock %}
 {% block description %}{% trans "Agendas" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block extrajs %}
-    <script type="text/javascript" src="{% static "js/jquery.flot.min.js" %}"></script>
+    <script src="{% static "js/jquery.flot.min.js" %}"></script>
+    <script>
+        $(function(){
+            $('.visualization').each(function() {
+                var $this=$(this), data=$this.data();
+                console.log($this)
+                $.plot($this, 
+                    [{data: data.info, bars: {show: true}, color: 1}],
+                    { xaxis: { ticks: data.ticks }});
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block nav-agendas %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+            <li class="active">{% trans "Agendas" %}</li>
+{% endblock %}
+
 {% block divcontent %}
-    <div id="list-wrap">
-        <h2> {% trans "Your Agendas" %} </h2>
-        {% if not user.is_authenticated %}
-            <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a>
-        {% else %}
-            <div class="item-list">
-                {% for o in user.agendas.all %}
-                    <div class="item {% cycle "alt" "normal" %}">
-                        {% with agenda_votes|lookup:o.id as agenda_votes_num %}
-                        {% with agenda_party_values|lookup:o.id as agenda_party_values %}
-                        {% with agenda_editors|lookup:o.id as agenda_editor_ids %}
-                        {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup editors agenda_editor_ids %}
-                        {% endwith %}
-                        {% endwith %}
-                        {% endwith %}
-                    </div>
-                {% empty %}
-                    {% trans "You are not editing any agenda" %}
-                {% endfor %}
-            </div>
-            {% if user.is_superuser %}
-                <div class="add">
-                    <a class="awesome-button medium" href="/agenda/add/">{% trans "Add" %}</a>
-                </div>
-            {% endif %}
-        {% endif %}
+
+    <div id="information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="modalLabel">{% trans "Agendas" %}</h3>
+        </div>
+        <div class="modal-body">
+            {% i18ninclude "agendas/agenda_list_help.html" LANGUAGE_CODE %}
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+        </div>
     </div>
-    <div id="list-wrap">
-        <h2> {% trans "All Agendas" %} </h2>
-        <div class="item-list">
+
+    <div class="cards">
+        <div class="card card-list">
+            <header>
+                <h1>{% trans "Your Agendas" %}</h1>
+                <a class="btn btn-mini btn-question" href="#information-modal" data-toggle="modal">?</a>
+            </header>
+                <ul>
+                    {% if not user.is_authenticated %}
+                        <li><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a></li>
+                    {% else %}
+                        {% for o in user.agendas.all %}
+                            {% with agenda_votes|lookup:o.id as agenda_votes_num %}
+                            {% with agenda_party_values|lookup:o.id as agenda_party_values %}
+                            {% with agenda_editors|lookup:o.id as agenda_editor_ids %}
+                            {% agenda_list_item o watched agenda_votes_num agenda_party_values parties_lookup editors agenda_editor_ids %}
+                            {% endwith %}
+                            {% endwith %}
+                            {% endwith %}
+                        {% empty %}
+                            <li>{% trans "You are not editing any agenda" %}</li>
+                        {% endfor %}
+                        {% if user.is_superuser %}
+                        <li><a class="btn" href="/agenda/add/">{% trans "Add" %}</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+        </div>
+    </div>
+
+    <div class="cards">
+        <section class="card card-list card-list-latest">
+            <header>
+                <h1>{% trans "All Agendas" %}</h1>
+                <a class="btn btn-mini btn-question" href="#information-modal" data-toggle="modal">?</a>
+            </header>
+            <ul>
             {% for o in object_list %}
                 {% if user.id not in agenda_editors|lookup:o.id %}
-                    <div class="item {% cycle "alt" "normal" %}">
                         {% with agenda_votes|lookup:o.id as agenda_votes_num %}
                         {% with agenda_party_values|lookup:o.id as agenda_party_values %}
                         {% with agenda_editors|lookup:o.id as agenda_editor_ids %}
@@ -54,9 +86,9 @@
                         {% endwith %}
                         {% endwith %}
                         {% endwith %}
-                    </div>
                 {% endif %}
             {% endfor %}
-        </div>
+            </ul>
+        </section>
     </div>
 {% endblock %}

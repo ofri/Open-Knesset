@@ -5804,6 +5804,18 @@ ol {
   font-weight: normal;
   color: #605e5e;
 }
+.agenda-item img {
+  float: right;
+  display: block;
+  margin: 0 0 10px 10px;
+}
+.agenda-item h2 span {
+  font-weight: normal;
+}
+.agenda-item .visualization {
+  height: 150px;
+  font-size: 12px;
+}
 .note-worthy-note {
   border-bottom: 1px solid #e6e6e6;
   padding: 140px 0 30px;
