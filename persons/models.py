@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -57,9 +58,11 @@ class Person(models.Model):
         verbose_name = _('Person')
         verbose_name_plural = _('Persons')
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('person-detail', [str(self.id)])
+        if self.mk:
+            return self.mk.get_absolute_url()
+        else:
+            return reverse('person-detail', kwargs={'pk':self.id})
 
     def number_of_meetings(self):
         return self.protocol_parts.values('meeting').distinct().count()

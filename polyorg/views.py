@@ -18,7 +18,9 @@ class CandidateListDetailView(DetailView):
         context = super(CandidateListDetailView, self).get_context_data(**kwargs)
         cl = context['object']
         context['head'] = cl.getHeadName()
-        context['candidates'] = Candidate.objects.filter(candidates_list=cl).order_by('ordinal')
+        candidates = Candidate.objects.select_related('person',
+                'person__mk').filter(candidates_list=cl).order_by('ordinal')
+        context['candidates'] = [x.person for x in candidates]
         agendas = []
         if cl.member_ids:
             for a in Agenda.objects.filter(is_public=True).order_by('-num_followers'):
