@@ -88,7 +88,7 @@
                 <header><h2>{% trans 'Last Meetings' %}</h2></header>
                 <ul>
                 {% for o in meetings_list %}
-                    {% include "committees/_meeting_li.html" %}
+                    {% include "committees/_meeting_li.html" with add_li=1 %}
                 {% empty %}
                     <li>{% trans "None" %}</li>
                 {% endfor %}

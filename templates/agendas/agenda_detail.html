@@ -100,6 +100,21 @@
                 {% endif %}
                 </footer>
             </section>
+
+            <section class="card card-list card-list-latest">
+                <header><h2>{% trans "Ascribed Committee Meetings" %}</h2></header>
+                <ul id="recent-meetings">
+                    {% include "agendas/agenda_meeting_partial.html" with object_list=agenda_meetings %}
+                </ul>
+                {% if agenda_meetings_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-meetings" 
+                    data-url="{% url agenda-detail-more-meetings object.pk %}"
+                    data-initial="{{INITIAL}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
+            </section>
         </div> <!-- span9 -->
 
         <div class="span3">
@@ -148,65 +163,6 @@
         </div> <!-- span3 -->
     </div>
 
-    <div id="agenda-info">
-        <div>
-
-
-        <div class="item-list">
-            <h2> {% trans "Ascribed Bills" %}</h2>
-            <table id="agenda-bills">
-                {% for agendabill in object.agendabills.all %}
-                    <tr>
-                        <td>
-                            <div class="agenda-importance">{{agendabill.get_importance_display}}</div>
-                            <div class="agenda-score{% if agendabill.score > 0 %} positive{% endif %}{% if agendabill.score < 0 %} negative{% endif %}">
-                                {{ agendabill.get_score_display }}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="item {% cycle "alt" "normal" %}">
-                                {% bill_list_item agendabill.bill %}
-                                <span class="reasoning">
-                                    {{ agendabill.reasoning|urlizetrunc:"30" }}
-                                </span>
-                            </div>
-                        {% get_comment_count for agendabill as comment_count %}
-                        <a href="{% url agenda-bill-detail agendabill.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
-                        </td>
-                    </tr>
-                {% empty %}
-                    {% trans "No results found" %}
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="item-list">
-            <h2> {% trans "Ascribed Committee Meetings" %}</h2>
-            <table id="agenda-meetings">
-                {% for agendameeting in object.agendameetings.all %}
-                    <tr>
-                        <td>
-                            <div class="agenda-score positive">
-                                {{ agendameeting.get_score_display }}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="item {% cycle "alt" "normal" %}">
-                                {% committee_meeting_list_item agendameeting.meeting %}
-                                <span class="reasoning">
-                                    {{ agendameeting.reasoning }}
-                                </span>
-                            </div>
-                            {% get_comment_count for agendameeting as comment_count %}
-                            <a href="{% url agenda-meeting-detail agendameeting.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
-                        </td>
-                    </tr>
-                {% empty %}
-                    {% trans "No results found" %}
-                {% endfor %}
-            </table>
-        </div>
-    </div> {# id="agenda-info" #}
     {% if paginator %}
         {% pagination page_obj paginator request %}
     {% endif %}

@@ -146,6 +146,10 @@ class AgendaDetailView(DetailView):
         context['agenda_bills_more'] = agenda_bills.count() > self.INITIAL
         context['agenda_bills'] = agenda_bills[:self.INITIAL]
 
+        agenda_meetings = agenda.agendameetings.all()
+        context['agenda_meetings_more'] = agenda_meetings.count() > self.INITIAL
+        context['agenda_meetings'] = agenda_meetings[:self.INITIAL]
+
         # Optimization: get all parties and members before rendering
         # Further possible optimization: only bring parties/members needed for rendering
         parties_objects = Party.objects.all()
@@ -195,17 +199,15 @@ class AgendaBillsMoreView(GetMoreView):
         agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
         return agenda.agendabills.all()
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super(AgendaBillsMoreView, self).get_context_data(*args, **kwargs)
 
-        if self.request.user.is_authenticated():
-            p = self.request.user.get_profile()
-            watched_members = p.members
-        else:
-            watched_members = False
-        ctx['watched_members'] = watched_members
+class AgendaMeetingsMoreView(GetMoreView):
 
-        return ctx
+    paginate_by = 10
+    template_name = 'agendas/agenda_meeting_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        return agenda.agendameetings.all()
 
 
 class AgendaVoteDetailView (DetailView):
@@ -213,7 +215,7 @@ class AgendaVoteDetailView (DetailView):
     template_name = 'agendas/agenda_vote_detail.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(AgendaVoteDetailView , self).get_context_data(*args, **kwargs)
+        context = super(AgendaVoteDetailView, self).get_context_data(*args, **kwargs)
         agendavote = context['object']
         vote = agendavote.vote
         agenda = agendavote.agenda
