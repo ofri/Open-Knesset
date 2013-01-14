@@ -14,7 +14,6 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
                 register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
@@ -61,9 +60,9 @@
     </section>
 
     <div class="row">
-        <div class="span9">
-            <section class="card">
-                <div class="spacer">
+        <div class="cards span9">
+            <section class="card card-list">
+                <div class="spacer text-center">
                 {% if object.is_public %}
                     <iframe width="600" height="400" frameborder="0" src="http://ydaniv.github.com/ok-agenda-viz/?agenda_id={{object.id}}"></iframe>
                 {% else %}
@@ -71,6 +70,22 @@
                     {% endif %}
                 </div>
             </section>
+
+            <section class="card card-list card-list-latest">
+                <header><h2> {% trans "Ascribed Votes" %}</h2></header>
+                <ul id="recent-votes">
+                    {% include "agendas/agenda_vote_partial.html" with object_list=agenda_votes %}
+                </ul>
+                {% if agenda_votes_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-votes" 
+                    data-url="{% url agenda-detail-more-votes object.pk %}"
+                    data-initial="{{INITIAL_AGENDA_VOTES}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
+            </section>
+
         </div> <!-- span9 -->
 
         <div class="span3">
@@ -123,34 +138,6 @@
     <div id="agenda-info">
         <div>
 
-        <div class="item-list">
-
-        <h2> {% trans "Ascribed Votes" %}</h2>
-        <table id="agenda-votes">
-            {% for agendavote in agenda_votes %}
-                <tr>
-                    <td>
-                        <div class="agenda-importance">{{agendavote.get_importance_display}}</div>
-                        <div class="agenda-score{% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">
-                            {{ agendavote.get_score_display }}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="item {% cycle "alt" "normal" %}">
-                            {% vote_list_item agendavote.vote watched_members %}
-                            <span class="reasoning">
-                                {{ agendavote.reasoning|urlizetrunc:"30" }}
-                            </span>
-                        </div>
-                        {% get_comment_count for agendavote as comment_count %}
-                        <a href="{% url agenda-vote-detail agendavote.id %}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
-                    </td>
-                </tr>
-            {% empty %}
-                {% trans "No results found" %}
-            {% endfor %}
-        </table>
-        </div>
 
         <div class="item-list">
             <h2> {% trans "Ascribed Bills" %}</h2>

@@ -16,6 +16,7 @@ agenda_meeting_detail_view     = AgendaMeetingDetailView.as_view()
 urlpatterns = patterns('',
     url(r'^$', agenda_list_view, name='agenda-list'),
     url(r'^(?P<pk>\d+)/$', agenda_detail_view, name='agenda-detail'),
+    url(r'^(?P<pk>\d+)/more-votes/$', AgendaVotesMoreView.as_view(), name='agenda-detail-more-votes'),
     url(r'^(?P<pk>\d+)/member/(?P<member_id>\d+)/$', agenda_mk_detail_view, name='mk-agenda-detail'),
     url(r'^(?P<pk>\d+)/edit/$', agenda_detail_edit_view, name='agenda-detail-edit'),
     url(r'^vote/(?P<pk>\d+)/$', agenda_vote_detail_view, name='agenda-vote-detail'),
