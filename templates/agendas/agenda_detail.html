@@ -92,86 +92,36 @@
                 {% endwith %}
                 {% endfor %}
                 </ul>
+            </aside> <!-- parties -->
+            {% if all_mks %}
+            <aside class="sidebar">
+                <h2>{% trans "Agenda MKs" %}</h2>
+                <ul>
+                {% include "agendas/_agenda_mks_items.html" with mks_ids=all_mks_ids %}
+                </ul>
             </aside>
+            {% else %}
+            <aside class="sidebar clearfix">
+                <h2>{% trans 'Agenda Top MKs' %}</h2>
+                <ul>
+                {% include "agendas/_agenda_mks_items.html" with mks_ids=mks_top %}
+                </ul>
+                <a class="btn btn-more" href="?all_mks">{% trans 'Click here to see the full list.' %}</a>
+            </aside>
+            <aside class="sidebar clearfix">
+                <h2>{% trans 'Agenda Bottom MKs' %}</h2>
+                <ul>
+                {% include "agendas/_agenda_mks_items.html" with mks_ids=mks_bottom %}
+                </ul>
+                <a class="btn btn-more" href="?all_mks">{% trans 'Click here to see the full list.' %}</a>
+            </aside>
+            {% endif %}
         </div> <!-- span3 -->
     </div>
 
 
     <div id="agenda-info">
         <div>
-        <div style="display:inline-block">
-            <h3>{% trans "Members" %}</h3>
-            <div class="list-wrap">
-            {% if not all_mks %}
-                <a href="?all_mks">{% trans 'Click here to see the full list.' %}</a>
-            {% endif %}
-                <table>
-                {% if all_mks %}
-                    <tr>
-                        <td colspan="3" style="text-align:center">{% trans 'Agenda MKs' %}</td>
-                    </tr>
-                    {% for selected_mk_id in all_mks_ids %}
-			{% with members|lookup:selected_mk_id as selected_mk %}
-                        <tr>
-			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
-			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
-                            <td>
-                                <div id="selected_mk_{{ selected_mk.id}}_percentile" class="percentile 
-                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
-                            </td>
-			{% endwith %}
-			{% endwith %}
-                        </tr>
-			{% endwith %}
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="3" style="text-align:center">{% trans 'Agenda Top MKs' %}</td>
-                    </tr>
-                    {% for selected_mk_id in mks_top %}
-			{% with members|lookup:selected_mk_id as selected_mk %}
-                        <tr>
-			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
-			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
-                            <td>
-                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
-                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
-                            </td>
-			{% endwith %}
-			{% endwith %}
-                        </tr>
-			{% endwith %}
-                    {% endfor %}
-                    <tr>
-                        <td colspan="3" style="text-align:center">{% trans 'Agenda Bottom MKs' %}</td>
-                    </tr>
-                    {% for selected_mk_id in mks_bottom %}
-			{% with members|lookup:selected_mk_id as selected_mk %}
-                        <tr>
-			{% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
-			{% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
-                            <td><a class="item dontwrap party-{{selected_mk_party.id}}" title="{{selected_mk_party.name}}" id="detail-{{ selected_mk.id }}" href="{% url mk-agenda-detail object.id selected_mk.id %}">{{ selected_mk }}</a></td>
-                            <td class="numeric">{{mk_values.score|floatformat:"0"}}%</td>
-                            <td>
-                                <div id="selected_mk_{{selected_mk.id}}_percentile" class="percentile 
-                                    {% if mk_values.score < 0 %}percentile_against{% endif %}"></div>
-                                <script>set_percentile('selected_mk_{{selected_mk.id}}',({{mk_values.score}}+100)/2);</script>
-                            </td>
-			{% endwith %}
-			{% endwith %}
-                        </tr>
-			{% endwith %}
-                    {% endfor %}
-                {% endif %}
-                </table>
-            </div>
-        </div>
 
         <div class="item-list">
 
