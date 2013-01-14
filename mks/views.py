@@ -721,15 +721,18 @@ class PartiesOverview(TemplateView):
                    'ballot': cl.ballot,
                    'wikipedia_page': cl.wikipedia_page,
                    'facebook_url': cl.facebook_url,
-                   'candidates': [{'name': candidate.name,
-                                   'img_url': candidate.img_url,
-                                   'gender': candidate.gender or 'X',
-                                   'mk':getattr(candidate, "mk") is not None,
-                                   'bills_stats_approved': candidate.mk.bills_stats_approved if candidate.mk else None,
-                                   'bills_stats_proposed': candidate.mk.bills_stats_proposed if candidate.mk else None,
-                                   'residence_centrality': candidate.residence_centrality
+                   'candidates': [{'id': person.id,
+                                   'name': person.name,
+                                   'img_url': person.img_url,
+                                   'ordinal': None,  # TODO
+                                   'gender': person.gender or 'X',
+                                   'mk':getattr(person, "mk") is not None,
+                                   'bills_stats_approved': person.mk.bills_stats_approved if person.mk else None,
+                                   'bills_stats_proposed': person.mk.bills_stats_proposed if person.mk else None,
+                                   'residence_centrality': person.residence_centrality,
+                                   'role': person.roles.all()[0].text if person.roles.count() else None
                                   }
-                                  for candidate in cl.candidates.order_by('candidate__ordinal')[:10]]}
+                                  for person in cl.candidates.order_by('candidate__ordinal')[:10]]}
                   for cl in CandidateList.objects.order_by('ballot')]
 
         ctx['candidate_lists'] = simplejson.dumps(clists)

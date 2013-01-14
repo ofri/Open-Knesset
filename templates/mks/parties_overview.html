@@ -10,10 +10,22 @@
 
 {% block extracss %}
     <style type="text/css">
+        [ng\:cloak], [ng-cloak], .ng-cloak {
+            display: none !important;
+        }
+
+        .clist-bulk-selectos{
+            padding: 15px 0;
+        }
         #controls-clists label{
             display: inline-block;
-            width: 33%;
+            width: 50%;
             vertical-align: top;
+        }
+
+        #controls-properties label{
+            display: inline-block;
+            margin: 5px 10px;
         }
 
         #clists {
@@ -43,8 +55,11 @@
         }
 
         .ballot-card .name {
+            height: 45px;
             font-size: 11px;
             line-height: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .candidates {
@@ -63,6 +78,9 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        .candidate .badge{
+            width: 40px;
+        }
         .candidate .img {
             max-width: 80px;
             max-height: 60px;
@@ -71,8 +89,10 @@
             position: absolute;
             top: 0;
             left: 0;
+            padding: 0 3px;
             color: white;
-            background: red;
+            background: #ACACAC;
+            font-size: 10px;
         }
 
     </style>
@@ -81,18 +101,23 @@
 {% block divcontent %}
 
     <h1>{% trans "Candidate list for the comming elections" %}</h1>
-    <div ng-app="okApp" ng-controller="okCtrl">
+    <div ng-app="okApp" ng-controller="okCtrl" ng-cloak>
         <div id="controls-clists" class="well">
+            <div class="clist-bulk-selectos">
+                <a ng-click="set_clists_visible(true)">{% trans 'Select all' %}</a> |
+                <a ng-click="set_clists_visible(false)">{% trans 'Select none' %}</a>
+            </div>
+
             <div>
-                <label ng-repeat="clist in clists">
+                <label ng-repeat="clist in clists | orderBy:'name' ">
                     <input type="checkbox" ng-click="clist.visible=!clist.visible" ng-checked="clist.visible">
                     <span>(( clist.name ))</span>
                 </label>
             </div>
-            <hr class="dashed">
-            <div>
-                <button class="btn" ng-click="set_clists_visible(true)">{% trans 'Select all' %}</button>
-                <button class="btn" ng-click="set_clists_visible(false)">{% trans 'Select none' %}</button>
+
+            <div class="clist-bulk-selectos">
+                <a ng-click="set_clists_visible(true)">{% trans 'Select all' %}</a> |
+                <a ng-click="set_clists_visible(false)">{% trans 'Select none' %}</a>
             </div>
         </div>
 
@@ -100,7 +125,7 @@
             <div>
                 <label ng-repeat="prop in candidate_properties">
                     <input type="checkbox" ng-click="prop.visible=!prop.visible" ng-checked="prop.visible">
-                    <span class="badge" ng-class="prop.badge_class">(( prop.display_name ))</span>
+                    <span class="badge" ng-style="prop.badge_style">(( prop.display_name ))</span>
                 </label>
             </div>
         </div>
@@ -120,12 +145,12 @@
                     <ul class="candidates">
                         <li class="candidate" ng-repeat='candidate in clist.candidates'>
                             <img class="img" ng-src="(( candidate.img_url || default_img_url[candidate.gender] ))">
-                            <div class="is-new-badge" ng-show="!candidate.mk">{% trans 'NEW' %}</div>
+                            <div class="is-new-badge" ng-show="!candidate.mk">{% trans 'NEW' %}<i class="icon-certificate icon-white"></i></div>
 
-                            <div class="name">(( candidate.name ))</div>
+                            <div class="name"><span ng-show="candidate.ordinal">(( candidate.ordinal )).</span>(( candidate.name ))</div>
 
                             <div class="badges">
-                                <span class="badge" ng-class="prop.badge_class"
+                                <span class="badge" ng-style="prop.badge_style"
                                       ng-repeat="prop in candidate_properties | filter:{'visible': true}"
                                       ng-show="!!candidate[prop.field_name]">
 
@@ -162,22 +187,37 @@
                     field_name:'bills_stats_proposed',
                     display_name:'{% trans "Bills Proposed" %}',
                     visible: true,
-                    badge_class: '',
-                    badge_icon: 'icon-book icon-white'
+                    badge_icon: 'icon-book icon-white',
+                    badge_style:{
+                        'background-color': '#DF4F4F'
+                    }
                 },
                 {
                     field_name:'bills_stats_approved',
                     display_name:'{% trans "Bills Approved" %}',
                     visible: true,
-                    badge_class: 'badge-warning',
-                    badge_icon: 'icon-book icon-white'
+                    badge_icon: 'icon-book icon-white',
+                    badge_style:{
+                        'background-color': '#C8DF4F'
+                    }
                 },
                 {
                     field_name:'residence_centrality',
                     display_name:'{% trans "Residence Centrality" %}',
                     visible: true,
-                    badge_class: 'badge-success',
-                    badge_icon: 'icon-home icon-white'
+                    badge_icon: 'icon-home icon-white',
+                    badge_style:{
+                        'background-color': '#4F89DF'
+                    }
+                },
+                {
+                    field_name:'role',
+                    display_name:'{% trans "Role" %}',
+                    visible: true,
+                    badge_icon: '',
+                    badge_style:{
+                        'background-color': '#DFB74F'
+                    }
                 }
             ];
 
