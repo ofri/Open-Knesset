@@ -1,6 +1,5 @@
 {% load i18n %}
 {% if links %}
-    <ul class="links">
     {% for link in links %}
         {% if link.active %}
         <li><a href="{{ link.url|safe }}" target="_blank">
@@ -16,7 +15,6 @@
         </a></li>
         {% endif %}
     {% endfor %}
-    </ul>
 {% else %}
     {% trans 'none' %}
 {% endif %}

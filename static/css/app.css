@@ -5967,6 +5967,7 @@ ol {
   float: right;
 }
 .social-links ul {
+  margin-top: 8px;
   margin-right: -10px;
 }
 .social-links ul li {
@@ -5975,8 +5976,6 @@ ol {
 .social-links ul li a {
   display: block;
   overflow: hidden;
-  text-indent: -30000em;
-  width: 32px;
   height: 32px;
   opacity: 0.7;
 }
