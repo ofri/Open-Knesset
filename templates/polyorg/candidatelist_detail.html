@@ -12,36 +12,12 @@
 {% block help-section %}
 	 {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
 {% endblock %}
+{% block breadcrumbs %}
+    <li><a href="{% url candidate-list-list %}">{% trans "Candidate Lists" %}</a> <span class="divider">/</span></li>
+    <li class="active">{{ object.name }}</li>
+{% endblock %}
 {% block divcontent %}
     <div id="candidate-list">
-            {% for o in candidates %}
-              {% if o.person.mk %}
-              <a href="{{o.person.mk.get_absolute_url}}">
-              {% endif %}
-              <div class="card card-list candidate-list-item person">
-                <header>
-                <h2>{{o.ordinal}}</h2>
-              </header>
-                <h3>{{o.person.name}}</h3>
-                {% if o.person.img_url %}
-                  <img src="{{o.person.img_url}}" alt="{{o.person.name}}">
-                {% endif %}
-              </div>
-              {% if o.person.mk %}
-              </a>
-              {% endif %}
-            {% if o.ordinal == 1 %}
-              {% if object.wikipedia_page %}
-              <div class="card card-list candidate-list-item">
-                <header>
-                  <h2>{% trans 'Wikipedia' %} </h2>
-                </header>
-                <section>
-                <div class="wikipedia" wikipedia-page="{{object.wikipedia_page}}">
-                </div>
-                </section>
-              </div>
-              {% endif %}
               <div class="candidate-list-item ballot">
                 <h1>{{object.ballot}}</h1>
                 <h2>{{object.name}}</h2>
@@ -82,6 +58,16 @@
                   </section>
                 </div>
               {% endif %}
+              {% if object.facebook_url %}
+                <div class="card card-list candidate-list-item">
+                  <header>
+                    <h2>{% trans "Facebook" %}</h2>
+                  </header>
+                  <section>
+                    <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=292&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:558px;" allowTransparency="true"></iframe>
+                  </section>
+                </div>
+              {% endif %}
               {% if object.youtube_user %}
                 <div class="card card-list candidate-list-item">
                   <header>
@@ -92,15 +78,16 @@
                   </section>
                 </div>
               {% endif %}
-              {% if object.facebook_url %}
-                <div class="card card-list candidate-list-item">
-                  <header>
-                    <h2>{% trans "Facebook" %}</h2>
-                  </header>
-                  <section>
-                    <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=292&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:558px;" allowTransparency="true"></iframe>
-                  </section>
+              {% if object.wikipedia_page %}
+              <div class="card card-list candidate-list-item">
+                <header>
+                  <h2>{% trans 'Wikipedia' %} </h2>
+                </header>
+                <section>
+                <div class="wikipedia" wikipedia-page="{{object.wikipedia_page}}">
                 </div>
+                </section>
+              </div>
               {% endif %}
               {% comment %}
               <div class="candidate-list-item links">
@@ -116,8 +103,11 @@
               </div>
               {% endif %}
               {% endcomment %}
-            {% endif %}
-            {% endfor %}
+          </div>
+          <div class="card card-persons">
+            <div>
+              {% include "persons/person_photos.html" with persons=candidates %}
+            </div>
           </div>
                 <footer class="more-button" style="display:hidden;">
     <a class="btn btn-mini btn-expand">{% trans "more" %}&nbsp;+</a>
@@ -181,7 +171,7 @@
           $('#candidate-list').isotope({
             transformsEnabled: false,
             itemSelector: '.candidate-list-item',
-            masonry: { columnWidth: 40 },
+            masonry: { columnWidth: 8 },
            });
       });
     </script>

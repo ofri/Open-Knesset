@@ -79,6 +79,77 @@
 .wikipedia dl {display:none;}
 
 .more-item {display:none;}
-.candidate-list-agendas { width:385px; }
+.candidate-list-agendas { width:25%; }
 .candidate-list-agendas>table { clear:both; margin:0.5em; }
 section {clear:both; padding:0.5em;}
+.numeric {direction: ltr;}
+
+.card-persons {
+  margin-bottom: 35px;
+  counter-reset: memberNum;
+}
+.card-persons > div {
+  margin: 9px;
+}
+.card-persons > div .person-photo {
+  counter-increment: memberNum;
+  position: relative;
+  height: 80px;
+  width: 60px;
+  display: inline-block;
+  margin: 9px;
+}
+.card-persons > div .person-photo .person-info {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  margin: -1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  position: relative;
+  display: none;
+  z-index: 1;
+  position: absolute;
+  top: 80px;
+  width: 405px;
+  height: 218px;
+}
+.card-persons > div .person-photo .person-info .person-info-photo {
+  position: absolute;
+  border: 1px solid #e6e6e6;
+  height: 177px;
+  width: 130px;
+  top: 14px;
+  right: 10px;
+}
+.card-persons > div .person-photo .person-info .person-info-text {
+  height: 160px;
+  border-bottom: 1px solid #e6e6e6;
+  padding-right: 160px;
+}
+.card-persons > div .person-photo .person-info .person-info-text h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.card-persons > div .person-photo .person-info .person-info-links {
+  height: 47px;
+  background: #f6f6f6;
+  padding-right: 160px;
+}
+.card-persons > div .person-photo:hover .person-info {
+  display: block;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.card-persons > div .person-photo:after {
+  content: counter(memberNum);
+  position: absolute;
+  bottom: 2px;
+  left: 3px;
+  color: white;
+}
+
