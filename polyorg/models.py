@@ -15,6 +15,7 @@ class CandidateList(models.Model):
     wikipedia_page = models.CharField(_('Wikipedia page'), max_length = 80, null=True, blank=True)
     twitter_account = models.CharField(_('Twitter account'), max_length = 80, null=True, blank=True)
     facebook_url = models.URLField(blank=True, verify_exists=True, null=True)
+    platform = models.TextField(_('Platform'), blank=True, null=True)
 
     def save(self, *args, **kwargs):
         super(CandidateList, self).save()

@@ -48,7 +48,7 @@
               </div>
               {% endif %}
               {% if object.mpg_html_report %}
-                <div class="card card-list candidate-list-item expandable-item" style="width:400px">
+                <div class="card card-list candidate-list-item expandable-item" style="width:340px">
                   <header>
                   <h2>{% trans "Report from MQG" %}</h2>
                   </header>
@@ -58,6 +58,17 @@
                   </section>
                 </div>
               {% endif %}
+              {% if object.platform %}
+                 <div class="card card-list candidate-list-item expandable-item" style="width:340px">
+                  <header>
+                  <h2>{% trans "Official Platform" %}</h2>
+                  </header>
+                  <section>
+                    <p class="hide-on-more">{{object.platform|truncatewords_html:30|linebreaksbr}}</p>
+                    <p class="more-item">{{object.platform|linebreaksbr}}</p>
+                  </section>
+                </div>
+              {%  endif %}
               {% if object.facebook_url %}
                 <div class="card card-list candidate-list-item">
                   <header>
