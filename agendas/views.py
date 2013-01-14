@@ -73,7 +73,7 @@ class AgendaDetailView(DetailView):
 
     model = Agenda
 
-    INITIAL_VOTES = 4
+    INITIAL = 4
 
     class ForbiddenAgenda(Exception):
         pass
@@ -138,9 +138,13 @@ class AgendaDetailView(DetailView):
         except TypeError:
             total_votes = len(agenda_votes)
 
-        context['agenda_votes_more'] = total_votes > self.INITIAL_VOTES
-        context['INITIAL_AGENDA_VOTES'] = self.INITIAL_VOTES
-        context['agenda_votes'] = agenda_votes[:self.INITIAL_VOTES]
+        context['INITIAL'] = self.INITIAL
+        context['agenda_votes_more'] = total_votes > self.INITIAL
+        context['agenda_votes'] = agenda_votes[:self.INITIAL]
+
+        agenda_bills = agenda.agendabills.all()
+        context['agenda_bills_more'] = agenda_bills.count() > self.INITIAL
+        context['agenda_bills'] = agenda_bills[:self.INITIAL]
 
         # Optimization: get all parties and members before rendering
         # Further possible optimization: only bring parties/members needed for rendering
@@ -171,6 +175,28 @@ class AgendaVotesMoreView(GetMoreView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(AgendaVotesMoreView, self).get_context_data(*args, **kwargs)
+
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched_members = p.members
+        else:
+            watched_members = False
+        ctx['watched_members'] = watched_members
+
+        return ctx
+
+
+class AgendaBillsMoreView(GetMoreView):
+
+    paginate_by = 10
+    template_name = 'agendas/agenda_bill_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        return agenda.agendabills.all()
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(AgendaBillsMoreView, self).get_context_data(*args, **kwargs)
 
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()

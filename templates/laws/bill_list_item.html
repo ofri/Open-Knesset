@@ -1,11 +1,15 @@
 {% load i18n bills_tags %}
 {% if bill %}
-    <li>
+{% if add_li %}
+     <li>
+{% endif %}
         <p class="item-action">{% trans bill.get_stage_display %}</p>
         <p class="item-title">
             <a href="{% url bill-detail bill.id %}">{% bill_full_name bill %}</a>
         </p>
         <p class="item-context">{{ bill.stage_date|timesince }}</p>
         <p class="item-context">{% item_tags bill.tags %}</p>
+{% if add_li %}
     </li>
+{% endif %}
 {% endif %}

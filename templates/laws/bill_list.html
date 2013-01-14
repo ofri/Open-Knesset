@@ -41,7 +41,7 @@
                 </header>
                 <ul>
                     {% for bill in object_list  %}
-                    {% include "laws/bill_list_item.html" %}
+                    {% include "laws/bill_list_item.html" with add_li=1 %}
                     {% endfor %}
                 </ul>
             </section>

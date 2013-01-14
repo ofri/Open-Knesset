@@ -81,11 +81,25 @@
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-votes" 
                     data-url="{% url agenda-detail-more-votes object.pk %}"
-                    data-initial="{{INITIAL_AGENDA_VOTES}}">{% trans "More" %} +</button>
+                    data-initial="{{INITIAL}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
             </section>
 
+            <section class="card card-list card-list-latest">
+                <header><h2>{% trans "Ascribed Bills" %}</h2></header>
+                <ul id="recent-bills">
+                    {% include "agendas/agenda_bill_partial.html" with object_list=agenda_bills %}
+                </ul>
+                {% if agenda_bills_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-bills" 
+                    data-url="{% url agenda-detail-more-bills object.pk %}"
+                    data-initial="{{INITIAL}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
+            </section>
         </div> <!-- span9 -->
 
         <div class="span3">
@@ -133,7 +147,6 @@
             {% endif %}
         </div> <!-- span3 -->
     </div>
-
 
     <div id="agenda-info">
         <div>
