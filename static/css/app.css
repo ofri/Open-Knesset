@@ -5186,6 +5186,9 @@ body {
 .text-center {
   text-align: center;
 }
+.numeric {
+  direction: ltr;
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
