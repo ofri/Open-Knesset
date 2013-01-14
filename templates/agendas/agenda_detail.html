@@ -73,9 +73,17 @@
 
             <section class="card card-list card-list-latest">
                 <header><h2> {% trans "Ascribed Votes" %}</h2></header>
-                <ul>
+                <ul id="recent-votes">
                     {% include "agendas/agenda_vote_partial.html" with object_list=agenda_votes %}
                 </ul>
+                {% if agenda_votes_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-votes" 
+                    data-url="{% url agenda-detail-more-votes object.pk %}"
+                    data-initial="{{INITIAL_AGENDA_VOTES}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
             </section>
 
         </div> <!-- span9 -->

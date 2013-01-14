@@ -25,6 +25,7 @@ import queries
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
+from auxiliary.views import GetMoreView
 
 
 logger = logging.getLogger("open-knesset.agendas.views")
@@ -137,8 +138,8 @@ class AgendaDetailView(DetailView):
         except TypeError:
             total_votes = len(agenda_votes)
 
-        context['agenda_votes_has_more'] = total_votes > self.INITIAL_VOTES
-        context['agenda_votes_initial'] = self.INITIAL_VOTES
+        context['agenda_votes_more'] = total_votes > self.INITIAL_VOTES
+        context['INITIAL_AGENDA_VOTES'] = self.INITIAL_VOTES
         context['agenda_votes'] = agenda_votes[:self.INITIAL_VOTES]
 
         # Optimization: get all parties and members before rendering
@@ -151,6 +152,35 @@ class AgendaDetailView(DetailView):
         membersDict = dict(map(lambda mk:(mk.id,mk),member_objects))
         context['members']=membersDict
         return context
+
+
+class AgendaVotesMoreView(GetMoreView):
+
+    paginate_by = 10
+    template_name = 'agendas/agenda_vote_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        agenda_votes = cache.get('agenda_votes_%d' % agenda.id)
+
+        if not agenda_votes:
+            agenda_votes = agenda.agendavotes.order_by(
+                '-vote__time').select_related('vote')
+            cache.set('agenda_votes_%d' % agenda.id, agenda_votes, 900)
+        return agenda_votes
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(AgendaVotesMoreView, self).get_context_data(*args, **kwargs)
+
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched_members = p.members
+        else:
+            watched_members = False
+        ctx['watched_members'] = watched_members
+
+        return ctx
+
 
 class AgendaVoteDetailView (DetailView):
     model = AgendaVote
