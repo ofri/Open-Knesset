@@ -4,7 +4,6 @@
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}" type="text/javascript"></script>
     <script src="{% static "js/watch.js" %}"></script>
     <script src="{% static "js/mk-pie.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
     <script type="text/javascript">
 
         $(function() {
@@ -74,7 +73,7 @@
     </div>
 
     <div class="row">
-        <div class="cards span9">
+        <div class="cards span8">
             <section class="card card-list card-list-latest">
                 <header>
                     <h2>{% trans "Statistics" %}</h2>
@@ -107,30 +106,26 @@
                 </ul>
             </section>
         </div>
-    </div>
 
+        <div class="span4">
+            <aside class="sidebar sidebar-agendas">
+                <h2>{% trans "Agendas" %}</h2>
+                <ul>
+                {% for agenda in agendas %}
+                    <li class="row">
+                        <div class="span3"><a href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></div>
+                        <div class="numeric text-{% if agenda.score < 0 %}error{%else%}success{% endif %}">
+                            {{agenda.score|floatformat:"0"}}%
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </aside>
+        </div>
+    </div>
+{% comment %}
     <div class="list-wrap">
         <div id="residence_map"></div>
-        <div>
-            <h3>{% trans "Agendas" %}</h3>
-            <div class="list-wrap">
-                <table>
-                    {% for agenda in agendas %}
-                    <tr>
-                        <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-                        <td><a class="item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-                        <td class="numeric">{{agenda.score|floatformat:"0"}}%</td>                      
-                        <td>
-                            <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
-                            <script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>                            
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-
-
     </div>
     <script>
     var g_member_residences = [];
@@ -217,4 +212,5 @@
             draw_mk_residence_map();
         });
     </script>
+{% endcomment %}
 {% endblock %}
