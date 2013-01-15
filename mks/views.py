@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView, TemplateView
 from django.core.cache import cache
-from django.utils import simplejson as json
+from django.utils import simplejson as json, simplejson
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from backlinks.pingback.server import default_server
@@ -16,6 +16,7 @@ from actstream.models import Follow
 
 from hashnav.detail import DetailView
 from models import Member, Party
+from polyorg.models import CandidateList
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
@@ -704,3 +705,4 @@ class PartiesMembersView(TemplateView):
         ctx['past_members'] = Member.objects.filter(is_current=False)
 
         return ctx
+

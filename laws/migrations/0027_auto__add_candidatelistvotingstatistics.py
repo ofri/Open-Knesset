@@ -8,30 +8,17 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'BillBudgetEstimation'
-        db.create_table('laws_billbudgetestimation', (
+        # Adding model 'CandidateListVotingStatistics'
+        db.create_table('laws_candidatelistvotingstatistics', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('bill', self.gf('django.db.models.fields.related.ForeignKey')(related_name='budget_ests', to=orm['laws.Bill'])),
-            ('one_time_gov', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('yearly_gov', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('one_time_ext', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('yearly_ext', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('estimator', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='budget_ests', null=True, to=orm['auth.User'])),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('summary', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('candidates_list', self.gf('django.db.models.fields.related.OneToOneField')(related_name='voting_statistics', unique=True, to=orm['polyorg.CandidateList'])),
         ))
-        db.send_create_signal('laws', ['BillBudgetEstimation'])
-
-        # Adding unique constraint on 'BillBudgetEstimation', fields ['bill', 'estimator']
-        db.create_unique('laws_billbudgetestimation', ['bill_id', 'estimator_id'])
+        db.send_create_signal('laws', ['CandidateListVotingStatistics'])
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'BillBudgetEstimation', fields ['bill', 'estimator']
-        db.delete_unique('laws_billbudgetestimation', ['bill_id', 'estimator_id'])
-
-        # Deleting model 'BillBudgetEstimation'
-        db.delete_table('laws_billbudgetestimation')
+        # Deleting model 'CandidateListVotingStatistics'
+        db.delete_table('laws_candidatelistvotingstatistics')
 
 
     models = {
@@ -125,17 +112,10 @@ class Migration(SchemaMigration):
             'stage_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
         },
-        'laws.billbudgetestimation': {
-            'Meta': {'unique_together': "(('bill', 'estimator'),)", 'object_name': 'BillBudgetEstimation'},
-            'bill': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'budget_ests'", 'to': "orm['laws.Bill']"}),
-            'estimator': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'budget_ests'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'one_time_ext': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'one_time_gov': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'summary': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'yearly_ext': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'yearly_gov': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        'laws.candidatelistvotingstatistics': {
+            'Meta': {'object_name': 'CandidateListVotingStatistics'},
+            'candidates_list': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'voting_statistics'", 'unique': 'True', 'to': "orm['polyorg.CandidateList']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'laws.govlegislationcommitteedecision': {
             'Meta': {'object_name': 'GovLegislationCommitteeDecision'},
@@ -304,10 +284,27 @@ class Migration(SchemaMigration):
         },
         'persons.person': {
             'Meta': {'ordering': "('name',)", 'object_name': 'Person'},
+            'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'date_of_death': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'family_status': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'mk': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'person'", 'null': 'True', 'to': "orm['mks.Member']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
-            'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['persons.Title']"})
+            'number_of_children': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'place_of_birth': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence_lat': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence_lon': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
+            'residence_centrality': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'residence_economy': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['persons.Title']"}),
+            'year_of_aliyah': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
         },
         'persons.title': {
             'Meta': {'object_name': 'Title'},
@@ -320,6 +317,31 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '255', 'blank': 'True'}),
             'url': ('django.db.models.fields.URLField', [], {'unique': 'True', 'max_length': '1024', 'db_index': 'True'})
+        },
+        'polyorg.candidate': {
+            'Meta': {'object_name': 'Candidate'},
+            'candidates_list': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidateList']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ordinal': ('django.db.models.fields.IntegerField', [], {}),
+            'party': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.Party']", 'null': 'True', 'blank': 'True'}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['persons.Person']"}),
+            'votes': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'polyorg.candidatelist': {
+            'Meta': {'object_name': 'CandidateList'},
+            'ballot': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
+            'candidates': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['persons.Person']", 'null': 'True', 'through': "orm['polyorg.Candidate']", 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mpg_html_report': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
+            'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'surplus_partner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['polyorg.CandidateList']", 'null': 'True', 'blank': 'True'})
+        },
+        'polyorg.party': {
+            'Meta': {'object_name': 'Party'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
         },
         'tagging.tag': {
             'Meta': {'ordering': "('name',)", 'object_name': 'Tag'},
