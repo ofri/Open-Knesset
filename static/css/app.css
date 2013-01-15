@@ -5421,6 +5421,9 @@ ol {
   -moz-border-radius: 0 4px 0 0;
   border-radius: 0 4px 0 0;
 }
+.card-list header h1 {
+  font-size: 22px;
+}
 .card-list header .btn-question {
   margin: 12px;
 }
