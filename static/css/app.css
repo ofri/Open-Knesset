@@ -5287,6 +5287,9 @@ body {
   background: none;
   margin: 10px 0;
 }
+#id_search_page_q {
+  background-position: right center !important;
+}
 #app-footer {
   border-top: 4px solid #222222;
   font-size: 14px;
