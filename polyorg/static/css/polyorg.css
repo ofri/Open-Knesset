@@ -84,22 +84,17 @@
 section {clear:both; padding:0.5em;}
 .numeric {direction: ltr;}
 
-.card-persons {
-  margin-bottom: 35px;
-  counter-reset: memberNum;
-}
-.card-persons > div {
-  margin: 9px;
-}
-.card-persons > div .person-photo {
+.card-persons { padding:9px;}
+.person-card {
   counter-increment: memberNum;
   position: relative;
-  height: 80px;
-  width: 60px;
-  display: inline-block;
-  margin: 9px;
+  width: 140px;
+  height:60px;
+  /* display: inline-block;*/
+  float:right;
+  margin: 0 20px 20px 0px;
 }
-.card-persons > div .person-photo .person-info {
+.person-card .person-info {
   background: #ffffff;
   border: 1px solid #e6e6e6;
   margin: -1px;
@@ -117,7 +112,7 @@ section {clear:both; padding:0.5em;}
   width: 405px;
   height: 218px;
 }
-.card-persons > div .person-photo .person-info .person-info-photo {
+.person-info-photo {
   position: absolute;
   border: 1px solid #e6e6e6;
   height: 177px;
@@ -125,31 +120,33 @@ section {clear:both; padding:0.5em;}
   top: 14px;
   right: 10px;
 }
-.card-persons > div .person-photo .person-info .person-info-text {
+.person-info-text {
   height: 160px;
   border-bottom: 1px solid #e6e6e6;
   padding-right: 160px;
 }
-.card-persons > div .person-photo .person-info .person-info-text h3 {
+.person-info-text h3 {
   font-size: 16px;
   font-weight: 700;
 }
-.card-persons > div .person-photo .person-info .person-info-links {
+.person-info-links {
   height: 47px;
   background: #f6f6f6;
   padding-right: 160px;
 }
-.card-persons > div .person-photo:hover .person-info {
+.person-card:hover .person-info {
   display: block;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.card-persons > div .person-photo:after {
+.person-avatar { float:right; border: 1px solid #e6e6e6; margin-left:10px;}
+.person-avatar img { width:40px; height:54px;  }
+.person-card h3 { display: inline; line-height:16px;}
+
+.person-avatar:after {
   content: counter(memberNum);
   position: absolute;
   bottom: 2px;
-  left: 3px;
   color: white;
 }
-
