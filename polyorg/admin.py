@@ -15,7 +15,7 @@ class LinksInline(generic.GenericTabularInline):
     extra = 1
 
 class CandidateListAdmin(admin.ModelAdmin):
-    inlines = [MembershipInline, LinksInline]
+    pass
     
 admin.site.register(CandidateList, CandidateListAdmin)
     
