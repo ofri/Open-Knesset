@@ -9,7 +9,7 @@
 
 {% block divcontent %}
     <div class="row">
-      <div class="cards span5">
+      <div class="cards span6">
         <section class="card card-list card-list-latest">
             <header><h1>{% trans "Coalition" %}</h1></header>
             <ul>
@@ -22,7 +22,7 @@
             </ul>
         </section>
       </div>
-      <div class="cards span5">
+      <div class="cards span6">
         <section class="card card-list card-list-latest">
             <header><h1>{% trans "Opposition" %}</h1></header>
             <ul>
@@ -35,11 +35,14 @@
             </ul>
         </section>
       </div>
-      <div class="span2">
-          <aside class="sidebar sidebar-agendas">
-              <h2>{% trans "Past MKs" %}</h2>
-                {% include "mks/member_photos.html" with members=past_members %}
-          </aside>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <section class="card card-list card-list-latest">
+            <header><h2>{% trans "Past MKs" %}</h2></header>
+            {% include "mks/member_photos.html" with members=past_members %}
+        </section>
       </div>
     </div>
 {% endblock %}
