@@ -1,14 +1,7 @@
-
-.. warning::
-
-    The repository state, docs and steps for the build environment are in flux
-    and changing to virutalenv.
-
-
 .. important::
 
-    This document contains quick start instruction. For more details, please see
-    the `Open Knesset developers documentation`_
+    This document contains quick start instruction.
+    For more details, **please see** the `Open Knesset developers documentation`_ 
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 
@@ -58,7 +51,7 @@ Linux
   - ``git config --local user.name "Your Name"``
   - ``git config --local user.email "your@email.com"``
 
-- Create the virtual environment. In the terminal cd to the directory ypu want
+- Create the virtual environment. In the terminal cd to the directory you want
   the environment create it and run ``virtualenv oknesset``.
 
 - Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
@@ -75,7 +68,7 @@ Linux
 - Run the tests::
 
     cd Open-Knesset
-    ./manage.py test
+    python manage.py test
     
 
 MS Windows
@@ -87,7 +80,8 @@ MS Windows
 - Open command windows and::
 
     cd c:\Python27\Scripts
-    easy_install pip virtualenv
+    easy_install pip
+    pip install virtualenv
 
 - Download and install the installers matching your architecture for PIL_
   and lxml_ (version 2.3.x).
@@ -105,6 +99,7 @@ MS Windows
     Scripts\activate
 
   Note the changed prompt with includes the virtualenv's name.
+- If you haven't already forked the repository (top right of page), do so. 
 - Clone the repository. In the `oknesset` directory and run
   ``git clone git@github.com:your-name/Open-Knesset.git``
 - Install requirements: ``pip install -r Open-Knesset\requirements.txt`` and
@@ -122,17 +117,65 @@ MS Windows
 .. _GitHub for Windows: http://windows.github.com
 
 
+OS X
+--------
+
+- Install command line tools. Goto https://developer.apple.com/downloads, 
+  Search for "command line tools", download and install the version right for
+  your OS
+- Install pip and virtualenv::
+
+    sudo easy_install pip
+    sudo pip install virtualenv
+- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install binary python libraries build dependencies:
+  ``brew install jpeg libpng libxml2 libxslt``
+- We need UTF-8, Add locale settings (in case you're not UTF-8),
+  put in your ``~/.bashrc``::
+
+    export LANG="en_US.UTF-8"
+    export LC_COLLATE="en_US.UTF-8"
+    export LC_CTYPE="en_US.UTF-8"
+    export LC_MESSAGES="en_US.UTF-8"
+    export LC_MONETARY="en_US.UTF-8"
+    export LC_NUMERIC="en_US.UTF-8"
+    export LC_TIME="en_US.UTF-8"
+    export LC_ALL=
+
+  Once done, source them (to have them updated in the current shell):
+  ``source ~/.bashrc``
+- Create the virtual environment. In the terminal cd to the directory you want
+  the environment create it and run ``virtualenv oknesset``.
+
+- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
+  prompt which includes the virtualenv's name.
+
+- Clone the repository::
+
+    git clone https://github.com/your-username/Open-Knesset.git
+
+  This creates a copy of the project on your local machine.
+
+- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
+  and wait ...
+- Run the tests::
+
+    cd Open-Knesset
+    python manage.py test
+
+
+
 After basic installation: Tests and initial db
 =================================================
 
-.. note:: MS Windows users: repleace ``./manage.py`` with ``python manage.py``.
+.. note:: Linux users: you can replace ``python manage.py`` with ``./manage.py``.
 
-- Run the tests: ``./manage.py test``
+- Run the tests: ``python manage.py test``
 - Download and extract dev.db.zip_ or dev.db.bz2_ (bz2 is smaller), place dev.db
   into the ``Open-Knesset`` directory
-- Make sure db schema is upated: ``./manage.py migrate``
-- Create a superuser if needed: ``./manage.py createsuperuser``
-- To run the development server: ``./manage.py runserver``. Once done, you can
+- Make sure db schema is upated: ``python manage.py migrate``
+- Create a superuser if needed: ``python manage.py createsuperuser``
+- To run the development server: ``python manage.py runserver``. Once done, you can
   access it via http://localhost:8000
 
 .. _dev.db.zip: http://oknesset-devdb.s3.amazonaws.com/dev.db.zip
@@ -149,7 +192,7 @@ Before you code
 
 .. important::
 
-    - MS Windows users: replace ``./manage.py`` with ``python manage.py``
+    - Linux users: you can replace ``python manage.py`` with ``./manage.py``
     - Run the manage.py commands from the `Open-Knesset` directory, with the
       **virtualenv activated**.
 
@@ -159,9 +202,9 @@ Please do this every time before you start developing.
 - ``cd Open-Knesset``
 - ``git pull git@github.com:hasadna/Open-Knesset.git master``
 - ``pip install -r requirements.txt``  # only needed if the file requirements.txt was changed; but can't hurt you if you run it every time.
-- ``./manage.py migrate``              # do not create a superuser account
-- ``./manage.py test``                 # if there are any failures, contact the other developers to see if that's something you should worry about.
-- ``./manage.py runserver``            # now you can play with the site using your browser
+- ``python manage.py migrate``              # do not create a superuser account
+- ``python manage.py test``                 # if there are any failures, contact the other developers to see if that's something you should worry about.
+- ``python manage.py runserver``            # now you can play with the site using your browser
 
 When you code
 ---------------
@@ -171,7 +214,7 @@ General
 
 - Write tests for everything that you write.
 - Keep performance in mind - test the number of db queries your code performs
-  using ``./manage.py runserver`` and access a page that runs the code you
+  using ``python manage.py runserver`` and access a page that runs the code you
   changed. See the output of the dev-server before and after your change.
 
 Adding a field to existing model
@@ -180,8 +223,11 @@ Adding a field to existing model
 We use south to manage database migration. The work process looks something like:
 
 - add the field you want to model sample_model in app sample_app
-- bin/django schemamigration sample_app --auto # this generates a new migration under src/knesset/sample_app/migrations. You should review it to make sure it does what you expect.
-- bin/django syncdb --migrate # run the migration.
+- ``python manage.py schemamigration sample_app --auto`` this generates a new
+  migration under `src/knesset/sample_app/migrations`. You should review it to
+  make sure it does what you expect.
+- ``python manage.py --migrate`` To run un the migration (make the changes on
+  the db).
 - don't forget to git add/commit the migration file.
 
 Updating the translation strings
@@ -195,7 +241,7 @@ the code.
 After you code
 ~~~~~~~~~~~~~~~~
 
-- ``./manage.py test`` # make sure you didn't break anything
+- ``python manage.py test`` # make sure you didn't break anything
 - ``git status`` # to see what changes you made
 - ``git diff filename`` # to see what changed in a specific file
 - ``git add filename`` # for each file you changed/added.

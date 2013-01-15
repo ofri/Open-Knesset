@@ -9,6 +9,9 @@ from links.api import LinkResource
 from laws.api import BillResource, LawResource, VoteResource
 from agendas.api import AgendaResource, AgendaTodoResource
 from committees.api import CommitteeResource, CommitteeMeetingResource, ProtocolPartResource
+from auxiliary.api import PostResource, TagResource
+from events.api import EventResource
+from polyorg.api import CandidateListResource
 
 v2_api = Api(api_name='v2')
 
@@ -26,3 +29,7 @@ v2_api.register(AgendaTodoResource())
 v2_api.register(CommitteeResource())
 v2_api.register(CommitteeMeetingResource())
 v2_api.register(ProtocolPartResource())
+v2_api.register(PostResource())
+v2_api.register(TagResource())
+v2_api.register(EventResource())
+v2_api.register(CandidateListResource())

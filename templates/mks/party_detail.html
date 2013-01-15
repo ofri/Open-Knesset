@@ -1,74 +1,131 @@
 {% extends "site_base.html" %}
 {% load i18n links_tags mks_tags common_visual_elements %}{% load static from staticfiles %}
-{% block extrahead %}
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}"
-            type="text/javascript"></script>
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+{% block extrajs %}
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}" type="text/javascript"></script>
+    <script src="{% static "js/watch.js" %}"></script>
+    <script src="{% static "js/mk-pie.js" %}"></script>
+    <script type="text/javascript">
+
+        $(function() {
+            register_watch({{object.id}}, 'party', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
+            var MKPieChart= window.MKPieChart;
+
+            // init agenda-pie charts
+            $('.agenda-pie').each(function () {
+                var data = $(this).data(),
+                    pie_data = [], k;
+
+                for ( k in data ) {
+                    pie_data.push({type : k, votes : data[k]});
+                }
+                
+                new MKPieChart(this, {
+                    width       : 90,
+                    height      : 89,
+                    padding     : 0,
+                    line_width  : 6
+                }).render(pie_data);
+            });
+        });
+    </script>
 {% endblock %}
 {% block extratitle %}{{ object.name }}{% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
-{% block divcontent %}
-    <h2><a href=".">{{ object.name }}</a></h2>
-    <div class="list-wrap">
-        <h3>{% trans 'Statistics' %}</h3>
-        <div id="residence_map"></div>
-        <table id="party-info">
-            <tr>
-                <td>{% trans "Number of votes" %}</td>
-                <td>{{ object.voting_statistics.votes_count }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Average votes per MK" %}</td>
-                <td>{{ object.voting_statistics.votes_per_seat }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Factional discipline" %}</td>
-                <td>{{ object.voting_statistics.discipline }}%</td>
-            </tr>
-            <tr>
-                <td>{% if object.is_coalition %}{% trans "Coalition discipline" %}{% else %}{% trans 'Opposition discipline' %}{% endif %}</td>
-                <td>{{ object.voting_statistics.coalition_discipline }}%</td>
-            </tr>
-        </table>
-        <h3>{% trans 'Current MKs' %}</h3>
-        {% for o in object.current_members.all %}
-            {% mk_card o %}&nbsp;
-        {% empty %}
-            {% trans "Data base empty, no objects" %}
-        {% endfor %}
-        {% if object.past_members %}
-        <br/>
-        <h3>{% trans 'Past MKs' %}</h3>
-            {% for o in object.past_members %}
-                {% mk_card o %}&nbsp;
-            {% endfor %}
-        {% endif %}
+{% block nav-parties %}class="active"{% endblock %}
 
-        <div>
-            <h3>{% trans "Agendas" %}</h3>
-            <div class="list-wrap">
-                <table>
-                    {% for agenda in agendas %}
-                    <tr>
-                        <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-                        <td><a class="item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></td>
-                        <td class="numeric">{{agenda.score|floatformat:"0"}}%</td>                      
-                        <td>
-                            <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
-                            <script>set_percentile('agenda_{{ agenda.id }}',({{ agenda.score }}+100)/2);</script>                            
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
+ {% block breadcrumbs %}
+            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li class="active">{{ object.name }}</li>
+ {% endblock %}
+
+{% block divcontent %}
+
+    <section class="card card-main-party">
+        <div class="row">
+            <div class="span8 card-details">
+                <div class="spacer fill">
+                    <header>
+                        <h1>{{object.name}}</h1>
+                        <p>({{object.is_coalition|yesno:_("IN_COALITION,IN_OPPOSITION")}})</p>
+                    </header>
+                    <div class="social-links">
+                        <h5>{% blocktrans with name=object.name %}{{name}} around the net{% endblocktrans %}:</h5>
+                        <ul>
+                            {% object_links object %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="span4 social-details">
+                <div class="spacer actions-panel">
+                    <a id="watch" class="btn btn-big btn-primary"></a>
+                    <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="details">
-            <h3>{% trans "Links" %}</h3>
-            {% object_links object %}
-        </div> <br/>
+    <div class="card card-party-members">
+        <div>
+            {% include "mks/member_photos.html" with members=object.current_members %}
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="cards span8">
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>{% trans "Statistics" %}</h2>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
+                </header>
+                <ul>
+                    <li class="row">
+                        <span class="span2">{% trans "Number of votes" %}</span>
+                        <span class="span4">{{ object.voting_statistics.votes_count }}</span>
+                    </li>
+                    <li class="row">
+                        <span class="span2">{% trans "Average votes per MK" %}</span>
+                        <span class="span4">{{ object.voting_statistics.votes_per_seat|floatformat:2 }}</span>
+                    </li>
+                    <li class="row">
+                        <span class="span2">{% trans "Factional discipline" %}</span>
+                        <span class="span4">{{ object.voting_statistics.discipline|floatformat:2 }}%</span>
+                    </li>
+
+                    <li class="row">
+                        <span class="span2">
+                        {% if object.is_coalition %}
+                            {% trans "Coalition discipline" %}
+                        {% else %}
+                            {% trans "Opposition discipline" %}
+                        {% endif %}
+                        </span>
+                        <span class="span4">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}%</span>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="span4">
+            <aside class="sidebar sidebar-agendas">
+                <h2>{% trans "Agendas" %}</h2>
+                <ul>
+                {% for agenda in agendas %}
+                    <li class="row">
+                        <div class="span3"><a href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></div>
+                        <div class="numeric text-{% if agenda.score < 0 %}error{%else%}success{% endif %}">
+                            {{agenda.score|floatformat:"0"}}%
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </aside>
+        </div>
+    </div>
+{% comment %}
+    <div class="list-wrap">
+        <div id="residence_map"></div>
     </div>
     <script>
     var g_member_residences = [];
@@ -155,4 +212,5 @@
             draw_mk_residence_map();
         });
     </script>
+{% endcomment %}
 {% endblock %}

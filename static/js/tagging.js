@@ -3,17 +3,30 @@ var current_id = "";
 var current_object_type = "";
 var current_app = "";
 
-function get_tags_list() {
-    $("#possible_tags").html('');
-    $.ajax({url: '/api/tag/', success: get_tags_list_callback, cache: false});
+function get_tags_list(url) {
+    if (typeof(url) === 'undefined') {
+        url = '/api/v2/tag/?format=json&limit=100'
+    }
+    $.ajax({url: url, success: get_tags_list_callback, cache: false});
+}
+
+function add_nav_button(text, url) {
+    if (url !== null) {
+        $('<a>').attr('href', "javascript:get_tags_list('"+encodeURIComponent(url)+"')").html(text).appendTo("#possible_tags");
+    }
 }
 
 function get_tags_list_callback(data) {
-    $.each(data, function(i,item){
+    $("#possible_tags").html('<br/>');
+    $.each(data['objects'], function(i,item){
             var href = "javascript:toggle_tag("+item.id+");";
             $('<a class="tag">').attr("id", "possible_tag_"+item.id).attr("href", href).html(item.name).appendTo("#possible_tags");
             $("#possible_tags").append(document.createTextNode(" "));
           });
+    meta = data['meta'];
+    $("#possible_tags").append('<br/>');
+    add_nav_button(gettext('previous'), meta['previous']);
+    add_nav_button(gettext('next'), meta['next']);
     current_app = $('input[name="app_label"]').val();
     current_object_type = $('input[name="object_type"]').val();
     current_id = $('input[name="id"]').val();
@@ -22,7 +35,7 @@ function get_tags_list_callback(data) {
         current_object_type = 'committeemeeting';
         current_id = window.location.pathname.split('/')[3];
     }
-    var url = '/api/tag/'+current_app+'/'+current_object_type+'/'+current_id+'/';
+    var url = '/api/v2/tag/'+current_app+'/'+current_object_type+'/'+current_id+'/';
     $.ajax({url: url, success: mark_selected_tags, cache: false});
     $('#create_tag').show();
     $('#create_tag_form').submit(function(){
@@ -35,7 +48,7 @@ function get_tags_list_callback(data) {
 }
 
 function mark_selected_tags(data){
-    $.each(data, function(i,item){
+    $.each(data['objects'], function(i,item){
         $("#possible_tag_"+item.id).addClass("selected");
         selected_tags[item.id]=1;
     });

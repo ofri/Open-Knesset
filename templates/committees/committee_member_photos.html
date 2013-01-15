@@ -1,0 +1,17 @@
+{% extends "mks/member_photos.html" %}{% load i18n %}
+{% block member_extra %}
+{% spaceless %}
+<p>{% trans 'Presence:' %} {{member.meetings_count}}%</p>
+<p>
+{% if member in chairpersons %}
+    {% trans 'Chairperson' %}
+{% else %}
+    {% if member in replacements %}
+        {% trans 'Replacement' %}
+    {% else  %}
+        &nbsp;
+    {% endif %}
+{% endif %}
+</p>
+{% endspaceless %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% load i18n %}{% for agendabill in object_list %}
+<li>
+    <p class="item-action">
+        <span class="label">{{agendabill.get_importance_display}}</span>
+        <span class="label label-{% if agendabill.score < 0 %}important{% else %}success{% endif %}">{{ agendabill.get_score_display }}</span>
+    </p>
+    {% include "laws/bill_list_item.html" with add_li=0 bill=agendabill.bill %}
+</li>
+{% empty %}
+<li>{% trans "No results found" %}</li>
+{% endfor %}

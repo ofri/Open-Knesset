@@ -1,10 +1,9 @@
 {% extends "site_base.html" %}
 {% load i18n laws_tags mks_tags common_text_handling %}
-{% block extrahead %}{% endblock %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
-{% block nav-laws %}class="selected"{% endblock %}
+{% block nav-laws %}class="active"{% endblock %}
 {% block divcontent %}
 <h1>{{ title }}</h1>
     {% if object.mk %}

@@ -17,8 +17,10 @@ from knesset.sitemap import sitemaps as sitemaps_dict
 from mks.urls import mksurlpatterns
 from laws.urls import lawsurlpatterns
 from committees.urls import committeesurlpatterns
+from persons.urls import personsurlpatterns
 from mks.views import get_mk_entry, mk_is_backlinkable
 from laws.models import Bill
+from polyorg.urls import polyorgurlpatterns
 
 from auxiliary.views import (
     main, post_annotation, post_details,
@@ -55,9 +57,9 @@ urlpatterns = patterns('',
     #(r'^search/', include('haystack.urls')),
     url(r'^search/', 'auxiliary.views.search', name='site-search'),
     url(r'^feeds/$', feeds.MainActionsFeed(), name='main-actions-feed'),
-    (r'^feeds/comments/$', feeds.Comments()),
-    (r'^feeds/votes/$', feeds.Votes()),
-    (r'^feeds/bills/$', feeds.Bills()),
+    url(r'^feeds/comments/$', feeds.Comments(),name='feeds-comments'),
+    url(r'^feeds/votes/$', feeds.Votes(),name='feeds-votes'),
+    url(r'^feeds/bills/$', feeds.Bills(),name='feeds-bills'),
     (r'^feeds/annotations/$', feeds.Annotations()),
     #(r'^sitemap\.xml$', redirect_to, {'url': '/static/sitemap.xml'}),
     url(r'^sitemap\.xml$',
@@ -80,7 +82,7 @@ urlpatterns = patterns('',
     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
     url(r'^tags/$', TagList.as_view(), name='tags-list'),
-    url(r'^tags/(?P<slug>.*)$', TagDetail.as_view(), name='tag-detail'),
+    url(r'^tags/(?P<slug>.*)/$', TagDetail.as_view(), name='tag-detail'),
     url(r'^uservote/bill/(?P<object_id>\d+)/(?P<direction>\-?\d+)/?$',
         vote_on_object, dict(
             model=Bill, template_object_name='bill',
@@ -92,3 +94,5 @@ urlpatterns = patterns('',
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += polyorgurlpatterns + personsurlpatterns
+

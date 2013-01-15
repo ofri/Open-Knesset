@@ -3,6 +3,7 @@ from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext as _
+from django.utils import simplejson as json
 from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
@@ -12,8 +13,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import BaseListView
-from django.views.generic.list import ListView
+from django.views.generic.list import BaseListView, ListView
 from django.contrib.comments.models import Comment
 from actstream import action
 from actstream.models import Action
@@ -259,6 +259,31 @@ class TagDetail(DetailView):
     model = Tag
     template_name = 'auxiliary/tag_detail.html'
     slug_field = 'name'
+
+    def create_tag_cloud(self, tag, limit=30):
+        """
+        Create tag could for tag <tag>. Returns only the <limit> most tagged members
+        """
+
+        try:
+            mk_limit = int(self.request.GET.get('limit',limit))
+        except ValueError:
+            mk_limit = limit
+        mk_taggeds = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag)]
+        mk_taggeds += [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag)]
+        mk_taggeds += [cm.mks_attended.all() for cm in TaggedItem.objects.get_by_model(CommitteeMeeting, tag)]
+        d = {}
+        for tagged in mk_taggeds:
+            for p in tagged:
+                d[p] = d.get(p,0)+1
+        # now d is a dict: MK -> number of tagged in Bill, Vote and CommitteeMeeting in this tag
+        mks = dict(sorted(d.items(),lambda x,y:cmp(y[1],x[1]))[:mk_limit])
+        # Now only the most tagged are in the dict (up to the limit param)
+        for mk in mks:
+            mk.count = d[mk]
+        mks = tagging.utils.calculate_cloud(mks)
+        return mks
+
     def get_context_data(self, **kwargs):
         context = super(TagDetail, self).get_context_data(**kwargs)
         tag = context['object']
@@ -274,8 +299,8 @@ class TagDetail(DetailView):
         cms = [ti.object for ti in
                     TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
         context['cms'] = cms
+        context['members'] = self.create_tag_cloud(tag)
         return context
-
 
 class CsvView(BaseListView):
     """A view which generates CSV files with information for a model queryset.
@@ -284,8 +309,12 @@ class CsvView(BaseListView):
       * queryset -- the query performed on the model; defaults to all.
       * filename -- the name of the resulting CSV file (e.g., "info.csv").
       * list_display - a list (or tuple) of tuples, where the first item in
-        each tuple is the attribute (or the method) on the model to display and
+        each tuple is the attribute (or the method) to display and
         the second item is the title of that column.
+
+        The attribute can be a attribute on the CsvView child or the model
+        instance itself. If it's a callable it'll be called with (obj, attr)
+        for the CsvView attribute or without params for the model attribute.
     """
 
     filename = None
@@ -310,12 +339,16 @@ class CsvView(BaseListView):
             writer.writerow([unicode(item).encode('utf8') for item in row])
         return response
 
-    @staticmethod
-    def get_display_attr(obj, attr):
+    def get_display_attr(self, obj, attr):
         """Return the display string for an attr, calling it if necessary."""
-        display_attr = getattr(obj, attr)
-        if hasattr(display_attr, '__call__'):
-            display_attr = display_attr()
+        display_attr =  getattr(self, attr, None)
+        if display_attr is not None:
+            if callable(display_attr):
+                display_attr = display_attr(obj,attr)
+        else:
+            display_attr = getattr(obj, attr)
+            if callable(display_attr):
+                display_attr = display_attr()
         if display_attr is None:
             return ""
         return display_attr
@@ -328,3 +361,51 @@ class CsvView(BaseListView):
         directs it to decode the file with utf-8.
         """
         fileobj.write('\xef\xbb\xbf')
+
+
+class GetMoreView(ListView):
+    """A base view for feeding data to 'get more...' type of links
+
+    Will return a json result, with partial of rendered template:
+    {
+        "content": "....",
+        "current": current_patge number
+        "total": total_pages
+        "has_next": true if next page exists
+    }
+    We'll paginate the response. Since Get More link targets may already have
+    initial data, we'll look for `initial` GET param, and take it into
+    consdiration, completing to page size.
+    """
+
+    def get_context_data(self, **kwargs):
+        ctx = super(GetMoreView, self).get_context_data(**kwargs)
+        try:
+            initial = int(self.request.GET.get('initial', '0'))
+        except ValueError:
+            initial = 0
+
+        # initial only affects on first page
+        if ctx['page_obj'].number > 1 or initial >= self.paginate_by - 1:
+            initial = 0
+
+        ctx['object_list'] = ctx['object_list'][initial:]
+        return ctx
+
+    def render_to_response(self, context, **response_kwargs):
+        """We'll take the rendered content, and shove it into json"""
+
+        tmpl_response = super(GetMoreView, self).render_to_response(
+            context, **response_kwargs).render()
+
+        page = context['page_obj']
+
+        result = {
+            'content': tmpl_response.content,
+            'total': context['paginator'].num_pages,
+            'current': page.number,
+            'has_next': page.has_next(),
+        }
+
+        return HttpResponse(json.dumps(result, ensure_ascii=False),
+                            content_type='application/json')

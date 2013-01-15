@@ -16,7 +16,7 @@
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
     <script type="text/javascript" src="{% static "js/committeemeeting_detail.js" %}"> </script>
 {% endblock %}
-{% block nav-committees %}class="selected"{% endblock %}
+{% block nav-committees %}class="active"{% endblock %}
 {% block messages %}
 <span id="message_permission">
     <a href="{% url edit-profile %}">{% trans "Please validate your email to annotate" %}</a>
@@ -66,8 +66,8 @@
         </div>
         <div id="add_tags">
             <span>{% trans "Edit Tags" %}</span>
-            <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
-            </span>
+            <span id="possible_tags"></span><br>
+            <a href="javascript:get_tags_list('{% url related-tags resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
             <div id="create_tag" style='display:none'>
                 {% if perms.tagging.add_tag %}
                     <form id="create_tag_form" action="#">{% csrf_token %}

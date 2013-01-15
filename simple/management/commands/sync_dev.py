@@ -1,4 +1,5 @@
 # no handling now: posts
+import logging
 
 from django.core.management.base import NoArgsCommand
 from django.core.management import call_command
@@ -9,14 +10,19 @@ from user.models import UserProfile
 from actstream.models import Follow
 
 OUT_DB = 'dev'
+
+
 class Command(NoArgsCommand):
     """Export the sqlite database for developers, while whitelisting user data"""
 
-    reset_models = ('contenttypes.contenttype', )
-    ignore_models = ('sessions.session', 'auth.message', 'mailer',
+    reset_models = ('contenttypes.contenttype', 'sites.site',
+                    'flatpages.flatpage')
+    ignore_models = (
+        'sessions.session', 'auth.message', 'mailer',
         'accounts.email_validation', 'hitcount', 'actstream.follow',
         'avatar')
-    only_latest = ('actstream.action', 'committees.protocolpart','committees.committeemeeting')
+    only_latest = ('actstream.action', 'committees.protocolpart',
+                   'committees.committeemeeting')
 
     LATEST_COUNT = 1000
     DB = OUT_DB
@@ -24,7 +30,7 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         call_command('syncdb', database=self.DB, interactive=False,
-                migrate_all=True)
+                     migrate_all=True)
 
         # reset data in needed models
         for reset_model in self.reset_models:
@@ -102,7 +108,8 @@ class Command(NoArgsCommand):
         counted = 0
         total = 0
         newobjs = []
-        commit_every = 950/len(model._meta.fields)
+        commit_every = 950 / len(model._meta.fields)
+
         for obj in qs.iterator():
             if counted > commit_every:
                 if self.verbosity > 1:
@@ -129,5 +136,10 @@ class Command(NoArgsCommand):
 #            obj.save(using=self.DB)
             counted += 1
             total += 1
-        print "    %d Exported" % total
+
+        # make sure everything is saved
+        if newobjs:
+            model.objects.using(self.DB).bulk_create(newobjs)
+
         transaction.commit(using=self.DB)
+        print "    %d Exported" % total
