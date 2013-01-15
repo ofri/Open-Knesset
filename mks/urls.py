@@ -3,10 +3,8 @@ from django.conf.urls.defaults import *
 from . import views as mkv
 from feeds import MemberActivityFeed
 
-
 mksurlpatterns = patterns('mks.views',
     url(r'^parties-members/$', mkv.PartiesMembersView.as_view(), name='parties-members'),
-    url(r'^parties-overview/$', mkv.PartiesOverview.as_view(), name='parties-overview'),
     url(r'^member/$', mkv.MemberListView.as_view(), name='member-list'),
     url(r'^member/csv$', mkv.MemberCsvView.as_view()),
     url(r'^party/csv$', mkv.PartyCsvView.as_view()),

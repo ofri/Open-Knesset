@@ -1,11 +1,12 @@
 {% extends "site_base.html" %}
 {% load i18n %}
-{% block extratitle %}{% trans "Members and Parties" %}{% endblock %}
+{% block extratitle %}{% trans "Compare Lists" %}{% endblock %}
 {% block description %}{% trans "Members and Parties" %} -
     {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
-    <li class="active">{% trans "Members and Parties" %}</li>
+    <li><a href="{% url candidate-list-list %}">{% trans "Candidate Lists" %}</a> <span class="divider">/</span></li>
+    <li class="active">{% trans "Comapre Lists" %}</li>
 {% endblock %}
 
 {% block extracss %}
@@ -133,14 +134,12 @@
             <ul id="clists">
                 <li class="clist" ng-repeat='clist in clists' ng-show="clist.visible">
                     <div class="header">
+                      <a href="(( clist.url ))">
                         <div class="ballot-card">
                             <div class="ballot">(( clist.ballot ))</div>
                             <div class="name">(( clist.name ))</div>
                         </div>
-                        <div class="links">
-                            <a href="(( cl.wikipedia_page ))"><img src="http://g.etfv.co/http://wikipedia.com"></a>
-                            <a href="(( cl.facebook_url ))"><img src="http://g.etfv.co/http://facebook.com"></a>
-                        </div>
+                      </a>
                     </div>
                     <ul class="candidates">
                         <li class="candidate" ng-repeat='candidate in clist.candidates'>

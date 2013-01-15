@@ -3,7 +3,7 @@
 {% load i18n i18ninclude %}
 {% load common_visual_elements %}
 {% load static from staticfiles %}
-{% block extratitle %}{{ title }}{% endblock %}
+{% block extratitle %}{% trans "Candidate list for the comming elections" %}{% endblock %}
 {% block description %}{% trans "Candidate list for the comming elections" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extracss %}
     <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
@@ -17,8 +17,8 @@
 {% endblock %}
 {% block divcontent %}
     <div class="row-fluid">
-        <div class="span8"><h1>{% trans "Candidate list for the comming elections" %}</h1></div>
-        <div class="span4"><a href="{% url parties-overview %}" class="btn btn-warning btn-large btn-inline">{% trans "Not sure who to vote for?" %}</a></div>
+        <div style="float:left;"><a href="{% url candidate-list-compare %}" class="btn btn-large btn-inline">{% trans "Compare lists" %}</a></div>
+        <h1>{% trans "Candidate list for the comming elections" %}</h1>
     </div>
     <div id="candidate-lists">
     {% for o in object_list %}
