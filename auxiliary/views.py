@@ -78,30 +78,35 @@ def main(request):
          annotation-added (to meeting), ignore annotated (by user)
          comment-added
     """
-    context = cache.get('main_page_context')
-    if not context:
-        context = {}
-        context['title'] = _('Home')
-        #actions = list(main_actions()[:10])
-        #
-        #annotations = get_annotations(
-        #    annotations=[a.target for a in actions if a.verb != 'comment-added'],
-        #    comments=[x.target for x in actions if x.verb == 'comment-added'])
-        #context['annotations'] = annotations
-        #b = get_debated_bills()
-        #if b:
-        #    context['bill'] = get_debated_bills()[0]
-        #else:
-        #    context['bill'] = None
-        #public_agenda_ids = Agenda.objects.filter(is_public=True
-        #                                         ).values_list('id',flat=True)
-        #if len(public_agenda_ids) > 0:
-        #    context['agenda_id'] = random.choice(public_agenda_ids)
-        #context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
-        #                                 .order_by('-modified')\
-        #                                 .select_related('creator')[:10]
-        context['has_search'] = True # disable the base template search
-        cache.set('main_page_context', context, 300) # 5 Minutes
+    #context = cache.get('main_page_context')
+    #if not context:
+    #    context = {
+    #        'title': _('Home'),
+    #        'hide_crumbs': True,
+    #    }
+    #    actions = list(main_actions()[:10])
+    #
+    #    annotations = get_annotations(
+    #        annotations=[a.target for a in actions if a.verb != 'comment-added'],
+    #        comments=[x.target for x in actions if x.verb == 'comment-added'])
+    #    context['annotations'] = annotations
+    #    b = get_debated_bills()
+    #    if b:
+    #        context['bill'] = get_debated_bills()[0]
+    #    else:
+    #        context['bill'] = None
+    #    public_agenda_ids = Agenda.objects.filter(is_public=True
+    #                                             ).values_list('id',flat=True)
+    #    if len(public_agenda_ids) > 0:
+    #        context['agenda_id'] = random.choice(public_agenda_ids)
+    #    context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
+    #                                     .order_by('-modified')\
+    #                                     .select_related('creator')[:10]
+    #    cache.set('main_page_context', context, 300) # 5 Minutes
+    context = {
+        'title': _('Home'),
+        'hide_crumbs': True,
+    }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))
 
