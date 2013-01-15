@@ -76,26 +76,6 @@
     }
   }
 
-  .form-search {
-    position: relative;
-    
-    input.search-query{
-	    height: 30px;
-	    .border-radius(19px);
-    }
-
-    button{
-      background: transparent;
-      border:none;
-      position: absolute;
-			left: -9px;
-			top: 11px;
-			opacity: 0.5;
-			&:hover{
-				opacity: 1;
-			}
-    }
-  }
 }
 
 .breadcrumb{
@@ -103,4 +83,24 @@
 	margin: 10px 0;
 }
 
-#id_search_page_q { background-position: right center !important; }
+.form-search {
+  position: relative;
+  
+  input.search-query{
+    height: 30px;
+    .border-radius(19px);
+     background-position: right center !important;
+  }
+
+  button{
+    background: transparent;
+    border:none;
+    position: absolute;
+    left: -9px;
+    top: 11px;
+    opacity: 0.5;
+    &:hover{
+      opacity: 1;
+    }
+  }
+}
