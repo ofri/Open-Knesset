@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView, TemplateView
 from django.core.cache import cache
-from django.utils import simplejson as json
+from django.utils import simplejson as json, simplejson
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from backlinks.pingback.server import default_server
@@ -16,6 +16,7 @@ from actstream.models import Follow
 
 from hashnav.detail import DetailView
 from models import Member, Party
+from polyorg.models import CandidateList
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
@@ -703,4 +704,36 @@ class PartiesMembersView(TemplateView):
             extra=Sum('number_of_seats')).order_by('-extra')
         ctx['past_members'] = Member.objects.filter(is_current=False)
 
+        return ctx
+
+
+class PartiesOverview(TemplateView):
+    """
+    An overwiew of all parties
+    """
+
+    template_name = "mks/parties_overview.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(PartiesOverview, self).get_context_data(**kwargs)
+
+        clists = [{'name': cl.name,
+                   'ballot': cl.ballot,
+                   'wikipedia_page': cl.wikipedia_page,
+                   'facebook_url': cl.facebook_url,
+                   'candidates': [{'id': person.id,
+                                   'name': person.name,
+                                   'img_url': person.img_url,
+                                   'ordinal': None,  # TODO
+                                   'gender': person.gender or 'X',
+                                   'mk':getattr(person, "mk") is not None,
+                                   'bills_stats_approved': person.mk.bills_stats_approved if person.mk else None,
+                                   'bills_stats_proposed': person.mk.bills_stats_proposed if person.mk else None,
+                                   'residence_centrality': person.residence_centrality,
+                                   'role': person.roles.all()[0].text if person.roles.count() else None
+                                  }
+                                  for person in cl.candidates.order_by('candidate__ordinal')[:10]]}
+                  for cl in CandidateList.objects.order_by('ballot')]
+
+        ctx['candidate_lists'] = simplejson.dumps(clists)
         return ctx

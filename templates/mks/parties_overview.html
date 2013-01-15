@@ -1,0 +1,235 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans "Members and Parties" %}{% endblock %}
+{% block description %}{% trans "Members and Parties" %} -
+    {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block nav-parties %}class="active"{% endblock %}
+{% block breadcrumbs %}
+    <li class="active">{% trans "Members and Parties" %}</li>
+{% endblock %}
+
+{% block extracss %}
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], .ng-cloak {
+            display: none !important;
+        }
+
+        .clist-bulk-selectos{
+            padding: 15px 0;
+        }
+        #controls-clists label{
+            display: inline-block;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        #controls-properties label{
+            display: inline-block;
+            margin: 5px 10px;
+        }
+
+        #clists {
+            list-style: none;
+        }
+
+        .clist {
+            margin-bottom: 50px;
+        }
+        .clist .header{
+            display: inline-block;
+            text-align: center;
+        }
+        .clist .ballot-card {
+            display: inline-block;
+            height: 70px;
+            width: 60px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #000000;
+            background: white;
+        }
+        .ballot-card .ballot {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .ballot-card .name {
+            height: 45px;
+            font-size: 11px;
+            line-height: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .candidates {
+            display: inline;
+            list-style: none;
+            vertical-align: top;
+        }
+
+        .candidate {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            min-height: 80px;
+            vertical-align: top;
+            margin-left: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .candidate .badge{
+            width: 40px;
+        }
+        .candidate .img {
+            max-width: 80px;
+            max-height: 60px;
+        }
+        .candidate .is-new-badge{
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0 3px;
+            color: white;
+            background: #ACACAC;
+            font-size: 10px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block divcontent %}
+
+    <h1>{% trans "Candidate list for the comming elections" %}</h1>
+    <div ng-app="okApp" ng-controller="okCtrl" ng-cloak>
+        <div id="controls-clists" class="well">
+            <div class="clist-bulk-selectos">
+                <a ng-click="set_clists_visible(true)">{% trans 'Select all' %}</a> |
+                <a ng-click="set_clists_visible(false)">{% trans 'Select none' %}</a>
+            </div>
+
+            <div>
+                <label ng-repeat="clist in clists | orderBy:'name' ">
+                    <input type="checkbox" ng-click="clist.visible=!clist.visible" ng-checked="clist.visible">
+                    <span>(( clist.name ))</span>
+                </label>
+            </div>
+
+            <div class="clist-bulk-selectos">
+                <a ng-click="set_clists_visible(true)">{% trans 'Select all' %}</a> |
+                <a ng-click="set_clists_visible(false)">{% trans 'Select none' %}</a>
+            </div>
+        </div>
+
+        <div id="controls-properties" class="well">
+            <div>
+                <label ng-repeat="prop in candidate_properties">
+                    <input type="checkbox" ng-click="prop.visible=!prop.visible" ng-checked="prop.visible">
+                    <span class="badge" ng-style="prop.badge_style">(( prop.display_name ))</span>
+                </label>
+            </div>
+        </div>
+        <div id="candidate-lists">
+            <ul id="clists">
+                <li class="clist" ng-repeat='clist in clists' ng-show="clist.visible">
+                    <div class="header">
+                        <div class="ballot-card">
+                            <div class="ballot">(( clist.ballot ))</div>
+                            <div class="name">(( clist.name ))</div>
+                        </div>
+                        <div class="links">
+                            <a href="(( cl.wikipedia_page ))"><img src="http://g.etfv.co/http://wikipedia.com"></a>
+                            <a href="(( cl.facebook_url ))"><img src="http://g.etfv.co/http://facebook.com"></a>
+                        </div>
+                    </div>
+                    <ul class="candidates">
+                        <li class="candidate" ng-repeat='candidate in clist.candidates'>
+                            <img class="img" ng-src="(( candidate.img_url || default_img_url[candidate.gender] ))">
+                            <div class="is-new-badge" ng-show="!candidate.mk">{% trans 'NEW' %}<i class="icon-certificate icon-white"></i></div>
+
+                            <div class="name"><span ng-show="candidate.ordinal">(( candidate.ordinal )).</span>(( candidate.name ))</div>
+
+                            <div class="badges">
+                                <span class="badge" ng-style="prop.badge_style"
+                                      ng-repeat="prop in candidate_properties | filter:{'visible': true}"
+                                      ng-show="!!candidate[prop.field_name]">
+
+                                    <i ng-class="prop.badge_icon"></i>
+                                    (( candidate[prop.field_name] ))
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                    <hr class="dashed">
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extrajs %}
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
+
+    <script type="text/javascript">
+        var app = angular.module('okApp', []);
+        app.config(function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('((');
+            $interpolateProvider.endSymbol('))');
+        });
+        app.controller("okCtrl", function ($scope, $filter) {
+            $scope.default_img_url = {
+                'F': "http://profile.ak.fbcdn.net/hprofile-ak-ash3/c178.0.604.604/s160x160/600249_1002029915098_1903163647_n.jpg",
+                'M': "http://profile.ak.fbcdn.net/hprofile-ak-ash4/c178.0.604.604/s160x160/252231_1002029915278_1941483569_n.jpg",
+                'X': "http://upload.wikimedia.org/wikipedia/commons/d/d2/Question_mark.svg"
+            };
+            $scope.candidate_properties = [
+                {
+                    field_name:'bills_stats_proposed',
+                    display_name:'{% trans "Bills Proposed" %}',
+                    visible: true,
+                    badge_icon: 'icon-book icon-white',
+                    badge_style:{
+                        'background-color': '#DF4F4F'
+                    }
+                },
+                {
+                    field_name:'bills_stats_approved',
+                    display_name:'{% trans "Bills Approved" %}',
+                    visible: true,
+                    badge_icon: 'icon-book icon-white',
+                    badge_style:{
+                        'background-color': '#C8DF4F'
+                    }
+                },
+                {
+                    field_name:'residence_centrality',
+                    display_name:'{% trans "Residence Centrality" %}',
+                    visible: true,
+                    badge_icon: 'icon-home icon-white',
+                    badge_style:{
+                        'background-color': '#4F89DF'
+                    }
+                },
+                {
+                    field_name:'role',
+                    display_name:'{% trans "Role" %}',
+                    visible: true,
+                    badge_icon: '',
+                    badge_style:{
+                        'background-color': '#DFB74F'
+                    }
+                }
+            ];
+
+            $scope.clists = {{ candidate_lists|safe }};
+
+            $scope.set_clists_visible = function(true_or_false){
+                angular.forEach($scope.clists, function (clist) {
+                    clist.visible = true_or_false;
+                });
+            };
+            $scope.set_clists_visible(true);  // start with all clists checked
+
+        });
+    </script>
+{% endblock %}
