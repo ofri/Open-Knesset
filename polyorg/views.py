@@ -29,7 +29,6 @@ class CandidateListDetailView(DetailView):
                                 'url': a.get_absolute_url(),
                                 'score': a.candidate_list_score(cl)})
             context['agendas'] = agendas
-            context['stats'] = cl.voting_statistics
         return context
 
 class CandidateListCompareView(TemplateView):
