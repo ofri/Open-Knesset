@@ -129,6 +129,7 @@ class Membership(models.Model):
     party       = models.ForeignKey('Party')
     start_date  = models.DateField(blank=True, null=True)
     end_date    = models.DateField(blank=True, null=True)
+    position    = models.PositiveIntegerField(blank=True, default=999)
 
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
@@ -141,6 +142,7 @@ class Member(models.Model):
     name    = models.CharField(max_length=64)
     parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
     current_party = models.ForeignKey(Party, related_name='members', blank=True, null=True)
+    current_position   = models.PositiveIntegerField(blank=True, default=999)
     start_date  = models.DateField(blank=True, null=True)
     end_date    = models.DateField(blank=True, null=True)
     img_url     = models.URLField(blank=True, verify_exists=False)
