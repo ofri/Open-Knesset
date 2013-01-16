@@ -16,7 +16,7 @@
             {% for party in coalition %}
                 <li>
                     <h2><a href="{{party.get_absolute_url}}">{{party.name}}</a></h2>
-                    {% include "mks/member_photos.html" with members=party.current_members %}
+                    {% include "mks/member_photos.html" with members=party.current_members extra_class="numbered"%}
                 </li>
             {% endfor %}
             </ul>
@@ -29,7 +29,7 @@
             {% for party in opposition %}
                 <li>
                     <h2><a href="{{party.get_absolute_url}}">{{party.name}}<a></h2>
-                    {% include "mks/member_photos.html" with members=party.current_members %}
+                    {% include "mks/member_photos.html" with members=party.current_members extra_class="numbered"%}
                 </li>
             {% endfor %}
             </ul>

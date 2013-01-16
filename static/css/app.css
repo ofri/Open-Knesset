@@ -5571,7 +5571,7 @@ ol {
 .card-party-members > div {
   margin: 9px;
 }
-.card-party-members > div .party-member-photo {
+.card-party-members .party-member-photo {
   counter-increment: memberNum;
   position: relative;
   height: 80px;
@@ -5579,15 +5579,15 @@ ol {
   display: inline-block;
   margin: 9px;
 }
-.card-party-members > div .party-member-photo .party-member-extra {
+.card-party-members .party-member-photo .party-member-extra {
   font-size: 12px;
   text-align: center;
 }
-.card-party-members > div .party-member-photo .party-member-extra p,
-.card-party-members > div .party-member-photo .party-member-extra div {
+.card-party-members .party-member-photo .party-member-extra p,
+.card-party-members .party-member-photo .party-member-extra div {
   margin: 0;
 }
-.card-party-members > div .party-member-photo .party-member-info {
+.card-party-members .party-member-photo .party-member-info {
   background: #ffffff;
   border: 1px solid #e6e6e6;
   margin: -1px;
@@ -5605,7 +5605,7 @@ ol {
   width: 405px;
   height: 218px;
 }
-.card-party-members > div .party-member-photo .party-member-info .party-member-info-photo {
+.card-party-members .party-member-photo .party-member-info .party-member-info-photo {
   position: absolute;
   border: 1px solid #e6e6e6;
   height: 177px;
@@ -5613,27 +5613,27 @@ ol {
   top: 14px;
   right: 10px;
 }
-.card-party-members > div .party-member-photo .party-member-info .party-member-info-text {
+.card-party-members .party-member-photo .party-member-info .party-member-info-text {
   height: 160px;
   border-bottom: 1px solid #e6e6e6;
   padding-right: 160px;
 }
-.card-party-members > div .party-member-photo .party-member-info .party-member-info-text h3 {
+.card-party-members .party-member-photo .party-member-info .party-member-info-text h3 {
   font-size: 16px;
   font-weight: 700;
 }
-.card-party-members > div .party-member-photo .party-member-info .party-member-info-links {
+.card-party-members .party-member-photo .party-member-info .party-member-info-links {
   height: 47px;
   background: #f6f6f6;
   padding-right: 160px;
 }
-.card-party-members > div .party-member-photo:hover .party-member-info {
+.card-party-members .party-member-photo:hover .party-member-info {
   display: block;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.card-party-members > div .party-member-photo:after {
+.card-party-members.numbered .party-member-photo:after {
   content: counter(memberNum);
   position: absolute;
   bottom: 2px;
