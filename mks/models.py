@@ -91,7 +91,7 @@ class Party(models.Model):
         return "%s" % self.name
 
     def current_members(self):
-        return self.members.filter(is_current=True)
+        return self.members.filter(is_current=True).order_by('current_position')
 
     def past_members(self):
         return self.members.filter(is_current=False)
