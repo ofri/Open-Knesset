@@ -1,4 +1,4 @@
-<div class="card-party-members {{extra_class}}">
+{% load links_tags %}<div class="card-party-members {{extra_class}}">
     <div>
 {% for member in members %}
         <div class="party-member-photo">
@@ -9,7 +9,11 @@
               <h3><a href="{{member.get_absolute_url}}">{{member.name}}</a></h3>
                 <p>{{member.get_role}}</p>
             </div>
-            <div class="party-member-info-links"></div>
+            <div class="party-member-info-links">
+                <ul>
+                {% object_icon_links member %}
+                </ul>
+            </div>
             <div class="party-member-info-photo">
               <img src="{{member.highres_img_url}}">
             </div>

@@ -5630,6 +5630,10 @@ ol {
   height: 47px;
   background: #f6f6f6;
   padding-right: 160px;
+  overflow: hidden;
+}
+.card-party-members .party-member-photo .party-member-info .party-member-info-links ul {
+  margin-top: 8px;
 }
 .card-party-members .party-member-photo:hover .party-member-info {
   display: block;
@@ -5978,13 +5982,17 @@ ol {
   margin: 8px 0 0;
   float: right;
 }
-.social-links ul {
+.social-links ul,
+.party-member-info-links ul {
   margin-right: -10px;
+  list-style-type: none;
 }
-.social-links ul li {
+.social-links ul li,
+.party-member-info-links ul li {
   float: right;
 }
-.social-links ul li a {
+.social-links ul li a,
+.party-member-info-links ul li a {
   display: block;
   overflow: hidden;
   text-indent: -30000em;
@@ -5992,7 +6000,8 @@ ol {
   height: 32px;
   opacity: 0.7;
 }
-.social-links ul li a:hover {
+.social-links ul li a:hover,
+.party-member-info-links ul li a:hover {
   opacity: 1;
 }
 .label.level6 {
