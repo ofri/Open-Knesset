@@ -6030,3 +6030,57 @@ ol {
 .label.level2[href] {
   background-color: #1a1a1a;
 }
+.video_400_300 {
+  width: 400px;
+  height: 300px;
+  overflow: hidden;
+}
+.video_400_300 img {
+  width: 400px;
+  height: 300px;
+}
+.video_400_300 .video_playbtn {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  top: -300px;
+  background: transparent url(../icons/play.png) no-repeat center center;
+  cursor: pointer;
+}
+.video_playlist_player {
+  width: 400px;
+  height: 90px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.video_playlist_player a {
+  padding: 0;
+}
+.video_playlist_player .video_image {
+  width: 120px;
+  font-weight: bold;
+  text-align: center;
+  float: right;
+  padding-left: 5px;
+}
+.video_playlist_player img {
+  width: 120px;
+  height: 90px;
+}
+.video_playlist_player .video_playbtn {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  overflow: hidden;
+  top: -95px;
+  background: transparent url(../icons/play_small.png) no-repeat center center;
+  cursor: pointer;
+}
+.video_playlist_player .video_description {
+  line-height: 1.3em;
+  height: 7.8em;
+  overflow: hidden;
+}
+.video_playlist_player_embed {
+  margin-bottom: 10px;
+}
