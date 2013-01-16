@@ -5505,6 +5505,9 @@ ol {
   left: 27px;
   width: 232px;
 }
+#member-details {
+  padding-bottom: 40px;
+}
 .card-main-party {
   margin-bottom: 10px;
 }
@@ -5634,6 +5637,10 @@ ol {
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-links ul {
   margin-top: 8px;
+}
+.card-party-members .party-member-photo .party-member-info .party-member-info-links li {
+  padding: 0;
+  border: 0 none;
 }
 .card-party-members .party-member-photo:hover .party-member-info {
   display: block;
