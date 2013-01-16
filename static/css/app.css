@@ -5234,7 +5234,7 @@ body {
   margin-bottom: 0;
 }
 #app-header .nav-pills li {
-  width: 16%;
+  width: 20%;
   margin-left: -1px;
   border-left: 1px solid #f1f1f1;
 }
@@ -5263,16 +5263,21 @@ body {
   background: none;
   color: inherit;
 }
-#app-header .form-search {
+.breadcrumb {
+  background: none;
+  margin: 10px 0;
+}
+.form-search {
   position: relative;
 }
-#app-header .form-search input.search-query {
+.form-search input.search-query {
   height: 30px;
   -webkit-border-radius: 19px;
   -moz-border-radius: 19px;
   border-radius: 19px;
+  background-position: right center !important;
 }
-#app-header .form-search button {
+.form-search button {
   background: transparent;
   border: none;
   position: absolute;
@@ -5280,15 +5285,8 @@ body {
   top: 11px;
   opacity: 0.5;
 }
-#app-header .form-search button:hover {
+.form-search button:hover {
   opacity: 1;
-}
-.breadcrumb {
-  background: none;
-  margin: 10px 0;
-}
-#id_search_page_q {
-  background-position: right center !important;
 }
 #app-footer {
   border-top: 4px solid #222222;

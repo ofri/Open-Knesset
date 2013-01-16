@@ -16,7 +16,7 @@
     <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=1" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=2" />
     <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
 
 <!--    
@@ -44,7 +44,7 @@
           </a>
         </div>
         <div id="search" class="span5">
-            {% search_form "search_page" %}
+            {% search_form "search_page" "span5" %}
         </div>
 
         <div id="login" class="span3 dropdown">
@@ -70,7 +70,7 @@
         <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members %}">{% trans "Members and Parties" %}</a></li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-        <li><a href="#">מליאה</a></li>
+        <!-- <li><a href="#">מליאה</a></li> -->
         <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
       </ul>
     </header>
@@ -88,7 +88,7 @@
             <div class="clear"></div>
             {% block social %}
             <div class="content-footer">
-                {% if not debug %}
+                {% if not debug and not is_index %}
                     <!-- AddToAny BEGIN -->
                     <div class="a2a_kit a2a_default_style">
                     <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
@@ -126,8 +126,8 @@
                         <li><a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
                     </ul>
                 </nav>
-                <div class="span4">
-                    Search goes here
+                <div id="search-bottom" class="span4">
+                    {% search_form "search_page_bottom" "span4" %}
                 </div>
             </div>
             <div class="row about">
