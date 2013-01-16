@@ -106,6 +106,7 @@ def main(request):
     context = {
         'title': _('Home'),
         'hide_crumbs': True,
+        'is_index': True,
     }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))
