@@ -2,8 +2,8 @@
 {% for link in links %}
 {% if link.active %}
   <li>
-    <a href="{{ link.url|safe }}" target="_blank" class="icon sprite-website"
-      {% if link.link_type and link.link_type.image %}style="background-image: url('{{link.link_type.image.url}}'); background-position:50% 50%;"{% endif %}>{{ link.title }}</a>
+    <a href="{{ link.url|safe }}" target="_blank" rel="tooltip" class="icon sprite-website"
+      title="{{link.title}}" {% if link.link_type and link.link_type.image %}style="background-image: url('{{link.link_type.image.url}}'); background-position:50% 50%;"{% endif %}>{{ link.title }}</a>
   </li>
 {% endif %}
 {% endfor %}

@@ -2,6 +2,14 @@
 {% load i18n %}
 {% block extratitle %}{% trans "Members and Parties" %}{% endblock %}
 {% block description %}{% trans "Members and Parties" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript">
+        $(function() {
+            $('a[rel="tooltip"]').tooltip();
+        });
+    </script>
+{% endblock %}
+
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
             <li class="active">{% trans "Members and Parties" %}</li>
