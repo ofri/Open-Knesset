@@ -567,7 +567,19 @@ class PartyListView(ListView):
                 context['norm_factor'] = m/2
                 context['baseline'] = 0
                 context['title'] = "%s" % (_('Parties by monthly committee meetings'))
-
+        data = [
+            {
+                'label': _('Coalition'),
+                'data': [(x, o.extra) for (x, o) in enumerate(context['coalition'], 1)]
+            },
+            {
+                'label': _('Opposition'),
+                'data': [(x, o.extra) for (x, o) in enumerate(context['opposition'], len(context['coalition']) + 1)]
+            },
+        ]
+        context['data'] = json.dumps(data)
+        parties = [x.name for x in context['coalition']] + [x.name for x in context['opposition']]
+        context['ticks'] = json.dumps([(x + 1.5, o) for (x, o) in enumerate(parties)])
         return context
 
 

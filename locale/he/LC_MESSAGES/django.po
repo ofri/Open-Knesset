@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 01:12+0200\n"
-"PO-Revision-Date: 2013-01-16 01:13+0200\n"
+"POT-Creation-Date: 2013-01-17 01:08+0200\n"
+"PO-Revision-Date: 2013-01-17 01:10+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -214,7 +214,7 @@ msgstr "עזרה"
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:117
+#: auxiliary/views.py:118
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -921,71 +921,73 @@ msgstr "זכר"
 msgid "Female"
 msgstr "נקבה"
 
-#: mks/models.py:75
+#: mks/models.py:81
 msgid "Party"
 msgstr "מפלגה"
 
-#: mks/models.py:76 mks/views.py:373 mks/views.py:387 mks/views.py:402
+#: mks/models.py:82 mks/views.py:373 mks/views.py:387 mks/views.py:402
 #: mks/views.py:417 templates/agendas/agenda_detail.html:122
+#: templates/mks/parties_members.html:15
 msgid "Parties"
 msgstr "סיעות"
 
-#: mks/models.py:124 templates/mks/parties_members.html:14
-#: templates/mks/party_list.html:25
+#: mks/models.py:131 templates/mks/parties_members.html:23
+#: templates/mks/party_list.html:34
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:124 templates/mks/parties_members.html:27
-#: templates/mks/party_list.html:40
+#: mks/models.py:131 templates/mks/parties_members.html:36
+#: templates/mks/party_list.html:49
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:159 persons/models.py:45
+#: mks/models.py:172 persons/models.py:45
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: mks/models.py:160 persons/models.py:46
+#: mks/models.py:173 persons/models.py:46
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
-#: mks/models.py:183
+#: mks/models.py:200
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/models.py:184 mks/views.py:73 mks/views.py:83 mks/views.py:94
+#: mks/models.py:201 mks/views.py:73 mks/views.py:83 mks/views.py:94
 #: mks/views.py:105 mks/views.py:116 mks/views.py:131 mks/views.py:143
 #: mks/views.py:155 mks/views.py:158 templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4 templates/mks/member_graph.html:5
 #: templates/mks/member_list.html:3 templates/mks/member_list.html.py:4
 #: templates/mks/member_list.html:5 templates/mks/member_list_with_bars.html:6
+#: templates/mks/parties_members.html:16
 msgid "Members"
 msgstr "ח\"כים"
 
-#: mks/models.py:306
+#: mks/models.py:325
 msgid "Coalition Member (female)"
 msgstr "חברת כנסת בקואליציה"
 
-#: mks/models.py:308
+#: mks/models.py:327
 msgid "Opposition Member (female)"
 msgstr "חברת כנסת באופוזיציה"
 
-#: mks/models.py:311
+#: mks/models.py:330
 msgid "Coalition Member (male)"
 msgstr "חבר כנסת בקואליציה"
 
-#: mks/models.py:313
+#: mks/models.py:332
 msgid "Opposition Member (male)"
 msgstr "חבר כנסת באופוזיציה"
 
-#: mks/models.py:316
+#: mks/models.py:335
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: mks/models.py:318
+#: mks/models.py:337
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: mks/models.py:331
+#: mks/models.py:350
 msgid "Minister"
 msgstr "שר"
 
@@ -1075,27 +1077,27 @@ msgstr "משמעת קואליציה/אופוזיציה"
 
 #: mks/views.py:356
 msgid "By residence centrality"
-msgstr "לפי מדד מרכזיות מקום מגורים"
+msgstr "מדד מרכזיות מקום מגורים"
 
 #: mks/views.py:357
 msgid "By residence economy"
-msgstr "לפי מדד סוציואקונומי של מקום מגורים"
+msgstr "מדד סוציואקונומי של מקום מגורים"
 
 #: mks/views.py:358
 msgid "By bills proposed"
-msgstr "לפי לפי מספר הצעות חוק שהוצעו"
+msgstr "מספר הצעות חוק שהוצעו"
 
 #: mks/views.py:359
 msgid "By bills passed pre vote"
-msgstr "לפי הצעות חוק שעברו טרומית"
+msgstr "הצעות חוק שעברו טרומית"
 
 #: mks/views.py:360
 msgid "By bills passed first vote"
-msgstr "לפי הצעות חוק שעברו קריאה ראשונה"
+msgstr "הצעות חוק שעברו קריאה ראשונה"
 
 #: mks/views.py:361
 msgid "By bills approved"
-msgstr "לפי הצעות חוק שאושרו סופית"
+msgstr "הצעות חוק שאושרו סופית"
 
 #: mks/views.py:440
 msgid "Parties by residence centrality"
@@ -2584,8 +2586,8 @@ msgstr "אין"
 #: templates/include/party_list.html:6 templates/include/vote_list.html:20
 #: templates/mks/member_list.html:21
 #: templates/mks/member_list_with_bars.html:40
-#: templates/mks/member_select.html:18 templates/mks/party_list.html:35
-#: templates/mks/party_list.html.py:50
+#: templates/mks/member_select.html:18 templates/mks/party_list.html:44
+#: templates/mks/party_list.html.py:59
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
@@ -2955,7 +2957,7 @@ msgstr "חברי כנסת נוכחיים"
 
 #: templates/mks/member_list.html:23
 #: templates/mks/member_list_with_bars.html:44
-#: templates/mks/member_select.html:20 templates/mks/parties_members.html:43
+#: templates/mks/member_select.html:20 templates/mks/parties_members.html:52
 msgid "Past MKs"
 msgstr "חברי כנסת בעבר"
 
@@ -2971,6 +2973,14 @@ msgstr "חברי כנסת להציג את הצבעותיהם"
 #: templates/mks/member_select.html:10
 msgid "Click here when you are done"
 msgstr "סיום"
+
+#: templates/mks/parties_members.html:14
+msgid "Looking for comparisons ? Compare between"
+msgstr "מחפשים השוואות ? השוו בין"
+
+#: templates/mks/parties_members.html:15
+msgid "Or"
+msgstr "או"
 
 #: templates/mks/party_detail.html:49
 msgid "IN_COALITION,IN_OPPOSITION"
@@ -2995,6 +3005,10 @@ msgstr "משמעת קואליציה"
 #: templates/mks/party_detail.html:101
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
+
+#: templates/mks/party_list.html:23
+msgid "Compare by"
+msgstr "השוואה לפי"
 
 #: templates/mmm/committee_mmm_docs.html:5
 #: templates/mmm/committee_mmm_docs.html:8

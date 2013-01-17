@@ -15,14 +15,17 @@ GENDER_CHOICES = (
     (u'F', _('Female')),
 )
 
+
 class Correlation(models.Model):
-    m1 = models.ForeignKey('Member', related_name = 'm1')
-    m2 = models.ForeignKey('Member', related_name = 'm2')
+    m1 = models.ForeignKey('Member', related_name='m1')
+    m2 = models.ForeignKey('Member', related_name='m2')
     score = models.IntegerField(default=0)
     normalized_score = models.FloatField(null=True)
     not_same_party = models.NullBooleanField()
+
     def __unicode__(self):
-        return "%s - %s - %.0f" % (self.m1.name,self.m2.name,self.normalized_score)
+        return "%s - %s - %.0f" % (self.m1.name, self.m2.name, self.normalized_score)
+
 
 class BetterManager(models.Manager):
     def __init__(self):
@@ -37,7 +40,8 @@ class BetterManager(models.Manager):
         if not names:
             names = self.values_list('name', flat=True)
             cache.set('%s_names' % self.model.__name__, names)
-        possible_names = difflib.get_close_matches(name, names, cutoff=0.5, n=5)
+        possible_names = difflib.get_close_matches(
+            name, names, cutoff=0.5, n=5)
         qs = self.filter(name__in=possible_names)
         # used to establish size, overwritten later
         ret = range(qs.count())
@@ -46,6 +50,7 @@ class BetterManager(models.Manager):
                 return [m]
             ret[possible_names.index(m.name)] = m
         return ret
+
 
 class CoalitionMembership(models.Model):
     party = models.ForeignKey('Party',
@@ -61,10 +66,11 @@ class CoalitionMembership(models.Model):
                               self.start_date or "",
                               self.end_date or ""))
 
+
 class Party(models.Model):
-    name        = models.CharField(max_length=64)
-    start_date  = models.DateField(blank=True, null=True)
-    end_date    = models.DateField(blank=True, null=True)
+    name = models.CharField(max_length=64)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
     number_of_seats = models.IntegerField(blank=True, null=True)
@@ -75,8 +81,9 @@ class Party(models.Model):
         verbose_name = _('Party')
         verbose_name_plural = _('Parties')
         ordering = ('-number_of_seats',)
+
     @property
-    def uri_template (self):
+    def uri_template(self):
         # TODO: use the Site's url from django.contrib.site
         return "%s/api/party/%s/htmldiv/" % ('', self.id)
 
@@ -84,19 +91,19 @@ class Party(models.Model):
         return "%s" % self.name
 
     def current_members(self):
-        return self.members.filter(is_current=True)
+        return self.members.filter(is_current=True).order_by('current_position')
 
     def past_members(self):
         return self.members.filter(is_current=False)
 
     def name_with_dashes(self):
-        return self.name.replace("'",'"').replace(' ','-')
+        return self.name.replace("'", '"').replace(' ', '-')
 
     def Url(self):
         return "/admin/simple/party/%d" % self.id
 
     def NameWithLink(self):
-        return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
+        return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)
     NameWithLink.allow_tags = True
 
     def MembersString(self):
@@ -125,50 +132,60 @@ class Party(models.Model):
 
 
 class Membership(models.Model):
-    member      = models.ForeignKey('Member')
-    party       = models.ForeignKey('Party')
-    start_date  = models.DateField(blank=True, null=True)
-    end_date    = models.DateField(blank=True, null=True)
+    member = models.ForeignKey('Member')
+    party = models.ForeignKey('Party')
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    position = models.PositiveIntegerField(blank=True, default=999)
 
     def __unicode__(self):
-        return "%s-%s (%s-%s)" % (self.member.name,self.party.name,str(self.start_date),str(self.end_date))
+        return "%s-%s (%s-%s)" % (self.member.name, self.party.name, str(self.start_date), str(self.end_date))
+
 
 class MemberAltname(models.Model):
     member = models.ForeignKey('Member')
     name = models.CharField(max_length=64)
 
+
 class Member(models.Model):
-    name    = models.CharField(max_length=64)
-    parties = models.ManyToManyField(Party, related_name='all_members', through='Membership')
-    current_party = models.ForeignKey(Party, related_name='members', blank=True, null=True)
-    start_date  = models.DateField(blank=True, null=True)
-    end_date    = models.DateField(blank=True, null=True)
-    img_url     = models.URLField(blank=True, verify_exists=False)
+    name = models.CharField(max_length=64)
+    parties = models.ManyToManyField(
+        Party, related_name='all_members', through='Membership')
+    current_party = models.ForeignKey(
+        Party, related_name='members', blank=True, null=True)
+    current_position = models.PositiveIntegerField(blank=True, default=999)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    img_url = models.URLField(blank=True, verify_exists=False)
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)
-    website     = models.URLField(blank=True, null=True, verify_exists=False)
-    family_status = models.CharField(blank=True, null=True,max_length=10)
+    website = models.URLField(blank=True, null=True, verify_exists=False)
+    family_status = models.CharField(blank=True, null=True, max_length=10)
     number_of_children = models.IntegerField(blank=True, null=True)
-    date_of_birth  = models.DateField(blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     place_of_birth = models.CharField(blank=True, null=True, max_length=100)
-    date_of_death  = models.DateField(blank=True, null=True)
+    date_of_death = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
     is_current = models.BooleanField(default=True, db_index=True)
     blog = models.OneToOneField(Blog, blank=True, null=True)
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
-    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
-    place_of_residence_lat = models.CharField(blank=True, null=True, max_length=16)
-    place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
+    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('a general area of residence (for example, "the negev"'))
+    place_of_residence_lat = models.CharField(
+        blank=True, null=True, max_length=16)
+    place_of_residence_lon = models.CharField(
+        blank=True, null=True, max_length=16)
     residence_centrality = models.IntegerField(blank=True, null=True)
     residence_economy = models.IntegerField(blank=True, null=True)
-    user = models.ForeignKey(User,blank=True,null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
-    current_role_descriptions = models.CharField(blank=True, null=True, max_length=1024)
+    user = models.ForeignKey(User, blank=True, null=True)
+    gender = models.CharField(
+        max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    current_role_descriptions = models.CharField(
+        blank=True, null=True, max_length=1024)
 
     bills_stats_proposed = models.IntegerField(default=0)
-    bills_stats_pre      = models.IntegerField(default=0)
-    bills_stats_first    = models.IntegerField(default=0)
+    bills_stats_pre = models.IntegerField(default=0)
+    bills_stats_first = models.IntegerField(default=0)
     bills_stats_approved = models.IntegerField(default=0)
 
     average_weekly_presence_hours = models.FloatField(null=True)
@@ -186,21 +203,21 @@ class Member(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self,**kwargs):
+    def save(self, **kwargs):
         self.recalc_average_monthly_committee_presence()
-        super(Member,self).save(**kwargs)
+        super(Member, self).save(**kwargs)
 
     def average_votes_per_month(self):
         return self.voting_statistics.average_votes_per_month()
 
     def is_female(self):
-        return self.gender=='F'
+        return self.gender == 'F'
 
     def title(self):
         return self.name
 
     def name_with_dashes(self):
-        return self.name.replace(' - ',' ').replace("'","").replace(u"”",'').replace("`","").replace("(","").replace(")","").replace(u'\xa0',' ').replace(' ','-')
+        return self.name.replace(' - ', ' ').replace("'", "").replace(u"”", '').replace("`", "").replace("(", "").replace(")", "").replace(u'\xa0', ' ').replace(' ', '-')
 
     def Party(self):
         return self.parties.all().order_by('-membership__start_date')[0]
@@ -252,7 +269,7 @@ class Member(models.Model):
     def HighestCorrelations(self):
         return Correlation.objects.filter(m1=self.id).order_by('-normalized_score')[0:4]
 
-    def CorrelationListToString(self,cl):
+    def CorrelationListToString(self, cl):
 
         strings = []
         for c in cl:
@@ -260,7 +277,8 @@ class Member(models.Model):
                 m = c.m2
             else:
                 m = c.m1
-            strings.append("%s (%.0f)"%(m.NameWithLink(),100*c.normalized_score))
+            strings.append(
+                "%s (%.0f)" % (m.NameWithLink(), 100 * c.normalized_score))
         return ", ".join(strings)
 
     def service_time(self):
@@ -268,14 +286,15 @@ class Member(models.Model):
         if not self.start_date:
             return 0
         if self.is_current:
-            return (date.today() -  self.start_date).days
+            return (date.today() - self.start_date).days
         else:
             return (self.end_date - self.start_date).days
 
     def average_weekly_presence(self):
-        hours = WeeklyPresence.objects.filter(member=self).values_list('hours',flat=True)
+        hours = WeeklyPresence.objects.filter(
+            member=self).values_list('hours', flat=True)
         if len(hours):
-            return round(sum(hours)/len(hours),1)
+            return round(sum(hours) / len(hours), 1)
         else:
             return None
 
@@ -286,14 +305,14 @@ class Member(models.Model):
         service_time = self.service_time()
         if not service_time or not self.id:
             return 0
-        return round(self.committee_meetings.count() * 30.0 / self.service_time(),2)
+        return round(self.committee_meetings.count() * 30.0 / self.service_time(), 2)
 
     @models.permalink
     def get_absolute_url(self):
         return ('member-detail-with-slug', [str(self.id), self.name_with_dashes()])
 
     def NameWithLink(self):
-        return '<a href="%s">%s</a>' %(self.get_absolute_url(),self.name)
+        return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)
     NameWithLink.allow_tags = True
 
     @property
@@ -345,8 +364,10 @@ class Member(models.Model):
 
     def recalc_bill_statistics(self):
         self.bills_stats_proposed = self.bills.count()
-        self.bills_stats_pre      = self.bills.filter(stage__in=['2','3','4','5','6']).count()
-        self.bills_stats_first    = self.bills.filter(stage__in=['4','5','6']).count()
+        self.bills_stats_pre = self.bills.filter(
+            stage__in=['2', '3', '4', '5', '6']).count()
+        self.bills_stats_first = self.bills.filter(
+            stage__in=['4', '5', '6']).count()
         self.bills_stats_approved = self.bills.filter(stage='6').count()
         self.save()
 
@@ -359,7 +380,7 @@ class Member(models.Model):
 
     @property
     def names(self):
-        names=[self.name]
+        names = [self.name]
         for altname in self.memberaltname_set.all():
             names.append(altname.name)
         return names
@@ -392,15 +413,16 @@ class Member(models.Model):
 
 
 class WeeklyPresence(models.Model):
-    member      = models.ForeignKey('Member')
-    date        = models.DateField(blank=True, null=True) # contains the date of the begining of the relevant week (actually monday)
-    hours       = models.FloatField(blank=True) # number of hours this member was present during this week
+    member = models.ForeignKey('Member')
+    date = models.DateField(blank=True, null=True)  # contains the date of the begining of the relevant week (actually monday)
+    hours = models.FloatField(
+        blank=True)  # number of hours this member was present during this week
 
     def __unicode__(self):
         return "%s %s %.1f" % (self.member.name, str(self.date), self.hours)
 
-    def save(self,**kwargs):
-        super(WeeklyPresence,self).save(**kwargs)
+    def save(self, **kwargs):
+        super(WeeklyPresence, self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
 
 # force signal connections
