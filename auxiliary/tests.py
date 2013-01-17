@@ -16,7 +16,7 @@ from auxiliary.views import CsvView
 from django.core import cache
 
 class TagResourceTest(TestCase):
-    
+
     def setUp(self):
         cache.cache.clear()
         self.tags = []
@@ -62,14 +62,14 @@ class TagResourceTest(TestCase):
         self.assertEqual(res.status_code, 404)
 
     def test_api_tag_for_vote(self):
-        res = self.client.get(self._reverse_api('tags-for-object', app_label='laws', 
+        res = self.client.get(self._reverse_api('tags-for-object', app_label='laws',
                                                 object_type='vote', object_id=self.vote.id))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)['objects']
         self.assertEqual(len(res_json), 2)
 
     def test_api_related_tags(self):
-        res = self.client.get(self._reverse_api('related-tags', app_label='laws', 
+        res = self.client.get(self._reverse_api('related-tags', app_label='laws',
                                                 object_type='law', object_id=self.law.id, related_name='bills'))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)['objects']
@@ -123,7 +123,12 @@ class InternalLinksTest(TestCase):
 
         test_pages = [reverse('main'), reverse('vote-list'),
                       reverse('bill-list'), reverse('member-list'),
-                      reverse('party-list')]
+                      reverse('parties-members')]
+
+        redirects = [
+            reverse('party-list')
+        ]
+
         for page in test_pages:
 
             links_to_visit = []
@@ -150,7 +155,11 @@ class InternalLinksTest(TestCase):
             while links_to_visit:
                 link = links_to_visit.pop()
                 res0 = self.client.get(link)
-                self.assertEqual(res0.status_code, 200, msg="internal link %s from page %s seems to be broken" % (link,page))
+
+                if link in redirects:
+                    self.assertEqual(res0.status_code, 301, msg="internal redirect %s from page %s seems to be broken" % (link,page))
+                else:
+                    self.assertEqual(res0.status_code, 200, msg="internal link %s from page %s seems to be broken" % (link,page))
                 visited_links.add(link)
 
         # generate a txt file report of the visited links. for debugging the test

@@ -567,6 +567,8 @@ class PartyListView(ListView):
         opposition_data = []
 
         label = '%s<br><a href="%s">%s</a>'
+        count = 0  # Make sure we have some value, otherwise things like tests may fail
+
         for count, party in enumerate(context['coalition'], 1):
             coalition_data.append((count, party.extra))
             ticks.append((count + 0.5, label % (party.extra, party.get_absolute_url(), party.name)))

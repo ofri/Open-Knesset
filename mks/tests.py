@@ -105,12 +105,14 @@ class MemberViewsTest(TestCase):
         self.assertEqual(map(lambda x:x['id'], p), [self.mk_1.id])
 
     def testPartyList(self):
+        # party list should redirect to stats by seat
         res = self.client.get(reverse('party-list'))
-        self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'mks/party_list.html')
-        object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list),
-                         [ self.party_1.id, self.party_2.id, ])
+        self.assertRedirects(res, reverse('party-stats', kwargs={'stat_type': 'seats'}), 301)
+
+        #self.assertTemplateUsed(res, 'mks/party_list.html')
+        #object_list = res.context['object_list']
+        #self.assertEqual(map(just_id, object_list),
+        #                 [ self.party_1.id, self.party_2.id, ])
 
     def testPartyDetail(self):
         res = self.client.get(reverse('party-detail',
