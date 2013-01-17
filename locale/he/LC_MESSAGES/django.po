@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 01:08+0200\n"
-"PO-Revision-Date: 2013-01-17 01:10+0200\n"
+"POT-Creation-Date: 2013-01-17 14:16+0200\n"
+"PO-Revision-Date: 2013-01-17 14:17+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -925,19 +925,16 @@ msgstr "נקבה"
 msgid "Party"
 msgstr "מפלגה"
 
-#: mks/models.py:82 mks/views.py:373 mks/views.py:387 mks/views.py:402
-#: mks/views.py:417 templates/agendas/agenda_detail.html:122
-#: templates/mks/parties_members.html:15
+#: mks/models.py:82 templates/agendas/agenda_detail.html:122
+#: templates/mks/parties_members.html:15 templates/mks/party_list.html:25
 msgid "Parties"
 msgstr "סיעות"
 
-#: mks/models.py:131 templates/mks/parties_members.html:23
-#: templates/mks/party_list.html:34
+#: mks/models.py:131 mks/views.py:580 templates/mks/parties_members.html:23
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:131 templates/mks/parties_members.html:36
-#: templates/mks/party_list.html:49
+#: mks/models.py:131 mks/views.py:581 templates/mks/parties_members.html:36
 msgid "Opposition"
 msgstr "אופוזיציה"
 
@@ -953,9 +950,9 @@ msgstr "אזור מגורים (למשל, \"נגב\")"
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/models.py:201 mks/views.py:73 mks/views.py:83 mks/views.py:94
-#: mks/views.py:105 mks/views.py:116 mks/views.py:131 mks/views.py:143
-#: mks/views.py:155 mks/views.py:158 templates/mks/member_graph.html:3
+#: mks/models.py:201 mks/views.py:74 mks/views.py:84 mks/views.py:95
+#: mks/views.py:106 mks/views.py:117 mks/views.py:132 mks/views.py:144
+#: mks/views.py:156 mks/views.py:159 templates/mks/member_graph.html:3
 #: templates/mks/member_graph.html.py:4 templates/mks/member_graph.html:5
 #: templates/mks/member_list.html:3 templates/mks/member_list.html.py:4
 #: templates/mks/member_list.html:5 templates/mks/member_list_with_bars.html:6
@@ -991,159 +988,131 @@ msgstr "חבר כנסת לשעבר"
 msgid "Minister"
 msgstr "שר"
 
-#: mks/views.py:62
+#: mks/views.py:63
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: mks/views.py:63 mks/views.py:83
+#: mks/views.py:64 mks/views.py:84
 msgid "By number of bills proposed"
 msgstr "לפי מספר הצעות חוק שהוצעו"
 
-#: mks/views.py:64 mks/views.py:94
+#: mks/views.py:65 mks/views.py:95
 msgid "By number of bills pre-approved"
 msgstr "לפי מספר הצעות חוק שעברו טרומית"
 
-#: mks/views.py:65 mks/views.py:105
+#: mks/views.py:66 mks/views.py:106
 msgid "By number of bills first-approved"
 msgstr "לפי מספר הצעות חוק שעברו קריאה ראשונה"
 
-#: mks/views.py:66 mks/views.py:116
+#: mks/views.py:67 mks/views.py:117
 msgid "By number of bills approved"
 msgstr "לפי מספר הצעות חוק שאושרו סופית"
 
-#: mks/views.py:67 mks/views.py:131
+#: mks/views.py:68 mks/views.py:132
 msgid "By number of votes per month"
 msgstr "לפי מספר הצבעות ממוצע בחודש"
 
-#: mks/views.py:68 mks/views.py:143 mks/views.py:362
+#: mks/views.py:69 mks/views.py:144 mks/views.py:366
 msgid "By average weekly hours of presence"
-msgstr "לפי ממוצע שעות שבועיות"
+msgstr "ממוצע שעות שבועיות"
 
-#: mks/views.py:69 mks/views.py:155 mks/views.py:363
+#: mks/views.py:70 mks/views.py:156 mks/views.py:367
 msgid "By average monthly committee meetings"
-msgstr "לפי מספר ישיבות וועדות בחודש"
+msgstr "מספר ישיבות וועדות בחודש"
 
-#: mks/views.py:70 mks/views.py:158
+#: mks/views.py:71 mks/views.py:159
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
-#: mks/views.py:168 mks/views.py:577 polyorg/models.py:6
+#: mks/views.py:169 mks/views.py:592 polyorg/models.py:6
 msgid "Name"
 msgstr "שם"
 
-#: mks/views.py:169 templates/polyorg/candidatelist_compare.html:187
+#: mks/views.py:170 templates/polyorg/candidatelist_compare.html:187
 msgid "Bills Proposed"
 msgstr "הצעות חוק שהוצעו"
 
-#: mks/views.py:170
+#: mks/views.py:171
 msgid "Bills Pre-Approved"
 msgstr "הצעות חוק שאושרו טרומית"
 
-#: mks/views.py:171
+#: mks/views.py:172
 msgid "Bills First-Approved"
 msgstr "הצעות חוק שאושרו בקריאה ראשונה"
 
-#: mks/views.py:172 templates/polyorg/candidatelist_compare.html:196
+#: mks/views.py:173 templates/polyorg/candidatelist_compare.html:196
 msgid "Bills Approved"
 msgstr "הצעות חוק שאושרו סופית"
 
-#: mks/views.py:173
+#: mks/views.py:174
 msgid "Average Votes per Month"
 msgstr "ממוצע הצבעות בחודש"
 
-#: mks/views.py:174
+#: mks/views.py:175
 msgid "Average Weekly Presence"
 msgstr "שעות שבועיות בממוצע"
 
-#: mks/views.py:176
+#: mks/views.py:177
 msgid "Committee Meetings per Month"
 msgstr "ישיבות ועדה בחודש"
 
-#: mks/views.py:352
+#: mks/views.py:356
 msgid "By Number of seats"
 msgstr "מספר ח\"כים"
 
-#: mks/views.py:353
+#: mks/views.py:357
 msgid "By votes per seat"
 msgstr "הצבעות לח\"כ"
 
-#: mks/views.py:354
+#: mks/views.py:358
 msgid "By factional discipline"
 msgstr "משמעת סיעתית"
 
-#: mks/views.py:355
+#: mks/views.py:359
 msgid "By coalition/opposition discipline"
 msgstr "משמעת קואליציה/אופוזיציה"
 
-#: mks/views.py:356
+#: mks/views.py:360
 msgid "By residence centrality"
 msgstr "מדד מרכזיות מקום מגורים"
 
-#: mks/views.py:357
+#: mks/views.py:361
 msgid "By residence economy"
 msgstr "מדד סוציואקונומי של מקום מגורים"
 
-#: mks/views.py:358
+#: mks/views.py:362
 msgid "By bills proposed"
 msgstr "מספר הצעות חוק שהוצעו"
 
-#: mks/views.py:359
+#: mks/views.py:363
 msgid "By bills passed pre vote"
 msgstr "הצעות חוק שעברו טרומית"
 
-#: mks/views.py:360
+#: mks/views.py:364
 msgid "By bills passed first vote"
 msgstr "הצעות חוק שעברו קריאה ראשונה"
 
-#: mks/views.py:361
+#: mks/views.py:365
 msgid "By bills approved"
 msgstr "הצעות חוק שאושרו סופית"
 
-#: mks/views.py:440
-msgid "Parties by residence centrality"
-msgstr "מפלגות לפי מדד מרכזיות של מקום מגורים"
+#: mks/views.py:562
+msgid "Parties by %s"
+msgstr "סיעות לפי %s"
 
-#: mks/views.py:463
-msgid "Parties by residence economy"
-msgstr "מפלגות לפי מדד סוציואקונומי של מקום מגורים"
-
-#: mks/views.py:478
-msgid "Parties by number of bills proposed per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שהוצעו לכל ח\"כ"
-
-#: mks/views.py:493
-msgid "Parties by number of bills passed pre vote per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה טרומית לכל ח\"כ"
-
-#: mks/views.py:508
-msgid "Parties by number of bills passed first vote per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה ראשונה לכל ח\"כ"
-
-#: mks/views.py:523
-msgid "Parties by number of bills passed approved per seat"
-msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
-
-#: mks/views.py:546
-msgid "Parties by average weekly hours of presence"
-msgstr "מפלגות לפי ממוצע שעות שבועיות"
-
-#: mks/views.py:569
-msgid "Parties by monthly committee meetings"
-msgstr "מפלגות לפי ממוצע ישיבות וועדות בחודש"
-
-#: mks/views.py:578
+#: mks/views.py:593
 msgid "Number of Members"
 msgstr "מספר חברים"
 
-#: mks/views.py:579
+#: mks/views.py:594
 msgid "Number of Seats"
 msgstr "מספר מנדטים"
 
-#: mks/views.py:580
+#: mks/views.py:595
 msgid "Affiliation"
 msgstr "שיוך"
 
-#: mks/views.py:631
+#: mks/views.py:646
 #, python-format
 msgid "No %(object_type)s found matching \"%(name)s\"."
 msgstr "לא נמצאו %(object_type)s התואמים ל- \"%(name)s\"."
@@ -1315,7 +1284,7 @@ msgstr "אודות"
 #: templates/laws/vote_tags_cloud.html:5 templates/mks/member_list.html:5
 #: templates/mks/member_list_with_bars.html:7
 #: templates/mks/parties_members.html:4 templates/mks/party_detail.html:33
-#: templates/mks/party_list.html:6 templates/mmm/committee_mmm_docs.html:9
+#: templates/mks/party_list.html:5 templates/mmm/committee_mmm_docs.html:9
 #: templates/mmm/member_mmm_docs.html:9 templates/planet/posts/list.html:5
 #: templates/planet/tags/cloud.html:5 templates/planet/tags/detail.html:6
 #: templates/polyorg/candidatelist_compare.html:5
@@ -1353,7 +1322,7 @@ msgstr "בחירות 2013"
 #: templates/base.html:70 templates/base.html.py:122
 #: templates/mks/member_detail.html:67 templates/mks/parties_members.html:3
 #: templates/mks/parties_members.html:4 templates/mks/parties_members.html:7
-#: templates/mks/party_detail.html:37 templates/mks/party_list.html:9
+#: templates/mks/party_detail.html:37 templates/mks/party_list.html:24
 #: templates/polyorg/candidatelist_compare.html:4
 msgid "Members and Parties"
 msgstr "ח&quot;כים וסיעות"
@@ -2586,8 +2555,7 @@ msgstr "אין"
 #: templates/include/party_list.html:6 templates/include/vote_list.html:20
 #: templates/mks/member_list.html:21
 #: templates/mks/member_list_with_bars.html:40
-#: templates/mks/member_select.html:18 templates/mks/party_list.html:44
-#: templates/mks/party_list.html.py:59
+#: templates/mks/member_select.html:18
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
 
@@ -2732,7 +2700,7 @@ msgid "Please login to edit budget estimates"
 msgstr "יש להכנס לחשבון כדי לערוך הערות תקציב"
 
 #: templates/laws/bill_list.html:17 templates/laws/vote_list.html:28
-#: templates/mks/export_csv_link.html:5
+#: templates/mks/export_csv_link.html:5 templates/mks/party_list.html:57
 msgid "Export data to Excel"
 msgstr "יצא נתונים לגליון"
 
@@ -3006,7 +2974,7 @@ msgstr "משמעת קואליציה"
 msgid "Opposition discipline"
 msgstr "משמעת אופוזיציה"
 
-#: templates/mks/party_list.html:23
+#: templates/mks/party_list.html:40
 msgid "Compare by"
 msgstr "השוואה לפי"
 
@@ -3771,6 +3739,30 @@ msgstr "שבועי"
 #: user/views.py:123
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#~ msgid "Parties by residence centrality"
+#~ msgstr "מפלגות לפי מדד מרכזיות של מקום מגורים"
+
+#~ msgid "Parties by residence economy"
+#~ msgstr "מפלגות לפי מדד סוציואקונומי של מקום מגורים"
+
+#~ msgid "Parties by number of bills proposed per seat"
+#~ msgstr "מפלגות לפי מספר הצעות חוק שהוצעו לכל ח\"כ"
+
+#~ msgid "Parties by number of bills passed pre vote per seat"
+#~ msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה טרומית לכל ח\"כ"
+
+#~ msgid "Parties by number of bills passed first vote per seat"
+#~ msgstr "מפלגות לפי מספר הצעות חוק שעברו קריאה ראשונה לכל ח\"כ"
+
+#~ msgid "Parties by number of bills passed approved per seat"
+#~ msgstr "מפלגות לפי מספר הצעות חוק שאושרו טרומית לכל ח\"כ"
+
+#~ msgid "Parties by average weekly hours of presence"
+#~ msgstr "מפלגות לפי ממוצע שעות שבועיות"
+
+#~ msgid "Parties by monthly committee meetings"
+#~ msgstr "מפלגות לפי ממוצע ישיבות וועדות בחודש"
 
 #~ msgid "Click the # to highlight MKs from this party"
 #~ msgstr "ניתן ללחוץ על ה- # להדגשת חברי כנסת של מפלגה"

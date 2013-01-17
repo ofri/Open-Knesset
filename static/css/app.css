@@ -5288,6 +5288,11 @@ body {
 .form-search button:hover {
   opacity: 1;
 }
+.nav-pills.nav-stacked > li > a {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
 #app-footer {
   border-top: 4px solid #222222;
   font-size: 14px;
