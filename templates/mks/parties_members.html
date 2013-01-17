@@ -9,6 +9,15 @@
 
 {% block divcontent %}
     <div class="row">
+        <div class="span12">
+            <div class="alert">
+                {% trans "Looking for comparisons ? Compare between" %}
+                <a href="{% url party-list %}">{% trans "Parties" %}</a> {% trans "Or" %}
+                <a href="{% url member-list %}">{% trans "Members" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
       <div class="cards span6">
         <section class="card card-list card-list-latest">
             <header><h1>{% trans "Coalition" %}</h1></header>
