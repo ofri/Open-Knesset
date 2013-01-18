@@ -6,10 +6,22 @@
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block divcontent %}
 <div class="row" style="margin-top:20px;">
-    <div class="cards span8">
+    <div class="cards span4">
         <div class="card card-list text-center" style="padding:12px 0">
             <div class="spacer">
-                <a href="https://www.headstart.co.il/project.aspx?id=784">
+                <p>
+                    לקראת הבחירות פיתחנו כמה כלים יעודיים שיעזרו לכם לבחור בצורה חכמה. הכנסו לטאב <a href="{% url candidate-list-list %}">"בחירות 2013"</a>, או <a href="http://bchirometer.oknesset.org/" target="_blank">לבחירומטר - כלי פשוט לדירוג המפלגות שפועלות בכנסת, לפי השקפותיך</a>.
+                </p>
+                <a href="http://bchirometer.oknesset.org/" target="_blank">
+                    <img src="/static/img/bchirometer.jpg" alt="בחירומטר">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="cards span4">
+        <div class="card card-list text-center" style="padding:12px 0">
+            <div class="spacer">
+                <a href="https://www.headstart.co.il/project.aspx?id=784" target="_blank">
                     <img src="/static/img/movie_poster.jpg" alt="הסרט של הבחירות">
                 </a>
             </div>
