@@ -34,7 +34,7 @@
                 for ( k in data ) {
                     pie_data.push({type : k, votes : data[k]});
                 }
-                
+
                 new MKPieChart(this, {
                     width       : 90,
                     height      : 89,
@@ -250,10 +250,57 @@
                 </footer>
                 </footer>
             </section>
-                
+
             {% endif %}
         </div> <!-- /span9 -->
         <div class="span3">
+	 		<aside class="sidebar sidebar-stats">
+                <h2>{% trans "Votes" %}</h2>
+                <ul>
+                    <li>
+                        <label>{% trans "Number of votes" %}</label>
+                        <span class="numeric">{{ object.voting_statistics.votes_count }}</span>
+                    </li>
+                    <li>
+                        <label>{% trans "Last 30 days" %}</label>
+                        <span class="numeric">{{object|recent_votes_count}}</span>
+                    </li>
+                    <li>
+                        <label>
+                            {% trans "Factional discipline" %}
+                            {% if factional_discipline %}
+                                <a class="btn btn-mini btn-question" href="#factdiscp-modal" role="button" data-toggle="modal">?</a>
+                                <div id="factdiscp-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="factdiscpModalLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                        <h3 id="factdiscpModalLabel">{% trans "factional discipline explained" %}</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                    {% for voteaction in factional_discipline %}
+                                        <p class="factional_discipline_row discipline_row">
+                                            {{ object.is_female|yesno:_("Voted (Female),Voted (Male)") }}
+                                            <b>{{ voteaction.get_type_display }}</b>:
+                                            <a href="{{ voteaction.vote.get_absolute_url }}">{{voteaction.vote.title}}</a>
+                                        </p>
+                                    {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </label>
+                        <span class="numeric">
+                            {% if object.voting_statistics.discipline %}
+                                {{ object.voting_statistics.discipline }}%
+                            {% else %}
+                                {% trans 'Not enough data' %}
+                            {% endif %}
+                        </span>
+                    </li>
+                </ul>
+            </aside>
+
 	 		<aside class="sidebar sidebar-agendas">
 	 			<h2>{% trans "Notable agendas" %}</h2>
 	 			<a class="btn btn-mini btn-question" href="#">?</a>

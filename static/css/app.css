@@ -5738,6 +5738,25 @@ ol {
 .sidebar.sidebar-comments li {
   padding: 20px 0;
 }
+.sidebar.sidebar-stats li {
+  *zoom: 1;
+}
+.sidebar.sidebar-stats li:before,
+.sidebar.sidebar-stats li:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.sidebar.sidebar-stats li:after {
+  clear: both;
+}
+.sidebar.sidebar-stats label {
+  display: block;
+  width: 60%;
+  float: right;
+  padding-left: 10px;
+  cursor: default;
+}
 .agenda-mini header {
   *zoom: 1;
 }
@@ -5946,6 +5965,9 @@ ol {
 .btn-question:hover {
   color: #ffffff;
   background: #464545;
+}
+ul .btn-question {
+  float: none;
 }
 .btn-expand {
   font-size: 13px;
