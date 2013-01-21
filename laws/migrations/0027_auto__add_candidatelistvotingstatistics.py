@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('polyorg','0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding model 'CandidateListVotingStatistics'
         db.create_table('laws_candidatelistvotingstatistics', (
