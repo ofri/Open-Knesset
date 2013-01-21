@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 15:25+0200\n"
+"POT-Creation-Date: 2013-01-21 20:56+0200\n"
 "PO-Revision-Date: 2013-01-21 11:22+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -218,6 +218,26 @@ msgstr "דף הבית"
 #: auxiliary/views.py:118
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
+
+#: auxiliary/templatetags/common_visual_elements.py:25
+msgid "Extremely below average"
+msgstr "נמוך מאוד"
+
+#: auxiliary/templatetags/common_visual_elements.py:26
+msgid "Below average"
+msgstr "נמוך"
+
+#: auxiliary/templatetags/common_visual_elements.py:27
+msgid "Average"
+msgstr "ממוצע"
+
+#: auxiliary/templatetags/common_visual_elements.py:28
+msgid "Above average"
+msgstr "גבוה"
+
+#: auxiliary/templatetags/common_visual_elements.py:29
+msgid "Extremely above average"
+msgstr "גבוה מאוד"
 
 #: badges/handlers.py:42
 msgid "got badge"
@@ -569,6 +589,7 @@ msgstr "הצעת חוק"
 
 #: laws/models.py:530 laws/urls.py:11
 #: templates/committees/committeemeeting_detail.html:42
+#: templates/mks/member_detail.html:405
 msgid "Bills"
 msgstr "הצעות חוק"
 
@@ -2960,11 +2981,11 @@ msgstr "הצבעות נגד הצעות חוק של עצמו"
 msgid "Attendance"
 msgstr "נוכחות"
 
-#: templates/mks/member_detail.html:392
+#: templates/mks/member_detail.html:393
 msgid "Average weekly hours"
 msgstr "שעות שבועיות בממוצע"
 
-#: templates/mks/member_detail.html:399
+#: templates/mks/member_detail.html:412
 msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
@@ -4065,21 +4086,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "Suggest Tags"
 #~ msgstr "הוספת תגיות"
-
-#~ msgid "Extremely below average"
-#~ msgstr "נמוך מאוד"
-
-#~ msgid "Below average"
-#~ msgstr "נמוך"
-
-#~ msgid "Average"
-#~ msgstr "ממוצע"
-
-#~ msgid "Above average"
-#~ msgstr "גבוה"
-
-#~ msgid "Extremely above average"
-#~ msgstr "גבוה מאוד"
 
 #~ msgid "Percentile"
 #~ msgstr "אחוזון"

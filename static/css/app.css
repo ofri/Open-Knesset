@@ -5187,8 +5187,17 @@ body {
   text-align: center;
 }
 .numeric,
-.progress .bar {
-  direction: ltr;
+.progress {
+  position: relative;
+}
+.numeric .bar-label,
+.progress .bar-label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
 }
 /* Add additional stylesheets below
 -------------------------------------------------- */

@@ -1,34 +1,40 @@
 from django import template
-import random
-import string
+from django.utils.translation import ugettext as _
 
 register = template.Library()
 
 
 @register.inclusion_tag('auxiliary/_bar.html')
-def bar(weight, bar_class=None, norm_factor=1.2, baseline=0, id=""):
-    """ Draws a bar.
-        weight - translates to bar length
-        bar_class - class attribute of the bar element, used for css capture
-
-        FIXME norm_factor, baseline and id are ignored for now
+def bar(quantity, start, end, bar_class=None):
     """
-    if not weight:
-        weight = 0
+    Draws a bar.
 
-    weight = abs(weight)
+    :param quantity: The quanity to represent
+    :param start: Start of scale
+    :param end: End of scale
+    :param bar_class: Bootstrap bar class (One of: info, success, warning,
+                      danger). If not passed, will be calculated from percentage
+
+    """
+
+    assert quantity <= end, "bar: quantity > end"
+
+    value = (quantity - start) * 100 / (end - start)
+
+    VALUES = (
+        (20, 'danger', _('Extremely below average')),
+        (40, 'warning', _('Below average')),
+        (60, 'info', _('Average')),
+        (80, 'info', _('Above average')),
+        (101, 'success', _('Extremely above average')),
+    )
+
+    for boundary, css_class, label in VALUES:
+        if value < boundary:
+            break
 
     if bar_class is None:
-        pass
+        bar_class = css_class
 
-    if norm_factor:
-        width = round((weight - baseline) / norm_factor, 1)
-    else:
-        width = 0
-
-    if not id:
-        bar_id = ''.join(
-            random.sample(string.ascii_uppercase + string.digits, 5))
-    else:
-        bar_id = id
-    return {'width': width, 'bar_class': bar_class, "bar_id": bar_id}
+    return {'width': value, 'bar_class': bar_class, 'label': label,
+            'quantity': quantity}

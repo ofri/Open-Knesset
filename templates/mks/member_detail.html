@@ -392,10 +392,7 @@
                         <span class="numeric">{{ presence.average_weekly_presence_hours }}</span>
                         {% trans 'Average weekly hours' %}
                         {% if presence.average_weekly_presence_hours %}
-                        {% bar presence.average_weekly_presence_hours_percentile %}
-                        <div class="progress">
-                            <div class="bar" style="width:{{ presence.average_weekly_presence_hours_percentile }}%">{{ presence.average_weekly_presence_hours_percentile }} %</div>
-                        </div>
+                        {% bar presence.average_weekly_presence_hours_percentile 0 100 %}
                         {% endif %}
                     </li>
                 </ul>
