@@ -5661,6 +5661,17 @@ ol {
   color: white;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px -1px 0 rgba(0, 0, 0, 0.5), -1px 1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(0, 0, 0, 0.5);
 }
+.card-party-members .party-member-name {
+  position: absolute;
+  bottom: -7px;
+  left: 3px;
+  color: white;
+  line-height: 13px;
+  font-size: 13px;
+  text-align: left;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px -1px 0 rgba(0, 0, 0, 0.5), -1px 1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
 .sidebar {
   background: #fcfcfc;
   border-top: 2px solid #222222;

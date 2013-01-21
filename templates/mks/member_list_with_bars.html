@@ -6,6 +6,13 @@
 {% block keywords %}{% trans 'Members' %}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url member-list %}">{% trans "Members" %}</a> <span class="divider">/</span></li>
+            <li class="active">{{ title  }}</li>
+{% endblock %}
+            
 {% block help-section %}
 	 {% i18ninclude "mks/member_list_with_bars_help.html" LANGUAGE_CODE %}
 {% endblock %}
