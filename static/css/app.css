@@ -5186,7 +5186,8 @@ body {
 .text-center {
   text-align: center;
 }
-.numeric {
+.numeric,
+.progress .bar {
   direction: ltr;
 }
 /* Add additional stylesheets below

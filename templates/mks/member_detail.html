@@ -383,7 +383,22 @@
                         </span>
                     </li>
                 </ul>
-                </aside> <!-- votes stats -->
+            </aside> <!-- votes stats -->
+
+	 		<aside class="sidebar sidebar-stats">
+                <h2>{% trans "Attendance" %}</h2>
+                <ul>
+                    <li>
+                        <span class="numeric">{{ presence.average_weekly_presence_hours }}</span>
+                        {% trans 'Average weekly hours' %}
+                        {% if presence.average_weekly_presence_hours %}
+                        <div class="progress">
+                            <div class="bar" style="width:{{ presence.average_weekly_presence_hours_percentile }}%">{{ presence.average_weekly_presence_hours_percentile }} %</div>
+                        </div>
+                        {% endif %}
+                    </li>
+                </ul>
+            </aside> <!-- Attendance -->
 
 	 		<aside class="sidebar sidebar-agendas">
 	 			<h2>{% trans "Notable agendas" %}</h2>
@@ -491,130 +506,6 @@
                         <br/>
 
 
-                        <div>
-                            <h3>{% trans "Votes" %}</h3>
-                            <table>
-                                <tr>
-                                    <td style="width:140px;">{% trans "Number of votes" %}</td>
-                                    <td style="width:102px;">{{ object.voting_statistics.votes_count }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="width:140px;">{% trans "Last 30 days" %}</td>
-                                    <td style="width:102px;">{{ object|recent_votes_count }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{% if factional_discipline %}
-                                            <a class="factional_discipline">
-                                        {% endif %}
-                                        {% trans "Factional discipline" %}
-                                        {% if factional_discipline %}
-                                            </a>
-                                            <div class="factional_discipline factional_discipline_control expand_button"></div>
-                                            <div class="factional_discipline factional_discipline_control collapse_button discipline_hide_control"></div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{% if object.voting_statistics.discipline %}
-                                            {{ object.voting_statistics.discipline }}%
-                                        {% else %}
-                                            {% trans 'Not enough data' %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="factional_discipline_row discipline_row">
-                                        <h4>{% trans 'factional discipline explained' %}</h4>
-                                        {% for voteaction in factional_discipline %}
-                                            <p class="factional_discipline_row discipline_row">
-                                                {% if object.is_female %}
-                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% else %}
-                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% endif %}
-                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
-                                            </p>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_discipline }}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        {% if general_discipline %}
-                                            <a class="general_discipline">
-                                        {% endif %}
-                                        {% if object.current_party.is_coalition %}
-                                            {% trans "Coalition discipline" %}
-                                        {% else %}
-                                            {% trans 'Opposition discipline' %}
-                                        {% endif %}
-                                        {% if general_discipline %}
-                                            </a>
-                                            <div class="general_discipline general_discipline_control expand_button"></div>
-                                            <div class="general_discipline general_discipline_control collapse_button discipline_hide_control"></div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{% if object.voting_statistics.coalition_discipline %}
-                                            {{ object.voting_statistics.coalition_discipline }}%
-                                        {% else %}{% trans 'Not enough data' %}{% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="general_discipline_row discipline_row">
-                                        {% if object.current_party.is_coalition %}
-                                            <h4>{% trans "general discipline explained coalition" %}</h4>
-                                        {% else %}
-                                            <h4>{% trans 'general discipline explained opposition' %}</h4>
-                                        {% endif %}
-
-                                        {% for voteaction in general_discipline %}
-                                            <p class="general_discipline_row discipline_row">
-                                                {% if object.is_female %}
-                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% else %}
-                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% endif %}
-                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
-                                            </p>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% trans 'Last 30 days' %}</td><td>{{ object|recent_coalition_discipline }}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        {% if votes_against_own_bills %}
-                                            <a class="votes_against_own_bills">
-                                        {% endif %}
-                                        {% trans "Votes against own bills" %}
-                                        {% if votes_against_own_bills %}
-                                            </a>
-                                            <div class="votes_against_own_bills votes_against_own_bills_control expand_button"></div>
-                                            <div class="votes_against_own_bills votes_against_own_bills_control collapse_button discipline_hide_control"></div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{% if votes_against_own_bills %}
-                                            {{ votes_against_own_bills|length }}
-                                        {% else %}{% trans 'None' %}{% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="votes_against_own_bills_row discipline_row">
-                                        {% for voteaction in votes_against_own_bills %}
-                                            <p class="votes_against_own_bills_row discipline_row">
-                                                {% if object.is_female %}
-                                                    <span class="action-verb">הצביעה&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% else %}
-                                                    <span class="action-verb">הצביע&nbsp;<b>{{ voteaction.get_type_display }}</b>:</span>
-                                                {% endif %}
-                                                <a href="{{ voteaction.vote.get_absolute_url  }}">{{voteaction.vote.title}}</a>
-                                            </p>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            </table>
-                            <br/>
                             <h3>{% trans "Attendance" %}</h3>
                             <table>
                                 <tr>

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 13:45+0200\n"
+"POT-Creation-Date: 2013-01-21 15:25+0200\n"
 "PO-Revision-Date: 2013-01-21 11:22+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -2957,6 +2957,14 @@ msgid "Votes against own bills"
 msgstr "הצבעות נגד הצעות חוק של עצמו"
 
 #: templates/mks/member_detail.html:389
+msgid "Attendance"
+msgstr "נוכחות"
+
+#: templates/mks/member_detail.html:392
+msgid "Average weekly hours"
+msgstr "שעות שבועיות בממוצע"
+
+#: templates/mks/member_detail.html:399
 msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
@@ -3898,14 +3906,8 @@ msgstr "פרופיל המשתמש עודכן"
 #~ msgid "TrackBack:"
 #~ msgstr "טראקבק:"
 
-#~ msgid "Attendance"
-#~ msgstr "נוכחות"
-
 #~ msgid "Knesset presence"
 #~ msgstr "נוכחות במשכן"
-
-#~ msgid "Average weekly hours"
-#~ msgstr "שעות שבועיות בממוצע"
 
 #~ msgid "Committee presence"
 #~ msgstr "נוכחות בוועדות"
