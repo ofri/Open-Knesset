@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 20:56+0200\n"
+"POT-Creation-Date: 2013-01-21 21:33+0200\n"
 "PO-Revision-Date: 2013-01-21 11:22+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -589,7 +589,7 @@ msgstr "הצעת חוק"
 
 #: laws/models.py:530 laws/urls.py:11
 #: templates/committees/committeemeeting_detail.html:42
-#: templates/mks/member_detail.html:405
+#: templates/mks/member_detail.html:408
 msgid "Bills"
 msgstr "הצעות חוק"
 
@@ -2981,11 +2981,23 @@ msgstr "הצבעות נגד הצעות חוק של עצמו"
 msgid "Attendance"
 msgstr "נוכחות"
 
-#: templates/mks/member_detail.html:393
+#: templates/mks/member_detail.html:392
+msgid "Knesset presence"
+msgstr "נוכחות במשכן"
+
+#: templates/mks/member_detail.html:394
 msgid "Average weekly hours"
 msgstr "שעות שבועיות בממוצע"
 
-#: templates/mks/member_detail.html:412
+#: templates/mks/member_detail.html:400
+msgid "Committee presence"
+msgstr "נוכחות בוועדות"
+
+#: templates/mks/member_detail.html:402
+msgid "Average number of committee meetings per month"
+msgstr "ישיבות וועדות בחודש"
+
+#: templates/mks/member_detail.html:415
 msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
@@ -3926,15 +3938,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "TrackBack:"
 #~ msgstr "טראקבק:"
-
-#~ msgid "Knesset presence"
-#~ msgstr "נוכחות במשכן"
-
-#~ msgid "Committee presence"
-#~ msgstr "נוכחות בוועדות"
-
-#~ msgid "Average number of committee meetings per month"
-#~ msgstr "ישיבות וועדות בחודש"
 
 #~ msgid "Number of bills proposed"
 #~ msgstr "מספר הצעות חוק שהוצעו"

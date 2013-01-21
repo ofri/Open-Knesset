@@ -388,12 +388,19 @@
 	 		<aside class="sidebar sidebar-stats">
                 <h2>{% trans "Attendance" %}</h2>
                 <ul>
-                    <li>
+                    <li class="agenda-mini">
+                        <div>{% trans "Knesset presence" %}</div>
                         <span class="numeric">{{ presence.average_weekly_presence_hours }}</span>
                         {% trans 'Average weekly hours' %}
                         {% if presence.average_weekly_presence_hours %}
                         {% bar presence.average_weekly_presence_hours_percentile 0 100 %}
                         {% endif %}
+                    </li>
+                    <li>
+                        <div>{% trans "Committee presence" %}</div>
+                        <span class="numeric">{{ object.committee_meetings_per_month }}</span>
+                        {% trans "Average number of committee meetings per month" %}
+                        {% bar presence.average_monthly_committee_presence_percentile  0 100 %}
                     </li>
                 </ul>
             </aside> <!-- Attendance -->
@@ -508,33 +515,6 @@
                                 </tr>
                             </table>
                         </div>
-                        <br/>
-
-
-                            <h3>{% trans "Attendance" %}</h3>
-                            <table>
-                                <tr>
-                                    <td style="width:140px;">{% trans "Knesset presence" %}{% ht 'mk-knesset-presence' %}</td>
-                                    <td style="width:200px;">
-                                        {{ presence.average_weekly_presence_hours }} {% trans 'Average weekly hours' %}
-                                    </td>
-                                    <td>{% if presence.average_weekly_presence_hours %}
-                                            <div id="weekly_percentile" class="percentile"></div>
-                                            <script>set_percentile('weekly',{{ presence.average_weekly_presence_hours_percentile }});</script>
-                                        {% else %}
-                                            {% trans 'Not enough data' %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% trans "Committee presence" %}{% ht 'mk-committee-presence' %}</td>
-                                    <td>{{ object.committee_meetings_per_month }} {% trans "Average number of committee meetings per month" %}</td>
-                                    <td>
-                                        <div id="monthly_percentile" class="percentile"></div>
-                                        <script>set_percentile('monthly',{{ presence.average_monthly_committee_presence_percentile }});</script>
-                                    </td>
-                                </tr>
-                            </table>
                             <br/>
                             <h3>{% trans "Bills" %} {% ht 'mk-bills' %}</h3>
                             <table>
