@@ -190,6 +190,20 @@ class BillCsvView(CsvView):
                     ('proposers', _('Proposers')),
                     ('joiners', _('Joiners')))
 
+    def get_queryset(self, **kwargs):
+        try:
+            return self.model.objects.select_related('law',
+                                                     'first_vote',
+                                                     'approval_vote')\
+                                     .prefetch_related('joiners',
+                                                       'proposers',
+                                                       'pre_votes',
+                                                       'first_committee_meetings',
+                                                       'second_committee_meetings')
+        except DatabaseError: # sqlite can't prefetch this query, because it has
+                              # too many objects
+            return self.model.objects.all()
+
     def community_meeting_gen(self, obj, attr):
         '''
         A helper function to compute presentation of community meetings url list, space separated
