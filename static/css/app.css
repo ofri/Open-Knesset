@@ -5457,8 +5457,15 @@ ol {
 .card-list ul li:last-child {
   border-bottom: none;
 }
+.card-list.compact ul li {
+  padding: 20px 0 15px 0;
+}
+.card-list.compact header h1,
+.card-list.compact header h2 {
+  padding: 5px 20px 5px 5px;
+}
 .card-main {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 .card-main [class*='span'] {
   min-height: 245px;
