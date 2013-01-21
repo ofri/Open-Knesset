@@ -392,6 +392,7 @@
                         <span class="numeric">{{ presence.average_weekly_presence_hours }}</span>
                         {% trans 'Average weekly hours' %}
                         {% if presence.average_weekly_presence_hours %}
+                        {% bar presence.average_weekly_presence_hours_percentile %}
                         <div class="progress">
                             <div class="bar" style="width:{{ presence.average_weekly_presence_hours_percentile }}%">{{ presence.average_weekly_presence_hours_percentile }} %</div>
                         </div>
@@ -399,6 +400,13 @@
                     </li>
                 </ul>
             </aside> <!-- Attendance -->
+
+	 		<aside class="sidebar sidebar-stats">
+                <h2>{% trans "Bills" %}</h2>
+                <ul>
+                    <li></li>
+                </ul>
+            </aside> <!-- Bills -->
 
 	 		<aside class="sidebar sidebar-agendas">
 	 			<h2>{% trans "Notable agendas" %}</h2>
