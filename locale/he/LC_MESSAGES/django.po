@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 12:20+0200\n"
+"POT-Creation-Date: 2013-01-21 13:45+0200\n"
 "PO-Revision-Date: 2013-01-21 11:22+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -150,6 +150,7 @@ msgstr "בעריכת"
 #: templates/committees/committee_detail.html:73
 #: templates/committees/committee_detail.html:83
 #: templates/committees/committee_detail.html:93
+#: templates/mks/member_detail.html:381
 msgid "None"
 msgstr "אין"
 
@@ -857,7 +858,8 @@ msgstr "הצעות שלא תויגו"
 
 #: laws/templatetags/laws_tags.py:22 laws/templatetags/laws_tags.py:25
 #: laws/templatetags/laws_tags.py:35 laws/templatetags/laws_tags.py:38
-#: laws/templatetags/laws_tags.py:47 templates/mks/member_detail.html:290
+#: laws/templatetags/laws_tags.py:47 templates/mks/member_detail.html:297
+#: templates/mks/member_detail.html:344
 msgid "Not enough data"
 msgstr "אין מספיק נתונים"
 
@@ -1617,7 +1619,8 @@ msgstr "של"
 msgid "Present and didn't vote (Female),Present and didn't vote (Male)"
 msgstr "נכחה ולא הצביע,נכח ולא הצביע"
 
-#: templates/activity/voted/action.html:7
+#: templates/activity/voted/action.html:7 templates/mks/member_detail.html:281
+#: templates/mks/member_detail.html:328 templates/mks/member_detail.html:365
 msgid "Voted (Female),Voted (Male)"
 msgstr "הצביעה,הצביע"
 
@@ -1908,7 +1911,8 @@ msgstr "עריכת אג'נדה"
 #: templates/committees/committee_list.html:45
 #: templates/laws/bill_detail.html:186 templates/laws/bill_detail.html:203
 #: templates/laws/bill_detail.html:273 templates/laws/bill_list.html:33
-#: templates/mks/member_detail.html:171 templates/mks/member_detail.html:281
+#: templates/mks/member_detail.html:171 templates/mks/member_detail.html:288
+#: templates/mks/member_detail.html:335 templates/mks/member_detail.html:372
 msgid "Close"
 msgstr "סגור"
 
@@ -2919,7 +2923,8 @@ msgstr "פעולות אחרונות"
 msgid "M.M.M Documents"
 msgstr "מסמכי ממ\"מ"
 
-#: templates/mks/member_detail.html:265
+#: templates/mks/member_detail.html:265 templates/mks/member_detail.html:302
+#: templates/mks/member_detail.html:349
 msgid "Last 30 days"
 msgstr "ב 30 הימים האחרונים"
 
@@ -2931,7 +2936,27 @@ msgstr "משמעת סיעתית"
 msgid "factional discipline explained"
 msgstr "הצבעות בניגוד למרבית חברי הסיעה"
 
-#: templates/mks/member_detail.html:298
+#: templates/mks/member_detail.html:308 templates/mks/party_detail.html:100
+msgid "Coalition discipline"
+msgstr "משמעת קואליציה"
+
+#: templates/mks/member_detail.html:310 templates/mks/party_detail.html:102
+msgid "Opposition discipline"
+msgstr "משמעת אופוזיציה"
+
+#: templates/mks/member_detail.html:319
+msgid "general discipline explained coalition"
+msgstr "הצבעות בניגוד למרבית חברי הקואליציה"
+
+#: templates/mks/member_detail.html:321
+msgid "general discipline explained opposition"
+msgstr "הצבעות בניגוד למרבית חברי האופוזיציה"
+
+#: templates/mks/member_detail.html:354 templates/mks/member_detail.html:360
+msgid "Votes against own bills"
+msgstr "הצבעות נגד הצעות חוק של עצמו"
+
+#: templates/mks/member_detail.html:389
 msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
@@ -2979,14 +3004,6 @@ msgstr "סטטיסטיקה"
 #: templates/mks/party_detail.html:89
 msgid "Average votes per MK"
 msgstr "ממוצע הצבעות לח\"כ"
-
-#: templates/mks/party_detail.html:100
-msgid "Coalition discipline"
-msgstr "משמעת קואליציה"
-
-#: templates/mks/party_detail.html:102
-msgid "Opposition discipline"
-msgstr "משמעת אופוזיציה"
 
 #: templates/mks/party_list.html:40
 msgid "Compare by"
@@ -3831,15 +3848,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "time in knesset"
 #~ msgstr "זמן בכנסת"
-
-#~ msgid "general discipline explained coalition"
-#~ msgstr "הצבעות בניגוד למרבית חברי הקואליציה"
-
-#~ msgid "general discipline explained opposition"
-#~ msgstr "הצבעות בניגוד למרבית חברי האופוזיציה"
-
-#~ msgid "Votes against own bills"
-#~ msgstr "הצבעות נגד הצעות חוק של עצמו"
 
 #~ msgid "Number of MMM documents ordered"
 #~ msgstr "מספר מסמכי ממ\"מ שהוזמנו"

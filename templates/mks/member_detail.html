@@ -261,7 +261,7 @@
                         <label>{% trans "Number of votes" %}</label>
                         <span class="numeric">{{ object.voting_statistics.votes_count }}</span>
                     </li>
-                    <li>
+                    <li class="agenda-mini">
                         <label>{% trans "Last 30 days" %}</label>
                         <span class="numeric">{{object|recent_votes_count}}</span>
                     </li>
@@ -277,7 +277,7 @@
                                     </div>
                                     <div class="modal-body">
                                     {% for voteaction in factional_discipline %}
-                                        <p class="factional_discipline_row discipline_row">
+                                        <p>
                                             {{ object.is_female|yesno:_("Voted (Female),Voted (Male)") }}
                                             <b>{{ voteaction.get_type_display }}</b>:
                                             <a href="{{ voteaction.vote.get_absolute_url }}">{{voteaction.vote.title}}</a>
@@ -298,8 +298,92 @@
                             {% endif %}
                         </span>
                     </li>
+                    <li class="agenda-mini">
+                        <label>{% trans "Last 30 days" %}</label>
+                        <span class="numeric">{{object|recent_discipline}}</span>
+                    </li>
+                    <li>
+                        <label>
+                            {% if object.current_party.is_coalition %}
+                                {% trans "Coalition discipline" %}
+                            {% else %}
+                                {% trans 'Opposition discipline' %}
+                            {% endif %}
+                            {% if general_discipline %}
+                                <a class="btn btn-mini btn-question" href="#generaldiscp-modal" role="button" data-toggle="modal">?</a>
+                                <div id="generaldiscp-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="generaldiscpModalLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                        <h3 id="generaldiscpModalLabel">
+                                        {% if object.current_party.is_coalition %}
+                                            {% trans "general discipline explained coalition" %}
+                                        {% else %}
+                                            {% trans 'general discipline explained opposition' %}
+                                        {% endif %}
+                                        </h3>
+                                    </div>
+                                    <div class="modal-body">
+                                    {% for voteaction in general_discipline %}
+                                        <p>
+                                            {{ object.is_female|yesno:_("Voted (Female),Voted (Male)") }}
+                                            <b>{{ voteaction.get_type_display }}</b>:
+                                            <a href="{{ voteaction.vote.get_absolute_url }}">{{voteaction.vote.title}}</a>
+                                        </p>
+                                    {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </label>
+                        <span class="numeric">
+                            {% if object.voting_statistics.coalition_discipline %}
+                                {{ object.voting_statistics.coalition_discipline }}%
+                            {% else %}
+                                {% trans 'Not enough data' %}
+                            {% endif %}
+                        </span>
+                    </li>
+                    <li class="agenda-mini">
+                        <label>{% trans "Last 30 days" %}</label>
+                        <span class="numeric">{{object|recent_coalition_discipline}}</span>
+                    </li>
+                    <li>
+                        <label>
+                            {% trans "Votes against own bills" %}
+                            {% if votes_against_own_bills %}
+                                <a class="btn btn-mini btn-question" href="#votesagains-modal" role="button" data-toggle="modal">?</a>
+                                <div id="votesagains-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="votesagainsModalLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                        <h3 id="votesagainsModalLabel">{% trans "Votes against own bills" %}</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                    {% for voteaction in votes_against_own_bills %}
+                                        <p>
+                                            {{ object.is_female|yesno:_("Voted (Female),Voted (Male)") }}
+                                            <b>{{ voteaction.get_type_display }}</b>:
+                                            <a href="{{ voteaction.vote.get_absolute_url }}">{{voteaction.vote.title}}</a>
+                                        </p>
+                                    {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </label>
+                        <span class="numeric">
+                        {% if votes_against_own_bills %}
+                            {{ votes_against_own_bills|length }}
+                        {% else %}
+                            {% trans 'None' %}
+                        {% endif %}
+                        </span>
+                    </li>
                 </ul>
-            </aside>
+                </aside> <!-- votes stats -->
 
 	 		<aside class="sidebar sidebar-agendas">
 	 			<h2>{% trans "Notable agendas" %}</h2>
