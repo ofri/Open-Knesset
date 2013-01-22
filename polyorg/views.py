@@ -11,7 +11,7 @@ class CandidateListListView(ListView):
     model = CandidateList
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('ballot')
+        return self.model.objects.filter(number_of_seats__gt=0).order_by('-number_of_seats')
 
 class CandidateListDetailView(DetailView):
     model = CandidateList
@@ -24,12 +24,13 @@ class CandidateListDetailView(DetailView):
             cl = context['object']
             context['head'] = cl.getHeadName()
             candidates = Candidate.objects.select_related('person',
-                    'person__mk').filter(candidates_list=cl).order_by('ordinal')
+                    'person__mk').filter(candidates_list=cl,
+                                         ordinal__lte=cl.number_of_seats).order_by('ordinal')
             context['candidates'] = [x.person for x in candidates]
             agendas = []
             if cl.member_ids:
                 for a in Agenda.objects.filter(is_public=True).order_by('-num_followers'):
-                    agendas.append({'id': a.id, 
+                    agendas.append({'id': a.id,
                                     'name': a.name,
                                     'url': a.get_absolute_url(),
                                     'score': a.candidate_list_score(cl)})
