@@ -63,7 +63,7 @@
 .agenda-objects {border-color: red;}
 .ballot h1, .ballot h2 { text-align:center;}
 .ballot h1 {font-size: 4em;}
-.ballot h2 {line-height:20px; position: absolute; bottom:0.2em; padding: 0 0.4em;}
+.ballot h2 {line-height:20px; bottom:0.2em; padding: 0 0.4em;}
 .person {
     width: 150px;
     margin: 5px;
