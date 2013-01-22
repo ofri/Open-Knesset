@@ -11,7 +11,12 @@ class CandidateListListView(ListView):
     model = CandidateList
 
     def get_queryset(self):
-        return self.model.objects.filter(number_of_seats__gt=0).order_by('-number_of_seats')
+        cache_key = "candidate_list_list"
+        qs = cache.get(cache_key, None)
+        if not qs:
+            qs = self.model.objects.filter(number_of_seats__gt=0).order_by('-number_of_seats')
+            cache.set(cache_key, qs, settings.LONG_CACHE_TIME)
+        return qs
 
 class CandidateListDetailView(DetailView):
     model = CandidateList
