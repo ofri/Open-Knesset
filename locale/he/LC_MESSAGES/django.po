@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 21:33+0200\n"
+"POT-Creation-Date: 2013-01-24 01:53+0200\n"
 "PO-Revision-Date: 2013-01-21 11:22+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -219,23 +219,23 @@ msgstr "דף הבית"
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
-#: auxiliary/templatetags/common_visual_elements.py:25
+#: auxiliary/templatetags/common_visual_elements.py:28
 msgid "Extremely below average"
 msgstr "נמוך מאוד"
 
-#: auxiliary/templatetags/common_visual_elements.py:26
+#: auxiliary/templatetags/common_visual_elements.py:29
 msgid "Below average"
 msgstr "נמוך"
 
-#: auxiliary/templatetags/common_visual_elements.py:27
+#: auxiliary/templatetags/common_visual_elements.py:30
 msgid "Average"
 msgstr "ממוצע"
 
-#: auxiliary/templatetags/common_visual_elements.py:28
+#: auxiliary/templatetags/common_visual_elements.py:31
 msgid "Above average"
 msgstr "גבוה"
 
-#: auxiliary/templatetags/common_visual_elements.py:29
+#: auxiliary/templatetags/common_visual_elements.py:32
 msgid "Extremely above average"
 msgstr "גבוה מאוד"
 
@@ -589,7 +589,7 @@ msgstr "הצעת חוק"
 
 #: laws/models.py:530 laws/urls.py:11
 #: templates/committees/committeemeeting_detail.html:42
-#: templates/mks/member_detail.html:408
+#: templates/mks/member_detail.html:409
 msgid "Bills"
 msgstr "הצעות חוק"
 
@@ -2997,7 +2997,7 @@ msgstr "נוכחות בוועדות"
 msgid "Average number of committee meetings per month"
 msgstr "ישיבות וועדות בחודש"
 
-#: templates/mks/member_detail.html:415
+#: templates/mks/member_detail.html:416
 msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
