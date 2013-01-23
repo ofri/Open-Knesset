@@ -10,7 +10,7 @@ from django.conf import settings
 
 from models import Agenda, AgendaVote, AgendaBill, AgendaMeeting
 from laws.models import Vote, VoteAction, Bill
-from mks.models import Party, Member
+from mks.models import Party, Member, Membership
 from committees.models import Committee, CommitteeMeeting
 just_id = lambda x: x.id
 
@@ -23,6 +23,11 @@ class SimpleTest(TestCase):
         self.mk_2 = Member.objects.create(name='mk_2',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
+
+
+        Membership.objects.create(member=self.mk_1, party=self.party_1)
+        Membership.objects.create(member=self.mk_2, party=self.party_1)
+
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
@@ -53,6 +58,11 @@ class SimpleTest(TestCase):
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
         self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
+
+        self.vote_1. update_vote_properties()
+        self.vote_2. update_vote_properties()
+        self.vote_3. update_vote_properties()
+
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
                                                       score=-1,
