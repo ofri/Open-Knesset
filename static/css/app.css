@@ -5199,6 +5199,10 @@ body {
   right: 0;
   text-align: center;
 }
+/* Please remove once member stats are in place */
+.column-bar {
+  width: 200px;
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {

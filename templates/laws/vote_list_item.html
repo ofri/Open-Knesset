@@ -9,12 +9,12 @@
             <tr>
                 <td>{% trans 'For' %}:</td>
                 <td>{{ vote.for_votes_count }}</td>
-                <td class="column-bar">{% if vote %}{% bar vote.for_votes_count "for" %}{% endif %}</td>
+                <td class="column-bar">{% if vote %}{% bar vote.for_votes_count 0 vote.votes_count "success" 0 %}{% endif %}</td>
             </tr>
             <tr>
                 <td>{% trans 'Against' %}:</td>
                 <td>{{ vote.against_votes_count }}</td>
-                <td class="column-bar">{% if vote %}{% bar vote.against_votes_count "against" %}{% endif %}</td>
+                <td class="column-bar">{% if vote %}{% bar vote.against_votes_count 0 vote.votes_count "danger" 0 %}{% endif %}</td>
             </tr>
         </table>
             {% if vote.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}

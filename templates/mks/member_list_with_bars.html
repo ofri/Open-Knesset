@@ -40,7 +40,7 @@
                     {{ o.extra|floatformat }}
                 {% endif %}
                 </td>
-                <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
+                <td class="column-bar">{% bar o.extra 0 100 %}</td>
             </tr>
         {% endif %}
     {% empty %}
@@ -61,7 +61,7 @@
                 {{ o.extra|floatformat }}
             {% endif %}
             </td>
-            <td class="column-bar">{% bar o.extra "for" norm_factor %}</td>
+            <td class="column-bar">{% bar o.extra 0 100 %}</td>
         </tr>
     {% endfor %}
     </table>
