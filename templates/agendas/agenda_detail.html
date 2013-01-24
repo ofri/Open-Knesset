@@ -16,7 +16,9 @@
     <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
+                register_watch({{object.id}}, "agenda",
+                    "{% trans 'Watch' %}", "{% trans 'Unwatch' %}",
+                    "{% url user-follow-unfollow %}","{% url user-is-following %}");
         });
     </script>
 {% endblock %}
