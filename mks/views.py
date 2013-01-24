@@ -56,15 +56,6 @@ class MemberListView(ListView):
         ('graph', _('Graphical view'))
     )
 
-    def get_template_names_x(self):
-        info = self.request.GET.get('info','bills_pre')
-        if info=='abc':
-            return ['mks/member_list.html']
-        elif info=='graph':
-            return ['mks/member_graph.html']
-        else:
-            return ['mks/member_list_with_bars.html']
-
     def get_context_data(self, **kwargs):
 
         info = self.kwargs['stat_type']
@@ -172,7 +163,9 @@ class MemberListView(ListView):
 
         if info not in ('graph', 'abc'):
             context['max_current'] = qs[0].extra
-            context['max_past'] = context['past_mks'][0].extra
+
+            if context['past_mks']:
+                context['max_past'] = context['past_mks'][0].extra
 
         cache.set('object_list_by_%s' % info, context, settings.LONG_CACHE_TIME)
         original_context.update(context)

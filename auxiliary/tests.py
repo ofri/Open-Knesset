@@ -122,11 +122,12 @@ class InternalLinksTest(TestCase):
         visited_links = set()
 
         test_pages = [reverse('main'), reverse('vote-list'),
-                      reverse('bill-list'), reverse('member-list'),
+                      reverse('bill-list'),
                       reverse('parties-members')]
 
         redirects = [
-            reverse('party-list')
+            reverse('party-list'), reverse('member-list'),
+
         ]
 
         for page in test_pages:
