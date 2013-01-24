@@ -14,7 +14,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.views.decorators.http import require_http_methods
+from django.utils import simplejson as json
 
 from annotatetext.models import Annotation
 from actstream import unfollow, follow
@@ -131,75 +132,92 @@ def edit_profile(request):
             {'edit_form': edit_form,
             }))
 
+# these are the object types we allow following
+FOLLOW_TYPES = {
+    'member': Member,
+    'meeting': CommitteeMeeting,
+    'agenda': Agenda,
+    'bill': Bill,
+    'topic': Topic,
+}
+
+
+@require_http_methods(['POST'])
 def user_follow_unfollow(request):
     """Recieves POST parameters:
-        verb - 'follow' or 'unfollow'
-        what - string representing target object type ('member', 'agenda', ...)
-        id - id of target object
-        """
+
+    verb - 'follow' or 'unfollow'
+    what - string representing target object type ('member', 'agenda', ...)
+    id - id of target object
+
+    """
+    what = request.POST.get('what', None)
+    if what not in FOLLOW_TYPES:
+        return HttpResponseBadRequest(
+            'what parameter has to be one of: %s' % ','.join(FOLLOW_TYPES.keys()))
+
     if not request.user.is_authenticated():
         return HttpResponseForbidden(reverse('login'))
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
+
     target_id = request.POST.get('id', None)
     if not target_id:
         return HttpResponseBadRequest('need an id of an object to watch')
-    what = request.POST.get('what', None)
-    what_types = { # these are the object types we allow following
-        'member': Member,
-        'meeting': CommitteeMeeting,
-        'agenda': Agenda,
-        'bill': Bill,
-        'topic': Topic,
-    }
-    if what not in what_types:
-        return HttpResponseBadRequest(
-            'what parameter has to be one of: %s' % ','.join(what_types.keys()))
+
     verb = request.POST.get('verb', None)
-    if verb not in ['follow','unfollow']:
+    if verb not in ['follow', 'unfollow']:
         return HttpResponseBadRequest(
             "verb parameter has to be one of: 'follow', 'unfollow'")
+
+    logged_in = request.user.is_authenticated()
+    content_type = ContentType.objects.get_for_model(FOLLOW_TYPES[what])
+    qs = Follow.objects.filter(object_id=target_id, content_type=content_type)
+
     if verb == 'follow':
         try:
-            obj = get_object_or_404(what_types[what], pk=target_id)
+            obj = get_object_or_404(FOLLOW_TYPES[what], pk=target_id)
             follow(request.user, obj)
         except:
             return HttpResponseBadRequest('object not found')
-    else: # unfollow
-        content_type = ContentType.objects.get_for_model(what_types[what])
-        Follow.objects.get(user=request.user,
+    else:  # unfollow
+        Follow.objects.get(
+            user=request.user,
             content_type=content_type, object_id=target_id).delete()
 
-    return HttpResponse('OK')
+    res = {
+        'can_watch': logged_in,
+        'followers': qs.count(),
+        'watched': logged_in and bool(qs.filter(user=request.user))
+    }
+    return HttpResponse(json.dumps(res), content_type='application/json')
 
+
+@require_http_methods(['POST'])
 def user_is_following(request):
     """Recieves POST parameters:
-        what - string representing target object type ('member', 'agenda', ...)
-        id - id of target object
-        """
-    if not request.user.is_authenticated():
-        return HttpResponse('false')
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
+
+    what - string representing target object type ('member', 'agenda', ...)
+    id - id of target object
+
+    """
+    what = request.POST.get('what', None)
+
+    if what not in FOLLOW_TYPES:
+        return HttpResponseBadRequest(
+            'what parameter has to be one of: %s' % ','.join(FOLLOW_TYPES.keys()))
+
     target_id = request.POST.get('id', None)
     if not target_id:
         return HttpResponseBadRequest('need an id of an object to watch')
-    what = request.POST.get('what', None)
-    what_types = { # these are the object types we allow following
-        'member': Member,
-        'meeting': CommitteeMeeting,
-        'agenda': Agenda,
-        'bill': Bill,
-        'topic': Topic,
+
+    content_type = ContentType.objects.get_for_model(FOLLOW_TYPES[what])
+
+    logged_in = request.user.is_authenticated()
+    qs = Follow.objects.filter(object_id=target_id, content_type=content_type)
+
+    res = {
+        'can_watch': logged_in,
+        'followers': qs.count(),
+        'watched': logged_in and bool(qs.filter(user=request.user))
     }
-    if what not in what_types:
-        return HttpResponseBadRequest(
-            'what parameter has to be one of: %s' % ','.join(what_types.keys()))
-            
-    content_type = ContentType.objects.get_for_model(what_types[what])
-    try:
-        Follow.objects.get(user=request.user,
-            content_type=content_type, object_id=target_id)
-        return HttpResponse('true')
-    except ObjectDoesNotExist:
-        return HttpResponse('false')
+
+    return HttpResponse(json.dumps(res), content_type='application/json')

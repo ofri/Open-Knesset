@@ -1,66 +1,53 @@
-function register_watch(object_id, object_type, watch_text, unwatch_text, follow_url, is_following_url) {
-    jQuery.ajax({
-        type: 'POST',
-        url: is_following_url,
-        data: {'id': object_id,
-               'what': object_type},
-        context: $('#watch'),
-        success: function (data) {
-            if (data == 'true') {
-                document.is_watched = true;
-            } else {
-                document.is_watched = false;
-            }
-            
-            if (document.is_watched) {
-               $('#watch').html(unwatch_text);
-            } else {
-               $('#watch').html(watch_text);
-            }
-        },
-        error:  function(request, textStatus, error) {
-            document.is_watched = false;
-        }
-    });
-     
-    $('#watch').click( function () {
-        if (document.is_watched) {
-            jQuery.ajax({
-                type: 'POST',
-                url: follow_url,
-                data: {'verb': 'unfollow',
-                       'id': object_id,
-                       'what': object_type},
-                context: $('#watch'),
-                success: function () {
-                    document.is_watched = false;
-                    this.html(watch_text);
-                },
-                error:  function(request, textStatus, error) {
-                    var msg = $("#message_unknown").html()
-                    //$.jGrowl(msg, {life: 5000});
-                    $('#message_login').show();
-                }
-            });
+!function ($) {
+
+  "use strict"; // jshint ;_;
+
+  $(function() {
+
+    var $watcher = $('#watcher'),
+        $watch = $('#watch'),
+        $login = $('#watch-login'),
+        $num = $('#watch-followers'),
+        wdata = $watcher.data(),
+        can_watch = false,
+        watched = false,
+        followers = 0; 
+
+    // First we check whether the user can watch at all
+    $.post(wdata.isFollowingUrl, {'id': wdata.watchId, 'what': wdata.watchType})
+    .done(function(data){
+        can_watch = data.can_watch;
+        followers = data.followers;
+        watched = data.watched;
+
+        if (!can_watch) {
+            $watch.hide();
         }
         else {
-            jQuery.ajax({
-                type: 'POST',
-                url: follow_url,
-                data: {'verb': 'follow',
-                       'id': object_id,
-                       'what': object_type},
-                context: $('#watch'),
-                success: function () {
-                    document.is_watched = true;
-                    this.html(unwatch_text);
-                },
-                error:  function(request, textStatus, error) {
-                    var msg = $("#message_login").html()
-                    //$.jGrowl(msg, {sticky: true});
-                }
-            });
+            $login.hide();
+            $watch.text(watched ? wdata.unwatchText : wdata.watchText);
         }
-        return (false);
+
+        $watcher.show();
+        $num.text(followers);
     })
+
+    // Bind the button
+    $watch.click(function(e){
+        e.preventDefault();
+
+        $.post(wdata.watchUrl, {verb: watched ? 'unfollow' : 'follow', id: wdata.watchId,  'what': wdata.watchType})
+        .done(function(data) {
+            watched = data.watched;
+            $watch.text(watched ? wdata.unwatchText : wdata.watchText);
+            followers = data.followers;
+            $num.text(followers);
+        });
+    });
+
+  }) // end ready
+}(window.jQuery);
+
+
+function register_watch(object_id, object_type, watch_text, unwatch_text, follow_url, is_following_url) {
 }

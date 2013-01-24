@@ -130,7 +130,7 @@
 
         <div class="span3 social-details">
           <div class="spacer actions-panel">
-            {% include "auxiliary/_watch.html" %}
+            {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="member"%}
             {% if object.is_current %}
             <a href="#contact-information-modal" class="btn btn-big btn-contact" role="button" data-toggle="modal">{% trans "Contact Information" %}</a>
             {% endif %}

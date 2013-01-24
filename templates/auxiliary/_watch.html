@@ -1,11 +1,14 @@
 {% load i18n %}
-  <div id="watcher">
-    <div class="alert alert-block">
+  <div id="watcher" style="display:none"
+       data-watch-id="{{watched_id}}" data-watch-type="{{watched_type}}"
+       data-watch-url="{% url user-follow-unfollow %}" data-is-following-url="{% url user-is-following %}"
+       data-watch-text="{% trans "Watch" %}" data-unwatch-text="{% trans "Unwatch" %}">
+    <div id="watch-login" class="alert alert-block">
         {% trans "You have to be logged in to enable the watch feature." %}<br>
         <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
         {% trans "or" %}
         <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
     </div>
     <a id="watch" class="btn btn-big btn-primary"></a>
-    <p class="text-center" id="watch-followers"><span>{{num_followers}}</span> {% trans "Followers" %}</p>
+    <p class="text-center"><span id="watch-followers"></span> {% trans "Followers" %}</p>
   </div>
