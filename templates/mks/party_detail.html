@@ -2,12 +2,10 @@
 {% load i18n links_tags mks_tags common_visual_elements %}{% load static from staticfiles %}
 {% block extrajs %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}" type="text/javascript"></script>
-    <script src="{% static "js/ok-watch.js" %}"></script>
     <script src="{% static "js/mk-pie.js" %}"></script>
     <script type="text/javascript">
 
         $(function() {
-            register_watch({{object.id}}, 'party', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
             var MKPieChart= window.MKPieChart;
 
             // init agenda-pie charts
@@ -41,9 +39,9 @@
 
 {% block divcontent %}
 
-    <section class="card card-main-party">
+    <section class="card card-main">
         <div class="row">
-            <div class="span8 card-details">
+            <div class="span3 card-details">
                 <div class="spacer fill">
                     <header>
                         <h1>{{object.name}}</h1>
@@ -58,20 +56,14 @@
                 </div>
             </div>
 
-            <div class="span4 social-details">
-                <div class="spacer actions-panel">
-                    <a id="watch" class="btn btn-big btn-primary"></a>
-                    <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
+            <div class="span9 social-details">
+                <div>
+                    {% include "mks/member_photos.html" with members=object.current_members %}
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="card card-party-members">
-        <div>
-            {% include "mks/member_photos.html" with members=object.current_members %}
-        </div>
-    </div>
 
     <div class="row">
         <div class="cards span8">
