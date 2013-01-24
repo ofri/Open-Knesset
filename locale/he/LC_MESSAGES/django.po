@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-24 01:53+0200\n"
-"PO-Revision-Date: 2013-01-21 11:22+0200\n"
+"POT-Creation-Date: 2013-01-24 02:39+0200\n"
+"PO-Revision-Date: 2013-01-24 02:40+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -2585,7 +2585,7 @@ msgstr "אין"
 #: templates/include/member_list.html:6 templates/include/party_detail.html:7
 #: templates/include/party_list.html:6 templates/include/vote_list.html:20
 #: templates/mks/member_list.html:21
-#: templates/mks/member_list_with_bars.html:47
+#: templates/mks/member_list_with_bars.html:55
 #: templates/mks/member_select.html:18
 msgid "Data base empty, no objects"
 msgstr "המסד ריק, אין נתונים"
@@ -3002,13 +3002,13 @@ msgid "Notable agendas"
 msgstr "אג'נדות בולטות"
 
 #: templates/mks/member_list.html:15
-#: templates/mks/member_list_with_bars.html:29
+#: templates/mks/member_list_with_bars.html:37
 #: templates/mks/member_select.html:12
 msgid "Current MKs"
 msgstr "חברי כנסת נוכחיים"
 
 #: templates/mks/member_list.html:23
-#: templates/mks/member_list_with_bars.html:51
+#: templates/mks/member_list_with_bars.html:59
 #: templates/mks/member_select.html:20 templates/mks/parties_members.html:60
 msgid "Past MKs"
 msgstr "חברי כנסת בעבר"
@@ -3047,8 +3047,8 @@ msgid "Average votes per MK"
 msgstr "ממוצע הצבעות לח\"כ"
 
 #: templates/mks/party_list.html:40
-msgid "Compare by"
-msgstr "השוואה לפי"
+msgid "Display by"
+msgstr "הצג לפי"
 
 #: templates/mmm/committee_mmm_docs.html:5
 #: templates/mmm/committee_mmm_docs.html:8
@@ -3811,6 +3811,9 @@ msgstr "שבועי"
 #: user/views.py:123
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#~ msgid "Compare by"
+#~ msgstr "השוואה לפי"
 
 #~ msgid "Parties by residence centrality"
 #~ msgstr "מפלגות לפי מדד מרכזיות של מקום מגורים"
@@ -7081,9 +7084,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "sessions"
 #~ msgstr "התחברויות"
-
-#~ msgid "display name"
-#~ msgstr "שם לתצוגה"
 
 #~ msgid "sites"
 #~ msgstr "אתרים"

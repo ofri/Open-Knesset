@@ -37,7 +37,7 @@
     <div class="row">
         <nav class="span3">
             <ul class="nav nav-pills nav-stacked card">
-                <li class="nav-header">{% trans "Compare by" %}</li>
+                <li class="nav-header">{% trans "Display by" %}</li>
             {% for type, name in friend_pages %}
                 <li{% if type == stat_type %} class="active"{% endif %}>
                     <a href="{% url party-stats stat_type=type %}" >{{ name }}</a>
