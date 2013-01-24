@@ -36,13 +36,15 @@
     $watch.click(function(e){
         e.preventDefault();
 
+        $watch.button('loading');
         $.post(wdata.watchUrl, {verb: watched ? 'unfollow' : 'follow', id: wdata.watchId,  'what': wdata.watchType})
         .done(function(data) {
             watched = data.watched;
             $watch.text(watched ? wdata.unwatchText : wdata.watchText);
             followers = data.followers;
             $num.text(followers);
-        });
+        })
+        .always(function() {$watch.button('reset')});
     });
 
   }) // end ready

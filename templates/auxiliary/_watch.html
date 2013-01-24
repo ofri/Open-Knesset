@@ -9,6 +9,6 @@
         {% trans "or" %}
         <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
     </div>
-    <a id="watch" class="btn btn-big btn-primary"></a>
+    <button id="watch" class="btn btn-big btn-primary" data-loading-text="{% trans "Loading" %} ..."></button>
     <p class="text-center"><span id="watch-followers"></span> {% trans "Followers" %}</p>
   </div>
