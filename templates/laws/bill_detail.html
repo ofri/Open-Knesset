@@ -111,7 +111,6 @@
             return s;
         }
         $(document).ready(function() {
-                register_watch({{object.id}}, 'bill', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched|lower}}, "{% url user-follow-unfollow %}");
                 $("[rel=tooltip]").tooltip({placement:'bottom'});
                 var paper = Raphael("bill-canvas", 850, 150);
                 var titles = paper.image("{% static "img/bill-view-stage-labels.png" %}",137,10,699,130);
@@ -220,7 +219,7 @@
             </div>
             <div class="span3 social-details">
               <div class="spacer actions-panel">
-                <a id="watch" class="btn btn-big btn-primary"></a>
+                {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
                 <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
             </div>
     </section>
