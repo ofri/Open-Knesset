@@ -38,7 +38,7 @@ function register_watch(object_id, object_type, watch_text, unwatch_text, follow
                 },
                 error:  function(request, textStatus, error) {
                     var msg = $("#message_unknown").html()
-                    $.jGrowl(msg, {life: 5000});
+                    //$.jGrowl(msg, {life: 5000});
                     $('#message_login').show();
                 }
             });
@@ -57,7 +57,7 @@ function register_watch(object_id, object_type, watch_text, unwatch_text, follow
                 },
                 error:  function(request, textStatus, error) {
                     var msg = $("#message_login").html()
-                    $.jGrowl(msg, {sticky: true});
+                    //$.jGrowl(msg, {sticky: true});
                 }
             });
         }

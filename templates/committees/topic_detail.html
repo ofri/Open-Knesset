@@ -2,7 +2,7 @@
 {% load i18n links_tags ratings avatar_tags %}{% load static from staticfiles %}
 {% block extratitle %}{{ topic.title }} - {% trans "suggested topic"%} {% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
                 register_watch({{topic.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
