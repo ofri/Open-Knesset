@@ -5186,11 +5186,12 @@ body {
 .text-center {
   text-align: center;
 }
-.numeric,
+.numeric {
+  direction: ltr;
+}
 .progress {
   position: relative;
 }
-.numeric .bar-label,
 .progress .bar-label {
   position: absolute;
   top: 0;

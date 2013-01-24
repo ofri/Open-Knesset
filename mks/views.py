@@ -614,9 +614,9 @@ class PartyDetailView(DetailView):
         context['maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
 
         if self.request.user.is_authenticated():
-            agendas = Agenda.objects.get_selected_for_instance(party, user=self.request.user, top=3, bottom=3)
+            agendas = Agenda.objects.get_selected_for_instance(party, user=self.request.user, top=10, bottom=10)
         else:
-            agendas = Agenda.objects.get_selected_for_instance(party, user=None, top=3, bottom=3)
+            agendas = Agenda.objects.get_selected_for_instance(party, user=None, top=10, bottom=10)
         agendas = agendas['top'] + agendas['bottom']
         for agenda in agendas:
             agenda.watched=False
