@@ -5199,10 +5199,6 @@ body {
   right: 0;
   text-align: center;
 }
-/* Please remove once member stats are in place */
-.column-bar {
-  width: 200px;
-}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
@@ -5470,6 +5466,9 @@ ol {
 }
 .card-list ul li:last-child {
   border-bottom: none;
+}
+.card-list ul li .progress {
+  margin-bottom: 0;
 }
 .card-list.compact ul li {
   padding: 20px 0 15px 0;

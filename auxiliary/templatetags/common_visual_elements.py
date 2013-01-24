@@ -36,7 +36,7 @@ def bar(quantity, start, end, bar_class=None, show_label=True):
         if value < boundary:
             break
 
-    if bar_class is None:
+    if not bar_class:
         bar_class = css_class
 
     if not show_label:
