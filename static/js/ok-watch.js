@@ -7,6 +7,7 @@
     var $watcher = $('#watcher'),
         $watch = $('#watch'),
         $login = $('#watch-login'),
+        $error = $('#watch-error'),
         $num = $('#watch-followers'),
         wdata = $watcher.data(),
         can_watch = false,
@@ -31,6 +32,13 @@
         $watcher.show();
         $num.text(followers);
     })
+    .fail(function(response) {
+        $watch.hide();
+        $login.hide();
+        $error.text(response.responseText).show();
+        $num.parent().hide();
+        $watcher.show();
+    });
 
     // Bind the button
     $watch.click(function(e){
@@ -39,12 +47,13 @@
         $watch.button('loading');
         $.post(wdata.watchUrl, {verb: watched ? 'unfollow' : 'follow', id: wdata.watchId,  'what': wdata.watchType})
         .done(function(data) {
+            $watch.button('reset')
             watched = data.watched;
             $watch.text(watched ? wdata.unwatchText : wdata.watchText);
             followers = data.followers;
             $num.text(followers);
         })
-        .always(function() {$watch.button('reset')});
+        .fail(function() {$watch.button('reset')});
     });
 
   }) // end ready
