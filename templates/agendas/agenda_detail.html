@@ -14,14 +14,8 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-                register_watch({{object.id}}, "agenda",
-                    "{% trans 'Watch' %}", "{% trans 'Unwatch' %}",
-                    "{% url user-follow-unfollow %}","{% url user-is-following %}");
-        });
-    </script>
 {% endblock %}
+
 {% block nav-agendas %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
@@ -50,9 +44,7 @@
 
             <div class="span3 social-details">
                 <div class="spacer fill actions-panel">
-                    <a id="watch" class="btn btn-big btn-primary"></a>
-                    <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
-
+                    {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="agenda"%}
                     {% if user in object.editors.all %}
                         <a class="btn btn-big btn-contact" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
                     {% endif %}
