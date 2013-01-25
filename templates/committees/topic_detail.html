@@ -3,25 +3,48 @@
 {% block extratitle %}{{ topic.title }} - {% trans "suggested topic"%} {% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" src="{% static "js/jquery.raty.min.js" %}"></script>
+    <script>
         $(document).ready(function() {
-                register_watch({{topic.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
-        });
+            $('#average_rating').raty({
+                number: 7,
+                start: {{topic.rating.get_rating}},
+                readOnly: true,
+                path: '{% static "img" %}',
+            });
+            {% if user.is_authenticated %}
+            {% rating_by_user user on topic.rating as vote %}
+            $('#your_rating').raty({
+                cancel: true,
+                number: 7,
+                start: {% if vote %}{{vote}}{% else %}0{%endif%},
+                path: '{% static "img" %}',
+                click: function(score, evt) {
+                    $.post('/committee/topic/{{object.id}}/'+score+'/')
+                }
+            });
+            {% endif %}
+        })
     </script>
 {% endblock %}
 {% block nav-committees %}class="active"{% endblock %}
-{% block header %}
-    <ul id="breadcrumbs"> 
-        <li class="first"><a href="{% url committee-list %}">{% trans "Committees" %}</a></li>
+
+{% block breadcrumbs %}
+        <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         <li>
         {% for c in topic.committees.all %}
             {% if not forloop.first %} | {% endif %}
             <a href="{% url committee-detail c.id %}">{{c}}</a>
-        {% endfor%}
+            {% endfor%}
+            <span class="divider">/</span>
         </li>
-        <li><a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a></li>
-    </ul>
+        <li>
+            <a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a>
+            <span class="divider">/</span>
+        </li>
+        <li class="active">{{topic.title}}</li>
 {% endblock %}
+
 {% block subnav %}
     <ul class="actions">
         {% if not user.is_authenticated %}
@@ -40,22 +63,32 @@
             </li>
         {% endif %}
         {% endif %}
-        <li><span id="watch" class="awesome-button medium"></span></li>
     </ul>
 {% endblock %}
 
 {% block content %}
-<script type="text/javascript" src="{% static "js/jquery.raty.min.js" %}"></script>
+    <section class="card card-main">
+        <div class="row">
+            <div class="span1">
+                <div class="spacer fill">
+                    <p><a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a></p>
+                    <p><a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a></p>
+                    <p>{{topic.creator.get_full_name}}</p>
+                </div>
+            </div>
+            <div class="span8">
+                <h1>{{topic.title}}</h1>
+                <p>{{topic.description|linebreaksbr}}</p>
+            </div>
+            <div class="span3 social-details">
+                <div class="spacer actions-panel">
+                    {% include "auxiliary/_watch.html" with watched_id=topic.id watched_type="topic"%}
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <h2>{{topic.title}}</h2>
     <div class="main-column">
-        <div class="item-header big-avatar">
-            <a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a>
-        </div>
-        <div class="item-credit">
-            <a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a>{{topic.creator.get_full_name}}:
-        </div>
-        <p>{{topic.description|linebreaksbr}}</p>
         <div style="padding: 0.5em; clear:both;"></div>
         <h3>{% trans "Links" %}:</h3>
         {% object_links topic %}
@@ -86,28 +119,6 @@
         <div class="clear"></div>
         {% include 'comments/object_comment_list.html' %}
     </div>
-    <script>
-        $(document).ready(function() {
-            $('#average_rating').raty({
-                number: 7,
-                start: {{topic.rating.get_rating}},
-                readOnly: true,
-                path: '{% static "img" %}',
-            });
-            {% if user.is_authenticated %}
-            {% rating_by_user user on topic.rating as vote %}
-            $('#your_rating').raty({
-                cancel: true,
-                number: 7,
-                start: {% if vote %}{{vote}}{% else %}0{%endif%},
-                path: '{% static "img" %}',
-                click: function(score, evt) {
-                    $.post('/committee/topic/{{object.id}}/'+score+'/')
-                }
-            });
-            {% endif %}
-        })
-    </script>
 {% endblock %}
 {% block social %}
 {% endblock %}
