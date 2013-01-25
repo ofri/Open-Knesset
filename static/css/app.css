@@ -5452,19 +5452,6 @@ ol {
   padding: 25px 58px 15px 15px;
   border-bottom: 1px solid #e6e6e6;
 }
-.card-list ul li .item-action {
-  font-size: 14px;
-}
-.card-list ul li .item-title {
-  font-size: 16px;
-  font-weight: bold;
-}
-.card-list ul li .item-title a {
-  color: #222222;
-}
-.card-list ul li .item-context {
-  font-size: 12px;
-}
 .card-list ul li:last-child {
   border-bottom: none;
 }
@@ -5477,6 +5464,19 @@ ol {
 .card-list.compact header h1,
 .card-list.compact header h2 {
   padding: 5px 20px 5px 5px;
+}
+.item-action {
+  font-size: 14px;
+}
+.item-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+.item-title a {
+  color: #222222;
+}
+.item-context {
+  font-size: 12px;
 }
 .card-main {
   margin-bottom: 60px;
