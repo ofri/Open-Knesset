@@ -59,9 +59,7 @@
                         <p class="item-title">
                         <a id="detail-{{ o.id }}" href="{% url committee-detail o.id %}">{{o.name}}</a></p>
 
-                        <p class="item-context">
-                            <a href="{% url committee-detail o.id %}" > {{ o.description|linebreaksbr }}</a>
-                        </p>
+                        <p class="item-context">{{ o.description|linebreaksbr }}</p>
                         {% endfor %}
                     </li>
                 </ul>
