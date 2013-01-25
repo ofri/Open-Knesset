@@ -10,9 +10,8 @@
                 <a href="{% url public-profile t.creator.username %}">{{t.creator}}</a><span>{{t.creator.get_full_name}}</span>
             </h3>
         </header>
-        <div>
           <div>
-              <a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a>
+            <p class="item-title"><a href="{{ t.get_absolute_url }}">{{ t.title|truncatewords:10 }}</a></p>
               <div>
               {% if not object %}
               {% for c in t.committees.all %}
