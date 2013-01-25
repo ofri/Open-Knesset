@@ -8,7 +8,7 @@
           {% trans "edited by" %} {{agenda.public_owner_name}}</h3>
     </header>
     <div class="agenda-pie"{% for stat in agenda.totals %} data-{{stat.type}}="{{stat.total}}"{% endfor %}>
-        <!-- <span class="agenda-percent"><span class="agenda-percent-num">56<span>%</span></span>התאמה</span> -->
+      <span class="agenda-percent"><span class="agenda-percent-num">{{agenda.score|floatformat:0}}<span>%</span></span>{% trans "Match" %}</span>
     </div>
 </li>
 {% endfor %}

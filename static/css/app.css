@@ -5868,6 +5868,7 @@ ol {
   -moz-border-radius: 50%;
   border-radius: 50%;
   margin: 35px auto;
+  position: relative;
 }
 .agenda-pie .agenda-percent {
   color: #464545;
@@ -5877,6 +5878,7 @@ ol {
   font-weight: 700;
   line-height: 1.2em;
   font-size: 12px;
+  direction: ltr;
 }
 .agenda-pie .agenda-percent .agenda-percent-num {
   display: block;

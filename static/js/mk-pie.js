@@ -62,9 +62,9 @@
         this.canvas = this.$element.append('svg')
                 .attr('width', this.options.width)
                 .attr('height', this.options.height)
-                .style('position', 'relative')
+                .style('position', 'absolute')
                 .style('top', -line_width_factor + 'px')
-                .style('left', line_width_factor + 'px')
+                .style('left', -line_width_factor + 'px')
                 .append('g')
                     .attr('transform', 'translate(' + this.options.width / 2 + ',' + this.options.height / 2 + ')');
     }
