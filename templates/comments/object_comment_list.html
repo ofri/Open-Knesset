@@ -3,9 +3,9 @@
 {% load avatar_tags %}
 
 {% get_comment_list for object as comment_list %}
+<header><h2>{% trans 'User comments' %}</h2></header>
+<ul>
 {% if comment_list %}
-    <header><h2>{% trans 'User comments' %}</h2></header>
-    <ul>
     {% for comment in comment_list %}
         <li class="agenda-mini">
           <a name="c{{ comment.id }}"></a>
@@ -25,17 +25,17 @@
             </div>
           </li>
     {% endfor %}
-    </ul>
 {% else %}
-    <header><h2>{% trans 'No comments yet' %}</h2></header>
+    <li>{% trans 'No comments yet' %}</li>
 {% endif %}
 
 {% if user.is_authenticated %}
     {% if perms.comments.add_comment %}
-        {% render_comment_form for object %}
+    <li>{% render_comment_form for object %}</li>
     {% else %}
-        {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
+    <li><div class="alert alert-block">{% trans "Please" %} <a href="{% url edit-profile %}">{% trans "validate your email" %}</a>{% trans " to comment" %}</div></li>
     {% endif %}
 {% else %}
-    <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a><span>
+  <li><div class="alert alert-block"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a><div></li>
 {% endif %}
+</ul>

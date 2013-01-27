@@ -5534,6 +5534,13 @@ ol {
   left: 27px;
   width: 232px;
 }
+.card-main .object-actions {
+  position: absolute;
+  bottom: 0;
+  left: 27px;
+  width: 232px;
+  text-align: center;
+}
 #member-details {
   padding-bottom: 40px;
 }
