@@ -1,6 +1,8 @@
 import logging, difflib, datetime, re, colorsys
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils import simplejson as json
 from django.views import generic
 from django.http import (HttpResponse, HttpResponseRedirect, Http404,
@@ -17,7 +19,7 @@ from tagging.models import TaggedItem, Tag
 from tagging.utils import get_tag
 import tagging
 from actstream import action
-from hashnav import ListView, DetailView, method_decorator
+from hashnav import ListView, DetailView, method_decorator as hashnav_method_decorator
 from laws.models import Bill, PrivateProposal
 from mks.models import Member
 from events.models import Event
@@ -118,7 +120,7 @@ class MeetingDetailView(DetailView):
         return context
 
 
-    @method_decorator(login_required)
+    @hashnav_method_decorator(login_required)
     def post(self, request, **kwargs):
         cm = get_object_or_404(CommitteeMeeting, pk=kwargs['pk'])
         bill = None
@@ -180,9 +182,16 @@ class TopicListView(generic.ListView):
         context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
         return context
 
+
 class TopicDetailView(DetailView):
+
     model = Topic
     context_object_name = 'topic'
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(TopicDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(TopicDetailView, self).get_context_data(**kwargs)
         topic = context['object']
