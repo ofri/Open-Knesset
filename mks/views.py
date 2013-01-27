@@ -6,9 +6,11 @@ from django.db.models import Sum, Q
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import ListView, TemplateView, RedirectView
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json, simplejson
+from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from backlinks.pingback.server import default_server
@@ -190,6 +192,10 @@ class MemberDetailView(DetailView):
 
     queryset = Member.objects.select_related('current_party', 'voting_statistics')
     MEMBER_INITIAL_DATA = 2
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(MemberDetailView, self).dispatch(*args, **kwargs)
 
     def calc_percentile(self,member,outdict,inprop,outvalprop,outpercentileprop):
         # store in instance var if needed, no need to access cache for each
