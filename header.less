@@ -40,10 +40,12 @@
       height:36px;
       overflow: hidden;
     }
+    @media (max-width: 767px){margin: -100px 0 80px;}
   }
   
   .nav-pills{
     margin-bottom: 0;
+    
     li{
       width: 20%;
       margin-left: -1px;
@@ -72,6 +74,24 @@
             color: inherit;
           }
         }
+      }
+      @media (max-width: 767px){
+      	width: 100%;
+      	a{
+	      	padding: 15px 0;
+	      	margin: 0;
+	      	&:hover{
+		      	border: 0;
+		      	padding: 15px 0;
+		      	background: @lightergray;
+	      	}
+      	}
+      	&.active a, &.active a:hover{
+		      background: @darkgray;
+		      color: @lightgray;
+		      border: 0;
+	      	padding: 15px 0;
+	      }
       }
     }
   }
@@ -102,5 +122,6 @@
     &:hover{
       opacity: 1;
     }
+    @media (max-width: 767px){left: 2px;top: 22px;}
   }
 }

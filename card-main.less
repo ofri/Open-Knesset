@@ -54,7 +54,10 @@
 		position: absolute;
 		bottom: 0;
 		left: 27px;
-		width: 232px;
+		width: 83%;
+		@media (max-width: 979px) and (min-width: 768px){width: 82%;left: 23px;}
+		@media (min-width: 1200px){width: 85%;}
+		@media (max-width: 767px){left: 38px;width: 85%;}
   }
 
   .object-actions {
