@@ -178,7 +178,8 @@ def votes_to_bar_widths(v_count, v_for, v_against):
 
 class BillCsvView(CsvView):
     model = Bill
-    filename = 'bills.csv'
+    file_path_and_name = ['csv','bills.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('full_title', _('Full Title')),
                     ('popular_name', _('Popular Name')),
                     ('get_stage_display', _('Stage')),
@@ -190,6 +191,20 @@ class BillCsvView(CsvView):
                     ('approval_vote', _('Approval Vote')),
                     ('proposers', _('Proposers')),
                     ('joiners', _('Joiners')))
+
+    def get_queryset(self, **kwargs):
+        try:
+            return self.model.objects.select_related('law',
+                                                     'first_vote',
+                                                     'approval_vote')\
+                                     .prefetch_related('joiners',
+                                                       'proposers',
+                                                       'pre_votes',
+                                                       'first_committee_meetings',
+                                                       'second_committee_meetings')
+        except DatabaseError: # sqlite can't prefetch this query, because it has
+                              # too many objects
+            return self.model.objects.all()
 
     def community_meeting_gen(self, obj, attr):
         '''
@@ -484,6 +499,8 @@ class BillListView (BillListMixin, ListView):
 
         context['friend_pages'] = r
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = BillCsvView.filename if default_storage.exists(BillCsvView.filename) else None
         return context
 
 
