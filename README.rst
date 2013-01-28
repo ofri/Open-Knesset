@@ -128,10 +128,12 @@ OS X
     sudo easy_install pip
     sudo pip install virtualenv
 - Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
-- Install binary python libraries build dependencies:
-  ``brew install jpeg libpng libxml2 libxslt``
+- Install binary python libraries build dependencies::
+
+  brew install jpeg libpng libxml2 libxslt
+
 - We need UTF-8, Add locale settings (in case you're not UTF-8),
-  put in your ``~/.bashrc``::
+  put in your ``~/.profile``::
 
     export LANG="en_US.UTF-8"
     export LC_COLLATE="en_US.UTF-8"
@@ -142,13 +144,20 @@ OS X
     export LC_TIME="en_US.UTF-8"
     export LC_ALL=
 
-  Once done, source them (to have them updated in the current shell):
-  ``source ~/.bashrc``
-- Create the virtual environment. In the terminal cd to the directory you want
-  the environment create it and run ``virtualenv oknesset``.
+  Once done, source them (to have them updated in the current shell)::
 
-- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
-  prompt which includes the virtualenv's name.
+    source ~/.profile
+
+- Create the virtual environment. In the terminal cd to the directory you want
+  the environment create it and run::
+
+    virtualenv oknesset
+
+- Activate the virutalenv::
+
+    cd oknesset; . bin/activate
+
+  Note the changed prompt which includes the virtualenv's name.
 
 - Clone the repository::
 
@@ -156,7 +165,10 @@ OS X
 
   This creates a copy of the project on your local machine.
 
-- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
+- Install required packages::
+
+    pip install -r Open-Knesset/requirements.txt
+
   and wait ...
 - Run the tests::
 

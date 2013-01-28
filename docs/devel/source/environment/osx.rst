@@ -6,7 +6,7 @@ OS X
 
     The info here is based on the post
     `Fixing Python, virtualenv and pip on Mountain Lion`_
-    
+
 .. _Fixing Python, virtualenv and pip on Mountain Lion: http://blog.dyve.net/fixing-python-virtualenv-and-pip-on-mountain
 
 Command Line Tools
@@ -117,7 +117,7 @@ run:
 .. code-block:: sh
 
     pip install -r Open-Knesset/requirements.txt
-    
+
 And wait ...
 
 Once done, proceed to :ref:`tests_develdb`.
