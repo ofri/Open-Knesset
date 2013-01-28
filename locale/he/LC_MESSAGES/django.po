@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 18:25+0200\n"
-"PO-Revision-Date: 2013-01-28 18:28+0200\n"
+"POT-Creation-Date: 2013-01-28 21:48+0200\n"
+"PO-Revision-Date: 2013-01-28 21:49+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -310,6 +310,7 @@ msgstr "נמחקה"
 #: templates/committees/committee_list.html:38
 #: templates/committees/committee_list.html:53
 #: templates/committees/committeemeeting_detail.html:28
+#: templates/committees/committeemeeting_list.html:9
 #: templates/committees/flatpages.html:3 templates/committees/flatpages.html:4
 #: templates/committees/flatpages.html:5
 #: templates/committees/topic_detail.html:34
@@ -349,27 +350,27 @@ msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:286
+#: committees/views.py:287
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: committees/views.py:287 committees/views.py:310
+#: committees/views.py:288 committees/views.py:312
 #, python-format
 msgid "No %(object_type)s found"
 msgstr "לא נמצאו %(object_type)s"
 
-#: committees/views.py:309
+#: committees/views.py:311
 #, python-format
 msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
-#: committees/views.py:318 laws/views.py:55 laws/views.py:122
+#: committees/views.py:320 laws/views.py:55 laws/views.py:122
 #, python-format
 msgid "No Tag found matching \"%s\"."
 msgstr "לא נמצאו הצעות חוק בנושא \"%s\""
 
-#: committees/views.py:322
+#: committees/views.py:324
 #, python-format
 msgid "Committee Meetings tagged %(tag)s"
 msgstr "ישיבות וועדה שתויגו %(tag)s"
@@ -1324,13 +1325,13 @@ msgstr ""
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
 
-#: templates/base.html:60 templates/user/login.html:16
+#: templates/base.html:60 templates/user/login.html:17
 msgid "Logout"
 msgstr "יציאה מהחשבון"
 
 #: templates/base.html:63 templates/auxiliary/_watch.html:9
-#: templates/user/login.html:4 templates/user/login.html.py:10
-#: templates/user/login.html:27
+#: templates/user/login.html:4 templates/user/login.html.py:11
+#: templates/user/login.html:28
 msgid "login"
 msgstr "כניסה לחשבון"
 
@@ -2050,7 +2051,7 @@ msgstr "נא לבחור"
 #: templates/agendas/agendasfor.html:38
 #: templates/committees/committeemeeting_detail.html:61
 #: templates/committees/committeemeeting_detail.html:94
-#: templates/committees/committeemeeting_list.html:10
+#: templates/committees/committeemeeting_list.html:17
 #: templates/laws/bill_detail.html:309 templates/laws/bill_detail.html:368
 #: templates/laws/bill_detail.html:427 templates/laws/vote_detail.html:102
 #: templates/laws/vote_detail.html:127
@@ -2109,8 +2110,8 @@ msgstr "כדי להשתמש ביכולת המעקב צריך להכנס לחשב
 msgid "or"
 msgstr "או"
 
-#: templates/auxiliary/_watch.html:11 templates/user/create_user.html:8
-#: templates/user/password_reset_form.html:13
+#: templates/auxiliary/_watch.html:11 templates/user/create_user.html:16
+#: templates/user/password_reset_form.html:19
 msgid "register"
 msgstr "הרשמה"
 
@@ -2437,7 +2438,11 @@ msgstr "כדי ליצור תגיות חדשות"
 msgid "Login to edit tags"
 msgstr "רוצה להציע תגית? לחץ/י כאן כדי להרשם"
 
-#: templates/committees/committeemeeting_list.html:8
+#: templates/committees/committeemeeting_list.html:11
+msgid "All meetings"
+msgstr "רשימת הישיבות המלאה"
+
+#: templates/committees/committeemeeting_list.html:15
 msgid "Lookup by date"
 msgstr "חיפוש לפי תאריך"
 
@@ -3441,7 +3446,8 @@ msgstr "בנוגע לדברים של"
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
-#: templates/user/create_user.html:4
+#: templates/user/create_user.html:4 templates/user/create_user.html.py:7
+#: templates/user/create_user.html:13
 msgid "Create new user"
 msgstr "יצירת משתמש חדש"
 
@@ -3492,69 +3498,73 @@ msgstr "הדואר האלקטרוני אומת, לכן יש לך הרשאות ע
 msgid "Topics by"
 msgstr "הצעות לסדר על ידי"
 
-#: templates/user/login.html:16
+#: templates/user/login.html:17
 msgid "You are already logged in."
 msgstr "את/ה כבר מחובר/ת."
 
-#: templates/user/login.html:35
-msgid "New user? Register"
-msgstr "משתמש חדש? הרשמה"
-
-#: templates/user/login.html:38
-msgid "Forgot password?"
-msgstr "שכחת סיסמה?"
-
-#: templates/user/login.html:44 templates/user/login.html.py:45
-#: templates/user/login.html:48 templates/user/login.html.py:49
+#: templates/user/login.html:35 templates/user/login.html.py:36
+#: templates/user/login.html:37 templates/user/login.html.py:38
 msgid "Enter using"
 msgstr "כניסה באמצעות"
 
+#: templates/user/login.html:44
+msgid "New user? Register"
+msgstr "משתמש חדש? הרשמה"
+
+#: templates/user/login.html:47
+msgid "Forgot password?"
+msgstr "שכחת סיסמה?"
+
 #: templates/user/password_reset_complete.html:3
-#: templates/user/password_reset_complete.html:5
+#: templates/user/password_reset_complete.html:6
+#: templates/user/password_reset_complete.html:11
 msgid "Password reset complete"
 msgstr "איפוס הסיסמה הושלם"
 
-#: templates/user/password_reset_complete.html:7
+#: templates/user/password_reset_complete.html:13
 msgid "Your password has been set.  You may go ahead and log in now."
 msgstr "ססמתך נשמרה. כעת ניתן להתחבר."
 
-#: templates/user/password_reset_complete.html:9
+#: templates/user/password_reset_complete.html:15
 msgid "Log in"
 msgstr "כניסה"
 
 #: templates/user/password_reset_confirm.html:3
+#: templates/user/password_reset_confirm.html:6
+#: templates/user/password_reset_done.html:6
 #: templates/user/password_reset_form.html:3
-#: templates/user/password_reset_form.html:7
+#: templates/user/password_reset_form.html:6
+#: templates/user/password_reset_form.html:12
 msgid "Password reset"
 msgstr "איפוס סיסמה"
 
-#: templates/user/password_reset_confirm.html:8
+#: templates/user/password_reset_confirm.html:16
 msgid "Enter new password"
 msgstr "הזנת סיסמה חדשה"
 
-#: templates/user/password_reset_confirm.html:10
+#: templates/user/password_reset_confirm.html:18
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr "נא להזין את סיסמתך החדשה פעמיים כדי שנוכל לוודא שהקלדת אותה כראוי."
 
-#: templates/user/password_reset_confirm.html:14
+#: templates/user/password_reset_confirm.html:22
 msgid "New password:"
 msgstr "סיסמה חדשה:"
 
-#: templates/user/password_reset_confirm.html:16
+#: templates/user/password_reset_confirm.html:24
 msgid "Confirm password:"
 msgstr "אימות סיסמה:"
 
-#: templates/user/password_reset_confirm.html:17
+#: templates/user/password_reset_confirm.html:25
 msgid "Change my password"
 msgstr "שנה את סיסמתי"
 
-#: templates/user/password_reset_confirm.html:22
+#: templates/user/password_reset_confirm.html:31
 msgid "Password reset unsuccessful"
 msgstr "איפוס הסיסמה נכשל"
 
-#: templates/user/password_reset_confirm.html:24
+#: templates/user/password_reset_confirm.html:32
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
@@ -3563,18 +3573,18 @@ msgstr ""
 "סיסמה. "
 
 #: templates/user/password_reset_done.html:3
-#: templates/user/password_reset_done.html:7
+#: templates/user/password_reset_done.html:11
 msgid "Password reset successful"
 msgstr "הסיסמה אופסה בהצלחה"
 
-#: templates/user/password_reset_done.html:9
+#: templates/user/password_reset_done.html:12
 msgid ""
 "We've e-mailed you instructions for setting your password to the e-mail "
 "address you submitted. You should be receiving it shortly."
 msgstr ""
 "שלחנו הוראות לקביעת הסיסמה אל כתובת הדוא\"ל שהזנת. ההודעה אמורה להתקבל בקרוב."
 
-#: templates/user/password_reset_form.html:8
+#: templates/user/password_reset_form.html:13
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll e-mail "
 "instructions for setting a new one."
@@ -3582,11 +3592,11 @@ msgstr ""
 "שכחת את סיסמתך? נא להזין את כתובת הדוא\"ל, ואנו נשלח הוראות לקביעת סיסמה "
 "חדשה."
 
-#: templates/user/password_reset_form.html:15
+#: templates/user/password_reset_form.html:23
 msgid "E-mail address:"
 msgstr "כתובת דוא\"ל:"
 
-#: templates/user/password_reset_form.html:15
+#: templates/user/password_reset_form.html:25
 msgid "Reset my password"
 msgstr "אפס את סיסמתי"
 
@@ -4123,9 +4133,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "previous results"
 #~ msgstr "התוצאות הקודמות"
-
-#~ msgid "Full meetings list"
-#~ msgstr "רשימת הישיבות המלאה"
 
 #~ msgid "Embed in external site"
 #~ msgstr "הטמעה באתר חיצוני"
