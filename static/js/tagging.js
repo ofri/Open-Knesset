@@ -24,9 +24,12 @@ function get_tags_list_callback(data) {
             $("#possible_tags").append(document.createTextNode(" "));
           });
     meta = data['meta'];
-    $("#possible_tags").append('<br/>');
-    add_nav_button(gettext('previous'), meta['previous']);
-    add_nav_button(gettext('next'), meta['next']);
+
+	if (meta) {
+		$("#possible_tags").append('<br/>');
+		add_nav_button(gettext('previous'), meta['previous']);
+		add_nav_button(gettext('next'), meta['next']);
+	}
     current_app = $('input[name="app_label"]').val();
     current_object_type = $('input[name="object_type"]').val();
     current_id = $('input[name="id"]').val();
@@ -49,7 +52,7 @@ function get_tags_list_callback(data) {
 
 function mark_selected_tags(data){
     $.each(data['objects'], function(i,item){
-        $("#possible_tag_"+item.id).addClass("selected");
+        $("#possible_tag_"+item.id).addClass("selected label");
         selected_tags[item.id]=1;
     });
 }
@@ -59,12 +62,12 @@ function toggle_tag(tag_id) {
     if (tag_id in selected_tags){
         $.post("/tags/"+current_app+"/"+current_object_type+"/"+current_id+"/remove-tag/",
                 { tag_id: tag_id, csrfmiddlewaretoken: csrf }, remove_tag_callback );
-        $("#possible_tag_"+tag_id).removeClass("selected");
+        $("#possible_tag_"+tag_id).removeClass("selected label");
         delete selected_tags[tag_id];
     } else {
         $.post("/tags/"+current_app+"/"+current_object_type+"/"+current_id+"/add-tag/",
                 { tag_id: tag_id, csrfmiddlewaretoken: csrf }, add_tag_callback );
-        $("#possible_tag_"+tag_id).addClass("selected");
+        $("#possible_tag_"+tag_id).addClass("selected label");
         selected_tags[tag_id] = 1;
     }
 }

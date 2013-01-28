@@ -15,6 +15,12 @@
     <script type="text/javascript" src="{% static "js/jquery.colorPicker.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
     <script type="text/javascript" src="{% static "js/committeemeeting_detail.js" %}"> </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        {% get_hit_count_javascript for object %}
+    });
+    // current hit count = {% get_hit_count for object %}
+</script>
 {% endblock %}
 {% block nav-committees %}class="active"{% endblock %}
 
@@ -46,7 +52,7 @@
                 <div class="spacer fill">
                     <h2>{% trans "MKs attended" %}</h2>
                     {% include "committees/committee_member_photos.html" with members=object.mks_attended.all chairpersons=object.committee.chairpersons.all replacements=object.committee.replacements.all%}
-                    
+
                     {% if user.is_authenticated %}
                     <form method="post" action="." class="form-inline">{% csrf_token %}
                         <input type="hidden" name="user_input_type" value="mk">
@@ -80,154 +86,149 @@
                 {% for b in object.bills_second.all %}<li><a href="{% url bill-detail b.id %}">{{ b }}</a></li>{% endfor %}
                 {% if user.is_authenticated %}
                 <li>
-                
-                <form method="post" action="." class="form-inline">{% csrf_token %}
-                    <input type="hidden" name="user_input_type" value="bill">
-                    <label for="id_bill_text">{% trans "Suggest a matching bill" %}</label>
-                    <input type="text" class="bill_input" name="bill_text" id="id_bill_text">
-                    <input type="hidden" name="bill_id">
-                    <input type="submit" value="{% trans 'Submit' %}" class="btn"></input>
-                </form>
+                    <form method="post" action="." class="form-inline">{% csrf_token %}
+                        <input type="hidden" name="user_input_type" value="bill">
+                        <label for="id_bill_text">{% trans "Suggest a matching bill" %}</label>
+                        <input type="text" class="bill_input" name="bill_text" id="id_bill_text">
+                        <input type="hidden" name="bill_id">
+                        <input type="submit" value="{% trans 'Submit' %}" class="btn"></input>
+                    </form>
                 </li>
                 {% endif %}
                 </ul>
             </section>
-        </div>
-    </div>
-                                 
-    
-                                 
-    
 
-    <div id="tagging-container">
-    {% if user.is_authenticated %}
-        <h2>{% trans "Tags" %}</h2>
-        <div id="tags">
-            {% if object.tags %}
-                {% for t in object.tags %}
-                    <a id="tag_{{t.id}}" href="{% url tag-detail slug=t %}" class="tag">{{ t }}</a>
-                {% endfor %}
-            {% else %}
-                <span id="no-tags-yet">{% trans "No tags yet" %}</span>
-            {% endif %}
-        </div>
-        <div id="add_tags">
-            <span>{% trans "Edit Tags" %}</span>
-            <span id="possible_tags"></span><br>
-            <a href="javascript:get_tags_list('{% url related-tags resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
-            <div id="create_tag" style='display:none'>
-                {% if perms.tagging.add_tag %}
-                    <form id="create_tag_form" action="#">{% csrf_token %}
-                        <label for="tag">{% trans 'Create new tag' %}: </label>
-                        <input type="hidden" name="app_label" id="app_label" value="committees">
-                        <input type="hidden" name="object_type" value="committeemeeting">
-                        <input type="hidden" name="id" value="{{object.id}}">
-                        <input type="text" name="tag" id="tag">
-                        <input type="submit" value="{% trans 'Send' %}">
-                    </form>
-                {% else %}
-                    {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                {% endif %}
-            </div>
-        </div>
-    {% else %}
-        <h3>{% trans "Tags" %}</h3>
-        {% if object.tags %}
-            <div id="tags">
-            {% for t in object.tags %}
-               <a href="{% url tag-detail slug=t %}" class="tag">{{ t }}</a>
-            {% endfor %}
-            </div>
-        {% else %}
-            {% trans "No tags yet" %}<br />
-        {% endif %}
+            <section class="card card-list">
+                <header><h2>{% trans 'Protocol' %}</h2></header>
+                  {% with object.parts.list as parts %}
+                    {% get_annotations_for parts as annotation_dict %}
+                    <div class="protocol row">
+                    {% autopaginate parts paginate_by %}
+                    {% for speech_part in parts %}
+                      {% with speech_part.id as spid %}
+                      {% with annotation_dict|hash:spid as annotation_obj %}
+                      {% if forloop.first %}
+                <script type="text/html" id="annotationform">
+                    <div class="annotation-form" id="annotationform-<%=speech_part.id%>">
+                        <form action="{% url annotatetext-post_annotation %}" method="post" accept-charset="utf-8" id="annotationrealform-<%=speech_part.id%>" class="annotationrealform">{% csrf_token %}
+                        {% with annotation_obj|hash:"form" as annotation_form %}
+                            <div class="annotationselection">
+                              <span class="arrowhint">&#8658;</span>
+                              <span class="selectionempty" id="selectionempty-<%=speech_part.id%>"> {% trans "Please Mark Passage" %}</span>
+                              <span class="selectionhint" id="selectionhint-<%=speech_part.id%>"> </span>
+                              <span class="hideme">
+                              <label for="selection_start-<%=speech_part.id%>">{% trans "Beginning with" %}</label>
+                              <input type="text" size="3" value="" name="selection_start" id="selection_start-<%=speech_part.id%>"/>
+                              <label for="selection_end-<%=speech_part.id%>">{% trans "Ending with" %}</label>
+                              <input type="text" size="3" value="" name="selection_end" id="selection_end-<%=speech_part.id%>"/>
+                              </span>
+                            </div>
+                            <p class="annotationfields">
+                               <label>{% trans "Type your note" %}:</label>
+                               {{ annotation_form.flags }}
+                                <br />
+                                <label>{% trans "Color" %}:</label>
+                                <input type="text" size="6" name="color" id="annotationcolor-<%=speech_part.id%>" value="#99ccff"/>
+                                <input type="hidden" name="object_id" value="<%=speech_part.id%>"/>
+                                {{ annotation_form.content_type }}
+                            </p>
+                            {{ annotation_form.comment }}
+                            <div>
+                                <input type="hidden" name="lengthcheck" value="<%=speech_part.length%>"/>
+                                <input type="submit" value="{% trans "Save note" %}"/>
+                                <a href="#annotationform-<%=speech_part.id%>" class="annotationform-cancel" id="cancelable-<%=speech_part.id%>">{% trans "Cancel" %}</a>
+                            </div>
+                            <p class="annotationlicensing">
+                                {% trans "Your note will be published under"%}&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.he">cc-by-sa-3.0</a>
+                            </p>
+                        {% endwith %}
+                        </form>
+                        </div>
+                </script>
+                      {% endif %}
+                      <div class="speech-{{ object.id }} speech-container span5" id="speech-{{ object.id }}-{{ speech_part.order }}">
+                        <div class="text-speaker" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
+                            {% firstof speech_part.header "&nbsp;" %}
+                            {% ifnotequal speech_part.order 1 %}
+                                <a href="#speech-{{ object.id }}-{{ speech_part.order }}" class="permalink">¶</a>
+                            {% endifnotequal %}
+                        </div>
 
-        (<a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>)
-    {% endif %}
-    </div>
-
-    {% agendas_for user object 'committeemeeting' %}
-
-  {% with object.parts.list as parts %}
-    {% get_annotations_for parts as annotation_dict %}
-    <h2>{% trans 'Protocol' %}</h2>
-    <div class="protocol">
-    {% autopaginate parts paginate_by %}
-    {% for speech_part in parts %}
-      {% with speech_part.id as spid %}
-      {% with annotation_dict|hash:spid as annotation_obj %}
-      {% if forloop.first %}
-<script type="text/html" id="annotationform">
-    <div class="annotation-form" id="annotationform-<%=speech_part.id%>">
-        <form action="{% url annotatetext-post_annotation %}" method="post" accept-charset="utf-8" id="annotationrealform-<%=speech_part.id%>" class="annotationrealform">{% csrf_token %}
-        {% with annotation_obj|hash:"form" as annotation_form %}
-            <div class="annotationselection">
-              <span class="arrowhint">&#8658;</span>
-              <span class="selectionempty" id="selectionempty-<%=speech_part.id%>"> {% trans "Please Mark Passage" %}</span>
-              <span class="selectionhint" id="selectionhint-<%=speech_part.id%>"> </span>
-              <span class="hideme">
-              <label for="selection_start-<%=speech_part.id%>">{% trans "Beginning with" %}</label>
-              <input type="text" size="3" value="" name="selection_start" id="selection_start-<%=speech_part.id%>"/>
-              <label for="selection_end-<%=speech_part.id%>">{% trans "Ending with" %}</label>
-              <input type="text" size="3" value="" name="selection_end" id="selection_end-<%=speech_part.id%>"/>
-              </span>
-            </div>
-            <p class="annotationfields">
-               <label>{% trans "Type your note" %}:</label>
-               {{ annotation_form.flags }}
-                <br />
-                <label>{% trans "Color" %}:</label>
-                <input type="text" size="6" name="color" id="annotationcolor-<%=speech_part.id%>" value="#99ccff"/>
-                <input type="hidden" name="object_id" value="<%=speech_part.id%>"/>
-                {{ annotation_form.content_type }}
-            </p>
-            {{ annotation_form.comment }}
-            <div>
-                <input type="hidden" name="lengthcheck" value="<%=speech_part.length%>"/>
-                <input type="submit" value="{% trans "Save note" %}"/>
-                <a href="#annotationform-<%=speech_part.id%>" class="annotationform-cancel" id="cancelable-<%=speech_part.id%>">{% trans "Cancel" %}</a>
-            </div>
-            <p class="annotationlicensing">
-                {% trans "Your note will be published under"%}&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.he">cc-by-sa-3.0</a>
-            </p>
-        {% endwith %}
-        </form>
-        </div>
-</script>
-      {% endif %}
-      <div class="speech-{{ object.id }} speech-container" id="speech-{{ object.id }}-{{ speech_part.order }}">
-        <div class="text-speaker" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
-            {% firstof speech_part.header "&nbsp;" %}
-            {% ifnotequal speech_part.order 1 %}
-                <a href="#speech-{{ object.id }}-{{ speech_part.order }}" class="permalink">¶</a>
-            {% endifnotequal %}
-        </div>
-        <div class="text-content" id="annotations-{{ speech_part.id }}_content">
-            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content" style="background-color:{{colors|hash:speech_part.header}}">{{ speech_part.body|simple_formatting }}</blockquote>
-        </div>
-        <div style="display:none" class="annotationtoolbox annotating" id="annotationtoolbox-{{ speech_part.id }}">
-            <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
-            <input type="checkbox" class="markall" name="markall-{{ speech_part.id }}" id="markall-{{ speech_part.id }}"/>
-        </div>
-        <p class="tool-links">
-            <a href="#annotationform-{{ speech_part.id }}" class="annotationform-link annotating" id="selectable-{{ speech_part.id }}">{% trans "Annotate"%}</a>
-        </p>
-        <div class="annotating annotation-content" id="annotations-{{ speech_part.id }}">
-            {% with annotation_obj.annotations as annotations %}
-            {% for annotation in annotations %}
-            {% include "annotatetext/_annotation.html" %}
-            {% endfor %}
-            {% endwith %}
-        </div>
-      {% endwith %}
-      {% endwith %}
-        </div>
-    {% endfor %}
-                    <div class="clear"></div>
+                        <div class="text-content" id="annotations-{{ speech_part.id }}_content">
+                            <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content" style="background-color:{{colors|hash:speech_part.header}}">{{ speech_part.body|simple_formatting }}</blockquote>
+                        </div>
+                        <div style="display:none" class="annotationtoolbox annotating" id="annotationtoolbox-{{ speech_part.id }}">
+                            <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
+                            <input type="checkbox" class="markall" name="markall-{{ speech_part.id }}" id="markall-{{ speech_part.id }}"/>
+                        </div>
+                        <p class="tool-links">
+                            <a href="#annotationform-{{ speech_part.id }}" class="annotationform-link annotating" id="selectable-{{ speech_part.id }}">{% trans "Annotate"%}</a>
+                        </p>
+                        <div class="annotating annotation-content" id="annotations-{{ speech_part.id }}">
+                            {% with annotation_obj.annotations as annotations %}
+                            {% for annotation in annotations %}
+                            {% include "annotatetext/_annotation.html" %}
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                      {% endwith %}
+                      {% endwith %}
+                        </div>
+                    {% endfor %}
                     {% paginate %}
+                    </div>
+                  {% endwith %}
+                {% endblock %}
+            </section> <!-- protocol -->
+        </div>
+
+        <div class="span4">
+            <aside class="sidebar sidebar-agendas">
+                <header><h2>{% trans "Tags" %}</h2></header>
+                <div id="tagging-container">
+                    <div id="tags">
+                        {% if object.tags %}
+                            {% for t in object.tags %}
+                                <a id="tag_{{t.id}}" href="{% url tag-detail slug=t %}" class="tag">{{ t }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <span id="no-tags-yet">{% trans "No tags yet" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                    <div id="add_tags">
+                        <h3>{% trans "Edit Tags" %}</h3>
+                        <span id="possible_tags"></span><br>
+                        <a href="javascript:get_tags_list('{% url related-tags resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
+                        <div id="create_tag" style='display:none'>
+                            {% if perms.tagging.add_tag %}
+                                <form id="create_tag_form" action="#">{% csrf_token %}
+                                    <label for="tag">{% trans 'Create new tag' %}: </label>
+                                    <input type="hidden" name="app_label" id="app_label" value="committees">
+                                    <input type="hidden" name="object_type" value="committeemeeting">
+                                    <input type="hidden" name="id" value="{{object.id}}">
+                                    <input type="text" name="tag" id="tag">
+                                    <input type="submit" value="{% trans 'Send' %}">
+                                </form>
+                            {% else %}
+                                <div class="alert alert-block">{% trans "Please" %} <a href="{% url edit-profile %}">{% trans "validate your email" %}</a>{% trans " to create new tags" %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-block"><a href="{% url login %}?next={{request.get_full_path}}">{% trans "Login to edit tags" %}</a></div>
+                {% endif %}
+            </aside>
+
+            <aside class="sidebar">
+                {% agendas_for user object 'committeemeeting' %}
+            </aside>
+        </div>
     </div>
-  {% endwith %}
-{% endblock %}
+
+
+
 
 {% block footer %}
 <script>
@@ -237,10 +238,4 @@
     window.username = "{{ request.user.username }}";
     window.parts_lengths = {{ parts_lengths|safe }};
 </script>
-<script type="text/javascript"><!--
-    $(document).ready(function() {
-        {% get_hit_count_javascript for object %}
-    });
-    // current hit count = {% get_hit_count for object %}
---></script>
 {% endblock %}
