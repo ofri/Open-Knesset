@@ -89,9 +89,13 @@ class CommitteeDetailView(DetailView):
         context['topics'] = cm.topic_set.summary()[:5]
         return context
 
+
 class MeetingDetailView(DetailView):
 
     model = CommitteeMeeting
+
+    def get_queryset(self):
+        return super(MeetingDetailView, self).get_queryset().select_related('committee')
 
     def get_context_data(self, *args, **kwargs):
         context = super(MeetingDetailView, self).get_context_data(*args, **kwargs)
