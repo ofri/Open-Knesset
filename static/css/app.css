@@ -5244,6 +5244,11 @@ body {
   height: 36px;
   overflow: hidden;
 }
+@media (max-width: 767px) {
+  #app-header #login {
+    margin: -100px 0 80px;
+  }
+}
 #app-header .nav-pills {
   margin-bottom: 0;
 }
@@ -5277,6 +5282,27 @@ body {
   background: none;
   color: inherit;
 }
+@media (max-width: 767px) {
+  #app-header .nav-pills li {
+    width: 100%;
+  }
+  #app-header .nav-pills li a {
+    padding: 15px 0;
+    margin: 0;
+  }
+  #app-header .nav-pills li a:hover {
+    border: 0;
+    padding: 15px 0;
+    background: #f6f6f6;
+  }
+  #app-header .nav-pills li.active a,
+  #app-header .nav-pills li.active a:hover {
+    background: #222222;
+    color: #f1f1f1;
+    border: 0;
+    padding: 15px 0;
+  }
+}
 .breadcrumb {
   background: none;
   margin: 10px 0;
@@ -5301,6 +5327,12 @@ body {
 }
 .form-search button:hover {
   opacity: 1;
+}
+@media (max-width: 767px) {
+  .form-search button {
+    left: 2px;
+    top: 22px;
+  }
 }
 .nav-pills.nav-stacked > li > a {
   -webkit-border-radius: 0;
@@ -5432,7 +5464,7 @@ ol {
 .card-list header h1,
 .card-list header h2 {
   float: right;
-  padding: 5px 30px 5px 5px;
+  padding: 5px 30px 5px 15px;
   background: #464545;
   color: #fff;
   margin: 0;
@@ -5466,7 +5498,7 @@ ol {
 }
 .card-list.compact header h1,
 .card-list.compact header h2 {
-  padding: 5px 20px 5px 5px;
+  padding: 5px 20px 5px 15px;
 }
 .item-action {
   font-size: 14px;
@@ -5532,7 +5564,24 @@ ol {
   position: absolute;
   bottom: 0;
   left: 27px;
-  width: 232px;
+  width: 83%;
+}
+@media (max-width: 979px) and (min-width: 768px) {
+  .card-main .btn-contact {
+    width: 82%;
+    left: 23px;
+  }
+}
+@media (min-width: 1200px) {
+  .card-main .btn-contact {
+    width: 85%;
+  }
+}
+@media (max-width: 767px) {
+  .card-main .btn-contact {
+    left: 38px;
+    width: 85%;
+  }
 }
 .card-main .object-actions {
   position: absolute;
