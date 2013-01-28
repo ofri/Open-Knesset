@@ -1,8 +1,9 @@
 # encoding: utf-8
 
-import urllib,urllib2,re,datetime,traceback,sys,os
+import urllib,urllib2,re,datetime,traceback,sys,os,subprocess
 from BeautifulSoup import BeautifulSoup
 from django.conf import settings
+from committees.models import Committee, CommitteeMeeting
 
 URL="http://www.knesset.gov.il/plenum/heb/plenum_queue.aspx"
 ROBOTS_URL="http://www.knesset.gov.il/robots.txt"
@@ -33,7 +34,7 @@ def _get_committees_index_page(full):
         traceback.print_exc(file=sys.stdout)
 
 def _copy(url,to):
-    _debug("copying from "+url+" to "+to)
+    #_debug("copying from "+url+" to "+to)
     d=os.path.dirname(to)
     if not os.path.exists(d):
         os.makedirs(d)
@@ -43,14 +44,38 @@ def _copy(url,to):
     else:
         _debug('already downloaded')
 
-#def _downloadRobots():
-    #f=urllib2.urlopen(ROBOTS_URL)
-    #for line in f:
-        #res=re.search(r"^Disallow: (.*)$",line)
-        #if res is not None:
-            #path=res.group(1)
+def _antiword(filename):
+    cmd='antiword -x db '+filename+' > '+filename+'.awdb.xml'
+    #_debug(cmd)
+    subprocess.call(cmd,shell=True)
+    xmldata=''
+    with open(filename+'.awdb.xml','r') as f:
+        xmldata=f.read()
+    os.remove(filename+'.awdb.xml')
+    return xmldata
 
-def _downloadLatest(full):
+def _urlAlreadyDownloaded(url):
+    plenum=Committee.objects.filter(type='plenum')[0]
+    if CommitteeMeeting.objects.filter(committee=plenum,src_url=url).count()>0:
+        return True
+    else:
+        return False
+
+def _updateDb(xmlData,url,year,mon,day):
+    plenum=Committee.objects.filter(type='plenum')[0]
+    cms=CommitteeMeeting.objects.filter(committee=plenum,src_url=url)
+    if cms.count()>0:
+        meeting=cms[0]
+    else:
+        meeting=CommitteeMeeting(
+            committee=plenum,
+            date=datetime.datetime(int(year),int(mon),int(day)),
+            src_url=url
+        )
+    meeting.protocol_text=xmlData
+    meeting.save()
+
+def _downloadLatest(full,redownload):
     html=_get_committees_index_page(full)
     soup=BeautifulSoup(html)
     if full:
@@ -71,16 +96,21 @@ def _downloadLatest(full):
             day=m.group(1)
             mon=m.group(2)
             year=m.group(3)
-            DATA_ROOT = getattr(settings, 'DATA_ROOT')
-            _copy(url.replace('/heb/..',''),DATA_ROOT+'plenum_protocols/'+year+'/'+mon+'/'+day+'/'+filename)
+            url=url.replace('/heb/..','')
+            _debug(url)
+            if not redownload and _urlAlreadyDownloaded(url):
+                _debug('url already downloaded')
+            else:
+                DATA_ROOT = getattr(settings, 'DATA_ROOT')
+                _copy(url.replace('/heb/..',''),DATA_ROOT+'plenum_protocols/'+year+'_'+mon+'_'+day+'_'+filename)
+                xmlData=_antiword(DATA_ROOT+'plenum_protocols/'+year+'_'+mon+'_'+day+'_'+filename)
+                os.remove(DATA_ROOT+'plenum_protocols/'+year+'_'+mon+'_'+day+'_'+filename)
+                _updateDb(xmlData,url,year,mon,day)
+                
 
-def Download(verbosity_level,robots):
+def Download(verbosity_level,redownload):
     global verbosity
     verbosity=int(verbosity_level)
-    if (robots):
-        #_downloadRobots()
-        print "not implemented yet"
-    else:
-        _downloadLatest(False)
-        _downloadLatest(True)
+    _downloadLatest(False,redownload)
+    _downloadLatest(True,redownload)
 

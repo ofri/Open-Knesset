@@ -16,6 +16,8 @@ from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
+from xml.etree import ElementTree
+from django.utils.encoding import smart_text
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -32,6 +34,7 @@ class Committee(models.Model):
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
     portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False, blank=True)
+    type = models.CharField(max_length=10,default='committee')
 
     def __unicode__(self):
         return "%s" % self.name
@@ -166,6 +169,84 @@ class CommitteeMeeting(models.Model):
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
 
+    def _plenum_parseParaElement(self,para):
+        isBold=False
+        if para.find('emphasis') is not None:
+            isBold=True
+        txt=''
+        for subtext in para.itertext():
+            txt+=subtext
+        return (isBold,txt)
+
+    def _plenum_parseParaText(self,para,isBold):
+        t='text'
+        if isBold and re.search(r":[\s]*$",para) is not None:
+            # bold + ends with a colon
+            t='speaker'
+        elif isBold:
+            t='title'
+        return t
+    
+    def _plenum_parsePara(self,txt,t,titles):
+        if titles is None:
+            titles=[]
+            if t=='speaker':
+                titles.append({u't':u'',u'c':[
+                    {u't':txt,u'c':[],u's':1}
+                ]})
+            elif t=='title':
+                titles.append({u't':txt,u'c':[]})
+            else:
+                titles.append({u't':'',u'c':[
+                    {u't':txt,u's':0}
+                ]})
+        elif t=='title':
+            titles.append({u't':txt,u'c':[]})
+        else:
+            title=titles[len(titles)-1]
+            children=title['c']
+            if t=='speaker':
+                children.append({u't':txt,u'c':[],u's':1})
+            elif len(children)==0:
+                children.append({u't':txt,u's':0})
+            elif children[len(children)-1]['s']==1:
+                children[len(children)-1]['c'].append({u't':txt})
+            else:
+                children.append({u't':txt,u's':0})
+        return titles
+
+    def create_plenum_protocol_parts(self):
+        txt=self.protocol_text.encode('utf-8')
+        tree=ElementTree.fromstring(txt)
+        titles=None
+        for para in tree.iter('para'):
+            (isBold,txt)=self._plenum_parseParaElement(para)
+            t=self._plenum_parseParaText(txt,isBold)
+            titles=self._plenum_parsePara(txt,t,titles)
+        i=0
+        for title in titles:
+            t=title['t'].strip()
+            if len(t)>0:
+                ProtocolPart(meeting=self, order=i, header='', body=t, type='title').save()
+                i+=1
+            for child in title['c']:
+                t=child['t'].strip()
+                if child['s']==1:
+                    if len(t)>0:
+                        header=t
+                    else:
+                        header=''
+                    for schild in child['c']:
+                        t=schild['t'].strip()
+                        if len(t)>0:
+                            ProtocolPart(meeting=self, order=i, header=header, body=t, type='speaker').save()
+                            i+=1
+                else:
+                    if len(t)>0:
+                        ProtocolPart(meeting=self, order=i, header='', body=t, type='text').save()
+                        i+=1
+        logger.debug('wrote '+str(i)+' protocol parts')
+
     def create_protocol_parts(self, delete_existing=False):
         """ Create protocol parts from this instance's protocol_text
             Optionally, delete existing parts.
@@ -182,9 +263,12 @@ class CommitteeMeeting(models.Model):
         else:
             if self.parts.count():
                 raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
-
         if not self.protocol_text: # sometimes there are empty protocols
             return # then we don't need to do anything here.
+
+        if self.committee.type=='plenum':
+            self.create_plenum_protocol_parts()
+            return
 
         # break the protocol to its parts
         # first, fix places where the colon is in the begining of next line
@@ -258,6 +342,7 @@ class ProtocolPart(models.Model):
     body = models.TextField(blank=True)
     speaker = models.ForeignKey('persons.Person', blank=True, null=True, related_name='protocol_parts')
     objects = ProtocolPartManager()
+    type = models.TextField(blank=True,max_length=20)
 
     annotatable = True
 
