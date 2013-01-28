@@ -1,9 +1,13 @@
 {% extends 'site_base.html' %}
 {% load i18n %}{% load static from staticfiles %}
 
-{% block extratitle %}{% trans 'login' %}{% endblock %}
+{% block extratitle %}{% trans "login" %}{% endblock %}
 {% block extracss %} 
 <link href="{% static "css/auth-buttons.css" %}" type="text/css" rel="stylesheet" media="all" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "login" %}</li>
 {% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
@@ -14,23 +18,38 @@
 
 {% else %}
 
-<div id="login">
-    <form method="post" action="{% url login %}">{% csrf_token %}
-        <table>{{ form.as_table }}</table>
-        <input type="submit" value="{% trans 'login' %}">
-        <input type="hidden" name="next" value="{{ next }}">
-    </form><br>
-    <a href="{% url register %}?next={{next}}">{% trans "New user? Register" %}</a><br>
-    <a href="{% url password_reset %}?next={{next}}">{% trans "Forgot password?" %}</a><br>    
-
+<div class="card card-main">
+<div class="row">
+    <div class="span4" id="login">
+        <div class="spacer fill">
+            <form method="post" action="{% url login %}">{% csrf_token %}
+                <table>{{ form.as_table }}</table>
+                <input type="submit" value="{% trans "login" %}" class="btn">
+                <input type="hidden" name="next" value="{{ next }}">
+            </form>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="spacer fill">
+            <div class="alert alert-block">
+                <a href="{% url register %}?next={{next}}">{% trans "New user? Register" %}</a>
+            </div>
+            <div class="alert alert-block">
+                <a href="{% url password_reset %}?next={{next}}">{% trans "Forgot password?" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="span4" id="social-login">
+        <div class="spacer fill">
+        <a class="btn-auth btn-twitter" href="{% url socialauth_begin 'twitter' %}">{% trans "Enter using" %} <b>Twitter</b></a>
+        <a class="btn-auth btn-google" href="{% url socialauth_begin 'google' %}">{% trans "Enter using" %} <b>Gmail</b></a>
+        <br />
+        <br />
+        <a class="btn-auth btn-facebook" href="{% url socialauth_begin 'facebook' %}">{% trans "Enter using" %} <b>Facebook</b></a>
+        <a class="btn-auth btn-github" href="{% url socialauth_begin 'github' %}">{% trans "Enter using" %} <b>GitHub</b></a>
+        </div>
+    </div>
 </div>
-<div id="social-login">
-	<a class="btn-auth btn-twitter" href="{% url socialauth_begin 'twitter' %}">{% trans "Enter using" %} <b>Twitter</b></a>
-    <a class="btn-auth btn-google" href="{% url socialauth_begin 'google' %}">{% trans "Enter using" %} <b>Gmail</b></a>
-    <br />
-    <br />
-    <a class="btn-auth btn-facebook" href="{% url socialauth_begin 'facebook' %}">{% trans "Enter using" %} <b>Facebook</b></a>
-    <a class="btn-auth btn-github" href="{% url socialauth_begin 'github' %}">{% trans "Enter using" %} <b>GitHub</b></a>
 </div>
 {% endif %}
 {% endblock %}
