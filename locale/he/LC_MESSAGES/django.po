@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 21:48+0200\n"
-"PO-Revision-Date: 2013-01-28 21:49+0200\n"
+"POT-Creation-Date: 2013-01-29 12:22+0200\n"
+"PO-Revision-Date: 2013-01-29 12:26+0200\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -136,7 +136,9 @@ msgstr "אג'נדה"
 #: templates/base.html.py:126 templates/agendas/agenda_detail.html:22
 #: templates/agendas/agenda_list.html:4 templates/agendas/agenda_list.html:5
 #: templates/agendas/agenda_list.html:6 templates/agendas/agenda_list.html:25
-#: templates/agendas/agenda_list.html:33 templates/mks/party_detail.html:70
+#: templates/agendas/agenda_list.html:33
+#: templates/agendas/mk_agenda_detail.html:9
+#: templates/mks/party_detail.html:70
 #: templates/polyorg/candidatelist_detail.html:45
 msgid "Agendas"
 msgstr "אג'נדות"
@@ -310,7 +312,7 @@ msgstr "נמחקה"
 #: templates/committees/committee_list.html:38
 #: templates/committees/committee_list.html:53
 #: templates/committees/committeemeeting_detail.html:28
-#: templates/committees/committeemeeting_list.html:9
+#: templates/committees/committeemeeting_list.html:21
 #: templates/committees/flatpages.html:3 templates/committees/flatpages.html:4
 #: templates/committees/flatpages.html:5
 #: templates/committees/topic_detail.html:34
@@ -355,22 +357,22 @@ msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: committees/views.py:288 committees/views.py:312
+#: committees/views.py:288 committees/views.py:315
 #, python-format
 msgid "No %(object_type)s found"
 msgstr "לא נמצאו %(object_type)s"
 
-#: committees/views.py:311
+#: committees/views.py:314
 #, python-format
 msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
-#: committees/views.py:320 laws/views.py:55 laws/views.py:122
+#: committees/views.py:325 laws/views.py:55 laws/views.py:122
 #, python-format
 msgid "No Tag found matching \"%s\"."
 msgstr "לא נמצאו הצעות חוק בנושא \"%s\""
 
-#: committees/views.py:324
+#: committees/views.py:329
 #, python-format
 msgid "Committee Meetings tagged %(tag)s"
 msgstr "ישיבות וועדה שתויגו %(tag)s"
@@ -1801,7 +1803,7 @@ msgstr "שמירה"
 
 #: templates/agendas/agenda_bill_partial.html:10
 #: templates/agendas/agenda_meeting_partial.html:15
-#: templates/agendas/mk_agenda_detail.html:41
+#: templates/agendas/mk_agenda_detail.html:61
 #: templates/auxiliary/tag_detail.html:33
 #: templates/committees/committeemeeting_list_by_tag.html:17
 #: templates/laws/bill_list_by_tag.html:33
@@ -2051,7 +2053,7 @@ msgstr "נא לבחור"
 #: templates/agendas/agendasfor.html:38
 #: templates/committees/committeemeeting_detail.html:61
 #: templates/committees/committeemeeting_detail.html:94
-#: templates/committees/committeemeeting_list.html:17
+#: templates/committees/committeemeeting_list.html:43
 #: templates/laws/bill_detail.html:309 templates/laws/bill_detail.html:368
 #: templates/laws/bill_detail.html:427 templates/laws/vote_detail.html:102
 #: templates/laws/vote_detail.html:127
@@ -2070,7 +2072,12 @@ msgstr "שיוך אג'נדה בעריכתך"
 msgid "Update"
 msgstr "עדכון"
 
-#: templates/agendas/mk_agenda_detail.html:12
+#: templates/agendas/mk_agenda_detail.html:11
+#, python-format
+msgid "Analysis of votes by %(member)s"
+msgstr "ניתוח ההצבעות של %(member)s"
+
+#: templates/agendas/mk_agenda_detail.html:29
 #, python-format
 msgid ""
 "Analysis of votes by <a href=\"%(member_url)s\">%(member)s</a> by <a href="
@@ -2079,15 +2086,15 @@ msgstr ""
 "ניתוח ההצבעות של <a href=\"%(member_url)s\">%(member)s</a> לפי <a href="
 "\"%(agenda_url)s\">%(agenda_name)s</a>"
 
-#: templates/agendas/mk_agenda_detail.html:15
+#: templates/agendas/mk_agenda_detail.html:35
 msgid "Overall score"
 msgstr "מדד ההתאמה לאג'נדה"
 
-#: templates/agendas/mk_agenda_detail.html:19
+#: templates/agendas/mk_agenda_detail.html:44
 msgid "Score details"
 msgstr "פירוט ההצבעות"
 
-#: templates/agendas/mk_agenda_detail.html:35
+#: templates/agendas/mk_agenda_detail.html:56
 msgid "Voted"
 msgstr "הצביע/ה"
 
@@ -2438,11 +2445,11 @@ msgstr "כדי ליצור תגיות חדשות"
 msgid "Login to edit tags"
 msgstr "רוצה להציע תגית? לחץ/י כאן כדי להרשם"
 
-#: templates/committees/committeemeeting_list.html:11
+#: templates/committees/committeemeeting_list.html:23
 msgid "All meetings"
 msgstr "רשימת הישיבות המלאה"
 
-#: templates/committees/committeemeeting_list.html:15
+#: templates/committees/committeemeeting_list.html:40
 msgid "Lookup by date"
 msgstr "חיפוש לפי תאריך"
 

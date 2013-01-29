@@ -4,54 +4,67 @@
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ object.name }}, {{ member }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-agendas %}class="active"{% endblock %}
-{% block extrajs %}
-    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+
+{% block breadcrumbs %}
+        <li><a href="{% url agenda-list %}">{% trans "Agendas" %}</a> <span class="divider">/</span></li>
+        <li><a href="{{ agenda_url  }}">{{ agenda_name }}</a> <span class="divider">/</span></li>
+        <li class="active">{% blocktrans %}Analysis of votes by {{ member }}{% endblocktrans %}</li>
 {% endblock %}
-{% block divcontent %}
-    <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
-    <div id="agenda-info">
-        <div class="item-list">
-        <h2>{% trans 'Overall score' %} <span class="numeric" style="display:inline-block;font-weight:bold;">{{score|floatformat:"0"}}%</span></h2>
-            <div id="member_percentile" class="percentile {% if score < 0 %}percentile_against{% endif %}"></div>
-            <script>set_percentile('member',({{ score }}+100)/2);</script>
 
-        <h2>{% trans 'Score details' %}</h2>
-        <table id="agenda-votes">
+{% block nav-agendas %}class="active"{% endblock %}
 
-            {% for agendavote in related_votes %}
-                <tr>
-                    <td>
-                        <div class="agenda-importance">{{agendavote.get_importance_display}}</div>
-                        <div class="agenda-score{% if agendavote.score > 0 %} positive{% endif %}{% if agendavote.score < 0 %} negative{% endif %}">
-                            {{ agendavote.get_score_display }}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="item">
-                            <a id="detail-{{ agendavote.vote.id }}" href="{{ agendavote.vote.get_absolute_url }}">
-                                {{ agendavote.vote.title }}<br/>
-                            </a>
-                            <span class="agenda-mk-vote {% if agendavote.voteaction.type == 'for' %} positive{% endif %}{% if agendavote.voteaction.type = 'against' %} negative{% endif %}">{{ member.name }} {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}</span>
-
-                        </div>
-                    </td>
-                </tr>
-            {% empty %}
-                {% trans "No results found" %}
-            {% endfor %}
-        </table>
-    </div> {# id="agenda-info" #}
-    {% if paginator %}
-        {% pagination page_obj paginator request %}
-    {% endif %}
-
-{% endblock %} {# divcontent #}
-
-{% block footer %}
+{% block extrajs %}
 <script type="text/javascript"><!--
     $(document).ready(function() {
         {% get_hit_count_javascript for object %}
     });
 --></script>
 {% endblock %}
+
+{% block divcontent %}
+    <div class="card card-main">
+        <div class="row">
+            <div class="span8">
+                <div class="spacer fill">
+                    <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="spacer fill">
+                    <p>{% trans "Overall score" %} <span class="numeric">{{score|floatformat:"0"}}%</span></p>
+                    <div>{% bar score -100 100 %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <div class="card card-list">
+                <header><h2>{% trans "Score details" %}</h2></header>
+                <ul>
+                {% for agendavote in related_votes %}
+                    <li>
+                    {% with agendavote.vote as vote %}
+                        <p class="item-context">{{vote.time}}</p>
+                        <p class="item-action">
+                            <span class="label">{{agendavote.get_importance_display}}</span>
+                            <span class="label label-{% if agendavote.score < 0 %}important{% else %}success{% endif %}">{{ agendavote.get_score_display }}</span>
+                        </p>
+                        <p class="item-title"><a href="{{ vote.get_absolute_url  }}">{{vote.title}}</a></p>
+                        <p class="item-action text-{% if agendavote.voteaction.type == "for" %}success{% endif %}{% if agendavote.voteaction.type = "against" %}error{% endif %}">
+                            {% trans "Voted" %} {{ agendavote.voteaction.get_type_display }}
+                        </p>
+                    {% endwith %}
+                    </li>
+                {% empty %}
+                    <li>{% trans "No results found" %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% if paginator %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+
+{% endblock %} {# divcontent #}
