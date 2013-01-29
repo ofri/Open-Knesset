@@ -297,21 +297,26 @@ class MeetingsListView(ListView):
         else:
             return CommitteeMeeting.objects.all()
 
+
 def meeting_list_by_date(request, *args, **kwargs):
-    committee_id = kwargs.get('committee_id',None)
-    date_string = kwargs.get('date',None)
+    committee_id = kwargs.get('committee_id', None)
+    date_string = kwargs.get('date', None)
+
     try:
-        date = datetime.datetime.strptime(date_string,'%Y-%m-%d').date()
+        date = datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
     except:
         raise Http404()
-    object = get_object_or_404(Committee, pk=committee_id)
-    object_list = object.meetings.filter(date=date)
 
-    context = {'object_list':object_list, 'committee_id':committee_id}
-    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date}
-    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+    committee = get_object_or_404(Committee, pk=committee_id)
+    object_list = committee.meetings.filter(date=date)
+
+    context = {'object_list': object_list, 'committee_id': committee_id}
+    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee': committee.name, 'date': date}
+    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural}
+    context['committee'] = committee
+
     return render_to_response("committees/committeemeeting_list.html",
-        context, context_instance=RequestContext(request))
+                              context, context_instance=RequestContext(request))
 
 
 def meeting_tag(request, tag):
