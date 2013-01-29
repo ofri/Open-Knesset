@@ -5928,6 +5928,7 @@ ol {
   border-radius: 50%;
   margin: 35px auto;
   position: relative;
+  display: block;
 }
 .agenda-pie .agenda-percent {
   color: #464545;
