@@ -24,12 +24,13 @@
 {% block divcontent %}
     <div class="card card-main">
         <div class="row">
-            <div class="span8">
+            <div class="span2"><div class="spacer"><img src="{{ member.highres_img_url }}" alt="{{member.name}}"/></div></div>
+            <div class="span7 card-details">
                 <div class="spacer fill">
-                    <h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1>
+                    <header><h1>{% blocktrans %}Analysis of votes by <a href="{{ member_url }}">{{ member }}</a> by <a href="{{ agenda_url }}">{{ agenda_name }}</a>{% endblocktrans %}</h1></header>
                 </div>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <div class="spacer fill">
                     <p>{% trans "Overall score" %} <span class="numeric">{{score|floatformat:"0"}}%</span></p>
                     <div>{% bar score -100 100 %}</div>
