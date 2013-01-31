@@ -1,0 +1,41 @@
+{% load links_tags i18n %}{% load static from staticfiles %}<div class="card-party-members {{extra_class}}">
+    <div>
+{% for v in votes %}
+{% with v.member as member %}
+
+        <div class="party-member-photo">
+          <a href="{{member.get_absolute_url}}"><img src="{{member.img_url}}"></a>
+          <div class="party-member-name">{{member.name}}</div>
+          <div class="party-member-extra">
+                {% if v.against_party %}<img src="{% static "img/Warning.png" %}" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
+                {% if v.against_coalition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
+                {% if v.against_opposition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
+          </div>
+          <div class="party-member-info">
+            <div class="party-member-info-text">
+              <h3><a href="{{member.get_absolute_url}}">{{member.name}}</a></h3>
+                <p>{{member.get_role}}</p>
+            </div>
+            <div class="party-member-info-links">
+                <ul>
+                {% object_icon_links member %}
+                </ul>
+            </div>
+            <div class="party-member-info-photo">
+              <img src="{{member.highres_img_url}}">
+            </div>
+          </div>
+        </div>    
+{% endwith %}
+{% endfor %}
+    </div>
+      {% if user.is_superuser %}
+      <form method="post" action="." class="clearfix form-inline">{% csrf_token %}
+        <input type="hidden" name="user_input_type" value="mk-for">
+        <label>{% trans 'Suggest an MK' %}</label>
+        <input type="text" name="mk_name">
+        <input type="submit" value="{% trans "Submit" %}" class="btn">
+      </form>
+      {% endif %}
+</div>
+

@@ -12,7 +12,7 @@ function get_tags_list(url) {
 
 function add_nav_button(text, url) {
     if (url !== null) {
-        $('<a>').attr('href', "javascript:get_tags_list('"+encodeURIComponent(url)+"')").html(text).appendTo("#possible_tags");
+        $('<a class="btn btn-small">').attr('href', "javascript:get_tags_list('"+encodeURIComponent(url)+"')").html(text).appendTo("#possible_tags");
     }
 }
 
