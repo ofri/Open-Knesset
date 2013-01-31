@@ -1,11 +1,13 @@
 import json
 from django.conf import settings
 from django.core.cache import cache
+from django.http import Http404
 from django.views.generic import ListView, TemplateView
 from django.utils.translation import ugettext as _
 from hashnav.detail import DetailView
 from agendas.models import Agenda
 from polyorg.models import CandidateList, Candidate
+
 
 class CandidateListListView(ListView):
     model = CandidateList
@@ -18,8 +20,18 @@ class CandidateListListView(ListView):
             cache.set(cache_key, qs, settings.LONG_CACHE_TIME)
         return qs
 
+
 class CandidateListDetailView(DetailView):
+
     model = CandidateList
+
+    def get(self, request, **kwargs):
+        # Don't allow Candidates without seats
+        cl = self.get_object()
+
+        if not cl.number_of_seats:
+            raise Http404
+        return super(CandidateListDetailView, self).get(request, **kwargs)
 
     def get_context_data (self, **kwargs):
         cache_key = "candidate_list_%(pk)s" % kwargs
