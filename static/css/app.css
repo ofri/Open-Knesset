@@ -6172,6 +6172,14 @@ ul .btn-question {
 .label.level2[href] {
   background-color: #1a1a1a;
 }
+.label.level1,
+.label.level2,
+.label.level3,
+.label.level4,
+.label.level5,
+.label.level6 {
+  margin: 2px;
+}
 .video_400_300 {
   width: 400px;
   height: 300px;
