@@ -13,7 +13,7 @@ from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
-from models import Law, Bill, Vote
+from models import Law, Bill, Vote, PrivateProposal
 
 from simple.management.commands.syncdata_globals import p_explanation
 
@@ -50,6 +50,11 @@ class VoteResource(BaseResource):
 
         return orm_filters
 
+class PrivateProposalResource(BaseResource):
+    class Meta(BaseResource.Meta):
+        queryset = PrivateProposal.objects.all()
+        allowed_methods = ['get']
+
 class BillResource(BaseResource):
     ''' Bill API '''
     class Meta(BaseResource.Meta):
@@ -82,6 +87,10 @@ class BillResource(BaseResource):
                     'approval_vote',
                     null=True,
                     full=False)
+    proposals = fields.ToManyField(PrivateProposalResource,
+                                   'proposals',
+                                   null=True,
+                                   full=True)
 
 
     def dehydrate_explanation(self, bundle):
