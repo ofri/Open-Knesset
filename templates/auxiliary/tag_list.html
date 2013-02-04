@@ -1,18 +1,31 @@
 {% extends "site_base.html" %}
 {% load i18n %}
 {% load i18n i18ninclude %}
-{% block extratitle %}{% trans 'Tags' %}{% endblock %}
-{% block keywords %}{% trans 'Tags' %}{% endblock %}
-{% block description %}{% trans 'Tags' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block help-section %}
-	 {% i18ninclude "auxiliary/tag_list_help.html" LANGUAGE_CODE %}
-{% endblock %}
+
+{% block extratitle %}{% trans "Tags" %}{% endblock %}
+
+{% block keywords %}{% trans "Tags" %}{% endblock %}
+
+{% block description %}{% trans "Tags" %} - {% trans "Open Knesset - Opening the Knesset to the public" %}{% endblock %}
+
 {% block nav-tags %}class="selected"{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "Tags" %}</li>
+{% endblock %}
+
 {% block divcontent %}
-<div class="tags cloud">
-    <h1>{% trans 'Tags' %}</h1>
-    {% for tag in tags_cloud %}
-        <a href="{% url tag-detail slug=tag %}" class="level{{ tag.font_size }}">{{ tag }}</a>
-    {% endfor %}
+<div class="alert alert-info">
+	 {% i18ninclude "auxiliary/tag_list_help.html" LANGUAGE_CODE %}
+</div>
+<div class="card card-main">
+    <div class="spacer">
+        <h1>{% trans 'Tags' %}</h1>
+        <div class="text-center">
+            {% for tag in tags_cloud %}
+                <a href="{% url tag-detail slug=tag %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}

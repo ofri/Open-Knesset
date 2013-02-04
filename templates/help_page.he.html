@@ -1,41 +1,73 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude mks_tags search avatar_tags %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
-{% block extratitle %}{% trans 'Home' %}{% endblock %}
-{% block nav-main-page %} class="selected" {% endblock %}
+{% block extratitle %}מה אפשר לעשות באתר?{% endblock %}
+
+{% block breadcrumbs %}
+        <li class="active">מה אפשר לעשות באתר?</li>
+{% endblock %}
+
 {% block divcontent %}
-<h2><a href="{% url help %}">מה אפשר לעשות באתר? </a></h2>
-<div id="what" class="display_note_outer">
-    <div class="display_note alt">
-        <h3>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h3>
-        <p>וההתקדמות שלהן בתהליך החקיקה.</p>
-        <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
+<div class="card card-main-party">
+    <div class="spacer">
+        <h1>מה אפשר לעשות באתר?</h1>
+        <p>ואנחנו כל הזמן עובדים על עוד...</p>
     </div>
-    <div class="display_note">
-        <h3>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a></h3>
-        <p>למשל:</p>
-        <ul>
-            {% for tag in tags %}
-            <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="display_note alt">
-        <h3>מעקב הצבעות חבר כנסת</h3>
-        <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
-        <p>לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></p>
-    </div>
-    <div class="display_note"><h3>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3>
-        <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
-        <div>לדוגמה, הדף של {% mk_card member %}</div>
-    </div>
-    <div class="display_note alt">
-        <h3>לקרוא את הפרוטוקולים</h3>
-        <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
-        <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
-    </div>
-    <p style="clear:both; padding:1em;">ואנחנו כל הזמן עובדים על עוד...</p>
 </div>
 
+<div class="row cards">
+    <div class="span6">
+        <div class="card card-list">
+            <header><h2>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h2></header>
+                <ul>
+                    <li>
+                        <p>וההתקדמות שלהן בתהליך החקיקה.</p>
+                        <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
+                    </li>
+                </ul>
+        </div>
 
+        <div class="card card-list">
+            <header><h2>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל</h2></header>
+            <ul>
+                {% for tag in tags %}
+                <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+    
+    <div class="span6">
+        <div class="card card-list">
+            <header><h2>מעקב הצבעות חבר כנסת</h2></header>
+            <ul>
+                <li>
+                    <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
+                    <p>לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card card-list">
+            <header><h2>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3></header>
+            <ul>
+                <li>
+                    <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
+                    <div>לדוגמה, הדף של {% mk_card member %}</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card card-list">
+            <header><h2>לקרוא את הפרוטוקולים</h2></header>
+            <ul>
+                <li>
+                    <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
+                    <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}
