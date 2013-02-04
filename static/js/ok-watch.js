@@ -21,15 +21,11 @@
         followers = data.followers;
         watched = data.watched;
 
-        if (!can_watch) {
-            $watch.hide();
-        }
-        else {
-            $login.hide();
+        if (can_watch) {
             $watch.text(watched ? wdata.unwatchText : wdata.watchText);
         }
 
-        $watcher.show();
+        $num.show();
         $num.text(followers);
     })
     .fail(function(response) {
@@ -44,6 +40,10 @@
     $watch.click(function(e){
         e.preventDefault();
 
+		if (!can_watch) {
+			$login.show();
+			return false;
+		}
         $watch.button('loading');
         $.post(wdata.watchUrl, {verb: watched ? 'unfollow' : 'follow', id: wdata.watchId,  'what': wdata.watchType})
         .done(function(data) {
