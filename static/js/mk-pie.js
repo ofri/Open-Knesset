@@ -27,7 +27,7 @@
                 'for'       : '#3ac8a8', // goodColor
                 against     : '#ec6752', // badColor
                 'abstain'   : '#a9a6a6',
-                'no-vote'   : 'transparent'
+                'noVote'   : 'transparent'
             },
             sort        : null,
             value       : function (d) { return d.votes; }
