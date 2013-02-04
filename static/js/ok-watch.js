@@ -58,7 +58,3 @@
 
   }) // end ready
 }(window.jQuery);
-
-
-function register_watch(object_id, object_type, watch_text, unwatch_text, follow_url, is_following_url) {
-}
