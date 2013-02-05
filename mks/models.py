@@ -67,6 +67,16 @@ class CoalitionMembership(models.Model):
                               self.end_date or ""))
 
 
+class Knesset(models.Model):
+
+    number = models.IntegerField(_('Knesset number'), primary_key=True)
+    start_date = models.DateField(_('Start date'), blank=True, null=True)
+    end_date = models.DateField(_('End date'), blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.number)
+
+
 class Party(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField(blank=True, null=True)
