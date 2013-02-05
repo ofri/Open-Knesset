@@ -84,6 +84,8 @@ class Party(models.Model):
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
     number_of_seats = models.IntegerField(blank=True, null=True)
+    knesset = models.ForeignKey(Knesset, related_name='parties', db_index=True,
+                                null=True, blank=True)
 
     objects = BetterManager()
 
@@ -91,6 +93,7 @@ class Party(models.Model):
         verbose_name = _('Party')
         verbose_name_plural = _('Parties')
         ordering = ('-number_of_seats',)
+        unique_together = ('knesset', 'name')
 
     @property
     def uri_template(self):
