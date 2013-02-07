@@ -73,7 +73,7 @@ class AgendaMeeting(models.Model):
     def get_score_header(self):
         return _('Importance')
     def get_importance_header(self):
-        return None
+        return ''
 
     class Meta:
         unique_together = ('agenda', 'meeting')
