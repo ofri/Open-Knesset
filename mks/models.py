@@ -1,5 +1,6 @@
 #encoding: utf-8
 from datetime import date
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
 from django.db.models import Q
@@ -423,6 +424,10 @@ class Member(models.Model):
             return self.img_url
 
         return self.img_url.replace('-s.jpg', '.jpg')
+
+    @property
+    def age(self):
+        return relativedelta(date.today(), self.date_of_birth)
 
 
 class WeeklyPresence(models.Model):
