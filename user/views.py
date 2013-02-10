@@ -41,7 +41,7 @@ class PublicUserProfile(DetailView):
         context = super(PublicUserProfile, self).get_context_data(**kwargs)
         user = self.object
         context.update({
-            'annotations': Annotation.objects.filter(user=user).order_by('content_type', 'object_id'),
+            'annotations': Annotation.objects.filter(user=user).prefetch_related('content_object').order_by('content_type', 'object_id'),
             'tagged_items': TagVote.objects.filter(user=user).order_by('tagged_item__content_type','tagged_item__object_id'),
             'agendas': [a for a in user.get_profile().agendas if a.is_public],
             'topics': Topic.objects.get_public().filter(creator=user),

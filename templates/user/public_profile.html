@@ -1,92 +1,116 @@
 {% extends "site_base.html" %}
 {% load i18n mks_tags pagination_tags avatar_tags %}
 {% block extratitle %}{{viewed_user.get_profile}}{% endblock %}
-{% block header %}<h1>{{viewed_user.get_profile}}</h1>{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url profile-list %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
+    <li class="active">{{viewed_user.get_profile}}</li>
+{% endblock %}
+
 {% block content %}
-    {% if viewed_user.get_profile.public_profile or viewed_user == user%}
-        <div style="float:right;">
-            {% avatar viewed_user 75 %}
-        </div>
-        <p style="float:right;padding-right:1em;">{{ viewed_user.get_profile.description|linebreaksbr }}</p>
-        <div class="clear"></div>
-        <div class="details">
-        <div>
-            <h3>{% trans 'Following Members' %}:</h3>
-            <ul class='favorites-list'>
-            {% for member in viewed_user.get_profile.members %}
-                <li><a href="{{member.get_absolute_url}}">{% mk_card member %}</a></li>
-            {% empty %}
-                <li>{% trans 'Not following any memebers.' %}</li>
-            {% endfor %}
-            </ul>
-        </div>
-
-        <div>
-            <h3>{% trans 'Following Agendas' %}:</h3>
-            <ul class='favorites-list'>
-            {% for agenda in agendas %}
-                <li><a href="{{ agenda.get_absolute_url }}">{{ agenda }}</a></li>
-            {% empty %}
-                <li>{% trans 'Not following any agendas.' %}</li>
-            {% endfor %}
-            </ul>
-        </div>
-
-        <div>
-            <h3>{% trans 'Following Topics' %}:</h3>
-            {% include "committees/_topics_summary.html" %}
-        </div>
-
-        <div class="clear"></div>
-        <div>
-            <h3>{% trans 'Annotations' %}</h3>
-            <ul>
-            {% for a in annotations|slice:":10" %}
-                {% ifchanged %}
-                    {% with meeting=a.content_object.meeting %}
-                    <li><h4><a href="{{ meeting.get_absolute_url}}">{{ meeting}}</a></h4>
-                    {% endwith %}
-                {% endifchanged %}
-                <div style="padding: 0 1em 0.5em;">
-                    <p style="padding-right:2em; font-size:120%;">"{{a.comment|linebreaksbr}}"</p>
-                    <p class="triangle-border top">
-                        "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>,
-                        <a href="{% url committee-meeting a.content_object.meeting.id %}">{{ a.content_object.meeting }}</a></h4>
-                        </a>
-                    </p>
+{% if viewed_user.get_profile.public_profile or viewed_user == user%}
+    <section class="card card-main">
+        <div class="row">
+            <div class="span2">
+                <div class="spacer fill">{% avatar viewed_user 75 %}</div>
+            </div>
+            <div class="span6">
+                <div class="spacer fill">
+                    <h1>{{viewed_user.get_profile}}</h1>
+                    <p>{{ viewed_user.get_profile.description|default_if_none:""|linebreaksbr }}</p>
                 </div>
-            {% empty %}
-                <li>{% trans "No annotations yet..." %}
-            {% endfor %}
-            </ul>
-            {% if annotations.count > 10 %}
-                <a href="{% url user-annotated-items viewed_user.username %}">{% trans "more..."%}</a>
-            {% endif %}
+            </div>
+            <div class="span4">
+                <div class="spacer fill">
+                    <h2>{% trans "Following Members" %}</h2>
+                    <div>
+                    {% if viewed_user.get_profile.members %}
+                        {% include "mks/member_photos.html" with members=viewed_user.get_profile.members %}
+                    {% else %}
+                        {% trans "Not following any memebers." %}           
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <h3>{% trans 'Tagged Items' %}</h3>
-            {% if tagged_items %}
-            <table>
-            {% for t in tagged_items|slice:":10" %}
-                {% ifchanged %}
-                <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
-                        <td>
-                {% endifchanged %}
-                <a href="{{t.get_absolute_url}}" class="tag">{{ t.tagged_item.tag }}<span class="{% if t.vote > 0 %}vote-up{%else%}vote-down{%endif%}">&nbsp;</span></a>
-                {% if foorloop.last %}</td>{% endif %}
-            {% endfor %}
-            </td></tr>
-            </table>
-            {% if tagged_items.count > 10 %}
-                <a href="{% url user-tagged-items viewed_user.username %}">{% trans "more..."%}</a>
-            {% endif %}
-            {% else %}
-                {% trans "No tagged items yet..." %}
-            {% endif %}
+    </section>
+
+    <div class="row">
+        <div class="cards span8">
+            <section class="card card-list card-list-latest">
+                <header><h2>{% trans "Annotations" %}</h2></header>
+                <ul>
+                {% for a in annotations|slice:":10" %}
+                    <li>
+                        {% with meeting=a.content_object.meeting %}
+                        <p class="item-context"><a href="{{ meeting.get_absolute_url}}">{{ meeting}}</a></p>
+                        <p class="item-title">&quot;{{a.comment|linebreaksbr}}&quot;</p>
+                        <p class="item-action">
+                            "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>
+                        </p>
+                        {% endwith %}
+                    </li>
+                {% empty %}
+                    <li>{% trans "No annotations yet..." %}</li>
+                {% endfor %}
+                </ul>
+                {% if annotations.count > 10 %}
+                <footer>
+                    <a class="btn btn-min btn-expand" href="{% url user-annotated-items viewed_user.username %}">{% trans "More"%} ...</a>
+                </footer>
+                {% endif %}
+            </section>
+
+            <section class="card card-list card-list-latest">
+                <header><h2>{% trans "Tagged Items" %}</h2></header>
+                <ul>
+                {% if tagged_items %}
+                {% for t in tagged_items|slice:":10" %}
+                    {% ifchanged %}
+                    <li>
+                        <p class="item-title">
+                            <a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
+                        </p>
+                    {% endifchanged %}
+                    <a href="{{t.get_absolute_url}}" class="label">{{ t.tagged_item.tag }}<span class="{% if t.vote > 0 %}vote-up{%else%}vote-down{%endif%}">&nbsp;</span></a>
+                {% endfor %}
+                {% if tagged_items.count > 10 %}
+                <footer>
+                    <a class="btn btn-min btn-expand" href="{% url user-tagged-items viewed_user.username %}">{% trans "More" %} ...</a>
+                </footer>
+                {% endif %}
+                {% else %}
+                    <li>{% trans "No tagged items yet..." %}</li>
+                {% endif %}
+                </ul>
+            </section>
         </div>
+
+        <div class="span4">
+            <aside class="sidebar">
+                <h2>{% trans "Following Agendas" %}</h2>
+                <ul>
+                {% for agenda in agendas %}
+                    <li class="agenda-mini"><p class="item-title"><a href="{{ agenda.get_absolute_url }}">{{ agenda }}</a></p></li>
+                {% empty %}
+                    <li>{% trans "Not following any agendas." %}</li>
+                {% endfor %}
+                </ul>
+            </aside>
+
+            <aside class="sidebar">
+                <h2>{% trans "Following Topics" %}</h2>
+                <ul>
+                {% include "committees/_topics_summary.html" %}
+                </ul>
+            </aside>
         </div>
-    {% else %}
-        {% trans "Sorry, this user has selected not to share his profile" %}
-    {% endif %}
-<br/>
+    </div>
+
+    <div class="details">
+
+    </div>
+{% else %}
+    <div class="alert alert-error">{% trans "Sorry, this user has selected not to share his profile" %}</div>
+{% endif %}
 {% endblock %}
