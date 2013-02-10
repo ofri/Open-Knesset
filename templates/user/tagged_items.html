@@ -2,37 +2,46 @@
 {% load i18n %}
 {% load pagination_tags %}
 {% block extratitle %}{% trans "Items tagged by" %}{{viewed_user.username}}{% endblock %}
-{% block header %}
-    {% with tagged_items|length as count %}
-    <h1>
-        {% blocktrans %}{{ count }} Items tagged by {% endblocktrans %}<a href="{{ viewed_user.get_absolute_url }}">{{ viewed_user.username }}</a>
-        
-    </h1>
-    {% endwith %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url profile-list %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
+    <li><a href="{{viewed_user.get_absolute_url}}">{{viewed_user.username}}</a> <span class="divider">/</span></li>
+    <li class="active">{% trans "Tagged Items" %}</li>
 {% endblock %}
+
 {% block content %}
-    {% if viewed_user.get_profile.public_profile or viewed_user == user%}
-        <div>
-            {% if tagged_items %}                
+{% if viewed_user.get_profile.public_profile or viewed_user == user%}
+    <div class="row">
+        <div class="span12 cards">
+            <div class="card card-list">
+                <header>
+                    <h1>
+                    {% with tagged_items|length as count %}
+                        {% blocktrans %}{{ count }} Items tagged by {% endblocktrans %}<a href="{{ viewed_user.get_absolute_url }}">{{ viewed_user.username }}</a>
+                    {% endwith %}
+                    </h1>
+                </header>
                 {% autopaginate tagged_items %}
-                <table>
-                {% for t in tagged_items %}
+                <ul>
+                {% if tagged_items %}                
+                    {% for t in tagged_items %}
                     {% ifchanged %}
-                    {% if not forloop.first %}</td></tr> {% endif %}
-                    <tr><th style="text-align: right;"><a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
-                            <td>
+                    <li>
+                        <p class="item-title">
+                            <a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
+                        </p>
                     {% endifchanged %}
-                    <a href="{{t.get_absolute_url}}" class="tag {% if t.vote > 0 %}thumbs-up{%else%}thumbs-down{%endif%}">{{ t.tagged_item.tag }}</a>
-                {% endfor %}
-                </td></tr>
-                </table>
-                {% paginate %}
-            {% else %}
-                {% trans "No tagged items yet..." %}
-            {% endif %}
+                        <a href="{{t.get_absolute_url}}" class="label">{{ t.tagged_item.tag }} <i class="icon-thumbs-{% if t.vote > 0 %}up{%else%}down{%endif%} icon-white"></i></a>
+                    {% endfor %}
+                {% else %}
+                    <li>{% trans "No tagged items yet..." %}</li>
+                {% endif %}
+                </ul>
+            </div>
         </div>
-    {% else %}
-        {% trans "Sorry, this user has selected not to share his profile" %}
-    {% endif %}
-<br/>
+    </div>
+    <div class="text-center">{% paginate %}</div>
+{% else %}
+    <div class="alert alert-error">{% trans "Sorry, this user has selected not to share his profile" %}</div>
+{% endif %}
 {% endblock %}
