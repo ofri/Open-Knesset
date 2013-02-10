@@ -72,7 +72,7 @@
                             <a href="{{t.tagged_item.object.get_absolute_url}}">{{ t.tagged_item.object }}</a>
                         </p>
                     {% endifchanged %}
-                    <a href="{{t.get_absolute_url}}" class="label">{{ t.tagged_item.tag }}<span class="{% if t.vote > 0 %}vote-up{%else%}vote-down{%endif%}">&nbsp;</span></a>
+                        <a href="{{t.get_absolute_url}}" class="label">{{ t.tagged_item.tag }} <i class="icon-thumbs-{% if t.vote > 0 %}up{%else%}down{%endif%} icon-white"></i></a>
                 {% endfor %}
                 {% if tagged_items.count > 10 %}
                 <footer>
