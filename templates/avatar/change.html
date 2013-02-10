@@ -1,23 +1,38 @@
 {% extends "site_base.html" %}
 {% load i18n avatar_tags %}
-{% block header %}<h1>{% trans 'Change your avatar' %}</h1>{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "Change your avatar" %}</li>
+{% endblock %}
 
 {% block content %}
-    <p>{% trans "Your current avatar: " %}</p>
-    {% avatar user %}
-    {% if not avatars %}
-        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
-    {% else %}
-        <form class="avatar-form" method="POST" action="{% url avatar_change %}">
-            <ul>
-                {{ primary_avatar_form.as_ul }}
-            </ul>
-            <p>{% csrf_token %}<input type="submit" value="{% trans "Choose new Default" %}" /></p>
-        </form>
-    {% endif %}
-    <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
-        {{ upload_avatar_form.as_p }}
-        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
-    </form>
+<section class="card card-main">
+    <div class="row">
+        <div class="span3">
+            <div class="spacer">
+                <h3>{% trans "Your current avatar" %}</h3>
+                {% avatar user %}
+            </div>
+        </div>
+        <div class="span9">
+            <div class="spacer">
+                <h1>{% trans "Change your avatar" %}</h1>
+                {% if not avatars %}
+                    <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+                {% else %}
+                    <form class="avatar-form" method="POST" action="{% url avatar_change %}">
+                        <ul>
+                            {{ primary_avatar_form.as_ul }}
+                        </ul>
+                        <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}" /></p>
+                    </form>
+                {% endif %}
+                <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
+                    {{ upload_avatar_form.as_p }}
+                    <p>{% csrf_token %}<input type="submit" class="btn" value="{% trans "Upload New Image" %}" /></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
-{% block social %} {% endblock %}
