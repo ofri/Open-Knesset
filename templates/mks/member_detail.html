@@ -84,7 +84,7 @@
                 {% if object.date_of_death %}
                 <div>{% trans "date of death" %} - {{ object.date_of_death }}</div>
                 {% else %}
-                <div>{% trans "age" %} - {{ object.date_of_birth|timesince }}</div>
+                <div>{% trans "age" %} - {{ object.age.years }}</div>
                 {% endif %}
                 <div>{% trans "place of birth" %} - {{ object.place_of_birth }}</div>
                 {% if object.year_of_aliyah %}

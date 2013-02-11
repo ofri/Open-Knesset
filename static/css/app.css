@@ -5203,6 +5203,11 @@ body {
   letter-spacing: 1px;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px -1px 0 rgba(0, 0, 0, 0.5), -1px 1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(0, 0, 0, 0.5);
 }
+form .helptext {
+  color: #3A87AD;
+  /* Use bootstrap's text-info color */
+
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
