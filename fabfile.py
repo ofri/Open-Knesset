@@ -1,4 +1,5 @@
 from fabric.api import run, cd, sudo, roles, runs_once, env
+from fabric.contrib.files import first
 
 # add a local_fab_settings.py file,
 # so that you can access your servers
@@ -9,16 +10,27 @@ except ImportError as e:
     pass
 
 
-env.venv_root = '/oknesset_web/oknesset/'
+env.venv_roots = ['/oknesset_web/oknesset/', '/oknesset_data/oknesset/']
+
 env.project_dir = 'Open-Knesset'
-env.project_root = env.venv_root + env.project_dir
 env.ok_user = 'oknesset'
-env.activate = 'source ' + env.venv_root + 'bin/activate'
+
+
+def _venv_root():
+    return first(*env.venv_roots)
+
+
+def _project_root():
+    return _venv_root() + env.project_dir
+
+
+def _activate():
+    return 'source ' + _venv_root() + 'bin/activate'
 
 
 def virtualenv(command):
-    with cd(env.project_root):
-        sudo(env.activate + ' && ' + command, user=env.ok_user)
+    with cd(_project_root()):
+        sudo(_activate() + ' && ' + command, user=env.ok_user)
 
 
 # web server stuff
@@ -33,7 +45,7 @@ def restart_oknesset():
 
 
 def _update_commit():
-    with cd(env.project_root):
+    with cd(_project_root()):
         sudo(
             'git log --pretty=format:"Code Commit: %H <br>Last Update: %cd" -n 1 > templates/last_build.txt',
             user=env.ok_user)
@@ -46,7 +58,7 @@ def _chown(to_user, directory=env.project_dir):
 @roles('web')
 def deploy_web(buildout=False):
     web_apache_cmd('stop')
-    with cd(env.venv_root):
+    with cd(_venv_root()):
         _chown(env.ok_user)
         with cd(env.project_dir):
             _git_pull()
@@ -67,7 +79,7 @@ def db_migrate_syncdb():
 
 @roles('db')
 def deploy_backend(migration=False, requirements=False):
-    with cd("/oknesset_data/Open-Knesset"):
+    with cd(_project_root()):
         _git_pull()
         if requirements:
             _install_requirements()
@@ -103,7 +115,7 @@ def _git_pull(repo='origin', branch='master', as_user=env.ok_user):
 def _install_requirements():
     virtualenv(
         'cd .. && pip install -r ' +
-        env.project_dir + '/requirements.txt && cd ' + env.project_root)
+        env.project_dir + '/requirements.txt && cd ' + _project_root())
 
 
 @roles('all')
