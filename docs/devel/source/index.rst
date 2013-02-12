@@ -33,11 +33,12 @@ is Python_ and Django_ based.
 Contents:
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     github
     environment/index
     workflow
+    css_docs
     ide
 
 Indices and tables
