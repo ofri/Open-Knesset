@@ -202,6 +202,7 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
+    {% if perms.laws.change_bill %}
     <div id="edit-bill-modal" class="modal hide fade"
         tabindex="-1" role="dialog" aria-labelledby="editBillModalLabel" aria-hidden="true">
         <div class="modal-header">
@@ -222,6 +223,7 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
+    {% endif %}
     <section class="card card-main-party">
         <div class="row">
             <div class="span9 card-details">
