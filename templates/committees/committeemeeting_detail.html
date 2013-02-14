@@ -98,9 +98,9 @@
                 </ul>
             </section>
 
+            {% with object.parts.list as parts %}
             <section class="card card-list">
                 <header><h2>{% trans 'Protocol' %}</h2></header>
-                  {% with object.parts.list as parts %}
                     {% get_annotations_for parts as annotation_dict %}
                     <div class="protocol row">
                     {% autopaginate parts paginate_by %}
@@ -175,11 +175,10 @@
                       {% endwith %}
                         </div>
                     {% endfor %}
-                    {% paginate %}
                     </div>
-                  {% endwith %}
-                {% endblock %}
             </section> <!-- protocol -->
+            <div class="text-center">{% paginate %}</div>
+            {% endwith %}
         </div>
 
         <div class="span4">
@@ -227,6 +226,7 @@
         </div>
     </div>
 
+{% endblock %}
 
 
 
