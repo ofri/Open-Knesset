@@ -205,23 +205,23 @@
     {% if perms.laws.change_bill %}
     <div id="edit-bill-modal" class="modal hide fade"
         tabindex="-1" role="dialog" aria-labelledby="editBillModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="editBillModalLabel">{% trans "Edit Bill" %}</h3>
-        </div>
-        <div class="modal-body">
-            <form method="post" action=".">{% csrf_token %}
-                <input type="hidden" name="user_input_type" value="change_bill_name"></input>
-                <label for="bill_name">{% trans 'name' %}:</label>
-                <input type="text" name="bill_name" id="bill_name" value="{{ object.full_title }}" /><br/>
-                <label for="bill_name">{% trans 'popular name' %}:</label>
-                <input type="text" name="popular_name" id="popular_name" value="{{ object.popular_name }}" />
-                <input class="clearfix" type="submit" value="{% trans 'Submit' %}" />
-            </form>       
-        </div>
-        <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
-        </div>
+        <form method="post" action="." class="modal-form">{% csrf_token %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 id="editBillModalLabel">{% trans "Edit Bill" %}</h3>
+            </div>
+            <div class="modal-body">
+                    <input type="hidden" name="user_input_type" value="change_bill_name"></input>
+                    <label for="bill_name">{% trans 'name' %}:</label>
+                    <input type="text" class="input-block-level" name="bill_name" id="bill_name" value="{{ object.full_title }}" /><br/>
+                    <label for="bill_name">{% trans 'popular name' %}:</label>
+                    <input type="text" class="input-block-level" name="popular_name" id="popular_name" value="{{ object.popular_name }}" />
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="submit" value="{% trans "Submit" %}" />
+                <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+            </div>
+        </form>       
     </div>
     {% endif %}
     <section class="card card-main-party">
