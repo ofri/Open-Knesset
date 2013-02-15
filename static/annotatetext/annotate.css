@@ -15,7 +15,7 @@ blockquote {
     border:0 none;
 }
 
-.selectableText {
+.text-content .selectableText {
     font-family:Helvetica;
     font-size: 12pt;
     overflow-y:hidden;
@@ -29,6 +29,7 @@ blockquote {
     padding:1px 0px;
     resize: none;
     line-height:16pt;
+    cursor: text;
 }
 
 
