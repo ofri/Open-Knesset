@@ -6,7 +6,7 @@
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ description }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block extracss %}
-    <link href="{% static "annotatetext/annotate.css" %}" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{% static "annotatetext/annotate.css" %}?v=1" rel="stylesheet" type="text/css" media="screen" />
     <link href="{% static "css/jquery.autocomplete.css" %}" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
 {% block extrajs %}
@@ -67,7 +67,7 @@
     </section>
 
     <div class="row">
-        <div class="span8 cards">
+        <div class="span9 cards">
             {% if object.bg_material %}
             <section class="card card-list">
                 <header><h2>{% trans "Background Material" %}</h2></header>
@@ -147,18 +147,18 @@
                 </script>
                       {% endif %}
                       <div class="speech-{{ object.id }} speech-container row" id="speech-{{ object.id }}-{{ speech_part.order }}">
-                        <div class="text-speaker span8" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
+                        <div class="text-speaker span9" {% if speech_part.header %}style="background-color:{{ colors|hash:speech_part.header }}" {% endif %}>
                             {% firstof speech_part.header "&nbsp;" %}
                             {% ifnotequal speech_part.order 1 %}
                                 <a href="#speech-{{ object.id }}-{{ speech_part.order }}" class="permalink">¶</a>
                             {% endifnotequal %}
                         </div>
 
-                        <div class="text-content span5" id="annotations-{{ speech_part.id }}_content">
+                        <div class="text-content span6" id="annotations-{{ speech_part.id }}_content">
                             <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content" style="background-color:{{colors|hash:speech_part.header}}">{{ speech_part.body|simple_formatting }}</blockquote>
                         </div>
                         <div class="span3">
-                            <div style="display:none" class="annotationtoolbox annotating" id="annotationtoolbox-{{ speech_part.id }}">
+                            <div style="display:none" class="annotationtoolbox annotating form-inline" id="annotationtoolbox-{{ speech_part.id }}">
                                 <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
                                 <input type="checkbox" class="markall" name="markall-{{ speech_part.id }}" id="markall-{{ speech_part.id }}"/>
                             </div>
@@ -183,7 +183,7 @@
             {% endwith %}
         </div>
 
-        <div class="span4">
+        <div class="span3">
             <aside class="sidebar sidebar-agendas">
                 <header><h2>{% trans "Tags" %}</h2></header>
                 <div id="tagging-container">
