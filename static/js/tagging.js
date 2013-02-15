@@ -77,7 +77,7 @@ function add_tag_callback(data) {
     $('#no-tags-yet').remove();
     if( $("#tag_"+item.id).length == 0 ){ // we don't already have this tag.
         var href = item.url;
-        $('<a class="tag">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#tags");
+        $('<a class="tag label">').attr("id", "tag_"+item.id).attr("href", href).html(item.name).appendTo("#tags");
         $("#tags").append(document.createTextNode(" "));
     };
     if( $("#possible_tag_"+item.id).length == 0 ){ // we don't already have this tag in the possible list.
