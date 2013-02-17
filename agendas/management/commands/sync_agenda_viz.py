@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
     _DIRS = {
         'dist': os.path.join(_static_root, 'js'),
         'css': os.path.join(_static_root, 'css'),
-        'img': os.path.join(_static_root, 'img', 'agenda-vis'),
+        'img': os.path.join(_static_root, 'img', 'agenda-viz'),
     }
     _html_file = 'agenda-widget.html'
 
