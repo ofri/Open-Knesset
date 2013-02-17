@@ -18,16 +18,15 @@ class Command(NoArgsCommand):
     _DIRS = {
         'dist': os.path.join(_static_root, 'js'),
         'css': os.path.join(_static_root, 'css'),
-        'icons': os.path.join(_static_root, 'img', 'agenda-vis'),
+        'img': os.path.join(_static_root, 'img', 'agenda-vis'),
     }
     _html_file = 'agenda-widget.html'
 
     _replacements = (
         ('/lib/require.js', '{% static "js/require.js" %}'),
-        ('src/agenda-viz.js', '{% static "js/agenda-viz-1.0.js" %}'),
+        ('src/agenda-viz.js', '{% static "js/agenda-viz-1.0.1.js" %}'),
         ('/src/css/openfont.css', '{% static "css/openfont.css" %}'),
         ('/src/img/', '{% static "img/agenda-viz/" %}'),
-        ('icons/', ''),
         ('</body>', '    <script>window.IMAGES_PATH = "{% static "img/agenda-viz/" %}";</script>\n</body>'),
     )
 
