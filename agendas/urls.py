@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^meeting/(?P<pk>\d+)/$', agenda_meeting_detail_view, name='agenda-meeting-detail'),
     url(r'^add/$', agenda_add_view, name='agenda-add'),
     url(r'^update/votes/$', update_editors_agendas, name='update-editors-agendas'),
-    url(r'^embed/$', TemplateView.as_view(template_name='agendas/agenda-widget.html')),
+    url(r'^embed/$', TemplateView.as_view(template_name='agendas/agenda-widget.html'), name="agenda-embed"),
 #    url(r'^user/(?P<user_id>\d+)/$', user_agendas_list_view, name),
 #    url(r'^vote/(?P<vote_id>\d+)/$', ascribe_agenda_to_vote),
 )
