@@ -70,7 +70,9 @@ def _updateDb(xmlData,url,year,mon,day):
         meeting=CommitteeMeeting(
             committee=plenum,
             date=datetime.datetime(int(year),int(mon),int(day)),
-            src_url=url
+            src_url=url,
+            topics=u'ישיבת מליאה מתאריך '+day+'/'+mon+'/'+year,
+            date_string=''+day+'/'+mon+'/'+year
         )
     meeting.protocol_text=xmlData
     meeting.save()

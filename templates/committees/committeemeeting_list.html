@@ -5,18 +5,20 @@
 {% block description %}{{ title }} - {% endblock %}
 {% block nav-committees %}class="active"{% endblock %}
 {% block divcontent %}
-    <div class="datelookup">{% trans 'Lookup by date' %}
-    <input type="text" id="datelookup_input" value="{{ object_list.0.date }}"/>
-    <input type="submit" id="datelookup_submit" value="{% trans 'Submit' %}"/>
-    <script>
-        $('#datelookup_submit').click(function(){
-                                                 var d = $('#datelookup_input').val();                                                     
-                                                 if (d){
-                                                        window.location = '{% url committee-meetings-by-date committee_id %}' +d + '/';
-                                                 }
-                                             });
-    </script>
-    </div>
+    {% ifnotequal committee_type 'plenum' %}
+        <div class="datelookup">{% trans 'Lookup by date' %}
+        <input type="text" id="datelookup_input" value="{{ object_list.0.date }}"/>
+        <input type="submit" id="datelookup_submit" value="{% trans 'Submit' %}"/>
+        <script>
+            $('#datelookup_submit').click(function(){
+                                                    var d = $('#datelookup_input').val();                                                     
+                                                    if (d){
+                                                            window.location = '{% url committee-meetings-by-date committee_id %}' +d + '/';
+                                                    }
+                                                });
+        </script>
+        </div>
+    {% endifnotequal %}
     <h2>{{ title }}</h2>
     <div class="clear"></div>
 	<ul class="item-list">

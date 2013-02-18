@@ -4,8 +4,6 @@ from django.core.management.base import NoArgsCommand
 from optparse import make_option
 from plenum.management.commands.parse_plenum_protocols_subcommands.download import Download
 from plenum.management.commands.parse_plenum_protocols_subcommands.parse import Parse
-from plenum.management.commands.parse_plenum_protocols_subcommands.html_preview import HtmlPreview
-from plenum.management.commands.parse_plenum_protocols_subcommands.update_db import UpdateDb
 
 class Command(NoArgsCommand):
 
@@ -21,9 +19,12 @@ class Command(NoArgsCommand):
     )
 
     def handle_noargs(self, **options):
+        didSomething=False
         if options.get('download',False) or options.get('redownload',False):
             Download(options.get('verbosity',1),options.get('redownload',False))
-        elif options.get('parse',False) or options.get('reparse',False):
+            didSomething=True
+        if options.get('parse',False) or options.get('reparse',False):
             Parse(options.get('verbosity',1),options.get('reparse',False))
-        else:
-            print "invalid option, try --help"
+            didSomething=True
+        if not didSomething==True:
+            print 'invalid options, try --help for help'

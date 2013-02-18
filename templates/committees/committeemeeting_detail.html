@@ -27,30 +27,36 @@
 </span>
 {% endblock %}
 {% block divcontent %}
-    <a href="{% url committee-detail object.committee.id %}">{% trans 'Back to committee' %}</a><br>
+    {% ifequal object.committee.type 'plenum' %}
+        <a href="{{ object.committee.get_absolute_url }}">{% trans 'Back to plenum' %}</a><br>
+    {% else %}
+        <a href="{{ object.committee.get_absolute_url }}">{% trans 'Back to committee' %}</a><br>
+    {% endifequal %}
     <h1>{{ object.topics|safe }}</h1>
-    <h2>{{ title }}</h2>
-    <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{% mk_card m %}{% endfor %}<br>
-    {% if user.is_authenticated %}
-        {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
-    {% endif %}
-    {% if object.bg_material %}
-    <h2>{% trans 'Background Material' %}</h2>
-            {% for b in object.bg_material %} <a class="item dontwrap" href="{{ b.url}}" />{{ b.title }}</a> &nbsp; {% endfor %}
-    {% endif %}
-                                 
-    <h2>{% trans 'Bills' %}</h2> {% for b in object.bills_first.all %}<a class="item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
-                                 {% for b in object.bills_second.all %}<a class="item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
-    <br>
-    {% if user.is_authenticated %}
-    {% trans 'Suggest a matching bill' %}
-    <form method="post" action=".">{% csrf_token %}
-        <input type="hidden" name="user_input_type" value="bill"></input>
-        <input type="text" class="bill_input" name="bill_text"></input>
-        <input type="hidden" name="bill_id"></input>
-        <input type="submit" value="{% trans 'Submit' %}"></input>
-    </form>
-    {% endif %}
+    {% ifnotequal object.committee.type 'plenum' %}
+        <h2>{{ title }}</h2>
+        <h2>{% trans 'MKs attended' %}</h2> {% for m in object.mks_attended.all %}{% mk_card m %}{% endfor %}<br>
+        {% if user.is_authenticated %}
+            {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
+        {% endif %}
+        {% if object.bg_material %}
+        <h2>{% trans 'Background Material' %}</h2>
+                {% for b in object.bg_material %} <a class="item dontwrap" href="{{ b.url}}" />{{ b.title }}</a> &nbsp; {% endfor %}
+        {% endif %}
+                                    
+        <h2>{% trans 'Bills' %}</h2> {% for b in object.bills_first.all %}<a class="item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
+                                    {% for b in object.bills_second.all %}<a class="item dontwrap" href="{% url bill-detail b.id %}" />{{ b }}</a> &nbsp; {% endfor %}
+        <br>
+        {% if user.is_authenticated %}
+        {% trans 'Suggest a matching bill' %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="user_input_type" value="bill"></input>
+            <input type="text" class="bill_input" name="bill_text"></input>
+            <input type="hidden" name="bill_id"></input>
+            <input type="submit" value="{% trans 'Submit' %}"></input>
+        </form>
+        {% endif %}
+    {% endifnotequal %}
 
     <div id="tagging-container">
     {% if user.is_authenticated %}
