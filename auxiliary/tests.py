@@ -8,7 +8,7 @@ from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
 from laws.models import Vote, VoteAction, Bill, Law
-from mks.models import Member,Party,WeeklyPresence
+from mks.models import Member,Party,WeeklyPresence,Knesset
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
@@ -81,7 +81,9 @@ class InternalLinksTest(TestCase):
 
     def setUp(self):
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4,
+                                            knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
         self.voteactions = []
