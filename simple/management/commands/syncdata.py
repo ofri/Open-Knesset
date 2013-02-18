@@ -414,7 +414,7 @@ class Command(NoArgsCommand):
                     l = Link(title='אתר האינטרנט של %s' % name, url=website, content_type=ContentType.objects.get_for_model(m), object_pk=str(m.id))
                     l.save()
 
-            if k19:
+            if k19: # KNESSET 19 specific
                 parties = Party.objects.filter(knesset_id=19).values_list('name','id')
                 k19 = k19.decode(ENCODING)
                 for k,v in parties:
@@ -424,6 +424,11 @@ class Command(NoArgsCommand):
                                      % (m.name,
                                         k19,
                                         k))
+                        m.save()
+                if m.current_party is None:
+                    logger.debug('member %s, k19 %s not found' %
+                                 (m.name,
+                                  k19))
 
     def get_search_string(self,s):
         if isinstance(s,unicode):

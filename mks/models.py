@@ -3,7 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
@@ -52,6 +52,17 @@ class BetterManager(models.Manager):
             ret[possible_names.index(m.name)] = m
         return ret
 
+class KnessetManager(models.Manager):
+    """This is a manager for Knesset class"""
+
+    def __init__(self):
+        super(KnessetManager, self).__init__()
+        self._current_knesset = None
+
+    def current_knesset(self):
+        if self._current_knesset is None:
+            self._current_knesset = self.get_query_set().order_by('-number')[0]
+        return self._current_knesset
 
 class CoalitionMembership(models.Model):
     party = models.ForeignKey('Party',
@@ -73,6 +84,8 @@ class Knesset(models.Model):
     number = models.IntegerField(_('Knesset number'), primary_key=True)
     start_date = models.DateField(_('Start date'), blank=True, null=True)
     end_date = models.DateField(_('End date'), blank=True, null=True)
+
+    objects = KnessetManager()
 
     def __unicode__(self):
         return unicode(self.number)

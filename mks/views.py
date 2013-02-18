@@ -18,7 +18,7 @@ from actstream import actor_stream
 from actstream.models import Follow
 
 from hashnav.detail import DetailView
-from models import Member, Party
+from models import Member, Party, Knesset
 from polyorg.models import CandidateList
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
@@ -76,7 +76,8 @@ class MemberListView(ListView):
         context['stat_type'] = info
         context['title'] = dict(self.pages)[info]
 
-        context['past_mks'] = Member.objects.filter(is_current=False)
+        context['past_mks'] = Member.objects.filter(is_current=False,
+                current_party__knesset_id=Knesset.objects.current_knesset().number)
 
         # We make sure qs are lists so that the template can get min/max
         if info == 'abc':
@@ -734,11 +735,14 @@ class PartiesMembersView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(PartiesMembersView, self).get_context_data(**kwargs)
 
-        ctx['coalition'] = Party.objects.filter(is_coalition=True).annotate(
+        ctx['coalition'] = Party.objects.filter(is_coalition=True,
+            knesset=Knesset.objects.current_knesset()).annotate(
             extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['opposition'] = Party.objects.filter(is_coalition=False).annotate(
+        ctx['opposition'] = Party.objects.filter(is_coalition=False,
+            knesset=Knesset.objects.current_knesset()).annotate(
             extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['past_members'] = Member.objects.filter(is_current=False)
+        ctx['past_members'] = Member.objects.filter(is_current=False,
+            current_party__knesset=Knesset.objects.current_knesset())
 
         return ctx
 
