@@ -10,11 +10,12 @@ blockquote {
     line-height:16pt;
     margin: 0 0 0.5em 0;;
     -moz-border-radius:0em 0em 0.5em 0.5em;
-    -webkit-border-radius:0em 0em 0.5em 0.5em 
-    border-radius:0em 0em 0.5em 0.5em    
+    -webkit-border-radius:0em 0em 0.5em 0.5em;
+    border-radius:0em 0em 0.5em 0.5em;
+    border:0 none;
 }
 
-.selectableText {
+.text-content .selectableText {
     font-family:Helvetica;
     font-size: 12pt;
     overflow-y:hidden;
@@ -28,6 +29,7 @@ blockquote {
     padding:1px 0px;
     resize: none;
     line-height:16pt;
+    cursor: text;
 }
 
 

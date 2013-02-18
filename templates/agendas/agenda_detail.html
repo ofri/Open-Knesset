@@ -58,7 +58,7 @@
             <section class="card card-list">
                 <div class="spacer text-center">
                 {% if object.is_public %}
-                    <iframe width="600" height="400" frameborder="0" src="http://ydaniv.github.com/ok-agenda-viz/?agenda_id={{object.id}}"></iframe>
+                    <iframe width="600" height="400" frameborder="0" src="{% url agenda-embed %}?agenda_id={{object.id}}"></iframe>
                 {% else %}
                     <p>{% trans 'Note: This agenda is private. It is only viewable by its editors. If you feel this agenda should be made public, content us at mail@oknesset.org' %}</p>
                     {% endif %}
