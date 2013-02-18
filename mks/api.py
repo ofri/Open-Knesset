@@ -155,7 +155,8 @@ class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta(BaseResource.Meta):
 
-        queryset = Member.objects.all().select_related('current_party')
+        queryset = Member.objects.exclude(
+            current_party__isnull=True).select_related('current_party')
 
         allowed_methods = ['get']
         ordering = [
