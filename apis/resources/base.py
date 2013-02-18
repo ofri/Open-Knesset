@@ -2,6 +2,8 @@ from django.conf import settings
 from tastypie.cache import SimpleCache
 from tastypie.resources import ModelResource
 from tastypie.throttle import CacheThrottle
+from django.core.serializers import json
+from tastypie.serializers import Serializer
 
 # are we using DummyCache ?
 _cache = getattr(settings, 'CACHES', {})
@@ -22,6 +24,15 @@ class SmartCacheThrottle(CacheThrottle):
             identifier, **kwargs)
 
 
+class IterJSONSerializer(Serializer):
+
+    def to_json(self, data, options=None):
+        options = options or {}
+
+        data = self.to_simple(data, options)
+        return ''.join(json.DjangoJSONEncoder(sort_keys=True).iterencode(data))
+
+
 class BaseResource(ModelResource):
 
     """Adds to Meta the following options:
@@ -38,6 +49,7 @@ class BaseResource(ModelResource):
     class Meta:
         cache = SimpleCache()
         throttle = SmartCacheThrottle(throttle_at=60, timeframe=60)
+        serializer = IterJSONSerializer()
 
     def get_list(self, request, **kwargs):
         """
