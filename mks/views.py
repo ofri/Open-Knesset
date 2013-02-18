@@ -372,6 +372,10 @@ class PartyListView(ListView):
 
     model = Party
 
+    def get_queryset(self):
+        return self.model.objects.filter(
+            knesset=Knesset.objects.current_knesset())
+
     pages = (
         ('seats', _('By Number of seats')),
         ('votes-per-seat', _('By votes per seat')),
