@@ -4,7 +4,7 @@
   <div class="span12">
     <div class="row">
   <div class="span5">
-    {% if agenda.image %}<img src="{{agenda.image.url}}" />{% endif %}
+    {% if agenda.image %}<a href="{% url agenda-detail agenda.id %}"><img src="{{agenda.image.url}}"></a>{% endif %}
     <p class="item-action">
         {{ agenda_votes_num }} {% trans 'votes' %},
         {{ agenda.num_followers }} {% trans 'followers' %}
