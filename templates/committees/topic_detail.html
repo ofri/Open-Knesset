@@ -2,104 +2,23 @@
 {% load i18n links_tags ratings avatar_tags %}{% load static from staticfiles %}
 {% block extratitle %}{{ topic.title }} - {% trans "suggested topic"%} {% endblock %}
 {% block extrajs %}
-    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-                register_watch({{topic.id}}, "topic", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
-        });
-    </script>
-{% endblock %}
-{% block nav-committees %}class="active"{% endblock %}
-{% block header %}
-    <ul id="breadcrumbs"> 
-        <li class="first"><a href="{% url committee-list %}">{% trans "Committees" %}</a></li>
-        <li>
-        {% for c in topic.committees.all %}
-            {% if not forloop.first %} | {% endif %}
-            <a href="{% url committee-detail c.id %}">{{c}}</a>
-        {% endfor%}
-        </li>
-        <li><a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a></li>
-    </ul>
-{% endblock %}
-{% block subnav %}
-    <ul class="actions">
-        {% if not user.is_authenticated %}
-            <li><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to rank this topic' %}</a></li>
-        {% else %}{% if user == topic.creator %}
-            <li>
-                <a href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
-            </li>
-            <li>
-                <a href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
-            </li>
-        {% else %}
-            <li> {% trans "your rating" %}: 
-                <div style="display:inline;" id="your_rating">
-                </div>
-            </li>
-        {% endif %}
-        {% endif %}
-        <li><span id="watch" class="awesome-button medium"></span></li>
-    </ul>
-{% endblock %}
-
-{% block content %}
-<script type="text/javascript" src="{% static "js/jquery.raty.min.js" %}"></script>
-
-    <h2>{{topic.title}}</h2>
-    <div class="main-column">
-        <div class="item-header big-avatar">
-            <a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a>
-        </div>
-        <div class="item-credit">
-            <a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a>{{topic.creator.get_full_name}}:
-        </div>
-        <p>{{topic.description|linebreaksbr}}</p>
-        <div style="padding: 0.5em; clear:both;"></div>
-        <h3>{% trans "Links" %}:</h3>
-        {% object_links topic %}
-        <div class="clear" style="padding-bottom:1em;"></div>
-        <h3>{% trans "share" %}:</h3>
-        <p style="padding-top:0.5em;">
-        <a href="https://twitter.com/share" class="twitter-share-button social-row" data-count="horizontal" data-via="oknesset" style="display:block;float:right;">צייץ</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
-        <iframe src="http://www.facebook.com/plugins/like.php?href={{request.get_host|iriencode}}{{request.get_full_path|iriencode}}&amp;locale=he_IL&amp;layout=standard&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;" scrolling="no" frameborder="0" allowTransparency="true" style="height:20px; width: 400px;" ></iframe>
-<!-- Place this tag where you want the +1 button to render -->
-<g:plusone size="medium" annotation="inline" width="120"></g:plusone>
-
-<!-- Place this render call where appropriate -->
-<script type="text/javascript">
-  window.___gcfg = {lang: 'iw'};
-
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
-        </p>
-    </div>
-    <div class="secondary-column">
-        <h3> {% trans "average rating" %}: </h3>
-        <div style="display:inline;" id="average_rating"></div>
-        <div class="clear"></div>
-        <div class="clear"></div>
-        {% include 'comments/object_comment_list.html' %}
-    </div>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.raty.min.js" %}"></script>
     <script>
         $(document).ready(function() {
             $('#average_rating').raty({
                 number: 7,
-                start: {{topic.rating.get_rating}},
+                score: {{topic.rating.get_rating}},
                 readOnly: true,
                 path: '{% static "img" %}',
+                width: 150
             });
             {% if user.is_authenticated %}
             {% rating_by_user user on topic.rating as vote %}
             $('#your_rating').raty({
                 cancel: true,
                 number: 7,
-                start: {% if vote %}{{vote}}{% else %}0{%endif%},
+                score: {% if vote %}{{vote}}{% else %}0{%endif%},
                 path: '{% static "img" %}',
                 click: function(score, evt) {
                     $.post('/committee/topic/{{object.id}}/'+score+'/')
@@ -108,6 +27,121 @@
             {% endif %}
         })
     </script>
+{% endblock %}
+{% block nav-committees %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+        <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+        <li>
+        {% for c in topic.committees.all %}
+            {% if not forloop.first %} | {% endif %}
+            <a href="{% url committee-detail c.id %}">{{c}}</a>
+            {% endfor%}
+            <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a>
+            <span class="divider">/</span>
+        </li>
+        <li class="active">{{topic.title}}</li>
+{% endblock %}
+
+{% block subnav %}
+{% endblock %}
+
+{% block content %}
+    <section class="card card-main">
+        <div class="row">
+            <div class="span1">
+                <div class="spacer fill">
+                    <p><a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a></p>
+                    <p><a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a></p>
+                    <p>{{topic.creator.get_full_name}}</p>
+                </div>
+            </div>
+            <div class="span8">
+                <h1>{{topic.title}}</h1>
+                <p>{{topic.description|linebreaksbr}}</p>
+            </div>
+            <div class="span3 social-details">
+                <div class="spacer actions-panel">
+                    {% include "auxiliary/_watch.html" with watched_id=topic.id watched_type="topic"%}
+                </div>
+        {% if user == topic.creator %}
+                <div class="object-actions">
+                    <a class="btn" href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
+                    <a class="btn btn-danger" href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
+                </p>
+        {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="cards span9">
+            <section class="card card-list">
+                <header><h2>{% trans "Links" %}</h2></header>
+                <ul>
+                {% object_links topic %}
+                </ul>
+            </section>
+            <section class="card card-list">
+            {% include 'comments/object_comment_list.html' %}
+            </section>
+        </div>
+
+        <div class="span3">
+            <aside class="sidebar">
+                <h2>{% trans "Rating" %}</h2>
+                <ul>
+                {% if user != topic.creator %}
+                    <li>
+                    {% if not user.is_authenticated %}
+                        <div class="alert alert-block">
+                            <a href="{% url login %}?next={{request.get_full_path}}">{% trans "Login to rank this topic" %}</a>
+                        </div>
+                    {% else %}
+                        {% trans "your rating" %}: 
+                            <div style="display:inline;" id="your_rating"></div>
+                        </li>
+                    {% endif %}
+                    </li>
+                {% endif %}
+                    <li>
+                        {% trans "average rating" %}:
+                        <div style="display:inline;" id="average_rating"></div>
+                    </li>
+                </ul>
+            </aside> <!-- rating -->
+
+            <aside class="sidebar sidebar-agendas">
+                <h2>{% trans "share" %}</h2>
+                <ul>
+                    <li>
+                        <a href="https://twitter.com/share" class="twitter-share-button social-row" data-count="horizontal" data-via="oknesset" style="display:block;float:right;">צייץ</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+                    </li>
+                    <li>
+                        <iframe src="http://www.facebook.com/plugins/like.php?href={{request.get_host|iriencode}}{{request.get_full_path|iriencode}}&amp;locale=he_IL&amp;layout=standard&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;" scrolling="no" frameborder="0" allowTransparency="true" style="height:40px; width: 250px;" ></iframe>
+                    </li>
+                    <li>
+                        <!-- Place this tag where you want the +1 button to render -->
+                        <g:plusone size="medium" annotation="inline" width="120"></g:plusone>
+
+                        <!-- Place this render call where appropriate -->
+                        <script type="text/javascript">
+                        window.___gcfg = {lang: 'iw'};
+
+                        (function() {
+                            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                            po.src = 'https://apis.google.com/js/plusone.js';
+                            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                        })();
+                        </script>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </div>
 {% endblock %}
 {% block social %}
 {% endblock %}

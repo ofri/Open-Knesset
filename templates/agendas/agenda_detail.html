@@ -13,13 +13,9 @@
 
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-                register_watch({{object.id}}, "agenda", "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched_object|lower}}, "{% url user-follow-unfollow %}");
-        });
-    </script>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
 {% endblock %}
+
 {% block nav-agendas %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
@@ -48,9 +44,7 @@
 
             <div class="span3 social-details">
                 <div class="spacer fill actions-panel">
-                    <a id="watch" class="btn btn-big btn-primary"></a>
-                    <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
-
+                    {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="agenda"%}
                     {% if user in object.editors.all %}
                         <a class="btn btn-big btn-contact" href="{{ object.get_edit_absolute_url }}">{% trans "Edit" %}</a>
                     {% endif %}
@@ -64,7 +58,7 @@
             <section class="card card-list">
                 <div class="spacer text-center">
                 {% if object.is_public %}
-                    <iframe width="600" height="400" frameborder="0" src="http://ydaniv.github.com/ok-agenda-viz/?agenda_id={{object.id}}"></iframe>
+                    <iframe width="600" height="400" frameborder="0" src="{% url agenda-embed %}?agenda_id={{object.id}}"></iframe>
                 {% else %}
                     <p>{% trans 'Note: This agenda is private. It is only viewable by its editors. If you feel this agenda should be made public, content us at mail@oknesset.org' %}</p>
                     {% endif %}

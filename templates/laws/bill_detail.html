@@ -7,7 +7,7 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
     <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
@@ -111,7 +111,6 @@
             return s;
         }
         $(document).ready(function() {
-                register_watch({{object.id}}, 'bill', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", {{watched|lower}}, "{% url user-follow-unfollow %}");
                 $("[rel=tooltip]").tooltip({placement:'bottom'});
                 var paper = Raphael("bill-canvas", 850, 150);
                 var titles = paper.image("{% static "img/bill-view-stage-labels.png" %}",137,10,699,130);
@@ -203,6 +202,28 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
+    {% if perms.laws.change_bill %}
+    <div id="edit-bill-modal" class="modal hide fade"
+        tabindex="-1" role="dialog" aria-labelledby="editBillModalLabel" aria-hidden="true">
+        <form method="post" action="." class="modal-form">{% csrf_token %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 id="editBillModalLabel">{% trans "Edit Bill" %}</h3>
+            </div>
+            <div class="modal-body">
+                    <input type="hidden" name="user_input_type" value="change_bill_name"></input>
+                    <label for="bill_name">{% trans 'name' %}:</label>
+                    <input type="text" class="input-block-level" name="bill_name" id="bill_name" value="{{ object.full_title }}" /><br/>
+                    <label for="bill_name">{% trans 'popular name' %}:</label>
+                    <input type="text" class="input-block-level" name="popular_name" id="popular_name" value="{{ object.popular_name }}" />
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="submit" value="{% trans "Submit" %}" />
+                <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+            </div>
+        </form>       
+    </div>
+    {% endif %}
     <section class="card card-main-party">
         <div class="row">
             <div class="span9 card-details">
@@ -220,8 +241,11 @@
             </div>
             <div class="span3 social-details">
               <div class="spacer actions-panel">
-                <a id="watch" class="btn btn-big btn-primary"></a>
+                {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
                 <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
+                {% if perms.laws.change_bill %}
+                <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
+                {% endif %}
             </div>
     </section>
     {% if proposers %}

@@ -16,10 +16,10 @@
     <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=4" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=13" />
     <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
 
-<!--    
+<!--
     <link href="{% static "css/common.css" %}?v=21" rel="stylesheet" type="text/css" media="screen" />
     <link href="{% static "css/jquery.jgrowl.css" %}" rel="stylesheet" type="text/css" media="screen" />
 -->
@@ -66,7 +66,7 @@
       </div>
 
       <ul class="nav nav-pills">
-          <li id="nav-elections" {% block nav-elections %} {% endblock %} > <a href="{% url candidate-list-list %}">{% trans 'Election' %}</a> </li>
+          <li id="nav-elections" {% block nav-elections %} {% endblock %} > <a href="{% url candidate-list-list %}">{% trans 'Knesset 19' %}</a> </li>
         <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members %}">{% trans "Members and Parties" %}</a></li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
@@ -122,7 +122,7 @@
                         <li><a href="{% url party-list %}">{% trans "Members and Parties" %}</a></li>
                         <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
                         <li><a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-                        <li><a href="{% url plenum %}">מליאה</a></li>
+                        <!-- <li><a href="#">מליאה</a></li> -->
                         <li><a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
                     </ul>
                 </nav>
@@ -150,7 +150,7 @@
                 <div class="span4 offset4 hasadna">
                     <h3>
                         <img src="{% static "img/sadna30x30.png" %}" alt="{% trans "The Public Knowledge Workshop" %}">
-                        <span>{% trans "Project of" %}</span>{% trans "The Public Knowledge Workshop" %}
+                        <span>{% trans "Project of" %}</span><a href="http://www.hasadna.org.il">{% trans "The Public Knowledge Workshop" %}</a>
                     </h3>
                     <ul>
                         <li><a
@@ -168,13 +168,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="span11">
+                <div class="span9">
                     {% trans "Some rights reserved. Using data from the site requires credit" %}
                     <a href="{% url about %}">{% trans "Details in the link" %}</a>
                 </div>
-                <div class="span1">
-                    <a target="_blank" href="https://market.android.com/details?id=org.oknesset"><img src="/static/img/android_app.png" alt="אייפון" height="32" width="25"></a>
-                    <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון" height="32" width="21"></a>
+                <div class="span3">
+                <a href="https://play.google.com/store/apps/details?id=org.oknesset" target="_blank">
+                    <img alt="Get it on Google Play"
+                    src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+                </a>
+                    <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון"></a>
                 </div>
             </div>
         </div>
@@ -207,7 +210,7 @@
     <script>
         $(function() { 
             // send csrf with AJAX
-            $('html').ajaxSend(function(event, xhr, settings) {
+            $(document).ajaxSend(function(event, xhr, settings) {
                 function getCookie(name) {
                     var cookieValue = null;
                     if (document.cookie && document.cookie != '') {
@@ -237,7 +240,7 @@
         _gaq.push(['_setAccount', 'UA-15521464-1']);
         _gaq.push(['_setDomainName','.oknesset.org']);
         _gaq.push(['_trackPageview']);
-      
+
         (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';

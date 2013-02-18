@@ -1,5 +1,6 @@
 #encoding: utf-8
 from datetime import date
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
 from django.db.models import Q
@@ -67,6 +68,16 @@ class CoalitionMembership(models.Model):
                               self.end_date or ""))
 
 
+class Knesset(models.Model):
+
+    number = models.IntegerField(_('Knesset number'), primary_key=True)
+    start_date = models.DateField(_('Start date'), blank=True, null=True)
+    end_date = models.DateField(_('End date'), blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.number)
+
+
 class Party(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField(blank=True, null=True)
@@ -74,6 +85,8 @@ class Party(models.Model):
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
     number_of_seats = models.IntegerField(blank=True, null=True)
+    knesset = models.ForeignKey(Knesset, related_name='parties', db_index=True,
+                                null=True, blank=True)
 
     objects = BetterManager()
 
@@ -81,6 +94,7 @@ class Party(models.Model):
         verbose_name = _('Party')
         verbose_name_plural = _('Parties')
         ordering = ('-number_of_seats',)
+        unique_together = ('knesset', 'name')
 
     @property
     def uri_template(self):
@@ -288,7 +302,10 @@ class Member(models.Model):
         if self.is_current:
             return (date.today() - self.start_date).days
         else:
-            return (self.end_date - self.start_date).days
+            try:
+                return (self.end_date - self.start_date).days
+            except TypeError:
+                return None
 
     def average_weekly_presence(self):
         hours = WeeklyPresence.objects.filter(
@@ -410,6 +427,10 @@ class Member(models.Model):
             return self.img_url
 
         return self.img_url.replace('-s.jpg', '.jpg')
+
+    @property
+    def age(self):
+        return relativedelta(date.today(), self.date_of_birth)
 
 
 class WeeklyPresence(models.Model):

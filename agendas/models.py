@@ -73,7 +73,7 @@ class AgendaMeeting(models.Model):
     def get_score_header(self):
         return _('Importance')
     def get_importance_header(self):
-        return None
+        return ''
 
     class Meta:
         unique_together = ('agenda', 'meeting')
@@ -357,8 +357,12 @@ class Agenda(models.Model):
         "Get count for each vote type for a specific member on this agenda"
 
         # let's split qs to make it more readable
-        qs = VoteAction.objects.filter(member=member, vote__agendavotes__agenda=self)
-        qs = qs.values('type').annotate(total=Count('id'))
+        qs = VoteAction.objects.filter(member=member, type__in=('for', 'against'), vote__agendavotes__agenda=self)
+        qs = list(qs.values('type').annotate(total=Count('id')))
+
+        totals = sum(x['total'] for x in qs)
+        qs.append({'type': 'no-vote', 'total': self.votes.count() - totals})
+
         return qs
 
     def get_party_values(self):

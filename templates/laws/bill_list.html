@@ -14,10 +14,10 @@
         <ul class="actions">
             <li>
                 <span id="export-csv" class="awesome-button medium">
-                    <a href="./csv/?{{ query_string }}">{% trans 'Export data to Excel' %}</a>
+                    <a href="{% if not csv_file %}./csv/?{% else %}{{MEDIA_URL}}{{csv_file}}{% endif %}">{% trans 'Export data to Excel' %}</a>
                 </span>
             </li>
-        </ul>	
+        </ul>
 {% endblock %}
 {% block divcontent %}
     <div id="legislation-information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
@@ -27,7 +27,7 @@
         </div>
         <div class="modal-body">
             <p><a target="_blank" href="http://hamishmar.org.il/?page_id=431">{% trans 'Explanation about the legislation process' %}</a></p>
-	        {% i18ninclude "laws/bill_list_help.html" LANGUAGE_CODE %}
+            {% i18ninclude "laws/bill_list_help.html" LANGUAGE_CODE %}
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
@@ -51,10 +51,10 @@
             {% endif %}
         </div>
         <div class="span3">
-	 		<aside class="sidebar sidebar-agendas">
+            <aside class="sidebar sidebar-agendas">
                 <header>
                     <h2>{% trans "Filter" %}</h2>
-	 			    <a class="btn btn-mini btn-question" href="#">?</a>
+                    <a class="btn btn-mini btn-question" href="#">?</a>
                 </header>
                 <div>
                     <form action="." method="get" class="filter-form">

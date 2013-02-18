@@ -1,73 +1,96 @@
 {% extends "site_base.html" %}
 {% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
-{% block extratitle %}{% trans 'User Profile' %}{% endblock %}
-{% block header %}<h1>{% trans 'User Profile' %}</h1>{% endblock %}
+{% block extratitle %}{% trans "User Profile" %}{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "User Profile" %}</li>
+{% endblock %}
+
 {% block content %}
-<form action="." method="post">{% csrf_token %}
-    <table>
-    <tr>
-        <th><label>{% trans "Avatar" %}</label></th>
-        <td>
-            {% avatar request.user 75 %}
-            <a href="{% url avatar_change %}">{% trans "Change your avatar" %}</a>
-        </td>
-    </tr>
-    {{ edit_form }}
-    <tr>
-        <th><label>{% trans "Following Members" %}:</label></th>
-        <td>
+<div class="row">
+    <div class="span9">
+        <div class="card card-main">
+            <div class="spacer">
+                <h1>{% trans "User Profile" %}</h1>
+                {% if not edit_form.valid_email %}
+                    {% if not edit_form.has_email %}
+                        <div class="alert alert-error">
+                            {% trans "You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address." %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-block">
+                            {% trans "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it" %}
+                            <form action="{% url send-validation-email %}" method="post">{% csrf_token %}
+                                <input type="submit" name="send validation email" value="{% trans 'send validation email' %}">
+                            </form>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info">{% trans 'Your email has been validated, so you can edit stuff!' %}</div>
+                {% endif %}
+                <form action="." method="post">{% csrf_token %}
+                    {{ edit_form.as_p }}
+                    <input class="btn btn-primary" type="submit" name="save" value="{% trans 'save' %}" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="span3">
+        <aside class="sidebar">
+            <h2>{% trans "Avatar" %}</h2>
+            <ul class="text-center">
+                <li>{% avatar request.user 75 %}</li>
+                <li><a class="btn" href="{% url avatar_change %}">{% trans "Change your avatar" %}</a></li>
+            </ul>
+        </aside>
+
+        <aside class="sidebar">
+            <h2>{% trans "Following Members" %}</h2>
+            <ul>
             {% for member in request.user.get_profile.members %}
-                <a class="item" id="following-member-{{member.id}}" href="{{member.get_absolute_url}}">
-                <img class="unfollow" id="unfollow-member-{{member.id}}" src="{% static "img/X.png" %}" />
-                {{member}}
-                </a>
+                <li>
+                    <a href="#" class="btn btn-danger btn-mini unfollow" id="unfollow-member-{{member.id}}"><i class="icon-remove-sign icon-white"></i></a>
+                    <a id="following-member-{{member.id}}" href="{{member.get_absolute_url}}">{{member}}</a>
+                </li>
+            {% empty %}
+                <li>{% trans "None" %}</li>
             {% endfor %}
-        </td>
-    </tr>
-    {% for bill in request.user.get_profile.bills %}
-    <tr>
-        {% if forloop.first %}
-            <th><label>{% trans "Following Bills" %}:</label></th>
-        {% else %}
-            <th></th>
-        {% endif %}
-        <td>
-           <a class="item" id="following-bill-{{bill.id}}" href="{{ bill.get_absolute_url }}">
-            <img class="unfollow" id="unfollow-bill-{{ bill.id }}" src="{% static "img/X.png" %}" />
-            {{ bill }}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    {% for meeting in request.user.get_profile.meetings %}
-    <tr>
-        {% if forloop.first %}
-            <th><label>{% trans "Following Meetings" %}:</label></th>
-        {% else %}
-            <th></th>
-        {% endif %}
-        <td>
-           <a class="item" id="following-meeting-{{meeting.id}}" href="{{ meeting.get_absolute_url }}">
-            <img class="unfollow" id="unfollow-meeting-{{ meeting.id }}" src="{% static "img/X.png" %}" />
-            {{ meeting }}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    </table>
-    <input type="submit" name="save" value="{% trans 'save' %}" />
-</form>
-<br/>
-{% if not edit_form.valid_email %}
-    {% if not edit_form.has_email %}
-        {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must first provide a valid email address.' %}
-    {% else %}
-        {% trans 'You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it' %}
-        <form action="{% url send-validation-email %}" method="post">{% csrf_token %}
-            <input type="submit" name="send validation email" value="{% trans 'send validation email' %}" />
-        </form>
-    {% endif %}
-{% else %}
-    {% trans 'Your email has been validated, so you can edit stuff!' %}
-{% endif %}
+            </ul>
+        </aside>
+
+        <aside class="sidebar">
+            <h2>{% trans "Following Bills" %}:</h2>
+            <ul>
+            {% for bill in request.user.get_profile.bills %}
+                <li>
+                    <a href="#" class="btn btn-danger btn-mini unfollow" id="unfollow-bill-{{ bill.id }}"><i class="icon-remove-sign icon-white"></i></a>
+                    <a id="following-bill-{{bill.id}}" href="{{ bill.get_absolute_url }}">{{ bill }}</a>
+                </li>
+            {% empty %}
+                <li>{% trans "None" %}</li>
+            {% endfor %}
+            </ul>
+        </aside>
+
+        <aside class="sidebar">
+            <h2>{% trans "Following Meetings" %}</h2>
+            <ul>
+            {% for meeting in request.user.get_profile.meetings %}
+                <li>
+                    <a href="#" class="btn btn-danger btn-mini unfollow" id="unfollow-meeting-{{ meeting.id }}"><i class="icon-remove-sign icon-white"></i></a>
+                    <a class="item" id="following-meeting-{{meeting.id}}" href="{{ meeting.get_absolute_url }}">{{ meeting }}</a>
+                </li>
+            {% empty %}
+                <li>{% trans "None" %}</li>
+            {% endfor %}
+            </ul>
+        </aside>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extrajs %}
 <script>
     $(document).ready( function() {
         $('.unfollow').click(function(evt){
@@ -81,13 +104,11 @@
                 data: {what: what, id: object_id, verb:'unfollow'},
                 context: $('#following-' + what + '-' + object_id),
                 success: function () {
-                    this.remove();
+                    $(this).parent().remove();
                 },
             })
             return (false);
         })
     })
 </script>
-
 {% endblock %}
-{% block social %} {% endblock %}

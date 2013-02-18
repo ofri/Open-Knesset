@@ -8,31 +8,32 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+	do='nothing'
         # Adding model 'Document'
-        db.create_table('mmm_document', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('url', self.gf('django.db.models.fields.URLField')(unique=True, max_length=200)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=2000)),
-            ('publication_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('author_names', self.gf('django.db.models.fields.CharField')(max_length=500, blank=True)),
-        ))
-        db.send_create_signal('mmm', ['Document'])
+        #db.create_table('mmm_document', (
+            #('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            #('url', self.gf('django.db.models.fields.URLField')(unique=True, max_length=200)),
+            #('title', self.gf('django.db.models.fields.CharField')(max_length=2000)),
+            #('publication_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            #('author_names', self.gf('django.db.models.fields.CharField')(max_length=500, blank=True)),
+        #))
+        #db.send_create_signal('mmm', ['Document'])
 
         # Adding M2M table for field req_committee on 'Document'
-        db.create_table('mmm_document_req_committee', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('document', models.ForeignKey(orm['mmm.document'], null=False)),
-            ('committee', models.ForeignKey(orm['committees.committee'], null=False))
-        ))
-        db.create_unique('mmm_document_req_committee', ['document_id', 'committee_id'])
+        #db.create_table('mmm_document_req_committee', (
+            #('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            #('document', models.ForeignKey(orm['mmm.document'], null=False)),
+            #('committee', models.ForeignKey(orm['committees.committee'], null=False))
+        #))
+        #db.create_unique('mmm_document_req_committee', ['document_id', 'committee_id'])
 
         # Adding M2M table for field req_mks on 'Document'
-        db.create_table('mmm_document_req_mks', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('document', models.ForeignKey(orm['mmm.document'], null=False)),
-            ('member', models.ForeignKey(orm['mks.member'], null=False))
-        ))
-        db.create_unique('mmm_document_req_mks', ['document_id', 'member_id'])
+        #db.create_table('mmm_document_req_mks', (
+            #('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            #('document', models.ForeignKey(orm['mmm.document'], null=False)),
+            #('member', models.ForeignKey(orm['mks.member'], null=False))
+        #))
+        #db.create_unique('mmm_document_req_mks', ['document_id', 'member_id'])
 
 
     def backwards(self, orm):

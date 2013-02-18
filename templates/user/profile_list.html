@@ -1,17 +1,28 @@
 {% extends "site_base.html" %}
 {% load i18n mks_tags activity_tags pagination_tags %}
-{% block extratitle %}{% trans 'Users' %}{% endblock %}
-{% block header %}<h1>{% trans 'Users' %}</h1>{% endblock %}
+{% block extratitle %}{% trans "Users" %}{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "Users" %}</li>
+{% endblock %}
+
 {% block content %}
     {% autopaginate object_list %}
-    <ul class="user-list">
-    {% for user in object_list %}
-        <li><a href="{{user.get_absolute_url}}">{{user}}</a></li>
-    {% empty %}
-        <p>
-        {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
-        </p>
-    {% endfor %}
-    </ul>
-    {% paginate %}
+    <div class="row cards">
+        <div class="span12">
+            <div class="card card-list">
+                <header><h1>{% trans "Users" %}</h1></header>
+                <ul class="user-list">
+                {% for user in object_list %}
+                    <li><p class="item-title"><a href="{{user.get_absolute_url}}">{{user}}</a></p></li>
+                {% empty %}
+                    <li>
+                    {% trans "Sorry, no data is available, try selecting more actions and refresh" %}
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">{% paginate %}</div>
 {% endblock %}

@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from django.core.files.storage import default_storage
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -177,7 +178,8 @@ def votes_to_bar_widths(v_count, v_for, v_against):
 
 class BillCsvView(CsvView):
     model = Bill
-    filename = 'bills.csv'
+    file_path_and_name = ['csv','bills.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('full_title', _('Full Title')),
                     ('popular_name', _('Popular Name')),
                     ('get_stage_display', _('Stage')),
@@ -189,6 +191,20 @@ class BillCsvView(CsvView):
                     ('approval_vote', _('Approval Vote')),
                     ('proposers', _('Proposers')),
                     ('joiners', _('Joiners')))
+
+    def get_queryset(self, **kwargs):
+        try:
+            return self.model.objects.select_related('law',
+                                                     'first_vote',
+                                                     'approval_vote')\
+                                     .prefetch_related('joiners',
+                                                       'proposers',
+                                                       'pre_votes',
+                                                       'first_committee_meetings',
+                                                       'second_committee_meetings')
+        except DatabaseError: # sqlite can't prefetch this query, because it has
+                              # too many objects
+            return self.model.objects.all()
 
     def community_meeting_gen(self, obj, attr):
         '''
@@ -226,9 +242,14 @@ class BillCsvView(CsvView):
     def pre_votes(self, obj, attr):
         return self.community_meeting_gen(obj, attr)
 
+
 class BillDetailView (DetailView):
     allowed_methods = ['get', 'post']
     model = Bill
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(BillDetailView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
         try:
@@ -364,12 +385,17 @@ class BillDetailView (DetailView):
             if request.user.has_perm('laws.change_bill') and 'bill_name' in request.POST.keys():
                 new_title = request.POST.get('bill_name')
                 new_popular_name = request.POST.get('popular_name')
-                Bill.objects.filter(pk=object_id).update(title=new_title, full_title=new_title, 
+                logger.info('user %d is updating bill %s. new_title=%s, new_popular_name=%s' %
+                                (request.user.id,object_id, new_title,
+                                 new_popular_name))
+                Bill.objects.filter(pk=object_id).update(title=new_title, full_title=new_title,
                                                          popular_name=new_popular_name)
+            else:
+                return HttpResponseForbidden()
         else:
             return HttpResponseBadRequest()
-        
-        
+
+
         return HttpResponseRedirect(".")
 
 _('added-vote-to-bill')
@@ -478,6 +504,8 @@ class BillListView (BillListMixin, ListView):
 
         context['friend_pages'] = r
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = BillCsvView.filename if default_storage.exists(BillCsvView.filename) else None
         return context
 
 

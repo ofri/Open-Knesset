@@ -1,24 +1,33 @@
 {% load i18n comments %}
-    <h3>{% trans "Ascribed agendas" %}</h3>
-    {% if agendas %}
-        <div class="ascribed-agendas">
-        {% for agenda in agendas %}
-            <div class="ascribed-agenda-item">
-            {% if agenda.agenda.image %}<img src="{{ agenda.agenda.image.url }}" />{% endif %}
-            <span class="ascribed-agenda-link"><a id="ascribed-agenda-{{ agenda.agenda.id }}" href="{% url agenda-detail agenda.agenda.id %}"/>{{ agenda.agenda }}</a></span>
-            <div><span class="ascribed-agenda-label">{{ agenda.get_score_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_score_display }}</span></div>
-            {% if agenda.get_importance_header %}<div><span class="ascribed-agenda-label">{{ agenda.get_importance_header }}:</span><span class="ascribed-agenda-value">{{ agenda.get_importance_display }}</span></div>{% endif %}
-            <div><span class="ascribed-agenda-label">{% trans "Reasoning" %}:</span><span class="ascribed-agenda-value">{{ agenda.reasoning|urlizetrunc:"30" }}</span></div>
-            </div>
-            <div>
-                {% get_comment_count for agenda as comment_count %}
-                <a href="{{ agenda.detail_view_url }}" hover="to edit">{% trans "comments" %}</a> {{ comment_count }}
-            </div>
-        {% endfor %}
-        </div>
-    {% else %}
-        <p>{% trans 'No agendas ascribed yet.' %}</p>
-    {% endif %}
+    <header><h2>{% trans "Ascribed agendas" %}</h2></header>
+    <ul>
+    {% for x_agenda in agendas %}
+    {% with x_agenda.agenda as agenda %}
+     
+      <li class="agenda-mini">
+          <header>
+              {% if agenda.image %}<img src="{{agenda.image.url}}" alt="{{agenda.name}}" width="30" height="30">{% endif %}
+              <h3>
+                <span class="item-title"><a href="{{agenda.get_absolute_url}}">{{agenda.name}}</a></span>
+                {% trans "edited by" %} {{agenda.public_owner_name}}</h3>
+        </header>
+        <p>
+            <span class="label" title="{{ x_agenda.get_score_header }}">{{ x_agenda.get_score_display }}</span>
+            <span class="label" title="{{ x_agenda.get_importance_header }}">{{ x_agenda.get_importance_display }}</span>
+        </p>
+        {% if x_agenda.reasoning %}
+        <p class="item-context">{{ x_agenda.reasoning|urlizetrunc:"30" }}</p>
+        {% endif %}
+        <p>
+            {% get_comment_count for x_agenda as comment_count %}
+            <a href="{{ x_agenda.detail_view_url }}">{% trans "comments" %}</a> <span class="badge">{{ comment_count }}</span>
+        </p>
+    </li>  
+    {% endwith %}
+    {% empty %}
+      <li>{% trans 'No agendas ascribed yet.' %}</li>    
+    {% endfor %}
+    </ul>
 
     {% if suggest_agendas %}
         <h3>{% trans 'Suggest an agenda' %}</h3>
@@ -51,7 +60,7 @@
         </script>
     {% else %}
         {% if suggest_agendas_login %}
-            <span class="please-login"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></span>
+            <div class="alert alert-block"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></div>
         {% endif %}
     {% endif %}
 

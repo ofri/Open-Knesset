@@ -1,20 +1,37 @@
 import json
 from django.conf import settings
 from django.core.cache import cache
+from django.http import Http404
 from django.views.generic import ListView, TemplateView
 from django.utils.translation import ugettext as _
 from hashnav.detail import DetailView
 from agendas.models import Agenda
 from polyorg.models import CandidateList, Candidate
 
+
 class CandidateListListView(ListView):
     model = CandidateList
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('ballot')
+        cache_key = "candidate_list_list"
+        qs = cache.get(cache_key, None)
+        if not qs:
+            qs = self.model.objects.filter(number_of_seats__gt=0).order_by('-number_of_seats')
+            cache.set(cache_key, qs, settings.LONG_CACHE_TIME)
+        return qs
+
 
 class CandidateListDetailView(DetailView):
+
     model = CandidateList
+
+    def get(self, request, **kwargs):
+        # Don't allow Candidates without seats
+        cl = self.get_object()
+
+        if not cl.number_of_seats:
+            raise Http404
+        return super(CandidateListDetailView, self).get(request, **kwargs)
 
     def get_context_data (self, **kwargs):
         cache_key = "candidate_list_%(pk)s" % kwargs
@@ -24,12 +41,13 @@ class CandidateListDetailView(DetailView):
             cl = context['object']
             context['head'] = cl.getHeadName()
             candidates = Candidate.objects.select_related('person',
-                    'person__mk').filter(candidates_list=cl).order_by('ordinal')
+                    'person__mk').filter(candidates_list=cl,
+                                         ordinal__lte=cl.number_of_seats).order_by('ordinal')
             context['candidates'] = [x.person for x in candidates]
             agendas = []
             if cl.member_ids:
                 for a in Agenda.objects.filter(is_public=True).order_by('-num_followers'):
-                    agendas.append({'id': a.id, 
+                    agendas.append({'id': a.id,
                                     'name': a.name,
                                     'url': a.get_absolute_url(),
                                     'score': a.candidate_list_score(cl)})

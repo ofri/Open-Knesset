@@ -1,6 +1,8 @@
 import logging, difflib, datetime, re, colorsys
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils import simplejson as json
 from django.views import generic
 from django.http import (HttpResponse, HttpResponseRedirect, Http404,
@@ -17,7 +19,7 @@ from tagging.models import TaggedItem, Tag
 from tagging.utils import get_tag
 import tagging
 from actstream import action
-from hashnav import ListView, DetailView, method_decorator
+from hashnav import ListView, DetailView, method_decorator as hashnav_method_decorator
 from laws.models import Bill, PrivateProposal
 from mks.models import Member
 from events.models import Event
@@ -87,9 +89,13 @@ class CommitteeDetailView(DetailView):
         context['topics'] = cm.topic_set.summary()[:5]
         return context
 
+
 class MeetingDetailView(DetailView):
 
     model = CommitteeMeeting
+
+    def get_queryset(self):
+        return super(MeetingDetailView, self).get_queryset().select_related('committee')
 
     def get_context_data(self, *args, **kwargs):
         context = super(MeetingDetailView, self).get_context_data(*args, **kwargs)
@@ -118,7 +124,7 @@ class MeetingDetailView(DetailView):
         return context
 
 
-    @method_decorator(login_required)
+    @hashnav_method_decorator(login_required)
     def post(self, request, **kwargs):
         cm = get_object_or_404(CommitteeMeeting, pk=kwargs['pk'])
         bill = None
@@ -180,9 +186,16 @@ class TopicListView(generic.ListView):
         context["committee"] = committee_id and Committee.objects.get(pk=committee_id)
         return context
 
+
 class TopicDetailView(DetailView):
+
     model = Topic
     context_object_name = 'topic'
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(TopicDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(TopicDetailView, self).get_context_data(**kwargs)
         topic = context['object']
@@ -270,8 +283,10 @@ class MeetingsListView(ListView):
         context = super(MeetingsListView, self).get_context()
         if not self.items:
             raise Http404
-        context['title'] = _('All meetings by %(committee)s') % {'committee':self.items[0].committee.name}
+        committee = self.items[0].committee
+        context['title'] = _('All meetings by %(committee)s') % {'committee':committee.name}
         context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+        context['committee'] = committee
         context['committee_id'] = self.committee_id
         return context
 
@@ -282,21 +297,26 @@ class MeetingsListView(ListView):
         else:
             return CommitteeMeeting.objects.all()
 
+
 def meeting_list_by_date(request, *args, **kwargs):
-    committee_id = kwargs.get('committee_id',None)
-    date_string = kwargs.get('date',None)
+    committee_id = kwargs.get('committee_id', None)
+    date_string = kwargs.get('date', None)
+
     try:
-        date = datetime.datetime.strptime(date_string,'%Y-%m-%d').date()
+        date = datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
     except:
         raise Http404()
-    object = get_object_or_404(Committee, pk=committee_id)
-    object_list = object.meetings.filter(date=date)
 
-    context = {'object_list':object_list, 'committee_id':committee_id}
-    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee':object.name, 'date':date}
-    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+    committee = get_object_or_404(Committee, pk=committee_id)
+    object_list = committee.meetings.filter(date=date)
+
+    context = {'object_list': object_list, 'committee_id': committee_id}
+    context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee': committee.name, 'date': date}
+    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural}
+    context['committee'] = committee
+
     return render_to_response("committees/committeemeeting_list.html",
-        context, context_instance=RequestContext(request))
+                              context, context_instance=RequestContext(request))
 
 
 def meeting_tag(request, tag):

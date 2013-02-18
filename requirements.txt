@@ -19,7 +19,7 @@ vobject
 feedparser
 gdata
 gunicorn
-django-social-auth
+django-social-auth>=0.7.19
 oauth==1.0.1
 python-dateutil==1.5
 python-memcached

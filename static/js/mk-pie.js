@@ -27,7 +27,7 @@
                 'for'       : '#3ac8a8', // goodColor
                 against     : '#ec6752', // badColor
                 'abstain'   : '#a9a6a6',
-                'no-vote'   : 'transparent'
+                'noVote'   : 'transparent'
             },
             sort        : null,
             value       : function (d) { return d.votes; }
@@ -62,9 +62,9 @@
         this.canvas = this.$element.append('svg')
                 .attr('width', this.options.width)
                 .attr('height', this.options.height)
-                .style('position', 'relative')
+                .style('position', 'absolute')
                 .style('top', -line_width_factor + 'px')
-                .style('left', line_width_factor + 'px')
+                .style('left', -line_width_factor + 'px')
                 .append('g')
                     .attr('transform', 'translate(' + this.options.width / 2 + ',' + this.options.height / 2 + ')');
     }

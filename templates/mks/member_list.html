@@ -1,28 +1,106 @@
 {% extends "site_base.html" %}
-{% load i18n mks_tags %}
-{% block extratitle %}{% trans 'Members' %}{% endblock %}
-{% block keywords %}{% trans 'Members' %}{% endblock %}
-{% block description %}{% trans 'Members' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="active"{% endblock %}
-{% block subnav %}
-    {% for link in friend_pages %}
-        <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull;
-    {% endfor %}
+{% load i18n i18ninclude common_visual_elements%}{% load static from staticfiles %}
+{% block extratitle %}{{title}}{% endblock %}
+{% block keywords %}{{title}{% endblock %}
+{% block description %}{{title}} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block extrajs %}
+{% if stat_type == "graph" %}
+    <script type="text/javascript" src="{% static "js/jquery.flot.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/flot_graphs.js" %}"></script>
+{% endif %}
 {% endblock %}
+
+{% block nav-parties %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url member-list %}">{% trans "Members" %}</a> <span class="divider">/</span></li>
+            <li class="active">{{ title  }}</li>
+{% endblock %}
+
 {% block divcontent %}
-    {% include "mks/export_csv_link.html" %}
-    <div class="list-wrap">
-    <h1>{% trans 'Current MKs' %}</h1>
-    {% for o in object_list %}
-        {% if o.is_current %}
-            {% mk o %}
-        {% endif %}
-    {% empty %}
-        {% trans "Data base empty, no objects" %}
-    {% endfor %}
-    <h1>{% trans 'Past MKs' %}</h1>
-    {% for o in past_mks %}
-        {% mk o %}
-    {% endfor %}
+
+    <div class="row">
+        <div class="span12">
+            <div class="alert alert-info">
+                {% i18ninclude "mks/member_list_with_bars_help.html" LANGUAGE_CODE %}
+            </div>
+        </div>
     </div>
+
+    <div class="row">
+        <nav class="span3">
+            <ul class="nav nav-pills nav-stacked card">
+                <li class="nav-header">{% trans "Display by" %}</li>
+            {% for type, name in friend_pages %}
+                <li{% if type == stat_type %} class="active"{% endif %}>
+                    <a href="{% url member-stats stat_type=type %}" >{{ name }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </nav>
+        <div class="span9 cards">
+{% if stat_type == "abc" %}
+            <div class="card card-list">
+                <header><h1>{% trans "Current MKs" %} ({{title}})</h1></header>
+                {% include "mks/member_photos.html" with members=object_list %}
+            </div>
+            <div class="card card-list">
+                <header><h1>{% trans "Past MKs" %} ({{title}})</h1></header>
+                {% include "mks/member_photos.html" with members=past_mks %}
+            </div>
+{% elif stat_type == "graph" %}
+            <div class="card card-list">
+                <header><h1>({{title}})</h1></header>
+                <div class="spacer">
+                    <div id="placeholder" style="height:300px"></div>
+                    <div id="y-axis" class="axis_combobox"></div>
+                    <div id="x-axis" class="axis_combobox"></div>
+                    <div id="legend"></div>
+                </div>
+            </div>
+{% else %}
+            <div class="card card-list">
+                <header><h1>{% trans "Current MKs" %} ({{title}})</h1></header>
+                <ul>
+                {% for o in object_list %}
+                    <li class="clearfix">
+                        <span class="span2"><a href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
+                        <span class="span1 numeric">
+                        {% if bill_stage %}
+                            <a href="{% url bill-list %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
+                        {% else %}
+                            {{ o.extra|floatformat }}
+                        {% endif %}
+                        </span>
+                        <span class="span4">{% bar o.extra 0 max_current "" 0 %}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="card card-list">
+                <header><h1>{% trans "Past MKs" %} ({{title}})</h1></header>
+                <ul>
+                {% for o in past_mks %}
+                    <li class="clearfix">
+                        <span class="span2"><a href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
+                        <span class="span1 numeric">
+                        {% if bill_stage %}
+                            <a href="{% url bill-list %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
+                        {% else %}
+                            {{ o.extra|floatformat }}
+                        {% endif %}
+                        </span>
+                        <span class="span4">{% bar o.extra 0 max_past "" 0 %}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+{% endif %}
+        </div>
+    </div>
+
+
+    {% include "mks/export_csv_link.html" %}
 {% endblock %}

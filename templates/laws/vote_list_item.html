@@ -1,66 +1,58 @@
 {% load cache i18n common_visual_elements laws_tags bills_tags %}{% get_current_language as LANGUAGE_CODE %}
+<li>
 {% cache 3600 vote_list_item vote.pk LANGUAGE_CODE %}
-<div>
-    <div class="date-item">{{ vote.time|date:"d/m" }}<span>{{vote.time|date:"Y"}}</span>{{vote.time|date:"H:i"}}</div>
-    <a id="detail-{{ vote.id }}" href="{{ vote.get_absolute_url }}">
-    {{ vote.title }}<br/>
-    <div class="info">
-        <table>
-            <tr>
-                <td>{% trans 'For' %}:</td>
-                <td>{{ vote.for_votes_count }}</td>
-                <td class="column-bar">{% if vote %}{% bar vote.for_votes_count "for" %}{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Against' %}:</td>
-                <td>{{ vote.against_votes_count }}</td>
-                <td class="column-bar">{% if vote %}{% bar vote.against_votes_count "against" %}{% endif %}</td>
-            </tr>
-        </table>
-            {% if vote.full_text %}<p><img src="/static/img/Text.png" title="{% trans 'Full text is available' %}"/></p>{% endif %}
-            {% if vote.summary %}<p><img src="/static/img/List.png" title="{% trans 'Summary is available' %}"/></p>{% endif %}
-            {% if vote.against_party %}<p><img src="/static/img/Warning.png" />
+    <p class="item-context">{{vote.time}}</p>
+    <p class="item-action">
+      <span class="badge badge-success" title="{% trans "For" %}">{{ vote.for_votes_count }}</span>
+      <span class="badge badge-important" title="{% trans "Against" %}">{{ vote.against_votes_count }}</span>
+    </p>
+    <p class="item-title"><a href="{{ vote.get_absolute_url  }}">{{vote.title}}</a></p>
+    <p class="item-context">
+        {% if vote.full_text %}<span class="label">{% trans "Full text is available" %}</span>{% endif %}
+        {% if vote.summary %}<span class="label">{% trans "Summary is available" %}</span>{% endif %}
+    </p>
+    <p class="item-context">
+        {% if vote.against_party %}<span class="label label-warning">
                 {% blocktrans count vote.against_party as counter %}
                 {{ counter }} MK voted differently than the majority of his party
                 {% plural %}
                 {{ counter }} MKs voted differently than the majority of their party
-                {% endblocktrans %}</p> &nbsp;
-            {% endif %}
-            {% if vote.against_coalition %}<p><img src="/static/img/Error.png" />
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_coalition %}<span class="label label-important">
                 {% blocktrans count vote.against_coalition as counter %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
                 {% plural %}
                 {{ counter }} member of the coalition voted differently than the majority of the coalition
-                {% endblocktrans %}</p> &nbsp;
-            {% endif %}
-            {% if vote.against_opposition %}<p><img src="/static/img/Error.png" />
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_opposition %}<span class="label label-important">
                 {% blocktrans count vote.against_opposition as counter %}
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
                 {% plural %}
                 {{ counter }} member of the opposition voted differently than the majority of the opposition
-                {% endblocktrans %}</p> &nbsp;
-            {% endif %}
-            {% if vote.against_own_bill %}<p><img src="/static/img/Error-grey.png" />
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_own_bill %}<span class="label label-inverse">
                 {% blocktrans count vote.against_own_bill as counter %}
                 {{ counter }} member voted against his/her own bill
                 {% plural %}
                 {{ counter }} members votes against their own bill
-                {% endblocktrans %}</p> &nbsp;
-            {% endif %}
-    </div>
-    </a>
-    <div class="item-metadata">
-        {% if tags %}
-            {% item_tags tags %}
-        {% else %}
-            <!--{% trans 'No tags' %}-->
+                {% endblocktrans %}</span>
         {% endif %}
-    </div>
+    </p>
+    {% if vote.tags %}
+    <p class="item-context">
+       {% item_tags vote.tags %}
+    </p>
+    {% endif %}
 {% endcache %}
+    <div class="item-context">
     {% if watched_members %}
     {% if vote %}{% for s in watched_members %}{% member_stand vote s %}{% endfor %}{% endif %}
     {% else %} {% if forloop.first %}
         <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
         {% endif %}
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
+</li>

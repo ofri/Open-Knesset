@@ -2,12 +2,10 @@
 {% load i18n links_tags mks_tags common_visual_elements %}{% load static from staticfiles %}
 {% block extrajs %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{maps_api_key}}" type="text/javascript"></script>
-    <script src="{% static "js/watch.js" %}"></script>
     <script src="{% static "js/mk-pie.js" %}"></script>
     <script type="text/javascript">
 
         $(function() {
-            register_watch({{object.id}}, 'party', "{% trans 'Watch' %}", "{% trans 'Unwatch' %}", "{% url user-follow-unfollow %}", "{% url user-is-following %}");
             var MKPieChart= window.MKPieChart;
 
             // init agenda-pie charts
@@ -26,6 +24,7 @@
                     line_width  : 6
                 }).render(pie_data);
             });
+            $('a[rel="tooltip"]').tooltip();
         });
     </script>
 {% endblock %}
@@ -40,9 +39,9 @@
 
 {% block divcontent %}
 
-    <section class="card card-main-party">
+    <section class="card card-main">
         <div class="row">
-            <div class="span8 card-details">
+            <div class="span3 card-details">
                 <div class="spacer fill">
                     <header>
                         <h1>{{object.name}}</h1>
@@ -50,50 +49,59 @@
                     </header>
                     <div class="social-links">
                         <h5>{% blocktrans with name=object.name %}{{name}} around the net{% endblocktrans %}:</h5>
-                        <ul>
-                            {% object_links object %}
+                        <ul class="text-center">
+                            {% object_icon_links object %}
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="span4 social-details">
-                <div class="spacer actions-panel">
-                    <a id="watch" class="btn btn-big btn-primary"></a>
-                    <p class="text-center">{{num_followers}} {% trans "Followers" %}</p>
+            <div class="span9 social-details">
+                <div>
+                    {% include "mks/member_photos.html" with members=object.current_members %}
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="card card-party-members">
-        <div>
-            {% include "mks/member_photos.html" with members=object.current_members extra_class="numbered" %}
-        </div>
-    </div>
-
     <div class="row">
         <div class="cards span8">
             <section class="card card-list card-list-latest">
-                <header>
-                    <h2>{% trans "Statistics" %}</h2>
-                    <a class="btn btn-mini btn-question" href="#">?</a>
-                </header>
+                <header><h2>{% trans "Agendas" %}</h2></header>
                 <ul>
-                    <li class="row">
+                {% for agenda in agendas %}
+                    <li>
+                        <p class="item-title"><a href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></p>
+                        <div class="row">
+                            <span class="span1 numeric text-{% if agenda.score < 0 %}error{%else%}success{% endif %}">
+                                {{agenda.score|floatformat:"0"}}%
+                            </span>
+                            <span class="span4">{% bar agenda.score -100 100%}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </section>
+        </div>
+
+        <div class="span4">
+            <aside class="sidebar sidebar-comments">
+                <h2>{% trans "Statistics" %}</h2>
+                <ul>
+                    <li class="row agenda-mini">
                         <span class="span2">{% trans "Number of votes" %}</span>
-                        <span class="span4">{{ object.voting_statistics.votes_count }}</span>
+                        <span class="span1">{{ object.voting_statistics.votes_count }}</span>
                     </li>
-                    <li class="row">
+                    <li class="row agenda-mini">
                         <span class="span2">{% trans "Average votes per MK" %}</span>
-                        <span class="span4">{{ object.voting_statistics.votes_per_seat|floatformat:2 }}</span>
+                        <span class="span1">{{ object.voting_statistics.votes_per_seat|floatformat:2 }}</span>
                     </li>
-                    <li class="row">
+                    <li class="row agenda-mini">
                         <span class="span2">{% trans "Factional discipline" %}</span>
-                        <span class="span4">{{ object.voting_statistics.discipline|floatformat:2 }}%</span>
+                        <span class="span1">{{ object.voting_statistics.discipline|floatformat:2 }}%</span>
                     </li>
 
-                    <li class="row">
+                    <li class="row agenda-mini">
                         <span class="span2">
                         {% if object.is_coalition %}
                             {% trans "Coalition discipline" %}
@@ -101,24 +109,8 @@
                             {% trans "Opposition discipline" %}
                         {% endif %}
                         </span>
-                        <span class="span4">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}%</span>
+                        <span class="span1">{{ object.voting_statistics.coalition_discipline|floatformat:2 }}%</span>
                     </li>
-                </ul>
-            </section>
-        </div>
-
-        <div class="span4">
-            <aside class="sidebar sidebar-agendas">
-                <h2>{% trans "Agendas" %}</h2>
-                <ul>
-                {% for agenda in agendas %}
-                    <li class="row">
-                        <div class="span3"><a href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></div>
-                        <div class="numeric text-{% if agenda.score < 0 %}error{%else%}success{% endif %}">
-                            {{agenda.score|floatformat:"0"}}%
-                        </div>
-                    </li>
-                {% endfor %}
                 </ul>
             </aside>
         </div>

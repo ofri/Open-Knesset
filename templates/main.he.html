@@ -1,22 +1,20 @@
 {% extends "site_base.html" %}
 {% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url main-actions-feed %}" /> {% endblock %}
-{% load i18n i18ninclude search %}
+{% load i18n i18ninclude search %}{% load static from staticfiles %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
 {% block divcontent %}
 <div class="row" style="margin-top:20px;">
     <div class="cards span8">
-        <div class="card card-list text-center" style="padding:12px 0">
-            <div class="spacer">
-                <a href="https://www.headstart.co.il/project.aspx?id=784">
-                    <img src="/static/img/movie_poster.jpg" alt="הסרט של הבחירות">
-                </a>
+        <div class="card card-list text-center">
+            <div class="spacer" style="padding:39px 0">
+                <img src="{% static "img/elections2013.jpg" %}">
             </div>
         </div>
+        <div class="alert alert-block text-center"><a href="{% url help %}">מה אפשר לעשות באתר?</a></div>
     </div>
     <div class="span4">
-        <div class="alert"><a href="{% url help %}">מה אפשר לעשות באתר?</a></div>
         <aside class="sidebar sidebar-agendas">
             <h2>אודותינו</h2>
             <ul>

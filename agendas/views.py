@@ -11,8 +11,10 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllow
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
-from hashnav import DetailView, ListView, method_decorator
+from hashnav import DetailView, ListView
 from laws.models import Vote
 from mks.models import Member, Party
 from apis.urls import vote_handler
@@ -77,6 +79,10 @@ class AgendaDetailView(DetailView):
 
     class ForbiddenAgenda(Exception):
         pass
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(AgendaDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *arg, **kwargs):
         try:
