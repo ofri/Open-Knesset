@@ -56,24 +56,30 @@ class Committee(models.Model):
                     params = [ self.id ]).distinct()
 
     def members_by_presence(self):
+        """Return the commitee members with computed presence percentage"""
         n = self.meetings.count()
-        if n==0: # this committee had not meetings, can really compute presence
-                 # scores. just return all relevant mks.
+        if n == 0:  # this committee had no meetings, cannot really compute
+                    # presence scores. Just return all relevant mks.
             members = (self.members.all()|
                        self.chairpersons.all()|
                        self.replacements.all()).distinct()
             for m in members:
-                m.meetings_count = 0
+                m.meetings_percentage = 0
+                m.meetings_percentage_year = 0
             return members
         # otherwise compute presence
         members = []
         for m in (self.members.all()|
                   self.chairpersons.all()|
                   self.replacements.all()).distinct():
-            m.meetings_count = \
-                100 * m.committee_meetings.filter(committee=self).count() / n
+            all_meetings = m.committee_meetings.filter(committee=self)
+            meetings_this_year = all_meetings.filter(  # since this Jan 1st
+                                    date__gte='%d-01-01' % datetime.now().year)
+            meeting_percentage = lambda res_set: 100 * res_set.count() / n
+            m.meetings_percentage = meeting_percentage(all_meetings)
+            m.meetings_percentage_year = meeting_percentage(meetings_this_year)
             members.append(m)
-        members.sort(key=lambda x:x.meetings_count, reverse=True)
+        members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
 
     def recent_meetings(self):
@@ -125,7 +131,7 @@ def legitimate_header(line):
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
     date_string = models.CharField(max_length=256)
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
