@@ -114,7 +114,7 @@ class AgendaResource(BaseResource):
 
     def dehydrate_votes(self, bundle):
         return [
-            dict(title=v.vote.title, id=v.id, importance=v.importance,
+            dict(title=v.vote.title, id=v.vote_id, importance=v.importance,
                  score=v.score, reasoning=v.reasoning)
             for v in bundle.obj.agendavotes.select_related()
         ]
