@@ -152,7 +152,7 @@ class Party(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
+        return ('party-detail', [str(self.id)])
 
     def get_affiliation(self):
         return _('Coalition') if self.is_coalition else _('Opposition')
