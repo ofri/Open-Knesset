@@ -39,7 +39,11 @@
     </script>
 {% endblock %}
 {% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-committees %}class="active"{% endblock %}
+
+{% block nav-committees %}{% ifnotequal object.type 'plenum' %}class="active"{% endifnotequal %}{% endblock %}
+{% block nav-plenum %}{% ifequal object.type 'plenum' %}class="active"{% endifequal %}{% endblock %}
+
+
 {% block breadcrumbs %}
         {% ifnotequal object.type 'plenum' %}
             <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>

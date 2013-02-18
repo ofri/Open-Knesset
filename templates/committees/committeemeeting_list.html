@@ -15,7 +15,10 @@
 
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% endblock %}
-{% block nav-committees %}class="active"{% endblock %}
+
+{% block nav-committees %}{% ifnotequal object.committee.type 'plenum' %}class="active"{% endifnotequal %}{% endblock %}
+{% block nav-plenum %}{% ifequal object.committee.type 'plenum' %}class="active"{% endifequal %}{% endblock %}
+
 
 {% block breadcrumbs %}
         {% ifnotequal committee.type 'plenum' %}
