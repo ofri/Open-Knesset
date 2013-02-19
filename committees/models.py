@@ -55,32 +55,30 @@ class Committee(models.Model):
                               "%s.committee_id=%%s" % meeting_tn],
                     params = [ self.id ]).distinct()
 
+
     def members_by_presence(self):
-        """Return the commitee members with computed presence percentage"""
-        n = self.meetings.count()
-        if n == 0:  # this committee had no meetings, cannot really compute
-                    # presence scores. Just return all relevant mks.
-            members = (self.members.all()|
-                       self.chairpersons.all()|
-                       self.replacements.all()).distinct()
-            for m in members:
-                m.meetings_percentage = 0
-                m.meetings_percentage_year = 0
-            return members
-        # otherwise compute presence
-        members = []
-        for m in (self.members.all()|
-                  self.chairpersons.all()|
-                  self.replacements.all()).distinct():
-            all_meetings = m.committee_meetings.filter(committee=self)
-            meetings_this_year = all_meetings.filter(  # since this Jan 1st
-                                    date__gte='%d-01-01' % datetime.now().year)
-            meeting_percentage = lambda res_set: 100 * res_set.count() / n
-            m.meetings_percentage = meeting_percentage(all_meetings)
-            m.meetings_percentage_year = meeting_percentage(meetings_this_year)
-            members.append(m)
+        """Return the committee members with computed presence percentage"""
+        def count_percentage(res_set, total_count):
+            return (100 * res_set.count() / total_count) if total_count else 0
+
+        def filter_this_year(res_set):
+            return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
+
+        members = list((self.members.all() |
+                        self.chairpersons.all() |
+                        self.replacements.all()).distinct())
+
+        all_meet_count = self.meetings.count()
+        year_meet_count = filter_this_year(self.meetings).count()
+        for m in members:
+            all_member_meetings = m.committee_meetings.filter(committee=self)
+            year_member_meetings = filter_this_year(all_member_meetings)
+            m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
+            m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
+
         members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
+
 
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
