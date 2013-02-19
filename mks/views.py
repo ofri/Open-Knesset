@@ -30,6 +30,7 @@ from datetime import date, timedelta
 
 import logging
 from auxiliary.views import GetMoreView
+from auxiliary.serializers import PromiseAwareJSONEncoder
 
 
 logger = logging.getLogger("open-knesset.mks")
@@ -608,7 +609,7 @@ class PartyListView(ListView):
             ],
             'ticks': ticks
         }
-        context['graph'] = json.dumps(graph_data)
+        context['graph'] = json.dumps(graph_data, cls=PromiseAwareJSONEncoder)
         return context
 
 
