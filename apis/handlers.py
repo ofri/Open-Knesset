@@ -48,6 +48,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
 
     allowed_methods = ('GET')
     model = Member
+    qs = Member.current_knesset.all()
 
     def queryset(self, request):
         return self.model.current_knesset.all()
