@@ -33,7 +33,7 @@ def help_page(request):
     if not context:
         context = {}
         context['title'] = _('Help')
-        context['member'] = Member.objects.all()[random.randrange(Member.objects.count())]
+        context['member'] = Member.current_knesset.all()[random.randrange(Member.current_knesset.count())]
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
