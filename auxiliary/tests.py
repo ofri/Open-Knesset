@@ -80,6 +80,7 @@ class TagResourceTest(TestCase):
 class InternalLinksTest(TestCase):
 
     def setUp(self):
+        Knesset.objects._current_knesset = None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
         self.knesset = Knesset.objects.create(number=1)
         self.party_1 = Party.objects.create(name='party 1', number_of_seats=4,
@@ -119,7 +120,6 @@ class InternalLinksTest(TestCase):
         looks for links, and makes sure all internal pages return HTTP200
         """
         from django.conf import settings
-        print settings.DEBUG
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
 

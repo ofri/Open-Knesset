@@ -78,7 +78,7 @@ class MemberListView(ListView):
         context['title'] = dict(self.pages)[info]
 
         context['past_mks'] = Member.objects.filter(is_current=False,
-                current_party__knesset_id=Knesset.objects.current_knesset().number)
+                current_party__knesset=Knesset.objects.current_knesset())
 
         # We make sure qs are lists so that the template can get min/max
         if info == 'abc':

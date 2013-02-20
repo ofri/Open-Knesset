@@ -34,6 +34,7 @@ class ApiViewsTest(TestCase):
 
     def setUp(self):
         cache.cache.clear()
+        Knesset.objects._current_knesset=None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
         self.knesset = Knesset.objects.create(number=1)
 
