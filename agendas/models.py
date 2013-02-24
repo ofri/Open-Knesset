@@ -349,9 +349,25 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def get_mks_values(self):
+    def get_mks_values(self, knesset_number=None):
+        """Return mks values.
+
+        :param knesset_number: The knesset numer of the mks. ``None`` will
+                               return current knesset (default: ``None``).
+        """
         mks_grade = Agenda.objects.get_mks_values()
-        return mks_grade.get(self.id,[])
+
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        mks_ids = Member.objects.filter(
+            current_party__knesset=knesset).values_list('pk', flat=True)
+
+        grades = mks_grade.get(self.id, [])
+        current_grades = [x for x in grades if x[0] in mks_ids]
+        return current_grades
 
     def get_mks_totals(self, member):
         "Get count for each vote type for a specific member on this agenda"
