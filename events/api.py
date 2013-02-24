@@ -12,7 +12,7 @@ class EventResource(BaseResource):
         queryset = Event.objects.all()
         allowed_methods = ['get']
 
-    def override_urls(self):
+    def prepend_urls(self):
         return [
             url(r'^(?P<resource_name>%s)/?$' % self._meta.resource_name,
                 self.wrap_view('get_future_events'),

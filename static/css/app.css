@@ -5158,6 +5158,21 @@ a.badge:hover {
   width: 32px;
   height: 34px;
 }
+/* Fix rtl pop overs */
+.popover.right .arrow {
+  left: -11px;
+  right: auto;
+  border-left-width: 0;
+  border-right-width: 11px;
+  border-right-color: #999;
+  border-right-color: rgba(0, 0, 0, 0.25);
+}
+.popover.right .arrow:after {
+  right: -11px;
+  border-left-width: 0;
+  border-right-color: #ffffff;
+  border-right-width: 10px;
+}
 @font-face {
   font-family: 'Alef';
   src: url('../font/Alef-regular.eot');

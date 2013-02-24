@@ -24,7 +24,7 @@ oauth==1.0.1
 python-dateutil==1.5
 python-memcached
 -e git://github.com/openid/python-openid.git#egg=python-openid
-django-tastypie==0.9.11
+django-tastypie==0.9.12
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
 -e git://github.com/hasadna/django-activity-stream.git#egg=django-activity-stream

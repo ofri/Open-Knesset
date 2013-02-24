@@ -44,6 +44,28 @@ class BetterManager(models.Manager):
         return ret
 
 
+class CurrentKnessetPartyManager(models.Manager):
+
+    def __init__(self):
+        super(CurrentKnessetPartyManager, self).__init__()
+        self._current = None
+
+    def get_query_set(self):
+        # caching won't help here, as the query set will be re-run on each
+        # request, and we may need to further run queries down the road
+        from mks.models import Knesset
+        qs = super(CurrentKnessetPartyManager, self).get_query_set()
+        qs = qs.filter(knesset=Knesset.objects.current_knesset())
+        return qs
+
+    @property
+    def current_parties(self):
+        if self._current is None:
+            self._current = list(self.get_query_set())
+
+        return self._current
+
+
 class CurrentKnessetMembersManager(models.Manager):
     "Adds the ability to filter on current knesset"
 

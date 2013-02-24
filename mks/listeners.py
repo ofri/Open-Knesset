@@ -1,10 +1,10 @@
 #encoding: utf-8
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from planet.models import Feed, Post
 from actstream import action
 from knesset.utils import cannonize, disable_for_loaddata
 from links.models import Link, LinkType
-from models import Member
+from models import Member, Knesset
 
 import logging
 logger = logging.getLogger("open-knesset.mks.listeners")
@@ -36,3 +36,9 @@ def record_post_action(sender, created, instance, **kwargs):
                     timestamp=instance.date_modified or instance.date_created)
 post_save.connect(record_post_action, sender=Post)
 
+
+def reset_current_knesset(sender, instance, **kwargs):
+    """Make sure current knesset is cleared upon changes to Knesset"""
+    Knesset.objects._current_knesset = None
+post_save.connect(reset_current_knesset, sender=Knesset)
+post_delete.connect(reset_current_knesset, sender=Knesset)
