@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from actstream.models import Follow
 from laws.models import VoteAction, Vote
-from mks.models import Party, Member
+from mks.models import Party, Member, Knesset
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -373,12 +373,31 @@ class Agenda(models.Model):
         """
         party_grades = Agenda.objects.get_all_party_values()
         all_grades = party_grades.get(self.id, [])
-        current_parties_id = [x.pk for x in Party.current_knesset.current_parties]
+
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        current_parties_id = [x.pk for x in Party.objects.filter(knesset=knesset)]
         current_grades = [x for x in all_grades if x[0] in current_parties_id]
         return current_grades
 
-    def get_all_party_values(self):
-        return Agenda.objects.get_all_party_values()
+    def get_all_party_values(self, knesset_number=None):
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        current_parties_id = [x.pk for x in Party.objects.filter(knesset=knesset)]
+
+        current_parties_scores = {}
+
+        for agenda_id, parties_scores in Agenda.objects.get_all_party_values().iteritems():
+            current_parties_scores[agenda_id] = [
+                x for x in parties_scores if x[0] in current_parties_id]
+
+        return current_parties_scores
 
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))
