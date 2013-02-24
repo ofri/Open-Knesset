@@ -45,8 +45,6 @@ class MemberRedirectView(RedirectView):
 
 class MemberListView(ListView):
 
-    queryset = Member.current_knesset.all()
-
     pages = (
         ('abc', _('By ABC')),
         ('bills_proposed', _('By number of bills proposed')),
@@ -58,6 +56,9 @@ class MemberListView(ListView):
         ('committees', _('By average monthly committee meetings')),
         ('graph', _('Graphical view'))
     )
+
+    def get_queryset(self):
+        return Member.current_knesset.all()
 
     def get_context_data(self, **kwargs):
 
