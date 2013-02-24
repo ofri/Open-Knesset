@@ -365,9 +365,17 @@ class Agenda(models.Model):
 
         return qs
 
-    def get_party_values(self):
+    def get_party_values(self, knesset_number=None):
+        """Return party values.
+
+        :param knesset_number: The knesset numer of the parties. ``None`` will
+                               return current knesset (default: ``None``).
+        """
         party_grades = Agenda.objects.get_all_party_values()
-        return party_grades.get(self.id,[])
+        all_grades = party_grades.get(self.id, [])
+        current_parties_id = [x.pk for x in Party.current_knesset.current_parties]
+        current_grades = [x for x in all_grades if x[0] in current_parties_id]
+        return current_grades
 
     def get_all_party_values(self):
         return Agenda.objects.get_all_party_values()
