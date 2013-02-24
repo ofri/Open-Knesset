@@ -86,7 +86,8 @@ class AgendaResource(BaseResource):
     def dehydrate_members(self, bundle):
         mks_values = dict(bundle.obj.get_mks_values())
         members = []
-        for mk in Member.objects.filter(pk__in=mks_values.keys()).select_related('current_party'):
+        for mk in Member.objects.filter(pk__in=mks_values.keys(),
+                                        current_party__isnull=False).select_related('current_party'):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append(dict(
@@ -114,7 +115,7 @@ class AgendaResource(BaseResource):
 
     def dehydrate_votes(self, bundle):
         return [
-            dict(title=v.vote.title, id=v.id, importance=v.importance,
+            dict(title=v.vote.title, id=v.vote_id, importance=v.importance,
                  score=v.score, reasoning=v.reasoning)
             for v in bundle.obj.agendavotes.select_related()
         ]

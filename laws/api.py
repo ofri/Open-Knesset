@@ -37,13 +37,19 @@ class VoteActionResource(BaseResource):
                               full=False)
 
 class VoteResource(BaseResource):
+
     class Meta(BaseResource.Meta):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
-        exclude_from_list_view = ['members',]
-        filtering = dict(member = ALL,
-                         member_for = ALL,
-                         member_against = ALL)
+        list_fields = [
+            'time', 'title', 'votes_count', 'for_votes_count',
+            'against_votes_count', 'meeting_number', 'vote_number',
+            'importance', 'controversy', 'against_party ', 'against_coalition',
+            'against_opposition', 'against_own_bill',
+        ]
+        filtering = dict(member=ALL,
+                         member_for=ALL,
+                         member_against=ALL)
 
     votes = fields.ToManyField(VoteActionResource,
                     attribute=lambda bundle:VoteAction.objects.filter(
@@ -64,21 +70,25 @@ class VoteResource(BaseResource):
 
         return orm_filters
 
+
 class PrivateProposalResource(BaseResource):
     class Meta(BaseResource.Meta):
         queryset = PrivateProposal.objects.all()
         allowed_methods = ['get']
 
+
 class BillResource(BaseResource):
     ''' Bill API '''
+
     class Meta(BaseResource.Meta):
         queryset = Bill.objects.all()
         allowed_methods = ['get']
-        # excludes = ['stage']
         ordering = ['stage_date', 'title']
-        filtering = dict(stage = ALL, proposer = ALL)
-        exclude_from_list_view = ['proposers', 'explanation', 'legal_code',
-        'pre_votes', 'first_vote', 'approval_vote']
+        filtering = dict(stage=ALL, proposer=ALL)
+        list_fields = [
+            'title', 'full_title', 'popular_name', 'law', 'stage',
+            'stage_date'
+        ]
         include_absolute_url = True
         limit = 20
 

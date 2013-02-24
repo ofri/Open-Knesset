@@ -18,7 +18,7 @@ from actstream import actor_stream
 from actstream.models import Follow
 
 from hashnav.detail import DetailView
-from models import Member, Party
+from models import Member, Party, Knesset
 from polyorg.models import CandidateList
 from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
@@ -30,6 +30,7 @@ from datetime import date, timedelta
 
 import logging
 from auxiliary.views import GetMoreView
+from auxiliary.serializers import PromiseAwareJSONEncoder
 
 
 logger = logging.getLogger("open-knesset.mks")
@@ -76,7 +77,8 @@ class MemberListView(ListView):
         context['stat_type'] = info
         context['title'] = dict(self.pages)[info]
 
-        context['past_mks'] = Member.objects.filter(is_current=False)
+        context['past_mks'] = Member.objects.filter(is_current=False,
+                current_party__knesset=Knesset.objects.current_knesset())
 
         # We make sure qs are lists so that the template can get min/max
         if info == 'abc':
@@ -371,6 +373,10 @@ class PartyListView(ListView):
 
     model = Party
 
+    def get_queryset(self):
+        return self.model.objects.filter(
+            knesset=Knesset.objects.current_knesset())
+
     pages = (
         ('seats', _('By Number of seats')),
         ('votes-per-seat', _('By votes per seat')),
@@ -603,7 +609,7 @@ class PartyListView(ListView):
             ],
             'ticks': ticks
         }
-        context['graph'] = json.dumps(graph_data)
+        context['graph'] = json.dumps(graph_data, cls=PromiseAwareJSONEncoder)
         return context
 
 
@@ -734,11 +740,14 @@ class PartiesMembersView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(PartiesMembersView, self).get_context_data(**kwargs)
 
-        ctx['coalition'] = Party.objects.filter(is_coalition=True).annotate(
+        ctx['coalition'] = Party.objects.filter(is_coalition=True,
+            knesset=Knesset.objects.current_knesset()).annotate(
             extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['opposition'] = Party.objects.filter(is_coalition=False).annotate(
+        ctx['opposition'] = Party.objects.filter(is_coalition=False,
+            knesset=Knesset.objects.current_knesset()).annotate(
             extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['past_members'] = Member.objects.filter(is_current=False)
+        ctx['past_members'] = Member.objects.filter(is_current=False,
+            current_party__knesset=Knesset.objects.current_knesset())
 
         return ctx
 

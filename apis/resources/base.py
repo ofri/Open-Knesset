@@ -49,27 +49,13 @@ class BaseResource(ModelResource):
     class Meta:
         cache = SimpleCache()
         throttle = SmartCacheThrottle(throttle_at=60, timeframe=60)
-        serializer = IterJSONSerializer()
+        serializer = IterJSONSerializer(formats=['json', 'jsonp', 'xml'])
 
-    def get_list(self, request, **kwargs):
+    def _get_list_fields(self, request):
+        """Helper to return list and extra fields for list mode.
+
+        Make things easier for overriding.
         """
-        Returns a serialized list of resources.
-        We overide here, to add optional ``fields`` in calls to full_dehydrate
-        in case the resource specifies ``list_fields`` (and optional
-        ``extra_fields`` in GET).
-
-        Calls ``obj_get_list`` to provide the data, then handles that result
-        set and serializes it.
-
-        Should return a HttpResponse (200 OK).
-        """
-        # TODO: Uncached for now. Invalidation that works for everyone may be
-        # impossible.
-        objects = self.obj_get_list(request=request, **self.remove_api_resource_names(kwargs))
-        sorted_objects = self.apply_sorting(objects, options=request.GET)
-
-        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_list_uri(), limit=self._meta.limit)
-        to_be_serialized = paginator.page()
 
         field_names = getattr(self._meta, 'list_fields', None)
         if field_names:
@@ -89,13 +75,44 @@ class BaseResource(ModelResource):
         else:
             fields = None
 
+        return fields
+
+    def get_list(self, request, **kwargs):
+        """
+        Returns a serialized list of resources.
+
+        We overide here, to add optional ``fields`` in calls to full_dehydrate
+        in case the resource specifies ``list_fields`` (and optional
+        ``extra_fields`` in GET).
+
+        Calls ``obj_get_list`` to provide the data, then handles that result
+        set and serializes it.
+
+        Should return a HttpResponse (200 OK).
+        """
+        # TODO: Uncached for now. Invalidation that works for everyone may be
+        #       impossible.
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle, **self.remove_api_resource_names(kwargs))
+        sorted_objects = self.apply_sorting(objects, options=request.GET)
+
+        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(), limit=self._meta.limit, max_limit=self._meta.max_limit, collection_name=self._meta.collection_name)
+        to_be_serialized = paginator.page()
+
+        fields = self._get_list_fields(request)
+
         # Dehydrate the bundles in preparation for serialization.
-        bundles = [self.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
-        to_be_serialized['objects'] = [self.full_dehydrate(bundle, fields) for bundle in bundles]
+        bundles = []
+
+        for obj in to_be_serialized[self._meta.collection_name]:
+            bundle = self.build_bundle(obj=obj, request=request)
+            bundles.append(self.full_dehydrate(bundle, fields=fields))
+
+        to_be_serialized[self._meta.collection_name] = bundles
         to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
         return self.create_response(request, to_be_serialized)
 
-    def full_dehydrate(self, bundle, fields=None):
+    def full_dehydrate(self, bundle, for_list=False, fields=None):
         """
         Given a bundle with an object instance, extract the information from it
         to populate the resource.
@@ -103,11 +120,22 @@ class BaseResource(ModelResource):
         We override this to take into account optional fields in case of
         ``list``.
         """
-        # Dehydrate each field.
+        use_in = ['all', 'list' if for_list else 'detail']
+
         if fields is None:
             fields = self.fields
 
+        # Dehydrate each field.
         for field_name, field_object in fields.items():
+            # If it's not for use in this mode, skip
+            field_use_in = getattr(field_object, 'use_in', 'all')
+            if callable(field_use_in):
+                if not field_use_in(bundle):
+                    continue
+            else:
+                if field_use_in not in use_in:
+                    continue
+
             # A touch leaky but it makes URI resolution work.
             if getattr(field_object, 'dehydrated_type', None) == 'related':
                 field_object.api_name = self._meta.api_name

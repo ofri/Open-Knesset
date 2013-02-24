@@ -71,7 +71,7 @@ class TagResource(BaseResource):
         bundle.data['number_of_items'] = bundle.obj.items.count()
         return bundle
 
-    def override_urls(self):
+    def prepend_urls(self):
         return [
             url(r'^(?P<resource_name>%s)/(?P<app_label>\w+)/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/$' % self._meta.resource_name, self.wrap_view('get_object_tags'), name='tags-for-object'),
             url(r'^(?P<resource_name>%s)/(?P<app_label>\w+)/(?P<object_type>\w+)/(?P<object_id>[0-9]+)/(?P<related_name>[_a-zA-Z]\w*)/$' % self._meta.resource_name, self.wrap_view('get_related_tags'), name='related-tags'),

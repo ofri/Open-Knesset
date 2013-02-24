@@ -3,13 +3,15 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from planet.models import Blog
 from knesset.utils import cannonize
 from links.models import Link
 import difflib
+from mks.managers import (BetterManager, KnessetManager,
+                          CurrentKnessetMembersManager)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -26,31 +28,6 @@ class Correlation(models.Model):
 
     def __unicode__(self):
         return "%s - %s - %.0f" % (self.m1.name, self.m2.name, self.normalized_score)
-
-
-class BetterManager(models.Manager):
-    def __init__(self):
-        super(BetterManager, self).__init__()
-        self._names = []
-
-    def find(self, name):
-        ''' looks for a member with a name that resembles 'name'
-            the returned array is ordered by similiarity
-        '''
-        names = cache.get('%s_names' % self.model.__name__)
-        if not names:
-            names = self.values_list('name', flat=True)
-            cache.set('%s_names' % self.model.__name__, names)
-        possible_names = difflib.get_close_matches(
-            name, names, cutoff=0.5, n=5)
-        qs = self.filter(name__in=possible_names)
-        # used to establish size, overwritten later
-        ret = range(qs.count())
-        for m in qs:
-            if m.name == name:
-                return [m]
-            ret[possible_names.index(m.name)] = m
-        return ret
 
 
 class CoalitionMembership(models.Model):
@@ -73,6 +50,8 @@ class Knesset(models.Model):
     number = models.IntegerField(_('Knesset number'), primary_key=True)
     start_date = models.DateField(_('Start date'), blank=True, null=True)
     end_date = models.DateField(_('End date'), blank=True, null=True)
+
+    objects = KnessetManager()
 
     def __unicode__(self):
         return unicode(self.number)
@@ -139,7 +118,7 @@ class Party(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('party-detail-with-slug', [str(self.id), self.name_with_dashes()])
+        return ('party-detail', [str(self.id)])
 
     def get_affiliation(self):
         return _('Coalition') if self.is_coalition else _('Opposition')
@@ -208,6 +187,7 @@ class Member(models.Model):
     backlinks_enabled = models.BooleanField(default=True)
 
     objects = BetterManager()
+    current_knesset = CurrentKnessetMembersManager()
 
     class Meta:
         ordering = ['name']

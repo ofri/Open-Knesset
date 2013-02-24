@@ -11,7 +11,7 @@ import tastypie.fields as fields
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from apis.resources.base import BaseResource
-from models import Member, Party
+from models import Member, Party, Knesset
 from agendas.models import Agenda
 from video.utils import get_videos_queryset
 from video.api import VideoResource
@@ -20,15 +20,14 @@ from links.api import LinkResource
 
 from django.db.models import Count
 
-
-
 class PartyResource(BaseResource):
     ''' Party API
     TBD: create a party app
     '''
 
     class Meta:
-        queryset = Party.objects.all()
+        queryset = Party.objects.filter(
+            knesset=Knesset.objects.current_knesset())
         allowed_methods = ['get']
         excludes = ['end_date', 'start_date']
         include_absolute_url = True
@@ -155,7 +154,8 @@ class MemberResource(BaseResource):
     ''' The Parliament Member API '''
     class Meta(BaseResource.Meta):
 
-        queryset = Member.objects.all().select_related('current_party')
+        queryset = Member.objects.exclude(
+            current_party__isnull=True).select_related('current_party')
 
         allowed_methods = ['get']
         ordering = [

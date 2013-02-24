@@ -48,7 +48,10 @@ class MemberHandler(BaseHandler, HandlerExtensions):
 
     allowed_methods = ('GET')
     model = Member
-    qs = Member.objects.all()
+    qs = Member.current_knesset.all()
+
+    def queryset(self, request):
+        return self.model.current_knesset.all()
 
     @classmethod
     def gender (self, member):
@@ -270,7 +273,7 @@ class BillHandler(BaseHandler, HandlerExtensions):
         page_num= int(request.GET.get('page_num', 0))
 
         if days_back:
-            qs = qs.filter(stage_date__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))            
+            qs = qs.filter(stage_date__gte=datetime.date.today()-datetime.timedelta(days=int(days_back)))
         if 'popular' not in kwargs:
             # we use type for something
             if type:
@@ -278,13 +281,13 @@ class BillHandler(BaseHandler, HandlerExtensions):
             # and specifying an order is relevant
             if order:
                 qs = qs.sort(by=order)
-                
+
             return qs[page_len*page_num:page_len*(page_num +1)]
         else:
             # we use type to specify if we want positive/negative popular bills, or None for "dont care"
             if type not in [None, 'positive', 'negative']:
                 type = None
-               
+
             # create the ordered list of bills according to the request
             if type is None:
                 # get the sorted list of popular bills (those with many votes)
@@ -292,17 +295,17 @@ class BillHandler(BaseHandler, HandlerExtensions):
             else:
                 # get the list of bills with annotations of their score (avg vote) and totalvotes
                 bill_ids = voting.models.Vote.objects.get_top(Bill, min_tv=2)
-                
+
                 # filter only positively/negatively rated bills
                 if type == 'positive':
                     bill_ids = bill_ids.filter(score__gt=0.5)
                 else:
                     bill_ids = bill_ids.filter(score__lt=-0.5)
-                    
+
                 # sort the bills according to their popularity
                 bill_ids = bill_ids.order_by('-totalvotes')
                 bill_ids = [x['object_id'] for x in bill_ids]
-                            
+
             # create the list of bills we want to return
             bill_ids = bill_ids[page_len*page_num:page_len*(page_num +1)]
             sorted_qs = [qs.get(pk=x) for x in bill_ids]
@@ -497,7 +500,7 @@ class CommitteeHandler(BaseHandler, HandlerExtensions):
     def members(cls, committee):
         return [ { 'url': x.get_absolute_url(),
                    'name' : x.name,
-                   'presence' : x.meetings_count }
+                   'presence' : x.meetings_percentage }
                 for x in committee.members_by_presence() ]
 
 class CommitteeMeetingHandler(BaseHandler, HandlerExtensions):

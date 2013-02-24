@@ -42,7 +42,7 @@ admin.site.register(CoalitionMembership, CoalitionMembershipAdmin)
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
-    list_display = ('name','start_date', 'end_date','is_coalition', 'number_of_members', 'number_of_seats')
+    list_display = ('name','knesset','start_date', 'end_date','is_coalition', 'number_of_members', 'number_of_seats')
     inlines = (MembershipInline,)
 
 admin.site.register(Party, PartyAdmin)

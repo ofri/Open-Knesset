@@ -409,12 +409,14 @@ class Command(NoArgsCommand):
                             number_of_children=number_of_children, date_of_birth=date_of_birth, place_of_birth=place_of_birth,
                             date_of_death=date_of_death, year_of_aliyah=year_of_aliyah)
                 m.save()
+                m = Member.objects.get(pk=member_id) # make sure we are are
+                    # working on the db object. e.g m.id is a number.
                 logger.debug('created member %d' % m.id)
                 if len(website)>0:
                     l = Link(title='אתר האינטרנט של %s' % name, url=website, content_type=ContentType.objects.get_for_model(m), object_pk=str(m.id))
                     l.save()
 
-            if k19:
+            if k19: # KNESSET 19 specific
                 parties = Party.objects.filter(knesset_id=19).values_list('name','id')
                 k19 = k19.decode(ENCODING)
                 for k,v in parties:
@@ -424,6 +426,11 @@ class Command(NoArgsCommand):
                                      % (m.name,
                                         k19,
                                         k))
+                        m.save()
+                if m.current_party is None:
+                    logger.debug('member %s, k19 %s not found' %
+                                 (m.name,
+                                  k19))
 
     def get_search_string(self,s):
         if isinstance(s,unicode):

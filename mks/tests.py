@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from actstream import follow,action
 from actstream.models import Action
-from mks.models import Member, Party, Membership, MemberAltname
+from mks.models import Member, Party, Membership, MemberAltname, Knesset
 from mks.views import MemberListView
 from laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
 from committees.models import CommitteeMeeting,Committee
@@ -36,8 +36,11 @@ class MemberViewsTest(TestCase):
 
         cache.clear()
 
-        self.party_1 = Party.objects.create(name='party 1')
-        self.party_2 = Party.objects.create(name='party 2')
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1',
+                                            knesset=self.knesset)
+        self.party_2 = Party.objects.create(name='party 2',
+                                            knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1,
@@ -462,7 +465,9 @@ from agendas.models import Agenda, AgendaVote
 class MKAgendasTest(TestCase):
 
     def setUp(self):
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1,
+                       knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)

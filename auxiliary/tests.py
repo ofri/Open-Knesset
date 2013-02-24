@@ -8,7 +8,8 @@ from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
 from laws.models import Vote, VoteAction, Bill, Law
-from mks.models import Member,Party,WeeklyPresence
+from mks.models import Member,Party,WeeklyPresence,Knesset
+from committees.models import Committee
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
@@ -80,10 +81,14 @@ class TagResourceTest(TestCase):
 class InternalLinksTest(TestCase):
 
     def setUp(self):
+        Knesset.objects._current_knesset = None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4,
+                                            knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
+        self.plenum = Committee.objects.create(name='Plenum',type='plenum')
         self.voteactions = []
         self.num_mks = 4
         for i in range(self.num_mks):
@@ -117,7 +122,6 @@ class InternalLinksTest(TestCase):
         looks for links, and makes sure all internal pages return HTTP200
         """
         from django.conf import settings
-        print settings.DEBUG
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
 
