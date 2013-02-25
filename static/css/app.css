@@ -5704,17 +5704,19 @@ ol {
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   position: relative;
-  display: none;
-  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  z-index: -1;
   position: absolute;
   top: 90px;
-  width: 405px;
-  height: 218px;
+  right: -150px;
+  width: 355px;
+  height: 198px;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-photo {
   position: absolute;
   border: 1px solid #e6e6e6;
-  height: 177px;
+  height: 172px;
   width: 130px;
   top: 14px;
   right: 10px;
@@ -5724,7 +5726,7 @@ ol {
   height: 100%;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-text {
-  height: 160px;
+  height: 140px;
   border-bottom: 1px solid #e6e6e6;
   padding-right: 160px;
 }
@@ -5733,13 +5735,13 @@ ol {
   font-weight: 700;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-links {
-  height: 47px;
+  height: 46px;
   background: #f6f6f6;
   padding-right: 160px;
   overflow: hidden;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-links ul {
-  margin-top: 8px;
+  margin-top: 7px;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-links li {
   padding: 0;
@@ -5747,10 +5749,23 @@ ol {
 }
 @media only screen and (min-width: 1224px) {
   .card-party-members .party-member-photo:hover .party-member-info {
-    display: block;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    z-index: 100;
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0.3s linear, opacity 0.3s linear;
+    transition-delay: 0.5s;
+    -moz-transition-delay: 0.5s;
+    /* Firefox 4 */
+  
+    -webkit-transition-delay: 0.5s;
+    /* Safari and Chrome */
+  
+    -o-transition-delay: 0.5s;
+    /* Opera */
+  
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
 }
 .card-party-members .party-member-name {
