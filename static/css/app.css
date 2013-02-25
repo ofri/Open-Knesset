@@ -5707,7 +5707,7 @@ ol {
   display: none;
   z-index: 1;
   position: absolute;
-  top: 80px;
+  top: 90px;
   width: 405px;
   height: 218px;
 }
@@ -5745,11 +5745,13 @@ ol {
   padding: 0;
   border: 0 none;
 }
-.card-party-members .party-member-photo:hover .party-member-info {
-  display: block;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+@media only screen and (min-width: 1224px) {
+  .card-party-members .party-member-photo:hover .party-member-info {
+    display: block;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
 }
 .card-party-members .party-member-name {
   position: absolute;

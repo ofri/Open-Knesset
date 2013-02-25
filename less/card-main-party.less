@@ -92,7 +92,7 @@
       display: none;
       z-index: 1;
       position: absolute;
-      top: 80px;
+      top: 90px;
       width: 405px;
       height: 218px;
       
@@ -127,9 +127,10 @@
     }
     
     &:hover .party-member-info {
-      display: block;
-      .box-shadow(@shadow);
-      
+      @media only screen and (min-width : 1224px) {
+        display: block;
+        .box-shadow(@shadow);
+      }
     }
     
   }
