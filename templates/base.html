@@ -16,7 +16,7 @@
     <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=15" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=16" />
     <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
 
 <!--
@@ -232,6 +232,23 @@
                 }
             });
 
+            // lazy load mkimages
+            $('.party-member-photo').hover(function() {
+                var card_info = $(this).find('.party-member-info'),
+                    card_info_display = card_info.css('display'),
+                    photo = card_info.find('.party-member-info-photo img');
+
+                // should work only for large screens, disply will be none for
+                // by media queries
+                if (card_info_display == 'block') {
+                    var img_src = photo.data('src');
+                    if (img_src) {
+                        photo.removeAttr('data-src');
+                        photo.attr('src', img_src).one('load', function() {photo.parent().css('background', 'white');});
+                    }
+                }
+
+            });
             // set jGrowl position
             $.jGrowl.defaults.position="top-left";
         });
