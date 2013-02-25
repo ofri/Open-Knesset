@@ -41,14 +41,16 @@ class CommitteeMeetingResource(BaseResource):
     mks_attended = fields.ToManyField(MemberResource, 'mks_attended')
     protocol = fields.ToManyField('committees.api.ProtocolPartResource',
                                   'parts', full=True)
+
     class Meta:
-        queryset = CommitteeMeeting.objects.all().select_related('committee',
-                                                                 'mks_attended',
-                                                                 ).prefetch_related('parts')
+        queryset = CommitteeMeeting.objects.select_related(
+            'committee').prefetch_related('mks_attended')
         allowed_methods = ['get']
         include_absolute_url = True
-        list_fields = ['committee','mks_attended','date','topics']
+        list_fields = ['committee', 'mks_attended', 'date', 'topics']
         excludes = ['protocol_text']
+        limit = 500
+
 
 class ProtocolPartResource(BaseResource):
     header = fields.CharField(attribute='header')
