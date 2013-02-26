@@ -19,7 +19,7 @@
                 <ul>
                 {% for a in annotations %}
                     <li>
-                        <p class="item-context"><a href="{{ meeting.get_absolute_url}}">{{ a.content_object.meeting }}</a></p>
+                        <p class="item-context">{{ a.content_object.meeting }}</p>
                         <p class="item-title"><a href="{{a.get_absolute_url }}">{{a.flag_value}} - {{a.comment|linebreaksbr}}</a></p>
                         <p class="item-action">
                             {% trans "On the words of" %} {{a.content_object.header}}: "...{{a.selection}}..."

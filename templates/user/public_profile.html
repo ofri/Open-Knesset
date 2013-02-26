@@ -43,8 +43,10 @@
                 {% for a in annotations|slice:":10" %}
                     <li>
                         {% with meeting=a.content_object.meeting %}
-                        <p class="item-context"><a href="{{ meeting.get_absolute_url}}">{{ meeting}}</a></p>
-                        <p class="item-title">&quot;{{a.comment|linebreaksbr}}&quot;</p>
+                        <p class="item-context">{{ meeting}}</p>
+                        <p class="item-title">
+                            <a href="{{a.get_absolute_url }}">{{a.flag_value}} - &quot;{{a.comment|linebreaksbr}}&quot;</a>
+                        </p>
                         <p class="item-action">
                             "{{a.selection}}" - <strong>{{a.content_object.header}}</strong>
                         </p>
