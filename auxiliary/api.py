@@ -4,6 +4,7 @@ Api for planet and tags
 
 from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL
+import tastypie.fields as fields
 from apis.resources.base import BaseResource
 from planet.models import Feed, Post
 from mks.models import Member
@@ -55,21 +56,23 @@ class PostResource(BaseResource):
 class TagResource(BaseResource):
     ''' Tagging API
     '''
+
+    number_of_items = fields.IntegerField()
+
     class Meta:
         queryset = Tag.objects.all().order_by('name')
         allowed_methods = ['get']
-        list_fields = [ 'id', 'name' ]
+        list_fields = ['id', 'name']
 
-    TAGGED_MODELS = ( Vote, Bill, CommitteeMeeting )
+    TAGGED_MODELS = (Vote, Bill, CommitteeMeeting)
 
     def obj_get_list(self, filters=None, **kwargs):
         all_tags = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
         all_tags.sort(key=attrgetter('name'))
         return all_tags
 
-    def dehydrate(self, bundle):
-        bundle.data['number_of_items'] = bundle.obj.items.count()
-        return bundle
+    def dehydrate_number_of_items(self, bundle):
+        return bundle.obj.items.count()
 
     def prepend_urls(self):
         return [
