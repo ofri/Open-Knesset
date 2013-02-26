@@ -62,6 +62,7 @@ class TagResource(BaseResource):
     class Meta:
         queryset = Tag.objects.all().order_by('name')
         allowed_methods = ['get']
+        include_absolute_url = True
         list_fields = ['id', 'name']
 
     TAGGED_MODELS = (Vote, Bill, CommitteeMeeting)
