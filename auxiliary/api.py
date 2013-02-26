@@ -12,6 +12,7 @@ from links.models import Link
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType
 from django.conf.urls.defaults import url
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -58,6 +59,7 @@ class TagResource(BaseResource):
     '''
 
     number_of_items = fields.IntegerField()
+    absolute_url = fields.CharField()
 
     class Meta:
         queryset = Tag.objects.all().order_by('name')
@@ -71,6 +73,9 @@ class TagResource(BaseResource):
         all_tags = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
         all_tags.sort(key=attrgetter('name'))
         return all_tags
+
+    def dehydrate_absolute_url(self, bundle):
+        return reverse('tag-detail', kwargs={'slug': bundle.obj.name})
 
     def dehydrate_number_of_items(self, bundle):
         return bundle.obj.items.count()
