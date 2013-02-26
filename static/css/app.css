@@ -5354,6 +5354,11 @@ form .helptext {
     top: 22px;
   }
 }
+.oksearch .search-member img {
+  max-height: 32px;
+  display: inline-block;
+  margin-left: 5px;
+}
 .nav-pills.nav-stacked > li > a {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
