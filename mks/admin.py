@@ -39,12 +39,14 @@ class CoalitionMembershipAdmin(admin.ModelAdmin):
     list_display = ('party','start_date','end_date')
 admin.site.register(CoalitionMembership, CoalitionMembershipAdmin)
 
+
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
-    list_display = ('name','knesset','start_date', 'end_date','is_coalition', 'number_of_members', 'number_of_seats')
+    list_display = ('name', 'knesset', 'start_date', 'end_date', 'is_coalition',
+                    'number_of_members', 'number_of_seats')
+    list_filter = ('knesset', )
     inlines = (MembershipInline,)
-
 admin.site.register(Party, PartyAdmin)
 
 
@@ -55,6 +57,7 @@ class MemberAdmin(admin.ModelAdmin):
     list_editable = ('is_current', 'current_position')
     search_fields = ['name']
     inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberRelatedVideosInline)
+    list_filter = ('current_party__knesset', )
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'
@@ -69,6 +72,9 @@ class MemberAdmin(admin.ModelAdmin):
         }
         return super(MemberAdmin, self).change_view(request, object_id,
                                                     extra_context=my_context)
+
+    def queryset(self, request):
+        return super(MemberAdmin, self).queryset(request).select_related('current_party')
 admin.site.register(Member, MemberAdmin)
 
 
