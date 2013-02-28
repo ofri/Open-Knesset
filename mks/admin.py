@@ -47,10 +47,13 @@ class PartyAdmin(admin.ModelAdmin):
 
 admin.site.register(Party, PartyAdmin)
 
+
 class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date')
-    list_display = ('name','PartiesString')
+    list_display = ('name', 'PartiesString', 'current_party', 'is_current', 'current_position')
+    list_editable = ('is_current', 'current_position')
+    search_fields = ['name']
     inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberRelatedVideosInline)
 
     # A template for a very customized change view:
@@ -59,13 +62,15 @@ class MemberAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, extra_context=None):
         m = Member.objects.get(id=object_id)
         my_context = {
-            'extra': {'hi_corr':m.CorrelationListToString(m.HighestCorrelations()),
-                      'low_corr':m.CorrelationListToString(m.LowestCorrelations()),
-                      }
+            'extra': {
+                'hi_corr': m.CorrelationListToString(m.HighestCorrelations()),
+                'low_corr': m.CorrelationListToString(m.LowestCorrelations()),
+            }
         }
         return super(MemberAdmin, self).change_view(request, object_id,
-            extra_context=my_context)
+                                                    extra_context=my_context)
 admin.site.register(Member, MemberAdmin)
+
 
 class CorrelationAdmin(admin.ModelAdmin):
     ordering = ('-normalized_score',)
