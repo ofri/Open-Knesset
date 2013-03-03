@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 21:39+0200\n"
-"PO-Revision-Date: 2013-02-21 15:13+0200\n"
+"POT-Creation-Date: 2013-03-03 13:56+0200\n"
+"PO-Revision-Date: 2013-03-03 13:57+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -275,39 +275,39 @@ msgstr "ישיבת ועדה"
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: committees/models.py:341 laws/views.py:553
+#: committees/models.py:347 laws/views.py:553
 msgid "Title"
 msgstr "כותרת"
 
-#: committees/models.py:343
+#: committees/models.py:349
 msgid "Description"
 msgstr "תאור"
 
-#: committees/models.py:345
+#: committees/models.py:351
 msgid "published"
 msgstr "פורסמה"
 
-#: committees/models.py:346
+#: committees/models.py:352
 msgid "flagged"
 msgstr "חשודה"
 
-#: committees/models.py:347
+#: committees/models.py:353
 msgid "rejected"
 msgstr "נדחתה"
 
-#: committees/models.py:348
+#: committees/models.py:354
 msgid "accepted"
 msgstr "אושרה"
 
-#: committees/models.py:349
+#: committees/models.py:355
 msgid "appeal"
 msgstr "בערעור"
 
-#: committees/models.py:350
+#: committees/models.py:356
 msgid "deleted"
 msgstr "נמחקה"
 
-#: committees/models.py:359 templates/base.html:72 templates/base.html.py:124
+#: committees/models.py:365 templates/base.html:72 templates/base.html.py:124
 #: templates/committees/committee_detail.html:49
 #: templates/committees/committee_list.html:3
 #: templates/committees/committee_list.html:4
@@ -324,11 +324,11 @@ msgstr "נמחקה"
 msgid "Committees"
 msgstr "ועדות"
 
-#: committees/models.py:367
+#: committees/models.py:373
 msgid "Topic"
 msgstr "הצעה לסדר"
 
-#: committees/models.py:368 templates/committees/topic_list.html:4
+#: committees/models.py:374 templates/committees/topic_list.html:4
 #: templates/user/followed_topics.html:4
 msgid "Topics"
 msgstr "הצעות לסדר"
@@ -944,122 +944,122 @@ msgstr "פעילות עבור חבר/ת הכנסת %s"
 msgid "Actions of %s, including votes, attended committees and posted articles"
 msgstr "פעילות עבור %s כולל הצבעות, פירסומים ונוכחות בוועדות"
 
-#: mks/models.py:17 persons/models.py:10 persons/models.py:28
+#: mks/models.py:18 persons/models.py:10 persons/models.py:28
 msgid "Male"
 msgstr "זכר"
 
-#: mks/models.py:18 persons/models.py:11 persons/models.py:29
+#: mks/models.py:19 persons/models.py:11 persons/models.py:29
 msgid "Female"
 msgstr "נקבה"
 
-#: mks/models.py:50
+#: mks/models.py:51
 msgid "Knesset number"
 msgstr "מספר כנסת"
 
-#: mks/models.py:51
+#: mks/models.py:52
 msgid "Start date"
 msgstr "תאריך התחלה"
 
-#: mks/models.py:52
+#: mks/models.py:53
 msgid "End date"
 msgstr "תאריך סיום"
 
-#: mks/models.py:73
+#: mks/models.py:75
 msgid "Party"
 msgstr "מפלגה"
 
-#: mks/models.py:74 templates/agendas/agenda_detail.html:116
+#: mks/models.py:76 templates/agendas/agenda_detail.html:116
 #: templates/mks/parties_members.html:23 templates/mks/parties_members.html:31
 #: templates/mks/party_list.html:25
 msgid "Parties"
 msgstr "סיעות"
 
-#: mks/models.py:124 mks/views.py:607
+#: mks/models.py:126 mks/views.py:607
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:124 mks/views.py:608
+#: mks/models.py:126 mks/views.py:608
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:165 persons/models.py:47
+#: mks/models.py:167 persons/models.py:47
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: mks/models.py:166 persons/models.py:48
+#: mks/models.py:168 persons/models.py:48
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
-#: mks/models.py:194
+#: mks/models.py:196
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/models.py:195 templates/mks/member_list.html:18
+#: mks/models.py:197 templates/mks/member_list.html:18
 #: templates/mks/parties_members.html:24
 msgid "Members"
 msgstr "ח\"כים"
 
-#: mks/models.py:322
+#: mks/models.py:324
 msgid "Coalition Member (female)"
 msgstr "חברת כנסת בקואליציה"
 
-#: mks/models.py:324
+#: mks/models.py:326
 msgid "Opposition Member (female)"
 msgstr "חברת כנסת באופוזיציה"
 
-#: mks/models.py:327
+#: mks/models.py:329
 msgid "Coalition Member (male)"
 msgstr "חבר כנסת בקואליציה"
 
-#: mks/models.py:329
+#: mks/models.py:331
 msgid "Opposition Member (male)"
 msgstr "חבר כנסת באופוזיציה"
 
-#: mks/models.py:332
+#: mks/models.py:334
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: mks/models.py:334
+#: mks/models.py:336
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: mks/models.py:347
+#: mks/models.py:349
 msgid "Minister"
 msgstr "שר"
 
-#: mks/views.py:51
+#: mks/views.py:49
 msgid "By ABC"
 msgstr "לפי א\"ב"
 
-#: mks/views.py:52
+#: mks/views.py:50
 msgid "By number of bills proposed"
 msgstr "לפי מספר הצעות חוק שהוצעו"
 
-#: mks/views.py:53
+#: mks/views.py:51
 msgid "By number of bills pre-approved"
 msgstr "לפי מספר הצעות חוק שעברו טרומית"
 
-#: mks/views.py:54
+#: mks/views.py:52
 msgid "By number of bills first-approved"
 msgstr "לפי מספר הצעות חוק שעברו קריאה ראשונה"
 
-#: mks/views.py:55
+#: mks/views.py:53
 msgid "By number of bills approved"
 msgstr "לפי מספר הצעות חוק שאושרו סופית"
 
-#: mks/views.py:56
+#: mks/views.py:54
 msgid "By number of votes per month"
 msgstr "לפי מספר הצבעות ממוצע בחודש"
 
-#: mks/views.py:57 mks/views.py:391
+#: mks/views.py:55 mks/views.py:391
 msgid "By average weekly hours of presence"
 msgstr "ממוצע שעות שבועיות"
 
-#: mks/views.py:58 mks/views.py:392
+#: mks/views.py:56 mks/views.py:392
 msgid "By average monthly committee meetings"
 msgstr "מספר ישיבות וועדות בחודש"
 
-#: mks/views.py:59
+#: mks/views.py:57
 msgid "Graphical view"
 msgstr "תצוגה גרפית"
 
@@ -1871,8 +1871,8 @@ msgstr "טוען"
 #: templates/laws/vote_list.html:32 templates/mks/member_detail.html:80
 #: templates/mks/member_detail.html:171 templates/mks/member_detail.html:190
 #: templates/mks/member_detail.html:209 templates/mks/member_detail.html:228
-#: templates/mks/member_detail.html:401 templates/user/public_profile.html:59
-#: templates/user/public_profile.html:79
+#: templates/mks/member_detail.html:401 templates/user/public_profile.html:61
+#: templates/user/public_profile.html:81
 msgid "More"
 msgstr "עוד"
 
@@ -2348,7 +2348,7 @@ msgstr "הארות אחרונות"
 
 #: templates/committees/committee_detail.html:159
 #: templates/user/annotated_items.html:29
-#: templates/user/public_profile.html:54
+#: templates/user/public_profile.html:56
 msgid "No annotations yet..."
 msgstr "אין עדיין הארות"
 
@@ -3431,30 +3431,13 @@ msgstr "תוצאות הבחירות לכנסת ה- 19"
 msgid "Factions in the 19th Knesset"
 msgstr "סיעות בכנסת ה- 19"
 
-#: templates/search/search.html:4 templates/search/search.html.py:36
+#: templates/search/search.html:4 templates/search/search.html.py:7
 msgid "Search"
 msgstr "חיפוש"
 
-#: templates/search/search.html:9
-msgid "Search results"
-msgstr "תוצאות החיפוש"
-
-#: templates/search/search.html:12
-#, python-format
-msgid ""
-"\n"
-"          This site uses a Google Custom Search, which requires Javascript.\n"
-"          If your results don't appear here shortly,\n"
-"          please <a href=\"http://www.google.com/cse?%(q)s\">view the "
-"results on Google's site</a>.\n"
-"          "
-msgstr ""
-"\n"
-"          אתר זה משתמש בחיפוש מותאם של גוגל, שדורש Javascript.\n"
-"          אם תוצאות החיפוש לא מופיעות כאן תוך זמן קצר,\n"
-"          ניתן <a href=\"http://www.google.com/cse?%(q)s\">לצפות בתוצאות "
-"בגוגל</a>.\n"
-"          "
+#: templates/search/search.html:15
+msgid "Search results for"
+msgstr "תוצאות החיפוש עבור"
 
 #: templates/user/annotated_items.html:7 templates/user/profile_list.html:3
 #: templates/user/profile_list.html.py:6 templates/user/profile_list.html:14
@@ -3472,7 +3455,7 @@ msgstr "בנוגע לדברים של"
 
 #: templates/user/annotated_items.html:37
 #: templates/user/followed_topics.html:24
-#: templates/user/public_profile.html:114 templates/user/tagged_items.html:45
+#: templates/user/public_profile.html:116 templates/user/tagged_items.html:45
 msgid "Sorry, this user has selected not to share his profile"
 msgstr "מצטערים. משתמש זה בחר שלא לשתף את הפרופיל שלו."
 
@@ -3635,23 +3618,23 @@ msgstr "אפס את סיסמתי"
 msgid "Not following any memebers."
 msgstr "אין חברי כנסת במעקב"
 
-#: templates/user/public_profile.html:65 templates/user/tagged_items.html:9
+#: templates/user/public_profile.html:67 templates/user/tagged_items.html:9
 msgid "Tagged Items"
 msgstr "ענינים מתויגים"
 
-#: templates/user/public_profile.html:83 templates/user/tagged_items.html:37
+#: templates/user/public_profile.html:85 templates/user/tagged_items.html:37
 msgid "No tagged items yet..."
 msgstr " עדיין אין ענינים מתויגים"
 
-#: templates/user/public_profile.html:91
+#: templates/user/public_profile.html:93
 msgid "Following Agendas"
 msgstr "אג'נדות במעקב"
 
-#: templates/user/public_profile.html:96
+#: templates/user/public_profile.html:98
 msgid "Not following any agendas."
 msgstr "אין אג'נדות במעקב"
 
-#: templates/user/public_profile.html:102
+#: templates/user/public_profile.html:104
 msgid "Following Topics"
 msgstr "הצעות לסדר במעקב"
 
@@ -3834,6 +3817,22 @@ msgstr "שבועי"
 #: user/views.py:124
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#~ msgid ""
+#~ "\n"
+#~ "          This site uses a Google Custom Search, which requires "
+#~ "Javascript.\n"
+#~ "          If your results don't appear here shortly,\n"
+#~ "          please <a href=\"http://www.google.com/cse?%(q)s\">view the "
+#~ "results on Google's site</a>.\n"
+#~ "          "
+#~ msgstr ""
+#~ "\n"
+#~ "          אתר זה משתמש בחיפוש מותאם של גוגל, שדורש Javascript.\n"
+#~ "          אם תוצאות החיפוש לא מופיעות כאן תוך זמן קצר,\n"
+#~ "          ניתן <a href=\"http://www.google.com/cse?%(q)s\">לצפות בתוצאות "
+#~ "בגוגל</a>.\n"
+#~ "          "
 
 #~ msgid ""
 #~ "\n"

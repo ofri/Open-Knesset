@@ -3,7 +3,36 @@
 {% load search %}
 {% block extratitle %}{% trans 'Search' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
+{% block breadcrumbs %}
+<li class="active">{% trans "Search" %}</li>
+{% endblock %}
 {% block divcontent %}
+{% if query %}
+<div class="card">
+    <div class="row">
+        <div class="span12">
+            <div class="spacer">
+                <h1>{% trans "Search results for" %} &quot;{{query}}&quot;</h1>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<script>
+  (function() {
+    var cx = '{{ cx }}';
+    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<div class="row">
+    <div id="google-search-results" class="span12">
+        <gcse:search></gcse:search>
+    </div>
+</div>
+</div>
+{% comment %}
   {% if query %}
     {% search_form "search_page" %}
     <h1>{% trans "Search results" %}</h1>
@@ -16,6 +45,7 @@
           {% endblocktrans %}
       </div>
     </div>
+
     <script type="text/javascript">
       var googleSearchMessage = document.getElementById("cse-search-results-js-required");
       googleSearchMessage.parentNode.removeChild(googleSearchMessage);
@@ -36,4 +66,5 @@
     <h1>{% trans "Search" %}</h1>
     {% search_form "search_page" %}
   {% endif %}
+{% endcomment %}
 {% endblock %}

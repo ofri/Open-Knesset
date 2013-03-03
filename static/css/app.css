@@ -6314,3 +6314,27 @@ div.color_swatch {
   cursor: pointer;
   line-height: 12px;
 }
+#google-search-results .gsc-search-box {
+  display: none;
+}
+#google-search-results .gsc-control-cse {
+  font-family: Alef, Arial;
+}
+#google-search-results .gsc-control-cse .gsc-table-result {
+  font-family: Alef, Arial;
+}
+#google-search-results .gsc-result {
+  padding: 15px;
+  border-bottom: 1px solid #e6e6e6;
+}
+#google-search-results .gsc-cursor-box {
+  background: #ffffff;
+}
+#google-search-results .gsc-cursor-box .gsc-cursor-page {
+  font-size: 16px;
+  text-decoration: none;
+}
+#google-search-results .gcsc-branding,
+#google-search-results .gsc-results {
+  background: #ffffff;
+}
