@@ -53,11 +53,12 @@ admin.site.register(Party, PartyAdmin)
 class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
 #    fields = ('name','start_date','end_date')
-    list_display = ('name', 'PartiesString', 'current_party', 'is_current', 'current_position')
+    list_display = ('name', 'gender', 'PartiesString', 'current_party',
+                    'is_current', 'current_position')
     list_editable = ('is_current', 'current_position')
     search_fields = ['name']
     inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberRelatedVideosInline)
-    list_filter = ('current_party__knesset', )
+    list_filter = ('current_party__knesset', 'gender')
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'
