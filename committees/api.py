@@ -1,9 +1,6 @@
 '''
 Api for the committees app
 '''
-from tastypie.api import Api
-from tastypie.constants import ALL
-from tastypie.bundle import Bundle
 import tastypie.fields as fields
 
 from apis.resources.base import BaseResource
@@ -17,7 +14,7 @@ class CommitteeResource(BaseResource):
     recent_meetings = fields.ListField()
     future_meetings = fields.ListField()
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Committee.objects.all()
         allowed_methods = ['get']
         include_absolute_url = True
@@ -42,7 +39,7 @@ class CommitteeMeetingResource(BaseResource):
     protocol = fields.ToManyField('committees.api.ProtocolPartResource',
                                   'parts', full=True)
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = CommitteeMeeting.objects.select_related(
             'committee').prefetch_related('mks_attended')
         allowed_methods = ['get']
@@ -55,8 +52,9 @@ class CommitteeMeetingResource(BaseResource):
 class ProtocolPartResource(BaseResource):
     header = fields.CharField(attribute='header')
     body = fields.CharField(attribute='body')
-    class Meta:
+
+    class Meta(BaseResource.Meta):
         queryset = ProtocolPart.objects.all().order_by('order')
         allowed_methods = ['get']
-        fields = list_fields = ['header','body']
+        fields = list_fields = ['header', 'body']
         include_resource_uri = False
