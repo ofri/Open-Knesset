@@ -7,64 +7,34 @@
 <li class="active">{% trans "Search" %}</li>
 {% endblock %}
 {% block divcontent %}
-{% if query %}
-<div class="card">
+<div class="card" id="google-search-outer">
     <div class="row">
         <div class="span12">
             <div class="spacer">
+{% if query %}
                 <h1>{% trans "Search results for" %} &quot;{{query}}&quot;</h1>
+{% else %}
+                <h1>{% trans "Search" %}</h1>
+                <p>{% trans "Please enter a search term in the search field." %}</p>
+{% endif %}
             </div>
         </div>
     </div>
+{% if query %}
+    <script>
+    (function() {
+        var cx = '{{ cx }}';
+        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+    })();
+    </script>
+    <div class="row">
+        <div id="google-search-results" class="span12">
+            <gcse:search></gcse:search>
+        </div>
+    </div>
 {% endif %}
-<script>
-  (function() {
-    var cx = '{{ cx }}';
-    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
-    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-        '//www.google.com/cse/cse.js?cx=' + cx;
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
-  })();
-</script>
-<div class="row">
-    <div id="google-search-results" class="span12">
-        <gcse:search></gcse:search>
-    </div>
 </div>
-</div>
-{% comment %}
-  {% if query %}
-    {% search_form "search_page" %}
-    <h1>{% trans "Search results" %}</h1>
-    <div id="cse-search-results">
-      <div id="cse-search-results-js-required">
-          {% blocktrans with query_string|escape as q %}
-          This site uses a Google Custom Search, which requires Javascript.
-          If your results don't appear here shortly,
-          please <a href="http://www.google.com/cse?{{ q }}">view the results on Google's site</a>.
-          {% endblocktrans %}
-      </div>
-    </div>
-
-    <script type="text/javascript">
-      var googleSearchMessage = document.getElementById("cse-search-results-js-required");
-      googleSearchMessage.parentNode.removeChild(googleSearchMessage);
-      var googleSearchIframeName = "cse-search-results";
-      var googleSearchFormName = "cse-search-box";
-      var googleSearchDomain = "www.google.com";
-      var googleSearchPath = "/cse";
-    </script>
-    <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
-    <script type="text/javascript">
-      try{document.getElementsByName('googleSearchFrame')[0].height=1024;}catch(e){};
-      {% if not cx %}
-        $('#id_search_page_q').value="{{ query }}";
-        $('#search_page').submit();
-      {% endif %}
-    </script>
-  {% else %}
-    <h1>{% trans "Search" %}</h1>
-    {% search_form "search_page" %}
-  {% endif %}
-{% endcomment %}
 {% endblock %}

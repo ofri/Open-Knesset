@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-03 13:56+0200\n"
-"PO-Revision-Date: 2013-03-03 13:57+0200\n"
+"POT-Creation-Date: 2013-03-03 17:51+0200\n"
+"PO-Revision-Date: 2013-03-03 17:52+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -3432,12 +3432,17 @@ msgid "Factions in the 19th Knesset"
 msgstr "סיעות בכנסת ה- 19"
 
 #: templates/search/search.html:4 templates/search/search.html.py:7
+#: templates/search/search.html:17
 msgid "Search"
 msgstr "חיפוש"
 
 #: templates/search/search.html:15
 msgid "Search results for"
 msgstr "תוצאות החיפוש עבור"
+
+#: templates/search/search.html:18
+msgid "Please enter a search term in the search field."
+msgstr "נא להזין מונח בשדה החיפוש"
 
 #: templates/user/annotated_items.html:7 templates/user/profile_list.html:3
 #: templates/user/profile_list.html.py:6 templates/user/profile_list.html:14
@@ -3817,6 +3822,10 @@ msgstr "שבועי"
 #: user/views.py:124
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#, fuzzy
+#~ msgid "Search results"
+#~ msgstr "תוצאות החיפוש עבור"
 
 #~ msgid ""
 #~ "\n"
