@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-03 17:51+0200\n"
-"PO-Revision-Date: 2013-03-03 17:52+0200\n"
+"POT-Creation-Date: 2013-03-04 13:52+0200\n"
+"PO-Revision-Date: 2013-03-04 13:53+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -509,7 +509,7 @@ msgstr "סוגי הצבעות"
 #: templates/auxiliary/tag_list.html:5 templates/auxiliary/tag_list.html:7
 #: templates/auxiliary/tag_list.html:9 templates/auxiliary/tag_list.html:14
 #: templates/auxiliary/tag_list.html:23
-#: templates/committees/committeemeeting_detail.html:197
+#: templates/committees/committeemeeting_detail.html:198
 #: templates/include/vote_list.html:8 templates/laws/bill_detail.html:540
 #: templates/laws/bill_list_by_tag.html:10 templates/laws/item_tags.html:3
 #: templates/laws/vote_detail.html:114 templates/laws/vote_list_by_tag.html:10
@@ -2228,7 +2228,7 @@ msgid "Remove"
 msgstr "מחיקה"
 
 #: templates/comments/delete.html:13
-#: templates/committees/committeemeeting_detail.html:148
+#: templates/committees/committeemeeting_detail.html:149
 #: templates/committees/delete_topic.html:13
 #: templates/laws/bill_confirm_vote.html:22
 #: templates/laws/bill_unbind_vote.html:18
@@ -2262,7 +2262,7 @@ msgstr "אין עדיין תגובות"
 
 #: templates/comments/object_comment_list.html:36
 #: templates/committees/committee_detail.html:130
-#: templates/committees/committeemeeting_detail.html:225
+#: templates/committees/committeemeeting_detail.html:226
 #: templates/laws/bill_detail.html:566 templates/laws/bill_detail.html:603
 #: templates/laws/vote_detail.html:140
 msgid "Please"
@@ -2270,7 +2270,7 @@ msgstr "אנא"
 
 #: templates/comments/object_comment_list.html:36
 #: templates/committees/committee_detail.html:131
-#: templates/committees/committeemeeting_detail.html:225
+#: templates/committees/committeemeeting_detail.html:226
 #: templates/laws/bill_detail.html:566 templates/laws/bill_detail.html:603
 #: templates/laws/vote_detail.html:140
 msgid "validate your email"
@@ -2357,8 +2357,8 @@ msgid "what does committees do?"
 msgstr "מה עושות הועדות?"
 
 #: templates/committees/committee_member_photos.html:5
-msgid "Presence this year:"
-msgstr "נוכחות השנה:"
+msgid "This year:"
+msgstr "השנה:"
 
 #: templates/committees/committeemeeting_detail.html:41
 msgid "Please validate your email to annotate"
@@ -2390,82 +2390,82 @@ msgstr "חומר רקע"
 msgid "Suggest a matching bill"
 msgstr "הוספת הצעת חוק מתאימה"
 
-#: templates/committees/committeemeeting_detail.html:112
+#: templates/committees/committeemeeting_detail.html:114
 msgid "Protocol"
 msgstr "פרוטוקול"
 
-#: templates/committees/committeemeeting_detail.html:126
+#: templates/committees/committeemeeting_detail.html:127
 msgid "Please Mark Passage"
 msgstr "אנא סמנו קטע"
 
-#: templates/committees/committeemeeting_detail.html:129
+#: templates/committees/committeemeeting_detail.html:130
 msgid "Beginning with"
 msgstr "מתחיל ב"
 
-#: templates/committees/committeemeeting_detail.html:131
+#: templates/committees/committeemeeting_detail.html:132
 msgid "Ending with"
 msgstr "מסתיים ב"
 
-#: templates/committees/committeemeeting_detail.html:136
+#: templates/committees/committeemeeting_detail.html:137
 msgid "Type your note"
 msgstr "סוג ההארה"
 
-#: templates/committees/committeemeeting_detail.html:139
+#: templates/committees/committeemeeting_detail.html:140
 msgid "Color"
 msgstr "צבע"
 
-#: templates/committees/committeemeeting_detail.html:147
+#: templates/committees/committeemeeting_detail.html:148
 msgid "Save note"
 msgstr "שמור"
 
-#: templates/committees/committeemeeting_detail.html:151
+#: templates/committees/committeemeeting_detail.html:152
 msgid "Your note will be published under"
 msgstr "ההארה שלך תפורסם ברשיון"
 
-#: templates/committees/committeemeeting_detail.html:171
+#: templates/committees/committeemeeting_detail.html:172
 msgid "View all"
 msgstr "הצגת כל ההערות"
 
-#: templates/committees/committeemeeting_detail.html:175
+#: templates/committees/committeemeeting_detail.html:176
 msgid "Annotate"
 msgstr "האירו"
 
-#: templates/committees/committeemeeting_detail.html:205
+#: templates/committees/committeemeeting_detail.html:206
 #: templates/laws/bill_detail.html:547 templates/laws/vote_detail.html:121
 msgid "No tags yet"
 msgstr "אין עדיין תגיות"
 
-#: templates/committees/committeemeeting_detail.html:211
+#: templates/committees/committeemeeting_detail.html:212
 #: templates/laws/bill_detail.html:552 templates/laws/vote_detail.html:126
 msgid "Edit Tags"
 msgstr "עריכת תגיות"
 
-#: templates/committees/committeemeeting_detail.html:213
+#: templates/committees/committeemeeting_detail.html:214
 msgid "Click here for tags related to this committee"
 msgstr "רשימת התגים הקשורים לוועדה זו"
 
-#: templates/committees/committeemeeting_detail.html:213
+#: templates/committees/committeemeeting_detail.html:214
 msgid "Click here to see all available tags"
 msgstr "רשימת התגים המלאה"
 
-#: templates/committees/committeemeeting_detail.html:217
+#: templates/committees/committeemeeting_detail.html:218
 #: templates/laws/bill_detail.html:558 templates/laws/vote_detail.html:132
 msgid "Create new tag"
 msgstr "יצירת תגית חדשה"
 
-#: templates/committees/committeemeeting_detail.html:222
+#: templates/committees/committeemeeting_detail.html:223
 #: templates/laws/bill_detail.html:563 templates/laws/bill_detail.html:600
 #: templates/laws/vote_detail.html:137
 msgid "Send"
 msgstr "שליחה"
 
-#: templates/committees/committeemeeting_detail.html:225
+#: templates/committees/committeemeeting_detail.html:226
 #: templates/laws/bill_detail.html:566 templates/laws/bill_detail.html:603
 #: templates/laws/vote_detail.html:140
 msgid " to create new tags"
 msgstr "כדי ליצור תגיות חדשות"
 
-#: templates/committees/committeemeeting_detail.html:230
+#: templates/committees/committeemeeting_detail.html:231
 #: templates/laws/vote_detail.html:145
 msgid "Login to edit tags"
 msgstr "רוצה להציע תגית? לחץ/י כאן כדי להרשם"
@@ -3823,6 +3823,9 @@ msgstr "שבועי"
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
 
+#~ msgid "Presence this year:"
+#~ msgstr "נוכחות השנה:"
+
 #, fuzzy
 #~ msgid "Search results"
 #~ msgstr "תוצאות החיפוש עבור"
@@ -4899,9 +4902,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "This month"
 #~ msgstr "החודש"
-
-#~ msgid "This year"
-#~ msgstr "השנה"
 
 #~ msgid "Yes"
 #~ msgstr "כן"
