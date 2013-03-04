@@ -235,3 +235,19 @@ class MemberResource(BaseResource):
         return count
 
     fields.ToOneField(PartyResource, 'current_party', full=True)
+
+    def build_filters(self, filters=None):
+        if filters is None:
+            filters = {}
+
+        try:
+            current_knesset = int(filters.get('current_knesset', 0))
+        except KeyError:
+            current_knesset = 0
+
+        orm_filters = super(MemberResource, self).build_filters(filters)
+
+        if current_knesset:
+            orm_filters['current_party__knesset'] = Knesset.objects.current_knesset()
+
+        return orm_filters
