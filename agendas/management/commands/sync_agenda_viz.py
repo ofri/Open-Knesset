@@ -24,7 +24,7 @@ class Command(NoArgsCommand):
 
     _replacements = (
         ('/lib/require.js', '{% static "js/require.js" %}'),
-        ('src/agenda-viz.js', '{% static "js/agenda-viz-1.0.1.js" %}'),
+        ('src/agenda-viz.js', '{{% static "js/{0}" %}}'),
         ('/src/css/openfont.css', '{% static "css/openfont.css" %}'),
         ('/src/img/', '{% static "img/agenda-viz/" %}'),
         ('</body>', '    <script>window.IMAGES_PATH = "{% static "img/agenda-viz/" %}";</script>\n</body>'),
@@ -41,6 +41,9 @@ class Command(NoArgsCommand):
         zip_url = urllib2.urlopen(self.ZIP_URL)
         zip_file = ZipFile(StringIO(zip_url.read()))
 
+        content = None
+        js_with_version = None
+
         for member in zip_file.namelist():
             # we take only dist, css, and img directories
             dir_name, file_name = os.path.split(member)
@@ -52,23 +55,12 @@ class Command(NoArgsCommand):
             _, base_dir = os.path.split(dir_name)
 
             if file_name == self._html_file:
-                if is_verbose:
-                    print "Adopting ", self._html_file
-
-                # adopt the html to template
                 source = zip_file.open(member)
-                content = "{% load static from staticfiles %}\n" + source.read()
-
-                for orig, replacement in self._replacements:
-                    content = content.replace(orig, replacement)
-
+                content = source.read()
                 source.close()
 
-                target = os.path.join(self._templates_root, 'agendas',
-                                      self._html_file)
-
-                with open(target, 'w') as f:
-                    f.write(content)
+            if base_dir == 'dist':
+                js_with_version = file_name
 
             elif base_dir in self._DIRS:
                 target_dir = self._DIRS[base_dir]
@@ -88,3 +80,19 @@ class Command(NoArgsCommand):
 
                 source.close()
                 target.close()
+
+        if is_verbose:
+            print "Adopting ", self._html_file
+
+        # now adopt the template content, with the found version number
+        content = "{% load static from staticfiles %}\n" + content
+
+        for orig, replacement in self._replacements:
+            if replacement.find('{0}') > -1:
+                replacement = replacement.format(js_with_version)
+            content = content.replace(orig, replacement)
+
+        target = os.path.join(self._templates_root, 'agendas', self._html_file)
+
+        with open(target, 'w') as f:
+            f.write(content)
