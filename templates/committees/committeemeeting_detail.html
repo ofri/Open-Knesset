@@ -108,11 +108,12 @@
             {% endifnotequal %}
 
             {% with object.parts.list as parts %}
+            {% autopaginate parts paginate_by %}
+            <div class="text-center">{% paginate %}</div>
             <section class="card card-list">
                 <header><h2>{% trans 'Protocol' %}</h2></header>
                     {% get_annotations_for parts as annotation_dict %}
                     <div class="protocol">
-                    {% autopaginate parts paginate_by %}
                     {% for speech_part in parts %}
                       {% with speech_part.id as spid %}
                       {% with annotation_dict|hash:spid as annotation_obj %}
