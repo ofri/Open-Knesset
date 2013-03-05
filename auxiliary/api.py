@@ -24,7 +24,7 @@ from operator import attrgetter
 
 class PostResource(BaseResource):
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         limit = 50
         allowed_methods = ['get']
         fields = ['id', 'title', 'date_created', 'url', 'content']
@@ -61,7 +61,7 @@ class TagResource(BaseResource):
     number_of_items = fields.IntegerField()
     absolute_url = fields.CharField()
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Tag.objects.all().order_by('name')
         allowed_methods = ['get']
         include_absolute_url = True

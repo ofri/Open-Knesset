@@ -25,7 +25,7 @@ class PartyResource(BaseResource):
     TBD: create a party app
     '''
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Party.objects.filter(
             knesset=Knesset.objects.current_knesset())
         allowed_methods = ['get']
@@ -38,7 +38,7 @@ class DictStruct:
 
 class MemberBillsResource(BaseResource):
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         allowed_methods = ['get']
         resource_name = "member-bills"
         # object_class= DictStruct
@@ -100,7 +100,7 @@ class MemberAgendasResource(BaseResource):
 
     agendas = fields.ListField()
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Member.objects.select_related('current_party').order_by()
         allowed_methods = ['get']
         fields = ['agendas']  # We're not really interested in any member details here
