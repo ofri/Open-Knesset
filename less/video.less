@@ -18,40 +18,35 @@
 }
 
 .video_playlist_player {
-  width:400px;height:90px;
-  overflow:hidden;
-  margin-bottom:5px;
 
-  a { padding:0 }
-
-  .video_image {
-    width:120px;
-    font-weight:bold;
-    text-align:center;
-    float:right;padding-left:5px;
-  }
+  .span2 { position:relative }
 
   img {
-      width:120px;height:90px;
+      width:120px; height:90px; display:block;
   }
 
   .video_playbtn {
-      position:relative;
-      width:120px;height:90px;overflow:hidden;
-      top:-95px;
+      position:absolute;
+      width:120px;
+      height:90px;
+      overflow:hidden;
+      top:0;
+      right:0;
       background:transparent url(../icons/play_small.png) no-repeat center center;
       cursor:pointer;
-  }
-
-  .video_description {
-      line-height:1.3em;
-      height:7.8em;
-      overflow:hidden;
   }
 
 }
 
 .video_playlist_player_embed {
-    margin-bottom:10px;
+    margin-bottom:1ex;
+
+    iframe {
+      width: 400px;
+      height: 300px;
+      margin: 0 auto 1ex;
+      display: block;
+    }
+
 }
 
