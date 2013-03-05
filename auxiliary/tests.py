@@ -9,6 +9,7 @@ from django.conf import settings
 from tagging.models import Tag,TaggedItem
 from laws.models import Vote, VoteAction, Bill, Law
 from mks.models import Member,Party,WeeklyPresence,Knesset
+from committees.models import Committee
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
@@ -87,6 +88,7 @@ class InternalLinksTest(TestCase):
                                             knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
+        self.plenum = Committee.objects.create(name='Plenum',type='plenum')
         self.voteactions = []
         self.num_mks = 4
         for i in range(self.num_mks):

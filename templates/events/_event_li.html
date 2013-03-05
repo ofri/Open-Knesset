@@ -1,7 +1,7 @@
 {% load i18n %}
 <li>
     {% ifchanged %}
-        <div class="date">{% trans "day" %} {{o.when|date:"l, d/m/Y"}}&nbsp;</div>
+        <div class="item-context">{% trans "day" %} {{o.when|date:"l, d/m/Y"}}&nbsp;</div>
     {% endifchanged %}
     <p>
      <span class="time">{{o.when|date:"H:i"}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;

@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from actstream.models import Follow
 from laws.models import VoteAction, Vote
-from mks.models import Party, Member
+from mks.models import Party, Member, Knesset
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -349,9 +349,25 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def get_mks_values(self):
+    def get_mks_values(self, knesset_number=None):
+        """Return mks values.
+
+        :param knesset_number: The knesset numer of the mks. ``None`` will
+                               return current knesset (default: ``None``).
+        """
         mks_grade = Agenda.objects.get_mks_values()
-        return mks_grade.get(self.id,[])
+
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        mks_ids = Member.objects.filter(
+            current_party__knesset=knesset).values_list('pk', flat=True)
+
+        grades = mks_grade.get(self.id, [])
+        current_grades = [x for x in grades if x[0] in mks_ids]
+        return current_grades
 
     def get_mks_totals(self, member):
         "Get count for each vote type for a specific member on this agenda"
@@ -365,12 +381,39 @@ class Agenda(models.Model):
 
         return qs
 
-    def get_party_values(self):
-        party_grades = Agenda.objects.get_all_party_values()
-        return party_grades.get(self.id,[])
+    def get_party_values(self, knesset_number=None):
+        """Return party values.
 
-    def get_all_party_values(self):
-        return Agenda.objects.get_all_party_values()
+        :param knesset_number: The knesset numer of the parties. ``None`` will
+                               return current knesset (default: ``None``).
+        """
+        party_grades = Agenda.objects.get_all_party_values()
+        all_grades = party_grades.get(self.id, [])
+
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        current_parties_id = [x.pk for x in Party.objects.filter(knesset=knesset)]
+        current_grades = [x for x in all_grades if x[0] in current_parties_id]
+        return current_grades
+
+    def get_all_party_values(self, knesset_number=None):
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        current_parties_id = [x.pk for x in Party.objects.filter(knesset=knesset)]
+
+        current_parties_scores = {}
+
+        for agenda_id, parties_scores in Agenda.objects.get_all_party_values().iteritems():
+            current_parties_scores[agenda_id] = [
+                x for x in parties_scores if x[0] in current_parties_id]
+
+        return current_parties_scores
 
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))

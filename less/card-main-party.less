@@ -69,7 +69,6 @@
 
 .card-party-members {
 	margin-bottom: 35px;
-	counter-reset: memberNum;
 	
 	> div {
 		margin: 9px;
@@ -77,7 +76,6 @@
 	}
 		
   .party-member-photo {
-    counter-increment: memberNum;
     position: relative;
     height: 80px;
     width: 60px;
@@ -89,28 +87,36 @@
       text-align: center;
       p, div {margin: 0;}
      }
+
+     
     .party-member-info {
       .card;
-      display: none;
-      z-index: 1;
+      @media only screen and (max-width : 1223px) {
+        display: none;
+      }
+      visibility: hidden;
+      opacity: 0;
+      z-index: -1;
       position: absolute;
-      top: 80px;
-      width: 405px;
-      height: 218px;
+      top: 90px;
+      right: -150px;
+      width: 355px;
+      height: 198px;
       
       .party-member-info-photo {
         position: absolute;
         border: 1px solid @borderColor;
-        height: 177px;
+        height: 172px;
         width: 130px;
         top: 14px;
         right: 10px;
+        background: white url("../img/ajax-loader.gif") 50% 50% no-repeat;
 
         img { width: 100%; height:100%; }
       }
       
       .party-member-info-text {
-        height: 160px;
+        height: 140px;
         border-bottom: 1px solid @borderColor;
         padding-right: 160px;
 
@@ -118,34 +124,30 @@
       }
       
       .party-member-info-links {
-        height: 47px;
+        height: 46px;
         background: @lightergray;
         padding-right: 160px;
         overflow: hidden;
 
-        ul { margin-top:8px; }
+        ul { margin-top:7px; }
         li {  padding:0; border: 0 none;}
       }
     }
     
     &:hover .party-member-info {
-      display: block;
-      .box-shadow(@shadow);
-      
+      @media only screen and (min-width : 1224px) {
+        z-index: 100;
+        opacity: 1;
+        visibility: visible;
+        transition: visibility 0.3s linear, opacity 0.3s linear;
+        transition-delay: 0.4s;
+        -moz-transition-delay: 0.4s; /* Firefox 4 */
+        -webkit-transition-delay: 0.4s; /* Safari and Chrome */
+        -o-transition-delay: 0.4s; /* Opera */
+        .box-shadow(0 5px 10px rgba(0,0,0,.2));
+      }
     }
     
-  }
-
-  &.numbered .party-member-photo:after {
-      content: counter(memberNum);
-      position: absolute;
-      bottom: 2px;
-      left: 3px;
-      color: white;
-      text-shadow: -1px -1px 0 rgba(0,0,0,0.5),  
-                   1px -1px 0 rgba(0,0,0,0.5),
-                   -1px 1px 0 rgba(0,0,0,0.5),
-                   1px 1px 0 rgba(0,0,0,0.5);
   }
 
   .party-member-name {

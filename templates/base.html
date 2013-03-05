@@ -16,7 +16,7 @@
     <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=13" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=19" />
     <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
 
 <!--
@@ -70,7 +70,7 @@
         <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members %}">{% trans "Members and Parties" %}</a></li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-        <!-- <li><a href="#">מליאה</a></li> -->
+        <li id="nav-plenum" {% block nav-plenum %} {% endblock %} ><a href="{% url plenum %}">מליאה</a></li>
         <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
       </ul>
     </header>
@@ -122,7 +122,7 @@
                         <li><a href="{% url party-list %}">{% trans "Members and Parties" %}</a></li>
                         <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
                         <li><a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-                        <!-- <li><a href="#">מליאה</a></li> -->
+                        <li><a href="{% url plenum %}">מליאה</a></li>
                         <li><a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
                     </ul>
                 </nav>
@@ -206,6 +206,7 @@
 
     <script src="{% static "js/ok-toggle.js" %}"></script>
     <script src="{% static "js/ok-more.js" %}"></script>
+    <script src="{% static "js/ok-search.js" %}"></script>
 <!-- end JS -->
     <script>
         $(function() { 
@@ -232,6 +233,23 @@
                 }
             });
 
+            // lazy load mkimages
+            $('.party-member-photo').hover(function() {
+                var card_info = $(this).find('.party-member-info'),
+                    card_info_display = card_info.css('display'),
+                    photo = card_info.find('.party-member-info-photo img');
+
+                // should work only for large screens, disply will be none for
+                // by media queries
+                if (card_info_display == 'block') {
+                    var img_src = photo.data('src');
+                    if (img_src) {
+                        photo.removeAttr('data-src');
+                        photo.attr('src', img_src).one('load', function() {photo.parent().css('background', 'white');});
+                    }
+                }
+
+            });
             // set jGrowl position
             $.jGrowl.defaults.position="top-left";
         });

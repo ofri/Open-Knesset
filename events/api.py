@@ -8,11 +8,11 @@ from apis.resources.base import BaseResource
 from django.conf.urls.defaults import url
 
 class EventResource(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Event.objects.all()
         allowed_methods = ['get']
 
-    def override_urls(self):
+    def prepend_urls(self):
         return [
             url(r'^(?P<resource_name>%s)/?$' % self._meta.resource_name,
                 self.wrap_view('get_future_events'),

@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'okhelptexts',
     'tastypie',
     'polyorg',
+    'plenum',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -209,7 +210,7 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s:%(lineno)d\t%(levelname)s\t
 h.setFormatter(formatter)
 logger.addHandler(h)
 
-GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
+GOOGLE_CUSTOM_SEARCH = "007833092092208924626:1itz_l8x4a4"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev']  # override this in prod server

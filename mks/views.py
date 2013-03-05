@@ -45,8 +45,6 @@ class MemberRedirectView(RedirectView):
 
 class MemberListView(ListView):
 
-    model = Member
-
     pages = (
         ('abc', _('By ABC')),
         ('bills_proposed', _('By number of bills proposed')),
@@ -58,6 +56,9 @@ class MemberListView(ListView):
         ('committees', _('By average monthly committee meetings')),
         ('graph', _('Graphical view'))
     )
+
+    def get_queryset(self):
+        return Member.current_knesset.all()
 
     def get_context_data(self, **kwargs):
 
@@ -77,8 +78,7 @@ class MemberListView(ListView):
         context['stat_type'] = info
         context['title'] = dict(self.pages)[info]
 
-        context['past_mks'] = Member.objects.filter(is_current=False,
-                current_party__knesset=Knesset.objects.current_knesset())
+        context['past_mks'] = Member.current_knesset.filter(is_current=False)
 
         # We make sure qs are lists so that the template can get min/max
         if info == 'abc':

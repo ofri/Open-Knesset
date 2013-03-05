@@ -129,9 +129,10 @@ def search(request, lang='he'):
         'query': request.GET.get('q'),
         'query_string': mutable_get.urlencode(),
         'has_search': True,
-        'lang' : lang,
-        'cx': request.GET.get('cx')
+        'lang': lang,
+        'cx': settings.GOOGLE_CUSTOM_SEARCH,
     }))
+
 
 def post_details(request, post_id):
     ''' patching django-planet's post_detail view so it would update the
