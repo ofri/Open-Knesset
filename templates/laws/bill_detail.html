@@ -358,8 +358,7 @@
                 <ul>
                     <li> 
                     {% if object.knesset_proposal %}
-                        <p class="item-title">{{ object.knesset_proposal.title }}</p>
-                        <p class="item-context"><a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a></p>
+                        <p class="item-title"><a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a></p>
                     {% else %}
                         {% trans 'No Info' %}
                     {% endif %}
