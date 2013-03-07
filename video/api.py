@@ -1,15 +1,16 @@
 from datetime import date,timedelta
-from tastypie.resources import ModelResource
 from tastypie.constants import ALL
 from models import Video
 from django.contrib.contenttypes.models import ContentType
 from mks.models import Member
 from committees.models import Committee
 from django.db.models import Q
+from apis.resources.base import BaseResource
 
-class VideoResource(ModelResource):
+class VideoResource(BaseResource):
 
-    class Meta:
+    class Meta(BaseResource.Meta):
+        limit = 500
         queryset = Video.objects.all()
         allowed_methods = ['get']
         filtering = dict(
@@ -18,7 +19,7 @@ class VideoResource(ModelResource):
             )
 
     def apply_filters(self, request, applicable_filters):
-        qs = super(VideoResource, self).apply_filters(request, 
+        qs = super(VideoResource, self).apply_filters(request,
                 applicable_filters)
 
         if request.GET.has_key('object_type'):
