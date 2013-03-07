@@ -402,7 +402,7 @@
                 <ul>
                 {% for cm in object.second_committee_meetings.all|slice:":4" %}
                     <li>
-                        <p class="item-title"><a href="{% url committee-meeting cm.id %}">{{ cm.committee.name }}</a></p>
+                        <p class="item-title"><a href="{% url committee-meeting cm.id %}">{{ cm.committee }}</a></p>
                         <p class="item-context">{{ cm.date }}</p>
                     </li>
                 {% empty %}
