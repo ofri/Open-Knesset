@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-10 18:00+0200\n"
-"PO-Revision-Date: 2013-03-10 18:04+0200\n"
+"POT-Creation-Date: 2013-03-10 18:11+0200\n"
+"PO-Revision-Date: 2013-03-10 18:12+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -245,11 +245,19 @@ msgstr "טקסט הלחצן"
 msgid "Button link"
 msgstr "קישור הלחצן"
 
+#: auxiliary/models.py:22
+msgid "Active"
+msgstr "פעיל"
+
 #: auxiliary/models.py:23
+msgid "Ordering"
+msgstr "מיון"
+
+#: auxiliary/models.py:26
 msgid "Tidbit"
 msgstr "הידעת"
 
-#: auxiliary/models.py:24
+#: auxiliary/models.py:27
 msgid "Tidbits"
 msgstr "הידעת"
 
@@ -4444,10 +4452,6 @@ msgstr "פרופיל המשתמש עודכן"
 #, fuzzy
 #~ msgid "Inactive"
 #~ msgstr "Iwate"
-
-#, fuzzy
-#~ msgid "Active"
-#~ msgstr "פעילויות"
 
 #, fuzzy
 #~ msgid "status"
