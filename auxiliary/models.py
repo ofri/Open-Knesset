@@ -25,3 +25,6 @@ class Tidbit(models.Model):
     class Meta:
         verbose_name = _('Tidbit')
         verbose_name_plural = _('Tidbits')
+
+    def __unicode__(self):
+        return u'{0.title} {0.content}'.format(self)
