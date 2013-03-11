@@ -19,8 +19,10 @@ class Tidbit(models.Model):
     button_text = models.CharField(_('Button text'), max_length=100)
     button_link = models.CharField(_('Button link'), max_length=255)
 
-    active = models.BooleanField(_('Active'), default=True)
+    is_active = models.BooleanField(_('Active'), default=True)
     ordering = models.IntegerField(_('Ordering'), default=20, db_index=True)
+
+    objects = models.Manager()
 
     class Meta:
         verbose_name = _('Tidbit')
