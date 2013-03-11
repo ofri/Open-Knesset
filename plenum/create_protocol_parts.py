@@ -7,7 +7,7 @@ from mks.models import Member
 from persons.models import Person, PersonAlias
 
 logger = logging.getLogger("open-knesset.plenum.create_protocol_parts")
-speaker_text_threshold=30
+speaker_text_threshold=40
 
 _parts=None
 _mks_attended=set()
@@ -81,7 +81,7 @@ def _savePart(meeting,header,body,type):
     _parts.append(
         committees.models.ProtocolPart(meeting=meeting, order=len(_parts), header=header.strip(), body=body.strip(), type=type)
     )
-    if type=='speaker':
+    if type=='speaker' and len(body.strip())>speaker_text_threshold:
         for (i,name) in enumerate(_mk_names):
             if header.find(name)>-1:
                 _mks_attended.add(_mks[i])
