@@ -9,6 +9,13 @@ ICON_CHOICES = (
 )
 
 
+class TidbitManager(models.Manager):
+
+    def get_query_set(self):
+        return super(TidbitManager, self).get_query_set().filter(
+            is_active=True).order_by('ordering')
+
+
 class Tidbit(models.Model):
     """Entries for 'Did you know ?' section in the index page"""
 
@@ -23,6 +30,7 @@ class Tidbit(models.Model):
     ordering = models.IntegerField(_('Ordering'), default=20, db_index=True)
 
     objects = models.Manager()
+    active = TidbitManager()
 
     class Meta:
         verbose_name = _('Tidbit')
