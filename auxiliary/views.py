@@ -25,6 +25,8 @@ from tagging.models import Tag, TaggedItem
 from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
 from knesset.utils import notify_responsible_adult, main_actions
+from .models import  Tidbit
+
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
@@ -107,9 +109,11 @@ def main(request):
         'title': _('Home'),
         'hide_crumbs': True,
         'is_index': True,
+        'tidbits': Tidbit.active.all()
     }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context, context_instance=RequestContext(request))
+
 
 def post_annotation(request):
     if request.user.has_perm('annotatetext.add_annotation'):
