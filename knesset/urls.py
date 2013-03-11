@@ -92,8 +92,8 @@ urlpatterns = patterns('',
         name='vote-on-bill'),
     (r'^video/', include('video.urls')),
     (r'^mmm-documents/', include('mmm.urls')),
+    (r'^tinymce/', include('tinymce.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += polyorgurlpatterns + personsurlpatterns
-

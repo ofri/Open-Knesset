@@ -168,6 +168,7 @@ INSTALLED_APPS = (
     'tastypie',
     'polyorg',
     'plenum',
+    'tinymce',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -260,6 +261,19 @@ SERIALIZATION_MODULES = {
 API_LIMIT_PER_PAGE = 1000
 
 SOUTH_TESTS_MIGRATE = False
+
+
+TINYMCE_DEFAULT_CONFIG = {
+    'mode': "textareas",
+    'theme': "advanced",
+    'theme_advanced_buttons1': ("bold,italic,underline,|,undo,redo,|,"
+                                "link,unlink,|,bullist,numlist,|"
+                                ",cut,copy,paste,|,cleanup"),
+    'theme_advanced_buttons2': "",
+    'theme_advanced_buttons3': "",
+    'theme_advanced_toolbar_align': "center",
+
+}
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
