@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 01:43+0200\n"
-"PO-Revision-Date: 2013-02-27 01:54+0200\n"
+"POT-Creation-Date: 2013-03-12 14:40+0200\n"
+"PO-Revision-Date: 2013-03-12 14:40+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -76,10 +76,14 @@ msgid "Members"
 msgstr "ח\"כים"
 
 #: static/js/ok-search.js:47
+msgid "Parties"
+msgstr "סיעות"
+
+#: static/js/ok-search.js:56
 msgid "Tags"
 msgstr "תגים"
 
-#: static/js/ok-search.js:56
+#: static/js/ok-search.js:65
 msgid "Committees"
 msgstr "ועדות"
 
