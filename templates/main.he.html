@@ -4,8 +4,42 @@
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
 {% block nav-main-page %} class="selected" {% endblock %}
+
+{% block extrajs %}
+{% if tidbits %}
+    <script type="text/javascript">
+        $(function() {
+            $('#tidbitCarousel').carousel()
+        });
+    </script>
+{% endif %}
+{% endblock %}
+
 {% block divcontent %}
-<div class="row" style="margin-top:20px;">
+{% if tidbits %}
+<div id="tidbitCarousel" class="carousel slide card card-main" style="margin-top:20px;">
+    <!--ol class="carousel-indicators">
+        <li data-target="#tidbitCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#tidbitCarousel" data-slide-to="1"></li>
+        <li data-target="#tidbitCarousel" data-slide-to="2"></li>
+        <li data-target="#tidbitCarousel" data-slide-to="3"></li>
+    </ol-->
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        {% for tidbit in tidbits  %}
+        <div class="item {% if forloop.first %}active{% endif %}">
+            <h1 class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</h1>
+            <div>{{tidbit.content|safe}}</div>
+            <a class="btn" href="{{tidbit.button_link}}">{{tidbit.button_text}}</a>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#tidbitCarousel" data-slide="next">&lsaquo;</a>
+    <a class="carousel-control right" href="#tidbitCarousel" data-slide="prev">&rsaquo;</a>
+</div>
+{% endif %}
+<div class="row">
     <div class="cards span8">
         <div class="card card-list text-center">
             <div class="spacer" style="padding:39px 0">
