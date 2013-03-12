@@ -5226,6 +5226,9 @@ form .helptext {
 /* fix for carousel scroller */
 .carousel-inner > .item {
   transition: right 0.6s ease-in-out 0s;
+  -webkit-transition: right 0.6s ease-in-out 0s;
+  -moz-transition: right 0.6s ease-in-out 0s;
+  -o-transition: right 0.6s ease-in-out 0s;
 }
 /* Add additional stylesheets below
 -------------------------------------------------- */
