@@ -50,15 +50,10 @@ class IterJSONAndCSVSerializer(Serializer):
         writer = csv.writer(response, dialect='excel')
 
         # if data contains an 'objects' key, refer to it's value as a list of objects
-        if 'objects' in data:
-            for item in data['objects']:
-                writer.writerow([unicode(item[key]).encode(
-                                "utf-8", "replace") for key in item.keys()])
-        else:
-            # if data isn't an 'object', refer to it as a single object
-            dataObject = data
-            writer.writerow([unicode(dataObject[key]).encode(
-                "utf-8", "replace") for key in dataObject.keys()])
+        objects = data.get('objects', [data])
+        for item in objects:
+            writer.writerow([unicode(item[key]).encode(
+                "utf-8", "replace") for key in item.keys()])
         return response
 
 
