@@ -120,7 +120,6 @@ class MeetingDetailView(DetailView):
         for part in cm.parts.all():
             parts_lengths[part.id] = len(part.body)
         context['parts_lengths'] = json.dumps(parts_lengths)
-        context['parts']=cm.parts.all()
         context['paginate_by'] = COMMITTEE_PROTOCOL_PAGINATE_BY
 
         if cm.committee.type=='plenum':
