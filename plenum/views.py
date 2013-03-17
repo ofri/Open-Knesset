@@ -19,3 +19,11 @@ class PlenumMeetingsListView(MeetingsListView):
         context = super(PlenumMeetingsListView, self).get_context()
         context['committee_type'] = 'plenum'
         return context
+    
+class PlenumMeetingDetailView(MeetingDetailView):
+    
+    def get_context_data(self, *args, **kwargs):
+        context=super(PlenumMeetingDetailView, self).get_context_data(*args, **kwargs)
+        context['parts']=context['object'].parts.filter(type='title')
+        context['is_titles_only']=True
+        return context
