@@ -107,7 +107,6 @@
                 </section>
             {% endifnotequal %}
 
-            {% with object.parts.list as parts %}
             {% autopaginate parts paginate_by %}
             <div class="text-center">{% paginate %}</div>
             <section class="card card-list">
@@ -164,23 +163,31 @@
                             {% endifnotequal %}
                         </div>
 
+                        {% if not is_titles_only %}
                         <div class="text-content span6" id="annotations-{{ speech_part.id }}_content">
                             <blockquote cite="{{ session.document_url }}" id="annotationtext_{{ speech_part.id }}" class="entry-content" style="background-color:{{colors|hash:speech_part.header}}">{{ speech_part.body|simple_formatting }}</blockquote>
                         </div>
+                        {% endif %}
                         <div class="span3">
                             <div style="display:none" class="annotationtoolbox annotating form-inline" id="annotationtoolbox-{{ speech_part.id }}">
+                                {% if not is_titles_only %}
                                 <label for="markall-{{ speech_part.id }}">{% trans "View all" %}</label>
                                 <input type="checkbox" class="markall" name="markall-{{ speech_part.id }}" id="markall-{{ speech_part.id }}"/>
+                                {% endif %}
                             </div>
                             <p class="tool-links">
+                                {% if not is_titles_only %}
                                 <a href="#annotationform-{{ speech_part.id }}" class="annotationform-link annotating" id="selectable-{{ speech_part.id }}">{% trans "Annotate"%}</a>
+                                {% endif %}
                             </p>
                             <div class="annotating annotation-content" id="annotations-{{ speech_part.id }}">
+                                {% if not is_titles_only %}
                                 {% with annotation_obj.annotations as annotations %}
                                 {% for annotation in annotations %}
                                 {% include "annotatetext/_annotation.html" %}
                                 {% endfor %}
                                 {% endwith %}
+                                {% endif %}
                             </div>
                         </div>
                       {% endwith %}
@@ -190,7 +197,6 @@
                     </div>
             </section> <!-- protocol -->
             <div class="text-center">{% paginate %}</div>
-            {% endwith %}
         </div>
 
         <div class="span3">
