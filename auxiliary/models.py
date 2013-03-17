@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from tinymce import models as tinymce_models
 
 ICON_CHOICES = (
-    ('qoute', _('Quote')),
+    ('quote', _('Quote')),
     ('stat', _('Statistic')),
     ('hand', _('Hand')),
 )

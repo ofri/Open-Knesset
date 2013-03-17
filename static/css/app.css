@@ -5223,6 +5223,13 @@ form .helptext {
   /* Use bootstrap's text-info color */
 
 }
+/* fix for carousel scroller */
+.carousel-inner > .item {
+  transition: right 0.6s ease-in-out 0s;
+  -webkit-transition: right 0.6s ease-in-out 0s;
+  -moz-transition: right 0.6s ease-in-out 0s;
+  -o-transition: right 0.6s ease-in-out 0s;
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
@@ -6339,4 +6346,34 @@ div.color_swatch {
 #google-search-results .gcsc-branding,
 #google-search-results .gsc-results {
   background: #ffffff;
+}
+#tidbitCarousel {
+  padding: 30px 20%;
+}
+#tidbitCarousel .item {
+  height: 200px;
+}
+#tidbitCarousel .item h1 {
+  padding: 0 40px 20px 0;
+  background-position: 100% 30%;
+  background-repeat: no-repeat;
+}
+#tidbitCarousel .item h1.tidbit-icon-quote {
+  background-image: url("../img/tidbits/quote.png");
+}
+#tidbitCarousel .item h1.tidbit-icon-stat {
+  background-image: url("../img/tidbits/stats.png");
+}
+#tidbitCarousel .item h1.tidbit-icon-hand {
+  background-image: url("../img/tidbits/hand.png");
+}
+#tidbitCarousel .item div {
+  padding-right: 40px;
+}
+#tidbitCarousel .btn {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  font-size: 120%;
+  padding: 15px 40px;
 }

@@ -42,6 +42,15 @@
                 return el;
             }
         },
+		party: {
+            url: '/api/v2/party/',
+			title: gettext('Parties'),
+            render: function(item) {
+                var el = $('<li class="search-party"><a></a></li>');
+                el.find('a').attr('href', item.absolute_url).text(item.name);
+                return el;
+            }
+		},
         tag: {
             url: '/api/v2/tag/',
 			title: gettext('Tags'),
