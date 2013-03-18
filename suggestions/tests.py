@@ -28,3 +28,9 @@ class SuggestionsTests(TestCase):
 
         mk = Member.objects.get(pk=self.member.pk)
         self.assertEqual(mk.website, MK_SITE)
+
+        # cleanup
+        mk.website = None
+        mk.save()
+
+        self.member = mk
