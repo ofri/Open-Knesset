@@ -81,12 +81,18 @@ class Suggestion(models.Model):
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
 
-    def auto_apply(self):
+    def auto_apply(self, resolved_by):
 
         type_maps = {
             self.UPDATE: 'update'
         }
         getattr(self, 'auto_apply_' + type_maps[self.suggestion_action])()
+
+        self.resolved_by = resolved_by
+        self.resolved_status = self.FIXED
+        self.resolved_at = datetime.now()
+
+        self.save()
 
     def auto_apply_update(self):
         "Auto updates a field"
