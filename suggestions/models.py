@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from .managers import SuggestionsManager
+
 
 class Suggestion(models.Model):
     """Data improvement suggestions.  Designed to implement suggestions queue
@@ -52,7 +54,7 @@ class Suggestion(models.Model):
     content_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'content_id')
 
-    suggestion_type = models.PositiveIntegerField(
+    suggestion_action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
     # suggestion can be either a foreign key adding to some related manager,
@@ -61,19 +63,34 @@ class Suggestion(models.Model):
         max_length=255, blank=True, null=True,
         help_text=_('Field or related manager to change'))
     suggested_type = models.ForeignKey(
-        ContentType, related_name='suggested_content')
-    suggested_id = models.PositiveIntegerField()
+        ContentType, related_name='suggested_content', blank=True, null=True)
+    suggested_id = models.PositiveIntegerField(blank=True, null=True)
     suggested_object = generic.GenericForeignKey('content_type', 'content_id')
-    suggested_text = models.TextField(_('Suggested free text'), blank=True, null=True)
+    suggested_text = models.TextField(_('Free text'), blank=True, null=True)
 
-    resolved_at = models.DateTimeField(
-        _('resolved at'), blank=True, default=datetime.now)
+    resolved_at = models.DateTimeField(_('Resolved at'), blank=True, null=True)
     resolved_by = models.ForeignKey(
         User, related_name='resolved_suggestions', blank=True, null=True)
     resolved_status = models.IntegerField(
         _('Resolved status'), db_index=True, default=NEW,
         choices=RESOLVE_CHOICES)
 
+    objects = SuggestionsManager()
+
     class Meta:
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
+
+    def auto_apply(self):
+
+        type_maps = {
+            self.UPDATE: 'update'
+        }
+        getattr(self, 'auto_apply_' + type_maps[self.suggestion_action])()
+
+    def auto_apply_update(self):
+        "Auto updates a field"
+
+        ct_obj = self.content_object
+        setattr(ct_obj, self.suggested_field, self.suggested_text)
+        ct_obj.save()
