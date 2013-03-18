@@ -4,6 +4,7 @@ Api for planet and tags
 
 from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL
+import tastypie.fields as fields
 from apis.resources.base import BaseResource
 from planet.models import Feed, Post
 from mks.models import Member
@@ -11,6 +12,7 @@ from links.models import Link
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType
 from django.conf.urls.defaults import url
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -22,7 +24,7 @@ from operator import attrgetter
 
 class PostResource(BaseResource):
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         limit = 50
         allowed_methods = ['get']
         fields = ['id', 'title', 'date_created', 'url', 'content']
@@ -55,21 +57,28 @@ class PostResource(BaseResource):
 class TagResource(BaseResource):
     ''' Tagging API
     '''
-    class Meta:
+
+    number_of_items = fields.IntegerField()
+    absolute_url = fields.CharField()
+
+    class Meta(BaseResource.Meta):
         queryset = Tag.objects.all().order_by('name')
         allowed_methods = ['get']
-        list_fields = [ 'id', 'name' ]
+        include_absolute_url = True
+        list_fields = ['id', 'name']
 
-    TAGGED_MODELS = ( Vote, Bill, CommitteeMeeting )
+    TAGGED_MODELS = (Vote, Bill, CommitteeMeeting)
 
     def obj_get_list(self, filters=None, **kwargs):
         all_tags = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
         all_tags.sort(key=attrgetter('name'))
         return all_tags
 
-    def dehydrate(self, bundle):
-        bundle.data['number_of_items'] = bundle.obj.items.count()
-        return bundle
+    def dehydrate_absolute_url(self, bundle):
+        return reverse('tag-detail', kwargs={'slug': bundle.obj.name})
+
+    def dehydrate_number_of_items(self, bundle):
+        return bundle.obj.items.count()
 
     def prepend_urls(self):
         return [

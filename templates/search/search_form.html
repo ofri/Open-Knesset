@@ -5,7 +5,7 @@
     <input type="hidden" name="cof" value="FORID:11"> 
     <input type="hidden" name="ie" value="UTF-8">
     <input type="hidden" name="hl" value="{{ lang|escape }}">
-    <input id="id_search_page_q" class="{{span_size}} search-query" type="text" name="q">
+    <input id="id_search_page_q" class="{{span_size}} search-query" type="text" name="q" data-provide="oksearch" autocomplete="off" value="{{ form.q.value|default:"" }}">
     <button type="submit"><i class="icon icon-search"></i></button>
     {{ form.as_q }}
   </div>

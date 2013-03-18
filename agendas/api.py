@@ -91,6 +91,7 @@ class AgendaResource(BaseResource):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
             members.append(dict(
+                id=mk.id,
                 name=mk.name,
                 score=mks_values[mk.id]['score'],
                 rank=mks_values[mk.id]['rank'],
@@ -108,9 +109,9 @@ class AgendaResource(BaseResource):
         party_values = dict(map(lambda party_data:(party_data[0],(party_data[1],party_data[2])),
                             bundle.obj.get_party_values()))
         return [
-            dict(name=x.name, score=party_values[x.pk][0], volume=party_values[x.pk][1],
+            dict(id=x.id, name=x.name, score=party_values[x.pk][0], volume=party_values[x.pk][1],
                  absolute_url=x.get_absolute_url())
-            for x in Party.objects.all()
+            for x in Party.current_knesset.current_parties
         ]
 
     def dehydrate_votes(self, bundle):

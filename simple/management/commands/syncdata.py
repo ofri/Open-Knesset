@@ -1508,7 +1508,7 @@ class Command(NoArgsCommand):
         update = options.get('update', False)
         laws = options.get('laws',False)
         committees = options.get('committees', False)
-        
+
         if all_options:
             download = True
             load = True
@@ -1553,6 +1553,7 @@ class Command(NoArgsCommand):
             self.find_proposals_in_other_data()
             self.merge_duplicate_laws()
             self.update_mk_role_descriptions()
+            self.update_mks_is_current()
             self.update_gov_law_decisions()
             self.correct_votes_matching()
             logger.debug('finished update')

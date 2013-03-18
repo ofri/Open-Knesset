@@ -1,0 +1,40 @@
+#google-search-outer {
+  margin-bottom: 20px;
+}
+
+#google-search-results {
+
+  .gsc-search-box { display:none; }
+
+  .gsc-control-cse { 
+    font-family: @baseFontFamily;
+
+    .gsc-table-result {
+        font-family: @baseFontFamily; 
+        font-size: @baseFontSize - 1;
+
+        .gs-title {
+          font-weight: bold;
+
+          b { text-decoration: underline;  }
+        }
+    }
+  }
+
+  .gsc-result {
+    padding:15px;
+    border-bottom: 1px solid @borderColor;
+  }
+  .gsc-cursor-box {
+      background: @white;
+
+      .gsc-cursor-page { 
+        font-size: 16px; text-decoration: none;
+        border-color: @borderColor;
+        color: ;
+      }
+  }
+  
+  .gcsc-branding, .gsc-results { background: @white;  }
+
+}

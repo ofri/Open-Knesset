@@ -111,18 +111,28 @@ class MeetingDetailView(DetailView):
                                    % {'committee':cm.committee.name,
                                       'date':cm.date_string,
                                       'topic':cm.topics}
-        context['description'] = clean_string(context['description']).replace('"','')
-        page = self.request.GET.get('page',None)
+        context['description'] = clean_string(context['description']).replace('"', '')
+        page = self.request.GET.get('page', None)
         if page:
-            context['description'] += _(' page %(page)s') % {'page':page}
+            context['description'] += _(' page %(page)s') % {'page': page}
         context['colors'] = colors
         parts_lengths = {}
         for part in cm.parts.all():
             parts_lengths[part.id] = len(part.body)
         context['parts_lengths'] = json.dumps(parts_lengths)
         context['paginate_by'] = COMMITTEE_PROTOCOL_PAGINATE_BY
-        return context
 
+        if cm.committee.type == 'plenum':
+            context['members'] = cm.mks_attended.order_by('name')
+            context['hide_member_presence'] = True
+        else:
+            #get meeting members with presence calculation
+            meeting_members_ids = set(m.id for m in cm.mks_attended.all())
+            context['members'] = [m for m in cm.committee.members_by_presence()
+                                  if m.id in meeting_members_ids]
+            context['hide_member_presence'] = False
+
+        return context
 
     @hashnav_method_decorator(login_required)
     def post(self, request, **kwargs):
@@ -284,7 +294,11 @@ class MeetingsListView(ListView):
         if not self.items:
             raise Http404
         committee = self.items[0].committee
-        context['title'] = _('All meetings by %(committee)s') % {'committee':committee.name}
+        if committee.type=='plenum':
+            committee_name=_('Knesset Plenum')
+        else:
+            committee_name=committee.name
+        context['title'] = _('All meetings by %(committee)s') % {'committee':committee_name}
         context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
         context['committee'] = committee
         context['committee_id'] = self.committee_id

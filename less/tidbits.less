@@ -1,0 +1,26 @@
+#tidbitCarousel {
+  padding: 30px 20%;
+
+  .item {
+    height: 200px;
+
+    h1 { 
+        padding: 0 40px 20px 0;
+        background-position: 100% 30%;
+        background-repeat: no-repeat;
+
+        &.tidbit-icon-quote { background-image: url("../img/tidbits/quote.png"); }
+        &.tidbit-icon-stat { background-image: url("../img/tidbits/stats.png"); }
+        &.tidbit-icon-hand { background-image: url("../img/tidbits/hand.png"); }
+    }
+
+    & div { padding-right: 40px; }
+  }
+
+  .btn {
+    position: absolute;
+    left:0; bottom:0; 
+    font-size: 120%;
+    padding: 15px 40px;
+  }
+}

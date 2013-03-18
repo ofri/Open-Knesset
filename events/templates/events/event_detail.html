@@ -18,16 +18,15 @@
                         <p>עוד<br/>
                         <strong>..</strong><br/>
                         </p>
-                        {% if in_days > 2 %}
+                        {% if in_days %}
                           <h1>{{in_days}}</h1>
                           <p>{% trans "Days" %}</p>
-                        {% else %}
-                          <h1>{{in_hours}}</h1>
-                          <p>{% trans "Hours" %}</p>
-                          <h1>{{in_minutes}}</h1>
-                          <p><strong>..</strong></p>
-                          <p>{% trans "Minutes" %}</p>
                         {% endif %}
+                        <h1>{{in_hours}}</h1>
+                        <p>{% trans "Hours" %}</p>
+                        <h1>{{in_minutes}}</h1>
+                        <p><strong>..</strong></p>
+                        <p>{% trans "Minutes" %}</p>
                         <p>
                           <strong>..</strong>
                         </p>

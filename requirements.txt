@@ -40,3 +40,4 @@ nose
 django-nose
 django-devserver==0.4.0
 ipython
+django-tinymce==1.5.1b4

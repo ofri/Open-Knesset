@@ -4,12 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.forms.fields import IntegerField
 
-from managers import PersonManager
+from mks.models import Member, GENDER_CHOICES
+from .managers import PersonManager
 
-GENDER_CHOICES = (
-    (u'M', _('Male')),
-    (u'F', _('Female')),
-)
 
 class Title(models.Model):
     name = models.CharField(max_length=64)

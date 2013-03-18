@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django import forms
 from django.contrib import admin
 from django.forms.models import modelformset_factory
@@ -16,5 +17,4 @@ class EventAdmin(admin.ModelAdmin):
     ordering = ('when',)
     list_display = ('when','what', 'where')
     inlines = (EventLinksInline,)
-
 admin.site.register(Event, EventAdmin)

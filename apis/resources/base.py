@@ -1,8 +1,11 @@
+import csv
+
 from django.conf import settings
+from django.core.serializers import json
+from django.http import HttpResponse
 from tastypie.cache import SimpleCache
 from tastypie.resources import ModelResource
 from tastypie.throttle import CacheThrottle
-from django.core.serializers import json
 from tastypie.serializers import Serializer
 
 # are we using DummyCache ?
@@ -24,13 +27,35 @@ class SmartCacheThrottle(CacheThrottle):
             identifier, **kwargs)
 
 
-class IterJSONSerializer(Serializer):
+class IterJSONAndCSVSerializer(Serializer):
+
+    formats = Serializer.formats + ['csv']
+    content_types = dict(
+        Serializer.content_types.items() + [('csv', 'text/csv')]
+    )
 
     def to_json(self, data, options=None):
         options = options or {}
 
         data = self.to_simple(data, options)
         return ''.join(json.DjangoJSONEncoder(sort_keys=True).iterencode(data))
+
+    def to_csv(self, data, options=None):
+        options = options or {}
+        data = self.to_simple(data, options)
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=data.csv'
+
+        response.write(u'\ufeff'.encode('utf8'))  # BOM for excel
+        writer = csv.writer(response, dialect='excel')
+
+        #   if data contains an 'objects' key, refer to it's value as a list of objects.
+        #   else, treat data as a single object itself
+        objects = data.get('objects', [data])
+        for item in objects:
+            writer.writerow([unicode(item[key]).encode(
+                "utf-8", "replace") for key in item.keys()])
+        return response
 
 
 class BaseResource(ModelResource):
@@ -49,7 +74,8 @@ class BaseResource(ModelResource):
     class Meta:
         cache = SimpleCache()
         throttle = SmartCacheThrottle(throttle_at=60, timeframe=60)
-        serializer = IterJSONSerializer(formats=['json', 'jsonp', 'xml'])
+        serializer = IterJSONAndCSVSerializer(
+            formats=['json', 'jsonp', 'xml', 'csv'])
 
     def _get_list_fields(self, request):
         """Helper to return list and extra fields for list mode.

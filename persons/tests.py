@@ -1,23 +1,38 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
+from datetime import datetime
 
 from django.test import TestCase
+from unittest import skip
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+from .models import Person
+from mks.models import Member
+
+
+class PersonTests(TestCase):
+
+    @skip
+    def test_member_person_sync(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Test member/person sync on member save()
         """
-        self.failUnlessEqual(1 + 1, 2)
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+        birth = datetime.now()
 
->>> 1 + 1 == 2
-True
-"""}
+        defaults = {
+            'name': 'The MK',
+            'date_of_birth': birth,
+            'family_status': 'XYZ',
+            'place_of_residence': 'AAA',
+            'phone': '000-1234',
+            'fax': '999-8765',
+            'gender': 'F',
+        }
+        mk = Member.objects.create(**defaults)
 
+        self.assertGreater(mk.person.count(), 0)
+
+        person = Person.objects.filter(mk=mk)[0]
+
+        for field in defaults:
+            self.assertEqual(getattr(mk, field), getattr(person, field))
+
+        mk.delete()

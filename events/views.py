@@ -12,7 +12,16 @@ class EventDetailView(DetailView):
     model = Event
     def get_context_data(self, *args, **kwargs):
         context = super(EventDetailView, self).get_context_data(**kwargs)
-        context['creators'] = [x.mk for x in context['object'].who.all()]
+        obj = context['object']
+        time_diff = obj.when - datetime.now()
+        context['in_days'] = time_diff.days
+        context['in_minutes'] = (time_diff.seconds / 60) % 60
+        context['in_hours'] = time_diff.seconds / 3600
+        creators = []
+        for i in obj.who.all():
+            if i.mk:
+                creators.append(i.mk)
+        context['creators']=creators
         return context
 
 def icalendar(request, summary_length=50, future_only=True):

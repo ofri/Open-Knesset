@@ -10,8 +10,9 @@ from planet.models import Blog
 from knesset.utils import cannonize
 from links.models import Link
 import difflib
-from mks.managers import (BetterManager, KnessetManager,
-                          CurrentKnessetMembersManager)
+from mks.managers import (
+    BetterManager, KnessetManager, CurrentKnessetMembersManager,
+    CurrentKnessetPartyManager)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -68,6 +69,7 @@ class Party(models.Model):
                                 null=True, blank=True)
 
     objects = BetterManager()
+    current_knesset = CurrentKnessetPartyManager()
 
     class Meta:
         verbose_name = _('Party')
@@ -181,8 +183,8 @@ class Member(models.Model):
     bills_stats_first = models.IntegerField(default=0)
     bills_stats_approved = models.IntegerField(default=0)
 
-    average_weekly_presence_hours = models.FloatField(null=True)
-    average_monthly_committee_presence = models.FloatField(null=True)
+    average_weekly_presence_hours = models.FloatField(null=True, blank=True)
+    average_monthly_committee_presence = models.FloatField(null=True, blank=True)
 
     backlinks_enabled = models.BooleanField(default=True)
 

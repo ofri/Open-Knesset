@@ -72,7 +72,7 @@ class Committee(models.Model):
         def filter_this_year(res_set):
             return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
 
-        members = list((self.members.all() |
+        members = list((self.members.filter(is_current=True) |
                         self.chairpersons.all() |
                         self.replacements.all()).distinct())
 
@@ -155,12 +155,18 @@ class CommitteeMeeting(models.Model):
     def __unicode__(self):
         cn = cache.get('committee_%d_name' % self.committee_id)
         if not cn:
-            cn = self.committee.name
+            if self.committee.type=='plenum':
+                cn='Plenum'
+            else:
+                cn = unicode(self.committee)
             cache.set('committee_%d_name' % self.committee_id,
                       cn,
                       settings.LONG_CACHE_TIME)
-        return (u"%s - %s" % (cn,
-                              self.title())).replace("&nbsp;", u"\u00A0")
+        if cn=='Plenum':
+            return (u"%s" % (self.title())).replace("&nbsp;", u"\u00A0")
+        else:
+            return (u"%s - %s" % (cn,
+                                self.title())).replace("&nbsp;", u"\u00A0")
 
     @models.permalink
     def get_absolute_url(self):
@@ -181,7 +187,7 @@ class CommitteeMeeting(models.Model):
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
 
-    def create_protocol_parts(self, delete_existing=False):
+    def create_protocol_parts(self, delete_existing=False, mks=None, mk_names=None):
         """ Create protocol parts from this instance's protocol_text
             Optionally, delete existing parts.
             If the meeting already has parts, and you don't ask to
@@ -201,7 +207,7 @@ class CommitteeMeeting(models.Model):
             return # then we don't need to do anything here.
 
         if self.committee.type=='plenum':
-            create_plenum_protocol_parts(self)
+            create_plenum_protocol_parts(self,mks=mks,mk_names=mk_names)
             return
 
         # break the protocol to its parts

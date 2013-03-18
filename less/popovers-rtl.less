@@ -1,0 +1,19 @@
+/* Fix rtl pop overs */
+
+.popover {
+  &.right .arrow {
+    left:-@popoverArrowOuterWidth;
+    right: auto;
+    border-left-width: 0;
+    border-right-width: @popoverArrowOuterWidth;
+    border-right-color: #999; // IE8 fallback
+    border-right-color: @popoverArrowOuterColor;
+
+    &:after {
+      right: -@popoverArrowOuterWidth;
+      border-left-width: 0;
+      border-right-color: @popoverArrowColor;
+      border-right-width: @popoverArrowWidth;
+    }
+  }
+}

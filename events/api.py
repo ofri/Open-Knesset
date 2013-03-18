@@ -8,7 +8,7 @@ from apis.resources.base import BaseResource
 from django.conf.urls.defaults import url
 
 class EventResource(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = Event.objects.all()
         allowed_methods = ['get']
 

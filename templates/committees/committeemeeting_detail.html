@@ -33,7 +33,7 @@
             <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         {% endifnotequal %}
         <li><a href="{{ object.committee.get_absolute_url }}">{{ object.committee }}</a> <span class="divider">/</span></l1>
-        <li class="active">{{object.topics}}</li>
+        <li class="active">{{object.topics|safe}}</li>
 {% endblock %}
 
 {% block messages %}
@@ -46,33 +46,33 @@
 </span>
 {% endblock %}
 {% block divcontent %}
-    {% ifnotequal object.committee.type 'plenum' %}
-        <section class="card card-main">
-            <div class="row">
-                <div class="span6 card-details">
-                    <div class="spacer fill">
-                        <h1>{{ object.topics|safe }}</h1>
+    <section class="card card-main">
+        <div class="row">
+            <div class="span6 card-details">
+                <div class="spacer fill">
+                    <h1>{{ object.topics|safe }}</h1>
+                    {% ifequal object.committee.type 'committee' %}
                         <p>{{title}}</p>
-                    </div>
-                </div>
-                <div class="span6 social-details">
-                    <div class="spacer fill">
-                        <h2>{% trans "MKs attended" %}</h2>
-                        {% include "committees/committee_member_photos.html" with members=object.mks_attended.all chairpersons=object.committee.chairpersons.all replacements=object.committee.replacements.all%}
-
-                        {% if user.is_authenticated %}
-                        <form method="post" action="." class="form-inline">{% csrf_token %}
-                            <input type="hidden" name="user_input_type" value="mk">
-                            <label for="id_mk_name">{% trans "Suggest an MK" %}</label>
-                            <input type="text" name="mk_name" id="id_mk_name">
-                            <input type="submit" value="{% trans "Submit" %}" class="btn">
-                        </form>
-                        {% endif %}
-                    </div>
+                    {% endifequal %}
                 </div>
             </div>
-        </section>
-    {% endifnotequal %}
+            <div class="span6 social-details">
+                <div class="spacer fill">
+                    <h2>{% trans "MKs attended" %}</h2>
+                    {% include "committees/committee_member_photos.html" with members=members chairpersons=object.committee.chairpersons.all replacements=object.committee.replacements.all%}
+
+                    {% if user.is_authenticated %}
+                    <form method="post" action="." class="form-inline">{% csrf_token %}
+                        <input type="hidden" name="user_input_type" value="mk">
+                        <label for="id_mk_name">{% trans "Suggest an MK" %}</label>
+                        <input type="text" name="mk_name" id="id_mk_name">
+                        <input type="submit" value="{% trans "Submit" %}" class="btn">
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="row">
         <div class="span9 cards">
@@ -108,11 +108,12 @@
             {% endifnotequal %}
 
             {% with object.parts.list as parts %}
+            {% autopaginate parts paginate_by %}
+            <div class="text-center">{% paginate %}</div>
             <section class="card card-list">
                 <header><h2>{% trans 'Protocol' %}</h2></header>
                     {% get_annotations_for parts as annotation_dict %}
                     <div class="protocol">
-                    {% autopaginate parts paginate_by %}
                     {% for speech_part in parts %}
                       {% with speech_part.id as spid %}
                       {% with annotation_dict|hash:spid as annotation_obj %}

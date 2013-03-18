@@ -16,7 +16,7 @@ class CandidateListResource(BaseResource):
     TBD: create a party app
     '''
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         queryset = CandidateList.objects.all()
         allowed_methods = ['get']
         excludes = ['end_date', 'start_date']
