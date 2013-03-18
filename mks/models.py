@@ -6,10 +6,13 @@ from django.core.cache import cache
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from planet.models import Blog
 from knesset.utils import cannonize
 from links.models import Link
 import difflib
+import inspect
 from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
     CurrentKnessetPartyManager)
@@ -413,6 +416,18 @@ class Member(models.Model):
     @property
     def age(self):
         return relativedelta(date.today(), self.date_of_birth)
+
+
+@receiver(post_save, sender=Member)
+def member_post_save(sender, **kwargs):
+    instance = kwargs['instance']
+    from persons.models import Person
+    person = Person.objects.get_or_create(mk=instance)[0]
+    for field in instance._meta.fields:
+        if field.name != 'id' and hasattr(person, field.name):
+            setattr(person, field.name, getattr(instance, field.name))
+
+    person.save()
 
 
 class WeeklyPresence(models.Model):
