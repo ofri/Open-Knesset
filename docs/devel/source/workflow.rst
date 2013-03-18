@@ -47,6 +47,7 @@ running this command event in case of no changes):
         `pip install -r Open-Knesset/requirements.txt`
 
 
+
 Run migrations and tests
 --------------------------------
 
@@ -61,41 +62,7 @@ group to see if that's something you should worry about.
 .. _oknesset-dev: https://groups.google.com/forum/#!forum/oknesset-dev
 
 
-If you're lazy and you're using bash
-------------------------------------
-
-You can use some variation on these functions to start a development session:
-
-.. code-block:: bash
-
-    oknesset_activate () { #just enter the directory and activate the virtualenv
-        cd ~/oknesset/ #or wherever you put it
-
-        source bin/activate
-        cd Open-Knesset
-    }
-
-    oknesset_dev () { #get and prepare the new code
-        oknesset_activate
-
-        wget http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
-        mv dev.db dev.db.old
-        bzip2 -d dev.db.bz2
-        git pull git@github.com:hasadna/Open-Knesset.git master
-
-        cd ..
-        pip install -r requirements.txt 
-        cd Open-Knesset
-
-        ./manage.py migrate
-        ./manage.py test
-    }
-
-    oknesset_runserver () { #start the local server
-        oknesset_activate
-        ./manage.py runserver
-    }
-
+See :ref:`devel_tips` for a few bash functions that may help.
 
 While Coding
 ==============
