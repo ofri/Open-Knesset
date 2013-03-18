@@ -37,24 +37,27 @@
         </div>
         {% endif %}
       </div>
+      {% if events %}
       <div class="card card-list card-list-latest">
         <header>
             <h2>{% trans "Upcoming Events" %}</h2>
         </header>
         <ul id="upcoming-events">
-          {% for event in events %}
-            {# TODO: write a template tag {% display_event event %} #}
-            stam
+          {% for o in events %}
+              {% include "events/_event_li.html" %}
           {% endfor %}
-          {% if events_more %}
-          <button class="btn btn-mini btn-expand" data-provide="okmore"
-              data-loading-text="{% trans "Loading" %} ..."
-              autocomplete="off" data-target="#upcoming-events" 
-              data-url="{% url more-upcoming-events %}"
-              data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
-          {% endif %}
         </ul>
+        <footer>
+        {% if events_more %}
+        <button class="btn btn-mini btn-expand" data-provide="okmore"
+            data-loading-text="{% trans "Loading" %} ..."
+            autocomplete="off" data-target="#upcoming-events" 
+            data-url="{% url more-upcoming-events %}"
+            data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+        {% endif %}
+        </footer>
       </div>
+      {% endif %}
     </div>
     <div class="span4">
         <aside class="sidebar">

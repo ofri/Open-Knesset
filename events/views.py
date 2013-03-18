@@ -1,11 +1,14 @@
 # Create your views here.
 
 from datetime import datetime
-
 import vobject
 
+from django.conf import settings
 from django.http import HttpResponse
+
+from auxiliary.views import GetMoreView
 from hashnav.detail import DetailView
+
 from models import Event
 
 class EventDetailView(DetailView):
@@ -23,6 +26,19 @@ class EventDetailView(DetailView):
                 creators.append(i.mk)
         context['creators']=creators
         return context
+
+class MoreUpcomingEventsView(GetMoreView):
+    """Get partially rendered member actions content for AJAX calls to 'More'"""
+
+    paginate_by = 10
+    template_name = 'events/events_partials.html'
+
+    def get_queryset(self):
+        if settings.DEBUG:
+            now = datetime(2011,11,11)
+        else:
+            now = datetime.now()
+        return Event.objects.filter(when__gte=now).order_by('when')
 
 def icalendar(request, summary_length=50, future_only=True):
     """

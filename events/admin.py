@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django import forms
 from django.contrib import admin
 from django.forms.models import modelformset_factory
