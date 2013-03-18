@@ -30,8 +30,8 @@ class Suggestion(models.Model):
     ADD, DELETE, UPDATE, REPLACE, FREE_TEXT = range(5)
 
     SUGGEST_CHOICES = (
-        (ADD, _('Add')),
-        (DELETE, _('Delete')),
+        (ADD, _('Add related object')),
+        (DELETE, _('Delete related object')),
         (UPDATE, _('update field')),
         (REPLACE, _('Replace partial string')),
         (FREE_TEXT, _('Free textual description')),
