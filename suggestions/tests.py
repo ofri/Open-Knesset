@@ -146,3 +146,14 @@ class SuggestionsTests(TestCase):
 
         # cleanup
         Suggestion.objects.all().delete()
+
+    def test_cant_auto_apply_freetext(self):
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.member1,
+            suggestion_action=Suggestion.FREE_TEXT,
+            suggested_text="A free text comment"
+        )
+
+        with self.assertRaises(ValueError):
+            suggestion.auto_apply(self.editor)

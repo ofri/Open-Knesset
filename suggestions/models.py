@@ -33,7 +33,7 @@ class Suggestion(models.Model):
         (ADD, _('Add related object to m2m relation')),
         (DELETE, _('Delete related object from m2m relation')),
         (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
-        (FREE_TEXT, _('Free textual description')),
+        (FREE_TEXT, _("Free text suggestion")),
     )
 
     NEW, FIXED, WONTFIX = 0, 1, 2
@@ -82,10 +82,18 @@ class Suggestion(models.Model):
 
     def auto_apply(self, resolved_by):
 
-        type_maps = {
-            self.SET: 'set'
+        action_map = {
+            self.SET: self.auto_apply_set
         }
-        getattr(self, 'auto_apply_' + type_maps[self.suggestion_action])()
+
+        action = action_map.get(self.suggestion_action, None)
+
+        if action is None:
+            raise ValueError("{0} can't be auto applied".format(
+                self.get_suggestion_action_display()
+            ))
+
+        action()
 
         self.resolved_by = resolved_by
         self.resolved_status = self.FIXED
