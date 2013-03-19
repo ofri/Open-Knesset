@@ -22,7 +22,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.UPDATE,
+            suggestion_action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )
@@ -51,7 +51,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.UPDATE,
+            suggestion_action=Suggestion.SET,
             suggested_field='current_party',
             suggested_object=self.party
         )
@@ -83,7 +83,7 @@ class SuggestionsTests(TestCase):
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.UPDATE,
+            suggestion_action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )
@@ -91,7 +91,7 @@ class SuggestionsTests(TestCase):
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member2,
-            suggestion_action=Suggestion.UPDATE,
+            suggestion_action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )

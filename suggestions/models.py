@@ -16,7 +16,7 @@ class Suggestion(models.Model):
     A suggestion can be either:
 
     * Automatically applied once approved (for that data needs to to supplied
-      and action be one of: ADD, DELETE, UPDATE. If the the field to be
+      and action be one of: ADD, DELETE, SET. If the the field to be
       modified is a relation manger, `content_object` should be provided as
       well.
     * Manually applied, in that case a content should be provided for
@@ -27,13 +27,12 @@ class Suggestion(models.Model):
 
     """
 
-    ADD, DELETE, UPDATE, REPLACE, FREE_TEXT = range(5)
+    ADD, DELETE, SET, REPLACE, FREE_TEXT = range(5)
 
     SUGGEST_CHOICES = (
-        (ADD, _('Add related object')),
-        (DELETE, _('Delete related object')),
-        (UPDATE, _('update field')),
-        (REPLACE, _('Replace partial string')),
+        (ADD, _('Add related object to m2m relation')),
+        (DELETE, _('Delete related object from m2m relation')),
+        (SET, _('Set field or related manager value')),
         (FREE_TEXT, _('Free textual description')),
     )
 
@@ -84,7 +83,7 @@ class Suggestion(models.Model):
     def auto_apply(self, resolved_by):
 
         type_maps = {
-            self.UPDATE: 'update'
+            self.SET: 'set'
         }
         getattr(self, 'auto_apply_' + type_maps[self.suggestion_action])()
 
@@ -94,7 +93,7 @@ class Suggestion(models.Model):
 
         self.save()
 
-    def auto_apply_update(self):
+    def auto_apply_set(self):
         "Auto updates a field"
 
         ct_obj = self.content_object
