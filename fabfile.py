@@ -100,10 +100,14 @@ def db_show_replication():
 # memcache commands
 
 
-@roles('memcache')
+@roles('web')
+@runs_once
 def mc_flushall():
-    run('echo flush_all | telnet localhost 11211')
-
+    #run('echo flush_all | telnet localhost 11211')
+    virtualenv(
+        "DJANGO_SETTINGS_MODULE='knesset.settings' " +
+        "python -c 'from django.core.cache import cache; cache.clear()'"
+    )
 
 # commands for all servers
 
