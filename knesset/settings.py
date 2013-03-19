@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'polyorg',
     'plenum',
     'tinymce',
+    'suggestions',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
