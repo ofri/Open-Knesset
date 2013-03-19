@@ -32,7 +32,7 @@ class Suggestion(models.Model):
     SUGGEST_CHOICES = (
         (ADD, _('Add related object to m2m relation')),
         (DELETE, _('Delete related object from m2m relation')),
-        (SET, _('Set field or related manager value')),
+        (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
         (FREE_TEXT, _('Free textual description')),
     )
 
@@ -101,7 +101,9 @@ class Suggestion(models.Model):
         field_name = self.suggested_field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
 
-        if isinstance(field, models.ForeignKey):
+        if m2m:
+            value = [self.suggested_object]
+        elif isinstance(field, models.ForeignKey):
             value = self.suggested_object
         else:
             value = self.suggested_text

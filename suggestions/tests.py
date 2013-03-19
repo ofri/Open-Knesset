@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from mks.models import Member, Party
+from committees.models import Committee
 from .models import Suggestion
 
 
@@ -16,6 +17,7 @@ class SuggestionsTests(TestCase):
         self.editor = User.objects.create_superuser(
             'admin', 'admin@example.com', 'passwd')
         self.party = Party.objects.create(name='party')
+        self.committee = Committee.objects.create(name='comm')
 
     def test_simple_text_suggestion(self):
 
@@ -63,6 +65,26 @@ class SuggestionsTests(TestCase):
         # cleanup
         mk.current_party = None
         mk.save()
+
+        self.member1 = mk
+        Suggestion.objects.all().delete()
+
+    def test_m2m_update_suggestion(self):
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.committee,
+            suggestion_action=Suggestion.SET,
+            suggested_field='members',
+            suggested_object=self.member1
+        )
+        suggestion.auto_apply(self.editor)
+
+        mk = Member.objects.get(pk=self.member1.pk)
+        self.assertEqual(list(self.committee.members.all()), [self.member1])
+
+        # cleanup
+        self.committee.members.clear()
 
         self.member1 = mk
         Suggestion.objects.all().delete()
