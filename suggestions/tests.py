@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from mks.models import Member
+from mks.models import Member, Party
 from .models import Suggestion
 
 
@@ -15,6 +15,7 @@ class SuggestionsTests(TestCase):
         self.regular_user = User.objects.create_user('reg_user')
         self.editor = User.objects.create_superuser(
             'admin', 'admin@example.com', 'passwd')
+        self.party = Party.objects.create(name='party')
 
     def test_simple_text_suggestion(self):
 
@@ -43,6 +44,28 @@ class SuggestionsTests(TestCase):
         mk.save()
 
         self.member1 = mk
+        Suggestion.objects.all().delete()
+
+    def test_relation_update_suggestion(self):
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.member1,
+            suggestion_action=Suggestion.UPDATE,
+            suggested_field='current_party',
+            suggested_object=self.party
+        )
+        suggestion.auto_apply(self.editor)
+
+        mk = Member.objects.get(pk=self.member1.pk)
+        self.assertEqual(mk.current_party, self.party)
+
+        # cleanup
+        mk.current_party = None
+        mk.save()
+
+        self.member1 = mk
+        Suggestion.objects.all().delete()
 
     def test_get_pending_suggestions(self):
 
@@ -98,3 +121,6 @@ class SuggestionsTests(TestCase):
         total_mk2 = suggestions_mks2.count()
         self.assertEqual(total_mk2, 1)
         self.assertEqual(list(suggestions_mks2), [suggestion2])
+
+        # cleanup
+        Suggestion.objects.all().delete()

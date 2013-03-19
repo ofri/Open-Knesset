@@ -65,7 +65,7 @@ class Suggestion(models.Model):
     suggested_type = models.ForeignKey(
         ContentType, related_name='suggested_content', blank=True, null=True)
     suggested_id = models.PositiveIntegerField(blank=True, null=True)
-    suggested_object = generic.GenericForeignKey('content_type', 'content_id')
+    suggested_object = generic.GenericForeignKey('suggested_type', 'suggested_id')
     suggested_text = models.TextField(_('Free text'), blank=True, null=True)
 
     resolved_at = models.DateTimeField(_('Resolved at'), blank=True, null=True)
@@ -98,5 +98,14 @@ class Suggestion(models.Model):
         "Auto updates a field"
 
         ct_obj = self.content_object
-        setattr(ct_obj, self.suggested_field, self.suggested_text)
+
+        field_name = self.suggested_field
+        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
+
+        if isinstance(field, models.ForeignKey):
+            value = self.suggested_object
+        else:
+            value = self.suggested_text
+
+        setattr(ct_obj, field_name, value)
         ct_obj.save()
