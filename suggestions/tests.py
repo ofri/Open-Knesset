@@ -48,7 +48,7 @@ class SuggestionsTests(TestCase):
         self.member1 = mk
         Suggestion.objects.all().delete()
 
-    def test_relation_update_suggestion(self):
+    def test_relation_set_suggestion(self):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
@@ -69,7 +69,7 @@ class SuggestionsTests(TestCase):
         self.member1 = mk
         Suggestion.objects.all().delete()
 
-    def test_m2m_update_suggestion(self):
+    def test_m2m_set_suggestion(self):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
@@ -80,13 +80,50 @@ class SuggestionsTests(TestCase):
         )
         suggestion.auto_apply(self.editor)
 
-        mk = Member.objects.get(pk=self.member1.pk)
         self.assertEqual(list(self.committee.members.all()), [self.member1])
 
         # cleanup
         self.committee.members.clear()
+        Suggestion.objects.all().delete()
 
-        self.member1 = mk
+    def test_m2m_add_remove_suggestion(self):
+        # make sure we're starting clean
+        self.assertEqual(self.committee.members.count(), 0)
+
+        suggestion1 = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.committee,
+            suggestion_action=Suggestion.ADD,
+            suggested_field='members',
+            suggested_object=self.member1
+        )
+        suggestion2 = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.committee,
+            suggestion_action=Suggestion.ADD,
+            suggested_field='members',
+            suggested_object=self.member2
+        )
+        suggestion3 = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            content_object=self.committee,
+            suggestion_action=Suggestion.REMOVE,
+            suggested_field='members',
+            suggested_object=self.member1
+        )
+
+        suggestion1.auto_apply(self.editor)
+        self.assertItemsEqual(self.committee.members.all(), [self.member1])
+
+        suggestion2.auto_apply(self.editor)
+        self.assertItemsEqual(
+            self.committee.members.all(), [self.member1, self.member2])
+
+        suggestion3.auto_apply(self.editor)
+        self.assertItemsEqual(self.committee.members.all(), [self.member2])
+
+        # cleanup
+        self.committee.members.clear()
         Suggestion.objects.all().delete()
 
     def test_get_pending_suggestions(self):
@@ -157,3 +194,6 @@ class SuggestionsTests(TestCase):
 
         with self.assertRaises(ValueError):
             suggestion.auto_apply(self.editor)
+
+        # cleanup
+        Suggestion.objects.all().delete()

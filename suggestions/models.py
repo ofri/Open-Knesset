@@ -16,7 +16,7 @@ class Suggestion(models.Model):
     A suggestion can be either:
 
     * Automatically applied once approved (for that data needs to to supplied
-      and action be one of: ADD, DELETE, SET. If the the field to be
+      and action be one of: ADD, REMOVE, SET. If the the field to be
       modified is a relation manger, `content_object` should be provided as
       well.
     * Manually applied, in that case a content should be provided for
@@ -27,11 +27,11 @@ class Suggestion(models.Model):
 
     """
 
-    ADD, DELETE, SET, REPLACE, FREE_TEXT = range(5)
+    ADD, REMOVE, SET, REPLACE, FREE_TEXT = range(5)
 
     SUGGEST_CHOICES = (
         (ADD, _('Add related object to m2m relation')),
-        (DELETE, _('Delete related object from m2m relation')),
+        (REMOVE, _('Remove related object from m2m relation')),
         (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
         (FREE_TEXT, _("Free text suggestion")),
     )
@@ -83,7 +83,9 @@ class Suggestion(models.Model):
     def auto_apply(self, resolved_by):
 
         action_map = {
-            self.SET: self.auto_apply_set
+            self.SET: self.auto_apply_set,
+            self.ADD: self.auto_apply_add,
+            self.REMOVE: self.auto_applly_remove,
         }
 
         action = action_map.get(self.suggestion_action, None)
@@ -118,3 +120,33 @@ class Suggestion(models.Model):
 
         setattr(ct_obj, field_name, value)
         ct_obj.save()
+
+    def auto_apply_add(self):
+        "Auto add to m2m"
+
+        ct_obj = self.content_object
+
+        field_name = self.suggested_field
+        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
+
+        if not m2m:
+            raise ValueError("{0} can be auto applied only on m2m".format(
+                self.get_suggestion_action_display()
+            ))
+
+        getattr(ct_obj, field_name).add(self.suggested_object)
+
+    def auto_applly_remove(self):
+        "Auto delete from m2m"
+
+        ct_obj = self.content_object
+
+        field_name = self.suggested_field
+        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
+
+        if not m2m:
+            raise ValueError("{0} can be auto applied only on m2m".format(
+                self.get_suggestion_action_display()
+            ))
+
+        getattr(ct_obj, field_name).remove(self.suggested_object)
