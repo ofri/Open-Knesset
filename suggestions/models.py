@@ -76,8 +76,8 @@ class Suggestion(models.Model):
     # the option subject this suggestion is for
     subject_ct = models.ForeignKey(
         ContentType, related_name='suggestion_subject', blank=True, null=True)
-    content_id = models.PositiveIntegerField(blank=True, null=True)
-    subject = generic.GenericForeignKey('subject_ct', 'content_id')
+    subject_id = models.PositiveIntegerField(blank=True, null=True)
+    subject = generic.GenericForeignKey('subject_ct', 'subject_id')
 
     action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)

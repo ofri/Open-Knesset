@@ -24,4 +24,4 @@ class SuggestionsManager(models.Manager):
 
         qs = self.get_pending_suggestions()
         ct = ContentType.objects.get_for_model(subject)
-        return qs.filter(subject_ct=ct, content_id=subject.pk)
+        return qs.filter(subject_ct=ct, subject_id=subject.pk)
