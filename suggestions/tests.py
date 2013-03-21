@@ -26,7 +26,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.member1,
             action=Suggestion.SET,
-            suggested_field='website',
+            field='website',
             suggested_text=self.MK_SITE
         )
 
@@ -55,7 +55,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.member1,
             action=Suggestion.SET,
-            suggested_field='current_party',
+            field='current_party',
             suggested_object=self.party
         )
         suggestion.auto_apply(self.editor)
@@ -76,7 +76,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.committee,
             action=Suggestion.SET,
-            suggested_field='members',
+            field='members',
             suggested_object=self.member1
         )
         suggestion.auto_apply(self.editor)
@@ -95,21 +95,21 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.committee,
             action=Suggestion.ADD,
-            suggested_field='members',
+            field='members',
             suggested_object=self.member1
         )
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
             action=Suggestion.ADD,
-            suggested_field='members',
+            field='members',
             suggested_object=self.member2
         )
         suggestion3 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
             action=Suggestion.REMOVE,
-            suggested_field='members',
+            field='members',
             suggested_object=self.member1
         )
 
@@ -144,7 +144,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.member1,
             action=Suggestion.SET,
-            suggested_field='website',
+            field='website',
             suggested_text=self.MK_SITE
         )
 
@@ -152,7 +152,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             content_object=self.member2,
             action=Suggestion.SET,
-            suggested_field='website',
+            field='website',
             suggested_text=self.MK_SITE
         )
 
@@ -222,7 +222,7 @@ class SuggestionsTests(TestCase):
                 suggested_by=self.regular_user,
                 content_object=self.member1,
                 action=Suggestion.SET,
-                suggested_field='current_party',
+                field='current_party',
             )
 
     def test_invalid_action_withot_content_object(self):
@@ -230,5 +230,5 @@ class SuggestionsTests(TestCase):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
                 action=Suggestion.SET,
-                suggested_field='current_party',
+                field='current_party',
             )

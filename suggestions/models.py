@@ -36,19 +36,19 @@ class Suggestion(models.Model):
     * Suggest a model instance for m2m relation (e.g: add Member to Committee):
         - action: ADD
         - content_object: the object to work upon (e.g: Committee instance)
-        - suggested_field: m2m relation name on content_object (e.g: 'members')
+        - field: m2m relation name on content_object (e.g: 'members')
         - suggested_object: Instance to add to the relation (Member instance)
 
     * Suggest instance for ForeignKey (e.g: suggest Member's current_party):
         - action: SET
         - content_object: the object to work upon (e.g: Member instance)
-        - suggested_field: FK field name in content_object (e.g: 'current_party')
+        - field: FK field name in content_object (e.g: 'current_party')
         - suggested_object: Party instance for the ForeignKey
 
     * Set Model's text field value (e.g: Member's website):
         - action: SET
         - content_object: the object to work upon (e.g: Member instance)
-        - suggested_field: Field name in content_object (e.g: 'website')
+        - field: Field name in content_object (e.g: 'website')
         - suggested_text: The content for the field
     """
 
@@ -83,7 +83,7 @@ class Suggestion(models.Model):
 
     # suggestion can be either a foreign key adding to some related manager,
     # set some content text, etc
-    suggested_field = models.CharField(
+    field = models.CharField(
         max_length=255, blank=True, null=True,
         help_text=_('Field or related manager to change'))
     suggested_type = models.ForeignKey(
@@ -108,7 +108,7 @@ class Suggestion(models.Model):
     def clean(self):
 
         action = self.action
-        field_name = self.suggested_field
+        field_name = self.field
 
         # Free text needs no validation
         if action == self.FREE_TEXT:
@@ -117,8 +117,8 @@ class Suggestion(models.Model):
             else:
                 return
 
-        if not self.suggested_field:
-            raise ValidationError("This type of action requires suggested_field")
+        if not self.field:
+            raise ValidationError("This type of action requires field")
 
         if not self.content_object:
             raise ValidationError("This type of action requires content_object")
@@ -159,7 +159,7 @@ class Suggestion(models.Model):
 
         ct_obj = self.content_object
 
-        field_name = self.suggested_field
+        field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
 
         if m2m:
@@ -177,7 +177,7 @@ class Suggestion(models.Model):
 
         ct_obj = self.content_object
 
-        field_name = self.suggested_field
+        field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
 
         if not m2m:
@@ -192,7 +192,7 @@ class Suggestion(models.Model):
 
         ct_obj = self.content_object
 
-        field_name = self.suggested_field
+        field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
 
         if not m2m:
