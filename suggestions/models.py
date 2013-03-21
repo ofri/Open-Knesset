@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+import jsonfield
 
 from .managers import SuggestionsManager
 
@@ -52,12 +51,13 @@ class Suggestion(models.Model):
         - content: The content for the field
     """
 
-    ADD, REMOVE, SET, REPLACE, FREE_TEXT = range(5)
+    ADD, REMOVE, SET, CREATE, FREE_TEXT = range(5)
 
     SUGGEST_CHOICES = (
         (ADD, _('Add related object to m2m relation or new model instance')),
         (REMOVE, _('Remove related object from m2m relation')),
         (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
+        (CREATE, _('Create new model instance')),
         (FREE_TEXT, _("Free text suggestion")),
     )
 
@@ -73,26 +73,10 @@ class Suggestion(models.Model):
         _('Suggested at'), blank=True, default=datetime.now, db_index=True)
     suggested_by = models.ForeignKey(User, related_name='suggestions')
 
-    # the option subject this suggestion is for
-    subject_ct = models.ForeignKey(
-        ContentType, related_name='suggestion_subject', blank=True, null=True)
-    subject_id = models.PositiveIntegerField(blank=True, null=True)
-    subject = generic.GenericForeignKey('subject_ct', 'subject_id')
-
     action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
-    # suggestion can be either a foreign key adding to some related manager,
-    # set some content text, etc
-    field = models.CharField(
-        max_length=255, blank=True, null=True,
-        help_text=_('Field or related manager to change'))
-    suggested_type = models.ForeignKey(
-        ContentType, related_name='suggested_content', blank=True, null=True)
-    suggested_id = models.PositiveIntegerField(blank=True, null=True)
-    suggested_object = generic.GenericForeignKey('suggested_type', 'suggested_id')
-
-    content = models.TextField(_('Free text'), blank=True, null=True)
+    content = jsonfield.JSONField(_('JSON Encoded suggestion content'))
 
     resolved_at = models.DateTimeField(_('Resolved at'), blank=True, null=True)
     resolved_by = models.ForeignKey(
