@@ -24,7 +24,7 @@ class SuggestionsTests(TestCase):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.member1,
+            subject=self.member1,
             action=Suggestion.SET,
             field='website',
             suggested_text=self.MK_SITE
@@ -53,7 +53,7 @@ class SuggestionsTests(TestCase):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.member1,
+            subject=self.member1,
             action=Suggestion.SET,
             field='current_party',
             suggested_object=self.party
@@ -74,7 +74,7 @@ class SuggestionsTests(TestCase):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.committee,
+            subject=self.committee,
             action=Suggestion.SET,
             field='members',
             suggested_object=self.member1
@@ -93,21 +93,21 @@ class SuggestionsTests(TestCase):
 
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.committee,
+            subject=self.committee,
             action=Suggestion.ADD,
             field='members',
             suggested_object=self.member1
         )
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.committee,
+            subject=self.committee,
             action=Suggestion.ADD,
             field='members',
             suggested_object=self.member2
         )
         suggestion3 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.committee,
+            subject=self.committee,
             action=Suggestion.REMOVE,
             field='members',
             suggested_object=self.member1
@@ -142,7 +142,7 @@ class SuggestionsTests(TestCase):
 
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.member1,
+            subject=self.member1,
             action=Suggestion.SET,
             field='website',
             suggested_text=self.MK_SITE
@@ -150,7 +150,7 @@ class SuggestionsTests(TestCase):
 
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.member2,
+            subject=self.member2,
             action=Suggestion.SET,
             field='website',
             suggested_text=self.MK_SITE
@@ -188,7 +188,7 @@ class SuggestionsTests(TestCase):
     def test_cant_auto_apply_freetext(self):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            content_object=self.member1,
+            subject=self.member1,
             action=Suggestion.FREE_TEXT,
             suggested_text="A free text comment"
         )
@@ -204,7 +204,7 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                content_object=self.committee,
+                subject=self.committee,
                 action=Suggestion.ADD,
                 suggested_object=self.member1
             )
@@ -220,12 +220,12 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                content_object=self.member1,
+                subject=self.member1,
                 action=Suggestion.SET,
                 field='current_party',
             )
 
-    def test_invalid_action_withot_content_object(self):
+    def test_invalid_action_withot_subject(self):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,

@@ -18,7 +18,7 @@ class Suggestion(models.Model):
 
     * Automatically applied once approved (for that data needs to to supplied
       and action be one of: ADD, REMOVE, SET. If the the field to be
-      modified is a relation manger, `content_object` should be provided as
+      modified is a relation manger, `subject` should be provided as
       well.
     * Manually applied, in that case a content should be provided for
       `suggested_text`.
@@ -35,20 +35,20 @@ class Suggestion(models.Model):
 
     * Suggest a model instance for m2m relation (e.g: add Member to Committee):
         - action: ADD
-        - content_object: the object to work upon (e.g: Committee instance)
-        - field: m2m relation name on content_object (e.g: 'members')
+        - subject: the object to work upon (e.g: Committee instance)
+        - field: m2m relation name on subject (e.g: 'members')
         - suggested_object: Instance to add to the relation (Member instance)
 
     * Suggest instance for ForeignKey (e.g: suggest Member's current_party):
         - action: SET
-        - content_object: the object to work upon (e.g: Member instance)
-        - field: FK field name in content_object (e.g: 'current_party')
+        - subject: the object to work upon (e.g: Member instance)
+        - field: FK field name in subject (e.g: 'current_party')
         - suggested_object: Party instance for the ForeignKey
 
     * Set Model's text field value (e.g: Member's website):
         - action: SET
-        - content_object: the object to work upon (e.g: Member instance)
-        - field: Field name in content_object (e.g: 'website')
+        - subject: the object to work upon (e.g: Member instance)
+        - field: Field name in subject (e.g: 'website')
         - suggested_text: The content for the field
     """
 
@@ -76,7 +76,7 @@ class Suggestion(models.Model):
     content_type = models.ForeignKey(
         ContentType, related_name='suggestion_content', blank=True, null=True)
     content_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = generic.GenericForeignKey('content_type', 'content_id')
+    subject = generic.GenericForeignKey('content_type', 'content_id')
 
     action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)
@@ -120,10 +120,10 @@ class Suggestion(models.Model):
         if not self.field:
             raise ValidationError("This type of action requires field")
 
-        if not self.content_object:
-            raise ValidationError("This type of action requires content_object")
+        if not self.subject:
+            raise ValidationError("This type of action requires subject")
 
-        ct_obj = self.content_object
+        ct_obj = self.subject
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
 
         if (m2m or isinstance(field, models.ForeignKey)) and (
@@ -157,7 +157,7 @@ class Suggestion(models.Model):
     def auto_apply_set(self):
         "Auto updates a field"
 
-        ct_obj = self.content_object
+        ct_obj = self.subject
 
         field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
@@ -175,7 +175,7 @@ class Suggestion(models.Model):
     def auto_apply_add(self):
         "Auto add to m2m"
 
-        ct_obj = self.content_object
+        ct_obj = self.subject
 
         field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
@@ -190,7 +190,7 @@ class Suggestion(models.Model):
     def auto_applly_remove(self):
         "Auto delete from m2m"
 
-        ct_obj = self.content_object
+        ct_obj = self.subject
 
         field_name = self.field
         field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
