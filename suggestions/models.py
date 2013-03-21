@@ -73,10 +73,11 @@ class Suggestion(models.Model):
         _('Suggested at'), blank=True, default=datetime.now, db_index=True)
     suggested_by = models.ForeignKey(User, related_name='suggestions')
 
-    content_type = models.ForeignKey(
-        ContentType, related_name='suggestion_content', blank=True, null=True)
+    # the option subject this suggestion is for
+    subject_ct = models.ForeignKey(
+        ContentType, related_name='suggestion_subject', blank=True, null=True)
     content_id = models.PositiveIntegerField(blank=True, null=True)
-    subject = generic.GenericForeignKey('content_type', 'content_id')
+    subject = generic.GenericForeignKey('subject_ct', 'content_id')
 
     action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)

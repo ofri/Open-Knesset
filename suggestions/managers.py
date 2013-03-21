@@ -19,9 +19,9 @@ class SuggestionsManager(models.Manager):
             resolved_status=self.model.NEW)
         return qs
 
-    def get_pending_suggestions_for(self, suggested_object):
+    def get_pending_suggestions_for(self, subject):
         "Return new suggestions for a specific instance"
 
         qs = self.get_pending_suggestions()
-        ct = ContentType.objects.get_for_model(suggested_object)
-        return qs.filter(content_type=ct, content_id=suggested_object.pk)
+        ct = ContentType.objects.get_for_model(subject)
+        return qs.filter(subject_ct=ct, content_id=subject.pk)
