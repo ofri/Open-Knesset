@@ -26,12 +26,36 @@ class Suggestion(models.Model):
     The model is generic is possible, and designed for building custom
     suggestion forms for each content type.
 
+
+    Some scenarious:
+
+    * User allowed to enter a genric text comment (those can't be auto applied)
+        - suggestion_action: FREE_TEXT
+        - suggested_text: Requires the comment (not empty)
+
+    * Suggest a model instance for m2m relation (e.g: add Member to Committee):
+        - suggestion_action: ADD
+        - content_object: the object to work upon (e.g: Committee instance)
+        - suggested_field: m2m relation name on content_object (e.g: 'members')
+        - suggested_object: Instance to add to the relation (Member instance)
+
+    * Suggest instance for ForeignKey (e.g: suggest Member's current_party):
+        - suggestion_action: SET
+        - content_object: the object to work upon (e.g: Member instance)
+        - suggested_field: FK field name in content_object (e.g: 'current_party')
+        - suggested_object: Party instance for the ForeignKey
+
+    * Set Model's text field value (e.g: Member's website):
+        - suggestion_action: SET
+        - content_object: the object to work upon (e.g: Member instance)
+        - suggested_field: Field name in content_object (e.g: 'website')
+        - suggested_text: The content for the field
     """
 
     ADD, REMOVE, SET, REPLACE, FREE_TEXT = range(5)
 
     SUGGEST_CHOICES = (
-        (ADD, _('Add related object to m2m relation')),
+        (ADD, _('Add related object to m2m relation or new model instance')),
         (REMOVE, _('Remove related object from m2m relation')),
         (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
         (FREE_TEXT, _("Free text suggestion")),

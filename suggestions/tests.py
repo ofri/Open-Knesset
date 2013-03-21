@@ -209,6 +209,13 @@ class SuggestionsTests(TestCase):
                 suggested_object=self.member1
             )
 
+    def test_free_text_without_suggested_text(self):
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                suggestion_action=Suggestion.FREE_TEXT,
+            )
+
     def test_invalid_set_without_suggested_object(self):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
