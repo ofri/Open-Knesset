@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from mks.models import Member, Party
 from committees.models import Committee
@@ -197,3 +198,30 @@ class SuggestionsTests(TestCase):
 
         # cleanup
         Suggestion.objects.all().delete()
+
+    def test_invalid_add_without_field(self):
+
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                content_object=self.committee,
+                suggestion_action=Suggestion.ADD,
+                suggested_object=self.member1
+            )
+
+    def test_invalid_set_without_suggested_object(self):
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                content_object=self.member1,
+                suggestion_action=Suggestion.SET,
+                suggested_field='current_party',
+            )
+
+    def test_invalid_action_withot_content_object(self):
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                suggestion_action=Suggestion.SET,
+                suggested_field='current_party',
+            )

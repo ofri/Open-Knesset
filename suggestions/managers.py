@@ -8,6 +8,7 @@ class SuggestionsManager(models.Manager):
         """Creates a suggestion, and notifies editors"""
 
         suggestion = self.create(**kwargs)
+        suggestion.full_clean()  # Ensure Model.clean() validation is called
 
         # TODO email editors
 

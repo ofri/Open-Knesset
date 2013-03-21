@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -49,8 +50,8 @@ class Suggestion(models.Model):
     suggested_by = models.ForeignKey(User, related_name='suggestions')
 
     content_type = models.ForeignKey(
-        ContentType, related_name='suggestion_content')
-    content_id = models.PositiveIntegerField()
+        ContentType, related_name='suggestion_content', blank=True, null=True)
+    content_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = generic.GenericForeignKey('content_type', 'content_id')
 
     suggestion_action = models.PositiveIntegerField(
@@ -79,6 +80,32 @@ class Suggestion(models.Model):
     class Meta:
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
+
+    def clean(self):
+
+        action = self.suggestion_action
+        field_name = self.suggested_field
+
+        # Free text needs no validation
+        if action == self.FREE_TEXT:
+            if not self.suggested_text:
+                raise ValidationError("FREE_TEXT requires suggested_text")
+            else:
+                return
+
+        if not self.suggested_field:
+            raise ValidationError("This type of action requires suggested_field")
+
+        if not self.content_object:
+            raise ValidationError("This type of action requires content_object")
+
+        ct_obj = self.content_object
+        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
+
+        if (m2m or isinstance(field, models.ForeignKey)) and (
+                not self.suggested_object):
+            raise ValidationError(
+                "This type of action requires suggested_object instance")
 
     def auto_apply(self, resolved_by):
 
