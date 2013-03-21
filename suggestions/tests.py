@@ -25,7 +25,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.SET,
+            action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )
@@ -54,7 +54,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.SET,
+            action=Suggestion.SET,
             suggested_field='current_party',
             suggested_object=self.party
         )
@@ -75,7 +75,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
-            suggestion_action=Suggestion.SET,
+            action=Suggestion.SET,
             suggested_field='members',
             suggested_object=self.member1
         )
@@ -94,21 +94,21 @@ class SuggestionsTests(TestCase):
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
-            suggestion_action=Suggestion.ADD,
+            action=Suggestion.ADD,
             suggested_field='members',
             suggested_object=self.member1
         )
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
-            suggestion_action=Suggestion.ADD,
+            action=Suggestion.ADD,
             suggested_field='members',
             suggested_object=self.member2
         )
         suggestion3 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.committee,
-            suggestion_action=Suggestion.REMOVE,
+            action=Suggestion.REMOVE,
             suggested_field='members',
             suggested_object=self.member1
         )
@@ -143,7 +143,7 @@ class SuggestionsTests(TestCase):
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.SET,
+            action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )
@@ -151,7 +151,7 @@ class SuggestionsTests(TestCase):
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member2,
-            suggestion_action=Suggestion.SET,
+            action=Suggestion.SET,
             suggested_field='website',
             suggested_text=self.MK_SITE
         )
@@ -189,7 +189,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             content_object=self.member1,
-            suggestion_action=Suggestion.FREE_TEXT,
+            action=Suggestion.FREE_TEXT,
             suggested_text="A free text comment"
         )
 
@@ -205,7 +205,7 @@ class SuggestionsTests(TestCase):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
                 content_object=self.committee,
-                suggestion_action=Suggestion.ADD,
+                action=Suggestion.ADD,
                 suggested_object=self.member1
             )
 
@@ -213,7 +213,7 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                suggestion_action=Suggestion.FREE_TEXT,
+                action=Suggestion.FREE_TEXT,
             )
 
     def test_invalid_set_without_suggested_object(self):
@@ -221,7 +221,7 @@ class SuggestionsTests(TestCase):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
                 content_object=self.member1,
-                suggestion_action=Suggestion.SET,
+                action=Suggestion.SET,
                 suggested_field='current_party',
             )
 
@@ -229,6 +229,6 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                suggestion_action=Suggestion.SET,
+                action=Suggestion.SET,
                 suggested_field='current_party',
             )

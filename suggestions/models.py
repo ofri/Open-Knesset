@@ -30,23 +30,23 @@ class Suggestion(models.Model):
     Some scenarious:
 
     * User allowed to enter a genric text comment (those can't be auto applied)
-        - suggestion_action: FREE_TEXT
+        - action: FREE_TEXT
         - suggested_text: Requires the comment (not empty)
 
     * Suggest a model instance for m2m relation (e.g: add Member to Committee):
-        - suggestion_action: ADD
+        - action: ADD
         - content_object: the object to work upon (e.g: Committee instance)
         - suggested_field: m2m relation name on content_object (e.g: 'members')
         - suggested_object: Instance to add to the relation (Member instance)
 
     * Suggest instance for ForeignKey (e.g: suggest Member's current_party):
-        - suggestion_action: SET
+        - action: SET
         - content_object: the object to work upon (e.g: Member instance)
         - suggested_field: FK field name in content_object (e.g: 'current_party')
         - suggested_object: Party instance for the ForeignKey
 
     * Set Model's text field value (e.g: Member's website):
-        - suggestion_action: SET
+        - action: SET
         - content_object: the object to work upon (e.g: Member instance)
         - suggested_field: Field name in content_object (e.g: 'website')
         - suggested_text: The content for the field
@@ -78,7 +78,7 @@ class Suggestion(models.Model):
     content_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = generic.GenericForeignKey('content_type', 'content_id')
 
-    suggestion_action = models.PositiveIntegerField(
+    action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
     # suggestion can be either a foreign key adding to some related manager,
@@ -107,7 +107,7 @@ class Suggestion(models.Model):
 
     def clean(self):
 
-        action = self.suggestion_action
+        action = self.action
         field_name = self.suggested_field
 
         # Free text needs no validation
@@ -139,11 +139,11 @@ class Suggestion(models.Model):
             self.REMOVE: self.auto_applly_remove,
         }
 
-        action = action_map.get(self.suggestion_action, None)
+        action = action_map.get(self.action, None)
 
         if action is None:
             raise ValueError("{0} can't be auto applied".format(
-                self.get_suggestion_action_display()
+                self.get_action_display()
             ))
 
         action()
@@ -182,7 +182,7 @@ class Suggestion(models.Model):
 
         if not m2m:
             raise ValueError("{0} can be auto applied only on m2m".format(
-                self.get_suggestion_action_display()
+                self.get_action_display()
             ))
 
         getattr(ct_obj, field_name).add(self.suggested_object)
@@ -197,7 +197,7 @@ class Suggestion(models.Model):
 
         if not m2m:
             raise ValueError("{0} can be auto applied only on m2m".format(
-                self.get_suggestion_action_display()
+                self.get_action_display()
             ))
 
         getattr(ct_obj, field_name).remove(self.suggested_object)
