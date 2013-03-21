@@ -21,7 +21,7 @@ class Suggestion(models.Model):
       modified is a relation manger, `subject` should be provided as
       well.
     * Manually applied, in that case a content should be provided for
-      `suggested_text`.
+      `content`.
 
     The model is generic is possible, and designed for building custom
     suggestion forms for each content type.
@@ -31,7 +31,7 @@ class Suggestion(models.Model):
 
     * User allowed to enter a genric text comment (those can't be auto applied)
         - action: FREE_TEXT
-        - suggested_text: Requires the comment (not empty)
+        - content: Requires the comment (not empty)
 
     * Suggest a model instance for m2m relation (e.g: add Member to Committee):
         - action: ADD
@@ -49,7 +49,7 @@ class Suggestion(models.Model):
         - action: SET
         - subject: the object to work upon (e.g: Member instance)
         - field: Field name in subject (e.g: 'website')
-        - suggested_text: The content for the field
+        - content: The content for the field
     """
 
     ADD, REMOVE, SET, REPLACE, FREE_TEXT = range(5)
@@ -91,7 +91,8 @@ class Suggestion(models.Model):
         ContentType, related_name='suggested_content', blank=True, null=True)
     suggested_id = models.PositiveIntegerField(blank=True, null=True)
     suggested_object = generic.GenericForeignKey('suggested_type', 'suggested_id')
-    suggested_text = models.TextField(_('Free text'), blank=True, null=True)
+
+    content = models.TextField(_('Free text'), blank=True, null=True)
 
     resolved_at = models.DateTimeField(_('Resolved at'), blank=True, null=True)
     resolved_by = models.ForeignKey(
@@ -113,8 +114,8 @@ class Suggestion(models.Model):
 
         # Free text needs no validation
         if action == self.FREE_TEXT:
-            if not self.suggested_text:
-                raise ValidationError("FREE_TEXT requires suggested_text")
+            if not self.content:
+                raise ValidationError("FREE_TEXT requires content")
             else:
                 return
 
@@ -168,7 +169,7 @@ class Suggestion(models.Model):
         elif isinstance(field, models.ForeignKey):
             value = self.suggested_object
         else:
-            value = self.suggested_text
+            value = self.content
 
         setattr(ct_obj, field_name, value)
         ct_obj.save()

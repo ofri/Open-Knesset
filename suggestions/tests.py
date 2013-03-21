@@ -27,7 +27,7 @@ class SuggestionsTests(TestCase):
             subject=self.member1,
             action=Suggestion.SET,
             field='website',
-            suggested_text=self.MK_SITE
+            content=self.MK_SITE
         )
 
         self.assertIsNone(self.member1.website)
@@ -145,7 +145,7 @@ class SuggestionsTests(TestCase):
             subject=self.member1,
             action=Suggestion.SET,
             field='website',
-            suggested_text=self.MK_SITE
+            content=self.MK_SITE
         )
 
         suggestion2 = Suggestion.objects.create_suggestion(
@@ -153,7 +153,7 @@ class SuggestionsTests(TestCase):
             subject=self.member2,
             action=Suggestion.SET,
             field='website',
-            suggested_text=self.MK_SITE
+            content=self.MK_SITE
         )
 
         total = Suggestion.objects.get_pending_suggestions().count()
@@ -190,7 +190,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.member1,
             action=Suggestion.FREE_TEXT,
-            suggested_text="A free text comment"
+            content="A free text comment"
         )
 
         with self.assertRaises(ValueError):
@@ -209,7 +209,7 @@ class SuggestionsTests(TestCase):
                 suggested_object=self.member1
             )
 
-    def test_free_text_without_suggested_text(self):
+    def test_free_text_without_content(self):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
