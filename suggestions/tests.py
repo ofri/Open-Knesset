@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from mks.models import Member, Party
+from mks.models import Member, Party, GENDER_CHOICES
 from committees.models import Committee
-from .models import Suggestion
+from .models import Suggestion, SuggestedAction
 
 
 class SuggestionsTests(TestCase):
@@ -20,20 +20,33 @@ class SuggestionsTests(TestCase):
         self.party = Party.objects.create(name='party')
         self.committee = Committee.objects.create(name='comm')
 
-    def test_simple_text_suggestion(self):
+    def test_set_suggestion(self):
 
+        actions = [
+            {
+                'action': SuggestedAction.SET,
+                'subject': self.member1,
+                'fields': {
+                    'website': self.MK_SITE,
+                    'gender': GENDER_CHOICES[0][0],
+                    'current_party': self.party,
+                }
+            }
+        ]
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            action=Suggestion.SET,
-            subject=self.member1,
-            fields={'website': self.MK_SITE}
+            actions=actions,
         )
 
         self.assertIsNone(self.member1.website)
+        self.assertIsNone(self.member1.gender)
+        self.assertIsNone(self.member1.current_party)
         suggestion.auto_apply(self.editor)
 
         mk = Member.objects.get(pk=self.member1.pk)
         self.assertEqual(mk.website, self.MK_SITE)
+        self.assertEqual(mk.gender, GENDER_CHOICES[0][0])
+        self.assertEqual(mk.current_party, self.party)
 
         suggestion = Suggestion.objects.get(pk=suggestion.pk)
 
@@ -43,25 +56,7 @@ class SuggestionsTests(TestCase):
 
         # cleanup
         mk.website = None
-        mk.save()
-
-        self.member1 = mk
-        Suggestion.objects.all().delete()
-
-    def test_relation_set_suggestion(self):
-
-        suggestion = Suggestion.objects.create_suggestion(
-            suggested_by=self.regular_user,
-            subject=self.member1,
-            action=Suggestion.SET,
-            fields={'current_party': self.party}
-        )
-        suggestion.auto_apply(self.editor)
-
-        mk = Member.objects.get(pk=self.member1.pk)
-        self.assertEqual(mk.current_party, self.party)
-
-        # cleanup
+        mk.gender = None
         mk.current_party = None
         mk.save()
 
@@ -73,7 +68,7 @@ class SuggestionsTests(TestCase):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.committee,
-            action=Suggestion.SET,
+            action=SuggestedAction.SET,
             fields={'members': self.member1},
         )
         suggestion.auto_apply(self.editor)
@@ -137,14 +132,14 @@ class SuggestionsTests(TestCase):
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.member1,
-            action=Suggestion.SET,
+            action=SuggestedAction.SET,
             fields={'website': self.MK_SITE}
         )
 
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.member2,
-            action=Suggestion.SET,
+            action=SuggestedAction.SET,
             fields={'website': self.MK_SITE}
         )
 
@@ -213,7 +208,7 @@ class SuggestionsTests(TestCase):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
                 subject=self.member1,
-                action=Suggestion.SET,
+                action=SuggestedAction.SET,
                 field='current_party',
             )
 
@@ -221,5 +216,5 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                action=Suggestion.SET,
+                action=SuggestedAction.SET,
             )

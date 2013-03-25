@@ -1,7 +1,9 @@
 from datetime import datetime
+import json
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -51,16 +53,6 @@ class Suggestion(models.Model):
         - content: The content for the field
     """
 
-    ADD, REMOVE, SET, CREATE, FREE_TEXT = range(5)
-
-    SUGGEST_CHOICES = (
-        (ADD, _('Add related object to m2m relation or new model instance')),
-        (REMOVE, _('Remove related object from m2m relation')),
-        (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
-        (CREATE, _('Create new model instance')),
-        (FREE_TEXT, _("Free text suggestion")),
-    )
-
     NEW, FIXED, WONTFIX = 0, 1, 2
 
     RESOLVE_CHOICES = (
@@ -72,9 +64,6 @@ class Suggestion(models.Model):
     suggested_at = models.DateTimeField(
         _('Suggested at'), blank=True, default=datetime.now, db_index=True)
     suggested_by = models.ForeignKey(User, related_name='suggestions')
-
-    action = models.PositiveIntegerField(
-        _('Suggestion type'), choices=SUGGEST_CHOICES)
 
     comment = models.TextField(blank=True, null=True)
 
@@ -108,51 +97,13 @@ class Suggestion(models.Model):
 
         return load_model_or_instance(*model_or_instance)
 
-    def clean(self):
-
-        action = self.action
-        fields = self.content.get('fields', {})
-
-        subject = self.subject
-
-        # Free text needs no validation
-        if action == self.FREE_TEXT:
-            if not self.content.get('text'):
-                raise ValidationError("FREE_TEXT requires content")
-            else:
-                return
-
-        if action == self.CREATE:
-            pass  # TODO implement create validation
-
-        if not fields:
-            raise ValidationError("This type of action requires fields")
-
-        if not subject:
-            raise ValidationError("This type of action requires subject")
-
-        for name, value in fields.items():
-            try:
-                field, model, direct, m2m = subject._meta.get_field_by_name(name)
-            except models.FieldDoesNotExist:
-                raise ValidationError('Field "{0}" does not exist'.format(name))
-
     def auto_apply(self, resolved_by):
 
-        action_map = {
-            self.SET: self.auto_apply_set,
-            self.ADD: self.auto_apply_add,
-            self.REMOVE: self.auto_applly_remove,
-        }
+        if not self.actions.count():
+            raise ValueError("Can't be auto applied, no actions")
 
-        action = action_map.get(self.action, None)
-
-        if action is None:
-            raise ValueError("{0} can't be auto applied".format(
-                self.get_action_display()
-            ))
-
-        action()
+        for action in self.actions.all():
+            action.auto_apply()
 
         self.resolved_by = resolved_by
         self.resolved_status = self.FIXED
@@ -208,3 +159,74 @@ class Suggestion(models.Model):
         getattr(ct_obj, field_name).remove(self.suggested_object)
 
 
+class SuggestedAction(models.Model):
+    """Suggestion can be of multiple action"""
+
+    ADD, REMOVE, SET, CREATE = range(4)
+
+    SUGGEST_CHOICES = (
+        (ADD, _('Add related object to m2m relation or new model instance')),
+        (REMOVE, _('Remove related object from m2m relation')),
+        (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
+        (CREATE, _('Create new model instance')),
+    )
+
+    suggestion = models.ForeignKey(Suggestion, related_name='actions')
+    action = models.PositiveIntegerField(
+        _('Suggestion type'), choices=SUGGEST_CHOICES)
+
+    # The Model instance (or model itself in case of create) to work on
+    subject_type = models.ForeignKey(ContentType, related_name='action_subjects')
+    subject_id = models.PositiveIntegerField(
+        blank=True, null=True, help_text=_('Can be blank, for create operations'))
+    subject = generic.GenericForeignKey(
+        'subject_type', 'subject_id')
+
+    def auto_apply(self, subject=None):
+        """Auto apply the action. subject is optional, and needs to passed in
+        case if adding to m2m after create.
+
+        """
+        work_on = subject or self.subject
+
+        actions = {
+            self.SET: self.do_set
+        }
+
+        doer = actions.get(self.action)
+        return doer(work_on)
+
+    def do_set(self, subject):
+        for field, value in self.action_params:
+            setattr(subject, field, value)
+        subject.save()
+
+    @property
+    def action_params(self):
+        return (x.field_and_value for x in self.action_fields.all())
+
+
+class ActionFields(models.Model):
+    """Fields for each suggestion"""
+
+    action = models.ForeignKey(SuggestedAction, related_name='action_fields')
+    name = models.CharField(
+        _('Field or relation set name'), null=False, blank=False, max_length=50)
+
+    # general value
+    value = models.TextField(blank=True, null=True)
+
+    # In case value is a related object
+    value_type = models.ForeignKey(
+        ContentType, related_name='action_values', blank=True, null=True)
+    value_id = models.PositiveIntegerField(blank=True, null=True)
+    value_object = generic.GenericForeignKey('value_type', 'value_id')
+
+    @property
+    def field_and_value(self):
+        "Return a tuple of field name and actual value"
+
+        if self.value_id is not None:
+            return self.name, self.value_object
+
+        return self.name, json.loads(self.value)

@@ -1,49 +1,40 @@
+import json
+
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
-from .utils import store_model_or_instance
 
 
 class SuggestionsManager(models.Manager):
 
-    def create_suggestion(self, subject=None, fields=None, **kwargs):
-        """Creates a suggestion, and notifies editors"""
+    def create_suggestion(self, actions=None, **kwargs):
+        """Creates a suggestion with all related models, and notifies editors
 
-        content = kwargs.get('content', {})
+        :param actions: The actions for a suggestion (no action means free
+                        text comment). If specifed, actions should be an
+                        iterable, with each action a dict of fields matching
+                        SuggestedAction and a key of 'fields' dict with
+                        'field_name': value
 
-        if subject:
-            content['subject'] = store_model_or_instance(subject)
-
-        if fields:
-            # prepare field values for storage (specially model instances)
-            content_fields = {}
-
-            for field, value in fields.items():
-                if isinstance(value, models.Model):
-                    value = store_model_or_instance(value)
-                elif not isinstance(value, basestring):
-                    # Iterable, assume a list of several model instances for
-                    # the field(e.g: for m2m relations)
-                    if not isinstance(value, basestring):
-                        try:
-                            value_iter = iter(value)
-                            items = []
-                            for x in value_iter:
-                                if isinstance(x, models.Model):
-                                    items.append(store_model_or_instance(x))
-                                else:
-                                    items.append(x)
-                        except TypeError:
-                            pass
-                content_fields[field] = value
-            # TODO handle many instances for field items (e.g: several model
-            # instances)
-            content['fields'] = content_fields
-
-        kwargs['content'] = content
-
+                        TODO : Add some example here
+        """
         suggestion = self.create(**kwargs)
-        suggestion.full_clean()  # Ensure Model.clean() validation is called
+
+        if actions:
+            for action in actions:
+                fields = action.pop('fields', None)
+                action = suggestion.actions.create(**action)
+
+                if fields:
+                    for field, value in fields.iteritems():
+                        if isinstance(value, models.Model):
+                            action.action_fields.create(name=field,
+                                                        value_object=value)
+                        else:
+                            # TODO: using json.dumps to serialize values here
+                            #       Maybe some other safer way to implement
+                            #       this ?
+                            action.action_fields.create(name=field,
+                                                        value=json.dumps(value))
 
         # TODO email editors
 
