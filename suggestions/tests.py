@@ -24,10 +24,9 @@ class SuggestionsTests(TestCase):
 
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.member1,
             action=Suggestion.SET,
-            field='website',
-            content=self.MK_SITE
+            subject=self.member1,
+            fields={'website': self.MK_SITE}
         )
 
         self.assertIsNone(self.member1.website)
@@ -55,8 +54,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.member1,
             action=Suggestion.SET,
-            field='current_party',
-            suggested_object=self.party
+            fields={'current_party': self.party}
         )
         suggestion.auto_apply(self.editor)
 
@@ -76,8 +74,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.committee,
             action=Suggestion.SET,
-            field='members',
-            suggested_object=self.member1
+            fields={'members': self.member1},
         )
         suggestion.auto_apply(self.editor)
 
@@ -95,22 +92,19 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.committee,
             action=Suggestion.ADD,
-            field='members',
-            suggested_object=self.member1
+            fields={'members': self.member1}
         )
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.committee,
             action=Suggestion.ADD,
-            field='members',
-            suggested_object=self.member2
+            fields={'members': self.member2}
         )
         suggestion3 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.committee,
             action=Suggestion.REMOVE,
-            field='members',
-            suggested_object=self.member1
+            fields={'members': self.member1}
         )
 
         suggestion1.auto_apply(self.editor)
@@ -144,16 +138,14 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.member1,
             action=Suggestion.SET,
-            field='website',
-            content=self.MK_SITE
+            fields={'website': self.MK_SITE}
         )
 
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
             subject=self.member2,
             action=Suggestion.SET,
-            field='website',
-            content=self.MK_SITE
+            fields={'website': self.MK_SITE}
         )
 
         total = Suggestion.objects.get_pending_suggestions().count()
@@ -190,7 +182,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             subject=self.member1,
             action=Suggestion.FREE_TEXT,
-            content="A free text comment"
+            content={'text': "A free text comment"}
         )
 
         with self.assertRaises(ValueError):
@@ -230,5 +222,4 @@ class SuggestionsTests(TestCase):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
                 action=Suggestion.SET,
-                field='current_party',
             )

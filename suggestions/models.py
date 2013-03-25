@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-import jsonfield
 
 from .managers import SuggestionsManager
+from .utils import load_model_or_instance
 
 
 class Suggestion(models.Model):
@@ -76,7 +76,7 @@ class Suggestion(models.Model):
     action = models.PositiveIntegerField(
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
-    content = jsonfield.JSONField(_('JSON Encoded suggestion content'))
+    comment = models.TextField(blank=True, null=True)
 
     resolved_at = models.DateTimeField(_('Resolved at'), blank=True, null=True)
     resolved_by = models.ForeignKey(
@@ -91,31 +91,51 @@ class Suggestion(models.Model):
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
 
+    @property
+    def subject(self):
+        """
+        Return the subject instance or Model. Allows exceptions to bubble up
+        (important for validation in clean() method).
+
+        :rtype: a model instance or Model if found
+        :raises: DoesNotExist for invalid pk
+
+        """
+        model_or_instance = self.content.get('subject')
+
+        if not model_or_instance:
+            return
+
+        return load_model_or_instance(*model_or_instance)
+
     def clean(self):
 
         action = self.action
-        field_name = self.field
+        fields = self.content.get('fields', {})
+
+        subject = self.subject
 
         # Free text needs no validation
         if action == self.FREE_TEXT:
-            if not self.content:
+            if not self.content.get('text'):
                 raise ValidationError("FREE_TEXT requires content")
             else:
                 return
 
-        if not self.field:
-            raise ValidationError("This type of action requires field")
+        if action == self.CREATE:
+            pass  # TODO implement create validation
 
-        if not self.subject:
+        if not fields:
+            raise ValidationError("This type of action requires fields")
+
+        if not subject:
             raise ValidationError("This type of action requires subject")
 
-        ct_obj = self.subject
-        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
-
-        if (m2m or isinstance(field, models.ForeignKey)) and (
-                not self.suggested_object):
-            raise ValidationError(
-                "This type of action requires suggested_object instance")
+        for name, value in fields.items():
+            try:
+                field, model, direct, m2m = subject._meta.get_field_by_name(name)
+            except models.FieldDoesNotExist:
+                raise ValidationError('Field "{0}" does not exist'.format(name))
 
     def auto_apply(self, resolved_by):
 
@@ -141,22 +161,21 @@ class Suggestion(models.Model):
         self.save()
 
     def auto_apply_set(self):
-        "Auto updates a field"
+        "Auto set fields values"
 
-        ct_obj = self.subject
+        subject = self.subject
+        fields = self.content.get('fields', {})
 
-        field_name = self.field
-        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
+        for name, value in fields.items():
+            field, model, direct, m2m = subject._meta.get_field_by_name(name)
 
-        if m2m:
-            value = [self.suggested_object]
-        elif isinstance(field, models.ForeignKey):
-            value = self.suggested_object
-        else:
-            value = self.content
+            if m2m:
+                value = [load_model_or_instance(*x) for x in value]
+            elif isinstance(field, models.ForeignKey):
+                value = load_model_or_instance(*value)
 
-        setattr(ct_obj, field_name, value)
-        ct_obj.save()
+            setattr(subject, name, value)
+        subject.save()
 
     def auto_apply_add(self):
         "Auto add to m2m"
@@ -187,3 +206,5 @@ class Suggestion(models.Model):
             ))
 
         getattr(ct_obj, field_name).remove(self.suggested_object)
+
+
