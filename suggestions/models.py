@@ -111,53 +111,6 @@ class Suggestion(models.Model):
 
         self.save()
 
-    def auto_apply_set(self):
-        "Auto set fields values"
-
-        subject = self.subject
-        fields = self.content.get('fields', {})
-
-        for name, value in fields.items():
-            field, model, direct, m2m = subject._meta.get_field_by_name(name)
-
-            if m2m:
-                value = [load_model_or_instance(*x) for x in value]
-            elif isinstance(field, models.ForeignKey):
-                value = load_model_or_instance(*value)
-
-            setattr(subject, name, value)
-        subject.save()
-
-    def auto_apply_add(self):
-        "Auto add to m2m"
-
-        ct_obj = self.subject
-
-        field_name = self.field
-        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
-
-        if not m2m:
-            raise ValueError("{0} can be auto applied only on m2m".format(
-                self.get_action_display()
-            ))
-
-        getattr(ct_obj, field_name).add(self.suggested_object)
-
-    def auto_applly_remove(self):
-        "Auto delete from m2m"
-
-        ct_obj = self.subject
-
-        field_name = self.field
-        field, model, direct, m2m = ct_obj._meta.get_field_by_name(field_name)
-
-        if not m2m:
-            raise ValueError("{0} can be auto applied only on m2m".format(
-                self.get_action_display()
-            ))
-
-        getattr(ct_obj, field_name).remove(self.suggested_object)
-
 
 class SuggestedAction(models.Model):
     """Suggestion can be of multiple action"""
@@ -190,20 +143,50 @@ class SuggestedAction(models.Model):
         work_on = subject or self.subject
 
         actions = {
-            self.SET: self.do_set
+            self.SET: self.do_set,
+            self.ADD: self.do_add,
+            self.REMOVE: self.do_remove,
         }
 
         doer = actions.get(self.action)
         return doer(work_on)
 
-    def do_set(self, subject):
-        for field, value in self.action_params:
-            setattr(subject, field, value)
-        subject.save()
-
     @property
     def action_params(self):
         return (x.field_and_value for x in self.action_fields.all())
+
+    def do_set(self, subject):
+        "Set subject fields"
+        for field, value in self.action_params:
+            setattr(subject, field, value)
+        subject.save()
+        return subject
+
+    def do_add(self, subject):
+        "Add an instance to subject's m2m attribute"
+
+        for fname, value in self.action_params:
+            field, model, direct, m2m = subject._meta.get_field_by_name(fname)
+
+            if not m2m:
+                raise ValueError("{0} can be auto applied only on m2m".format(
+                    self.get_action_display()
+                ))
+            getattr(subject, fname).add(value)
+
+        return subject
+
+    def do_remove(self, subject):
+        "Remove an instance to subject's m2m attribute"
+
+        for fname, value in self.action_params:
+            field, model, direct, m2m = subject._meta.get_field_by_name(fname)
+
+            if not m2m:
+                raise ValueError("{0} can be auto applied only on m2m".format(
+                    self.get_action_display()
+                ))
+            getattr(subject, fname).remove(value)
 
 
 class ActionFields(models.Model):

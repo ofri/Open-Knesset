@@ -63,43 +63,41 @@ class SuggestionsTests(TestCase):
         self.member1 = mk
         Suggestion.objects.all().delete()
 
-    def test_m2m_set_suggestion(self):
-
-        suggestion = Suggestion.objects.create_suggestion(
-            suggested_by=self.regular_user,
-            subject=self.committee,
-            action=SuggestedAction.SET,
-            fields={'members': self.member1},
-        )
-        suggestion.auto_apply(self.editor)
-
-        self.assertEqual(list(self.committee.members.all()), [self.member1])
-
-        # cleanup
-        self.committee.members.clear()
-        Suggestion.objects.all().delete()
-
     def test_m2m_add_remove_suggestion(self):
         # make sure we're starting clean
         self.assertEqual(self.committee.members.count(), 0)
 
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.committee,
-            action=Suggestion.ADD,
-            fields={'members': self.member1}
+            actions=[
+                {
+                    'subject': self.committee,
+                    'action': SuggestedAction.ADD,
+                    'fields': {'members': self.member1}
+                }
+            ]
         )
+
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.committee,
-            action=Suggestion.ADD,
-            fields={'members': self.member2}
+            actions=[
+                {
+                    'subject': self.committee,
+                    'action': SuggestedAction.ADD,
+                    'fields': {'members': self.member2}
+                }
+            ]
         )
+
         suggestion3 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.committee,
-            action=Suggestion.REMOVE,
-            fields={'members': self.member1}
+            actions=[
+                {
+                    'subject': self.committee,
+                    'action': SuggestedAction.REMOVE,
+                    'fields': {'members': self.member1}
+                }
+            ]
         )
 
         suggestion1.auto_apply(self.editor)
