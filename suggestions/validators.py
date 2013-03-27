@@ -71,8 +71,8 @@ def validate_actions(actions):
                     'Invalid action field: Field "{0}" does '
                     'not exists for "{1.object_name}"'.format(fname, meta))
 
-            if (isinstance(field, models.ForeignKey) and
-                    not isinstance(value, field.rel.to)):
+            rel = getattr(field, 'rel')
+            if rel and not isinstance(value, field.rel.to):
                 raise ValidationError(
                     'Invalid action: Value for "{0.name}" should be an '
                     'instance of "{0.rel.to}"'.format(field))
