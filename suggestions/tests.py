@@ -4,7 +4,9 @@ from django.core.exceptions import ValidationError
 
 from mks.models import Member, Party, GENDER_CHOICES
 from committees.models import Committee
-from .models import Suggestion, SuggestedAction
+
+from . import consts
+from .models import Suggestion
 
 
 class SuggestionsTests(TestCase):
@@ -24,7 +26,7 @@ class SuggestionsTests(TestCase):
 
         actions = [
             {
-                'action': SuggestedAction.SET,
+                'action': consts.SET,
                 'subject': self.member1,
                 'fields': {
                     'website': self.MK_SITE,
@@ -50,7 +52,7 @@ class SuggestionsTests(TestCase):
 
         suggestion = Suggestion.objects.get(pk=suggestion.pk)
 
-        self.assertEqual(suggestion.resolved_status, Suggestion.FIXED)
+        self.assertEqual(suggestion.resolved_status, consts.FIXED)
         self.assertEqual(suggestion.resolved_by, self.editor)
         self.assertIsNotNone(suggestion.resolved_at)
 
@@ -72,7 +74,7 @@ class SuggestionsTests(TestCase):
             actions=[
                 {
                     'subject': self.committee,
-                    'action': SuggestedAction.ADD,
+                    'action': consts.ADD,
                     'fields': {'members': self.member1}
                 }
             ]
@@ -83,7 +85,7 @@ class SuggestionsTests(TestCase):
             actions=[
                 {
                     'subject': self.committee,
-                    'action': SuggestedAction.ADD,
+                    'action': consts.ADD,
                     'fields': {'members': self.member2}
                 }
             ]
@@ -94,7 +96,7 @@ class SuggestionsTests(TestCase):
             actions=[
                 {
                     'subject': self.committee,
-                    'action': SuggestedAction.REMOVE,
+                    'action': consts.REMOVE,
                     'fields': {'members': self.member1}
                 }
             ]
@@ -131,7 +133,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             actions=[
                 {
-                    'action': SuggestedAction.SET,
+                    'action': consts.SET,
                     'fields': {'website': self.MK_SITE},
                     'subject':self.member1,
                 },
@@ -142,7 +144,7 @@ class SuggestionsTests(TestCase):
             suggested_by=self.regular_user,
             actions=[
                 {
-                    'action': SuggestedAction.SET,
+                    'action': consts.SET,
                     'fields': {'website': self.MK_SITE},
                     'subject':self.member2,
                 },
@@ -195,30 +197,106 @@ class SuggestionsTests(TestCase):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                subject=self.committee,
-                action=Suggestion.ADD,
-                suggested_object=self.member1
+                actions=[
+                    {
+                        'subject': self.committee,
+                        'action': consts.ADD
+                    }
+                ],
             )
+
+        # cleanup just to be on the safe side
+        Suggestion.objects.all().delete()
 
     def test_free_text_without_content(self):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
-                suggested_by=self.regular_user,
-                action=Suggestion.FREE_TEXT,
+                suggested_by=self.regular_user
             )
 
-    def test_invalid_set_without_suggested_object(self):
+        # cleanup just to be on the safe side
+        Suggestion.objects.all().delete()
+
+    def test_invalid_action_fields_type(self):
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                subject=self.member1,
-                action=SuggestedAction.SET,
-                field='current_party',
+                actions=[
+                    {
+                        'subject': self.member1,
+                        'action': consts.SET,
+                        'fields': 'current_party',
+                    }
+                ]
             )
 
-    def test_invalid_action_withot_subject(self):
+        # cleanup just to be on the safe side
+        Suggestion.objects.all().delete()
+
+    def test_invalid_action_without_valid_subject(self):
+        # first test without subject
         with self.assertRaises(ValidationError):
             Suggestion.objects.create_suggestion(
                 suggested_by=self.regular_user,
-                action=SuggestedAction.SET,
+                actions=[{'action': consts.SET}],
+            )
+
+        # Now test invalid subject (not a model instance)
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                actions=[{'action': consts.SET, 'subject': 'Moo'}],
+            )
+
+        # cleanup just to be on the safe side
+        Suggestion.objects.all().delete()
+
+    def test_invalid_action_withot_action(self):
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                actions=[{'subject': self.member1}],
+            )
+
+        # cleanup just to be on the safe side
+        Suggestion.objects.all().delete()
+
+    def test_invalid_fields(self):
+        # invalid field name
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                actions=[
+                    {
+                        'subject': self.member1,
+                        'action': consts.SET,
+                        'fields': {'not_exists': 'bla bla'},
+                    }
+                ]
+            )
+
+        # test without model instance
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                actions=[
+                    {
+                        'subject': self.member1,
+                        'action': consts.SET,
+                        'fields': {'current_party': 'bla bla'},
+                    }
+                ]
+            )
+
+        # test with invalid model instance type
+        with self.assertRaises(ValidationError):
+            Suggestion.objects.create_suggestion(
+                suggested_by=self.regular_user,
+                actions=[
+                    {
+                        'subject': self.member1,
+                        'action': consts.SET,
+                        'fields': {'current_party': self.member2},
+                    }
+                ]
             )

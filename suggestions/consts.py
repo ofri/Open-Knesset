@@ -1,0 +1,2 @@
+CREATE, ADD, REMOVE, SET = range(4)
+NEW, FIXED, WONTFIX = range(3)

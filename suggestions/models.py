@@ -7,8 +7,8 @@ from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from .consts import (CREATE, ADD, REMOVE, SET, NEW, FIXED, WONTFIX)
 from .managers import SuggestionsManager
-from .utils import load_model_or_instance
 
 
 class Suggestion(models.Model):
@@ -53,8 +53,6 @@ class Suggestion(models.Model):
         - content: The content for the field
     """
 
-    NEW, FIXED, WONTFIX = 0, 1, 2
-
     RESOLVE_CHOICES = (
         (NEW, _('New')),
         (FIXED, _('Fixed')),
@@ -80,23 +78,6 @@ class Suggestion(models.Model):
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
 
-    @property
-    def subject(self):
-        """
-        Return the subject instance or Model. Allows exceptions to bubble up
-        (important for validation in clean() method).
-
-        :rtype: a model instance or Model if found
-        :raises: DoesNotExist for invalid pk
-
-        """
-        model_or_instance = self.content.get('subject')
-
-        if not model_or_instance:
-            return
-
-        return load_model_or_instance(*model_or_instance)
-
     def auto_apply(self, resolved_by):
 
         if not self.actions.count():
@@ -106,7 +87,7 @@ class Suggestion(models.Model):
             action.auto_apply()
 
         self.resolved_by = resolved_by
-        self.resolved_status = self.FIXED
+        self.resolved_status = FIXED
         self.resolved_at = datetime.now()
 
         self.save()
@@ -115,13 +96,11 @@ class Suggestion(models.Model):
 class SuggestedAction(models.Model):
     """Suggestion can be of multiple action"""
 
-    ADD, REMOVE, SET, CREATE = range(4)
-
     SUGGEST_CHOICES = (
+        (CREATE, _('Create new model instance')),
         (ADD, _('Add related object to m2m relation or new model instance')),
         (REMOVE, _('Remove related object from m2m relation')),
         (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
-        (CREATE, _('Create new model instance')),
     )
 
     suggestion = models.ForeignKey(Suggestion, related_name='actions')
@@ -143,9 +122,9 @@ class SuggestedAction(models.Model):
         work_on = subject or self.subject
 
         actions = {
-            self.SET: self.do_set,
-            self.ADD: self.do_add,
-            self.REMOVE: self.do_remove,
+            SET: self.do_set,
+            ADD: self.do_add,
+            REMOVE: self.do_remove,
         }
 
         doer = actions.get(self.action)
