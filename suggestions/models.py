@@ -17,9 +17,14 @@ class Suggestion(models.Model):
 
     A suggestion can be either:
 
+    .. warning::
+        Don't use ``Suggestion.objects.create()`` ! Instead use
+        ``Suggestion.objects.create_suggestion()``. It also validates contents
+        and handles actions/fields relations as it should !
+
     * Automatically applied once approved (for that data needs to to supplied
-      and action be one of: ADD, REMOVE, SET. If the the field to be
-      modified is a relation manger, `subject` should be provided as
+      and action be one of: ADD, REMOVE, SET, CREATE. If the the field to be
+      modified is a relation manger, action's `subject` should be provided as
       well.
     * Manually applied, in that case a content should be provided for
       `content`.
@@ -28,29 +33,7 @@ class Suggestion(models.Model):
     suggestion forms for each content type.
 
 
-    Some scenarious:
-
-    * User allowed to enter a genric text comment (those can't be auto applied)
-        - action: FREE_TEXT
-        - content: Requires the comment (not empty)
-
-    * Suggest a model instance for m2m relation (e.g: add Member to Committee):
-        - action: ADD
-        - subject: the object to work upon (e.g: Committee instance)
-        - field: m2m relation name on subject (e.g: 'members')
-        - suggested_object: Instance to add to the relation (Member instance)
-
-    * Suggest instance for ForeignKey (e.g: suggest Member's current_party):
-        - action: SET
-        - subject: the object to work upon (e.g: Member instance)
-        - field: FK field name in subject (e.g: 'current_party')
-        - suggested_object: Party instance for the ForeignKey
-
-    * Set Model's text field value (e.g: Member's website):
-        - action: SET
-        - subject: the object to work upon (e.g: Member instance)
-        - field: Field name in subject (e.g: 'website')
-        - content: The content for the field
+    For now see ``suggestions/tests.py`` if usage examples
     """
 
     RESOLVE_CHOICES = (
