@@ -83,14 +83,18 @@ class Suggestion(models.Model):
         if not self.actions.count():
             raise ValueError("Can't be auto applied, no actions")
 
+        # subject's are carried from action to action, to make sure CREATE
+        # follwed by ADD for m2m will work
+        subject = None
         for action in self.actions.all():
-            action.auto_apply()
+            subject = action.auto_apply(subject)
 
         self.resolved_by = resolved_by
         self.resolved_status = FIXED
         self.resolved_at = datetime.now()
 
         self.save()
+        return subject
 
 
 class SuggestedAction(models.Model):
@@ -108,7 +112,8 @@ class SuggestedAction(models.Model):
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
     # The Model instance (or model itself in case of create) to work on
-    subject_type = models.ForeignKey(ContentType, related_name='action_subjects')
+    subject_type = models.ForeignKey(ContentType, related_name='action_subjects',
+                                     blank=True, null=True)
     subject_id = models.PositiveIntegerField(
         blank=True, null=True, help_text=_('Can be blank, for create operations'))
     subject = generic.GenericForeignKey(
@@ -125,6 +130,7 @@ class SuggestedAction(models.Model):
             SET: self.do_set,
             ADD: self.do_add,
             REMOVE: self.do_remove,
+            CREATE: self.do_create,
         }
 
         doer = actions.get(self.action)
@@ -166,6 +172,18 @@ class SuggestedAction(models.Model):
                     self.get_action_display()
                 ))
             getattr(subject, fname).remove(value)
+
+        return subject
+
+    def do_create(self, subject):
+        """Create a new instance.
+
+        we don't care about prev subjects, as we're creating a new one
+        """
+        model = self.subject_type.model_class()
+        subject = model.objects.create(**dict(self.action_params))
+
+        return subject
 
 
 class ActionFields(models.Model):

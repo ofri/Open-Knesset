@@ -116,6 +116,35 @@ class SuggestionsTests(TestCase):
         self.committee.members.clear()
         Suggestion.objects.all().delete()
 
+    def test_create_and_m2m_suggestion(self):
+        NAME = 'The cool MK'
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            actions=[
+                {
+                    'action': consts.CREATE,
+                    'fields': {
+                        'name': NAME,
+                        'current_party': self.party,
+                    },
+                    'subject': Member,
+                },
+                {
+                    'action': consts.ADD,
+                    'fields': {'committees': self.committee}
+                },
+            ]
+        )
+
+        m = suggestion.auto_apply(self.editor)
+
+        self.assertEqual(m.name, NAME)
+        self.assertEqual(m.current_party, self.party)
+        self.assertItemsEqual(m.committees.all(), [self.committee])
+
+        m.delete()
+        Suggestion.objects.all().delete()
+
     def test_get_pending_suggestions(self):
 
         total = Suggestion.objects.get_pending_suggestions().count()

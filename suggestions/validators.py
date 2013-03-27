@@ -29,6 +29,10 @@ def validate_actions(actions):
     if not actions:  # No actions ? Nothing to do here
         return
 
+    # empty subject for operations are valid if CREATE was done prior to them
+    # to allow m2m ADD after creating new objects
+    create_found = False
+
     for action in actions:
         action_type = action.get('action')
 
@@ -38,14 +42,14 @@ def validate_actions(actions):
                 'of (CREATE, ADD, REMOVE, SET)')
 
         subject = action.get('subject')
-        if action != CREATE:
+        if action_type != CREATE:
             # actions excluding CREATE need a subject model instance
-            if not subject:
+            if not subject and not create_found:
                 raise ValidationError(
                     'Invalid action: "subject" keyword is required for actions '
                     'of (ADD, REMOVE, SET)')
 
-            if not isinstance(subject, models.Model):
+            if not isinstance(subject, models.Model) and not create_found:
                 raise ValidationError(
                     'Invalid action: "subject" should be a model instance ')
         else:
@@ -54,14 +58,16 @@ def validate_actions(actions):
                 raise ValidationError(
                     'Invalid action: For CREATE "subject" should be a Model '
                     'subclass')
+            create_found = subject
 
         fields = action.get('fields')
 
         if not hasattr(fields, 'items'):
             raise ValidationError('Actions require a "fields" dict')
 
-        # Now validate fields
-        meta = subject._meta
+        # Now validate fields, in case of prev CREATE and empty following
+        # subject, the the found create
+        meta = (subject or create_found)._meta
 
         for fname, value in fields.items():
             try:
@@ -71,8 +77,15 @@ def validate_actions(actions):
                     'Invalid action field: Field "{0}" does '
                     'not exists for "{1.object_name}"'.format(fname, meta))
 
-            rel = getattr(field, 'rel')
-            if rel and not isinstance(value, field.rel.to):
+            target = None
+
+            rel = getattr(field, 'rel', None)
+            if rel:
+                target = rel.to
+            elif m2m:
+                target = field.model
+
+            if target and not isinstance(value, target):
                 raise ValidationError(
                     'Invalid action: Value for "{0.name}" should be an '
-                    'instance of "{0.rel.to}"'.format(field))
+                    'instance of "{1}"'.format(field, target))
