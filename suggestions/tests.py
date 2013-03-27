@@ -131,16 +131,24 @@ class SuggestionsTests(TestCase):
 
         suggestion1 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.member1,
-            action=SuggestedAction.SET,
-            fields={'website': self.MK_SITE}
+            actions=[
+                {
+                    'action': SuggestedAction.SET,
+                    'fields': {'website': self.MK_SITE},
+                    'subject':self.member1,
+                },
+            ]
         )
 
         suggestion2 = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.member2,
-            action=SuggestedAction.SET,
-            fields={'website': self.MK_SITE}
+            actions=[
+                {
+                    'action': SuggestedAction.SET,
+                    'fields': {'website': self.MK_SITE},
+                    'subject':self.member2,
+                },
+            ]
         )
 
         total = Suggestion.objects.get_pending_suggestions().count()
