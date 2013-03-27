@@ -183,9 +183,7 @@ class SuggestionsTests(TestCase):
     def test_cant_auto_apply_freetext(self):
         suggestion = Suggestion.objects.create_suggestion(
             suggested_by=self.regular_user,
-            subject=self.member1,
-            action=Suggestion.FREE_TEXT,
-            content={'text': "A free text comment"}
+            comment="A free text comment"
         )
 
         with self.assertRaises(ValueError):
