@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block divcontent %}
-{% if tidbits %}
 <div id="tidbitCarousel" class="carousel slide card card-main" style="margin-top:20px;">
     <!--ol class="carousel-indicators">
         <li data-target="#tidbitCarousel" data-slide-to="0" class="active"></li>
@@ -32,13 +31,18 @@
             <div>{{tidbit.content|safe}}</div>
             <a class="btn" href="{{tidbit.button_link}}">{{tidbit.button_text}}</a>
         </div>
+        {% empty %}
+        <div class="item active">
+          <h1>No Tidbits</h1>
+            <div>Seems like the db is clean of tidbits.</div>
+            <a class="btn" href="admin/auxiliary/tidbit/add/">Add a tidbit</a>
+        </div>
         {% endfor %}
     </div>
     <!-- Carousel nav -->
     <a class="carousel-control left" href="#tidbitCarousel" data-slide="next">&lsaquo;</a>
     <a class="carousel-control right" href="#tidbitCarousel" data-slide="prev">&rsaquo;</a>
 </div>
-{% endif %}
 <div class="row">
     <div class="cards span8">
         <div class="card card-list text-center">
