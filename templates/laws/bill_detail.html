@@ -273,7 +273,7 @@
                 {% else %}
                     {% for pp in object.proposals.all %}
                     <li>
-                        <p class="item-action">p/{{pp.knesset_id}}/{{pp.proposal_id}}</p>
+                        <p class="item-action">פ/&rlm;{{pp.knesset_id}}/&rlm;{{pp.proposal_id}}</p>
                         <p class="item-title">
                             <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.title }}</a>
                         </p>
