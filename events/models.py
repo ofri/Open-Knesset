@@ -32,11 +32,11 @@ class Event(models.Model):
     # KNESSET_TODO the end time of a committee meeting is not recorded anywhere,
     # so we are left to guess
     when_over_guessed = models.BooleanField(default=True)
-    who = models.ManyToManyField(Person)
+    who = models.ManyToManyField(Person, null=True)
     # TODO - just randomly looking it seems to be wrong in some objects:
     # key 1957, contains repetition of the subject.
     what = models.TextField()
-    where = models.TextField()
+    where = models.TextField(default=_("earth"))
     which_type   = models.ForeignKey(ContentType,
             verbose_name=_('content type'),
             related_name="event_for_%(class)s", null=True)

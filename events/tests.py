@@ -24,16 +24,20 @@ class SimpleTest(TestCase):
     def setUp(self):
         self.ev1 = Event.objects.create(when=now, what="ev1")
         self.ev2 = Event.objects.create(when=now + timedelta(days=1), when_over=now + timedelta(days=1,hours=2), when_over_guessed=False, what="future=%s" % ''.join(str(x % 10) for x in xrange(300)))
-        self.ev3 = Event.objects.create(when=now + timedelta(days=1), what="ev3")
+        self.ev3 = Event.objects.create(when=now + timedelta(days=2), what="ev3")
 
-    def testFutureEvent(self):
+    def testFutureEvents(self):
         """
-        Tests Event.is_future property.
+        Tests Event.is_future property and
+              Event.objects.get_upcoming
         """
-        tomorrow = now+datetime.timedelta(1)
-        ev2 = Event.objects.create(when=tomorrow, what="ev2")
-        self.assertTrue(ev2.is_future)
-        ev2.delete()
+        self.assertTrue(self.ev2.is_future)
+        upcoming = Event.objects.get_upcoming()
+        self.assertEquals(upcoming[0].what, "ev2")
+        self.assertEqual(upcoming.count(), 2)
+        self.ev3.delete()
+        self.assertEqual(upcoming.count(), 1)
+        self.ev3 = Event.objects.create(when=now + timedelta(days=1), what="ev3")
 
     def testIcalenderSummaryLength(self):
         """
