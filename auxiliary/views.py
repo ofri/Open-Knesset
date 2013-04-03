@@ -113,7 +113,7 @@ def main(request):
         'title': _('Home'),
         'hide_crumbs': True,
         'is_index': True,
-        'tidbits': Tidbit.active.all().order_by('-id'),
+        'tidbits': Tidbit.active.all().order_by('?'),
         'events': events[:NUMOF_EVENTS],
         'events_more': events.count() > NUMOF_EVENTS,
     }
