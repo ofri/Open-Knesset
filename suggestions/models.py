@@ -15,13 +15,12 @@ class Suggestion(models.Model):
     """Data improvement suggestions.  Designed to implement suggestions queue
     for content editors.
 
-    A suggestion can be either:
-
     .. warning::
         Don't use ``Suggestion.objects.create()`` ! Instead use
         ``Suggestion.objects.create_suggestion()``. It also validates contents
         and handles actions/fields relations as it should !
 
+    A suggestion can be either:
     * Automatically applied once approved (for that data needs to to supplied
       and action be one of: ADD, REMOVE, SET, CREATE. If the the field to be
       modified is a relation manger, action's `subject` should be provided as
@@ -29,11 +28,10 @@ class Suggestion(models.Model):
     * Manually applied, in that case a content should be provided for
       `content`.
 
-    The model is generic is possible, and designed for building custom
+    The model is generic when possible, and designed for building custom
     suggestion forms for each content type.
 
-
-    For now see ``suggestions/tests.py`` if usage examples
+    For now see ``suggestions/tests.py`` for usage examples
     """
 
     RESOLVE_CHOICES = (
@@ -103,8 +101,8 @@ class SuggestedAction(models.Model):
         'subject_type', 'subject_id')
 
     def auto_apply(self, subject=None):
-        """Auto apply the action. subject is optional, and needs to passed in
-        case if adding to m2m after create.
+        """Auto apply the action. subject is optional, and needs to be passed in
+        case of adding to m2m after create.
 
         """
         work_on = subject or self.subject
