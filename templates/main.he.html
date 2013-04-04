@@ -14,7 +14,7 @@
     });
 {% if tidbits %}
   $(function() {
-     $('#tidbitCarousel').carousel()
+        $('#tidbitCarousel').carousel({interval: 8000})
   });
 {% endif %}
 </script>
@@ -25,7 +25,12 @@
 <div class="row" style="margin-top:20px;">
     <div class="cards span12">
       <div class="card card-list">
-        <div id="tidbitCarousel" class="carousel slide" >
+        <div id="tidbitCarousel" class="carousel slide">
+            <ol class="carousel-indicators">
+            {% for tidbit in tidbits  %}
+                <li {% if forloop.first %} class="active"{% endif %} data-slide-to="{{forloop.counter0}}" data-target="#tidbitCarousel"> </li>
+            {% endfor %}
+            </ol>
             <!-- Carousel items -->
             <div class="carousel-inner">
                 {% for tidbit in tidbits  %}
