@@ -34,11 +34,7 @@ class MoreUpcomingEventsView(GetMoreView):
     template_name = 'events/events_partials.html'
 
     def get_queryset(self):
-        if settings.DEBUG:
-            now = datetime(2011,11,11)
-        else:
-            now = datetime.now()
-        return Event.objects.filter(when__gte=now).order_by('when')
+        return Event.objects.get_upcoming()
 
 def icalendar(request, summary_length=50, future_only=True):
     """
