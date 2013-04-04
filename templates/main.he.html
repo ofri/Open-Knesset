@@ -23,7 +23,7 @@
 
 {% block divcontent %}
 <div class="row" style="margin-top:20px;">
-    <div class="cards span8">
+    <div class="cards span12">
       <div class="card card-list">
         <div id="tidbitCarousel" class="carousel slide" >
             <!-- Carousel items -->
@@ -47,32 +47,38 @@
             <a class="carousel-control right" href="#tidbitCarousel" data-slide="prev">&rsaquo;</a>
         </div>
       </div>
-      {% if events %}
+    </div>
+</div>
+<div class="row">
+    <div class="span8">
       <div class="card card-list card-list-latest">
         <header>
             <h2>{% trans "Upcoming Events" %}</h2>
         </header>
         <ul id="upcoming-events">
+        {% if events %}
           {% for o in events %}
               {% include "events/_event_li.html" %}
           {% endfor %}
+        {% else %}
+            לא נמצאו אירועים
+        {% endif %}
         </ul>
-        <footer>
         {% if events_more %}
+        <footer>
         <button id="events-more" class="btn btn-mini btn-expand" data-provide="okmore"
             data-loading-text="{% trans "Loading" %} ..."
             autocomplete="off" data-target="#upcoming-events" 
             data-url="{% url more-upcoming-events %}"
             >{% trans "More" %} +</button>
-        {% endif %}
         </footer>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
     <div class="span4">
-        <aside class="sidebar">
-          <h1><a href="{% url help %}">מה אפשר לעשות באתר?</a></h1>
-        </aside>
+        <div class="alert alert-block">
+          <a href="{% url help %}">מה אפשר לעשות באתר?</a>
+        </div>
         <aside class="sidebar">
           <h2>אודותינו</h2>
           <ul>
