@@ -312,7 +312,10 @@
                 <ul>
                 {% for v in object.pre_votes.all %}
                     <li>
-                        <p class="item-action">{% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }}</p>
+                        <p class="item-action">
+                            {% trans 'For' %} <span class="badge badge-success">{{ v.for_votes_count }}</span>
+                            {% trans 'Against' %} <span class="badge badge-important">{{ v.against_votes_count }}</span>
+                        </p>
                         <p class="item-title">
                         {% if user.is_authenticated %}
                             <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
