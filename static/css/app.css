@@ -5280,7 +5280,7 @@ form .helptext {
   margin-bottom: 0;
 }
 #app-header .nav-pills li {
-  width: 16.5%;
+  width: 20%;
   margin-left: -1px;
   border-left: 1px solid #f1f1f1;
 }
@@ -6311,8 +6311,6 @@ div.color_swatch {
   cursor: pointer;
   line-height: 12px;
 }
-.timer { text-align: center; padding: 21px 16px 0 5px; }
-.event-why { padding:1em; }
 #google-search-outer {
   margin-bottom: 20px;
 }
