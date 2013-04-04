@@ -195,9 +195,8 @@
           if (values.length) {
             elements.push($('<li class="nav-header"></li>').text(that.searchFor[key].title));
             $.each(values, function(idx, item) {
-                var i = that.searchFor[key].render(item);
-                
-                var highlighted = that.highlighter(item.name),
+                var i = that.searchFor[key].render(item),
+                	highlighted = that.highlighter(item.name),
                     $a = i.find('a'),
                     $img = $a.find('img');
 
