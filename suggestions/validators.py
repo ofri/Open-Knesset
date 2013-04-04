@@ -14,13 +14,13 @@ def validate_suggestion(actions, **suggestion_kwargs):
 def validate_free_text_has_comment(actions, **kwargs):
 
     if actions:
-        return  # If we have actions, it's no a free text comment
+        return  # If we have actions, it's not a free text comment
 
     comment = kwargs.get('comment')
 
     if not comment:
         raise ValidationError('A free text suggestion (without actions) '
-                              'requires comment')
+                              'requires a comment')
 
 
 def validate_actions(actions):
@@ -29,7 +29,7 @@ def validate_actions(actions):
     if not actions:  # No actions ? Nothing to do here
         return
 
-    # empty subject for operations are valid if CREATE was done prior to them
+    # empty subjects for operations are valid if CREATE was done prior to them
     # to allow m2m ADD after creating new objects
     create_found = False
 
