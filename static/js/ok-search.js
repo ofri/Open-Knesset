@@ -100,17 +100,18 @@
     }
 
   , select: function () {
-      var $el = this.$menu.find('.active'),
-          val = $el.attr('data-value'),
+      var $el = this.$menu.find('.active');
+
+	  // no selection ? submit the form
+	  if ($el.length === 0) {
+		  this.$element.closest('form').submit();
+		  return;
+	  }
+
+      var val = $el.attr('data-value'),
           url = $el.find('a').attr('href');
 
           window.location.href = url;
-      /*
-      this.$element
-        .val(this.updater(val))
-        .change()
-      return this.hide()
-      */
     }
 
   , updater: function (item) {
@@ -188,7 +189,6 @@
 
   , render: function (items) {
       var that = this,
-          first = true,
           elements = new Array();
 
       $.each(items, function(key, values) {
@@ -196,10 +196,7 @@
             elements.push($('<li class="nav-header"></li>').text(that.searchFor[key].title));
             $.each(values, function(idx, item) {
                 var i = that.searchFor[key].render(item);
-                if (first) {
-                    i.addClass('active');
-                    first = false;
-                }
+                
                 var highlighted = that.highlighter(item.name),
                     $a = i.find('a'),
                     $img = $a.find('img');
