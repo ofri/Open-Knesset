@@ -33,7 +33,7 @@ class SimpleTest(TestCase):
         """
         self.assertTrue(self.ev2.is_future)
         upcoming = Event.objects.get_upcoming()
-        self.assertEquals(upcoming[0].what, "ev2")
+        self.assertEquals(upcoming[0].what, self.ev2.what)
         self.assertEqual(upcoming.count(), 2)
         self.ev3.delete()
         self.assertEqual(upcoming.count(), 1)
