@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from tinymce import models as tinymce_models
+from django.contrib.auth.models import User
+
 
 ICON_CHOICES = (
     ('quote', _('Quote')),
@@ -31,6 +33,9 @@ class Tidbit(models.Model):
 
     objects = models.Manager()
     active = TidbitManager()
+
+    suggested_by = models.ForeignKey(User, related_name='tidbits', blank=True,
+                                     null=True)
 
     class Meta:
         verbose_name = _('Tidbit')
