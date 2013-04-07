@@ -63,8 +63,14 @@ class SuggestionsManager(models.Manager):
         return qs
 
     def get_pending_suggestions_for(self, subject):
-        "Return new suggestions for a specific instance"
+        "Return new suggestions for a specific instance or model"
 
         qs = self.get_pending_suggestions()
         ct = ContentType.objects.get_for_model(subject)
-        return qs.filter(actions__subject_type=ct, actions__subject_id=subject.pk)
+
+        # is it a model instance ?
+        if isinstance(subject, models.Model):
+            return qs.filter(actions__subject_type=ct,
+                             actions__subject_id=subject.pk)
+
+        return qs.filter(actions__subject_type=ct)

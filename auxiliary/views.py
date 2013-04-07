@@ -8,8 +8,9 @@ from django.utils import simplejson as json
 from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseForbidden, HttpResponseRedirect, \
-    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
+from django.http import (
+    HttpResponseForbidden, HttpResponseRedirect, HttpResponse,
+    HttpResponseNotAllowed, HttpResponseBadRequest, Http404)
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import TemplateView
@@ -27,7 +28,10 @@ from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
 from knesset.utils import notify_responsible_adult, main_actions
 from events.models import Event
-from .models import  Tidbit
+from suggestions.models import Suggestion
+from .models import Tidbit
+from .forms import TidbitSuggestionForm
+from .serializers import PromiseAwareJSONEncoder
 
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -107,6 +111,33 @@ def main(request):
     #                                     .order_by('-modified')\
     #                                     .select_related('creator')[:10]
     #    cache.set('main_page_context', context, 300) # 5 Minutes
+
+    # did we post the TidbitSuggest form ?
+    if request.method == 'POST':
+        # only logged-in users can suggest
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+
+        form = TidbitSuggestionForm(request.POST)
+        if form.is_valid():
+            form.save(suggested_by=request.user)
+            tidbits_suggestions = \
+                Suggestion.objects.get_pending_suggestions_for(Tidbit).count()
+
+            res = {
+                'success': True,
+                'tidbits_suggestions': tidbits_suggestions,
+            }
+        else:
+            res = {
+                'success': False,
+                'errors': form.errors,
+            }
+
+        return HttpResponse(
+            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
+            mimetype='application/json')
+
     NUMOF_EVENTS = 5
     events = Event.objects.get_upcoming()
     context = {
@@ -114,11 +145,13 @@ def main(request):
         'hide_crumbs': True,
         'is_index': True,
         'tidbits': Tidbit.active.all().order_by('?'),
+        'suggest_tidbit': TidbitSuggestionForm(),
         'events': events[:NUMOF_EVENTS],
         'events_more': events.count() > NUMOF_EVENTS,
     }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
-    return render_to_response(template_name, context, context_instance=RequestContext(request))
+    return render_to_response(template_name, context,
+                              context_instance=RequestContext(request))
 
 
 def post_annotation(request):

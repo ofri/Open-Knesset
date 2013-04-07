@@ -5234,8 +5234,8 @@ form .helptext {
   list-style: none outside none;
   margin: 0;
   position: absolute;
-  left: 15px;
-  top: 15px;
+  right: 20px;
+  bottom: 0;
   z-index: 5;
 }
 .carousel-indicators li {
@@ -6079,7 +6079,8 @@ ol {
   color: #ffffff;
   border: 2px solid #4f81a9;
 }
-.btn-question {
+.btn-question,
+.btn-suggest {
   float: left;
   *zoom: 1;
   -webkit-border-radius: 50%;
@@ -6096,20 +6097,33 @@ ol {
   text-align: center;
 }
 .btn-question:before,
-.btn-question:after {
+.btn-suggest:before,
+.btn-question:after,
+.btn-suggest:after {
   display: table;
   content: "";
   line-height: 0;
 }
-.btn-question:after {
+.btn-question:after,
+.btn-suggest:after {
   clear: both;
 }
-.btn-question:hover {
+.btn-question:hover,
+.btn-suggest:hover {
   color: #ffffff;
   background: #464545;
 }
-ul .btn-question {
+ul .btn-question,
+ul .btn-suggest {
   float: none;
+}
+.btn-suggest {
+  width: auto;
+  padding: 0 10px;
+  z-index: 100;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .btn-expand {
   font-size: 13px;
@@ -6391,10 +6405,16 @@ div.color_swatch {
 #tidbitCarousel .item div {
   padding-right: 40px;
 }
-#tidbitCarousel .btn {
+#tidbitCarousel .carousel-inner .btn {
   position: absolute;
   left: 0;
   bottom: 0;
   font-size: 120%;
   padding: 15px 40px;
+}
+#tidbitCarousel .btn-suggest {
+  float: none;
+  position: absolute;
+  top: 15px;
+  left: 15px;
 }
