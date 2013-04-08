@@ -21,32 +21,11 @@
 {% endblock %}
 
 {% block divcontent %}
-{% comment %}
-<div id="suggest-tidbit-modal" class="modal hide fade"
-    tabindex="-1" role="dialog" aria-labelledby="suggestTidbitModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3 id="suggestTidbitModalLabel">{% trans "Suggest Tidbit" %}</h3>
-        </div>
-        <div class="modal-body">
-            {% if user.is_authenticated %}
-            {% crispy suggest_tidbit %}
-            {% else %}
-            {% include "auxiliary/_login_to_suggest.html" %}
-            {% endif %}
-        </div>
-        <div class="modal-footer">
-            {% if user.is_authenticated %}<input class="btn btn-primary" type="submit" value="{% trans "Submit" %}" data-loading-text="{% trans "Sending" %} ..."/>{% endif %}
-            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
-        </div>
-</div>
-{% endcomment %}
-
 <div class="row" style="margin-top:20px;">
     <div class="cards span12">
       <div class="card card-list">
         <div id="tidbitCarousel" class="carousel slide">
-            <a href="#suggest-tidbit-modal" class="btn btn-mini btn-suggest" data-role="button" data-toggle="modal">{% trans "Suggest" %}</a>
+            {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
             <ol class="carousel-indicators">
             {% for tidbit in tidbits  %}
                 <li {% if forloop.first %} class="active"{% endif %} data-slide-to="{{forloop.counter0}}" data-target="#tidbitCarousel"> </li>
