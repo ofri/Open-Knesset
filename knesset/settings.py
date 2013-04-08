@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'voting',
     'social_auth',
     'devserver',
+    'crispy_forms',
     #'knesset',
     'auxiliary',                  # knesset apps
     'mks',

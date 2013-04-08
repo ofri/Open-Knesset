@@ -182,6 +182,8 @@
         </div>
     </footer>
     <!-- END #footer -->
+{% comment %} Suggestion forms {% endcomment %}
+{% if suggestion_forms %}{% include "auxiliary/_suggestion_forms.html" %}{% endif %}
 <!-- JS Placed at the end of the document so the pages load faster -->
     <script src="{% static "js/jquery-1.8.3.min.js" %}"></script>
     <script src="{% static "js/bootstrap-transition.js" %}"></script>
@@ -206,6 +208,7 @@
     <script src="{% static "js/ok-toggle.js" %}"></script>
     <script src="{% static "js/ok-more.js" %}"></script>
     <script src="{% static "js/ok-search.js" %}?v=3"></script>
+    <script src="{% static "js/ok-suggest.js" %}"></script>
 <!-- end JS -->
     <script>
         $(function() { 

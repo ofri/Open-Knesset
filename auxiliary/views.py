@@ -145,7 +145,7 @@ def main(request):
         'hide_crumbs': True,
         'is_index': True,
         'tidbits': Tidbit.active.all().order_by('?'),
-        'suggest_tidbit': TidbitSuggestionForm(),
+        'suggestion_forms': {'tidbit': TidbitSuggestionForm()},
         'events': events[:NUMOF_EVENTS],
         'events_more': events.count() > NUMOF_EVENTS,
     }
