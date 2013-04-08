@@ -1,6 +1,8 @@
 from itertools import chain
+from operator import itemgetter, attrgetter
+
 from django.db import models
-from django.db.models import Sum, Q, Count
+from django.db.models import Sum, Q, Count, F
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
@@ -59,6 +61,46 @@ class AgendaVote(models.Model):
 
     def __unicode__(self):
         return u"%s %s" % (self.agenda,self.vote)
+
+    def update_monthly_counters(self):
+        agendaScore     = self.score * self.importance
+        objMonth        = dateMonthTruncate(self.vote.time)
+
+        summaryObjects  = SummaryAgenda.objects.filter( agenda=self.agenda,
+                                                        month=objMonth).all()
+
+        agendaSummary   = None
+        if not filter(lambda summary:summary.summary_type=='AG',summaryObjects):
+            agendaSummary   = SummaryAgenda(month=objMonth,
+                                            agenda=self.agenda,
+                                            summary_type='AG',
+                                            score=agendaScore,
+                                            votes=1)
+
+        agendasByMk     = dict(map(lambda summary:(summary.mk_id,summary),
+                                   filter(lambda summary:summary.summary_type=='MK',
+                                          summaryObjects)))
+        newObjects = []
+        if agendaSummary:
+            newObjects.append(agendaSummary)
+        for vote_action in self.vote.voteaction_set.all():
+            mkSummary = agendasByMk.get(vote_action.member_id,None)
+            if not mkSummary:
+                mkSummary = SummaryAgenda(  month=objMonth,
+                                            agenda=self.agenda,
+                                            summary_type='MK',
+                                            mk_id=vote_action.member_id,
+                                            votes=1,
+                                            score=agendaScore)
+                newObjects.append(mkSummary)
+
+        SummaryAgenda.objects.update(votes=F('votes')+1,score=F('score')+agendaScore)
+        if newObjects:
+            SummaryAgenda.objects.bulk_create(newObjects)
+
+    def save(self,*args,**kwargs):
+        super(AgendaVote,self).save(*args,**kwargs)
+        self.update_monthly_counters()
 
 class AgendaMeeting(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendameetings')
@@ -388,5 +430,25 @@ class Agenda(models.Model):
         votes = votes.extra(select=dict(score = 'controversy'))
         return votes.order_by('-score')[:num]
 
+SUMMARY_TYPES = (
+    ('AG','Agenda Votes'),
+    ('MK','MK Counter')
+)
+
+class SummaryAgenda(models.Model):
+    agenda          = models.ForeignKey(Agenda, related_name='score_summaries')
+    month           = models.DateTimeField(db_index=True)
+    summary_type    = models.CharField(max_length=2, choices=SUMMARY_TYPES)
+    score           = models.FloatField(default=0.0)
+    votes           = models.BigIntegerField(default=0)
+    mk              = models.ForeignKey(Member,blank=True, null=True, related_name='agenda_summaries')
+    db_created      = models.DateTimeField(auto_now_add=True)
+    db_updated      = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return '%s %s %s %s (%f,%d)' % (str(self.agenda),str(self.month),self.summary_type,str(self.mk) if self.mk else 'n/a',self.score,self.votes)
+
 from listeners import *
-from operator import itemgetter, attrgetter
+
+def dateMonthTruncate(dt):
+    return dt.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
