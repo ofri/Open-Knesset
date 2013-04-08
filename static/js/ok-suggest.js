@@ -33,7 +33,7 @@
 			.done(function(data){
 			   if (data.success) {
 				var container = $('<div class="alert"><a href="#" class="close" data-dismiss="alert">&times;</a></div>'),
-				msg = $('<span/>').text(gettext(trans "Your suggestion is submitted. Thank you !"));
+				msg = $('<span/>').text(gettext("Your suggestion is submitted. Thank you !"));
 
 				msg.appendTo(container);
 
