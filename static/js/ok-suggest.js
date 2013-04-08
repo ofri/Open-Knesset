@@ -20,6 +20,8 @@
 				return false;
 			}
 
+			// Remove pre-existing errors
+			$('.text-error', $this).remove();
 			$btn.button('loading');
 
 			$.post($this.attr('action'), $this.serialize())
@@ -35,7 +37,16 @@
 				$modal.modal('hide');
 			   }
 			   else {
-				// TODO handle form validation errors
+					// we assume we got the validation errors in data.errors object
+					// TODO handle form validation errors for __all__
+
+					$.each(data.errors, function(key, item_errors) {
+						var el = $('<div class="text-error"/>'),
+							target = $('[name=' + key  +']', $this);
+
+						el.insertAfter(target).text(item_errors.join());
+
+				   })
 			   }
 			})
 			.always(function() {
