@@ -2,6 +2,11 @@
 
   "use strict"; // jshint ;_;
 
+  // reset function for forms
+  jQuery.fn.reset = function () {
+    $(this).each (function() { this.reset(); });
+  }
+
   $(function() {
 	  // setup submit button
 	  $('.suggest-modal .btn-primary').click(function() {
@@ -28,12 +33,14 @@
 			.done(function(data){
 			   if (data.success) {
 				var container = $('<div class="alert"><a href="#" class="close" data-dismiss="alert">&times;</a></div>'),
-				msg = $('<span/>').text('{% trans "Your suggestion is submitted. Thank you" %}');
+				msg = $('<span/>').text(gettext(trans "Your suggestion is submitted. Thank you !"));
 
 				msg.appendTo(container);
 
 				$($('.container').get(1)).prepend(container);
 				container.alert();
+
+				$this.reset();
 				$modal.modal('hide');
 			   }
 			   else {

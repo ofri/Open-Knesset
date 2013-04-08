@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-07 19:15+0300\n"
+"POT-Creation-Date: 2013-04-08 20:29+0300\n"
 "PO-Revision-Date: 2013-04-07 19:17+0300\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -209,29 +209,33 @@ msgid ""
 "Main activity feed for the whole site, same as presented on the main page"
 msgstr "פיד ראשי עבור כל האתר, בדומה למוצג בדף הראשי"
 
-#: auxiliary/forms.py:13 committees/models.py:347 laws/views.py:553
+#: auxiliary/forms.py:14 committees/models.py:347 laws/views.py:553
 msgid "Title"
 msgstr "כותרת"
 
-#: auxiliary/forms.py:14 auxiliary/models.py:25
+#: auxiliary/forms.py:15 auxiliary/models.py:25
 msgid "Did you know ?"
 msgstr "הידעת ?"
 
-#: auxiliary/forms.py:15 auxiliary/models.py:26
+#: auxiliary/forms.py:16 auxiliary/models.py:26
 msgid "Icon"
 msgstr "צלמית"
 
-#: auxiliary/forms.py:16 auxiliary/models.py:27 links/admin.py:21
+#: auxiliary/forms.py:17 auxiliary/models.py:27 links/admin.py:21
 msgid "Content"
 msgstr "תוכן"
 
-#: auxiliary/forms.py:17 auxiliary/models.py:28
+#: auxiliary/forms.py:19 auxiliary/models.py:28
 msgid "Button text"
 msgstr "טקסט הלחצן"
 
-#: auxiliary/forms.py:18 auxiliary/models.py:29
+#: auxiliary/forms.py:20 auxiliary/models.py:29
 msgid "Button link"
 msgstr "קישור הלחצן"
+
+#: auxiliary/forms.py:27
+msgid "Suggest Tidbit"
+msgstr "הצעת הידעת"
 
 #: auxiliary/models.py:8
 msgid "Quote"
@@ -492,7 +496,7 @@ msgstr "הזנה של הצבעות"
 msgid "Bills feed"
 msgstr "הזנה של הצעות חוק"
 
-#: knesset/feeds.py:83 templates/main.he.html:193
+#: knesset/feeds.py:83 templates/main.he.html:140
 #: templates/user/annotated_items.html:4 templates/user/annotated_items.html:9
 #: templates/user/public_profile.html:41
 msgid "Annotations"
@@ -503,39 +507,39 @@ msgstr "הארות"
 msgid "feed"
 msgstr "פיד"
 
-#: knesset/settings.py:237
+#: knesset/settings.py:238
 msgid "Statement"
 msgstr "הצהרה"
 
-#: knesset/settings.py:238
+#: knesset/settings.py:239
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: knesset/settings.py:239
+#: knesset/settings.py:240
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: knesset/settings.py:240
+#: knesset/settings.py:241
 msgid "Source?"
 msgstr "מקור?"
 
-#: knesset/settings.py:241
+#: knesset/settings.py:242
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: knesset/settings.py:242
+#: knesset/settings.py:243
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: knesset/settings.py:243
+#: knesset/settings.py:244
 msgid "Important"
 msgstr "חשוב"
 
-#: knesset/settings.py:244
+#: knesset/settings.py:245
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: knesset/settings.py:245
+#: knesset/settings.py:246
 msgid "Comment"
 msgstr "תגובה"
 
@@ -1579,48 +1583,11 @@ msgid ""
 msgstr ""
 "אתר לא מפלגתי, לא מסחרי שמביא לכם תוכן רלוונטי, מפורט ועדכני על אודות הכנסת"
 
-#: templates/main.he.html:32
-msgid "Your suggestion is submitted. Thank you"
-msgstr "הצעתך נשלחה. תודה רבה"
-
 #: templates/main.he.html:61
-msgid "Suggest Tidbit"
-msgstr "הצעת הידעת"
-
-#: templates/main.he.html:71 templates/agendas/agendasfor.html:47
-#: templates/committees/committeemeeting_detail.html:69
-#: templates/committees/committeemeeting_detail.html:102
-#: templates/committees/committeemeeting_list.html:49
-#: templates/laws/bill_detail.html:221 templates/laws/bill_detail.html:337
-#: templates/laws/bill_detail.html:395 templates/laws/bill_detail.html:454
-#: templates/laws/vote_member_photos.html:37
-msgid "Submit"
-msgstr "אישור"
-
-#: templates/main.he.html:71
-msgid "Sending"
-msgstr "שולח"
-
-#: templates/main.he.html:72 templates/agendas/agenda_list.html:39
-#: templates/committees/committee_list.html:45
-#: templates/laws/bill_detail.html:185 templates/laws/bill_detail.html:202
-#: templates/laws/bill_detail.html:222 templates/laws/bill_detail.html:297
-#: templates/laws/bill_list.html:33 templates/mks/member_detail.html:151
-#: templates/mks/member_detail.html:279 templates/mks/member_detail.html:326
-#: templates/mks/member_detail.html:363
-#: templates/video/_video_playlist.html:18
-msgid "Close"
-msgstr "סגור"
-
-#: templates/main.he.html:81
-msgid "Suggest"
-msgstr "הציעו"
-
-#: templates/main.he.html:114
 msgid "Upcoming Events"
 msgstr "בקרוב"
 
-#: templates/main.he.html:128 templates/agendas/agenda_detail.html:78
+#: templates/main.he.html:75 templates/agendas/agenda_detail.html:78
 #: templates/agendas/agenda_detail.html:93
 #: templates/agendas/agenda_detail.html:108 templates/auxiliary/_watch.html:13
 #: templates/committees/committee_list.html:77
@@ -1629,7 +1596,7 @@ msgstr "בקרוב"
 msgid "Loading"
 msgstr "טוען"
 
-#: templates/main.he.html:131 templates/agendas/agenda_detail.html:81
+#: templates/main.he.html:78 templates/agendas/agenda_detail.html:81
 #: templates/agendas/agenda_detail.html:96
 #: templates/agendas/agenda_detail.html:111
 #: templates/committees/committee_list.html:82
@@ -1642,7 +1609,7 @@ msgstr "טוען"
 msgid "More"
 msgstr "עוד"
 
-#: templates/main.he.html:186 templates/agendas/agenda_meeting_partial.html:11
+#: templates/main.he.html:133 templates/agendas/agenda_meeting_partial.html:11
 #: templates/agendas/agendasfor.html:23
 msgid "comments"
 msgstr "תגובות"
@@ -2080,6 +2047,18 @@ msgstr "הח\"כים המתנגדים ביותר לאג'נדה"
 msgid "Edit agenda"
 msgstr "עריכת אג'נדה"
 
+#: templates/agendas/agenda_list.html:39
+#: templates/auxiliary/_suggestion_forms.html:18
+#: templates/committees/committee_list.html:45
+#: templates/laws/bill_detail.html:185 templates/laws/bill_detail.html:202
+#: templates/laws/bill_detail.html:222 templates/laws/bill_detail.html:297
+#: templates/laws/bill_list.html:33 templates/mks/member_detail.html:151
+#: templates/mks/member_detail.html:279 templates/mks/member_detail.html:326
+#: templates/mks/member_detail.html:363
+#: templates/video/_video_playlist.html:18
+msgid "Close"
+msgstr "סגור"
+
 #: templates/agendas/agenda_list.html:46
 msgid "Your Agendas"
 msgstr "האג'נדות שלך"
@@ -2228,6 +2207,17 @@ msgstr "ההצעות שלך"
 msgid "Please select"
 msgstr "נא לבחור"
 
+#: templates/agendas/agendasfor.html:47
+#: templates/auxiliary/_suggestion_forms.html:17
+#: templates/committees/committeemeeting_detail.html:69
+#: templates/committees/committeemeeting_detail.html:102
+#: templates/committees/committeemeeting_list.html:49
+#: templates/laws/bill_detail.html:221 templates/laws/bill_detail.html:337
+#: templates/laws/bill_detail.html:395 templates/laws/bill_detail.html:454
+#: templates/laws/vote_member_photos.html:37
+msgid "Submit"
+msgstr "אישור"
+
 #: templates/agendas/agendasfor.html:63
 msgid "Login to suggest an agenda"
 msgstr "רוצה להציע אג'נדה קשורה? לחץ כאן כדי להרשם"
@@ -2283,6 +2273,14 @@ msgstr "או"
 #: templates/user/password_reset_form.html:19
 msgid "register"
 msgstr "הרשמה"
+
+#: templates/auxiliary/_suggestion_button.html:1
+msgid "Suggest"
+msgstr "הציעו"
+
+#: templates/auxiliary/_suggestion_forms.html:17
+msgid "Sending"
+msgstr "שולח"
 
 #: templates/auxiliary/_watch.html:5 templates/auxiliary/_watch.html.py:13
 msgid "Watch"
@@ -3974,6 +3972,9 @@ msgstr "שבועי"
 #: user/views.py:124
 msgid "Your profile has been updated."
 msgstr "פרופיל המשתמש עודכן"
+
+#~ msgid "Your suggestion is submitted. Thank you"
+#~ msgstr "הצעתך נשלחה. תודה רבה"
 
 #~ msgid "Database error"
 #~ msgstr "שגיאת בסיס נתונים"
