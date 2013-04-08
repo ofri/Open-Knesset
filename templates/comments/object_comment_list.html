@@ -3,39 +3,39 @@
 {% load avatar_tags %}
 
 {% get_comment_list for object as comment_list %}
+<header><h2>{% trans 'User comments' %}</h2></header>
+<ul>
 {% if comment_list %}
-    <h3>{% trans 'User comments' %}</h3>
-    <div class="item-list">
     {% for comment in comment_list %}
-        <a name="c{{ comment.id }}"></a>
-        <div class="item {% cycle "normal" "alt" %}">
-            <div class="item-header">
-                <div class="avatar-item">
-                    <a href="{% url public-profile comment.user.username %}" alt="{{comment.user}}">{% avatar comment.user 48 %}</a>
-                </div>
+        <li class="agenda-mini">
+          <a name="c{{ comment.id }}"></a>
+          <header>
+              <a href="{% url public-profile comment.user.username %}" alt="{{comment.user}}">{% avatar comment.user 48 %}</a>
+              <h3>
+                  <a href="{% url public-profile comment.user.username %}">{{comment.user}}</a>&nbsp; &nbsp;{{comment.user.get_full_name}}
+              </h3>
+          </header>
+          <div>
+              <div class="item-credit">
+              </div>
+              <p>{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</p>
+               {% if user == comment.user or user.is_staff%}
+               <footer style="center-text"><a href="{% url comments-delete-comment comment.id %}">{% trans 'delete comment' %}</a></footer>
+               {% endif %}
             </div>
-            <div class="item-credit">
-                <a href="{% url public-profile comment.user.username %}">{{comment.user}}</a>&nbsp; &nbsp;{{comment.user.get_full_name}}
-            </div>
-            <p>{{ comment.comment|escape|urlizetrunc:"40"|linebreaks }}</p>
-            <div class="item-footer">
-                {% if user == comment.user or user.is_staff%}
-                    <div style="float:left;"><a href="{% url comments-delete-comment comment.id %}">{% trans 'delete comment' %}</a> </div>
-                {% endif %}
-            </div>
-        </div>
+          </li>
     {% endfor %}
-    </div>
 {% else %}
-    <h3>{% trans 'No comments yet' %}</h3>
+    <li>{% trans 'No comments yet' %}</li>
 {% endif %}
 
 {% if user.is_authenticated %}
     {% if perms.comments.add_comment %}
-        {% render_comment_form for object %}
+    <li>{% render_comment_form for object %}</li>
     {% else %}
-        {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to comment' %}
+    <li><div class="alert alert-block">{% trans "Please" %} <a href="{% url edit-profile %}">{% trans "validate your email" %}</a>{% trans " to comment" %}</div></li>
     {% endif %}
 {% else %}
-    <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a><span>
+  <li><div class="alert alert-block"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to comment' %}</a><div></li>
 {% endif %}
+</ul>

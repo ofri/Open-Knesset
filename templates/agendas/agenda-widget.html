@@ -1,0 +1,414 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <base href="{% static "img/agenda-viz/" %}"/>
+    <title>Open Knesset Agenda Visualization Widget</title>
+    <style>
+        @charset "utf-8";
+        @import "{% static "css/openfont.css" %}";
+        body, html {
+            width: 100%;
+            height: 100%;
+            direction: rtl;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: openfont, sans-serif;
+            font-size: 14px;
+            line-height: 1.143;
+            color: #20557B;
+        }
+        a {
+            color: #20557B;
+        }
+        div, h1, h2, p {
+            margin: 0;
+            padding: 0;
+        }
+        .clearfix:before, .clearfix:after { content: ""; display: table; }
+        .clearfix:after { clear: both; }
+        .color-axis-sign {
+            width: 10px;
+            height: 10px;
+        }
+        .exit-ribbon {
+            display: block;
+            position: absolute;
+            right: 10px;
+            top: 74px;
+            z-index: 1001;
+            width: 26px;
+            /*height: 60px;*/
+            height: 0;
+            background: #09f url('agenda-embed-X.png') center 40px no-repeat;
+            cursor: pointer;
+        }
+        .hide {
+            display: none;
+        }
+        .member line {
+            fill: none;
+            /*opacity: .8;*/
+        }
+        .member circle {
+            stroke-width: 2;
+            fill: transparent;
+        }
+        .member rect {
+            fill: transparent;
+        }
+        .no-events {
+            pointer-events: none;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            z-index: 1000;
+            overflow: hidden;
+            background-color: rgba(32, 85, 123, 0.95);
+        }
+        .tooltip {
+            stroke-width: 0px;
+            z-index: 2000;
+        }
+        .twitter-share-button {
+            margin: 0 auto;
+        }
+        
+        #about-content {
+            margin-bottom: 1em;
+        }
+        #about-overlay {
+            position: absolute;
+            top: 44px;
+            right: 0;
+            left: 0;
+            z-index: 1010;
+            height: auto;
+            box-sizing: border-box;
+            overflow: auto;
+            font-size: 14px;
+            line-height: 150%;
+            background-color: #f6f7ec;
+        }
+        #about-overlay h3 {
+            margin: 0 0 1em;
+            font-size: 16px;
+        }
+        #about-overlay-padding {
+            padding: 20px 60px 20px 20px;
+        }
+        #about-toggler {
+            display: block;
+            float: left;
+            margin: 10px;
+            border-top: 12px solid #20557B;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            cursor: pointer;
+        }
+        #about-toggler.opened {
+            border-top: none;
+            border-bottom: 12px solid #20557B;
+        }
+        #about-votes {
+            padding: 0;
+            list-style-position: inside;
+            list-style-type: square;
+        }
+        #agenda-name {
+            display: inline-block;
+            margin: 0 0 4px 6px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 100%;
+        }
+        #charts {
+            position: absolute;
+            top: 76px;
+            bottom: 21px;
+            width: 100%;
+            clear: both;
+            overflow: hidden;
+            background-color: #f6f7ec;
+        }
+        #charts svg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #color-axis-minus {
+            background: url('i_minus.png') left top no-repeat;
+        }
+        #color-axis-plus {
+            background: url('i_plus.png') left top no-repeat;
+        }
+        #parties-canvas {
+            z-index: 10;
+        }
+        #members-canvas {
+            z-index: 1;
+        }
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #d9eefb;
+        }
+        #controls {
+            clear: both;
+            padding: 3px 5px;
+        }
+        #controls select {
+            -webkit-appearance: none;
+               -moz-appearance: none;
+                -ms-appearance: none;
+                 -o-appearance: none;
+            padding: 0 8px 0px 25px;
+            background-image: url('i_drop.png');
+            background-position: 7px 55%;
+            background-repeat: no-repeat;
+            font-family: openfont, sans-serif;
+            font-size: 14px;
+            color: #20557B;
+        }
+        #controls select, #controls span {
+            background-color: transparent;
+            border: 1px solid #65BAF7;
+            border-radius: 10px;
+            outline: none;
+        }
+        #exit-about {
+            top: 41px;
+            z-index: 1011;
+        }
+        #headings {
+            float: right;
+        }
+        #help-overlay p {
+            text-align: right;
+        }
+        #loader {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #65BAF7;
+        }
+        #loader-message {
+            display: block;
+            position: absolute;
+            width: 80px;
+            height: 20px;
+            left: 50%;
+            top: 50%;
+            margin-left: -40px;
+            margin-top: -10px;
+        }
+        #members-chart {
+            z-index: 1;
+        }
+        #number-of-votes-container {
+            display: inline-block;
+            font-size: 10px;
+        }
+        #owner-image {
+            float: right;
+            margin-left: 8px;
+        }
+        #owner-image img {
+            border: none;
+        }
+        #owner-image-anchor {
+            display: block;
+            font-size: 0;
+            border: none;
+        }
+        #parties-chart {
+            z-index: 10;
+        }
+        #parties-menu{
+            font-weight: 700;
+        }
+        #public-owner-name {
+            font-size: 12px;
+            line-height: 100%;
+            font-weight: normal;
+        }
+        #toggle-zoom {
+            position: relative;
+            float: left;
+            width: 80px;
+            height: 22px;
+            padding: 0;
+        }
+        #header {
+            height: 75px;
+            border-bottom: 1px dashed #65BAF7;
+        }
+        #header-meta {
+            height: 32px;
+            padding: 5px;
+            border-bottom: 1px dashed #65BAF7;
+        }
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            font-size: 12px;
+            border-top: 1px dashed #65BAF7;
+        }
+        #footer p:hover {
+            background-color: #65BAF7;
+        }
+        #footer-info {
+            float: right;
+            margin-right: 0;
+            line-height: 20px;
+            background: url('agenda-embed-help.png') 97% 2px no-repeat;
+        }
+        #footer-info p {
+            display: inline-block;
+            border-left: 1px solid #65BAF7;
+        }
+        #info-agenda {
+            padding: 0 30px 0 10px;
+            cursor: pointer;
+        }
+        #info-ok {
+            padding: 0 10px;
+        }
+        #embed-link {
+            float: left;
+            padding: 0 10px 0 28px;
+            line-height: 20px;
+            background: url('i_embed.png') 10px 3px no-repeat;
+            border-right: 1px solid #65BAF7;
+            border-left: 1px solid #65BAF7;
+        }
+        #share-link {
+            float: left;
+            padding: 0 15px 0 28px;
+            line-height: 20px;
+            background: url('i_share.png') 10px 3px no-repeat;
+        }
+        #embed-link:hover, #share-link:hover {
+            cursor: pointer;
+        }
+        .overlay-clip {
+            width: 100%;
+            margin-bottom: 20px;
+            outline: none;
+            padding: 10px 5px;
+            direction: ltr;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1em;
+            color: #20557B;
+        }
+        .overlay-message {
+            width: 80%;
+            max-width: 400px;
+            margin: 10% auto 0;
+            text-align: center;
+            color: #fff;
+        }
+        .overlay-message p {
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <div id="header-meta" class="clearfix">
+                <div id="owner-image"><a href="" target="_blank" id="owner-image-anchor"></a></div>
+                <div id="headings">
+                    <h1 id="agenda-name"><a href="" target="_blank"></a></h1><span id="number-of-votes-container"><span id="number-of-votes"></span> הצבעות</span>
+                    <h2 id="public-owner-name">בעריכת <a href="" target="_blank"></a></h2>
+                </div>
+                <span id="about-toggler"></span>
+                <span id="exit-about" class="exit-ribbon"></span>
+                <div id="about-overlay" class="overlay hide">
+                    <div id="about-overlay-padding">
+                        <h3>אודות</h3>
+                        <p id="about-content"></p>
+                        <h3>מבין ההצבעות המרכיבות את האג'נדה:</h3>
+                        <ul id="about-votes"></ul>
+                    </div>
+                </div>
+            </div>
+            <div id="controls" class="clearfix">
+                <select id="parties-menu" name="party"></select>
+                <select id="knesset-menu" name="knesset">
+                    <option value="18">הכנסת ה - 18</option>
+                </select>
+                <span id="toggle-zoom" name="zoom"></span>
+            </div>
+            <span id="exit-button" class="exit-ribbon"></span>
+        </div>
+        <div id="charts">
+            <div id="share-overlay" class="overlay">
+                <div class="overlay-message">
+                    <p>שתפו את הלינק לאג'נדה:</p><input type="text" class="overlay-clip" id="share-snippet" value=""/>
+                    <a href="https://twitter.com/share" class="hide" data-url="http://oknesset.org/agenda/2/" data-text="שקיפות המידע הציבורי בעריכת התנועה לחופש המידע" data-lang="he" data-size="large" id="tweeter">ציוץ</a>
+                </div>
+            </div>
+            <div id="embed-overlay" class="overlay">
+                <div class="overlay-message"><p>הטמיעו את האג'נדה אצלכם באתר:</p><input type="text" class="overlay-clip" id="embed-snippet" value=""/></div>
+            </div>
+            <div id="help-overlay" class="overlay">
+                <div class="overlay-message"><p>מערכת האג'נדות מאפשרת לעקוב אחרי דפוסי הצבעה של חברי הכנסת בנושאים שונים. עורכי האג'נדות - גופים, עמותות ויחידים, מגדירים הצבעות על הצעות חוק כתומכים או נוגדים את האג'נדה אותה הם מקדמים, והמערכת מציגה את המגמות העולות מאופני ההצבעה של הח"כים בהתאם.</p></div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="footer-info"><p id="info-agenda">אג'נדה: ניתוח דפוסי הצבעה</p><p id="info-ok">מאתר <a href="http://oknesset.org/" target="_blank">כנסת פתוחה</a></p></div>
+            <p id="share-link">שתף</p>
+            <p id="embed-link">עמבד</p>
+        </div>
+        <div id="loader"><span id="loader-message">טוען קבצים...</span></div>
+    </div>
+    <!--[if lte IE 8]>
+    <script>
+        var IE8_COMPAT_MODE = true;
+        var require = {
+            deps    : ['lib/ie8/compat', 'lib/ie8/sizzle'],
+            paths   : {
+                'd3' : '../lib/ie8/r2d3',
+                reqwest : '../lib/reqwest',
+                when    : '../lib/when'
+            }
+        };
+        window.IMAGES_PATH = document.querySelector('base').getAttribute('href');
+    </script>
+    <![endif]-->
+    <!--[if IE 9]><!-->
+    <script>
+        var IE8_COMPAT_MODE = false;
+        var require = {
+            paths   : {
+                'd3' : '../lib/d3.v2',
+                reqwest : '../lib/reqwest',
+                when    : '../lib/when'
+            }
+        };
+        window.IMAGES_PATH = document.querySelector('base').getAttribute('href');
+    </script>
+    <!--<![endif]-->
+    <script src="{% static "js/require.js" %}" data-main="{% static "js/agenda-viz-1.0.2.js" %}"></script>
+    <script>window.IMAGES_PATH = "{% static "img/agenda-viz/" %}";</script>
+</body>
+</html>

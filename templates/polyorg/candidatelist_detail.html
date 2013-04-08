@@ -1,0 +1,201 @@
+{% extends "site_base.html" %}
+{% load i18n links_tags %}
+{% load i18n i18ninclude %}
+{% load common_visual_elements %}
+{% load static from staticfiles %}
+{% block extratitle %}{{ object.name }}{% endblock %}
+{% block description %}{{ object.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
+{% endblock %}
+{% block nav-elections %}class="active"{% endblock %}
+{% block help-section %}
+{% endblock %}
+{% block breadcrumbs %}
+    <li><a href="{% url candidate-list-list %}">{% trans "Knesset 19 Factions" %}</a> <span class="divider">/</span></li>
+    <li class="active">{{ object.name }}</li>
+{% endblock %}
+{% block divcontent %}
+    <div class="alert alert-info">
+     {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
+    </div>
+
+<div id="candidate-list-info">
+
+    <div class="card card-main">
+        <div class="row">
+            <div class="span2">
+                <div class="spacer">
+                    <div class="candidate-list-item ballot">
+                        <h1>{{object.ballot}}</h1>
+                        <h2>{{object.name}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="span10">
+                <header>
+                    <h2>{% trans "MKs" %}</h2>
+                </header>
+                <div class="card-persons">
+                    {% include "persons/person_cards.html" with persons=candidates %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="span7 cards">
+            {% if object.platform %}
+            <div class="card card-list">
+                <header><h2>{% trans "Official Platform" %}</h2></header>
+                <section>
+                    <p class="hide-on-more">{{object.platform|truncatewords_html:30|linebreaksbr}}</p>
+                    <p class="more-item">{{object.platform|linebreaksbr}}</p>
+                </section>
+                <footer class="more-button">
+                    <a class="btn btn-mini btn-expand">{% trans "more" %}&nbsp;+</a>
+                </footer>
+                <footer class="less-button" style="display:none;">
+                    <a class="btn btn-mini btn-expand">{% trans "less" %}&nbsp;-</a>
+                </footer>
+            </div>
+            {%  endif %}
+            {% if object.mpg_html_report %}
+            <div class="card card-list">
+                <header><h2>{% trans "Report from MQG" %}</h2></header>
+                <section>
+                    <p class="hide-on-more">{{object.mpg_html_report|truncatewords_html:30|linebreaksbr}}</p>
+                    <p class="more-item">{{object.mpg_html_report|linebreaksbr}}</p>
+                </section>
+                <footer class="more-button">
+                    <a class="btn btn-mini btn-expand">{% trans "more" %}&nbsp;+</a>
+                </footer>
+                <footer class="less-button" style="display:none;">
+                    <a class="btn btn-mini btn-expand">{% trans "less" %}&nbsp;-</a>
+                </footer>
+            </div>
+            {% endif %}
+            {% if object.wikipedia_page %}
+            <div class="card card-list">
+                <header> <h2>{% trans 'Wikipedia' %} </h2> </header>
+                <section class="clearfix">
+                    <div class="wikipedia" wikipedia-page="{{object.wikipedia_page}}">
+                        {% trans "loading..." %}
+                    </div>
+                </section>
+                <footer class="more-button">
+                    <a class="btn btn-mini btn-expand">{% trans "more" %}&nbsp;+</a>
+                </footer>
+                <footer class="less-button" style="display:none;">
+                    <a class="btn btn-mini btn-expand">{% trans "less" %}&nbsp;-</a>
+                </footer>
+            </div>
+            {% endif %}
+        </div>
+        <div class="span5">
+            {% if agendas %}
+            <aside class="sidebar sidebar-agendas">
+                <header><h2>{% trans "Agendas" %}</h2></header>
+                <section>
+                <table>
+                {% for a in agendas %}
+                    <tr {% if forloop.counter >= 6 %}class="more-item"{% endif %}>
+                    <td style="width: 20em;"><a href="{{ a.url }}">{{a.name}}</a></td>
+                    <td class="numeric">{{a.score|floatformat:"0"}}%</td>
+                    <td>
+                        {% comment %}
+                        <!-- a nice graphics to show the score -->
+                        <div class="agenda-score progress">
+                        <div class="agenda-marker" data-score="{{a.score}}"></div>
+                        </div>
+                        {% endcomment %}
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                </section>
+                <footer class="more-button">
+                    <a class="btn btn-more">{% trans "more" %}&nbsp;+</a>
+                </footer>
+                <footer class="less-button" style="display:none;">
+                    <a class="btn btn-more">{% trans "less" %}&nbsp;-</a>
+                </footer>
+            </aside>
+            {% endif %}
+            {% if object.facebook_url %}
+            <aside class="sidebar">
+                <header><h2>{% trans "Facebook" %}</h2></header>
+                <section>
+                    <iframe src="//www.facebook.com/plugins/likebox.php?href={{object.facebook_url}}&width=390&height=558&show_faces=true&colorscheme=light&stream=true&border_color&header=false&appId=204241419711188" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:390px; height:558px;" allowTransparency="true"></iframe>
+                </section>
+            </aside>
+            {% endif %}
+            {% if object.youtube_user %}
+            <aside class="sidebar">
+                <header>
+                    <h2>{% trans "Videos" %}</h2>
+                </header>
+                <section>
+                    <iframe width="390" height="320" src="http://www.youtube.com/embed/?listType=user_uploads&list={{object.youtube_user}}&showinfo=1" frameborder="0" allowfullscreen></iframe>
+                </section>
+            </aside>
+            {% endif %}
+        </div>
+    </div>
+
+      {% comment %}
+      <div class="candidate-list-item links">
+          <h3>{% trans "Links" %}</h3>
+          {% object_links object %}
+      </div>
+      {% endcomment %}
+      {% comment %}
+      <!-- needs more stats before we can display -->
+      {% if stats %}
+      <div class="candidate-list-item candidate-list-stats">
+        {% trans 'Votes per member' %} {{stats.votes_per_seat}}
+      </div>
+      {% endif %}
+      {% endcomment %}
+</div>
+{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/bars.js" %}"></script>
+    <script type="text/javascript">
+      $(document).ready( function () {
+          $('.less-button').click(function () {
+            var item = $(this).parent();
+            item.find('.more-item').hide()
+            $(this).hide()
+            item.children('.more-button').show();
+            item.find('.hide-on-more').show();
+          });
+          $('.more-button').click(function () {
+            var item = $(this).parent();
+            item.find('.more-item').show()
+            item.find('.hide-on-more').hide();
+            $(this).hide()
+            item.children('.less-button').show();
+          });
+          var wikipedia = $('.wikipedia');
+          if (wikipedia.length > 0) {
+            $.getJSON("http://he.wikipedia.org/w/api.php?action=parse&format=json&callback=?",
+                {page:wikipedia.attr('wikipedia-page'), prop:'text'},
+                function(data) {
+                  var wikipedia = $('.wikipedia');
+                  wikipedia.html(data.parse.text['*']);
+                  // all links are relative, got to make them absolute
+                  wikipedia.find('a').each(function() {
+                    var cur = $(this).attr('href');
+                    $(this).attr('href', 'http://he.wikipedia.org'+cur);
+                  });
+                  // remove the edit button, make all items but the table a more item
+                  // and hide them
+                  wikipedia.find('.editsection').remove()
+                  wikipedia.children(':not(dl)').addClass('more-item').hide();
+                  wikipedia.children('table').first().removeClass('more-item').show();
+                });
+          }
+      });
+    </script>
+{% endblock %}

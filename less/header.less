@@ -1,0 +1,133 @@
+/* Add additional stylesheets below
+-------------------------------------------------- */
+
+#app-header{
+  padding: 12px 0 0;
+  border-bottom: 2px solid @darkgray;
+
+  #logo{
+  	margin-top: -18px;
+    img{
+      float: right;
+      margin-left: 10px;
+      }
+    span{
+      padding: 29px 0 0;
+      display: block;
+      font-size: 20px;
+      color: @textColor;
+      font-weight: 700;
+      }
+  }
+  
+  #login{
+    >a{      
+      float: left;
+      display: block;
+      &:hover{
+        text-decoration: none;
+      }
+    }
+    .dropdown-menu{
+      left: 0;
+      right: auto;
+    }
+    .user-pic{
+      .border-radius(50%);
+      border:2px solid @linkColor;
+      display: inline-block;
+      width:36px;
+      height:36px;
+      overflow: hidden;
+    }
+    @media (max-width: 767px){margin: -100px 0 80px;}
+  }
+  
+  .nav-pills{
+    margin-bottom: 0;
+    
+    li{
+      width: 20%;
+      margin-left: -1px;
+      border-left: 1px solid @lightgray;
+      a{
+        padding-bottom: 12px;
+        text-align: center;
+        margin: 0 30px;
+        .border-radius(0);
+        color: @darkgray;
+        font-size: 20px;
+        &:hover{
+          padding-bottom: 8px;
+          border-bottom: 4px solid @darkgray;
+        }
+      }
+      &.active{
+        a{
+          background: none;
+          padding-bottom: 8px;
+          border-bottom: 4px solid @darkgray;
+          color: @darkgray;
+          font-weight: 700;
+          &:hover{
+            background: none;
+            color: inherit;
+          }
+        }
+      }
+      @media (max-width: 767px){
+      	width: 100%;
+      	a{
+	      	padding: 15px 0;
+	      	margin: 0;
+	      	&:hover{
+		      	border: 0;
+		      	padding: 15px 0;
+		      	background: @lightergray;
+	      	}
+      	}
+      	&.active a, &.active a:hover{
+		      background: @darkgray;
+		      color: @lightgray;
+		      border: 0;
+	      	padding: 15px 0;
+	      }
+      }
+    }
+  }
+
+}
+
+.breadcrumb{
+	background: none;
+	margin: 10px 0;
+}
+
+.form-search {
+  position: relative;
+  
+  input.search-query{
+    height: 30px;
+    .border-radius(19px);
+     background-position: right center !important;
+  }
+
+  button{
+    background: transparent;
+    border:none;
+    position: absolute;
+    left: -9px;
+    top: 11px;
+    opacity: 0.5;
+    &:hover{
+      opacity: 1;
+    }
+    @media (max-width: 767px){left: 2px;top: 22px;}
+  }
+}
+
+.oksearch {
+  .search-member {
+    img { max-height: 32px; display: inline-block; margin-left: 5px;  }
+  }
+}

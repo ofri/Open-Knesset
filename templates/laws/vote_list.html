@@ -1,45 +1,59 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude laws_tags common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
+{% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url feeds-votes %}"/> {% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
-{% block help-section %}
-	 {% i18ninclude "laws/vote_list_help.html" LANGUAGE_CODE %}
-{% endblock %}
-{% block subnav %}
-{% comment %}
-        {% trans 'Vote types' %}: {% for link in friend_pages.type %}<a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
-        {% trans 'Tags' %}: {% for link in friend_pages.tagged %}        <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
-        {% trans 'Time range' %}: {% for link in friend_pages.since %}     <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
-        {% trans 'Order by' %}:   {% for link in friend_pages.order %}    <a href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull; {% endfor %}<br/>
-        <a href="{% url vote-tags-cloud %}">{% trans 'Choose by tag' %}</a>
-{% endcomment %}
-        <div>
-            <form action="." method="get" class="filter-form">
-            {{ form.as_p }}
-            <input type="submit" value="{% trans "Filter" %}" class="submit awesome-button">
-            </form>
-        </div>
-        <ul class="actions">
-            <li>
-                <span id="export-csv" class="awesome-button medium">
-                    <a href="./csv/?{{ query_string }}">{% trans 'Export data to Excel' %}</a>
-                </span>
-            </li>
-        </ul>
-{% endblock %}
+
+ {% block breadcrumbs %}
+        <li class="active">{{title}}</a>
+ {% endblock %}
+
 {% block divcontent %}
-
-    <div class="item-list">
-
-    {% for o in object_list %}
-        <div class="item {% cycle "alt" "normal" %}">
-            {% vote_list_item o watched_members %}
+    <section class="card card-main">
+        <div class="row">
+            <div class="span9">
+                <div class="spacer fill">
+                    <header><h1>{{ title  }}</h1></header>
+                    <div class="alert alert-info">
+	                    {% i18ninclude "laws/vote_list_help.html" LANGUAGE_CODE %}
+                    </div>
+                </div>
+            </div>
+            <div class="span3 social-details">
+                <div class="spacer actions-panel">
+                    <a class="btn btn-big" href="{% if query_string or not csv_file %}./csv/?{{ query_string }}{% else %}{{MEDIA_URL}}{{csv_file}}{% endif %}">{% trans 'Export data to Excel' %}</a>
+                </div>
+            </div>
         </div>
-{% empty %}
-    {% trans "No results found" %}
-{% endfor %}
+        <footer>
+            <a href="#" class="btn btn-mini btn-expand" data-target="#more-votes-help"
+                data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Collapse" %} -">{% trans "More" %} +</a>
+        </footer>
+    </section>
+
+    <div class="row">
+        <div class="cards span9">
+            <div class="card card-list">
+                <ul>
+                {% for o in object_list %}
+                    {% vote_list_item o watched_members %}
+                {% empty %}
+                    <li>{% trans "No results found" %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span3">
+            <aside class="sidebar">
+                <header><h2>{% trans "Filter" %}</h2></header>
+                <form action="." method="get">
+                {{ form.as_p }}
+                <input type="submit" value="{% trans "Filter" %}" class="submit awesome-button">
+                </form>
+            </aside>
+        </div>
     </div>
     {% if paginator %}
         {% pagination page_obj paginator request %}

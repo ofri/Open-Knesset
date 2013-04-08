@@ -10,19 +10,26 @@ from django.conf import settings
 
 from models import Agenda, AgendaVote, AgendaBill, AgendaMeeting
 from laws.models import Vote, VoteAction, Bill
-from mks.models import Party, Member
+from mks.models import Party, Member, Membership, Knesset
 from committees.models import Committee, CommitteeMeeting
 just_id = lambda x: x.id
 
 class SimpleTest(TestCase):
     def setUp(self):
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1,
+                                            knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
         self.mk_2 = Member.objects.create(name='mk_2',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
+
+
+        Membership.objects.create(member=self.mk_1, party=self.party_1)
+        Membership.objects.create(member=self.mk_2, party=self.party_1)
+
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
         self.user_3 = User.objects.create_user('superman', 'super@user.com', 'CRP')
@@ -53,6 +60,11 @@ class SimpleTest(TestCase):
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
         self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
+
+        self.vote_1. update_vote_properties()
+        self.vote_2. update_vote_properties()
+        self.vote_3. update_vote_properties()
+
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
                                                       score=-1,
@@ -131,7 +143,6 @@ I have a deadline''')
         translation.deactivate()
 
     def testAgendaDetail(self):
-
         # Access public agenda while not logged in
         res = self.client.get('%s?all_mks' % reverse('agenda-detail',
                                       kwargs={'pk': self.agenda_1.id}))
@@ -143,6 +154,11 @@ I have a deadline''')
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
         self.assertEqual(len(res.context['all_mks_ids']), 2)
+
+    def testAgendaUnauthorized(self):
+        # Access non-public agenda without authorization
+        res = self.client.get(reverse('agenda-detail',kwargs={'pk': self.agenda_3.id}))
+        self.assertEqual(res.status_code, 403)
 
     def testAgendaVoteDetail(self):
         res = self.client.get(reverse('agenda-vote-detail', args=[1]))

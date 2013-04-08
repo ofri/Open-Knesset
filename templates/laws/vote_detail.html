@@ -1,165 +1,159 @@
-{% extends "two_cols.html" %}
+{% extends "site_base.html" %}
 {% load i18n i18ninclude tagging_tags bills_tags links_tags mks_tags agendas_tags %}
 {% load static from staticfiles %}
-{% block help-section %}{% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}{% endblock %}
+{% block help-section %}{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
-{% block extrahead %}
-    <script type="text/javascript" src="{% static "js/jquery-1.4.2.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery-ui-1.8.4.custom.min.js" %}"></script>
+{% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
-    <link href="{% static "css/jquery-ui-1.8.4.custom.css" %}" rel="stylesheet" type="text/css" media="screen" />
 {% endblock %}
-{% block title %} {{ vote.title }} {% endblock %}
-{% block secondary %}
-        <h3>{% trans "Links" %}</h3>
-        {% object_links vote %}
 
-        <div id="tagging-container">
-        {% if user.is_authenticated %}
-            <h3>{% trans "Tags" %}</h3>
-            <div id="tags">
+{% block breadcrumbs %}
+        <li><a href="{% url vote-list %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
+        <li class="active">{{title}}</a>
+{% endblock %}
+
+{% block divcontent %}
+    <section class="card card-main">
+        <div class="row">
+            <div class="span12">
+                <div class="spacer">
+                    <h1>{{ vote.title }}</h1>
+                    <p>{{ vote.time_string }}</p>
+                    <div class="alert alert-info">
+                        {% i18ninclude "laws/vote_detail_help.html" LANGUAGE_CODE %}
+                    </div>
+                </div>
+            </div>
+        </div>
+      <a href="#" class="btn btn-mini btn-expand" data-target="#vote-extra"
+          data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Collapse" %} -">{% trans "More" %} +</a>
+    </section>
+
+    <section class="card card-main">
+        <div class="row">
+            <div class="span6">
+                <div class="spacer">
+                    <h2>{% trans "For" %} <span class="badge badge-success">{{vote.for_votes_count}}</span></h2>
+                    {% include "laws/vote_member_photos.html" with votes=for_votes%}
+                </div>
+            </div>
+            <div class="span6">
+                <div class="spacer">
+                    <h2>{% trans "Against" %} <span class="badge badge-important">{{vote.against_votes_count}}</span></h2>
+                    {% include "laws/vote_member_photos.html" with votes=against_votes %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="span8 cards">
+            <div class="card card-list">
+                <header><h2>{% trans "Links" %}</h2></header>
+                <ul>
+                {% object_links vote %}
+                </ul>
+            </div>
+            <div class="card card-list">
+                <header><h2>{% trans 'Bill' %}</h2></header>
+                <ul class="items">
+                {% for bill in bills %}
+                    <li>
+                        <p class="item-title"><a href={% url bill-detail bill.id %}>{% bill_full_name bill %}</a></p>
+                    </li>
+                {% empty %}
+                    <li>{% trans 'No bill is associated with this vote' %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% if vote.committee_meetings.count %}
+            <div class="card card-list">
+                <header><h2>{% trans 'This vote is mentioned in the following committe meetings' %}</h2></header>
+                <ul>
+                {% for cm in vote.committee_meetings.all %}
+                    <li>
+                        <p class="item-title"><a href="{{ cm.get_absolute_url }}">{{ cm }}</a></p>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% if vote.summary %}
+            <div class="card card-list">
+                <header><h2>{% trans 'summary' %}</h2></header>
+                <ul>
+                    <li>{{ vote.summary|safe }}</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if vote.full_text %}
+            <div class="card card-list">
+                <header><h2>{% trans 'Bill Text' %}</h2></header>
+                <ul>
+                    <li>{{ vote.full_text|safe }}</li>
+                </ul>
+            </div>
+        {% endif %}
+
+            <div>
+                {% if next_v %}
+                <a class="btn" href="{{ next_v }}">{% trans "Go to next vote by time" %}</a>
+                {% endif %}
+                {% if prev_v %}
+                <a class="btn" href="{{ prev_v }}">{% trans "Go to previous vote by time" %}</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="span4">
+            <aside class="sidebar">
+                <header><h2>{% trans "Tags" %}</h2></header>
+                <div id="tags">
                 {% if tags %}
                     {% for t in tags %}
-                        <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
+                    <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                 {% else %}
                     <span id="no-tags-yet">{% trans "No tags yet" %}</span>
                 {% endif %}
                 </div>
-            <div id="add_tags">
-                <span>{% trans "Edit Tags" %}</span>
-                <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
-                </span>
-                <div id="create_tag" style='display:none'>
-                    {% if perms.tagging.add_tag %}
+                {% if user.is_authenticated %}
+                <div id="add_tags">
+                    <span>{% trans "Edit Tags" %}</span>
+                    <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
+                    </span>
+                    <div id="create_tag" style='display:none'>
+                        {% if perms.tagging.add_tag %}
                         <form id="create_tag_form" action="#">{% csrf_token %}
                             <label for="tag">{% trans 'Create new tag' %}: </label>
                             <input type="hidden" name="app_label" id="app_label" value="laws">
                             <input type="hidden" name="object_type" value="vote">
                             <input type="hidden" name="id" value="{{object.id}}">
                             <input type="text" name="tag" id="tag">
-                            <input type="submit" value="{% trans 'Send' %}">
+                            <input type="submit" value="{% trans "Send" %}" class="btn">
                         </form>
-                    {% else %}
-                        {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                    {% endif %}
+                        {% else %}
+                        <div class="alert alert-block">{% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}</div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        {% else %}
-            <h3>{% trans "Tags" %}</h3>
-            {% if tags %}
-                <div id="tags">
-                {% for t in tags %}
-                   <a href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans "No tags yet" %}<br />
-            {% endif %}
-            <span class="please-register"><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Login to edit tags' %}</a>
-        {% endif %}
+                {% else %}
+                <div class="alert alert-block"><a href="{% url login %}?next={{request.get_full_path}}">{% trans 'Login to edit tags' %}</a></div>
+                {% endif %}
+            </aside> <!-- tagging -->
+
+            <aside class="sidebar">
+                {% agendas_for user vote 'vote' %}
+            </aside>
+
+            <aside class="sidebar">
+            {% include "comments/object_comment_list.html" with object=vote %}
+            </aside>
         </div>
-        {% agendas_for user vote 'vote' %}
-{% endblock %}
-
-{% block primary %}
-        <div>
-            <h3>{% trans "Time" %}</h3>
-            {{ vote.time_string }}
-            {% if next_v %}
-            &nbsp; <a class="bold-link" href="{{ next_v }}">{% trans 'Go to next vote by time' %}</a>
-            {% endif %}
-            {% if prev_v %}
-            &nbsp; <a class="bold-link" href="{{ prev_v }}">{% trans 'Go to previous vote by time' %}</a>
-            {% endif %}
-        </div>
-        <div>
-            <h3>{% trans "For" %}</h3>
-            {% if vote.for_votes_count %}
-                {% blocktrans count for_votes|length as counter %}
-                {{ counter }} MK
-                {% plural %}
-                {{ counter }} MKs
-                {% endblocktrans %}
-                <div>
-                {% for m in for_votes %}
-                    {% mk_card m.member %}
-                    {% if m.against_party %}<img src="{% static "img/Warning.png" %}" title="{% trans 'Voted differently than majority of own party' %}" />{% endif %}
-                    {% if m.against_coalition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the coalition' %}" />{% endif %}
-                    {% if m.against_opposition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the opposition' %}" />{% endif %}
-                &nbsp;
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans 'none' %}
-            {% endif %}
-            {% if user.is_superuser %}
-                {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk-for"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
-            {% endif %}
-        </div>
-        <div>
-            <h3>{% trans "Against" %}</h3>
-            {% if vote.against_votes_count %}
-                {% blocktrans count against_votes|length as counter %}
-                {{ counter }} MK
-                {% plural %}
-                {{ counter }} MKs
-                {% endblocktrans %}
-                <div>
-                {% for m in against_votes %}
-                    {% mk_card m.member 'mk-card-against' %}
-                    {% if m.against_party %}<img src="{% static "img/Warning.png" %}" title="{% trans 'Voted differently than majority of own party' %}">{% endif %}
-                    {% if m.against_coalition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the coalition' %}">{% endif %}
-                    {% if m.against_opposition %}<img src="{% static "img/Error.png" %}" title="{% trans 'Voted differently than majority of the opposition' %}">{% endif %}
-                    {% if m.against_own_bill %}<img src="{% static "img/Error-grey.png" %}" title="{% trans 'Voted against own bill' %}">{% endif %}
-                &nbsp;
-                {% endfor %}
-                </div>
-            {% else %}
-                {% trans 'none' %}
-            {% endif %}
-            {% if user.is_superuser %}
-                {% trans 'Suggest an MK' %}<form method="post" action=".">{% csrf_token %}<input type="hidden" name="user_input_type" value="mk-against"></input><input type="text" name="mk_name"></input><input type="submit" value="{% trans 'Submit' %}"></input></form>
-            {% endif %}
-        </div>
-
-        <h3>{% trans 'Bill' %}</h3>
-        <ul class="items">
-        {% for bill in bills %}
-            <li><a href={% url bill-detail bill.id %}>{% bill_full_name bill %}</a></li>
-        {% empty %}
-            {% trans 'No bill is associated with this vote' %}
-        {% endfor %}
-        </ul>
-
-        {% if vote.committee_meetings.count %}
-            <div>
-                <span>{% trans 'This vote is mentioned in the following committe meetings' %}:</span>
-                {% for cm in vote.committee_meetings.all %}
-                    <a class="item dontwrap" href="{{ cm.get_absolute_url }}">{{ cm }}</a>
-                    {% if not forloop.last %} &bull; {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        {% if vote.summary %}
-            <h3>{% trans 'summary' %}</h3>
-            {{ vote.summary|safe }}
-            <br><br>
-        {% endif %}
-
-        {% if vote.full_text %}
-            <h3>{% trans 'Bill Text' %}</h3>
-            {{ vote.full_text|safe }}
-            <br><br>
-        {% endif %}
-
-        {% with vote as object %}
-            {% include 'comments/object_comment_list.html' %}
-        {% endwith %}
+    </div>
 
 {% endblock %}
-

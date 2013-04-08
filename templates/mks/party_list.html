@@ -1,49 +1,65 @@
 {% extends "site_base.html" %}
-{% load i18n %}
-{% load i18n i18ninclude %}
+{% load i18n i18ninclude %}{% load static from staticfiles %}
 {% load common_visual_elements %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-parties %}class="selected"{% endblock %}
-{% block help-section %}
-	 {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
+
+{% block extrajs %}
+    <script src="{% static "js/jquery.flot.min.js" %}"></script>
+    <script>
+        $(function(){
+            var graph = {{graph|safe}},
+                p = $.plot($('#visualization'), graph.data, {
+                    bars: {show: true, barWidth:0.9},
+                    xaxis: {ticks: graph.ticks},
+                    grid: {borderWidth: 1}
+                });
+        });
+    </script>
+    
 {% endblock %}
-{% block subnav %}
-        {% for link in friend_pages %}
-            <a style="white-space:nowrap;" href="{{ link.0 }}" {% if link.2 %}class="current"{% endif %}>{{ link.1 }}</a> &bull;
-        {% endfor %}
+
+{% block nav-parties %}class="active"{% endblock %}
+{% block breadcrumbs %}
+            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url party-list %}">{% trans "Parties" %}</a> <span class="divider">/</span></li>
+            <li class="active">{{ title  }}</li>
 {% endblock %}
 {% block divcontent %}
-    {% include "mks/export_csv_link.html" %}
-    <div class="list-wrap">
-        <h2>{% trans 'Coalition' %}</h2>
-        <table>
-        {% for o in coalition %}
-        	<tr>
-                <td>{{ forloop.counter }}.</td>
-	            <td><a class="item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
-	            <td>{{ o.extra }}</td>
-	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
-            </tr>
-        {% empty %}
-            {% trans "Data base empty, no objects" %}
-        {% endfor %}
-        </table>
+    <div class="row">
+        <div class="span12">
+            <div class="alert alert-info">
+                {% i18ninclude "mks/party_list_help.html" LANGUAGE_CODE %}
+            </div>
+        </div>
     </div>
-    <div class="list-wrap">
-        <h2>{% trans 'Opposition' %}</h2>
-        <table>
-        {% for o in opposition %}
-        	<tr>
-                <td>{{ forloop.counter }}.</td>
-	            <td><a class="item dontwrap" id="detail-{{ o.id }}" href="{% url party-detail o.id %}">{{ o.name }}</a></td>
-	            <td>{{ o.extra }}</td>
-	            <td class="column-bar">{% bar o.extra "for" norm_factor baseline %}</td>
-            </tr>
-        {% empty %}
-            {% trans "Data base empty, no objects" %}
-        {% endfor %}
-        </table>
 
+    <div class="row">
+        <nav class="span3">
+            <ul class="nav nav-pills nav-stacked card">
+                <li class="nav-header">{% trans "Display by" %}</li>
+            {% for type, name in friend_pages %}
+                <li{% if type == stat_type %} class="active"{% endif %}>
+                    <a href="{% url party-stats stat_type=type %}" >{{ name }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </nav>
+        <div class="span9 cards">
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>{{ title }}</h2>
+                </header>
+                <div class="spacer">
+                    <div id="visualization" style="height:400px"></div>
+                </div>
+                {% comment %} CSV button behavior is broken, doesn't take into account active data set
+                <p style="text-align:left">
+                    <a class="btn" href="./csv">{% trans "Export data to Excel" %}</a>
+                </p>
+                    
+                {% endcomment %}
+            </section>
+        </div>
     </div>
 {% endblock %}

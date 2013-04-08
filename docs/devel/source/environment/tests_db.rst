@@ -47,17 +47,7 @@ You might want to create your own superuser:
     python manage.py createsuperuser
 
 
-Running the Development server
-=====================================
-
-To run the development server:
-
-.. code-block:: sh
-
-    python manage.py runserver
-
-Once done, you can access it via http://localhost:8000 .
-
+.. _debug_toolbar:
 
 Enable django-debug-toolbar
 ==============================
@@ -74,5 +64,29 @@ put in that file:
 
     INTERNAL_IPS = ('127.0.0.1',)
 
+
+Running the Development server
+=====================================
+
+To run the development server:
+
+.. code-block:: sh
+
+    python manage.py runserver
+
+Once done, you can access it with your browser via http://localhost:8000 .
+
+
+Using the debug toolbar
+=================================
+
+If you've :ref:`enabled the debug toolbar <debug_toolbar>`, you should see it's
+icon on the top right corner of the page:
+
+.. image:: ../_static/djdt.png
+
+
+Clicking on it will reveal a sidebar which will expose lots of info about the
+generated page (templates used, context variables, SQL queries etc.).
 
 We're cool ? Time for some :ref:`devel_workflow`.

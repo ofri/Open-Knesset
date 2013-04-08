@@ -1,0 +1,52 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% load i18n i18ninclude %}
+{% load common_visual_elements %}
+{% load static from staticfiles %}
+{% block extratitle %}{% trans "Results of the elections for the 19th Knesset" %}{% endblock %}
+{% block description %}{% trans "Results of the elections for the 19th Knesset" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
+{% endblock %}
+{% block nav-elections %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="active">{% trans "Knesset 19 Factions" %}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="alert alert-info">
+        {% i18ninclude "polyorg/candidatelist_list_help.html" LANGUAGE_CODE %}
+    </div>
+    <div class="row-fluid">
+        <h1>{% trans "Factions in the 19th Knesset" %}</h1>
+    </div>
+    <div id="candidate-lists">
+    {% for o in object_list %}
+      <a href="{% url candidate-list-detail o.id %}">
+        <div class="candidate-list-element ballot">
+            <h1>
+                {{o.ballot}}
+            </h1>
+            <h2>{{o.number_of_seats}}</h2>
+            <h2>
+                {{o.name}}
+            </h2>
+
+        </div>
+      </a>
+    {% endfor %}
+    </div>
+{% endblock %}
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/jquery.isotope.js" %}"></script>
+    <script type="text/javascript">
+      $(document).ready( function () {
+          $('#candidate-lists').isotope({
+            transformsEnabled: false,
+            itemSelector: '.candidate-list-element',
+            layoutMode : 'masonry'
+          })
+      });
+    </script>
+{% endblock %}

@@ -6,9 +6,12 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+from django.db.models import Count, Q
 from django.core.cache import cache
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
@@ -33,6 +36,25 @@ VOTE_ACTION_TYPE_CHOICES = (
 
 CONVERT_TO_DISCUSSION_HEADERS = ('להעביר את הנושא'.decode('utf8'), 'העברת הנושא'.decode('utf8'))
 
+class CandidateListVotingStatistics(models.Model):
+    candidates_list = models.OneToOneField('polyorg.CandidateList',related_name='voting_statistics')
+
+    def votes_against_party_count(self):
+        return VoteAction.objects.filter(member__id__in=self.candidates_list.member_ids, against_party=True).count()
+
+    def votes_count(self):
+        return VoteAction.objects.filter(member__id__in=self.candidates_list.member_ids).exclude(type='no-vote').count()
+
+    def votes_per_seat(self):
+        return round(float(self.votes_count()) / len(self.candidates_list.member_ids))
+
+    def discipline(self):
+        total_votes = self.votes_count()
+        if total_votes > 0:
+            votes_against_party = self.votes_against_party_count()
+            return round(100.0*(total_votes-votes_against_party)/total_votes,1)
+        else:
+            return _('N/A')
 
 class PartyVotingStatistics(models.Model):
     party = models.OneToOneField('mks.Party',related_name='voting_statistics')
@@ -448,6 +470,8 @@ class BillManager(models.Manager):
         stage = kwargs.get('stage', None)
         member = kwargs.get('member', None)
         booklet = kwargs.get('booklet', None)
+        changed_after = kwargs.get('changed_after', None)
+        changed_before = kwargs.get('changed_before', None)
 
         filter_kwargs = {}
         if stage and stage != 'all':
@@ -472,8 +496,13 @@ class BillManager(models.Manager):
             if kps:
                 qs = qs.filter(knesset_proposal__in=kps)
 
-        return qs
+        if changed_after:
+            qs = qs.filter(stage_date__gte=changed_after)
 
+        if changed_before:
+            qs = qs.filter(stage_date__lte=changed_before)
+
+        return qs
 
 class Bill(models.Model):
     title = models.CharField(max_length=1000)
@@ -764,5 +793,50 @@ class GovLegislationCommitteeDecision(models.Model):
 
     def get_absolute_url(self):
         return self.bill.get_absolute_url()
+
+class BillBudgetEstimation(models.Model):
+    
+    class Meta:
+        unique_together = (("bill","estimator"),)
+
+    bill = models.ForeignKey("Bill", related_name="budget_ests")
+    # costs are in thousands NIS
+    one_time_gov = models.IntegerField(blank=True, null=True)
+    yearly_gov = models.IntegerField(blank=True, null=True)
+    one_time_ext = models.IntegerField(blank=True, null=True)
+    yearly_ext = models.IntegerField(blank=True, null=True)
+    estimator = models.ForeignKey(User, related_name="budget_ests", blank=True, null=True)
+    time = models.DateTimeField(auto_now=True)
+    summary = models.TextField(null=True,blank=True)
+
+    def as_p(self):
+        return mark_safe(("<p><label><b>%s</b></label> %s</p>\n" * 7) % \
+            (
+            #leave this; the lazy translator does not evaluate for some reason.
+            _('Estimation of').format(),
+            "<b>%s</b>" % self.estimator.username,
+            _('Estimated on:').format(),
+            self.time,
+            _('One-time costs to government:').format(),
+            get_thousands_string(self.one_time_gov),
+            _('Yearly costs to government:').format(),
+            get_thousands_string(self.yearly_gov),
+            _('One-time costs to external bodies:').format(),
+            get_thousands_string(self.one_time_ext),
+            _('Yearly costs to external bodies:').format(),
+            get_thousands_string(self.yearly_ext),
+            _('Summary of the estimation:').format(),
+            escape(self.summary if self.summary else "",)))
+
+def get_thousands_string(f):
+    """
+    Get a nice string representation of a field of 1000's of NIS, which is int or None.
+    """
+    if f is None:
+        return "N/A"
+    elif f == 0:
+        return "0 NIS"
+    else:
+        return "%d000 NIS" % f
 
 from listeners import *

@@ -1,2 +1,8 @@
-<div id="{{bar_id}}" class="bar {{ bar_class }}" style="width:{{ width }}%"></div>
-
+{% if applicable %}
+<div class="progress progress-{{ bar_class }}">
+  <div id="{{bar_id}}" class="bar" style="width:{{width}}%"></div>
+  <div class="bar-label">{{label}}</div>
+</div>
+{% else %}
+    N/A
+{% endif %}

@@ -5,17 +5,24 @@
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-votes %}class="selected"{% endblock %}
 
+{% block breadcrumbs %}
+        <li><a href="{% url vote-list %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
+        <li class="active">{{title}}</a>
+{% endblock %}
+
 {% block content %}
-<h1>{{ title }}</h1>
-<div class="tags cloud">
-    {% autopaginate tags_cloud 200 %}
-    {% for tag in tags_cloud %}
-        <a href="{% url vote-tag tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="level{{ tag.font_size }}">{{ tag }}</a>
-    {% endfor %}
+{% autopaginate tags_cloud 200 %}
+<div class="card card-main">
+    <div class="spacer">
+        <h1>{{ title }}</h1>
+        <div class="text-center">
+            {% for tag in tags_cloud %}
+                <a href="{% url vote-tag tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="text-center">
     {% paginate %}
 </div>
 {% endblock %}
-
-{% block right_column %}
-{% endblock %}
-

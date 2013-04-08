@@ -3,7 +3,7 @@ import re
 import logging
 from datetime import datetime
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.text import truncate_words
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
@@ -16,6 +16,7 @@ from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
+from plenum.create_protocol_parts import create_plenum_protocol_parts
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -32,13 +33,20 @@ class Committee(models.Model):
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
     portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False, blank=True)
+    type = models.CharField(max_length=10,default='committee')
 
     def __unicode__(self):
-        return "%s" % self.name
+        if self.type=='plenum':
+            return "%s" % ugettext('Plenum')
+        else:
+            return "%s" % self.name
 
     @models.permalink
     def get_absolute_url(self):
-        return ('committee-detail', [str(self.id)])
+        if self.type=='plenum':
+            return('plenum', []) 
+        else:
+            return ('committee-detail', [str(self.id)])
 
     @property
     def annotations(self):
@@ -55,26 +63,30 @@ class Committee(models.Model):
                               "%s.committee_id=%%s" % meeting_tn],
                     params = [ self.id ]).distinct()
 
+
     def members_by_presence(self):
-        n = self.meetings.count()
-        if n==0: # this committee had not meetings, can really compute presence
-                 # scores. just return all relevant mks.
-            members = (self.members.all()|
-                       self.chairpersons.all()|
-                       self.replacements.all()).distinct()
-            for m in members:
-                m.meetings_count = 0
-            return members
-        # otherwise compute presence
-        members = []
-        for m in (self.members.all()|
-                  self.chairpersons.all()|
-                  self.replacements.all()).distinct():
-            m.meetings_count = \
-                100 * m.committee_meetings.filter(committee=self).count() / n
-            members.append(m)
-        members.sort(key=lambda x:x.meetings_count, reverse=True)
+        """Return the committee members with computed presence percentage"""
+        def count_percentage(res_set, total_count):
+            return (100 * res_set.count() / total_count) if total_count else 0
+
+        def filter_this_year(res_set):
+            return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
+
+        members = list((self.members.filter(is_current=True) |
+                        self.chairpersons.all() |
+                        self.replacements.all()).distinct())
+
+        all_meet_count = self.meetings.count()
+        year_meet_count = filter_this_year(self.meetings).count()
+        for m in members:
+            all_member_meetings = m.committee_meetings.filter(committee=self)
+            year_member_meetings = filter_this_year(all_member_meetings)
+            m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
+            m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
+
+        members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
+
 
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
@@ -125,7 +137,7 @@ def legitimate_header(line):
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
     date_string = models.CharField(max_length=256)
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     mks_attended = models.ManyToManyField('mks.Member', related_name='committee_meetings')
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
@@ -143,16 +155,25 @@ class CommitteeMeeting(models.Model):
     def __unicode__(self):
         cn = cache.get('committee_%d_name' % self.committee_id)
         if not cn:
-            cn = self.committee.name
+            if self.committee.type=='plenum':
+                cn='Plenum'
+            else:
+                cn = unicode(self.committee)
             cache.set('committee_%d_name' % self.committee_id,
                       cn,
                       settings.LONG_CACHE_TIME)
-        return (u"%s - %s" % (cn,
-                              self.title())).replace("&nbsp;", u"\u00A0")
+        if cn=='Plenum':
+            return (u"%s" % (self.title())).replace("&nbsp;", u"\u00A0")
+        else:
+            return (u"%s - %s" % (cn,
+                                self.title())).replace("&nbsp;", u"\u00A0")
 
     @models.permalink
     def get_absolute_url(self):
-        return ('committee-meeting', [str(self.id)])
+        if self.committee.type=='plenum':
+            return ('plenum-meeting', [str(self.id)])
+        else:
+            return ('committee-meeting', [str(self.id)])
 
     def _get_tags(self):
         tags = Tag.objects.get_for_object(self)
@@ -166,7 +187,7 @@ class CommitteeMeeting(models.Model):
     def save(self, **kwargs):
         super(CommitteeMeeting, self).save(**kwargs)
 
-    def create_protocol_parts(self, delete_existing=False):
+    def create_protocol_parts(self, delete_existing=False, mks=None, mk_names=None):
         """ Create protocol parts from this instance's protocol_text
             Optionally, delete existing parts.
             If the meeting already has parts, and you don't ask to
@@ -182,9 +203,12 @@ class CommitteeMeeting(models.Model):
         else:
             if self.parts.count():
                 raise ValidationError('CommitteeMeeting already has parts. delete them if you want to run create_protocol_parts again.')
-
         if not self.protocol_text: # sometimes there are empty protocols
             return # then we don't need to do anything here.
+
+        if self.committee.type=='plenum':
+            create_plenum_protocol_parts(self,mks=mks,mk_names=mk_names)
+            return
 
         # break the protocol to its parts
         # first, fix places where the colon is in the begining of next line
@@ -258,6 +282,7 @@ class ProtocolPart(models.Model):
     body = models.TextField(blank=True)
     speaker = models.ForeignKey('persons.Person', blank=True, null=True, related_name='protocol_parts')
     objects = ProtocolPartManager()
+    type = models.TextField(blank=True,max_length=20)
 
     annotatable = True
 

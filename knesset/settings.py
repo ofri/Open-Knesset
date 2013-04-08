@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'voting',
     'social_auth',
     'devserver',
+    'crispy_forms',
     #'knesset',
     'auxiliary',                  # knesset apps
     'mks',
@@ -166,6 +167,10 @@ INSTALLED_APPS = (
     'video',
     'okhelptexts',
     'tastypie',
+    'polyorg',
+    'plenum',
+    'tinymce',
+    'suggestions',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -208,7 +213,7 @@ formatter = logging.Formatter("%(asctime)s\t%(name)s:%(lineno)d\t%(levelname)s\t
 h.setFormatter(formatter)
 logger.addHandler(h)
 
-GOOGLE_CUSTOM_SEARCH = "011858809565220576533:pyrgq6kc_cy"
+GOOGLE_CUSTOM_SEARCH = "007833092092208924626:1itz_l8x4a4"
 GOOGLE_MAPS_API_KEYS = {'dev': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhQCULP4XOMyhPd8d_NrQQEO8sT8XBQdS2fOURLgU1OkrUWJE1ji1lJ-3w',
                         'prod': 'ABQIAAAAWCfW8hHVwzZc12qTG0qLEhR8lgcBs8YFes75W3FA_wpyzLVCpRTF-eaJoRuCHAJ2qzVu-Arahwp8QA'}
 GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEYS['dev']  # override this in prod server
@@ -258,6 +263,20 @@ SERIALIZATION_MODULES = {
 API_LIMIT_PER_PAGE = 1000
 
 SOUTH_TESTS_MIGRATE = False
+
+
+TINYMCE_DEFAULT_CONFIG = {
+    'mode': "textareas",
+    'theme': "advanced",
+    'plugins': "paste",
+    'theme_advanced_buttons1': ("bold,italic,underline,|,undo,redo,|,"
+                                "link,unlink,|,bullist,numlist,|"
+                                ",cut,copy,paste,pastetext,|,cleanup"),
+    'theme_advanced_buttons2': "",
+    'theme_advanced_buttons3': "",
+    'theme_advanced_toolbar_align': "center",
+
+}
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

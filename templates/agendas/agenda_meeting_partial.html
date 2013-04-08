@@ -1,0 +1,16 @@
+{% load comments i18n %}{% for agendameeting in object_list %}
+<li>
+    <p class="item-action">
+        <span class="label">{{agendameeting.get_score_display}}</span>
+    </p>
+    {% include "committees/_meeting_li.html" with o=agendameeting.meeting add_li=0 %}
+    <p class="item-context"><span class="label">{{ agendameeting.reasoning }}</span></p>
+    <p class="item-context">
+        {% get_comment_count for agendameeting as comment_count %}
+        <span class="badge {% if comment_count %}badge-success{% endif %}">{{ comment_count }}</span>
+        <a href="{% url agenda-meeting-detail agendameeting.id %}">{% trans "comments" %}</a>
+    </p>
+</li>
+{% empty %}
+  <li>{% trans "No results found" %}</li>
+{% endfor %}

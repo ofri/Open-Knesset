@@ -1,0 +1,58 @@
+{% load i18n bills_tags laws_tags %}{% for agendavote in object_list %}
+{% with agendavote.vote as vote %}
+<li>
+    <p class="item-context">{{vote.time}}</p>
+    <p class="item-action">
+      <span class="label">{{agendavote.get_importance_display}}</span>
+      <span class="label label-{% if agendavote.score < 0 %}important{% else %}success{% endif %}">{{ agendavote.get_score_display }}</span> |
+      <span class="badge badge-success" title="{% trans 'For' %}">{{ vote.for_votes_count }}</span>
+      <span class="badge badge-important" title="{% trans 'Against' %}">{{ vote.against_votes_count }}</span>
+    </p>
+    <p class="item-title"><a href="{{ vote.get_absolute_url  }}">{{vote.title}}</a></p>
+    <p class="item-context">{{ agendavote.reasoning|urlizetrunc:"30" }}</p>
+    <p class="item-context">
+        {% if vote.against_party %}<span class="label label-warning">
+                {% blocktrans count vote.against_party as counter %}
+                {{ counter }} MK voted differently than the majority of his party
+                {% plural %}
+                {{ counter }} MKs voted differently than the majority of their party
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_coalition %}<span class="label label-important">
+                {% blocktrans count vote.against_coalition as counter %}
+                {{ counter }} member of the coalition voted differently than the majority of the coalition
+                {% plural %}
+                {{ counter }} member of the coalition voted differently than the majority of the coalition
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_opposition %}<span class="label label-important">
+                {% blocktrans count vote.against_opposition as counter %}
+                {{ counter }} member of the opposition voted differently than the majority of the opposition
+                {% plural %}
+                {{ counter }} member of the opposition voted differently than the majority of the opposition
+                {% endblocktrans %}</span>
+        {% endif %}
+        {% if vote.against_own_bill %}<span class="label label-inverse">
+                {% blocktrans count vote.against_own_bill as counter %}
+                {{ counter }} member voted against his/her own bill
+                {% plural %}
+                {{ counter }} members votes against their own bill
+                {% endblocktrans %}</span>
+        {% endif %}
+    </p>
+    {% if vote.tags %}
+    <p class="item-context">
+       {% item_tags vote.tags %}
+    </p>
+    {% endif %}
+    <div class="item-context">
+    {% if watched_members %}
+    {% if vote %}{% for s in watched_members %}{% member_stand vote s %}{% endfor %}{% endif %}
+    {% else %} {% if forloop.first %}
+        <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
+        {% endif %}
+        {% endif %}
+    </div>
+</li>
+{% endwith %}
+{% endfor %}

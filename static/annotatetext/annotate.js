@@ -122,7 +122,7 @@ Annotations.prototype = {
         var total_height = this.text_div.height() + this.text_div.nextAll(".eventlist").height();
         // $("#annotations-"+this.id).css({"height": total_height+"px"});
         this.setupQuotes();
-        this.repositionAnnotation();
+        /* this.repositionAnnotation(); */
       }
     },
     

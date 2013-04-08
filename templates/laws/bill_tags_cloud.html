@@ -1,20 +1,32 @@
 {% extends "site_base.html" %}
-{% load i18n pagination_tags  %}
+{% load i18n i18ninclude pagination_tags  %}
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-laws %}class="selected"{% endblock %}
+{% block nav-laws %}class="active"{% endblock %}
 
-{% block content %}
-<h1>{{ title }}</h1>
-<div class="tags cloud">
-    {% autopaginate tags_cloud 200 %}
-    {% for tag in tags_cloud %}
-        <a href="{% url bill-tag tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="level{{ tag.font_size }}">{{ tag }}</a>
-    {% endfor %}
-    {% paginate %}
-</div>
+{% block breadcrumbs %}
+            <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> <span class="divider">/</span></li>
+            <li class="active">{{ title }}</li>
 {% endblock %}
 
-{% block right_column %}
+{% block content %}
+<div class="alert alert-info">
+	 {% i18ninclude "auxiliary/tag_list_help.html" LANGUAGE_CODE %}
+</div>
+
+{% autopaginate tags_cloud 200 %}
+<div class="card">
+    <div class="spacer">
+        <h1>{{ title  }}</h1>
+        <div class="text-center">
+    {% for tag in tags_cloud %}
+        <a href="{% url bill-tag tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
+    {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    {% paginate %}
+</div>
 {% endblock %}

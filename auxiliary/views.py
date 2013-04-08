@@ -1,19 +1,21 @@
 import csv, random, tagging, logging
+from datetime import datetime
 from operator import attrgetter
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext as _
+from django.utils import simplejson as json
 from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseForbidden, HttpResponseRedirect, \
-    HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, Http404
+from django.http import (
+    HttpResponseForbidden, HttpResponseRedirect, HttpResponse,
+    HttpResponseNotAllowed, HttpResponseBadRequest, Http404)
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import BaseListView
-from django.views.generic.list import ListView
+from django.views.generic.list import BaseListView, ListView
 from django.contrib.comments.models import Comment
 from actstream import action
 from actstream.models import Action
@@ -25,6 +27,12 @@ from tagging.models import Tag, TaggedItem
 from annotatetext.views import post_annotation as annotatetext_post_annotation
 from annotatetext.models import Annotation
 from knesset.utils import notify_responsible_adult, main_actions
+from events.models import Event
+from suggestions.models import Suggestion
+from .models import Tidbit
+from .forms import TidbitSuggestionForm
+from .serializers import PromiseAwareJSONEncoder
+
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
 
@@ -33,7 +41,7 @@ def help_page(request):
     if not context:
         context = {}
         context['title'] = _('Help')
-        context['member'] = Member.objects.all()[random.randrange(Member.objects.count())]
+        context['member'] = Member.current_knesset.all()[random.randrange(Member.current_knesset.count())]
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
@@ -78,32 +86,73 @@ def main(request):
          annotation-added (to meeting), ignore annotated (by user)
          comment-added
     """
-    context = cache.get('main_page_context')
-    if not context:
-        context = {}
-        context['title'] = _('Home')
-        #actions = list(main_actions()[:10])
-        #
-        #annotations = get_annotations(
-        #    annotations=[a.target for a in actions if a.verb != 'comment-added'],
-        #    comments=[x.target for x in actions if x.verb == 'comment-added'])
-        #context['annotations'] = annotations
-        #b = get_debated_bills()
-        #if b:
-        #    context['bill'] = get_debated_bills()[0]
-        #else:
-        #    context['bill'] = None
-        #public_agenda_ids = Agenda.objects.filter(is_public=True
-        #                                         ).values_list('id',flat=True)
-        #if len(public_agenda_ids) > 0:
-        #    context['agenda_id'] = random.choice(public_agenda_ids)
-        #context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
-        #                                 .order_by('-modified')\
-        #                                 .select_related('creator')[:10]
-        context['has_search'] = True # disable the base template search
-        cache.set('main_page_context', context, 300) # 5 Minutes
+    #context = cache.get('main_page_context')
+    #if not context:
+    #    context = {
+    #        'title': _('Home'),
+    #        'hide_crumbs': True,
+    #    }
+    #    actions = list(main_actions()[:10])
+    #
+    #    annotations = get_annotations(
+    #        annotations=[a.target for a in actions if a.verb != 'comment-added'],
+    #        comments=[x.target for x in actions if x.verb == 'comment-added'])
+    #    context['annotations'] = annotations
+    #    b = get_debated_bills()
+    #    if b:
+    #        context['bill'] = get_debated_bills()[0]
+    #    else:
+    #        context['bill'] = None
+    #    public_agenda_ids = Agenda.objects.filter(is_public=True
+    #                                             ).values_list('id',flat=True)
+    #    if len(public_agenda_ids) > 0:
+    #        context['agenda_id'] = random.choice(public_agenda_ids)
+    #    context['topics'] = Topic.objects.filter(status__in=PUBLIC_TOPIC_STATUS)\
+    #                                     .order_by('-modified')\
+    #                                     .select_related('creator')[:10]
+    #    cache.set('main_page_context', context, 300) # 5 Minutes
+
+    # did we post the TidbitSuggest form ?
+    if request.method == 'POST':
+        # only logged-in users can suggest
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+
+        form = TidbitSuggestionForm(request.POST)
+        if form.is_valid():
+            form.save(suggested_by=request.user)
+            tidbits_suggestions = \
+                Suggestion.objects.get_pending_suggestions_for(Tidbit).count()
+
+            res = {
+                'success': True,
+                'tidbits_suggestions': tidbits_suggestions,
+            }
+        else:
+            res = {
+                'success': False,
+                'errors': form.errors,
+            }
+
+        return HttpResponse(
+            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
+            mimetype='application/json')
+
+    NUMOF_EVENTS = 5
+    events = Event.objects.get_upcoming()
+    context = {
+        'title': _('Home'),
+        'hide_crumbs': True,
+        'is_index': True,
+        'tidbits': Tidbit.active.all().order_by('?'),
+        'suggestion_forms': {'tidbit': TidbitSuggestionForm()},
+        'events': events[:NUMOF_EVENTS],
+        'events_more': events.count() > NUMOF_EVENTS,
+    }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
-    return render_to_response(template_name, context, context_instance=RequestContext(request))
+    return render_to_response(template_name, context,
+                              context_instance=RequestContext(request))
+
 
 def post_annotation(request):
     if request.user.has_perm('annotatetext.add_annotation'):
@@ -123,9 +172,10 @@ def search(request, lang='he'):
         'query': request.GET.get('q'),
         'query_string': mutable_get.urlencode(),
         'has_search': True,
-        'lang' : lang,
-        'cx': request.GET.get('cx')
+        'lang': lang,
+        'cx': settings.GOOGLE_CUSTOM_SEARCH,
     }))
+
 
 def post_details(request, post_id):
     ''' patching django-planet's post_detail view so it would update the
@@ -265,6 +315,10 @@ class TagDetail(DetailView):
         Create tag could for tag <tag>. Returns only the <limit> most tagged members
         """
 
+        try:
+            mk_limit = int(self.request.GET.get('limit',limit))
+        except ValueError:
+            mk_limit = limit
         mk_taggeds = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag)]
         mk_taggeds += [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag)]
         mk_taggeds += [cm.mks_attended.all() for cm in TaggedItem.objects.get_by_model(CommitteeMeeting, tag)]
@@ -273,7 +327,7 @@ class TagDetail(DetailView):
             for p in tagged:
                 d[p] = d.get(p,0)+1
         # now d is a dict: MK -> number of tagged in Bill, Vote and CommitteeMeeting in this tag
-        mks = dict(sorted(d.items(),lambda x,y:cmp(y[1],x[1]))[:limit])
+        mks = dict(sorted(d.items(),lambda x,y:cmp(y[1],x[1]))[:mk_limit])
         # Now only the most tagged are in the dict (up to the limit param)
         for mk in mks:
             mk.count = d[mk]
@@ -357,3 +411,51 @@ class CsvView(BaseListView):
         directs it to decode the file with utf-8.
         """
         fileobj.write('\xef\xbb\xbf')
+
+
+class GetMoreView(ListView):
+    """A base view for feeding data to 'get more...' type of links
+
+    Will return a json result, with partial of rendered template:
+    {
+        "content": "....",
+        "current": current_patge number
+        "total": total_pages
+        "has_next": true if next page exists
+    }
+    We'll paginate the response. Since Get More link targets may already have
+    initial data, we'll look for `initial` GET param, and take it into
+    consdiration, completing to page size.
+    """
+
+    def get_context_data(self, **kwargs):
+        ctx = super(GetMoreView, self).get_context_data(**kwargs)
+        try:
+            initial = int(self.request.GET.get('initial', '0'))
+        except ValueError:
+            initial = 0
+
+        # initial only affects on first page
+        if ctx['page_obj'].number > 1 or initial >= self.paginate_by - 1:
+            initial = 0
+
+        ctx['object_list'] = ctx['object_list'][initial:]
+        return ctx
+
+    def render_to_response(self, context, **response_kwargs):
+        """We'll take the rendered content, and shove it into json"""
+
+        tmpl_response = super(GetMoreView, self).render_to_response(
+            context, **response_kwargs).render()
+
+        page = context['page_obj']
+
+        result = {
+            'content': tmpl_response.content,
+            'total': context['paginator'].num_pages,
+            'current': page.number,
+            'has_next': page.has_next(),
+        }
+
+        return HttpResponse(json.dumps(result, ensure_ascii=False),
+                            content_type='application/json')

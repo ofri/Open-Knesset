@@ -13,7 +13,7 @@ from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
-from models import Law, Bill, Vote
+from models import Law, Bill, Vote, VoteAction, PrivateProposal
 
 from simple.management.commands.syncdata_globals import p_explanation
 
@@ -24,18 +24,38 @@ class LawResource(BaseResource):
         queryset = Law.objects.all()
         allowed_methods = ['get']
 
+class VoteActionResource(BaseResource):
+    class Meta(BaseResource.Meta):
+        queryset = VoteAction.objects.all()
+        allowed_methods = ['get']
+        excludes = ['type','id']
+        include_resource_uri = False
+
+    vote_type = fields.CharField('type',null=True)
+    member = fields.ToOneField(MemberResource,
+                              'member',
+                              full=False)
+
 class VoteResource(BaseResource):
+
     class Meta(BaseResource.Meta):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
-        exclude_from_list_view = ['members',]
-        filtering = dict(member = ALL,
-                         member_for = ALL,
-                         member_against = ALL)
+        list_fields = [
+            'time', 'title', 'votes_count', 'for_votes_count',
+            'against_votes_count', 'meeting_number', 'vote_number',
+            'importance', 'controversy', 'against_party ', 'against_coalition',
+            'against_opposition', 'against_own_bill',
+        ]
+        filtering = dict(member=ALL,
+                         member_for=ALL,
+                         member_against=ALL)
 
-    members = fields.ToManyField(MemberResource,
-                    'votes',
-                    full=False)
+    votes = fields.ToManyField(VoteActionResource,
+                    attribute=lambda bundle:VoteAction.objects.filter(
+                                    vote=bundle.obj).select_related('member'),
+                    null=True,
+                    full=True)
 
     def build_filters(self, filters={}):
         orm_filters = super(VoteResource, self).build_filters(filters)
@@ -50,16 +70,25 @@ class VoteResource(BaseResource):
 
         return orm_filters
 
+
+class PrivateProposalResource(BaseResource):
+    class Meta(BaseResource.Meta):
+        queryset = PrivateProposal.objects.all()
+        allowed_methods = ['get']
+
+
 class BillResource(BaseResource):
     ''' Bill API '''
+
     class Meta(BaseResource.Meta):
         queryset = Bill.objects.all()
         allowed_methods = ['get']
-        # excludes = ['stage']
         ordering = ['stage_date', 'title']
-        filtering = dict(stage = ALL, proposer = ALL)
-        exclude_from_list_view = ['proposers', 'explanation', 'legal_code',
-        'pre_votes', 'first_vote', 'approval_vote']
+        filtering = dict(stage=ALL, proposer=ALL)
+        list_fields = [
+            'title', 'full_title', 'popular_name', 'law', 'stage',
+            'stage_date'
+        ]
         include_absolute_url = True
         limit = 20
 
@@ -82,6 +111,10 @@ class BillResource(BaseResource):
                     'approval_vote',
                     null=True,
                     full=False)
+    proposals = fields.ToManyField(PrivateProposalResource,
+                                   'proposals',
+                                   null=True,
+                                   full=True)
 
 
     def dehydrate_explanation(self, bundle):

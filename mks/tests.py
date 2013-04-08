@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from actstream import follow,action
 from actstream.models import Action
-from mks.models import Member, Party, Membership, MemberAltname
+from mks.models import Member, Party, Membership, MemberAltname, Knesset
 from mks.views import MemberListView
 from laws.models import Law,Bill,PrivateProposal,Vote,VoteAction
 from committees.models import CommitteeMeeting,Committee
@@ -36,8 +36,11 @@ class MemberViewsTest(TestCase):
 
         cache.clear()
 
-        self.party_1 = Party.objects.create(name='party 1')
-        self.party_2 = Party.objects.create(name='party 2')
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1',
+                                            knesset=self.knesset)
+        self.party_2 = Party.objects.create(name='party 2',
+                                            knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1,
@@ -70,11 +73,13 @@ class MemberViewsTest(TestCase):
 
     def testMemberList(self):
         res = self.client.get(reverse('member-list'))
+        self.assertEqual(res.status_code, 301)
+
+        res = self.client.get(reverse('member-stats', kwargs={'stat_type': 'bills_pre'}))
         self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'mks/member_list_with_bars.html')
+        self.assertTemplateUsed(res, 'mks/member_list.html')
         object_list = res.context['object_list']
-        self.assertItemsEqual(map(just_id, object_list),
-                         [ self.mk_1.id, self.mk_2.id, ])
+        self.assertItemsEqual(map(just_id, object_list), [self.mk_1.id, self.mk_2.id])
 
     def testMemberDetail(self):
         res = self.client.get(reverse('member-detail', args=[self.mk_1.id]))
@@ -105,12 +110,14 @@ class MemberViewsTest(TestCase):
         self.assertEqual(map(lambda x:x['id'], p), [self.mk_1.id])
 
     def testPartyList(self):
+        # party list should redirect to stats by seat
         res = self.client.get(reverse('party-list'))
-        self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res, 'mks/party_list.html')
-        object_list = res.context['object_list']
-        self.assertEqual(map(just_id, object_list),
-                         [ self.party_1.id, self.party_2.id, ])
+        self.assertRedirects(res, reverse('party-stats', kwargs={'stat_type': 'seats'}), 301)
+
+        #self.assertTemplateUsed(res, 'mks/party_list.html')
+        #object_list = res.context['object_list']
+        #self.assertEqual(map(just_id, object_list),
+        #                 [ self.party_1.id, self.party_2.id, ])
 
     def testPartyDetail(self):
         res = self.client.get(reverse('party-detail',
@@ -458,7 +465,9 @@ from agendas.models import Agenda, AgendaVote
 class MKAgendasTest(TestCase):
 
     def setUp(self):
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1,
+                       knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)

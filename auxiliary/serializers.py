@@ -1,5 +1,8 @@
 from django.core.serializers.xml_serializer import Serializer as XmlSerializer
-from django.utils.encoding import smart_unicode
+from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.encoding import smart_unicode, force_unicode
+from django.utils.functional import Promise
+
 
 class Serializer(XmlSerializer):
     """Extends XmlSerializer and hides sensitive data. That way we can provide
@@ -21,7 +24,6 @@ class Serializer(XmlSerializer):
 
         super(Serializer, self).start_object(obj)
 
-
     def handle_field(self, obj, field):
         """Special case models with sensitive data"""
 
@@ -33,7 +35,7 @@ class Serializer(XmlSerializer):
                 ('username', 'email', 'first_name', 'last_name'):
             uid = 'user_%s' % obj.pk
             if field_name == 'email':
-               value = '%s@example.com' % uid
+                value = '%s@example.com' % uid
             else:
                 value = uid
         else:
@@ -42,3 +44,11 @@ class Serializer(XmlSerializer):
 
         setattr(obj, field_name, value)
         super(Serializer, self).handle_field(obj, field)
+
+
+class PromiseAwareJSONEncoder(DjangoJSONEncoder):
+
+    def default(self, o):
+        if isinstance(o, Promise):
+            return force_unicode(o)
+        return super(PromiseAwareJSONEncoder, self).default(o)

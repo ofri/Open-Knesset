@@ -1,0 +1,105 @@
+// Scaffolding
+// -------------------------
+@bodyBackground:        @backgroundColor; 
+@baseFontFamily:        @alefFontFamily;
+
+@font-face{
+  font-family: 'Alef';
+  src: url('../font/Alef-regular.eot');
+  src: url('../font/Alef-regular.eot?#iefix')
+       format('embedded-opentype'),
+       url('../font/Alef-regular.woff') format('woff'),
+       url('../font/Alef-regular.ttf') format('truetype'),
+       url('../font/Alef-regular.svg#webfont') format('svg');
+}
+
+body {
+  text-align: right;
+  direction: rtl;
+  margin-top: 20px;
+}
+
+.row {
+  div[class*='span'] {
+    .spacer {
+      // border-right: 1px solid black;
+      margin: 12px 0px;
+    }
+  }
+  div[class*='span']:first-child {
+    .spacer {
+      // border-right: 0;
+      margin-right: 12px;
+    }
+  }
+  div[class*='span']:last-child .spacer {
+    margin-left: 12px;
+  }
+
+}
+.spacer {
+  margin: 12px;
+}
+
+.fill {
+  height: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.numeric { direction: ltr;  }
+
+.progress {
+  position: relative;
+  .bar-label {
+    position: absolute;
+    top: 0; bottom: 0; left:0; right:0;
+    text-align: center;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow: -1px -1px 0 rgba(0,0,0,0.5),  
+                 1px -1px  0 rgba(0,0,0,0.5),
+                 -1px 1px  0 rgba(0,0,0,0.5),
+                 1px 1px   0 rgba(0,0,0,0.5);
+  }
+}
+
+
+form .helptext {
+  color: #3A87AD;  /* Use bootstrap's text-info color */
+}
+
+/* fix for carousel scroller */
+.carousel-inner > .item {
+    transition: right 0.6s ease-in-out 0s;
+    -webkit-transition: right 0.6s ease-in-out 0s;
+    -moz-transition: right 0.6s ease-in-out 0s;
+    -o-transition: right 0.6s ease-in-out 0s;
+}
+
+
+.carousel-indicators {
+    list-style: none outside none;
+    margin: 0;
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    z-index: 5;
+
+    li {
+      background-color: rgba(0, 0, 0, 0.25);
+      border-radius: 5px 5px 5px 5px;
+      display: block;
+      float: right;
+      height: 10px;
+      margin-left: 5px;
+      text-indent: -999px;
+      width: 10px;
+
+      &.active {
+        background-color: rgba(0, 0, 0, 0.75);
+      }
+    }
+}

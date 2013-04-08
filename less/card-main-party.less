@@ -1,0 +1,171 @@
+.card-main-party {
+	margin-bottom: 10px;
+
+	[class*='span']{
+		min-height: 144px;
+		position: relative;
+
+		&+[class*='span']::before{
+			content: '';
+			display: block;
+			width:1px;
+			background: @borderColor;
+			position: absolute;
+			top:0;
+			bottom:-15px;
+			right:-15px;
+		}
+	}
+
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		li {
+			display: inline-block;
+		}
+	}
+
+	.card-details {
+		.spacer{
+			padding-right: 5px;
+		}
+	
+		.social-links{
+			bottom:10px;
+		}
+
+		.links {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+
+			li + li{
+				padding-right: 15px;
+				&::before {
+					content: '';
+					width:6px;
+					height:6px;
+					display: inline-block;
+					background: @textColor;
+					.border-radius(50%);
+					position: relative;
+					right:-10px;
+					top:-1px;
+				}
+			}
+		}
+	}
+		
+	.btn-contact{
+		position: absolute;
+		bottom: 10px;
+		left: 30px;
+		width: 322px;
+	}
+}
+
+
+.card-party-members {
+	margin-bottom: 35px;
+	
+	> div {
+		margin: 9px;
+    
+	}
+		
+  .party-member-photo {
+    position: relative;
+    height: 80px;
+    width: 60px;
+    display: inline-block;
+    margin: 9px;
+    
+    .party-member-extra {
+      font-size: 12px;
+      text-align: center;
+      p, div {margin: 0;}
+     }
+
+     
+    .party-member-info {
+      .card;
+      @media only screen and (max-width : 1223px) {
+        display: none;
+      }
+      visibility: hidden;
+      opacity: 0;
+      z-index: -1;
+      position: absolute;
+      top: 90px;
+      right: -150px;
+      width: 355px;
+      height: 198px;
+      
+      .party-member-info-photo {
+        position: absolute;
+        border: 1px solid @borderColor;
+        height: 172px;
+        width: 130px;
+        top: 14px;
+        right: 10px;
+        background: white url("../img/ajax-loader.gif") 50% 50% no-repeat;
+
+        img { width: 100%; height:100%; }
+      }
+      
+      .party-member-info-text {
+        height: 140px;
+        border-bottom: 1px solid @borderColor;
+        padding-right: 160px;
+
+        h3 { font-size: 16px; font-weight: 700	}
+      }
+      
+      .party-member-info-links {
+        height: 46px;
+        background: @lightergray;
+        padding-right: 160px;
+        overflow: hidden;
+
+        ul { margin-top:7px; }
+        li {  padding:0; border: 0 none;}
+      }
+    }
+    
+    &:hover .party-member-info {
+      @media only screen and (min-width : 1224px) {
+        z-index: 100;
+        opacity: 1;
+        visibility: visible;
+        transition: visibility 0.3s linear, opacity 0.3s linear;
+        transition-delay: 0.4s;
+        -moz-transition-delay: 0.4s; /* Firefox 4 */
+        -webkit-transition-delay: 0.4s; /* Safari and Chrome */
+        -o-transition-delay: 0.4s; /* Opera */
+        .box-shadow(0 5px 10px rgba(0,0,0,.2));
+      }
+    }
+    
+  }
+
+  .party-member-name {
+        position: absolute;
+        bottom: -7px;
+        left: 3px;
+        color: white;
+        line-height: 13px;
+        font-size: 13px;
+        text-align: left;
+        font-weight: bold;
+        text-shadow: -1px -1px 0 rgba(0,0,0,0.5),  
+                     1px -1px 0 rgba(0,0,0,0.5),
+                     -1px 1px 0 rgba(0,0,0,0.5),
+                     1px 1px 0 rgba(0,0,0,0.5);
+   }
+
+}
+
+
+

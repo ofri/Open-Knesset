@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Group, Permission
 from tagging.models import Tag, TaggedItem
 from laws.models import Vote, VoteAction, Bill, Law
-from mks.models import Member,Party,WeeklyPresence
+from mks.models import Member, Party, WeeklyPresence, Knesset
 from agendas.models import Agenda
 from committees.models import Committee
 from events.models import Event
@@ -34,8 +34,11 @@ class ApiViewsTest(TestCase):
 
     def setUp(self):
         cache.cache.clear()
+        Knesset.objects._current_knesset=None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.party_1 = Party.objects.create(name='party 1')
+        self.knesset = Knesset.objects.create(number=1)
+
+        self.party_1 = Party.objects.create(name='party 1', knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
         self.voteactions = []
@@ -73,7 +76,7 @@ class ApiViewsTest(TestCase):
                                           stage_date=datetime.date.today()-datetime.timedelta(10),
                                           title='bill 4',
                                           law=self.law_1)
-        
+
         # add user votings for the bills
         self.users = []
         for i in xrange(4):
@@ -155,7 +158,7 @@ class ApiViewsTest(TestCase):
         res_json = json.loads(res.content)
         self.assertEqual(len(res_json), 1)
         self.assertEqual(len(res_json[0]['proposing_mks']), 1)
-        
+
     def test_api_bill_list_popular_without_type(self):
         res = self.client.get(reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
@@ -165,7 +168,7 @@ class ApiViewsTest(TestCase):
                          set([u"%s, %s" % (self.bill_1.law.title, self.bill_1.title),
                              u"%s, %s" % (self.bill_3.law.title, self.bill_3.title)]))
         self.assertEqual(res_json[2]['bill_title'], u"%s, %s" % (self.bill_2.law.title, self.bill_2.title))
-    
+
     def test_api_bill_list_popular_with_type(self):
         res = self.client.get('%s?type=positive' % reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
@@ -173,7 +176,7 @@ class ApiViewsTest(TestCase):
         self.assertEqual(len(res_json), 2)
         self.assertEqual(res_json[0]['bill_title'], u"%s, %s" % (self.bill_1.law.title, self.bill_1.title))
         self.assertEqual(res_json[1]['bill_title'], u"%s, %s" % (self.bill_2.law.title, self.bill_2.title))
-        
+
         res = self.client.get('%s?type=negative' % reverse('popular-bills-handler',kwargs={'popular': True}))
         self.assertEqual(res.status_code, 200)
         res_json = json.loads(res.content)

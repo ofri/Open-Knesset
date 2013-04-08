@@ -1,0 +1,30 @@
+{% load static from staticfiles %}
+{% load links_tags %}
+{% for person in persons %}
+    <div class="person-card">
+      <a href="{{person.get_absolute_url}}">
+        <div class="person-avatar">
+          {% if person.img_url %}
+            <img src="{{person.img_url}}">
+          {% else %}
+            <img src="{% static "img/default-avatar.png" %}">
+          {% endif %}
+        </div>
+        <h3>{{person.name}}</h3>
+      </a>
+      <div class="person-info">
+        <div class="person-info-text">
+          <h3><a href="{{person.get_absolute_url}}">{{person.name}}</a></h3>
+            <p>{{person.get_role}}</p>
+        </div>
+        <div class="person-info-links">
+           <ul>
+             {% object_icon_links person %}
+           </ul>
+        </div>
+        <div class="person-info-photo">
+          <img src="{{person.img_url}}">
+        </div>
+      </div>
+    </div>
+{% endfor %}

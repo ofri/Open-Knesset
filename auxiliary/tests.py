@@ -7,20 +7,88 @@ from django.contrib.sites.models import Site
 from django.utils import translation
 from django.conf import settings
 from tagging.models import Tag,TaggedItem
-from laws.models import Vote, VoteAction, Bill
-from mks.models import Member,Party,WeeklyPresence
+from laws.models import Vote, VoteAction, Bill, Law
+from mks.models import Member,Party,WeeklyPresence,Knesset
+from committees.models import Committee
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
 from django.utils import simplejson as json
 from auxiliary.views import CsvView
+from django.core import cache
+
+class TagResourceTest(TestCase):
+
+    def setUp(self):
+        cache.cache.clear()
+        self.tags = []
+        self.tags.append(Tag.objects.create(name = 'tag1'))
+        self.tags.append(Tag.objects.create(name = 'tag2'))
+        self.tags.append(Tag.objects.create(name = 'tag3'))
+
+        self.vote = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
+        ctype = ContentType.objects.get_for_model(Vote)
+        TaggedItem._default_manager.get_or_create(tag=self.tags[0], content_type=ctype, object_id=self.vote.id)
+        TaggedItem._default_manager.get_or_create(tag=self.tags[1], content_type=ctype, object_id=self.vote.id)
+        self.law = Law.objects.create(title='law 1')
+        self.bill = Bill.objects.create(stage='1',
+                                          stage_date=datetime.date.today(),
+                                          title='bill 1',
+                                          law=self.law)
+        self.bill2 = Bill.objects.create(stage='2',
+                                          stage_date=datetime.date.today(),
+                                          title='bill 2',
+                                          law=self.law)
+        Tag.objects.add_tag(self.bill, 'tag1')
+        Tag.objects.add_tag(self.bill2, 'tag3')
+
+    def _reverse_api(self, name, **args):
+        args.update(dict(api_name='v2', resource_name='tag'))
+        return reverse(name, kwargs=args)
+
+    def test_api_tag_list(self):
+        res = self.client.get(self._reverse_api('api_dispatch_list'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 3)
+        self.assertEqual(set([x['name'] for x in res_json]), set(Tag.objects.values_list('name',flat=True)))
+
+    def test_api_tag(self):
+        res = self.client.get(self._reverse_api('api_dispatch_detail', pk = self.tags[0].id))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json['name'], self.tags[0].name)
+
+    def test_api_tag_not_found(self):
+        res = self.client.get(self._reverse_api('api_dispatch_detail', pk = 12345))
+        self.assertEqual(res.status_code, 404)
+
+    def test_api_tag_for_vote(self):
+        res = self.client.get(self._reverse_api('tags-for-object', app_label='laws',
+                                                object_type='vote', object_id=self.vote.id))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 2)
+
+    def test_api_related_tags(self):
+        res = self.client.get(self._reverse_api('related-tags', app_label='laws',
+                                                object_type='law', object_id=self.law.id, related_name='bills'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)['objects']
+        self.assertEqual(len(res_json), 2)
+        received_tags = set(Tag.objects.get(pk=x) for x in (res_json[0]['id'], res_json[1]['id']))
+        self.assertEqual(received_tags, set([self.tags[0], self.tags[2]]))
 
 class InternalLinksTest(TestCase):
 
     def setUp(self):
+        Knesset.objects._current_knesset = None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4)
+        self.knesset = Knesset.objects.create(number=1)
+        self.party_1 = Party.objects.create(name='party 1', number_of_seats=4,
+                                            knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
         self.mks = []
+        self.plenum = Committee.objects.create(name='Plenum',type='plenum')
         self.voteactions = []
         self.num_mks = 4
         for i in range(self.num_mks):
@@ -54,13 +122,18 @@ class InternalLinksTest(TestCase):
         looks for links, and makes sure all internal pages return HTTP200
         """
         from django.conf import settings
-        print settings.DEBUG
         translation.activate(settings.LANGUAGE_CODE)
         visited_links = set()
 
         test_pages = [reverse('main'), reverse('vote-list'),
-                      reverse('bill-list'), reverse('member-list'),
-                      reverse('party-list')]
+                      reverse('bill-list'),
+                      reverse('parties-members')]
+
+        redirects = [
+            reverse('party-list'), reverse('member-list'),
+
+        ]
+
         for page in test_pages:
 
             links_to_visit = []
@@ -87,7 +160,11 @@ class InternalLinksTest(TestCase):
             while links_to_visit:
                 link = links_to_visit.pop()
                 res0 = self.client.get(link)
-                self.assertEqual(res0.status_code, 200, msg="internal link %s from page %s seems to be broken" % (link,page))
+
+                if link in redirects:
+                    self.assertEqual(res0.status_code, 301, msg="internal redirect %s from page %s seems to be broken" % (link,page))
+                else:
+                    self.assertEqual(res0.status_code, 200, msg="internal link %s from page %s seems to be broken" % (link,page))
                 visited_links.add(link)
 
         # generate a txt file report of the visited links. for debugging the test

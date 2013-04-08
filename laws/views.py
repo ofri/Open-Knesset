@@ -1,5 +1,5 @@
 #encoding: utf-8
-import urllib, urllib2, difflib, logging, datetime
+import urllib, urllib2, difflib, logging, datetime, os
 from time import mktime
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
@@ -16,6 +16,8 @@ from django.template import loader, RequestContext
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
+from django.core.files.storage import default_storage
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from tagging.models import Tag, TaggedItem
 from tagging.views import tagged_object_list
@@ -29,7 +31,7 @@ from tagvotes.models import TagVote
 from hashnav import DetailView, ListView
 from agendas.models import Agenda,UserSuggestedVote
 from auxiliary.views import CsvView
-from forms import VoteSelectForm, BillSelectForm
+from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
 from models import *
 
 logger = logging.getLogger("open-knesset.laws.views")
@@ -176,7 +178,8 @@ def votes_to_bar_widths(v_count, v_for, v_against):
 
 class BillCsvView(CsvView):
     model = Bill
-    filename = 'bills.csv'
+    file_path_and_name = ['csv','bills.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('full_title', _('Full Title')),
                     ('popular_name', _('Popular Name')),
                     ('get_stage_display', _('Stage')),
@@ -188,28 +191,42 @@ class BillCsvView(CsvView):
                     ('approval_vote', _('Approval Vote')),
                     ('proposers', _('Proposers')),
                     ('joiners', _('Joiners')))
-    
+
+    def get_queryset(self, **kwargs):
+        try:
+            return self.model.objects.select_related('law',
+                                                     'first_vote',
+                                                     'approval_vote')\
+                                     .prefetch_related('joiners',
+                                                       'proposers',
+                                                       'pre_votes',
+                                                       'first_committee_meetings',
+                                                       'second_committee_meetings')
+        except DatabaseError: # sqlite can't prefetch this query, because it has
+                              # too many objects
+            return self.model.objects.all()
+
     def community_meeting_gen(self, obj, attr):
         '''
         A helper function to compute presentation of community meetings url list, space separated
         : param obj: The object instance
         : param attr: The object attribute
-        
+
         : return : A string with the urls comma-separated
         '''
         host = self.request.build_absolute_uri("/")
         return " ".join(host + row.get_absolute_url() for row in getattr(obj, attr).all())
-    
+
     def members_gen(self, obj, attr):
         '''
         A helper function to compute presentation of members, comma separated
         : param obj: The object instance
         : param attr: The object attribute
-        
+
         : return : A string with the urls comma-separated
         '''
         return ", ".join(row.name for row in getattr(obj, attr).all())
-    
+
     def proposers(self, obj, attr):
         return self.members_gen(obj ,attr)
 
@@ -218,16 +235,21 @@ class BillCsvView(CsvView):
 
     def first_committee_meetings(self, obj, attr):
         return self.community_meeting_gen(obj, attr)
-    
+
     def second_committee_meetings(self, obj, attr):
         return self.community_meeting_gen(obj, attr)
-    
+
     def pre_votes(self, obj, attr):
         return self.community_meeting_gen(obj, attr)
-    
+
+
 class BillDetailView (DetailView):
     allowed_methods = ['get', 'post']
     model = Bill
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(BillDetailView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
         try:
@@ -297,6 +319,13 @@ class BillDetailView (DetailView):
         context['party_voting_score'] = party_voting_score
         context['user_party_voting_score'] = user_party_voting_score
         context['tags'] = list(bill.tags)
+        context['budget_ests'] = list(bill.budget_ests.all())
+        if self.request.user:
+            context['user_has_be'] = bill.budget_ests.filter(estimator__username=str(self.request.user)).count()
+        if 'budget_ests_form' in kwargs:
+            context['budget_ests_form'] = kwargs['budget_ests_form']
+        else:
+            context['budget_ests_form'] = BudgetEstimateForm(bill,self.request.user)
         return context
 
     @method_decorator(login_required)
@@ -306,27 +335,67 @@ class BillDetailView (DetailView):
         if not object_id:
             return HttpResponseBadRequest()
 
-
-        vote = None
         bill = get_object_or_404(Bill, pk=object_id)
         user_input_type = request.POST.get('user_input_type')
-        if user_input_type == 'approval vote':
+        vote_types = ['approval vote','first vote','pre vote']
+        if user_input_type in vote_types:
+            i = vote_types.index(user_input_type)
             vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.approval_vote = vote
+            if i == 0:
+                bill.approval_vote = vote
+            elif i == 1:
+                bill.first_vote = vote
+            elif i == 2:
+                bill.pre_votes.add(vote)
+            else:
+                #FIXME: maybe different response.
+                return HttpResponseRedirect(".")
             bill.update_stage()
-        if user_input_type == 'first vote':
-            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.first_vote = vote
-            bill.update_stage()
-        if user_input_type == 'pre vote':
-            vote = Vote.objects.get(pk=request.POST.get('vote_id'))
-            bill.pre_votes.add(vote)
-            bill.update_stage()
+            action.send(request.user, verb='added-vote-to-bill',
+                    description=vote,
+                    target=bill,
+                    timestamp=datetime.datetime.now())
+        elif user_input_type == 'budget_est':
+            try:
+                budget_est = BillBudgetEstimation.objects.get(bill=bill,estimator=request.user)
+            except BillBudgetEstimation.DoesNotExist:
+                budget_est = BillBudgetEstimation(bill=bill,estimator=request.user)
+            #FIXME: breakage! sanitize!
+            form = BudgetEstimateForm(bill,request.user,request.POST)
+            if form.is_valid():
+                budget_est.one_time_gov = form.cleaned_data['be_one_time_gov']
+                budget_est.yearly_gov = form.cleaned_data['be_yearly_gov']
+                budget_est.one_time_ext = form.cleaned_data['be_one_time_ext']
+                budget_est.yearly_ext = form.cleaned_data['be_yearly_ext']
+                budget_est.summary = form.cleaned_data['be_summary']
+                budget_est.save()
+            else:
+                return self.get(request,budget_ests_form=form)
+            #botg = request.POST.get('be_one_time_gov')
+            #byg = request.POST.get('be_yearly_gov')
+            #bote = request.POST.get('be_one_time_ext')
+            #bye = request.POST.get('be_yearly_ext')
+            #bs = request.POST.get('be_summary')
+            #budget_est.one_time_gov = int(botg) if botg != "" else None
+            #budget_est.yearly_gov = int(byg) if byg != "" else None
+            #budget_est.one_time_ext = int(bote) if bote != "" else None
+            #budget_est.yearly_ext = int(bye) if bye != "" else None
+            #budget_est.summary = bs if bs != "" else None
+        elif user_input_type == 'change_bill_name':
+            if request.user.has_perm('laws.change_bill') and 'bill_name' in request.POST.keys():
+                new_title = request.POST.get('bill_name')
+                new_popular_name = request.POST.get('popular_name')
+                logger.info('user %d is updating bill %s. new_title=%s, new_popular_name=%s' %
+                                (request.user.id,object_id, new_title,
+                                 new_popular_name))
+                Bill.objects.filter(pk=object_id).update(title=new_title, full_title=new_title,
+                                                         popular_name=new_popular_name)
+            else:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseBadRequest()
 
-        action.send(request.user, verb='added-vote-to-bill',
-                description=vote,
-                target=bill,
-                timestamp=datetime.datetime.now())
+
         return HttpResponseRedirect(".")
 
 _('added-vote-to-bill')
@@ -362,18 +431,9 @@ def bill_unbind_vote(request, object_id, vote_id):
         return render_to_response("laws/bill_unbind_vote.html", context)
 
 
-class BillListView (ListView):
 
-    friend_pages = [
-            ('stage','all',_('All stages')),
-    ]
-    friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
-
-    bill_stages_names = { 'proposed':_('(Bills) proposed'),
-                          'pre':_('(Bills) passed pre-vote'),
-                          'first':_('(Bills) passed first vote'),
-                          'approved':_('(Bills) approved'),
-                        }
+class BillListMixin(object):
+    """Mixin for using both bill index index and "more" views"""
 
     def get_queryset(self):
 
@@ -400,6 +460,21 @@ class BillListView (ListView):
         form = BillSelectForm(self.request.GET) if self.request.GET \
                 else BillSelectForm()
         return form
+
+
+class BillListView (BillListMixin, ListView):
+
+    friend_pages = [
+        ('stage','all',_('All stages')),
+    ]
+    friend_pages.extend([('stage',x[0],_(x[1])) for x in BILL_STAGE_CHOICES])
+
+    bill_stages_names = {
+        'proposed':_('(Bills) proposed'),
+        'pre':_('(Bills) passed pre-vote'),
+        'first':_('(Bills) passed first vote'),
+        'approved':_('(Bills) approved'),
+    }
 
     def get_context(self):
         context = super(BillListView, self).get_context()
@@ -429,7 +504,15 @@ class BillListView (ListView):
 
         context['friend_pages'] = r
         context['form'] = self._get_filter_form()
+        context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = BillCsvView.filename if default_storage.exists(BillCsvView.filename) else None
         return context
+
+
+class BillMoreView(BillListMixin):
+    "TODO: Implement me once bills is converted from pagination to get more"
+    pass
+
 
 class VoteListView(ListView):
 
@@ -459,12 +542,14 @@ class VoteListView(ListView):
 
         context['form'] = self._get_filter_form()
         context['query_string'] = self.request.META['QUERY_STRING']
+        context['csv_file'] = VoteCsvView.filename if default_storage.exists(VoteCsvView.filename) else None
         return context
 
 
 class VoteCsvView(CsvView):
     model = Vote
-    filename = 'votes.csv'
+    file_path_and_name = ['csv','votes.csv']
+    filename = os.path.join(*file_path_and_name)
     list_display = (('title', _('Title')),
                     ('vote_type', _('Vote Type')),
                     ('time', _('Time')),
@@ -485,7 +570,6 @@ class VoteCsvView(CsvView):
             options = {}
 
         return Vote.objects.filter_and_order(**options)
-
 
 class VoteDetailView(DetailView):
     model = Vote

@@ -1,31 +1,59 @@
 {% extends "site_base.html" %}
 {% load i18n laws_tags %}
 {% block extratitle %}{{ title }}{% endblock %}
-{% block keywords %}{{ title }}{% endblock %}
-{% block description %}{{ title }} - {% endblock %}
-{% block nav-committees %}class="selected"{% endblock %}
-{% block divcontent %}
-    <div class="datelookup">{% trans 'Lookup by date' %}
-    <input type="text" id="datelookup_input" value="{{ object_list.0.date }}"/>
-    <input type="submit" id="datelookup_submit" value="{% trans 'Submit' %}"/>
+
+{% block extrajs %}
     <script>
         $('#datelookup_submit').click(function(){
-                                                 var d = $('#datelookup_input').val();                                                     
-                                                 if (d){
-                                                        window.location = '{% url committee-meetings-by-date committee_id %}' +d + '/';
-                                                 }
-                                             });
+            var d = $('#datelookup_input').val();
+            if (d){
+                window.location = '{% url committee-meetings-by-date committee_id "1970-1-1" %}'.replace('1970-1-1', d);
+            }
+        });
     </script>
+{% endblock %}
+
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+
+{% block nav-committees %}{% ifnotequal committee.type 'plenum' %}class="active"{% endifnotequal %}{% endblock %}
+{% block nav-plenum %}{% ifequal committee.type 'plenum' %}class="active"{% endifequal %}{% endblock %}
+
+
+{% block breadcrumbs %}
+        {% ifnotequal committee.type 'plenum' %}
+            <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+        {% endifnotequal %}
+        <li><a href="{{ committee.get_absolute_url }}">{{ committee }}</a> <span class="divider">/</span></l1>
+        <li class="active">{% trans "All meetings" %}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="span8 cards">
+            <section class="card card-list">
+                <header><h1>{{ title }}</h1></header>
+                <ul>
+                    {% for o in object_list %}
+                        {% include "committees/_meeting_li.html" with add_li=1%}
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+        {% ifnotequal committee_type 'plenum' %}
+            <div class="span4">
+                <aside class="sidebar">
+                    <h2>{% trans 'Lookup by date' %}</h2>
+                    <p>
+                        <input type="text" id="datelookup_input" value="{{ object_list.0.date|date:"Y-m-d" }}"/>
+                        <input class="btn" type="submit" id="datelookup_submit" value="{% trans "Submit" %}"/>
+                    </p>
+                </aside>
+            </div>
+        {% endifnotequal %}
     </div>
-    <h2>{{ title }}</h2>
-    <div class="clear"></div>
-	<ul class="item-list">
-        {% for o in object_list %}
-            {% include "committees/_meeting_li.html" %}
-        {% endfor %}
-	</ul> 
+    </div>
     {% if page_obj %}
         {% pagination page_obj paginator request %}
     {% endif %}
-      
 {% endblock %}

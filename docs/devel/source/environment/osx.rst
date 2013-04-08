@@ -6,7 +6,7 @@ OS X
 
     The info here is based on the post
     `Fixing Python, virtualenv and pip on Mountain Lion`_
-    
+
 .. _Fixing Python, virtualenv and pip on Mountain Lion: http://blog.dyve.net/fixing-python-virtualenv-and-pip-on-mountain
 
 Command Line Tools
@@ -39,7 +39,7 @@ Install binary python libraries build dependencies:
 
     brew install jpeg libpng libxml2 libxslt
     
-Add locale settings (in case you're not UTF-8), put in your ``~/.bashrc``:
+Add locale settings (in case you're not UTF-8), put in your ``~/.profile``:
 
 
 .. code-block:: bash
@@ -57,7 +57,7 @@ And source them (to have them updated in the current shell):
 
 .. code-block:: sh
 
-    source ~/.bashrc
+    source ~/.profile
 
 
 Creating and Activating the virtualenv
@@ -117,7 +117,7 @@ run:
 .. code-block:: sh
 
     pip install -r Open-Knesset/requirements.txt
-    
+
 And wait ...
 
 Once done, proceed to :ref:`tests_develdb`.

@@ -15,5 +15,6 @@ develop-eggs/
 *~
 nosetests.xml
 knesset/templates/last_build.txt
-static/avatars
+media/avatars
+media/agendas
 data/committee_mms_videos

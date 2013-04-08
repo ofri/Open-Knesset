@@ -11,8 +11,10 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllow
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
-from hashnav import DetailView, ListView, method_decorator
+from hashnav import DetailView, ListView
 from laws.models import Vote
 from mks.models import Member, Party
 from apis.urls import vote_handler
@@ -25,11 +27,14 @@ import queries
 
 from django.test import Client
 from django.core.handlers.wsgi import WSGIRequest
-from django.core.cache import cache
+from auxiliary.views import GetMoreView
+
 
 logger = logging.getLogger("open-knesset.agendas.views")
 
-class AgendaListView (ListView):
+
+class AgendaListView(ListView):
+
     def get_queryset(self):
         if not self.request.user.is_authenticated():
             return Agenda.objects.get_relevant_for_user(user=None)
@@ -43,6 +48,7 @@ class AgendaListView (ListView):
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
         allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
+
         parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
@@ -60,10 +66,19 @@ class AgendaListView (ListView):
         context['parties_lookup']=parties_lookup
         return context
 
-class AgendaDetailView (DetailView):
+
+class AgendaDetailView(DetailView):
+
     model = Agenda
+
+    INITIAL = 4
+
     class ForbiddenAgenda(Exception):
         pass
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(AgendaDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *arg, **kwargs):
         try:
@@ -74,8 +89,8 @@ class AgendaDetailView (DetailView):
 
     def get_object(self):
         obj = super(AgendaDetailView, self).get_object()
-        ids = [a.id for a in Agenda.objects.get_relevant_for_user(user=self.request.user)]
-        if obj.id in ids:
+        has_id = Agenda.objects.get_relevant_for_user(user=self.request.user).filter(pk=obj.id).count() > 0
+        if has_id:
             return obj
         else:
             raise self.ForbiddenAgenda
@@ -101,7 +116,7 @@ class AgendaDetailView (DetailView):
         all_mks = 'all_mks' in self.request.GET.keys()
         mks_values = agenda.get_mks_values()
         context['agenda_mk_values'] = dict(mks_values)
-        cmp_rank = lambda x,y: x[1]['rank']-y[1]['rank']
+        cmp_rank = lambda x, y: x[1]['rank'] - y[1]['rank']
         if all_mks:
             context['all_mks_ids'] = map(itemgetter(0),mks_values[:200])
             context['all_mks'] = True
@@ -113,13 +128,29 @@ class AgendaDetailView (DetailView):
         context['agenda_party_values']=dict(map(lambda x:(x[0],x[1]),allAgendaPartyVotes.setdefault(agenda.id,[])))
         context['agendaTopParties']=map(itemgetter(0),sorted(allAgendaPartyVotes[agenda.id],key=itemgetter(1),reverse=True)[:20])
 
-        cached_context = cache.get('agenda_votes_%d' % agenda.id)
-        if not cached_context:
-            agenda_votes = agenda.agendavotes.order_by('-vote__time')\
-                                             .select_related('vote')
-            cached_context = {'agenda_votes': agenda_votes }
-            cache.set('agenda_votes_%d' % agenda.id, cached_context, 900)
-        context.update(cached_context)
+        agenda_votes = cache.get('agenda_votes_%d' % agenda.id)
+
+        if not agenda_votes:
+            agenda_votes = agenda.agendavotes.order_by(
+                '-vote__time').select_related('vote')
+            cache.set('agenda_votes_%d' % agenda.id, agenda_votes, 900)
+
+        try:
+            total_votes = agenda_votes.count()
+        except TypeError:
+            total_votes = len(agenda_votes)
+
+        context['INITIAL'] = self.INITIAL
+        context['agenda_votes_more'] = total_votes > self.INITIAL
+        context['agenda_votes'] = agenda_votes[:self.INITIAL]
+
+        agenda_bills = agenda.agendabills.all()
+        context['agenda_bills_more'] = agenda_bills.count() > self.INITIAL
+        context['agenda_bills'] = agenda_bills[:self.INITIAL]
+
+        agenda_meetings = agenda.agendameetings.all()
+        context['agenda_meetings_more'] = agenda_meetings.count() > self.INITIAL
+        context['agenda_meetings'] = agenda_meetings[:self.INITIAL]
 
         # Optimization: get all parties and members before rendering
         # Further possible optimization: only bring parties/members needed for rendering
@@ -132,13 +163,90 @@ class AgendaDetailView (DetailView):
         context['members']=membersDict
         return context
 
+
+class AgendaVotesMoreView(GetMoreView):
+
+    paginate_by = 10
+    template_name = 'agendas/agenda_vote_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        agenda_votes = cache.get('agenda_votes_%d' % agenda.id)
+
+        if not agenda_votes:
+            agenda_votes = agenda.agendavotes.order_by(
+                '-vote__time').select_related('vote')
+            cache.set('agenda_votes_%d' % agenda.id, agenda_votes, 900)
+        return agenda_votes
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(AgendaVotesMoreView, self).get_context_data(*args, **kwargs)
+
+        if self.request.user.is_authenticated():
+            p = self.request.user.get_profile()
+            watched_members = p.members
+        else:
+            watched_members = False
+        ctx['watched_members'] = watched_members
+
+        return ctx
+
+
+class AgendaBillsMoreView(GetMoreView):
+
+    paginate_by = 10
+    template_name = 'agendas/agenda_bill_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        return agenda.agendabills.all()
+
+
+class AgendaMeetingsMoreView(GetMoreView):
+
+    paginate_by = 10
+    template_name = 'agendas/agenda_meeting_partial.html'
+
+    def get_queryset(self):
+        agenda = get_object_or_404(Agenda, pk=self.kwargs['pk'])
+        return agenda.agendameetings.all()
+
+
 class AgendaVoteDetailView (DetailView):
     model = AgendaVote
     template_name = 'agendas/agenda_vote_detail.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaVoteDetailView, self).get_context_data(*args, **kwargs)
+        agendavote = context['object']
+        vote = agendavote.vote
+        agenda = agendavote.agenda
+        try:
+            context['title'] = _("Comments on agenda %(agenda)s vote %(vote)s") % {
+                  'vote':vote.title,
+                  'agenda':agenda.name}
+        except AttributeError:
+            context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d vote %d' % (agenda.id,vote.id))
+        return context
+
 class AgendaMeetingDetailView (DetailView):
     model = AgendaMeeting
     template_name = 'agendas/agenda_meeting_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgendaMeetingDetailView , self).get_context_data(*args, **kwargs)
+        agendameeting = context['object']
+        meeting = agendameeting.meeting
+        agenda = agendameeting.agenda
+        try:
+            context['title'] = _("Comments on agenda %(agenda)s meeting %(meeting)s") % {
+                  'meeting':meeting,
+                  'agenda':agenda.name}
+        except AttributeError:
+            context['title'] = _('None')
+            logger.error('Attribute error trying to generate title for agenda %d meeting %d' % (agenda.id,meeting.id))
+        return context
 
 class AgendaBillDetailView (DetailView):
     model = AgendaBill
