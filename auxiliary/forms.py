@@ -21,3 +21,11 @@ class TidbitSuggestionForm(InstanceCreateSuggestionForm):
     class Meta:
         model = Tidbit
         caption = _('Suggest Tidbit')
+
+    def get_data(self, request):
+        "Add suggested_by for the tidbit to the action data"
+
+        data = super(TidbitSuggestionForm, self).get_data(request)
+        data['suggested_by'] = request.user
+
+        return data
