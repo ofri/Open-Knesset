@@ -273,7 +273,7 @@
                 {% else %}
                     {% for pp in object.proposals.all %}
                     <li>
-                        <p class="item-action">p/{{pp.knesset_id}}/{{pp.proposal_id}}</p>
+                        <p class="item-action">פ/&rlm;{{pp.knesset_id}}/&rlm;{{pp.proposal_id}}</p>
                         <p class="item-title">
                             <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.title }}</a>
                         </p>
@@ -312,7 +312,10 @@
                 <ul>
                 {% for v in object.pre_votes.all %}
                     <li>
-                        <p class="item-action">{% trans 'For' %}: {{ v.for_votes_count }}  {% trans 'Against' %}: {{ v.against_votes_count }}</p>
+                        <p class="item-action">
+                            {% trans 'For' %} <span class="badge badge-success">{{ v.for_votes_count }}</span>
+                            {% trans 'Against' %} <span class="badge badge-important">{{ v.against_votes_count }}</span>
+                        </p>
                         <p class="item-title">
                         {% if user.is_authenticated %}
                             <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
@@ -429,14 +432,14 @@
                 <ul>
                     <li>
                 {% if object.approval_vote %}
-                        <p class="item-action">{% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }}</p>
-                    {% if user.is_authenticated %}
-                        <p class="item-title">
+                    <p class="item-action">{% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }}</p>
+                    <p class="item-title">
+                        {% if user.is_authenticated %}
                             <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{% static "img/X.png" %}"></a>
-                            <a href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }}</a>
-                        </p>
-                        <p class="item-context">{{ object.approval_vote.time }}</p>
-                    {% endif %}
+                        {% endif %}
+                        <a href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }}</a>
+                    </p>
+                    <p class="item-context">{{ object.approval_vote.time }}</p>
                     </li>
                 {% else %}
                     <li>

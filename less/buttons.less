@@ -15,7 +15,7 @@
   border: 2px solid darken(@buttonBackgroundColor, 20%);
 }
 
-.btn-question{
+.btn-question, .btn-suggest {
 	float: left;
   .clearfix;
 	.border-radius(50%);
@@ -34,6 +34,11 @@
 	}
 
   ul & { float: none  }
+}
+
+.btn-suggest { 
+  width:auto; padding: 0 10px; z-index: 100;
+	.border-radius(10px);
 }
 
 .btn-expand{

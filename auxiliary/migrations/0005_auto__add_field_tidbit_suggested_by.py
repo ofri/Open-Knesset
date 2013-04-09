@@ -8,14 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'Tidbit.suggested_by'
+        db.add_column('auxiliary_tidbit', 'suggested_by',
+                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='tidbits', null=True, to=orm['auth.User']),
+                      keep_default=False)
 
-        # Changing field 'Suggestion.resolved_at'
-        db.alter_column('suggestions_suggestion', 'resolved_at', self.gf('django.db.models.fields.DateTimeField')(null=True))
 
     def backwards(self, orm):
+        # Deleting field 'Tidbit.suggested_by'
+        db.delete_column('auxiliary_tidbit', 'suggested_by_id')
 
-        # Changing field 'Suggestion.resolved_at'
-        db.alter_column('suggestions_suggestion', 'resolved_at', self.gf('django.db.models.fields.DateTimeField')())
 
     models = {
         'auth.group': {
@@ -47,29 +49,25 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        'auxiliary.tidbit': {
+            'Meta': {'object_name': 'Tidbit'},
+            'button_link': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'button_text': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'content': ('tinymce.models.HTMLField', [], {}),
+            'icon': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'ordering': ('django.db.models.fields.IntegerField', [], {'default': '20', 'db_index': 'True'}),
+            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'tidbits'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'title': ('django.db.models.fields.CharField', [], {'default': "u'Did you know ?'", 'max_length': '40'})
+        },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'suggestions.suggestion': {
-            'Meta': {'object_name': 'Suggestion'},
-            'content_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestion_content'", 'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'resolved_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'resolved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'resolved_suggestions'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'resolved_status': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
-            'suggested_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'db_index': 'True', 'blank': 'True'}),
-            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestions'", 'to': "orm['auth.User']"}),
-            'suggested_field': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'suggested_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'suggested_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'suggested_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggested_content'", 'to': "orm['contenttypes.ContentType']"}),
-            'suggestion_type': ('django.db.models.fields.PositiveIntegerField', [], {})
         }
     }
 
-    complete_apps = ['suggestions']
+    complete_apps = ['auxiliary']

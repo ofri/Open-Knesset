@@ -13,23 +13,44 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('suggested_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, db_index=True, blank=True)),
             ('suggested_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='suggestions', to=orm['auth.User'])),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='suggestion_content', to=orm['contenttypes.ContentType'])),
-            ('content_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('suggestion_type', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('suggested_field', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('suggested_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='suggested_content', to=orm['contenttypes.ContentType'])),
-            ('suggested_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('suggested_text', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('resolved_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('comment', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('resolved_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('resolved_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='resolved_suggestions', null=True, to=orm['auth.User'])),
             ('resolved_status', self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True)),
         ))
         db.send_create_signal('suggestions', ['Suggestion'])
 
+        # Adding model 'SuggestedAction'
+        db.create_table('suggestions_suggestedaction', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('suggestion', self.gf('django.db.models.fields.related.ForeignKey')(related_name='actions', to=orm['suggestions.Suggestion'])),
+            ('action', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('subject_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='action_subjects', to=orm['contenttypes.ContentType'])),
+            ('subject_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+        ))
+        db.send_create_signal('suggestions', ['SuggestedAction'])
+
+        # Adding model 'ActionFields'
+        db.create_table('suggestions_actionfields', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('action', self.gf('django.db.models.fields.related.ForeignKey')(related_name='action_fields', to=orm['suggestions.SuggestedAction'])),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('value', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('value_type', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='action_values', null=True, to=orm['contenttypes.ContentType'])),
+            ('value_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+        ))
+        db.send_create_signal('suggestions', ['ActionFields'])
+
 
     def backwards(self, orm):
         # Deleting model 'Suggestion'
         db.delete_table('suggestions_suggestion')
+
+        # Deleting model 'SuggestedAction'
+        db.delete_table('suggestions_suggestedaction')
+
+        # Deleting model 'ActionFields'
+        db.delete_table('suggestions_actionfields')
 
 
     models = {
@@ -69,21 +90,32 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'suggestions.actionfields': {
+            'Meta': {'object_name': 'ActionFields'},
+            'action': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'action_fields'", 'to': "orm['suggestions.SuggestedAction']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'value': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'value_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'value_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'action_values'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"})
+        },
+        'suggestions.suggestedaction': {
+            'Meta': {'object_name': 'SuggestedAction'},
+            'action': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'subject_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'subject_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'action_subjects'", 'to': "orm['contenttypes.ContentType']"}),
+            'suggestion': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actions'", 'to': "orm['suggestions.Suggestion']"})
+        },
         'suggestions.suggestion': {
             'Meta': {'object_name': 'Suggestion'},
-            'content_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestion_content'", 'to': "orm['contenttypes.ContentType']"}),
+            'comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'resolved_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'resolved_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'resolved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'resolved_suggestions'", 'null': 'True', 'to': "orm['auth.User']"}),
             'resolved_status': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'suggested_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'db_index': 'True', 'blank': 'True'}),
-            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestions'", 'to': "orm['auth.User']"}),
-            'suggested_field': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'suggested_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'suggested_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'suggested_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggested_content'", 'to': "orm['contenttypes.ContentType']"}),
-            'suggestion_type': ('django.db.models.fields.PositiveIntegerField', [], {})
+            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestions'", 'to': "orm['auth.User']"})
         }
     }
 

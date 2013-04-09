@@ -78,3 +78,28 @@ form .helptext {
     -moz-transition: right 0.6s ease-in-out 0s;
     -o-transition: right 0.6s ease-in-out 0s;
 }
+
+
+.carousel-indicators {
+    list-style: none outside none;
+    margin: 0;
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    z-index: 5;
+
+    li {
+      background-color: rgba(0, 0, 0, 0.25);
+      border-radius: 5px 5px 5px 5px;
+      display: block;
+      float: right;
+      height: 10px;
+      margin-left: 5px;
+      text-indent: -999px;
+      width: 10px;
+
+      &.active {
+        background-color: rgba(0, 0, 0, 0.75);
+      }
+    }
+}

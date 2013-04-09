@@ -75,7 +75,7 @@ class BaseResource(ModelResource):
         cache = SimpleCache()
         throttle = SmartCacheThrottle(throttle_at=60, timeframe=60)
         serializer = IterJSONAndCSVSerializer(
-            formats=['json', 'jsonp', 'xml', 'csv'])
+            formats=['json', 'jsonp', 'csv'])
 
     def _get_list_fields(self, request):
         """Helper to return list and extra fields for list mode.

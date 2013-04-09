@@ -5230,6 +5230,27 @@ form .helptext {
   -moz-transition: right 0.6s ease-in-out 0s;
   -o-transition: right 0.6s ease-in-out 0s;
 }
+.carousel-indicators {
+  list-style: none outside none;
+  margin: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+  z-index: 5;
+}
+.carousel-indicators li {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 5px 5px 5px 5px;
+  display: block;
+  float: right;
+  height: 10px;
+  margin-left: 5px;
+  text-indent: -999px;
+  width: 10px;
+}
+.carousel-indicators li.active {
+  background-color: rgba(0, 0, 0, 0.75);
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
@@ -5280,7 +5301,7 @@ form .helptext {
   margin-bottom: 0;
 }
 #app-header .nav-pills li {
-  width: 16.5%;
+  width: 20%;
   margin-left: -1px;
   border-left: 1px solid #f1f1f1;
 }
@@ -6058,7 +6079,8 @@ ol {
   color: #ffffff;
   border: 2px solid #4f81a9;
 }
-.btn-question {
+.btn-question,
+.btn-suggest {
   float: left;
   *zoom: 1;
   -webkit-border-radius: 50%;
@@ -6075,20 +6097,33 @@ ol {
   text-align: center;
 }
 .btn-question:before,
-.btn-question:after {
+.btn-suggest:before,
+.btn-question:after,
+.btn-suggest:after {
   display: table;
   content: "";
   line-height: 0;
 }
-.btn-question:after {
+.btn-question:after,
+.btn-suggest:after {
   clear: both;
 }
-.btn-question:hover {
+.btn-question:hover,
+.btn-suggest:hover {
   color: #ffffff;
   background: #464545;
 }
-ul .btn-question {
+ul .btn-question,
+ul .btn-suggest {
   float: none;
+}
+.btn-suggest {
+  width: auto;
+  padding: 0 10px;
+  z-index: 100;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .btn-expand {
   font-size: 13px;
@@ -6370,10 +6405,16 @@ div.color_swatch {
 #tidbitCarousel .item div {
   padding-right: 40px;
 }
-#tidbitCarousel .btn {
+#tidbitCarousel .carousel-inner .btn {
   position: absolute;
   left: 0;
   bottom: 0;
   font-size: 120%;
   padding: 15px 40px;
+}
+#tidbitCarousel .btn-suggest {
+  float: none;
+  position: absolute;
+  top: 15px;
+  left: 15px;
 }

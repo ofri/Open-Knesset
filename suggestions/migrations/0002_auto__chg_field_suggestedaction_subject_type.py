@@ -8,34 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Suggestion.suggestion_type'
-        db.delete_column('suggestions_suggestion', 'suggestion_type')
 
-        # Adding field 'Suggestion.suggestion_action'
-        db.add_column('suggestions_suggestion', 'suggestion_action',
-                      self.gf('django.db.models.fields.PositiveIntegerField')(default=0),
-                      keep_default=False)
-
-
-        # Changing field 'Suggestion.suggested_type'
-        db.alter_column('suggestions_suggestion', 'suggested_type_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['contenttypes.ContentType']))
-
-        # Changing field 'Suggestion.suggested_id'
-        db.alter_column('suggestions_suggestion', 'suggested_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True))
+        # Changing field 'SuggestedAction.subject_type'
+        db.alter_column('suggestions_suggestedaction', 'subject_type_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['contenttypes.ContentType']))
 
     def backwards(self, orm):
 
-        # User chose to not deal with backwards NULL issues for 'Suggestion.suggestion_type'
-        raise RuntimeError("Cannot reverse this migration. 'Suggestion.suggestion_type' and its values cannot be restored.")
-        # Deleting field 'Suggestion.suggestion_action'
-        db.delete_column('suggestions_suggestion', 'suggestion_action')
-
-
-        # User chose to not deal with backwards NULL issues for 'Suggestion.suggested_type'
-        raise RuntimeError("Cannot reverse this migration. 'Suggestion.suggested_type' and its values cannot be restored.")
-
-        # User chose to not deal with backwards NULL issues for 'Suggestion.suggested_id'
-        raise RuntimeError("Cannot reverse this migration. 'Suggestion.suggested_id' and its values cannot be restored.")
+        # User chose to not deal with backwards NULL issues for 'SuggestedAction.subject_type'
+        raise RuntimeError("Cannot reverse this migration. 'SuggestedAction.subject_type' and its values cannot be restored.")
 
     models = {
         'auth.group': {
@@ -74,21 +54,32 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'suggestions.actionfields': {
+            'Meta': {'object_name': 'ActionFields'},
+            'action': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'action_fields'", 'to': "orm['suggestions.SuggestedAction']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'value': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'value_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'value_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'action_values'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"})
+        },
+        'suggestions.suggestedaction': {
+            'Meta': {'object_name': 'SuggestedAction'},
+            'action': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'subject_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'subject_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'action_subjects'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
+            'suggestion': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actions'", 'to': "orm['suggestions.Suggestion']"})
+        },
         'suggestions.suggestion': {
             'Meta': {'object_name': 'Suggestion'},
-            'content_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestion_content'", 'to': "orm['contenttypes.ContentType']"}),
+            'comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'resolved_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'resolved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'resolved_suggestions'", 'null': 'True', 'to': "orm['auth.User']"}),
             'resolved_status': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'suggested_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'db_index': 'True', 'blank': 'True'}),
-            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestions'", 'to': "orm['auth.User']"}),
-            'suggested_field': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'suggested_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'suggested_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'suggested_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'suggested_content'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'suggestion_action': ('django.db.models.fields.PositiveIntegerField', [], {})
+            'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'suggestions'", 'to': "orm['auth.User']"})
         }
     }
 

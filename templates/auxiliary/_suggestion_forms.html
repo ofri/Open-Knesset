@@ -1,0 +1,21 @@
+{% load i18n crispy_forms_tags %}
+{% for key, form in suggestion_forms.items %}
+<div id="suggest-{{key}}-modal" class="modal hide fade suggest-modal"
+  tabindex="-1" role="dialog" aria-labelledby="suggest-{{key}}-ModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="suggest-{{key}}-ModalLabel">{{ form.modal_caption }}</h3>
+        </div>
+        <div class="modal-body">
+            {% if user.is_authenticated %}
+            {% crispy form %}
+            {% else %}
+            {% include "auxiliary/_login_to_suggest.html" %}
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            {% if user.is_authenticated %}<input class="btn btn-primary" type="submit" value="{% trans "Submit" %}" data-loading-text="{% trans "Sending" %} ..."/>{% endif %}
+            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+        </div>
+</div>
+{% endfor %}
