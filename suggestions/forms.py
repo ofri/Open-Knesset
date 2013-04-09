@@ -1,5 +1,10 @@
+import json
+
 from django import forms
+from django.http import HttpResponse
 from crispy_forms.helper import FormHelper
+
+from auxiliary.serializers import PromiseAwareJSONEncoder
 
 from suggestions.models import Suggestion, CREATE
 
@@ -35,27 +40,40 @@ class BaseSuggestionForm(forms.Form):
     def modal_caption(self):
         return self.Meta.caption
 
-    def get_data(self):
+    def get_data(self, request):
         """Get the data for the action creation """
         data = {}
         for k in self.fields.keys():
             data[k] = self.cleaned_data[k]
         return data
 
-    def save(self, suggested_by):
+    def save(self, request):
         "Implementations should override this"
         raise NotImplementedError
+
+    def get_response(self):
+        if self.is_valid():
+            res = {'success': True}
+        else:
+            res = {
+                'success': False,
+                'errors': self.errors,
+            }
+
+        return HttpResponse(
+            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
+            mimetype='application/json')
 
 
 class InstanceCreateSuggestionForm(BaseSuggestionForm):
 
-    def save(self, suggested_by):
+    def save(self, request):
         Suggestion.objects.create_suggestion(
-            suggested_by=suggested_by,
+            suggested_by=request.user,
             actions=[
                 {
                     'action': CREATE,
-                    'fields': self.get_data(),
+                    'fields': self.get_data(request),
                     'subject': self.Meta.model,
                 },
             ]
