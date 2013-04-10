@@ -77,6 +77,12 @@ class Suggestion(models.Model):
         self.save()
         return subject
 
+    def __unicode__(self):
+        if self.comment:
+            return self.comment
+        else:
+            return ','.join(unicode(x) for x in self.actions.all())
+
 
 class SuggestedAction(models.Model):
     """Suggestion can be of multiple action"""
@@ -85,7 +91,7 @@ class SuggestedAction(models.Model):
         (CREATE, _('Create new model instance')),
         (ADD, _('Add related object to m2m relation or new model instance')),
         (REMOVE, _('Remove related object from m2m relation')),
-        (SET, _('Set field value. For m2m _replaces_ (use ADD if needed)')),
+        (SET, _('Set fields values')),
     )
 
     suggestion = models.ForeignKey(Suggestion, related_name='actions')
@@ -93,17 +99,17 @@ class SuggestedAction(models.Model):
         _('Suggestion type'), choices=SUGGEST_CHOICES)
 
     # The Model instance (or model itself in case of create) to work on
-    subject_type = models.ForeignKey(ContentType, related_name='action_subjects',
-                                     blank=True, null=True)
+    subject_type = models.ForeignKey(
+        ContentType, related_name='action_subjects', blank=True, null=True)
     subject_id = models.PositiveIntegerField(
-        blank=True, null=True, help_text=_('Can be blank, for create operations'))
+        blank=True, null=True,
+        help_text=_('Can be blank, for create operations'))
     subject = generic.GenericForeignKey(
         'subject_type', 'subject_id')
 
     def auto_apply(self, subject=None):
-        """Auto apply the action. subject is optional, and needs to be passed in
-        case of adding to m2m after create.
-
+        """Auto apply the action. subject is optional, and needs to be passed
+        in case of adding to m2m after create.
         """
         work_on = subject or self.subject
 
@@ -116,6 +122,17 @@ class SuggestedAction(models.Model):
 
         doer = actions.get(self.action)
         return doer(work_on)
+
+    def __unicode__(self):
+        if self.subject_id:
+            label = unicode(self.subject)
+        else:
+            model = self.subject_type.model_class()
+            label = unicode(model._meta.verbose_name)
+
+        res = u'{0} {1}: {2}'.format(self.get_action_display(), label,
+                                     dict(self.action_params))
+        return res
 
     @property
     def action_params(self):
