@@ -11,20 +11,26 @@ from datetime import timedelta
 import vobject
 
 from django.test import TestCase
-from django.test.client import Client
 from django.utils import translation
 from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 
 from models import Event
 
-now = datetime.datetime.now()
 
 class SimpleTest(TestCase):
     def setUp(self):
-        self.ev1 = Event.objects.create(when=now, what="ev1")
-        self.ev2 = Event.objects.create(when=now + timedelta(days=1), when_over=now + timedelta(days=1,hours=2), when_over_guessed=False, what="future=%s" % ''.join(str(x % 10) for x in xrange(300)))
-        self.ev3 = Event.objects.create(when=now + timedelta(days=2), what="ev3")
+        self.now = datetime.datetime.now()
+
+        self.ev1 = Event.objects.create(when=self.now, what="ev1")
+        self.ev2 = Event.objects.create(
+            when=self.now + timedelta(days=1),
+            when_over=self.now + timedelta(days=1, hours=2),
+            when_over_guessed=False,
+            what="future=%s" % ''.join(str(x % 10) for x in xrange(300)))
+        self.ev3 = Event.objects.create(
+            when=self.now + timedelta(days=2),
+            what="ev3")
 
     def testFutureEvents(self):
         """
@@ -37,7 +43,8 @@ class SimpleTest(TestCase):
         self.assertEqual(upcoming.count(), 2)
         self.ev3.delete()
         self.assertEqual(upcoming.count(), 1)
-        self.ev3 = Event.objects.create(when=now + timedelta(days=1), what="ev3")
+        self.ev3 = Event.objects.create(
+            when=self.now + timedelta(days=1), what="ev3")
 
     def testIcalenderSummaryLength(self):
         """
@@ -45,8 +52,9 @@ class SimpleTest(TestCase):
         correctly.
         """
         summary_length = 123
-        res = self.client.get(reverse('event-icalendar', kwargs={'summary_length':summary_length}))
-        self.assertEqual(res.status_code,200)
+        res = self.client.get(reverse('event-icalendar',
+                              kwargs={'summary_length': summary_length}))
+        self.assertEqual(res.status_code, 200)
         vcal = vobject.base.readOne(res.content)
         for vevent in vcal.components():
             if vevent.name != 'VEVENT':
@@ -60,14 +68,16 @@ class SimpleTest(TestCase):
         """
         translation.activate('en')
         res = self.client.get(reverse('event-icalendar'))
-        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.status_code, 200)
         vcal = vobject.base.readOne(res.content)
         for vevent in vcal.components():
             if vevent.summary.value.startswith("future"):
                 self.assertEqual(vevent.description.value, self.ev2.what)
             elif vevent.summary.value == "ev3":
-                self.assertEqual(vevent.description.value,
-                    'ev3\n\noknesset warnings:\nno end date data - guessed it to be 2 hours after start')
+                self.assertEqual(
+                    vevent.description.value,
+                    'ev3\n\noknesset warnings:\nno end date data - '
+                    'guessed it to be 2 hours after start')
         translation.deactivate()
 
     def testAPIv2FutureEventsConsistency(self):
@@ -76,7 +86,7 @@ class SimpleTest(TestCase):
         """
         res_v1 = self.client.get('/api/event/')
         self.assertEqual(res_v1.status_code, 200)
-        res_v2 = self.client.get('/api/v2/event/', format = 'json')
+        res_v2 = self.client.get('/api/v2/event/', format='json')
         self.assertEqual(res_v2.status_code, 200)
         ids_v1 = set(x['what'] for x in json.loads(res_v1.content))
         ids_v2 = set(x['what'] for x in json.loads(res_v2.content))
@@ -89,7 +99,8 @@ class SimpleTest(TestCase):
         for event_id in [self.ev1.id, self.ev2.id, self.ev3.id]:
             res_v1 = self.client.get('/api/event/%d/' % event_id)
             self.assertEqual(res_v1.status_code, 200)
-            res_v2 = self.client.get('/api/v2/event/%d/' % event_id, format = 'json')
+            res_v2 = self.client.get('/api/v2/event/%d/' % event_id,
+                                     format='json')
             self.assertEqual(res_v2.status_code, 200)
             event_v1 = json.loads(res_v1.content)
             event_v2 = json.loads(res_v2.content)
@@ -103,15 +114,22 @@ class SimpleTest(TestCase):
         self.ev2.delete()
         self.ev3.delete()
 
+
 class ViewTest(TestCase):
     def setUp(self):
+        now = datetime.datetime.now()
         self.ev1 = Event.objects.create(when=now, what="ev1")
-        self.ev2 = Event.objects.create(when=now + timedelta(days=1, seconds=2*3600+34*60), when_over=now + timedelta(days=1,hours=2), when_over_guessed=False, what="future=%s" % ''.join(str(x % 10) for x in xrange(300)))
-        self.ev3 = Event.objects.create(when=now + timedelta(days=1), what="ev3")
+        self.ev2 = Event.objects.create(
+            when=now + timedelta(days=1, seconds=2 * 3600 + 34 * 60),
+            when_over=now + timedelta(days=1, hours=2),
+            when_over_guessed=False,
+            what="future=%s" % ''.join(str(x % 10) for x in xrange(300)))
+        self.ev3 = Event.objects.create(
+            when=now + timedelta(days=1), what="ev3")
 
     def testDetailView(self):
         res = self.client.get(self.ev2.get_absolute_url())
-        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context['in_days'], 1)
         self.assertEqual(res.context['in_hours'], 2)
         self.assertEqual(res.context['in_minutes'], 33)
@@ -120,4 +138,3 @@ class ViewTest(TestCase):
         self.ev1.delete()
         self.ev2.delete()
         self.ev3.delete()
-
