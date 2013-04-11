@@ -61,5 +61,37 @@
 			})
 		  return false;
 	  })
+
+	// Get the pending suggestions for each suggestion form
+	var getCountFor = $('.suggest-modal form').map(function() {
+		var $el = $(this),
+			res = $el.data('forModel'),
+			pk = $el.data('forPk');
+
+		
+		if (pk) {
+			res = res + '-' + pk;
+		}
+		return {name: 'for', value:res};
+	}).get();
+	// end getting pending suggestions
+
+	// hard-coded url, bla
+	$.get('/suggestions/pending_count/', getCountFor)
+		.done(function(data) {
+			if ($.isEmptyObject(data)) { return; }
+
+			var container = $('<div class="alert alert-info"><a href="#" class="close" data-dismiss="alert">&times;</a>' + gettext('Pending suggestions') + ':<ul/></div>'),
+				suggestion_ul = $('ul', container);
+
+			$.each(data, function(key, val){
+				var suggestion_li = $('<li/>');
+				suggestion_li.text(key+ ': ' + val);
+				suggestion_li.appendTo(suggestion_ul);
+			})
+
+			$($('.container').get(1)).prepend(container);
+			container.alert();
+		})
   }) // end ready
 }(window.jQuery);

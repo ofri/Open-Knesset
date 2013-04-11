@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-08 20:28+0300\n"
-"PO-Revision-Date: 2013-04-08 21:04+0300\n"
+"POT-Creation-Date: 2013-04-11 14:09+0300\n"
+"PO-Revision-Date: 2013-04-11 14:09+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -90,6 +90,10 @@ msgstr "ועדות"
 #: static/js/ok-suggest.js:36
 msgid "Your suggestion is submitted. Thank you !"
 msgstr "הצעתך נשלחה. תודה רבה !"
+
+#: static/js/ok-suggest.js:84
+msgid "Pending suggestions"
+msgstr "הצעות ממתינות"
 
 #: static/js/states.js:9
 msgid "members"
