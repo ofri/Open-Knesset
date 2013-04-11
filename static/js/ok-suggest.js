@@ -76,22 +76,24 @@
 	}).get();
 	// end getting pending suggestions
 
-	// hard-coded url, bla
-	$.get('/suggestions/pending_count/', getCountFor)
-		.done(function(data) {
-			if ($.isEmptyObject(data)) { return; }
+	if (getCountFor.length > 0) {
+		var countUrl = $('.suggest-modal form').data('countUrl');
+		$.get(countUrl, getCountFor)
+			.done(function(data) {
+				if ($.isEmptyObject(data)) { return; }
 
-			var container = $('<div class="alert alert-info"><a href="#" class="close" data-dismiss="alert">&times;</a>' + gettext('Pending suggestions') + ':<ul/></div>'),
-				suggestion_ul = $('ul', container);
+				var container = $('<div class="alert alert-info"><a href="#" class="close" data-dismiss="alert">&times;</a>' + gettext('Pending suggestions') + ':<ul/></div>'),
+					suggestion_ul = $('ul', container);
 
-			$.each(data, function(key, val){
-				var suggestion_li = $('<li/>');
-				suggestion_li.text(key+ ': ' + val);
-				suggestion_li.appendTo(suggestion_ul);
+				$.each(data, function(key, val){
+					var suggestion_li = $('<li/>');
+					suggestion_li.text(key+ ': ' + val);
+					suggestion_li.appendTo(suggestion_ul);
+				})
+
+				$($('.container').get(1)).prepend(container);
+				container.alert();
 			})
-
-			$($('.container').get(1)).prepend(container);
-			container.alert();
-		})
+	}
   }) // end ready
 }(window.jQuery);

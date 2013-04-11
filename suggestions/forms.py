@@ -1,6 +1,7 @@
 import json
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from crispy_forms.helper import FormHelper
 
@@ -31,7 +32,10 @@ class BaseSuggestionForm(forms.Form):
         meta = self.Meta.model._meta
         model_name = '{0.app_label}.{0.object_name}'.format(meta)
 
-        self.helper.attrs = {'data-for-model': model_name}
+        self.helper.attrs = {
+            'data-for-model': model_name,
+            'data-count-url': reverse('suggestions_pending_count')
+        }
 
         if suggested_pk:
             self.helper.attrs['data-for-pk'] = suggested_pk
