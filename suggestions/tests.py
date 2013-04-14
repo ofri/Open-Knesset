@@ -361,7 +361,7 @@ class SuggestionsTests(TestCase):
         response = c.get('/suggestions/pending_count/', {'for': 'mks.Member'})
         self.assertEqual(response['Content-Type'], 'application/json')
         data = json.loads(response.content)
-        self.assertEqual(data.items()[0][1], 0)
+        self.assertFalse(data)
 
         m.delete()
         Suggestion.objects.all().delete()
