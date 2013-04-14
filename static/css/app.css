@@ -6423,3 +6423,9 @@ div.color_swatch {
   top: 15px;
   left: 15px;
 }
+.suggestion-actions {
+  text-align: left;
+}
+.suggestion-actions a.btn {
+  margin-right: 10px;
+}

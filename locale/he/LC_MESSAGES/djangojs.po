@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-14 17:54+0300\n"
-"PO-Revision-Date: 2013-04-14 17:58+0300\n"
+"POT-Creation-Date: 2013-04-14 22:38+0300\n"
+"PO-Revision-Date: 2013-04-14 22:39+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -99,11 +99,15 @@ msgstr "הצעות ממתינות"
 msgid "View pending suggestions"
 msgstr "צפיה בהצעות ממתינות"
 
-#: static/js/ok-suggest.js:118
+#: static/js/ok-suggest.js:119
 msgid "Apply"
 msgstr "יישם"
 
-#: static/js/ok-suggest.js:131
+#: static/js/ok-suggest.js:126
+msgid "Reject"
+msgstr "דחה"
+
+#: static/js/ok-suggest.js:139
 msgid "You have to be logged in to view suggestions."
 msgstr "עליך להתחבר כדי לצפות בהצעות"
 

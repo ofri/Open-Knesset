@@ -110,13 +110,21 @@
 								suggestions_ul = $('<ul/>');
 
 							$.each(suggestions, function(idx, suggest) {
-								var s_li = $('<li/>').text(suggest.label);
+								var s_li = $('<li/>').text(suggest.label),
+									s_actions = $('<div class="suggestion-actions"/>').appendTo(s_li);
 
-								if (suggest.url) {
+								if (suggest.apply_url) {
 									$('<a>')
-									.attr({href:suggest.url, class:"btn btn-mini"})
+									.attr({href:suggest.apply_url, class:"btn btn-mini btn-success"})
 									.text(gettext('Apply'))
-									.prependTo(s_li);
+									.appendTo(s_actions);
+								}
+
+								if (suggest.reject_url) {
+									$('<a>')
+									.attr({href:suggest.reject_url, class:"btn btn-mini btn-warning"})
+									.text(gettext('Reject'))
+									.appendTo(s_actions);
 								}
 
 								suggestions_ul.append(s_li);

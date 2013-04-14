@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns, url
 from .views import (PendingSuggestionsView, PendingSuggestionsCountView,
-                    AutoApplySuggestionView)
+                    AutoApplySuggestionView, RejectSuggestionView)
 
 
 urlpatterns = patterns('',
@@ -10,4 +10,6 @@ urlpatterns = patterns('',
         name='suggestions_pending_count'),
     url('^auto_apply/(?P<pk>\d+)/$', AutoApplySuggestionView.as_view(),
         name='suggestions_auto_apply'),
+    url('^reject/(?P<pk>\d+)/$', RejectSuggestionView.as_view(),
+        name='suggestions_reject'),
 )

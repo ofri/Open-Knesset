@@ -87,9 +87,10 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
             result[key] = [
                 {
                     'label': unicode(x),
-                    'url': can_apply and x.can_auto_apply and reverse(
-                        'suggestions_auto_apply',
-                        kwargs={'pk': x.pk})
+                    'apply_url': can_apply and x.can_auto_apply and reverse(
+                        'suggestions_auto_apply', kwargs={'pk': x.pk}),
+                    'reject_url': can_apply and reverse(
+                        'suggestions_reject', kwargs={'pk': x.pk})
                 }
                 for x in result[key]]
 
@@ -103,6 +104,17 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
 
 class AutoApplySuggestionView(SingleObjectMixin, View):
     "Auto apply a suggestion"
+
+    model = Suggestion
+
+    @method_decorator(permission_required('suggesions.autoapply_suggestion',
+                                          raise_exception=True))
+    def post(self):
+        raise NotImplementedError
+
+
+class RejectSuggestionView(SingleObjectMixin, View):
+    "Reject a suggestion"
 
     model = Suggestion
 
