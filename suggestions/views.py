@@ -87,7 +87,7 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
             result[key] = [
                 {
                     'label': unicode(x),
-                    'url': can_apply and reverse(
+                    'url': can_apply and x.can_auto_apply and reverse(
                         'suggestions_auto_apply',
                         kwargs={'pk': x.pk})
                 }
