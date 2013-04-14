@@ -1,8 +1,10 @@
 import json
 
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 
 from .models import Suggestion
 from auxiliary.serializers import PromiseAwareJSONEncoder
@@ -74,6 +76,21 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
         "Prepares the QuerySet for the response"
 
         for key in result:
-            result[key] = [unicode(x) for x in result[key]]
+            result[key] = [
+                {
+                    'label': unicode(x),
+                    'url': reverse('suggestions_auto_apply',
+                                   kwargs={'pk': x.pk})
+                }
+                for x in result[key]]
 
         return result
+
+
+class AutoApplySuggestionView(SingleObjectMixin, View):
+    "Auto apply a suggestion"
+
+    model = Suggestion
+
+    def post(self):
+        raise NotImplementedError

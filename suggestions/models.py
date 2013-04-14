@@ -58,6 +58,9 @@ class Suggestion(models.Model):
     class Meta:
         verbose_name = _('Suggestion')
         verbose_name_plural = _('Suggestions')
+        permissions = (
+            ('autoapply_suggestion', 'Can auto apply suggestion'),
+        )
 
     def auto_apply(self, resolved_by):
 
@@ -188,8 +191,8 @@ class ActionFields(models.Model):
     """Fields for each suggestion"""
 
     action = models.ForeignKey(SuggestedAction, related_name='action_fields')
-    name = models.CharField(
-        _('Field or relation set name'), null=False, blank=False, max_length=50)
+    name = models.CharField(_('Field or relation set name'),
+                            null=False, blank=False, max_length=50)
 
     # general value
     value = models.TextField(blank=True, null=True)
