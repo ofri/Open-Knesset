@@ -34,7 +34,8 @@ class BaseSuggestionForm(forms.Form):
 
         self.helper.attrs = {
             'data-for-model': model_name,
-            'data-count-url': reverse('suggestions_pending_count')
+            'data-count-url': reverse('suggestions_pending_count'),
+            'data-detail-url': reverse('suggestions_pending'),
         }
 
         if suggested_pk:

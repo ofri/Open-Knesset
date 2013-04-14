@@ -62,7 +62,6 @@
 		  return false;
 	  })
 
-	// Get the pending suggestions for each suggestion form
 	var getCountFor = $('.suggest-modal form').map(function() {
 		var $el = $(this),
 			res = $el.data('forModel'),
@@ -74,16 +73,20 @@
 		}
 		return {name: 'for', value:res};
 	}).get();
-	// end getting pending suggestions
 
 	if (getCountFor.length > 0) {
-		var countUrl = $('.suggest-modal form').data('countUrl');
+		var countUrl = $('.suggest-modal form').data('countUrl'),
+			detailUrl =  $('.suggest-modal form').data('detailUrl');
+		// Get the pending suggestions for each suggestion form
 		$.get(countUrl, getCountFor)
 			.done(function(data) {
 				if ($.isEmptyObject(data)) { return; }
 
 				var container = $('<div class="alert alert-info"><a href="#" class="close" data-dismiss="alert">&times;</a>' + gettext('Pending suggestions') + ':<ul/></div>'),
-					suggestion_ul = $('ul', container);
+					suggestion_ul = $('ul', container),
+					detail = $('<a href="#" class="btn btn-info"></a>').text(gettext('View pending suggestions'));
+
+				detail.insertAfter(suggestion_ul);
 
 				$.each(data, function(key, val){
 					var suggestion_li = $('<li/>');
@@ -93,7 +96,17 @@
 
 				$($('.container').get(1)).prepend(container);
 				container.alert();
+
+				detail.click(function(ev) {
+					ev.preventDefault();
+
+					$.get(detailUrl, getCountFor).done(function(data) {
+						// TODO implement me
+					});
+					return false;
+				});
 			})
+		// end getting pending suggestions
 	}
   }) // end ready
 }(window.jQuery);
