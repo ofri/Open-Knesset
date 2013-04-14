@@ -1,12 +1,14 @@
 import json
-
-from django.db import models
+from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
 
 from .models import Suggestion
+from auxiliary.decorators import login_required_ajax
 from auxiliary.serializers import PromiseAwareJSONEncoder
 
 
@@ -54,17 +56,23 @@ class PendingSuggestionsCountView(View):
 
         return res
 
-    def prepare_pending(self, result):
+    def prepare_pending(self, result, can_apply=False):
         "Prepares the QuerySet for the response"
 
-        for key in result:
-            result[key] = result[key].count()
+        res = {}
 
-        return result
+        for key in result:
+            count = result[key].count()
+            if count:
+                res[key] = count
+
+        return res
 
     def get(self, request, *args, **kwargs):
         res = self.get_pending(request)
-        res = self.prepare_pending(res)
+        can_apply = request.user.has_perm('suggestions.autoapply_suggestion')
+        res = self.prepare_pending(res, can_apply=can_apply)
+
         return HttpResponse(
             json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
             mimetype='application/json')
@@ -72,19 +80,25 @@ class PendingSuggestionsCountView(View):
 
 class PendingSuggestionsView(PendingSuggestionsCountView):
 
-    def prepare_pending(self, result):
+    def prepare_pending(self, result, can_apply=False):
         "Prepares the QuerySet for the response"
 
         for key in result:
             result[key] = [
                 {
                     'label': unicode(x),
-                    'url': reverse('suggestions_auto_apply',
-                                   kwargs={'pk': x.pk})
+                    'url': can_apply and reverse(
+                        'suggestions_auto_apply',
+                        kwargs={'pk': x.pk})
                 }
                 for x in result[key]]
 
         return result
+
+    @method_decorator(login_required_ajax)
+    def get(self, request, *args, **kwargs):
+        return super(PendingSuggestionsView, self).get(
+            request, *args, **kwargs)
 
 
 class AutoApplySuggestionView(SingleObjectMixin, View):
@@ -92,5 +106,7 @@ class AutoApplySuggestionView(SingleObjectMixin, View):
 
     model = Suggestion
 
+    @method_decorator(permission_required('suggesions.autoapply_suggestion',
+                                          raise_exception=True))
     def post(self):
         raise NotImplementedError

@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-08 20:29+0300\n"
-"PO-Revision-Date: 2013-04-07 19:17+0300\n"
+"POT-Creation-Date: 2013-04-14 17:47+0300\n"
+"PO-Revision-Date: 2013-04-14 17:47+0300\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -209,31 +209,31 @@ msgid ""
 "Main activity feed for the whole site, same as presented on the main page"
 msgstr "פיד ראשי עבור כל האתר, בדומה למוצג בדף הראשי"
 
-#: auxiliary/forms.py:14 committees/models.py:347 laws/views.py:553
+#: auxiliary/forms.py:13 committees/models.py:347 laws/views.py:553
 msgid "Title"
 msgstr "כותרת"
 
-#: auxiliary/forms.py:15 auxiliary/models.py:25
+#: auxiliary/forms.py:14 auxiliary/models.py:25
 msgid "Did you know ?"
 msgstr "הידעת ?"
 
-#: auxiliary/forms.py:16 auxiliary/models.py:26
+#: auxiliary/forms.py:15 auxiliary/models.py:26
 msgid "Icon"
 msgstr "צלמית"
 
-#: auxiliary/forms.py:17 auxiliary/models.py:27 links/admin.py:21
+#: auxiliary/forms.py:16 auxiliary/models.py:27 links/admin.py:21
 msgid "Content"
 msgstr "תוכן"
 
-#: auxiliary/forms.py:19 auxiliary/models.py:28
+#: auxiliary/forms.py:18 auxiliary/models.py:28
 msgid "Button text"
 msgstr "טקסט הלחצן"
 
-#: auxiliary/forms.py:20 auxiliary/models.py:29
+#: auxiliary/forms.py:19 auxiliary/models.py:29
 msgid "Button link"
 msgstr "קישור הלחצן"
 
-#: auxiliary/forms.py:27
+#: auxiliary/forms.py:23
 msgid "Suggest Tidbit"
 msgstr "הצעת הידעת"
 
@@ -269,15 +269,15 @@ msgstr "הידעת"
 msgid "Tidbits"
 msgstr "הידעת"
 
-#: auxiliary/views.py:43
+#: auxiliary/views.py:37
 msgid "Help"
 msgstr "עזרה"
 
-#: auxiliary/views.py:144 templates/main.he.html:5
+#: auxiliary/views.py:124 templates/main.he.html:5
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:161
+#: auxiliary/views.py:141
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -1018,11 +1018,11 @@ msgstr "פעילות עבור חבר/ת הכנסת %s"
 msgid "Actions of %s, including votes, attended committees and posted articles"
 msgstr "פעילות עבור %s כולל הצבעות, פירסומים ונוכחות בוועדות"
 
-#: mks/models.py:18 persons/models.py:25
+#: mks/models.py:18 persons/models.py:27
 msgid "Male"
 msgstr "זכר"
 
-#: mks/models.py:19 persons/models.py:26
+#: mks/models.py:19 persons/models.py:28
 msgid "Female"
 msgstr "נקבה"
 
@@ -1055,11 +1055,11 @@ msgstr "קואליציה"
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:167 persons/models.py:44
+#: mks/models.py:167 persons/models.py:46
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: mks/models.py:168 persons/models.py:45
+#: mks/models.py:168 persons/models.py:47
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
@@ -1239,11 +1239,11 @@ msgstr "עדכונים שונים"
 msgid "Open Knesset Updates"
 msgstr "עדכוני כנסת פתוחה"
 
-#: persons/models.py:59
+#: persons/models.py:61
 msgid "Person"
 msgstr "אדם"
 
-#: persons/models.py:60 templates/persons/person_list.html:3
+#: persons/models.py:62 templates/persons/person_list.html:3
 #: templates/persons/person_list.html:4
 msgid "Persons"
 msgstr "אנשים"
@@ -1317,47 +1317,51 @@ msgstr ""
 msgid "Suggested at"
 msgstr "הוצע ב"
 
-#: suggestions/models.py:49
+#: suggestions/models.py:46
+msgid "Suggested by"
+msgstr "הוצע ע\"י"
+
+#: suggestions/models.py:50
 msgid "Resolved at"
 msgstr "נפתר ב"
 
-#: suggestions/models.py:53
+#: suggestions/models.py:54
 msgid "Resolved status"
 msgstr "סטטוס פתרון"
 
-#: suggestions/models.py:59
+#: suggestions/models.py:60
 msgid "Suggestion"
 msgstr "הצעה"
 
-#: suggestions/models.py:60
+#: suggestions/models.py:61
 msgid "Suggestions"
 msgstr "הצעות"
 
-#: suggestions/models.py:85
+#: suggestions/models.py:95
 msgid "Create new model instance"
 msgstr "יצירת אובייקט חדש למודל"
 
-#: suggestions/models.py:86
+#: suggestions/models.py:96
 msgid "Add related object to m2m relation or new model instance"
 msgstr ""
 
-#: suggestions/models.py:87
+#: suggestions/models.py:97
 msgid "Remove related object from m2m relation"
 msgstr ""
 
-#: suggestions/models.py:88
-msgid "Set field value. For m2m _replaces_ (use ADD if needed)"
+#: suggestions/models.py:98
+msgid "Set fields values"
 msgstr ""
 
-#: suggestions/models.py:93
+#: suggestions/models.py:103
 msgid "Suggestion type"
 msgstr "סוג הצעה"
 
-#: suggestions/models.py:99
+#: suggestions/models.py:110
 msgid "Can be blank, for create operations"
 msgstr ""
 
-#: suggestions/models.py:175
+#: suggestions/models.py:196
 msgid "Field or relation set name"
 msgstr ""
 
@@ -2049,6 +2053,7 @@ msgstr "עריכת אג'נדה"
 
 #: templates/agendas/agenda_list.html:39
 #: templates/auxiliary/_suggestion_forms.html:18
+#: templates/auxiliary/_suggestion_forms.html:33
 #: templates/committees/committee_list.html:45
 #: templates/laws/bill_detail.html:185 templates/laws/bill_detail.html:202
 #: templates/laws/bill_detail.html:222 templates/laws/bill_detail.html:297
@@ -2281,6 +2286,10 @@ msgstr "הציעו"
 #: templates/auxiliary/_suggestion_forms.html:17
 msgid "Sending"
 msgstr "שולח"
+
+#: templates/auxiliary/_suggestion_forms.html:26
+msgid "Pending suggestions"
+msgstr "הצעות ממתינות"
 
 #: templates/auxiliary/_watch.html:5 templates/auxiliary/_watch.html.py:13
 msgid "Watch"

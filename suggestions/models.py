@@ -42,7 +42,8 @@ class Suggestion(models.Model):
 
     suggested_at = models.DateTimeField(
         _('Suggested at'), blank=True, default=datetime.now, db_index=True)
-    suggested_by = models.ForeignKey(User, related_name='suggestions')
+    suggested_by = models.ForeignKey(User, related_name='suggestions',
+                                     verbose_name=_('Suggested by'))
 
     comment = models.TextField(blank=True, null=True)
 
@@ -133,8 +134,9 @@ class SuggestedAction(models.Model):
             model = self.subject_type.model_class()
             label = unicode(model._meta.verbose_name)
 
+        fields = [_(f) + ': ' + unicode(v) for (f, v) in self.action_params]
         res = u'{0} {1}: {2}'.format(self.get_action_display(), label,
-                                     dict(self.action_params))
+                                     ', '.join(fields))
         return res
 
     @property

@@ -19,3 +19,17 @@
         </div>
 </div>
 {% endfor %}
+<div id="suggest-viewDetails-modal" class="modal hide fade suggest-modal"
+  tabindex="-1" role="dialog" aria-labelledby="suggest-viewDetails-ModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="suggest-viewDetails-ModalLabel">{% trans "Pending suggestions" %}</h3>
+        </div>
+        <div class="modal-body">
+          <ul>
+          </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+        </div>
+</div>

@@ -100,8 +100,38 @@
 				detail.click(function(ev) {
 					ev.preventDefault();
 
-					$.get(detailUrl, getCountFor).done(function(data) {
-						// TODO implement me
+					var modal = $('#suggest-viewDetails-modal'),
+						target  = modal.find('.modal-body ul').empty();
+
+					$.get(detailUrl, getCountFor)
+					.done(function(data) {
+						$.each(data, function(label, suggestions) {
+							var label_li = $('<li/>').text(suggestions.length + ' ' + label),
+								suggestions_ul = $('<ul/>');
+
+							$.each(suggestions, function(idx, suggest) {
+								var s_li = $('<li/>').text(suggest.label);
+
+								if (suggest.url) {
+									$('<a>')
+									.attr({href:suggest.url, class:"btn btn-mini"})
+									.text(gettext('Apply'))
+									.prependTo(s_li);
+								}
+
+								suggestions_ul.append(s_li);
+							})
+
+							label_li.append(suggestions_ul);
+							target.append(label_li);
+						})
+					})
+					.fail(function() {
+						target.append(
+							$('<li>').text(gettext('You have to be logged in to view suggestions.')));
+					})
+					.always(function() {
+						modal.modal();
 					});
 					return false;
 				});
