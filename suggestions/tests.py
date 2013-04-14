@@ -365,3 +365,30 @@ class SuggestionsTests(TestCase):
 
         m.delete()
         Suggestion.objects.all().delete()
+
+    def test_can_auto_apply(self):
+
+        NAME = 'The chosen one'
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            actions=[
+                {
+                    'action': consts.CREATE,
+                    'fields': {
+                        'name': NAME,
+                        'current_party': self.party,
+                    },
+                    'subject': Member,
+                },
+            ]
+        )
+
+        self.assertTrue(suggestion.can_auto_apply)
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            comment='Insert comment here'
+        )
+
+        self.assertFalse(suggestion.can_auto_apply)

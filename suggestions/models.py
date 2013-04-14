@@ -81,6 +81,10 @@ class Suggestion(models.Model):
         self.save()
         return subject
 
+    @property
+    def can_auto_apply(self):
+        return self.actions.count() > 0
+
     def __unicode__(self):
         if self.comment:
             return self.comment
