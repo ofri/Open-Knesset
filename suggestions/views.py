@@ -90,7 +90,9 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
                     'apply_url': can_apply and x.can_auto_apply and reverse(
                         'suggestions_auto_apply', kwargs={'pk': x.pk}),
                     'reject_url': can_apply and reverse(
-                        'suggestions_reject', kwargs={'pk': x.pk})
+                        'suggestions_reject', kwargs={'pk': x.pk}),
+                    'by': unicode(x.suggested_by),
+                    'by_url': x.suggested_by.get_profile().get_absolute_url(),
                 }
                 for x in result[key]]
 
