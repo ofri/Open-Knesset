@@ -137,6 +137,26 @@
 							label_li.append(suggestions_ul);
 							target.append(label_li);
 						})
+
+						// setup buttons actions
+						target.find('a.btn-mini').click(function(ev) {
+							var btn = $(this),
+								url = btn.attr('href'),
+								reject = btn.hasClass('btn-warning'),
+								data = {};
+
+							if (reject) {
+								var reason = prompt(gettext("Reject reason"));
+
+								if (reason == null || reason == "") {return};
+								data['reason'] = reason
+							}
+
+							$.post(url, data);
+
+							return false;
+						})
+
 					})
 					.fail(function() {
 						target.append(
