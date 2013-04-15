@@ -6429,3 +6429,10 @@ div.color_swatch {
 .suggestion-actions a.btn {
   margin-right: 10px;
 }
+#suggest-viewDetails-modal li ul li {
+  padding: 5px 0 10px;
+  border-bottom: 1px solid #e6e6e6;
+}
+#suggest-viewDetails-modal li ul li:last-child {
+  border-bottom: none;
+}
