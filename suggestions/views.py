@@ -111,8 +111,23 @@ class AutoApplySuggestionView(SingleObjectMixin, View):
 
     @method_decorator(permission_required('suggesions.autoapply_suggestion',
                                           raise_exception=True))
-    def post(self):
-        raise NotImplementedError
+    def post(self, request, *args, **kwargs):
+        suggestion = self.get_object()
+
+        if not suggestion.can_auto_apply:
+            res = {
+                'success': False,
+                'message': "Can't auto apply this suggestion"
+            }
+        else:
+            suggestion.auto_apply(request.user)
+            res = {
+                'success': True,
+            }
+
+        return HttpResponse(
+            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
+            mimetype='application/json')
 
 
 class RejectSuggestionView(SingleObjectMixin, View):
@@ -122,5 +137,15 @@ class RejectSuggestionView(SingleObjectMixin, View):
 
     @method_decorator(permission_required('suggesions.autoapply_suggestion',
                                           raise_exception=True))
-    def post(self):
-        raise NotImplementedError
+    def post(self, request, *args, **kwargs):
+        suggestion = self.get_object()
+        reason = request.POST.get('reason', 'Unknown')
+
+        suggestion.reject(request.user, reason)
+        res = {
+            'success': True,
+        }
+
+        return HttpResponse(
+            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
+            mimetype='application/json')

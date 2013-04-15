@@ -83,6 +83,9 @@
    * Creates a button for showing the details and returns it
    ***************************************************************/
   function showPendingCounts(data) {
+	// remove old alerts if exists
+	$('.alert-pending-suggestions-count').remove();
+
 	var container = $(
 			'<div class="alert alert-info alert-pending-suggestions-count">' +
 			'<a href="#" class="close" data-dismiss="alert">&times;</a>' +

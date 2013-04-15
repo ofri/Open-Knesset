@@ -53,6 +53,8 @@ class Suggestion(models.Model):
     resolved_status = models.IntegerField(
         _('Resolved status'), db_index=True, default=NEW,
         choices=RESOLVE_CHOICES)
+    reason = models.CharField(
+        _('Reject reason'), max_length=200, blank=True, null=True)
 
     objects = SuggestionsManager()
 
@@ -80,6 +82,15 @@ class Suggestion(models.Model):
 
         self.save()
         return subject
+
+    def reject(self, resolved_by, reason):
+
+        self.resolved_by = resolved_by
+        self.resolved_status = WONTFIX
+        self.resolved_at = datetime.now()
+        self.reason = reason
+
+        self.save()
 
     @property
     def can_auto_apply(self):
