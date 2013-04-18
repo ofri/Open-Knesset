@@ -34,7 +34,7 @@
         {% for tidbit in tidbits  %}
         <div class="item {% if forloop.first %}active{% endif %}">
             <img class="tidbit-pic"
-                src="{% if tidbit.photo %}{{tidbit.photo}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
+                src="{% if tidbit.photo %}{{tidbit.photo.url}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
                 alt="Tidbit photo">
             <strong class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</strong>
             <div>{{tidbit.content|safe}}</div>
