@@ -166,7 +166,13 @@
 		data['reason'] = reason
 	}
 
-	$.post(url, data);
+	$.post(url, data)
+	.then(function(res) {
+		if (!res.success) {
+			alert(res.message || 'Unknown error')
+		}
+		btn.closest('li').fadeOut(1000, function() { $(this).remove() });
+	});
 
 	return false;
   }
