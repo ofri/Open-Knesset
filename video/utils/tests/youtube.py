@@ -42,7 +42,7 @@ class testYoutube(TestCase):
         self.assertIsNotNone(video['published'])
         title_and_desc = (video['title'] + video['description']).lower()
         self.assertIn('funny',title_and_desc)
-        self.assertIn('happy',title_and_desc)
+        self.assertIn('cat',title_and_desc)
 
     def testGetYoutubeVideoIdUrl(self):
         videos=GetYoutubeVideos(youtube_id_url='http://gdata.youtube.com/feeds/api/videos/4SA3ecqrGvM').videos
