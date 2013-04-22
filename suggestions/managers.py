@@ -50,8 +50,9 @@ class SuggestionsManager(models.Manager):
                         # TODO: using json.dumps to serialize values here
                         #       Maybe some other safer way to implement
                         #       this ?
-                        action.action_fields.create(name=field,
-                                                    value=json.dumps(value))
+                        action.action_fields.create(
+                            name=field,
+                            value=json.dumps(value, ensure_ascii=False))
 
         # TODO email editors
 

@@ -94,6 +94,7 @@ urlpatterns = patterns('',
     (r'^mmm-documents/', include('mmm.urls')),
     (r'^event/', include('events.urls')),
     (r'^tinymce/', include('tinymce.urls')),
+    (r'^suggestions/', include('suggestions.urls')),
 )
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

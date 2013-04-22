@@ -1,37 +1,31 @@
 import csv, random, tagging, logging
-from datetime import datetime
-from operator import attrgetter
-from django.template import RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
-from django.utils.translation import ugettext as _
-from django.utils import simplejson as json
+from actstream import action
+from annotatetext.views import post_annotation as annotatetext_post_annotation
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http import (
     HttpResponseForbidden, HttpResponseRedirect, HttpResponse,
     HttpResponseNotAllowed, HttpResponseBadRequest, Http404)
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from django.utils import simplejson as json
+from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import BaseListView, ListView
-from django.contrib.comments.models import Comment
-from actstream import action
-from actstream.models import Action
-from mks.models import Member
-from laws.models import Vote, Bill, get_debated_bills
-from committees.models import Topic, CommitteeMeeting, PUBLIC_TOPIC_STATUS
-from agendas.models import Agenda
 from tagging.models import Tag, TaggedItem
-from annotatetext.views import post_annotation as annotatetext_post_annotation
-from annotatetext.models import Annotation
-from knesset.utils import notify_responsible_adult, main_actions
-from events.models import Event
-from suggestions.models import Suggestion
-from .models import Tidbit
+
 from .forms import TidbitSuggestionForm
-from .serializers import PromiseAwareJSONEncoder
+from .models import Tidbit
+from committees.models import CommitteeMeeting
+from events.models import Event
+from knesset.utils import notify_responsible_adult
+from laws.models import Vote, Bill
+from mks.models import Member
 
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -120,23 +114,9 @@ def main(request):
 
         form = TidbitSuggestionForm(request.POST)
         if form.is_valid():
-            form.save(suggested_by=request.user)
-            tidbits_suggestions = \
-                Suggestion.objects.get_pending_suggestions_for(Tidbit).count()
+            form.save(request)
 
-            res = {
-                'success': True,
-                'tidbits_suggestions': tidbits_suggestions,
-            }
-        else:
-            res = {
-                'success': False,
-                'errors': form.errors,
-            }
-
-        return HttpResponse(
-            json.dumps(res, ensure_ascii=False, cls=PromiseAwareJSONEncoder),
-            mimetype='application/json')
+        return form.get_response()
 
     NUMOF_EVENTS = 5
     events = Event.objects.get_upcoming()

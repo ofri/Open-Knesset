@@ -16,7 +16,7 @@
     <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=24" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=26" />
     <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
 
 <!--
@@ -66,7 +66,7 @@
       </div>
 
       <ul class="nav nav-pills">
-        <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members %}">{% trans "Members and Parties" %}</a></li>
+        <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members-index %}">{% trans "Members and Parties" %}</a></li>
         <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
         <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
         <li id="nav-plenum" {% block nav-plenum %} {% endblock %} ><a href="{% url plenum %}">מליאה</a></li>
@@ -208,7 +208,7 @@
     <script src="{% static "js/ok-toggle.js" %}"></script>
     <script src="{% static "js/ok-more.js" %}"></script>
     <script src="{% static "js/ok-search.js" %}?v=3"></script>
-    <script src="{% static "js/ok-suggest.js" %}"></script>
+    <script src="{% static "js/ok-suggest.js" %}?v=1"></script>
 <!-- end JS -->
     <script>
         $(function() { 

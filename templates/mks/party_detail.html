@@ -33,8 +33,10 @@
 {% block nav-parties %}class="active"{% endblock %}
 
  {% block breadcrumbs %}
-            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
-            <li class="active">{{ object.name }}</li>
+    {% with object.knesset as knesset %}
+            <li><a href="{{knesset.get_absolute_url}}">{{ knesset }}</a> <span class="divider">/</span></li>
+            <li class="active">{{ object }}</li>
+    {% endwith %}
  {% endblock %}
 
 {% block divcontent %}
@@ -44,7 +46,7 @@
             <div class="span3 card-details">
                 <div class="spacer fill">
                     <header>
-                        <h1>{{object.name}}</h1>
+                        <h1>{{object}}</h1>
                         <p>({{object.is_coalition|yesno:_("IN_COALITION,IN_OPPOSITION")}})</p>
                     </header>
                     <div class="social-links">

@@ -21,7 +21,7 @@
 
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
-            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url parties-members-index  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
             <li><a href="{% url party-list %}">{% trans "Parties" %}</a> <span class="divider">/</span></li>
             <li class="active">{{ title  }}</li>
 {% endblock %}

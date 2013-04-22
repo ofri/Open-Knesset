@@ -22,6 +22,7 @@ class CommitteeRelatedVideosInline(generic.GenericTabularInline):
 
 class CommitteeAdmin(admin.ModelAdmin):
     ordering = ('name', )
+    filter_horizontal = ('members','chairpersons','replacements')
     inlines = (CommitteeRelatedVideosInline, )
 
 

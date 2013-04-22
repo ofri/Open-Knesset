@@ -1,4 +1,7 @@
+import json
+
 from django.test import TestCase
+from django.test.client import Client
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -164,7 +167,7 @@ class SuggestionsTests(TestCase):
                 {
                     'action': consts.SET,
                     'fields': {'website': self.MK_SITE},
-                    'subject':self.member1,
+                    'subject': self.member1,
                 },
             ]
         )
@@ -175,7 +178,7 @@ class SuggestionsTests(TestCase):
                 {
                     'action': consts.SET,
                     'fields': {'website': self.MK_SITE},
-                    'subject':self.member2,
+                    'subject': self.member2,
                 },
             ]
         )
@@ -329,3 +332,63 @@ class SuggestionsTests(TestCase):
                     }
                 ]
             )
+
+    def test_pending_suggestions_count_view(self):
+        c = Client()
+
+        NAME = 'The chosen one'
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            actions=[
+                {
+                    'action': consts.CREATE,
+                    'fields': {
+                        'name': NAME,
+                        'current_party': self.party,
+                    },
+                    'subject': Member,
+                },
+            ]
+        )
+
+        response = c.get('/suggestions/pending_count/', {'for': 'mks.Member'})
+        self.assertEqual(response['Content-Type'], 'application/json')
+        data = json.loads(response.content)
+        self.assertEqual(data.items()[0][1], 1)
+
+        m = suggestion.auto_apply(self.editor)
+
+        response = c.get('/suggestions/pending_count/', {'for': 'mks.Member'})
+        self.assertEqual(response['Content-Type'], 'application/json')
+        data = json.loads(response.content)
+        self.assertFalse(data)
+
+        m.delete()
+        Suggestion.objects.all().delete()
+
+    def test_can_auto_apply(self):
+
+        NAME = 'The chosen one'
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            actions=[
+                {
+                    'action': consts.CREATE,
+                    'fields': {
+                        'name': NAME,
+                        'current_party': self.party,
+                    },
+                    'subject': Member,
+                },
+            ]
+        )
+
+        self.assertTrue(suggestion.can_auto_apply)
+
+        suggestion = Suggestion.objects.create_suggestion(
+            suggested_by=self.regular_user,
+            comment='Insert comment here'
+        )
+
+        self.assertFalse(suggestion.can_auto_apply)

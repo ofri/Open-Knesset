@@ -5225,10 +5225,17 @@ form .helptext {
 }
 /* fix for carousel scroller */
 .carousel-inner > .item {
-  transition: right 0.6s ease-in-out 0s;
-  -webkit-transition: right 0.6s ease-in-out 0s;
-  -moz-transition: right 0.6s ease-in-out 0s;
-  -o-transition: right 0.6s ease-in-out 0s;
+  -webkit-transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
+  -moz-transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
+  -o-transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  -moz-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  -ms-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  -o-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  /* easeInOutQuad */
+
 }
 .carousel-indicators {
   list-style: none outside none;
@@ -5565,6 +5572,11 @@ ol {
 }
 .item-context {
   font-size: 12px;
+}
+.item-context a {
+  unicode-bidi: -webkit-isolate;
+  unicode-bidi: -moz-isolate;
+  unicode-bidi: isolate;
 }
 .card-main {
   margin-bottom: 60px;
@@ -6382,39 +6394,74 @@ div.color_swatch {
 #google-search-results .gsc-results {
   background: #ffffff;
 }
-#tidbitCarousel {
-  padding: 30px 20%;
+div#tidbitCarousel .carousel-control {
+  display: none;
 }
-#tidbitCarousel .item {
+div#tidbitCarousel .item {
   height: 200px;
+  padding: 30px 220px 0 30px;
+  background: url("../img/graphy.png");
 }
-#tidbitCarousel .item h1 {
-  padding: 0 40px 20px 0;
+div#tidbitCarousel .item img {
+  width: 200px;
+  height: auto;
+  -webkit-transform: rotate(5deg);
+  -moz-transform: rotate(5deg);
+  -ms-transform: rotate(5deg);
+  -o-transform: rotate(5deg);
+  transform: rotate(5deg);
+  position: absolute;
+  right: 10px;
+  top: 0;
+  -webkit-box-shadow: 2px 3px 6px rgba(112, 168, 220, 0.5);
+  -moz-box-shadow: 2px 3px 6px rgba(112, 168, 220, 0.5);
+  box-shadow: 2px 3px 6px rgba(112, 168, 220, 0.5);
+}
+div#tidbitCarousel .item strong {
+  display: block;
+  padding: 0 0px 20px 0;
   background-position: 100% 30%;
   background-repeat: no-repeat;
+  font-size: 20px;
 }
-#tidbitCarousel .item h1.tidbit-icon-quote {
-  background-image: url("../img/tidbits/quote.png");
+div#tidbitCarousel .item div {
+  padding-right: 0px;
+  font-size: 30px;
+  line-height: 35px;
+  max-width: 900px;
 }
-#tidbitCarousel .item h1.tidbit-icon-stat {
-  background-image: url("../img/tidbits/stats.png");
-}
-#tidbitCarousel .item h1.tidbit-icon-hand {
-  background-image: url("../img/tidbits/hand.png");
-}
-#tidbitCarousel .item div {
-  padding-right: 40px;
-}
-#tidbitCarousel .carousel-inner .btn {
+div#tidbitCarousel .btn {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: 10px;
   font-size: 120%;
   padding: 15px 40px;
 }
-#tidbitCarousel .btn-suggest {
+div#tidbitCarousel .btn-suggest {
   float: none;
   position: absolute;
   top: 15px;
   left: 15px;
+  font-size: inherit;
+  padding: 5px;
+  background: transparent;
+  color: #797878;
+  border-color: #797878;
+}
+div#tidbitCarousel .btn-suggest:hover {
+  color: #ffffff;
+  background: #797878;
+}
+.suggestion-actions {
+  text-align: left;
+}
+.suggestion-actions a.btn {
+  margin-right: 10px;
+}
+#suggest-viewDetails-modal li ul li {
+  padding: 5px 0 10px;
+  border-bottom: 1px solid #e6e6e6;
+}
+#suggest-viewDetails-modal li ul li:last-child {
+  border-bottom: none;
 }
