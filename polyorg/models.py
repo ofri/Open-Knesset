@@ -38,9 +38,10 @@ class CandidateList(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Party(models.Model):
-    name        = models.CharField(max_length=64)
-    number_of_seats = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=64)
+
 
 class Candidate(models.Model):
     candidates_list = models.ForeignKey(CandidateList)
