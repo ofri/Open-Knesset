@@ -165,13 +165,15 @@ class MemberResource(BaseResource):
             'bills_stats_pre',
             'bills_stats_first',
             'bills_stats_approved',
-            ]
+        ]
+
         filtering = dict(
-            name = ALL,
-            is_current = ALL,
-            )
+            name=ALL,
+            is_current=ALL,
+        )
+
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
-        list_fields = ['name', 'id', 'img_url']
+        list_fields = ['name', 'id', 'img_url', 'is_current']
         include_absolute_url = True
 
     party_name = fields.CharField()
