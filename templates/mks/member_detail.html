@@ -47,9 +47,11 @@
 {% block nav-parties %}class="active"{% endblock %}
 
  {% block breadcrumbs %}
-            <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+    {% with object.current_party as party %}
+<li><a href="{{party.knesset.get_absolute_url}}">{{party.knesset}}</a> <span class="divider">/</span></li>
             <li><a href="{% url party-detail object.current_party.id %}">{{ object.current_party }}</a> <span class="divider">/</span></li>
             <li class="active">{{ object.name }}</li>
+    {% endwith %}
  {% endblock %}
 
 

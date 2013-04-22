@@ -3,6 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
@@ -55,7 +56,10 @@ class Knesset(models.Model):
     objects = KnessetManager()
 
     def __unicode__(self):
-        return unicode(self.number)
+        return _(u'Knesset %(number)d') % {'number': self.number}
+
+    def get_absolute_url(self):
+        return reverse('parties-members-list', kwargs={'pk': self.number})
 
 
 class Party(models.Model):
@@ -92,7 +96,13 @@ class Party(models.Model):
         }
 
     def current_members(self):
-        return self.members.filter(is_current=True).order_by('current_position')
+        # for current knesset, we want to display by selecting is_current,
+        # for older ones, it's not relevant
+        if self.knesset == Knesset.objects.current_knesset():
+            return self.members.filter(
+                is_current=True).order_by('current_position')
+        else:
+            return self.all_members.order_by('current_position')
 
     def past_members(self):
         return self.members.filter(is_current=False)
