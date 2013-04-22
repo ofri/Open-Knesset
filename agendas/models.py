@@ -238,13 +238,13 @@ class AgendaManager(models.Manager):
                             .distinct()
         return agendas
 
-    def get_mks_values(self,fromdate=None,todate=None):
-        isFullQuery = (fromdate is None) and (todate is None)
+    def get_mks_values(self,ranges=[[None,None]]):
         mks_values = False
-        if isFullQuery:
+        if ranges == [[None,None]]:
             mks_values = cache.get('agendas_mks_values')
         if not mks_values:
-            q = queries.getAllAgendaMkVotes(fromdate,todate)
+
+            q = queries.getAllAgendaMkVotes()
             # outer join - add missing mks to agendas
             newAgendaMkVotes = {}
             # generates a set of all the current mk ids that have ever voted for any agenda
@@ -260,12 +260,11 @@ class AgendaManager(models.Manager):
                 mks_values[agenda_id] = \
                     map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1], numvotes=x[1][1][2])),
                         enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
-            if isFullQuery:
-                cache.set('agendas_mks_values', mks_values, 1800)
+            cache.set('agendas_mks_values', mks_values, 1800)
         return mks_values
 
-    def get_all_party_values(self,fromdate=None,todate=None):
-        return queries.getAllAgendaPartyVotes(fromdate,todate)
+    def get_all_party_values(self):
+        return queries.getAllAgendaPartyVotes()
 
 class Agenda(models.Model):
     name = models.CharField(max_length=200)
@@ -411,19 +410,19 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def get_mks_values(self,fromdate=None,todate=None):
-        mks_grade = Agenda.objects.get_mks_values(fromdate,todate)
+    def get_mks_values(self):
+        mks_grade = Agenda.objects.get_mks_values()
         return mks_grade.get(self.id,[])
 
-    def get_all_mks_values(self,fromdate=None,todate=None):
-        return Agenda.objects.get_mks_values(fromdate,todate)
+    def get_all_mks_values(self):
+        return Agenda.objects.get_mks_values()
 
-    def get_party_values(self,fromdate=None,todate=None):
-        party_grades = Agenda.objects.get_all_party_values(fromdate,todate)
+    def get_party_values(self):
+        party_grades = Agenda.objects.get_all_party_values()
         return party_grades.get(self.id,[])
 
-    def get_all_party_values(self,fromdate=None,todate=None):
-        return Agenda.objects.get_all_party_values(fromdate,todate)
+    def get_all_party_values(self):
+        return Agenda.objects.get_all_party_values()
 
     def get_suggested_votes_by_agendas(self, num):
         votes = Vote.objects.filter(~Q(agendavotes__agenda=self))

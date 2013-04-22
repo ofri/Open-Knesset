@@ -6,30 +6,14 @@ from operator import itemgetter
 
 import time,datetime
 
-def getAllAgendaPartyVotes(fromdate=None,todate=None):
-    results = None
-    isFullQuery = (fromdate is None) and (todate is None)
-    if isFullQuery:
-        results = cache.get('AllAgendaPartyVotes')
+def getAllAgendaPartyVotes():
+    results = cache.get('AllAgendaPartyVotes')
     if not results:
-        try:
-            if fromdate is None:
-                fromdate = 0
-            fromdt = datetime.datetime.utcfromtimestamp(float(fromdate))
-        except ValueError:
-            fromdt = datetime.datetime.utcfromtimestamp(float(0))
-        try:
-            if todate is None:
-                todate = time.time()
-            todt = datetime.datetime.utcfromtimestamp(float(todate))
-        except ValueError:
-            todt = datetime.datetime.utcfromtimestamp(float(time.time()))          
         cursor = connection.cursor()
-        cursor.execute(PARTY_QUERY,[fromdt,todt,fromdt,todt])
+        cursor.execute(PARTY_QUERY)
         results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3])),list(group))),
                            groupby(cursor.fetchall(),key=itemgetter(0))))
-        if (not fromdate is None) and (not todate is None):
-            cache.set('AllAgendaPartyVotes', results, 1800)
+        cache.set('AllAgendaPartyVotes', results, 1800)
     return results
 
 PARTY_QUERY = """
@@ -47,7 +31,6 @@ FROM   (SELECT agid                   agendaid,
                 FROM   agendas_agendavote a
                 JOIN   laws_vote v
                   ON   a.vote_id = v.id
-               WHERE   v.time BETWEEN %s and %s
                 GROUP  BY a.agenda_id) agendavalues
                left outer join mks_party m
                  on 1=1) a
@@ -82,8 +65,7 @@ FROM   (SELECT agid                   agendaid,
                                                      a.score * a.importance as VALUE 
                                               FROM   agendas_agendavote a
                                               JOIN   laws_vote v
-                                                ON   a.vote_id = v.id
-                                             WHERE   v.time BETWEEN %s and %s) a 
+                                                ON   a.vote_id = v.id) a 
                                     ON p.voteid = a.vote_id) b  
                    GROUP  BY agenda_id, 
                              partyid 
@@ -92,30 +74,14 @@ FROM   (SELECT agid                   agendaid,
             AND a.partyid = v.partyid 
 ORDER BY agendaid,score desc"""
 
-def getAllAgendaMkVotes(fromdate=None,todate=None):
-    results = None
-    isFullQuery = (fromdate is None) and (todate is None)
-    if isFullQuery:
-        results = cache.get('AllAgendaMemberVotes')
+def getAllAgendaMkVotes():
+    results = cache.get('AllAgendaMemberVotes')
     if not results:
-        try:
-            if fromdate is None:
-                fromdate = 0
-            fromdt = datetime.datetime.utcfromtimestamp(float(fromdate))
-        except ValueError:
-            fromdt = datetime.datetime.utcfromtimestamp(float(0))
-        try:
-            if todate is None:
-                todate = time.time()
-            todt = datetime.datetime.utcfromtimestamp(float(todate))
-        except ValueError:
-            todt = datetime.datetime.utcfromtimestamp(float(time.time()))          
         cursor = connection.cursor()
-        cursor.execute(MK_QUERY,[fromdt,todt,fromdt,todt])
+        cursor.execute(MK_QUERY)
         results = dict(map(lambda (key,group):(key,map(lambda g:(g[1],float(g[2]),float(g[3]),int(g[4])),list(group))),
                            groupby(cursor.fetchall(),key=itemgetter(0))))
-        if isFullQuery:        
-            cache.set('AllAgendaMemberVotes', results, 1800)
+        cache.set('AllAgendaMemberVotes', results, 1800)
     return results
 
 MK_QUERY = """
@@ -134,7 +100,6 @@ FROM   (SELECT a.agenda_id                    agendaid,
         FROM   agendas_agendavote a
         JOIN   laws_vote v
           ON   a.vote_id = v.id
-       WHERE   v.time BETWEEN %s and %s
         GROUP  BY a.agenda_id) a 
        LEFT OUTER JOIN (SELECT agenda_id, 
                                memberid, 
@@ -170,7 +135,6 @@ FROM   (SELECT a.agenda_id                    agendaid,
                                                    FROM   agendas_agendavote a
                                                    JOIN   laws_vote v
                                                      ON   a.vote_id = v.id
-                                                  WHERE   v.time BETWEEN %s and %s
                                                    ) a 
                                          ON p.voteid = a.vote_id) b 
                         GROUP  BY agenda_id, 

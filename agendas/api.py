@@ -1,6 +1,8 @@
 '''
 API for the agendas app
 '''
+from django.utils.timezone import datetime
+
 import tastypie.fields as fields
 from avatar.templatetags.avatar_tags import avatar_url
 from django.contrib.auth.models import User
@@ -74,6 +76,7 @@ class AgendaResource(BaseResource):
     parties = fields.ListField()
     votes = fields.ListField()
     editors = fields.ListField()
+    ranges = fields.ListField()
 
     class Meta(BaseResource.Meta):
         queryset = Agenda.objects.filter(
@@ -82,14 +85,13 @@ class AgendaResource(BaseResource):
         include_absolute_url = True
         excludes = ['is_public']
         list_fields = ['name', 'id', 'description', 'public_owner_name']
-        filtering = {
-            "date":["from","to"],
-        }
 
     def dehydrate_members(self, bundle):
-        fromdate = bundle.request.GET.get('date__from',None)
-        todate   = bundle.request.GET.get('date__to',None)
-        mks_values = dict(bundle.obj.get_mks_values(fromdate,todate))
+        rangesString = bundle.request.GET.get('ranges','-')
+        ranges = map(   lambda rangeString:[int(val) if val else None for val in rangeString.split('-')],
+                        rangesString.split(','))
+        fullRange = rangesString == '-'
+        mks_values = dict(bundle.obj.get_mks_values())
         members = []
         for mk in Member.objects.filter(pk__in=mks_values.keys(),
                                         current_party__isnull=False).select_related('current_party'):
@@ -111,10 +113,8 @@ class AgendaResource(BaseResource):
         return members
 
     def dehydrate_parties(self, bundle):
-        fromdate = bundle.request.GET.get('date__from',None)
-        todate   = bundle.request.GET.get('date__to',None)
         party_values = dict(map(lambda party_data:(party_data[0],(party_data[1],party_data[2])),
-                            bundle.obj.get_party_values(fromdate,todate)))
+                            bundle.obj.get_party_values()))
         parties = []
         for party in Party.objects.all():
             if party.pk in party_values:
@@ -142,3 +142,17 @@ class AgendaResource(BaseResource):
                  avatar=avatar_url(e, 48))
             for e in bundle.obj.editors.all()
         ]
+
+    def dehydrate_ranges(self, bundle):
+        rangesString = bundle.request.GET.get('ranges','-')
+        ranges = map(   lambda rangeString:[int(val) if val else None for val in rangeString.split('-')],
+                        rangesString.split(','))
+        results = []
+        for start,end in ranges:
+            rangeResult = {}
+            if start:
+                rangeResult['from']=datetime(year=start/100,month=start%100,day=1)
+            if end:
+                rangeResult['to']=datetime(year=end/100,month=end%100,day=1)
+            results.append(rangeResult)
+        return results
