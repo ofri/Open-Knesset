@@ -83,7 +83,13 @@ class Party(models.Model):
         return "%s/api/party/%s/htmldiv/" % ('', self.id)
 
     def __unicode__(self):
-        return "%s" % self.name
+        if self.is_current:
+            return self.name
+
+        return _(u'%(name)s in Knesset %(number)d') % {
+            'name': self.name,
+            'number': self.knesset.number
+        }
 
     def current_members(self):
         return self.members.filter(is_current=True).order_by('current_position')
@@ -124,6 +130,10 @@ class Party(models.Model):
 
     def get_affiliation(self):
         return _('Coalition') if self.is_coalition else _('Opposition')
+
+    @property
+    def is_current(self):
+        return self.knesset == Knesset.objects.current_knesset()
 
 
 class Membership(models.Model):

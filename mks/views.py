@@ -192,9 +192,9 @@ class MemberCsvView(CsvView):
 
 class MemberDetailView(DetailView):
 
-    queryset = Member.objects.filter(is_current=True)\
-                             .exclude(current_party__isnull=True)\
+    queryset = Member.objects.exclude(current_party__isnull=True)\
                              .select_related('current_party',
+                                             'current_party__knesset',
                                              'voting_statistics')
     MEMBER_INITIAL_DATA = 2
 

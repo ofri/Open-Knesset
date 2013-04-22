@@ -48,7 +48,7 @@
 
  {% block breadcrumbs %}
             <li><a href="{% url parties-members  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
-            <li><a href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a> <span class="divider">/</span></li>
+            <li><a href="{% url party-detail object.current_party.id %}">{{ object.current_party }}</a> <span class="divider">/</span></li>
             <li class="active">{{ object.name }}</li>
  {% endblock %}
 
@@ -63,10 +63,10 @@
         <div class="span7 card-details">
           <div class="spacer fill">
             <header>
-            <h1>{{object.name}}</h1>
+            <h1>{{object}}</h1>
             </header>
             <p>
-                {{ object.current_party.name }}
+                {{ object.current_party }}
                 <strong>({{object.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})</strong>
             </p>
             <p>

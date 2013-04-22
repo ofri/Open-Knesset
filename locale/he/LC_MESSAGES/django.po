@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-14 17:47+0300\n"
-"PO-Revision-Date: 2013-04-14 17:47+0300\n"
+"POT-Creation-Date: 2013-04-22 12:01+0300\n"
+"PO-Revision-Date: 2013-04-22 12:03+0300\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -221,15 +221,15 @@ msgstr "הידעת ?"
 msgid "Icon"
 msgstr "צלמית"
 
-#: auxiliary/forms.py:16 auxiliary/models.py:27 links/admin.py:21
+#: auxiliary/forms.py:16 auxiliary/models.py:28 links/admin.py:21
 msgid "Content"
 msgstr "תוכן"
 
-#: auxiliary/forms.py:18 auxiliary/models.py:28
+#: auxiliary/forms.py:18 auxiliary/models.py:29
 msgid "Button text"
 msgstr "טקסט הלחצן"
 
-#: auxiliary/forms.py:19 auxiliary/models.py:29
+#: auxiliary/forms.py:19 auxiliary/models.py:30
 msgid "Button link"
 msgstr "קישור הלחצן"
 
@@ -253,19 +253,27 @@ msgstr "הצבעה"
 msgid "title"
 msgstr "כותרת"
 
-#: auxiliary/models.py:31
+#: auxiliary/models.py:27
+msgid "Image type if no image is uploaded"
+msgstr ""
+
+#: auxiliary/models.py:32
 msgid "Active"
 msgstr "פעיל"
 
-#: auxiliary/models.py:32
+#: auxiliary/models.py:33
 msgid "Ordering"
 msgstr "מיון"
 
-#: auxiliary/models.py:41
+#: auxiliary/models.py:37
+msgid "Photo"
+msgstr ""
+
+#: auxiliary/models.py:44
 msgid "Tidbit"
 msgstr "הידעת"
 
-#: auxiliary/models.py:42
+#: auxiliary/models.py:45
 msgid "Tidbits"
 msgstr "הידעת"
 
@@ -496,7 +504,7 @@ msgstr "הזנה של הצבעות"
 msgid "Bills feed"
 msgstr "הזנה של הצעות חוק"
 
-#: knesset/feeds.py:83 templates/main.he.html:140
+#: knesset/feeds.py:83 templates/main.he.html:139
 #: templates/user/annotated_items.html:4 templates/user/annotated_items.html:9
 #: templates/user/public_profile.html:41
 msgid "Annotations"
@@ -507,39 +515,39 @@ msgstr "הארות"
 msgid "feed"
 msgstr "פיד"
 
-#: knesset/settings.py:238
+#: knesset/settings.py:239
 msgid "Statement"
 msgstr "הצהרה"
 
-#: knesset/settings.py:239
+#: knesset/settings.py:240
 msgid "Funny :-)"
 msgstr "מצחיק :-)"
 
-#: knesset/settings.py:240
+#: knesset/settings.py:241
 msgid "False fact"
 msgstr "עובדה שגויה"
 
-#: knesset/settings.py:241
+#: knesset/settings.py:242
 msgid "Source?"
 msgstr "מקור?"
 
-#: knesset/settings.py:242
+#: knesset/settings.py:243
 msgid "Found source"
 msgstr "הפניה למקור"
 
-#: knesset/settings.py:243
+#: knesset/settings.py:244
 msgid "Cross reference"
 msgstr "ראה גם"
 
-#: knesset/settings.py:244
+#: knesset/settings.py:245
 msgid "Important"
 msgstr "חשוב"
 
-#: knesset/settings.py:245
+#: knesset/settings.py:246
 msgid "Formatting/Error!"
 msgstr "עיצוב/שגיאה"
 
-#: knesset/settings.py:246
+#: knesset/settings.py:247
 msgid "Comment"
 msgstr "תגובה"
 
@@ -1047,56 +1055,60 @@ msgstr "מפלגה"
 msgid "Parties"
 msgstr "סיעות"
 
-#: mks/models.py:126 mks/views.py:607 templates/mks/parties_members.html:31
+#: mks/models.py:89
+msgid "%(name)s in Knesset %(number)d"
+msgstr "%(name)s בכנסת ה־%(number)d"
+
+#: mks/models.py:132 mks/views.py:607 templates/mks/parties_members.html:31
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:126 mks/views.py:608 templates/mks/parties_members.html:44
+#: mks/models.py:132 mks/views.py:608 templates/mks/parties_members.html:44
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:167 persons/models.py:46
+#: mks/models.py:177 persons/models.py:46
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: mks/models.py:168 persons/models.py:47
+#: mks/models.py:178 persons/models.py:47
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
-#: mks/models.py:196
+#: mks/models.py:206
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/models.py:197 templates/mks/member_list.html:18
+#: mks/models.py:207 templates/mks/member_list.html:18
 #: templates/mks/parties_members.html:24
 msgid "Members"
 msgstr "ח\"כים"
 
-#: mks/models.py:324
+#: mks/models.py:334
 msgid "Coalition Member (female)"
 msgstr "חברת כנסת בקואליציה"
 
-#: mks/models.py:326
+#: mks/models.py:336
 msgid "Opposition Member (female)"
 msgstr "חברת כנסת באופוזיציה"
 
-#: mks/models.py:329
+#: mks/models.py:339
 msgid "Coalition Member (male)"
 msgstr "חבר כנסת בקואליציה"
 
-#: mks/models.py:331
+#: mks/models.py:341
 msgid "Opposition Member (male)"
 msgstr "חבר כנסת באופוזיציה"
 
-#: mks/models.py:334
+#: mks/models.py:344
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: mks/models.py:336
+#: mks/models.py:346
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: mks/models.py:349
+#: mks/models.py:359
 msgid "Minister"
 msgstr "שר"
 
@@ -1329,39 +1341,43 @@ msgstr "נפתר ב"
 msgid "Resolved status"
 msgstr "סטטוס פתרון"
 
-#: suggestions/models.py:60
+#: suggestions/models.py:57
+msgid "Reject reason"
+msgstr ""
+
+#: suggestions/models.py:62
 msgid "Suggestion"
 msgstr "הצעה"
 
-#: suggestions/models.py:61
+#: suggestions/models.py:63
 msgid "Suggestions"
 msgstr "הצעות"
 
-#: suggestions/models.py:95
+#: suggestions/models.py:110
 msgid "Create new model instance"
 msgstr "יצירת אובייקט חדש למודל"
 
-#: suggestions/models.py:96
+#: suggestions/models.py:111
 msgid "Add related object to m2m relation or new model instance"
 msgstr ""
 
-#: suggestions/models.py:97
+#: suggestions/models.py:112
 msgid "Remove related object from m2m relation"
 msgstr ""
 
-#: suggestions/models.py:98
+#: suggestions/models.py:113
 msgid "Set fields values"
 msgstr ""
 
-#: suggestions/models.py:103
+#: suggestions/models.py:118
 msgid "Suggestion type"
 msgstr "סוג הצעה"
 
-#: suggestions/models.py:110
+#: suggestions/models.py:125
 msgid "Can be blank, for create operations"
 msgstr ""
 
-#: suggestions/models.py:196
+#: suggestions/models.py:215
 msgid "Field or relation set name"
 msgstr ""
 
@@ -1587,11 +1603,11 @@ msgid ""
 msgstr ""
 "אתר לא מפלגתי, לא מסחרי שמביא לכם תוכן רלוונטי, מפורט ועדכני על אודות הכנסת"
 
-#: templates/main.he.html:61
+#: templates/main.he.html:60
 msgid "Upcoming Events"
 msgstr "בקרוב"
 
-#: templates/main.he.html:75 templates/agendas/agenda_detail.html:78
+#: templates/main.he.html:74 templates/agendas/agenda_detail.html:78
 #: templates/agendas/agenda_detail.html:93
 #: templates/agendas/agenda_detail.html:108 templates/auxiliary/_watch.html:13
 #: templates/committees/committee_list.html:77
@@ -1600,7 +1616,7 @@ msgstr "בקרוב"
 msgid "Loading"
 msgstr "טוען"
 
-#: templates/main.he.html:78 templates/agendas/agenda_detail.html:81
+#: templates/main.he.html:77 templates/agendas/agenda_detail.html:81
 #: templates/agendas/agenda_detail.html:96
 #: templates/agendas/agenda_detail.html:111
 #: templates/committees/committee_list.html:82
@@ -1613,7 +1629,7 @@ msgstr "טוען"
 msgid "More"
 msgstr "עוד"
 
-#: templates/main.he.html:133 templates/agendas/agenda_meeting_partial.html:11
+#: templates/main.he.html:132 templates/agendas/agenda_meeting_partial.html:11
 #: templates/agendas/agendasfor.html:23
 msgid "comments"
 msgstr "תגובות"
