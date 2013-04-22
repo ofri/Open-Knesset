@@ -1,6 +1,7 @@
 from itertools import chain
 from operator import itemgetter, attrgetter
 
+from django.db import connection
 from django.db import models
 from django.db.models import Sum, Q, Count, F
 from django.utils.translation import ugettext_lazy as _
@@ -41,12 +42,31 @@ class UserSuggestedVote(models.Model):
     class Meta:
         unique_together = ('agenda','vote','user')
 
+class AgendaVoteManager(models.Manager):
+    db_month_trunc_functions = {
+        'sqlite3':{'monthfunc':"strftime('%%Y-%%m-01'",'nowfunc':'date()'},
+        'postgresql_psycopg2':{'monthfunc':"date_trunc('month'",'nowfunc':'now()'}
+    }
+
+    def compute_all(self):
+        db_engine = settings.DATABASES['default']['ENGINE']
+        db_functions = self.db_month_trunc_functions[db_engine.split('.')[-1]]
+        agenda_query = queries.BASE_AGENDA_QUERY % db_functions
+        cursor = connection.cursor()
+        cursor.execute(agenda_query)
+
+        mk_query = queries.BASE_MK_QUERY % db_functions
+        cursor.execute(mk_query)
+
+
 class AgendaVote(models.Model):
     agenda = models.ForeignKey('Agenda', related_name='agendavotes')
     vote = models.ForeignKey('laws.Vote', related_name='agendavotes')
     score = models.FloatField(default=0.0, choices=AGENDAVOTE_SCORE_CHOICES)
     importance = models.FloatField(default=1.0, choices=IMPORTANCE_CHOICES)
     reasoning = models.TextField(null=True,blank=True)
+
+    objects = AgendaVoteManager()
 
     def detail_view_url(self):
         return reverse('agenda-vote-detail', args=[self.pk])

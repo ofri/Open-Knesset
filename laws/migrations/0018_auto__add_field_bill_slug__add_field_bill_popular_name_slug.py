@@ -16,10 +16,11 @@ class Migration(SchemaMigration):
         # Adding field 'Bill.popular_name_slug'
         db.add_column('laws_bill', 'popular_name_slug', self.gf('django.db.models.fields.CharField')(default='', max_length=1000, blank=True), keep_default=False)
 
-        for bill in orm.Bill.objects.all():
-            bill.slug = slugify_name(bill.title)
-            bill.popular_name_slug = slugify_name(bill.popular_name)
-            bill.save() # this will slugify what's needed
+        if not db.dry_run:
+            for bill in orm.Bill.objects.all():
+                bill.slug = slugify_name(bill.title)
+                bill.popular_name_slug = slugify_name(bill.popular_name)
+                bill.save() # this will slugify what's needed
             
     def backwards(self, orm):
         
