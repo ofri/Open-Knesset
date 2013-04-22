@@ -118,7 +118,7 @@ def main(request):
 
         return form.get_response()
 
-    NUMOF_EVENTS = 5
+    NUMOF_EVENTS = 8
     events = Event.objects.get_upcoming()
     context = {
         'title': _('Home'),
@@ -127,6 +127,7 @@ def main(request):
         'tidbits': Tidbit.active.all().order_by('?'),
         'suggestion_forms': {'tidbit': TidbitSuggestionForm()},
         'events': events[:NUMOF_EVENTS],
+        'INITIAL_EVENTS': NUMOF_EVENTS,
         'events_more': events.count() > NUMOF_EVENTS,
     }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-04-22 19:07+0300\n"
-"PO-Revision-Date: 2013-04-22 19:08+0300\n"
+"PO-Revision-Date: 2013-04-22 22:38+0300\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -1610,7 +1610,7 @@ msgstr ""
 
 #: templates/main.he.html:60
 msgid "Upcoming Events"
-msgstr "בקרוב"
+msgstr "בקרוב בכנסת"
 
 #: templates/main.he.html:74 templates/agendas/agenda_detail.html:78
 #: templates/agendas/agenda_detail.html:93
