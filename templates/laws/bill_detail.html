@@ -233,7 +233,7 @@
                         <h1>{% bill_full_name object %}</h1>
                     </header>
                     <p>
-                        {% trans 'stage' %}: <strong>{% trans object.get_stage_display %}</strong>
+                        {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
                         {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
                     </p>
                     <div id="bill-canvas"> </div>

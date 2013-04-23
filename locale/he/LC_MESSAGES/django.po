@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 19:07+0300\n"
-"PO-Revision-Date: 2013-04-22 22:38+0300\n"
+"POT-Creation-Date: 2013-04-23 12:13+0300\n"
+"PO-Revision-Date: 2013-04-23 12:14+0300\n"
 "Last-Translator: Benny Daon <bennydaon@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -285,7 +285,7 @@ msgstr "עזרה"
 msgid "Home"
 msgstr "דף הבית"
 
-#: auxiliary/views.py:141
+#: auxiliary/views.py:142
 msgid "Sorry, you do not have the permission to annotate."
 msgstr "אין לך הרשאות להוסיף הארות."
 
@@ -504,7 +504,7 @@ msgstr "הזנה של הצבעות"
 msgid "Bills feed"
 msgstr "הזנה של הצעות חוק"
 
-#: knesset/feeds.py:83 templates/main.he.html:139
+#: knesset/feeds.py:83 templates/main.he.html:160
 #: templates/user/annotated_items.html:4 templates/user/annotated_items.html:9
 #: templates/user/public_profile.html:41
 msgid "Annotations"
@@ -567,7 +567,7 @@ msgstr "הזנה של הצעות חוק בכנסת"
 msgid "Bills from the Open Knesset site"
 msgstr "הצעות חוק מאתר כנסת פתוחה"
 
-#: laws/forms.py:11 laws/vote_choices.py:15 laws/vote_choices.py:47
+#: laws/forms.py:11 laws/vote_choices.py:15 laws/vote_choices.py:48
 msgid "All"
 msgstr "הכול"
 
@@ -787,7 +787,7 @@ msgstr "קריאה טרומית"
 msgid "First Committee Meetings"
 msgstr "ישיבות ועדה"
 
-#: laws/views.py:189 laws/vote_choices.py:33
+#: laws/views.py:189 laws/vote_choices.py:34
 #: templates/laws/bill_detail.html:374
 msgid "First Vote"
 msgstr "קריאה ראשונה"
@@ -934,42 +934,46 @@ msgid "Unknown"
 msgstr "לא ידוע"
 
 #: laws/vote_choices.py:28
+msgid "Frozen in previous knesset"
+msgstr "הוקפאה בכנסת קודמת"
+
+#: laws/vote_choices.py:29
 msgid "Proposed"
 msgstr "הצעה"
 
-#: laws/vote_choices.py:29
+#: laws/vote_choices.py:30
 msgid "Pre-Approved"
 msgstr "עברה קריאה טרומית"
 
-#: laws/vote_choices.py:30
+#: laws/vote_choices.py:31
 msgid "Failed Pre-Approval"
 msgstr "נפלה בקריאה טרומית"
 
-#: laws/vote_choices.py:31
+#: laws/vote_choices.py:32
 msgid "Converted to discussion"
 msgstr "הוסבה לנושא לדיון"
 
-#: laws/vote_choices.py:32
+#: laws/vote_choices.py:33
 msgid "In Committee"
 msgstr "בוועדה"
 
-#: laws/vote_choices.py:34
+#: laws/vote_choices.py:35
 msgid "Failed First Vote"
 msgstr "נפלה בקריאה ראשונה"
 
-#: laws/vote_choices.py:35
+#: laws/vote_choices.py:36
 msgid "Committee Corrections"
 msgstr "בתיקונים בוועדה"
 
-#: laws/vote_choices.py:36
+#: laws/vote_choices.py:37
 msgid "Approved"
 msgstr "אושרה"
 
-#: laws/vote_choices.py:37
+#: laws/vote_choices.py:38
 msgid "Failed Approval"
 msgstr "נפלה בקריאה שלישית"
 
-#: laws/vote_choices.py:48
+#: laws/vote_choices.py:49
 msgid "Untagged Proposals"
 msgstr "הצעות שלא תויגו"
 
@@ -1065,56 +1069,56 @@ msgstr "סיעות"
 msgid "%(name)s in Knesset %(number)d"
 msgstr "%(name)s בכנסת ה־%(number)d"
 
-#: mks/models.py:136 mks/views.py:607 templates/mks/parties_members.html:42
+#: mks/models.py:142 mks/views.py:607 templates/mks/parties_members.html:42
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:136 mks/views.py:608 templates/mks/parties_members.html:55
+#: mks/models.py:142 mks/views.py:608 templates/mks/parties_members.html:55
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:181 persons/models.py:46
+#: mks/models.py:187 persons/models.py:46
 msgid "an accurate place of residence (for example, an address"
 msgstr "מקום מגורים מדויק (למשל, כתובת)"
 
-#: mks/models.py:182 persons/models.py:47
+#: mks/models.py:188 persons/models.py:47
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "אזור מגורים (למשל, \"נגב\")"
 
-#: mks/models.py:210
+#: mks/models.py:216
 msgid "Member"
 msgstr "ח\"כ"
 
-#: mks/models.py:211 templates/mks/member_list.html:18
+#: mks/models.py:217 templates/mks/member_list.html:18
 #: templates/mks/parties_members.html:35
 msgid "Members"
 msgstr "ח\"כים"
 
-#: mks/models.py:338
+#: mks/models.py:344
 msgid "Coalition Member (female)"
 msgstr "חברת כנסת בקואליציה"
 
-#: mks/models.py:340
+#: mks/models.py:346
 msgid "Opposition Member (female)"
 msgstr "חברת כנסת באופוזיציה"
 
-#: mks/models.py:343
+#: mks/models.py:349
 msgid "Coalition Member (male)"
 msgstr "חבר כנסת בקואליציה"
 
-#: mks/models.py:345
+#: mks/models.py:351
 msgid "Opposition Member (male)"
 msgstr "חבר כנסת באופוזיציה"
 
-#: mks/models.py:348
+#: mks/models.py:354
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: mks/models.py:350
+#: mks/models.py:356
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: mks/models.py:363
+#: mks/models.py:369
 msgid "Minister"
 msgstr "שר"
 
@@ -1307,15 +1311,15 @@ msgstr "חשבון טוויטר"
 msgid "Platform"
 msgstr "מצע"
 
-#: polyorg/models.py:48
+#: polyorg/models.py:52
 msgid "Ordinal"
 msgstr "מיקום"
 
-#: polyorg/models.py:50
+#: polyorg/models.py:54
 msgid "Elected by #"
 msgstr "נבחר על ידי (מספר)"
 
-#: polyorg/models.py:50
+#: polyorg/models.py:54
 msgid "How many people voted for this person"
 msgstr "כמה מצביעים תמכו במועמד"
 
@@ -1621,7 +1625,7 @@ msgstr "בקרוב בכנסת"
 msgid "Loading"
 msgstr "טוען"
 
-#: templates/main.he.html:77 templates/agendas/agenda_detail.html:81
+#: templates/main.he.html:78 templates/agendas/agenda_detail.html:81
 #: templates/agendas/agenda_detail.html:96
 #: templates/agendas/agenda_detail.html:111
 #: templates/committees/committee_list.html:82
@@ -1634,7 +1638,7 @@ msgstr "טוען"
 msgid "More"
 msgstr "עוד"
 
-#: templates/main.he.html:132 templates/agendas/agenda_meeting_partial.html:11
+#: templates/main.he.html:153 templates/agendas/agenda_meeting_partial.html:11
 #: templates/agendas/agendasfor.html:23
 msgid "comments"
 msgstr "תגובות"
@@ -4646,9 +4650,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "entrance to knesset"
 #~ msgstr "תחילת כהונה"
-
-#~ msgid "retirement from knesset"
-#~ msgstr "תום כהונה"
 
 #~ msgid "time in knesset"
 #~ msgstr "זמן בכנסת"

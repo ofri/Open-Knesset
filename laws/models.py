@@ -757,18 +757,23 @@ class Bill(models.Model):
             action.send(self, verb='was-voted-on-gov', target=g,
                         timestamp=g.date, description=str(g.stand))
 
+    @property
+    def frozen(self):
+        return self.stage == u'0'
+
+
 def get_n_debated_bills(n=None):
     """Returns n random bills that have an active debate in the site.
     if n is None, it returns all of them."""
-    
+
     bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
     if not bill_votes:
         return None
-        
+
     if n is not None:
         bill_votes = random.sample(bill_votes, n)
     return Bill.objects.filter(pk__in=bill_votes)
-    
+
 def get_debated_bills():
     """
     Returns 3 random bills that have an active debate in the site
@@ -795,7 +800,7 @@ class GovLegislationCommitteeDecision(models.Model):
         return self.bill.get_absolute_url()
 
 class BillBudgetEstimation(models.Model):
-    
+
     class Meta:
         unique_together = (("bill","estimator"),)
 
