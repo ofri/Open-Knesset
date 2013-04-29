@@ -33,7 +33,7 @@ class Person(models.Model):
     mk = models.ForeignKey('mks.Member', blank=True, null=True, related_name='person')
     titles = models.ManyToManyField(Title, blank=True, null=True, related_name='persons')
     # TODO: change to an ImageField
-    img_url = models.URLField(blank=True, verify_exists=False)
+    img_url = models.URLField(blank=True)
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)

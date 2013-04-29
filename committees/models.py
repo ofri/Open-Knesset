@@ -32,7 +32,7 @@ class Committee(models.Model):
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
-    portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False, blank=True)
+    portal_knesset_broadcasts_url = models.URLField(max_length=1000, blank=True)
     type = models.CharField(max_length=10,default='committee')
 
     def __unicode__(self):
@@ -44,7 +44,7 @@ class Committee(models.Model):
     @models.permalink
     def get_absolute_url(self):
         if self.type=='plenum':
-            return('plenum', []) 
+            return('plenum', [])
         else:
             return ('committee-detail', [str(self.id)])
 
@@ -142,7 +142,7 @@ class CommitteeMeeting(models.Model):
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
-    src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    src_url  = models.URLField(max_length=1024,null=True,blank=True)
 
     class Meta:
         ordering = ('-date',)

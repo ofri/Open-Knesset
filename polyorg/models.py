@@ -6,15 +6,15 @@ class CandidateList(models.Model):
     name = models.CharField(_('Name'), max_length = 80)
     ballot = models.CharField(_('Ballot'), max_length=4)
     number_of_seats = models.IntegerField(blank=True, null=True)
-    surplus_partner = models.ForeignKey('self', blank=True, null=True, 
+    surplus_partner = models.ForeignKey('self', blank=True, null=True,
                 help_text=_('The list with which is the surplus votes partner'))
     mpg_html_report = models.TextField(_('MPG report'), blank=True, null=True,
                 help_text=_('The MPG report on the list, can use html'))
-    img_url = models.URLField(blank=True, verify_exists=False)
+    img_url = models.URLField(blank=True)
     youtube_user = models.CharField(_('YouTube user'), max_length = 80, null=True, blank=True)
     wikipedia_page = models.CharField(_('Wikipedia page'), max_length = 80, null=True, blank=True)
     twitter_account = models.CharField(_('Twitter account'), max_length = 80, null=True, blank=True)
-    facebook_url = models.URLField(blank=True, verify_exists=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True)
     platform = models.TextField(_('Platform'), blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -41,7 +41,7 @@ class CandidateList(models.Model):
 
 class Party(models.Model):
     name = models.CharField(max_length=64)
-    
+
     def __unicode__(self):
         return self.name
 

@@ -199,7 +199,7 @@ class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
     vote_number = models.IntegerField(null=True,blank=True)
     src_id = models.IntegerField(null=True,blank=True)
-    src_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    src_url = models.URLField(max_length=1024,null=True,blank=True)
     title = models.CharField(max_length=1000)
     time = models.DateTimeField(db_index=True)
     time_string = models.CharField(max_length=100)
@@ -215,7 +215,7 @@ class Vote(models.Model):
     against_own_bill = models.IntegerField(null=True, blank=True)
     summary = models.TextField(null=True,blank=True)
     full_text = models.TextField(null=True,blank=True)
-    full_text_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    full_text_url = models.URLField(max_length=1024,null=True,blank=True)
 
     tagged_items = generic.GenericRelation(TaggedItem,
                                            object_id_field="object_id",
@@ -424,7 +424,7 @@ class BillProposal(models.Model):
     law = models.ForeignKey('Law', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     title = models.CharField(max_length=1000)
     date = models.DateField(blank=True, null=True)
-    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    source_url = models.URLField(max_length=1024,null=True,blank=True)
     content_html = models.TextField(blank=True,default="")
     committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     votes = models.ManyToManyField('Vote', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
@@ -789,7 +789,7 @@ class GovLegislationCommitteeDecision(models.Model):
     subtitle = models.TextField(null=True,blank=True)
     text = models.TextField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
-    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    source_url = models.URLField(max_length=1024,null=True,blank=True)
     bill = models.ForeignKey('Bill', blank=True, null=True, related_name='gov_decisions')
     stand = models.IntegerField(blank=True, null=True)
     number = models.IntegerField(blank=True, null=True)
