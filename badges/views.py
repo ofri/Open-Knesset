@@ -1,6 +1,5 @@
 from django.db.models import Count
-
-from hashnav import DetailView, ListView
+from django.views.generic import DetailView, ListView
 from models import Badge, BadgeType
 
 
