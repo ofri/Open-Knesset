@@ -5,7 +5,13 @@ from djangoratings.views import AddRatingFromModel
 
 from hashnav import DetailView
 from models import *
-from views import *
+from views import MeetingsListView, MeetingDetailView
+from views import CommitteeListView, CommitteeDetailView
+from views import TopicListView, TopicsMoreView, TopicDetailView
+from views import delete_topic, delete_topic_rating
+from views import meeting_tag, meeting_list_by_date
+from views import edit_topic
+
 
 meetings_list = MeetingsListView.as_view(queryset=CommitteeMeeting.objects.all(), paginate_by=20)
 
@@ -16,7 +22,7 @@ committeesurlpatterns = patterns('',
     url(r'^committee/(?P<committee_id>\d+)/all_meetings/$', meetings_list, name='committee-all-meetings'),
     url(r'^committee/(?P<committee_id>\d+)/date/(?P<date>[\d\-]+)/$', meeting_list_by_date, name='committee-meetings-by-date'),
     url(r'^committee/(?P<committee_id>\d+)/date/$', meeting_list_by_date, name='committee-meetings-by-date'),
-    url(r'^committee/(?P<committee_id>\d+)/topic/$', TopicListView.as_view(), name ='committee-topic-list'),
+    url(r'^committee/(?P<committee_id>\d+)/topic/$', TopicListView.as_view(), name='committee-topic-list'),
     url(r'^committee/(?P<committee_id>\d+)/topic/add/$',
         edit_topic,
         name='edit-committee-topic'),
