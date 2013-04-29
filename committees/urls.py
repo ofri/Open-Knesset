@@ -1,5 +1,5 @@
 #encoding: UTF-8
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import url, patterns
 from django.utils.translation import ugettext
 from djangoratings.views import AddRatingFromModel
 
@@ -9,7 +9,7 @@ from views import *
 
 meetings_list = MeetingsListView.as_view(queryset=CommitteeMeeting.objects.all(), paginate_by=20)
 
-committeesurlpatterns = patterns ('',
+committeesurlpatterns = patterns('',
     url(r'^committee/$', CommitteeListView.as_view(), name='committee-list'),
     url(r'^committee/more-topics/$', TopicsMoreView.as_view(), name='committee-topics-more'),
     url(r'^committee/(?P<pk>\d+)/$', CommitteeDetailView.as_view(), name='committee-detail'),
