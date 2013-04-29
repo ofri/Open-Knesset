@@ -1,5 +1,6 @@
 from itertools import chain
 from operator import itemgetter, attrgetter
+from collections import defaultdict
 
 from django.db import connection
 from django.db import models
@@ -238,30 +239,39 @@ class AgendaManager(models.Manager):
                             .distinct()
         return agendas
 
-    def get_mks_values(self,ranges=[[None,None]]):
-        mks_values = False
-        if ranges == [[None,None]]:
-            mks_values = cache.get('agendas_mks_values')
-        if not mks_values:
+    # def get_mks_values(self,ranges=[[None,None]]):
+    #     mks_values = False
+    #     if ranges == [[None,None]]:
+    #         mks_values = cache.get('agendas_mks_values')
+    #     if not mks_values:
+    #         # get list of mk ids
+    #         # generate summary query
+    #         # query summary
+    #         # split data into appropriate ranges
+    #         # compute agenda measures per range
+    #         #   add missing mks while you're there
 
-            q = queries.getAllAgendaMkVotes()
-            # outer join - add missing mks to agendas
-            newAgendaMkVotes = {}
-            # generates a set of all the current mk ids that have ever voted for any agenda
-            # its not perfect, but its better than creating another query to generate all known mkids
-            allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
-            for agendaId,agendaVotes in q.items():
-                # the newdict will have 0's for each mkid, the update will change the value for known mks
-                newDict = {}.fromkeys(allMkIds,(0,0,0))
-                newDict.update(dict(map(lambda (mkid,score,volume,numvotes):(mkid,(score,volume,numvotes)),agendaVotes)))
-                newAgendaMkVotes[agendaId]=newDict.items()
-            mks_values = {}
-            for agenda_id, scores in newAgendaMkVotes.items():
-                mks_values[agenda_id] = \
-                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1], numvotes=x[1][1][2])),
-                        enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
-            cache.set('agendas_mks_values', mks_values, 1800)
-        return mks_values
+
+
+    #         q = queries.getAllAgendaMkVotes()
+    #         # outer join - add missing mks to agendas
+    #         newAgendaMkVotes = {}
+    #         # generates a set of all the current mk ids that have ever voted for any agenda
+    #         # its not perfect, but its better than creating another query to generate all known mkids
+    #         allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
+    #         for agendaId,agendaVotes in q.items():
+    #             # the newdict will have 0's for each mkid, the update will change the value for known mks
+    #             newDict = {}.fromkeys(allMkIds,(0,0,0))
+    #             newDict.update(dict(map(lambda (mkid,score,volume,numvotes):(mkid,(score,volume,numvotes)),agendaVotes)))
+    #             newAgendaMkVotes[agendaId]=newDict.items()
+    #         mks_values = {}
+    #         for agenda_id, scores in newAgendaMkVotes.items():
+    #             mks_values[agenda_id] = \
+    #                 map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1], numvotes=x[1][1][2])),
+    #                     enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
+    #         if ranges = [[None,None]]:
+    #             cache.set('agendas_mks_values', mks_values, 1800)
+    #     return mks_values
 
     def get_all_party_values(self):
         return queries.getAllAgendaPartyVotes()
@@ -410,9 +420,52 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def get_mks_values(self):
-        mks_grade = Agenda.objects.get_mks_values()
-        return mks_grade.get(self.id,[])
+    def generateSummaryFilters(self,ranges):
+        results = []
+        for r in ranges:
+            if not r[0] and not r[1]:
+                return None # might as well not filter at all
+            queryFields = {}
+            if r[0]:
+                queryFields['month__gte']=r[0]
+            if r[1]:
+                queryFields['month_lt']=r[1]
+            results.append(Q(**queryRange))
+        return results
+
+    def get_mks_values(self,ranges=[[None,None]]):
+        mks_values = False
+        if ranges == [[None,None]]:
+            mks_values = cache.get('agenda_%d_mks_values' % self.id)
+        if not mks_values:
+            # get list of mk ids
+            allMkIds=Member.objects.values_list('id', flat=True)
+
+            # generate summary query
+            filterList = self.generateSummaryFilters(ranges)
+            filtersFolded = reduce(lambda x,y:x | y, filterList)
+
+            # query summary
+            summaries = list(SummaryAgenda.objects.filter(agenda=self,filtersFolded))
+
+            # group summaries for respective ranges
+            summariesForRanges = []
+            for r in ranges:
+                summariesForRange = defaultdict(list)
+                for s in summaries:
+                    if (r[0] and s.month>=r[0]) or
+                        (r[1] and s.month<r[1]) or
+                        (not r[0] and not r[1]):
+                    summariesForRange[s.summary_type].append(s)
+                summariesForRanges.append(summariesForRange)
+
+            # compute agenda measures per range
+            rangeResults = []
+            for summaries in 
+
+            #   add missing mks while you're there
+
+            # transpose results to be per mk instead of per range
 
     def get_all_mks_values(self):
         return Agenda.objects.get_mks_values()
@@ -471,3 +524,6 @@ from listeners import *
 
 def dateMonthTruncate(dt):
     return dt.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+
+def indexby(data,fieldFunc):
+    return dict(map(lambda d:(fieldFunc(d),d),data))
