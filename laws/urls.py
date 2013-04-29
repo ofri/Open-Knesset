@@ -1,7 +1,7 @@
 #encoding: UTF-8
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext
-from django.views.generic.simple import redirect_to
+from django.views.generic import RedirectView
 from hashnav import ListView
 from models import *
 from views import *
@@ -19,8 +19,8 @@ lawsurlpatterns = patterns ('',
     url(r'^bill/rss/$', feeds.Bills(), name='bills-feed'),
     url(r'^bill/csv/$', BillCsvView.as_view()),
     url(r'^bill/tag/(?P<tag>.*)/$', bill_tag, name='bill-tag'),
-    url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', redirect_to,
-        {'url': '/bill/?booklet=%(booklet_num)s', 'premanent': True }),
+    url(r'^bill/knesset-booklet/(?P<booklet_num>\d+)/$', RedirectView.as_view(
+        url='/bill/?booklet=%(booklet_num)s', premanent=True)),
     url(r'^bill/(?P<pk>\d+)/$', bill_detail_view, name='bill-detail'),
     url(r'^bill/(?P<object_id>\d+)/embed/$', embed_bill_details, name='embed-bill-details'),
     url(r'^bill/(?P<object_id>\d+)/unbind-vote/(?P<vote_id>\d+)/$',
