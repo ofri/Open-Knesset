@@ -24,7 +24,7 @@ from tagging.models import Tag, TaggedItem
 from tagging.utils import get_tag
 
 from agendas.models import Agenda, UserSuggestedVote
-from auxiliary.views import CsvView
+from auxiliary.views import CsvView, BaseTagMemberListView
 from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
 from hashnav import DetailView, ListView as HashnavListView
 from knesset.utils import notify_responsible_adult
@@ -46,58 +46,6 @@ def bill_tags_cloud(request, min_posts_count=1):
         tags_cloud = Tag.objects.cloud_for_model(Bill)
     return render_to_response("laws/bill_tags_cloud.html",
         {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
-
-
-class BaseTagMemberListView(ListView):
-    "Generic helper for common tags operation"
-
-    @property
-    def tag_instance(self):
-        if not hasattr(self, '_tag_instance'):
-            tag = self.kwargs['tag']
-            self._tag_instance = get_tag(tag)
-
-            if self._tag_instance is None:
-                raise Http404(_('No Tag found matching "%s".') % tag)
-
-        return self._tag_instance
-
-    @property
-    def member(self):
-        if not hasattr(self, '_member'):
-            member_id = self.request.GET.get('member', False)
-
-            if member_id:
-                try:
-                    member_id = int(member_id)
-                except ValueError:
-                    raise Http404(
-                        _('No Member found matching "%s".') % member_id)
-
-                self._member = get_object_or_404(Member, pk=member_id)
-            else:
-                self._member = None
-
-        return self._member
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(BaseTagMemberListView, self).get_context_data(
-            *args, **kwargs)
-
-        context['tag'] = self.tag_instance
-        context['tag_url'] = reverse('bill-tag', args=[self.tag_instance])
-
-        if self.member:
-            context['member'] = self.member
-            context['member_url'] = reverse(
-                'member-detail', args=[self.member.pk])
-
-        if self.request.user.is_authenticated():
-            context['watched_members'] = request.user.get_profile().members
-        else:
-            context['watched_members'] = False
-
-        return context
 
 
 class BillTagsView(BaseTagMemberListView):
