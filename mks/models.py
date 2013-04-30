@@ -92,7 +92,7 @@ class Party(models.Model):
 
         return _(u'%(name)s in Knesset %(number)d') % {
             'name': self.name,
-            'number': self.knesset.number
+            'number': self.knesset.number if self.knesset else 0
         }
 
     def current_members(self):
