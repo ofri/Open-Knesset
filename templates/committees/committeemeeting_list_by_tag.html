@@ -21,7 +21,7 @@
         <div><h2>{% blocktrans %}MKs attendance in committee meetings related to {{ tag }}{% endblocktrans %}</h2>
             <div class="tags cloud">
                {% for mk in members %}
-                   <a href="{% url member-detail pk=mk.id %}" class="level{{ mk.font_size }}">{{ mk }}</a>
+                   <a href="{% url 'member-detail' pk=mk.id %}" class="level{{ mk.font_size }}">{{ mk }}</a>
                {% endfor %}
             </div>
         </div>

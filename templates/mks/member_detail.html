@@ -36,12 +36,12 @@
 {% block extrahead %}
     <meta property="og:image" content="{{ object.img_url }}"/>
     <meta name="thumbnail" content="{{ object.img_url }}" />
-{% if object.backlinks_enabled %}{% url pingback-server as pingback_url %}{% pingback_link pingback_url %}{% endif %}
+{% if object.backlinks_enabled %}{% url 'pingback-server' as pingback_url %}{% pingback_link pingback_url %}{% endif %}
 {% if object.backlinks_enabled %}
-    {% url member-trackback object_id=object.id as trackback_url %}
+    {% url 'member-trackback' object_id=object.id as trackback_url %}
     {% trackback_rdf object.get_absolute_url object.title trackback_url True %}
 {% endif %}
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url member-activity-feed object.id %}">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'member-activity-feed' object.id %}">
 {% endblock %}
 {% block description %} {% with object.name as name %} {% blocktrans %} Up to date information about {{ name }} in the knesset: votes, bills, committees, attendance and more.   Information about {{ name }} for journalists, researchers, students and citizens by Open Knesset - Opening the Knesset to the public. {% endblocktrans %} {% endwith %} {% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
@@ -49,7 +49,7 @@
  {% block breadcrumbs %}
     {% with object.current_party as party %}
 <li><a href="{{party.knesset.get_absolute_url}}">{{party.knesset}}</a> <span class="divider">/</span></li>
-            <li><a href="{% url party-detail object.current_party.id %}">{{ object.current_party }}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'party-detail' object.current_party.id %}">{{ object.current_party }}</a> <span class="divider">/</span></li>
             <li class="active">{{ object.name }}</li>
     {% endwith %}
  {% endblock %}
@@ -169,7 +169,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-actions" 
-                    data-url="{% url member-more-actions object.pk %}"
+                    data-url="{% url 'member-more-actions' object.pk %}"
                     data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -188,7 +188,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-legislation" 
-                    data-url="{% url member-more-legislation object.pk %}"
+                    data-url="{% url 'member-more-legislation' object.pk %}"
                     data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -207,7 +207,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-committees" 
-                    data-url="{% url member-more-committees object.pk %}"
+                    data-url="{% url 'member-more-committees' object.pk %}"
                     data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -226,7 +226,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-mmm" 
-                    data-url="{% url member-more-mmm object.pk %}"
+                    data-url="{% url 'member-more-mmm' object.pk %}"
                     data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -418,13 +418,13 @@
 {% comment %}
     <ul class="actions">
         <li>
-        <li><a href="{% url member-activity-feed object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
+        <li><a href="{% url 'member-activity-feed' object.id %}"><img src="{% static "icons/rss.png" %}" style="height:2em;"></a></li>
     </ul>
     <div class="member-photo">
         <img src="{{ object.img_url }}"/>
     </div>
     <div class="member-header">
-        <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url party-detail object.current_party.id %}">{{ object.current_party.name }}</a></h1>
+        <h1> {{ object.name }} - <a class="bold-link" id="detail-{{ object.current_party.id }}" href="{% url 'party-detail' object.current_party.id %}">{{ object.current_party.name }}</a></h1>
         <h2> {{ object.get_role }} </h2>
     </div>
     <div class="clear"></div>
@@ -513,7 +513,7 @@
                             <table>
                                 <tr>
                                     <td style="width:140px;">{% trans "Number of bills proposed" %}</td>
-                                    <td style="width:200px;"><a href="{% url bill-list %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
+                                    <td style="width:200px;"><a href="{% url 'bill-list' %}?member={{object.id}}&stage=proposed">{{ bills_statistics.proposed }}</a></td>
                                     <td>
                                         <div id="proposed_percentile" class="percentile"></div>
                                         <script>set_percentile('proposed',{{ bills_statistics.proposed_percentile }});</script>
@@ -521,7 +521,7 @@
                                 </tr>
                                 <tr>
                                     <td>{% trans "Bills passed pre-vote" %}</td>
-                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</td>
+                                    <td><a href="{% url 'bill-list' %}?member={{object.id}}&stage=pre">{{ bills_statistics.pre }}</td>
                                     <td>
                                         <div id="pre_percentile" class="percentile"></div>
                                         <script>set_percentile('pre',{{ bills_statistics.pre_percentile }});</script>
@@ -529,7 +529,7 @@
                                 </tr>
                                 <tr>
                                     <td>{% trans "Bills passed first vote" %}</td>
-                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
+                                    <td><a href="{% url 'bill-list' %}?member={{object.id}}&stage=first">{{ bills_statistics.first }}</a></td>
                                     <td>
                                         <div id="first_percentile" class="percentile"></div>
                                         <script>set_percentile('first',{{ bills_statistics.first_percentile }});</script>
@@ -537,7 +537,7 @@
                                 </tr>
                                 <tr>
                                     <td>{% trans "Bills approved" %}</td>
-                                    <td><a href="{% url bill-list %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
+                                    <td><a href="{% url 'bill-list' %}?member={{object.id}}&stage=approved">{{ bills_statistics.approved }}</a></td>
                                     <td>
                                         <div id="approved_percentile" class="percentile"></div>
                                         <script>set_percentile('approved',{{ bills_statistics.approved_percentile }});</script>
@@ -578,7 +578,7 @@
                                     <tr style="height:4em;">
                                         <td>{% if agenda.image %}<img class="mk-agenda-image" src="{{agenda.image.url}}" />{% endif %}</td>
                                         <td>{% if agenda.watched %}<div class="watched"></div>{% endif %}</td>
-                                        <td><a class="item dontwrap" id="detail-{{ agenda.id }}" href="{% url agenda-detail agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
+                                        <td><a class="item dontwrap" id="detail-{{ agenda.id }}" href="{% url 'agenda-detail' agenda.id %}">{{ agenda.name }}</a><br><span class="edited-by">{% trans 'edited by' %} {{ agenda.public_owner_name }}</span></td>
                                         <td class="numeric">{{agenda.score|floatformat:"0"}}%</td>
                                         <td>
                                             <div id="agenda_{{ agenda.id }}_percentile" class="percentile {% if agenda.score < 0 %}percentile_against{% endif %}"></div>
@@ -586,7 +586,7 @@
 
                                         </td>
                                         <td>
-                                        <a href="{% url mk-agenda-detail agenda.id object.id %}">#</a>
+                                        <a href="{% url 'mk-agenda-detail' agenda.id object.id %}">#</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

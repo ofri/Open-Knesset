@@ -7,7 +7,7 @@
         $('#datelookup_submit').click(function(){
             var d = $('#datelookup_input').val();
             if (d){
-                window.location = '{% url committee-meetings-by-date committee_id "1970-1-1" %}'.replace('1970-1-1', d);
+                window.location = '{% url 'committee-meetings-by-date' committee_id "1970-1-1" %}'.replace('1970-1-1', d);
             }
         });
     </script>
@@ -22,7 +22,7 @@
 
 {% block breadcrumbs %}
         {% ifnotequal committee.type 'plenum' %}
-            <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'committee-list' %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         {% endifnotequal %}
         <li><a href="{{ committee.get_absolute_url }}">{{ committee }}</a> <span class="divider">/</span></l1>
         <li class="active">{% trans "All meetings" %}</li>

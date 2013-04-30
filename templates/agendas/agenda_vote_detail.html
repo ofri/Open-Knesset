@@ -5,7 +5,7 @@
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-agendas %}class="active"{% endblock %}
 {% block subnav %}
-    <a class="button" href="{% url agenda-detail object.agenda.id %}">{% trans "Agenda" %} {{ object.agenda }}</a>
+    <a class="button" href="{% url 'agenda-detail' object.agenda.id %}">{% trans "Agenda" %} {{ object.agenda }}</a>
 {% endblock %}
 {% block divcontent %}
     <div class="item normal">

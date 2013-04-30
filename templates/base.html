@@ -56,28 +56,28 @@
             </span>
           </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <li><a href="{% url edit-profile %}">{% trans 'Edit Profile' %}</a></li>
-            <li><a href="{% url logout %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a></li>
+            <li><a href="{% url 'edit-profile' %}">{% trans 'Edit Profile' %}</a></li>
+            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a></li>
           </ul>
           {% else %}
-              <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
+              <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
           {% endif %}
         </div>
       </div>
 
       <ul class="nav nav-pills">
-        <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url parties-members-index %}">{% trans "Members and Parties" %}</a></li>
-        <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
-        <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-        <li id="nav-plenum" {% block nav-plenum %} {% endblock %} ><a href="{% url plenum %}">מליאה</a></li>
-        <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
+        <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url 'parties-members-index' %}">{% trans "Members and Parties" %}</a></li>
+        <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> </li>
+        <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url 'committee-list' %}">{% trans 'Committees' %}</a> </li>
+        <li id="nav-plenum" {% block nav-plenum %} {% endblock %} ><a href="{% url 'plenum' %}">מליאה</a></li>
+        <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a href="{% url 'agenda-list' %}">{% trans 'Agendas' %}</a> </li>
       </ul>
     </header>
     <div id="helptextcontainer"></div>
     <section class="container">
 {% if not hide_crumbs %}
         <ul class="breadcrumb">
-            <li><a class="home-icon" href="{% url main %}">{% trans "Homepage" %}</a> <span class="divider">/</span></li>
+            <li><a class="home-icon" href="{% url 'main' %}">{% trans "Homepage" %}</a> <span class="divider">/</span></li>
             {% block breadcrumbs %}{% endblock %}
         </ul>
 {% endif %}
@@ -117,12 +117,12 @@
             <div class="row">
                 <nav class="span8">
                     <ul class="nav nav-pills">
-                        <li><a class="home-icon" href="{% url main %}">{% trans "Homepage" %}</a></li>
-                        <li><a href="{% url party-list %}">{% trans "Members and Parties" %}</a></li>
-                        <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> </li>
-                        <li><a href="{% url committee-list %}">{% trans 'Committees' %}</a> </li>
-                        <li><a href="{% url plenum %}">מליאה</a></li>
-                        <li><a href="{% url agenda-list %}">{% trans 'Agendas' %}</a> </li>
+                        <li><a class="home-icon" href="{% url 'main' %}">{% trans "Homepage" %}</a></li>
+                        <li><a href="{% url 'party-list' %}">{% trans "Members and Parties" %}</a></li>
+                        <li><a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> </li>
+                        <li><a href="{% url 'committee-list' %}">{% trans 'Committees' %}</a> </li>
+                        <li><a href="{% url 'plenum' %}">מליאה</a></li>
+                        <li><a href="{% url 'agenda-list' %}">{% trans 'Agendas' %}</a> </li>
                     </ul>
                 </nav>
                 <div id="search-bottom" class="span4">
@@ -137,7 +137,7 @@
                     {% blocktrans %}All the information comes from the Knesset's site.
                     This site is maintained by volunteers and is not supported by
                     any political party ...{% endblocktrans %}
-                    <a href="{% url about %}">{% trans "Read more" %}</a>
+                    <a href="{% url 'about' %}">{% trans "Read more" %}</a>
                     </p>
                     </div>
                     <div class="follow-oknesset">
@@ -169,7 +169,7 @@
             <div class="row">
                 <div class="span9">
                     {% trans "Some rights reserved. Using data from the site requires credit" %}
-                    <a href="{% url about %}">{% trans "Details in the link" %}</a>
+                    <a href="{% url 'about' %}">{% trans "Details in the link" %}</a>
                 </div>
                 <div class="span3">
                 <a href="https://play.google.com/store/apps/details?id=org.oknesset" target="_blank">
@@ -199,7 +199,7 @@
     <script src="{% static "js/bootstrap-carousel.js" %}?v=1"></script>
     <script src="{% static "js/bootstrap-typeahead.js" %}"></script>
 
-    <script src="{% url django.views.i18n.javascript_catalog %}"></script>
+    <script src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     <script src="{% static "js/jquery.jgrowl.js" %}"></script>
     <script src="{% static "js/raphael-min.js" %}"></script>
     <script src="{% static "js/okhelptexts.js" %}"></script>

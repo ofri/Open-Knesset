@@ -11,7 +11,7 @@
 	{% endif %}
 	{% for target in aggr_action.targets.keys %}
 		{% with target as tagged_item %}
-	    	<a class="action-target" href="{% url bill-tag tagged_item.tag %}">{{ tagged_item.tag.name}}</a> {% trans "of" %} <a  class="action-target" href="{{ tagged_item.object.get_absolute_url }}">{{ tagged_item.object }}</a>{% endwith %}{% if not forloop.last %}, {% endif %}
+	    	<a class="action-target" href="{% url 'bill-tag' tagged_item.tag %}">{{ tagged_item.tag.name}}</a> {% trans "of" %} <a  class="action-target" href="{{ tagged_item.object.get_absolute_url }}">{{ tagged_item.object }}</a>{% endwith %}{% if not forloop.last %}, {% endif %}
 	{% endfor %}
 {% endif %}
 

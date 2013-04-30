@@ -5,7 +5,7 @@
     {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
-    <li><a href="{% url candidate-list-list %}">{% trans "Candidate Lists" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'candidate-list-list' %}">{% trans "Candidate Lists" %}</a> <span class="divider">/</span></li>
     <li class="active">{% trans "Comapre Lists" %}</li>
 {% endblock %}
 

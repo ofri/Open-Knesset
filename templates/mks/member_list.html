@@ -14,8 +14,8 @@
 {% block nav-parties %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
-            <li><a href="{% url parties-members-index  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
-            <li><a href="{% url member-list %}">{% trans "Members" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'parties-members-index'  %}">{% trans "Members and Parties" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'member-list' %}">{% trans "Members" %}</a> <span class="divider">/</span></li>
             <li class="active">{{ title  }}</li>
 {% endblock %}
 
@@ -35,7 +35,7 @@
                 <li class="nav-header">{% trans "Display by" %}</li>
             {% for type, name in friend_pages %}
                 <li{% if type == stat_type %} class="active"{% endif %}>
-                    <a href="{% url member-stats stat_type=type %}" >{{ name }}</a>
+                    <a href="{% url 'member-stats' stat_type=type %}" >{{ name }}</a>
                 </li>
             {% endfor %}
             </ul>
@@ -66,10 +66,10 @@
                 <ul>
                 {% for o in object_list %}
                     <li class="clearfix">
-                        <span class="span2"><a href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
+                        <span class="span2"><a href="{% url 'member-detail' o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
                         <span class="span1 numeric">
                         {% if bill_stage %}
-                            <a href="{% url bill-list %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
+                            <a href="{% url 'bill-list' %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
                         {% else %}
                             {{ o.extra|floatformat }}
                         {% endif %}
@@ -84,10 +84,10 @@
                 <ul>
                 {% for o in past_mks %}
                     <li class="clearfix">
-                        <span class="span2"><a href="{% url member-detail o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
+                        <span class="span2"><a href="{% url 'member-detail' o.id %}" title="{{ o.current_party.name }}">{{ o.name }}</a></span>
                         <span class="span1 numeric">
                         {% if bill_stage %}
-                            <a href="{% url bill-list %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
+                            <a href="{% url 'bill-list' %}?member={{o.id}}&amp;stage={{ bill_stage }}">{{ o.extra|floatformat }}</a>
                         {% else %}
                             {{ o.extra|floatformat }}
                         {% endif %}

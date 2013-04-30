@@ -8,7 +8,7 @@
 	<div class="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url law-detail o.id %}">{{ o.title }}</a><br/>
+                <a id="detail-{{ o.id }}" href="{% url 'law-detail' o.id %}">{{ o.title }}</a><br/>
             </div>
         {% empty %}
             {% trans "No results found" %}

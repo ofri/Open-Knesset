@@ -63,7 +63,7 @@
             <ul>
 
                 {% for proposer in proposers_first3 %}
-                <li><a href="https://oknesset.org{% url member-detail proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
+                <li><a href="https://oknesset.org{% url 'member-detail' proposer.id %}"><img src="{{proposer.img_url}}" alt="{{proposer.name}}" title="{{proposer.name}}"/></a></li>
                 {% endfor %}
 
             </ul>

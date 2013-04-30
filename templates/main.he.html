@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url main-actions-feed %}" /> {% endblock %}
+{% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'main-actions-feed' %}" /> {% endblock %}
 {% load i18n i18ninclude search %}{% load static from staticfiles %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
@@ -73,7 +73,7 @@
         <button id="events-more" class="btn btn-mini btn-expand" data-provide="okmore"
             data-loading-text="{% trans "Loading" %} ..."
             autocomplete="off" data-target="#upcoming-events" 
-            data-url="{% url more-upcoming-events %}"
+            data-url="{% url 'more-upcoming-events' %}"
             data-initial="INITIAL_EVENTS"
             >{% trans "More" %} +</button>
         </footer>
@@ -85,19 +85,19 @@
             <h2>מה אפשר לעשות באתר?</h2>
             <ul>
               <li> 
-                  <a href="{% url help %}#follow-members">לעקוב אחרי הצעות חוק</a>
+                  <a href="{% url 'help' %}#follow-members">לעקוב אחרי הצעות חוק</a>
               </li>
               <li> 
-                  <a href="{% url help %}#search-bills">לחפש הצעות חוק לפי נושא</a>
+                  <a href="{% url 'help' %}#search-bills">לחפש הצעות חוק לפי נושא</a>
               </li>
               <li> 
-                  <a href="{% url help %}#follow-member-votes">מעקב הצבעות חבר כנסת</a>
+                  <a href="{% url 'help' %}#follow-member-votes">מעקב הצבעות חבר כנסת</a>
               </li>
               <li> 
-                  <a href="{% url help %}#members-data">להשוות נתוני חברי־הכנסת</a>
+                  <a href="{% url 'help' %}#members-data">להשוות נתוני חברי־הכנסת</a>
               </li>
               <li> 
-                  <a href="{% url help %}#protocols">לקרוא את הפרוטוקולים</a>
+                  <a href="{% url 'help' %}#protocols">לקרוא את הפרוטוקולים</a>
               </li>
             </ul>
         </aside>

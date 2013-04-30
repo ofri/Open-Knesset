@@ -20,7 +20,7 @@
                     {% else %}
                         <div class="alert alert-block">
                             {% trans "You do not have permissions to edit anything. In order to be able to edit, you must provide a valid email address, and validate it" %}
-                            <form action="{% url send-validation-email %}" method="post">{% csrf_token %}
+                            <form action="{% url 'send-validation-email' %}" method="post">{% csrf_token %}
                                 <input type="submit" name="send validation email" value="{% trans 'send validation email' %}">
                             </form>
                         </div>
@@ -40,7 +40,7 @@
             <h2>{% trans "Avatar" %}</h2>
             <ul class="text-center">
                 <li>{% avatar request.user 75 %}</li>
-                <li><a class="btn" href="{% url avatar_change %}">{% trans "Change your avatar" %}</a></li>
+                <li><a class="btn" href="{% url 'avatar_change' %}">{% trans "Change your avatar" %}</a></li>
             </ul>
         </aside>
 
@@ -100,7 +100,7 @@
             var what = id_parts[1]
             jQuery.ajax({
                 type: 'POST',
-                url: '{% url user-follow-unfollow %}',
+                url: '{% url 'user-follow-unfollow' %}',
                 data: {what: what, id: object_id, verb:'unfollow'},
                 context: $('#following-' + what + '-' + object_id),
                 success: function () {

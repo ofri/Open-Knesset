@@ -4,7 +4,7 @@
 {% with parties|lookup:selected_mk.current_party_id as selected_mk_party %}
     {% with agenda_mk_values|lookup:selected_mk.id as mk_values %}
     <li class="row">
-    <div class="span2"><a href="{% url mk-agenda-detail object.id selected_mk.id %}" title="{{ selected_mk_party.name }}">{{ selected_mk }}</a></div>
+    <div class="span2"><a href="{% url 'mk-agenda-detail' object.id selected_mk.id %}" title="{{ selected_mk_party.name }}">{{ selected_mk }}</a></div>
         <div class="numeric text-{% if mk_values.score < 0 %}error{%else%}success{% endif %}">
             {{mk_values.score|floatformat:"0"}}%
         </div>
