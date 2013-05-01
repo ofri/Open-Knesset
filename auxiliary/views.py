@@ -32,6 +32,9 @@ class BaseTagMemberListView(ListView):
     """Generic helper for common tagged objects and optionally member
     operations. Shoud be inherited by others"""
 
+    url_to_reverse = None  # override in inherited for reversing tag_url
+                           # in context
+
     @property
     def tag_instance(self):
         if not hasattr(self, '_tag_instance'):
@@ -66,15 +69,17 @@ class BaseTagMemberListView(ListView):
             *args, **kwargs)
 
         context['tag'] = self.tag_instance
-        context['tag_url'] = reverse('bill-tag', args=[self.tag_instance])
+        context['tag_url'] = reverse(self.url_to_reverse,
+                                     args=[self.tag_instance])
 
         if self.member:
             context['member'] = self.member
             context['member_url'] = reverse(
                 'member-detail', args=[self.member.pk])
 
-        if self.request.user.is_authenticated():
-            context['watched_members'] = request.user.get_profile().members
+        user = self.request.user
+        if user.is_authenticated():
+            context['watched_members'] = user.get_profile().members
         else:
             context['watched_members'] = False
 

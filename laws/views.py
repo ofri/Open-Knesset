@@ -51,6 +51,7 @@ def bill_tags_cloud(request, min_posts_count=1):
 class BillTagsView(BaseTagMemberListView):
 
     template_name = 'laws/bill_list_by_tag.html'
+    url_to_reverse = 'bill-tag'
 
     def get_queryset(self):
         tag_instance = self.tag_instance
@@ -170,6 +171,7 @@ def vote_tags_cloud(request, min_posts_count=1):
 class VoteTagsView(BaseTagMemberListView):
 
     template_name = 'laws/vote_list_by_tag.html'
+    url_to_reverse = 'vote-tag'
 
     def get_queryset(self):
         tag_instance = self.tag_instance
