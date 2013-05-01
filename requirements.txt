@@ -34,7 +34,7 @@ django-ratings
 -e git://github.com/hasadna/django-avatar.git#egg=django-avatar
 -e git://github.com/hasadna/django-backlinks.git@014104cd38fd274020284e3b14d28f97ece7ea62#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
--e git://github.com/hasadna/django-piston.git@7d64aa4618ce80a92d93258b48c8f16dcef99615#egg=django-piston
+-e git://github.com/hasadna/django-piston.git@1b51686a5b2ff547429d0b224319d521170f63e2#egg=django-piston
 django-debug-toolbar>=0.8.3
 nose
 django-nose
