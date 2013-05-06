@@ -1060,7 +1060,7 @@ class Command(NoArgsCommand):
             if current_timestamp < min_timestamp: # we don't have info in the current file that goes back so far
                 current_timestamp = min_timestamp
 
-            while current_timestamp != end_timestamp: # loop over weeks
+            while current_timestamp <= end_timestamp: # loop over weeks
                 if current_timestamp in valid_weeks: # if we have valid data for this week
                     if current_timestamp in member_presence: # if this member was present this week
                         hours = member_presence[current_timestamp] # check how many hours
