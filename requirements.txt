@@ -22,7 +22,7 @@ gunicorn
 django-social-auth>=0.7.19
 oauth==1.0.1
 python-dateutil==1.5
-python-memcached
+python-memcached==1.48
 -e git://github.com/openid/python-openid.git#egg=python-openid
 django-tastypie==0.9.12
 django-ratings
