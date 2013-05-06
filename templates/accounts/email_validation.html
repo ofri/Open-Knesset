@@ -1,3 +1,3 @@
 {% load i18n %}
 {% trans "email validation for" %} {{ site.name }}:
-http://{{ site.domain }}{% url validate-email activation_key %}
+http://{{ site.domain }}{% url 'validate-email' activation_key %}

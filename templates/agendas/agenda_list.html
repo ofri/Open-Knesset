@@ -48,7 +48,7 @@
             </header>
                 <ul>
                     {% if not user.is_authenticated %}
-                        <li><a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a></li>
+                        <li><a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to see agendas you can edit' %}</a></li>
                     {% else %}
                         {% for o in user.agendas.all %}
                             {% with agenda_votes|lookup:o.id as agenda_votes_num %}

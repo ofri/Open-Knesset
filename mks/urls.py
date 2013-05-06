@@ -4,7 +4,8 @@ from . import views as mkv
 from feeds import MemberActivityFeed
 
 mksurlpatterns = patterns('mks.views',
-    url(r'^parties-members/$', mkv.PartiesMembersView.as_view(), name='parties-members'),
+    url(r'^parties-members/$', mkv.PartiesMembersRedirctView.as_view(), name='parties-members-index'),
+    url(r'^parties-members/(?P<pk>\d+)/$', mkv.PartiesMembersView.as_view(), name='parties-members-list'),
     url(r'^member/$', mkv.MemberRedirectView.as_view(), name='member-list'),
     url(r'^member/csv$', mkv.MemberCsvView.as_view()),
     url(r'^party/csv$', mkv.PartyCsvView.as_view()),

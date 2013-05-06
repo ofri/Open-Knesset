@@ -7,7 +7,7 @@
           <span class="item-title"><a href="{{agenda.get_absolute_url}}">{{agenda.name}}</a></span>
           {% trans "edited by" %} {{agenda.public_owner_name}}</h3>
     </header>
-    <a class="agenda-pie"{% for stat in agenda.totals %} data-{{stat.type}}="{{stat.total}}"{% endfor %} href="{% url mk-agenda-detail agenda.pk object.pk %}">
+    <a class="agenda-pie"{% for stat in agenda.totals %} data-{{stat.type}}="{{stat.total}}"{% endfor %} href="{% url 'mk-agenda-detail' agenda.pk object.pk %}">
       <span class="agenda-percent"><span class="agenda-percent-num">{{agenda.score|floatformat:0}}<span>%</span></span>{% trans "Match" %}</span>
     </a>
 </li>

@@ -3,6 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
@@ -55,7 +56,10 @@ class Knesset(models.Model):
     objects = KnessetManager()
 
     def __unicode__(self):
-        return unicode(self.number)
+        return _(u'Knesset %(number)d') % {'number': self.number}
+
+    def get_absolute_url(self):
+        return reverse('parties-members-list', kwargs={'pk': self.number})
 
 
 class Party(models.Model):
@@ -83,10 +87,22 @@ class Party(models.Model):
         return "%s/api/party/%s/htmldiv/" % ('', self.id)
 
     def __unicode__(self):
-        return "%s" % self.name
+        if self.is_current:
+            return self.name
+
+        return _(u'%(name)s in Knesset %(number)d') % {
+            'name': self.name,
+            'number': self.knesset.number if self.knesset else 0
+        }
 
     def current_members(self):
-        return self.members.filter(is_current=True).order_by('current_position')
+        # for current knesset, we want to display by selecting is_current,
+        # for older ones, it's not relevant
+        if self.knesset == Knesset.objects.current_knesset():
+            return self.members.filter(
+                is_current=True).order_by('current_position')
+        else:
+            return self.all_members.order_by('current_position')
 
     def past_members(self):
         return self.members.filter(is_current=False)
@@ -125,6 +141,10 @@ class Party(models.Model):
     def get_affiliation(self):
         return _('Coalition') if self.is_coalition else _('Opposition')
 
+    @property
+    def is_current(self):
+        return self.knesset == Knesset.objects.current_knesset()
+
 
 class Membership(models.Model):
     member = models.ForeignKey('Member')
@@ -151,11 +171,11 @@ class Member(models.Model):
     current_position = models.PositiveIntegerField(blank=True, default=999)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
-    img_url = models.URLField(blank=True, verify_exists=False)
+    img_url = models.URLField(blank=True)
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)
-    website = models.URLField(blank=True, null=True, verify_exists=False)
+    website = models.URLField(blank=True, null=True)
     family_status = models.CharField(blank=True, null=True, max_length=10)
     number_of_children = models.IntegerField(blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)

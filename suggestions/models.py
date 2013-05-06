@@ -53,6 +53,8 @@ class Suggestion(models.Model):
     resolved_status = models.IntegerField(
         _('Resolved status'), db_index=True, default=NEW,
         choices=RESOLVE_CHOICES)
+    reason = models.CharField(
+        _('Reject reason'), max_length=200, blank=True, null=True)
 
     objects = SuggestionsManager()
 
@@ -80,6 +82,15 @@ class Suggestion(models.Model):
 
         self.save()
         return subject
+
+    def reject(self, resolved_by, reason):
+
+        self.resolved_by = resolved_by
+        self.resolved_status = WONTFIX
+        self.resolved_at = datetime.now()
+        self.reason = reason
+
+        self.save()
 
     @property
     def can_auto_apply(self):
@@ -134,11 +145,15 @@ class SuggestedAction(models.Model):
     def __unicode__(self):
         if self.subject_id:
             label = unicode(self.subject)
+            meta = self.subject._meta
         else:
             model = self.subject_type.model_class()
             label = unicode(model._meta.verbose_name)
+            meta = model._meta
 
-        fields = [_(f) + ': ' + unicode(v) for (f, v) in self.action_params]
+        s_fields = dict((x.name, x) for x in meta.fields)
+        fields = [unicode(s_fields.get(f).verbose_name)
+                  + ': ' + unicode(v) for (f, v) in self.action_params]
         res = u'{0} {1}: {2}'.format(self.get_action_display(), label,
                                      ', '.join(fields))
         return res

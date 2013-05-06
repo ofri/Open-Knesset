@@ -12,16 +12,27 @@
 
 {% block nav-parties %}class="active"{% endblock %}
 {% block breadcrumbs %}
-            <li class="active">{% trans "Members and Parties" %}</li>
+            <li class="active">{% trans "Members and Parties" %} {{object}}</li>
 {% endblock %}
 
 {% block divcontent %}
     <div class="row">
-        <div class="span12">
+        <div class="span4">
+            <h1>{{ object }}</h1>
+        </div>
+        <div class="span4">
+            <div class="alert">
+            {% trans "See also" %}:
+            {% for kn in other_knessets %}
+                <a href="{{kn.get_absolute_url}}">{{kn}}</a>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="span4">
             <div class="alert">
                 {% trans "Looking for comparisons ? Compare between" %}
-                <a href="{% url party-list %}">{% trans "Parties" %}</a> {% trans "Or" %}
-                <a href="{% url member-list %}">{% trans "Members" %}</a>
+                <a href="{% url 'party-list' %}">{% trans "Parties" %}</a> {% trans "Or" %}
+                <a href="{% url 'member-list' %}">{% trans "Members" %}</a>
             </div>
         </div>
     </div>

@@ -192,9 +192,9 @@ class MemberCsvView(CsvView):
 
 class MemberDetailView(DetailView):
 
-    queryset = Member.objects.filter(is_current=True)\
-                             .exclude(current_party__isnull=True)\
+    queryset = Member.objects.exclude(current_party__isnull=True)\
                              .select_related('current_party',
+                                             'current_party__knesset',
                                              'voting_statistics')
     MEMBER_INITIAL_DATA = 2
 
@@ -722,7 +722,8 @@ class MemeberMoreCommitteeView(MemeberMoreActionsView):
 
 
 class MemeberMoreMMMView(MemeberMoreActionsView):
-    """Get partially rendered member mmm documents content for AJAX calls to 'More'"""
+    """Get partially rendered member mmm documents content for AJAX calls to
+    'More'"""
 
     template_name = "mks/mmm_partials.html"
     paginate_by = 10
@@ -732,22 +733,32 @@ class MemeberMoreMMMView(MemeberMoreActionsView):
         return member.mmm_documents.order_by('-publication_date')
 
 
-class PartiesMembersView(TemplateView):
+class PartiesMembersRedirctView(RedirectView):
+    "Redirect old url to listing of current knesset"
+
+    def get_redirect_url(self):
+        knesset = Knesset.objects.current_knesset()
+        return reverse('parties-members-list', kwargs={'pk': knesset.number})
+
+
+class PartiesMembersView(DetailView):
     """Index page for parties and members."""
 
     template_name = 'mks/parties_members.html'
+    model = Knesset
 
     def get_context_data(self, **kwargs):
         ctx = super(PartiesMembersView, self).get_context_data(**kwargs)
 
-        ctx['coalition'] = Party.objects.filter(is_coalition=True,
-            knesset=Knesset.objects.current_knesset()).annotate(
-            extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['opposition'] = Party.objects.filter(is_coalition=False,
-            knesset=Knesset.objects.current_knesset()).annotate(
-            extra=Sum('number_of_seats')).order_by('-extra')
-        ctx['past_members'] = Member.objects.filter(is_current=False,
-            current_party__knesset=Knesset.objects.current_knesset())
+        ctx['other_knessets'] = self.model.objects.exclude(
+            number=self.object.number).order_by('-number')
+        ctx['coalition'] = Party.objects.filter(
+            is_coalition=True, knesset=self.object).annotate(
+                extra=Sum('number_of_seats')).order_by('-extra')
+        ctx['opposition'] = Party.objects.filter(
+            is_coalition=False, knesset=self.object).annotate(
+                extra=Sum('number_of_seats')).order_by('-extra')
+        ctx['past_members'] = Member.objects.filter(
+            is_current=False, current_party__knesset=self.object)
 
         return ctx
-

@@ -5,7 +5,7 @@
 {% block description %}{{ tag }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-tags %}class="selected"{% endblock %}
 {% block breadcrumbs %}
-        <li><a href="{% url tags-list %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'tags-list' %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
         <li class="active">{{tag}}</li>
 {% endblock %}
 {% block divcontent %}
@@ -17,7 +17,7 @@
                     <h1>{% blocktrans %}Active members for {{ tag }}{% endblocktrans %}</h1>
                     <div class="text-center">
                     {% for mk in members %}
-                        <a href="{% url member-detail pk=mk.pk %}" class="label level{{ mk.font_size }}">{{ mk }}</a>
+                        <a href="{% url 'member-detail' pk=mk.pk %}" class="label level{{ mk.font_size }}">{{ mk }}</a>
                     {% endfor %}
                     </div>
                 </div>

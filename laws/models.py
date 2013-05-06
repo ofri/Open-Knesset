@@ -199,7 +199,7 @@ class Vote(models.Model):
     meeting_number = models.IntegerField(null=True,blank=True)
     vote_number = models.IntegerField(null=True,blank=True)
     src_id = models.IntegerField(null=True,blank=True)
-    src_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    src_url = models.URLField(max_length=1024,null=True,blank=True)
     title = models.CharField(max_length=1000)
     time = models.DateTimeField(db_index=True)
     time_string = models.CharField(max_length=100)
@@ -215,7 +215,7 @@ class Vote(models.Model):
     against_own_bill = models.IntegerField(null=True, blank=True)
     summary = models.TextField(null=True,blank=True)
     full_text = models.TextField(null=True,blank=True)
-    full_text_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    full_text_url = models.URLField(max_length=1024,null=True,blank=True)
 
     tagged_items = generic.GenericRelation(TaggedItem,
                                            object_id_field="object_id",
@@ -424,7 +424,7 @@ class BillProposal(models.Model):
     law = models.ForeignKey('Law', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     title = models.CharField(max_length=1000)
     date = models.DateField(blank=True, null=True)
-    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    source_url = models.URLField(max_length=1024,null=True,blank=True)
     content_html = models.TextField(blank=True,default="")
     committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     votes = models.ManyToManyField('Vote', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
@@ -757,18 +757,23 @@ class Bill(models.Model):
             action.send(self, verb='was-voted-on-gov', target=g,
                         timestamp=g.date, description=str(g.stand))
 
+    @property
+    def frozen(self):
+        return self.stage == u'0'
+
+
 def get_n_debated_bills(n=None):
     """Returns n random bills that have an active debate in the site.
     if n is None, it returns all of them."""
-    
+
     bill_votes = [x['object_id'] for x in voting.models.Vote.objects.get_popular(Bill)]
     if not bill_votes:
         return None
-        
+
     if n is not None:
         bill_votes = random.sample(bill_votes, n)
     return Bill.objects.filter(pk__in=bill_votes)
-    
+
 def get_debated_bills():
     """
     Returns 3 random bills that have an active debate in the site
@@ -784,7 +789,7 @@ class GovLegislationCommitteeDecision(models.Model):
     subtitle = models.TextField(null=True,blank=True)
     text = models.TextField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
-    source_url = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    source_url = models.URLField(max_length=1024,null=True,blank=True)
     bill = models.ForeignKey('Bill', blank=True, null=True, related_name='gov_decisions')
     stand = models.IntegerField(blank=True, null=True)
     number = models.IntegerField(blank=True, null=True)
@@ -795,7 +800,7 @@ class GovLegislationCommitteeDecision(models.Model):
         return self.bill.get_absolute_url()
 
 class BillBudgetEstimation(models.Model):
-    
+
     class Meta:
         unique_together = (("bill","estimator"),)
 

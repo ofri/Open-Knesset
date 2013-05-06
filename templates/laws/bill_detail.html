@@ -166,7 +166,7 @@
 {% block description %}{% bill_full_name object %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-laws %}class="active"{% endblock %}
 {% block breadcrumbs %}
-            <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> <span class="divider">/</span></li>
             <li class="active">{% bill_full_name object %}</li>
 {% endblock %}
 
@@ -233,7 +233,7 @@
                         <h1>{% bill_full_name object %}</h1>
                     </header>
                     <p>
-                        {% trans 'stage' %}: <strong>{% trans object.get_stage_display %}</strong>
+                        {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
                         {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
                     </p>
                     <div id="bill-canvas"> </div>
@@ -318,9 +318,9 @@
                         </p>
                         <p class="item-title">
                         {% if user.is_authenticated %}
-                            <a href="{% url bill-unbind-vote object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
+                            <a href="{% url 'bill-unbind-vote' object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
                         {% endif %}
-                            <a class="item" href="{% url vote-detail v.id %}">{{ v.title }}</a>
+                            <a class="item" href="{% url 'vote-detail' v.id %}">{{ v.title }}</a>
                         </p>
                         <p class="item-context">{{ v.time }}</p>
                     </li>
@@ -346,7 +346,7 @@
                 <ul>
                 {% for cm in object.first_committee_meetings.all %}
                     <li>
-                        <p class="item-title"><a class="item" href="{% url committee-meeting cm.id %}">{{ cm.committee.name }}</a></p>
+                        <p class="item-title"><a class="item" href="{% url 'committee-meeting' cm.id %}">{{ cm.committee.name }}</a></p>
                         <p class="item-context">{{ cm.date }}</p>
                     </li>
                 {% empty %}
@@ -377,9 +377,9 @@
                         <p class="item-action">{% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }}</p>
                         <p class="item-title">
                         {% if user.is_authenticated %}
-                            <a href="{% url bill-unbind-vote object.id object.first_vote.id %}"><img src="{% static "img/X.png" %}"></a>
+                            <a href="{% url 'bill-unbind-vote' object.id object.first_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                         {% endif %}
-                            <a href="{% url vote-detail object.first_vote.id %}">{{ object.first_vote.title }}</a>
+                            <a href="{% url 'vote-detail' object.first_vote.id %}">{{ object.first_vote.title }}</a>
                         </p>
                         <p class="item-context">{{ object.first_vote.time }}</p>
                     {% else %}
@@ -404,7 +404,7 @@
                 <ul>
                 {% for cm in object.second_committee_meetings.all|slice:":4" %}
                     <li>
-                        <p class="item-title"><a href="{% url committee-meeting cm.id %}">{{ cm.committee }}</a></p>
+                        <p class="item-title"><a href="{% url 'committee-meeting' cm.id %}">{{ cm.committee }}</a></p>
                         <p class="item-context">{{ cm.date }}</p>
                     </li>
                 {% empty %}
@@ -415,7 +415,7 @@
                 <ul id="more-meetings" style="display:none">
                 {% for cm in object.second_committee_meetings.all|slice:"4:" %}
                     <li>
-                        <p class="item-title"><a href="{% url committee-meeting cm.id %}">{{ cm.committee.name }}</a></p>
+                        <p class="item-title"><a href="{% url 'committee-meeting' cm.id %}">{{ cm.committee.name }}</a></p>
                         <p class="item-context">{{ cm.date }}</p>
                     </li>
                 {% endfor %}
@@ -435,9 +435,9 @@
                     <p class="item-action">{% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }}</p>
                     <p class="item-title">
                         {% if user.is_authenticated %}
-                            <a href="{% url bill-unbind-vote object.id object.approval_vote.id %}"><img src="{% static "img/X.png" %}"></a>
+                            <a href="{% url 'bill-unbind-vote' object.id object.approval_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                         {% endif %}
-                        <a href="{% url vote-detail object.approval_vote.id %}">{{ object.approval_vote.title }}</a>
+                        <a href="{% url 'vote-detail' object.approval_vote.id %}">{{ object.approval_vote.title }}</a>
                     </p>
                     <p class="item-context">{{ object.approval_vote.time }}</p>
                     </li>
@@ -519,21 +519,21 @@
                         {% vote_by_user user on object as vote_dict %}
                         {% if vote_dict and vote_dict.direction %}
                         {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
-                        <form action="{% url vote-on-bill bill.id 0 %}" method="post">{% csrf_token %}
+                        <form action="{% url 'vote-on-bill' bill.id 0 %}" method="post">{% csrf_token %}
                             <input type="submit" name="submit" value="{% trans "Delete" %}" class="btn"/>
                         </form>
                         {% else %}
                         <div class="row">
-                            <form class="span1" action="{% url vote-on-bill bill.id 1 %}" method="post">{% csrf_token %}
+                            <form class="span1" action="{% url 'vote-on-bill' bill.id 1 %}" method="post">{% csrf_token %}
                                 <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
                             </form>
-                            <form class="span1" action="{% url vote-on-bill bill.id -1 %}" method="post">{% csrf_token %}
+                            <form class="span1" action="{% url 'vote-on-bill' bill.id -1 %}" method="post">{% csrf_token %}
                                 <input type="submit" name="submit" value="{% trans "I'm against" %}" />
                             </form>
                         </div>
                         {% endif %}
                     {% else %}
-                        <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
+                        <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
                     {% endif %}
                 </div>
             </aside>
@@ -542,7 +542,7 @@
                 <p id="tags">
                     {% if tags %}
                         {% for t in tags %}
-                            <a class="label" id="tag_{{t.id}}" href="{% url bill-tag tag=t %}" class="tag">{{ t }}</a>
+                            <a class="label" id="tag_{{t.id}}" href="{% url 'bill-tag' tag=t %}" class="tag">{{ t }}</a>
                         {% endfor %}
                     {% else %}
                         <span id="no-tags-yet">{% trans "No tags yet" %}</span>
@@ -564,7 +564,7 @@
                                 <input type="submit" value="{% trans 'Send' %}">
                             </form>
                         {% else %}
-                            {% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
+                            {% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
                         {% endif %}
                     </div>
                 </div>
@@ -601,12 +601,12 @@
                             <input type="submit" value="{% trans "Send" %}" id="be_submit" class="btn">
                             </form>
                         <!--{% else %}-->
-                            <!--{% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}-->
+                            <!--{% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}-->
                         <!--{% endif %}-->
                     <!--</div>-->
                 </div>
                 {% else %}
-                    <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to edit budget estimates' %}</a>
+                    <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to edit budget estimates' %}</a>
                 {% endif %}
             </aside> <!-- budgets -->
 

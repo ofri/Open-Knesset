@@ -165,13 +165,15 @@ class MemberResource(BaseResource):
             'bills_stats_pre',
             'bills_stats_first',
             'bills_stats_approved',
-            ]
+        ]
+
         filtering = dict(
-            name = ALL,
-            is_current = ALL,
-            )
+            name=ALL,
+            is_current=ALL,
+        )
+
         excludes = ['website', 'backlinks_enabled', 'area_of_residence']
-        list_fields = ['name', 'id', 'img_url']
+        list_fields = ['name', 'id', 'img_url', 'is_current']
         include_absolute_url = True
 
     party_name = fields.CharField()
@@ -241,13 +243,14 @@ class MemberResource(BaseResource):
             filters = {}
 
         try:
-            current_knesset = int(filters.get('current_knesset', 0))
+            knesset = int(filters.get('knesset', 0))
         except KeyError:
-            current_knesset = 0
+            knesset = 0
 
         orm_filters = super(MemberResource, self).build_filters(filters)
 
-        if current_knesset:
-            orm_filters['current_party__knesset'] = Knesset.objects.current_knesset()
+        if knesset:
+            knesset = Knesset.objects.get(number=knesset)
+            orm_filters['parties__knesset'] = knesset
 
         return orm_filters

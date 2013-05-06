@@ -11,12 +11,12 @@
         p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 
         {% trans 'Proposed by' %}:
         {% for proposer in pp.proposers.all %}
-            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+            <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url 'member-detail' proposer.id %}">{{ proposer.name }}</a> 
         {% endfor %}<br>
 
-        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url 'committee-meeting' cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
         <br>
-        <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url 'vote-detail' v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
         <br>
 
         <br><br>
@@ -27,9 +27,9 @@
     {% for kp in kps %}
         {{ kp.title }} <br>
         <a href="{{ kp.source_url }}">{% trans 'Bill on knesset website' %}</a><br>         
-        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in kp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in kp.committee_meetings.all %}<a class="item dontwrap" href="{% url 'committee-meeting' cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
         <br>
-        <span>{% trans 'Votes' %}:</span>  {% for v in kp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+        <span>{% trans 'Votes' %}:</span>  {% for v in kp.votes.all %}<a class="item" href="{% url 'vote-detail' v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
         <br>
         {% if kp.originals.count %}
             {% trans 'Based on' %}: 
@@ -37,12 +37,12 @@
                 p/{{pp.knesset_id}}/{{pp.proposal_id}} {{ pp.title }} ({{ pp.date }}) <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a><br> 
                 {% trans 'Proposed by' %}:
                 {% for proposer in pp.proposers.all %}
-                    <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+                    <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url 'member-detail' proposer.id %}">{{ proposer.name }}</a> 
                 {% endfor %}<br>
 
-                <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url committee-meeting cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+                <span>{% trans 'Committee Meetings' %}:</span>  {% for cm in pp.committee_meetings.all %}<a class="item dontwrap" href="{% url 'committee-meeting' cm.id %}">{{ cm }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
                 <br>
-                <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url vote-detail v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
+                <span>{% trans 'Votes' %}:</span>  {% for v in pp.votes.all %}<a class="item" href="{% url 'vote-detail' v.id %}">{{ v }}</a>{% if not forloop.last %} &bull; {% endif %}{% endfor %}
                 </div>
             {% endfor %}
         {% endif %}

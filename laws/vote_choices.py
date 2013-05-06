@@ -25,6 +25,7 @@ ORDER_CHOICES = (
 
 BILL_STAGE_CHOICES = (
         (u'?', _(u'Unknown')),
+        (u'0', _(u'Frozen in previous knesset')),
         (u'1', _(u'Proposed')),
         (u'2', _(u'Pre-Approved')),
         (u'-2',_(u'Failed Pre-Approval')),

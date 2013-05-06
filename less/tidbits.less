@@ -1,28 +1,67 @@
-#tidbitCarousel {
-  padding: 30px 20%;
+div#tidbitCarousel {
+
+  .carousel-control{
+    display: none;
+  }
 
   .item {
     height: 200px;
+    padding: 30px 220px 0 30px;
+    background: url("../img/graphy.png");
 
-    h1 { 
-        padding: 0 40px 20px 0;
-        background-position: 100% 30%;
-        background-repeat: no-repeat;
-
-        &.tidbit-icon-quote { background-image: url("../img/tidbits/quote.png"); }
-        &.tidbit-icon-stat { background-image: url("../img/tidbits/stats.png"); }
-        &.tidbit-icon-hand { background-image: url("../img/tidbits/hand.png"); }
+    img{
+      width: 200px;
+      height: auto;
+      .rotate(5deg);
+      position: absolute;
+      right: 10px; top: 0;
+      .box-shadow(2px 3px 6px rgba(112,168,220,.5));
     }
 
-    & div { padding-right: 40px; }
+    strong { 
+        display: block;
+        padding: 0 0px 20px 0;
+        background-position: 100% 30%;
+        background-repeat: no-repeat;
+        font-size: 20px;
+
+        //&.tidbit-icon-quote { background-image: url("../img/tidbits/quote.png"); }
+        //&.tidbit-icon-stat { background-image: url("../img/tidbits/stats.png"); }
+        //&.tidbit-icon-hand { background-image: url("../img/tidbits/hand.png"); }
+    }
+
+    & div {
+      padding-right: 0px;
+      font-size: 30px;
+      line-height: 35px;
+      max-width: 900px;
+    }
   }
 
-  .carousel-inner .btn {
+  .btn {
     position: absolute;
-    left:0; bottom:0; 
+    left: 0;
+    bottom: 10px;
     font-size: 120%;
     padding: 15px 40px;
   }
 
-  .btn-suggest { float:none; position:absolute; top:15px; left:15px; }
+  .btn-suggest { 
+    float:none; 
+    position:absolute;
+    top:15px;
+    left:15px;
+    font-size: inherit;
+    padding: 5px;
+    background: transparent;
+    color: lighten(@textColor,20%);
+    border-color: lighten(@textColor,20%);
+
+    &:hover {
+		  color: @white;
+      background: lighten(@textColor,20%);	
+    }
+
+  }
+
 }

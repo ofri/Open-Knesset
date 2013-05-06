@@ -11,11 +11,11 @@
     {% for t in topics %}
         <div class="item {% cycle "alt" "normal" %}">
             <a href="{{ t.get_absolute_url }}">{{t}}</a>
-            {% trans "by" %}: <a href="{% url public-profile t.creator.id %}">{{t.creator}}</a><br>
+            {% trans "by" %}: <a href="{% url 'public-profile' t.creator.id %}">{{t.creator}}</a><br>
             {% trans "committee"%}:
             {% for c in t.committees.all %}
                 {% if not forloop.first %} | {% endif %}
-                <a href="{% url committee-detail c.id %}">{{c}}</a>
+                <a href="{% url 'committee-detail' c.id %}">{{c}}</a>
             {% endfor%}
         </div>
     {% endfor %}

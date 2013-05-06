@@ -51,7 +51,7 @@
     {% if watched_members %}
     {% if vote %}{% for s in watched_members %}{% member_stand vote s %}{% endfor %}{% endif %}
     {% else %} {% if forloop.first %}
-        <a href="{% url member-list %}">{% trans "No watched members. click me to select members to watch" %}</a>
+        <a href="{% url 'member-list' %}">{% trans "No watched members. click me to select members to watch" %}</a>
         {% endif %}
         {% endif %}
     </div>
