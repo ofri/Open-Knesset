@@ -83,7 +83,8 @@ class InternalLinksTest(TestCase):
     def setUp(self):
         Knesset.objects._current_knesset = None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.knesset = Knesset.objects.create(number=1)
+        self.knesset = Knesset.objects.create(number=1,
+                        start_date=datetime.date.today()-datetime.timedelta(days=100))
         self.party_1 = Party.objects.create(name='party 1', number_of_seats=4,
                                             knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
