@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.test import TestCase
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -8,7 +8,7 @@ from annotatetext.models import Annotation
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
 from laws.models import Bill
-from mks.models import Member
+from mks.models import Member, Knesset
 from links.models import LinkType
 from models import Committee, CommitteeMeeting, Topic
 from models import TOPIC_REJECTED
@@ -19,6 +19,8 @@ APP = 'committees'
 class CommitteeMeetingDetailViewTest(TestCase):
 
     def setUp(self):
+        self.knesset = Knesset.objects.create(number=1,
+                            start_date=datetime.today()-timedelta(days=1))
         self.committee_1 = Committee.objects.create(name='c1')
         self.committee_2 = Committee.objects.create(name='c2')
         self.meeting_1 = self.committee_1.meetings.create(date=datetime.now(),
