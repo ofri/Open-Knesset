@@ -76,7 +76,7 @@ class Committee(models.Model):
             return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
 
         if ids:
-            members = Member.objects.filter(id__in=ids)
+            members = list(Member.objects.filter(id__in=ids))
         else:
             members = list((self.members.filter(is_current=True) |
                             self.chairpersons.all() |
