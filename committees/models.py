@@ -17,6 +17,7 @@ from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
+from mks.models import Knesset
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -82,17 +83,19 @@ class Committee(models.Model):
                             self.chairpersons.all() |
                             self.replacements.all()).distinct())
 
-        all_meet_count = self.meetings.count()
+        d = Knesset.objects.current_knesset().start_date
+        all_meet_count = self.meetings.filter(date__gte=d).count()
+
         year_meet_count = filter_this_year(self.meetings).count()
         for m in members:
-            all_member_meetings = m.committee_meetings.filter(committee=self)
+            all_member_meetings = m.committee_meetings.filter(committee=self,
+                                                              date__gte=d)
             year_member_meetings = filter_this_year(all_member_meetings)
             m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
             m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
 
         members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
-
 
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
