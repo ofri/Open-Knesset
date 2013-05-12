@@ -3,7 +3,7 @@
 {% block extratitle %}{{viewed_user.get_profile}}{% endblock %}
 
 {% block breadcrumbs %}
-    <li><a href="{% url profile-list %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'profile-list' %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
     <li class="active">{{viewed_user.get_profile}}</li>
 {% endblock %}
 
@@ -58,7 +58,7 @@
                 </ul>
                 {% if annotations.count > 10 %}
                 <footer>
-                    <a class="btn btn-min btn-expand" href="{% url user-annotated-items viewed_user.username %}">{% trans "More"%} ...</a>
+                    <a class="btn btn-min btn-expand" href="{% url 'user-annotated-items' viewed_user.username %}">{% trans "More"%} ...</a>
                 </footer>
                 {% endif %}
             </section>
@@ -78,7 +78,7 @@
                 {% endfor %}
                 {% if tagged_items.count > 10 %}
                 <footer>
-                    <a class="btn btn-min btn-expand" href="{% url user-tagged-items viewed_user.username %}">{% trans "More" %} ...</a>
+                    <a class="btn btn-min btn-expand" href="{% url 'user-tagged-items' viewed_user.username %}">{% trans "More" %} ...</a>
                 </footer>
                 {% endif %}
                 {% else %}

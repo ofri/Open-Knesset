@@ -4,7 +4,7 @@
 {% block extratitle %}{% trans "Items tagged by" %}{{viewed_user.username}}{% endblock %}
 
 {% block breadcrumbs %}
-    <li><a href="{% url profile-list %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'profile-list' %}">{% trans "Users" %}</a> <span class="divider">/</span></li>
     <li><a href="{{viewed_user.get_absolute_url}}">{{viewed_user.username}}</a> <span class="divider">/</span></li>
     <li class="active">{% trans "Tagged Items" %}</li>
 {% endblock %}

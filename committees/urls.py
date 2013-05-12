@@ -1,19 +1,17 @@
 #encoding: UTF-8
 from django.conf.urls.defaults import url, patterns
-from django.utils.translation import ugettext
 from djangoratings.views import AddRatingFromModel
 
-from hashnav import DetailView
-from models import *
-from views import MeetingsListView, MeetingDetailView
-from views import CommitteeListView, CommitteeDetailView
-from views import TopicListView, TopicsMoreView, TopicDetailView
-from views import delete_topic, delete_topic_rating
-from views import meeting_tag, meeting_list_by_date
-from views import edit_topic
+from .models import CommitteeMeeting
+from views import (
+    MeetingsListView, MeetingDetailView, MeetingTagListView,
+    CommitteeListView, CommitteeDetailView, TopicListView, TopicsMoreView,
+    TopicDetailView, delete_topic, delete_topic_rating, meeting_list_by_date,
+    edit_topic)
 
 
-meetings_list = MeetingsListView.as_view(queryset=CommitteeMeeting.objects.all(), paginate_by=20)
+meetings_list = MeetingsListView.as_view(
+    queryset=CommitteeMeeting.objects.all(), paginate_by=20)
 
 committeesurlpatterns = patterns('',
     url(r'^committee/$', CommitteeListView.as_view(), name='committee-list'),
@@ -30,17 +28,16 @@ committeesurlpatterns = patterns('',
         edit_topic,
         name='edit-committee-topic'),
     url(r'^committee/meeting/(?P<pk>\d+)/$', MeetingDetailView.as_view(), name='committee-meeting'),
-    url(r'^committee/meeting/tag/(?P<tag>.*)/$', meeting_tag,
+    url(r'^committee/meeting/tag/(?P<tag>.*)/$', MeetingTagListView.as_view(),
         name='committeemeeting-tag'),
     url(r'^committee/topic/$', TopicListView.as_view(), name='topic-list'),
     url(r'^committee/topic/(?P<pk>\d+)/delete/$', delete_topic,
         name='delete-committee-topic'),
     url(r'^committee/topic/(?P<pk>\d+)/$', TopicDetailView.as_view(), name='topic-detail'),
-    url(r'^committee/topic/(?P<object_id>\d+)/(?P<score>\d+)/$', AddRatingFromModel(), {
-                   'app_label': 'committees',
-                   'model': 'topic',
-                   'field_name': 'rating',
-               }, name='rate-topic'),
+    url(r'^committee/topic/(?P<object_id>\d+)/(?P<score>\d+)/$',
+        AddRatingFromModel(),
+        {'app_label': 'committees', 'model': 'topic', 'field_name': 'rating'},
+        name='rate-topic'),
     url(r'^committee/topic/(?P<object_id>\d+)/null/$', delete_topic_rating,
-               name='delete-topic-rating'),
+        name='delete-topic-rating'),
 )

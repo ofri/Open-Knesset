@@ -17,6 +17,7 @@ from annotatetext.models import Annotation
 from events.models import Event
 from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
+from mks.models import Knesset
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -32,7 +33,7 @@ class Committee(models.Model):
     events = generic.GenericRelation(Event, content_type_field="which_type",
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
-    portal_knesset_broadcasts_url = models.URLField(max_length=1000, verify_exists=False, blank=True)
+    portal_knesset_broadcasts_url = models.URLField(max_length=1000, blank=True)
     type = models.CharField(max_length=10,default='committee')
 
     def __unicode__(self):
@@ -44,7 +45,7 @@ class Committee(models.Model):
     @models.permalink
     def get_absolute_url(self):
         if self.type=='plenum':
-            return('plenum', []) 
+            return('plenum', [])
         else:
             return ('committee-detail', [str(self.id)])
 
@@ -64,29 +65,37 @@ class Committee(models.Model):
                     params = [ self.id ]).distinct()
 
 
-    def members_by_presence(self):
-        """Return the committee members with computed presence percentage"""
+    def members_by_presence(self, ids=None):
+        """Return the members with computed presence percentage.
+        If ids is not provided, this will return committee members. if ids is
+        provided, this will return presence data for the given members.
+        """
         def count_percentage(res_set, total_count):
             return (100 * res_set.count() / total_count) if total_count else 0
 
         def filter_this_year(res_set):
             return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
 
-        members = list((self.members.filter(is_current=True) |
-                        self.chairpersons.all() |
-                        self.replacements.all()).distinct())
+        if ids:
+            members = list(Member.objects.filter(id__in=ids))
+        else:
+            members = list((self.members.filter(is_current=True) |
+                            self.chairpersons.all() |
+                            self.replacements.all()).distinct())
 
-        all_meet_count = self.meetings.count()
+        d = Knesset.objects.current_knesset().start_date
+        all_meet_count = self.meetings.filter(date__gte=d).count()
+
         year_meet_count = filter_this_year(self.meetings).count()
         for m in members:
-            all_member_meetings = m.committee_meetings.filter(committee=self)
+            all_member_meetings = m.committee_meetings.filter(committee=self,
+                                                              date__gte=d)
             year_member_meetings = filter_this_year(all_member_meetings)
             m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
             m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
 
         members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
-
 
     def recent_meetings(self):
         return self.meetings.all().order_by('-date')[:10]
@@ -142,7 +151,7 @@ class CommitteeMeeting(models.Model):
     votes_mentioned = models.ManyToManyField('laws.Vote', related_name='committee_meetings', blank=True)
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
-    src_url  = models.URLField(verify_exists=False, max_length=1024,null=True,blank=True)
+    src_url  = models.URLField(max_length=1024,null=True,blank=True)
 
     class Meta:
         ordering = ('-date',)

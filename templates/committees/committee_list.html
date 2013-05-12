@@ -57,7 +57,7 @@
                     {% for o in committees %}
                     <li>
                         <p class="item-title">
-                        <a id="detail-{{ o.id }}" href="{% url committee-detail o.id %}">{{o.name}}</a></p>
+                        <a id="detail-{{ o.id }}" href="{% url 'committee-detail' o.id %}">{{o.name}}</a></p>
 
                         <p class="item-context">{{ o.description|linebreaksbr }}</p>
                         {% endfor %}
@@ -76,7 +76,7 @@
                     <button class="btn btn-more" data-provide="okmore"
                         data-loading-text="{% trans "Loading" %} ..."
                         autocomplete="off" data-target="#committee-topics" 
-                        data-url="{% url committee-topics-more %}"
+                        data-url="{% url 'committee-topics-more' %}"
                         data-initial="{{INITIAL_TOPICS}}"
                         data-callback="setRating"
                         >{% trans "More" %} {% trans "Suggested Agenda Topics" %}</button>

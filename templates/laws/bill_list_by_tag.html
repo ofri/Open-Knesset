@@ -6,8 +6,8 @@
 {% block nav-laws %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
-            <li><a href="{% url bill-list %}">{% trans "Legislation" %}</a> <span class="divider">/</span></li>
-            <li><a href="{% url bill-tags-cloud %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'bill-tags-cloud' %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
             <li class="active">{{ tag }}</li>
 {% endblock %}
 
@@ -44,7 +44,7 @@
     </div>
 	<div class="tags cloud">
 	{% for mk in members %}
-	<a href="{% url bill-tag tag=tag %}?member={{mk.id}}" class="level{{ mk.font_size }}">{{ mk }}</a>
+	<a href="{% url 'bill-tag' tag=tag %}?member={{mk.id}}" class="level{{ mk.font_size }}">{{ mk }}</a>
 	{% endfor %}</div>
 	</div>
     {% if paginator %}

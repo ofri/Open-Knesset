@@ -6,7 +6,7 @@
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url agenda-list %}">{% trans "Agendas" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'agenda-list' %}">{% trans "Agendas" %}</a> <span class="divider">/</span></li>
         <li><a href="{{ agenda_url  }}">{{ agenda_name }}</a> <span class="divider">/</span></li>
         <li class="active">{% blocktrans %}Analysis of votes by {{ member }}{% endblocktrans %}</li>
 {% endblock %}

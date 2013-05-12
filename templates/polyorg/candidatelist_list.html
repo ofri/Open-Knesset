@@ -23,7 +23,7 @@
     </div>
     <div id="candidate-lists">
     {% for o in object_list %}
-      <a href="{% url candidate-list-detail o.id %}">
+      <a href="{% url 'candidate-list-detail' o.id %}">
         <div class="candidate-list-element ballot">
             <h1>
                 {{o.ballot}}

@@ -30,7 +30,7 @@
 
 {% block breadcrumbs %}
         {% ifnotequal object.committee.type 'plenum' %}
-            <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'committee-list' %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         {% endifnotequal %}
         <li><a href="{{ object.committee.get_absolute_url }}">{{ object.committee }}</a> <span class="divider">/</span></l1>
         <li class="active">{{object.date_string}}</li>
@@ -38,7 +38,7 @@
 
 {% block messages %}
 <span id="message_permission">
-    <a href="{% url edit-profile %}">{% trans "Please validate your email to annotate" %}</a>
+    <a href="{% url 'edit-profile' %}">{% trans "Please validate your email to annotate" %}</a>
 </span>
 <span id="message_staff">
     {% trans "Sorry, only editor can delete annotations." %}
@@ -90,8 +90,8 @@
                 <section class="card card-list">
                     <header><h2>{% trans "Bills" %}</h2></header>
                     <ul>
-                    {% for b in object.bills_first.all %}<li><a href="{% url bill-detail b.id %}">{{ b }}</a></li>{% endfor %}
-                    {% for b in object.bills_second.all %}<li><a href="{% url bill-detail b.id %}">{{ b }}</a></li>{% endfor %}
+                    {% for b in object.bills_first.all %}<li><a href="{% url 'bill-detail' b.id %}">{{ b }}</a></li>{% endfor %}
+                    {% for b in object.bills_second.all %}<li><a href="{% url 'bill-detail' b.id %}">{{ b }}</a></li>{% endfor %}
                     {% if user.is_authenticated %}
                     <li>
                         <form method="post" action="." class="form-inline">{% csrf_token %}
@@ -120,7 +120,7 @@
                       {% if forloop.first %}
                 <script type="text/html" id="annotationform">
                     <div class="annotation-form" id="annotationform-<%=speech_part.id%>">
-                        <form action="{% url annotatetext-post_annotation %}" method="post" accept-charset="utf-8" id="annotationrealform-<%=speech_part.id%>" class="annotationrealform">{% csrf_token %}
+                        <form action="{% url 'annotatetext-post_annotation' %}" method="post" accept-charset="utf-8" id="annotationrealform-<%=speech_part.id%>" class="annotationrealform">{% csrf_token %}
                         {% with annotation_obj|hash:"form" as annotation_form %}
                             <div class="annotationselection">
                               <span class="arrowhint">&#8658;</span>
@@ -200,7 +200,7 @@
                     <div id="tags">
                         {% if object.tags %}
                             {% for t in object.tags %}
-                                <a id="tag_{{t.id}}" href="{% url tag-detail slug=t %}" class="tag label">{{ t }}</a>
+                                <a id="tag_{{t.id}}" href="{% url 'tag-detail' slug=t %}" class="tag label">{{ t }}</a>
                             {% endfor %}
                         {% else %}
                             <span id="no-tags-yet">{% trans "No tags yet" %}</span>
@@ -211,7 +211,7 @@
                     <div id="add_tags">
                         <h3>{% trans "Edit Tags" %}</h3>
                         <span id="possible_tags"></span><br>
-                        <a href="javascript:get_tags_list('{% url related-tags resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
+                        <a href="javascript:get_tags_list('{% url 'related-tags' resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
                         <div id="create_tag" style='display:none'>
                             {% if perms.tagging.add_tag %}
                                 <form id="create_tag_form" action="#">{% csrf_token %}
@@ -223,12 +223,12 @@
                                     <input type="submit" value="{% trans 'Send' %}">
                                 </form>
                             {% else %}
-                                <div class="alert alert-block">{% trans "Please" %} <a href="{% url edit-profile %}">{% trans "validate your email" %}</a>{% trans " to create new tags" %}</div>
+                                <div class="alert alert-block">{% trans "Please" %} <a href="{% url 'edit-profile' %}">{% trans "validate your email" %}</a>{% trans " to create new tags" %}</div>
                             {% endif %}
                         </div>
                     </div>
                 {% else %}
-                    <div class="alert alert-block"><a href="{% url login %}?next={{request.get_full_path}}">{% trans "Login to edit tags" %}</a></div>
+                    <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans "Login to edit tags" %}</a></div>
                 {% endif %}
             </aside>
 

@@ -19,7 +19,7 @@
 {% block nav-agendas %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url agenda-list %}">{% trans "Agendas" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'agenda-list' %}">{% trans "Agendas" %}</a> <span class="divider">/</span></li>
         <li class="active">{{object}}</li>
 {% endblock %}
 
@@ -58,7 +58,7 @@
             <section class="card card-list">
                 <div class="spacer text-center">
                 {% if object.is_public %}
-                    <iframe width="600" height="400" frameborder="0" src="{% url agenda-embed %}?agenda_id={{object.id}}"></iframe>
+                    <iframe width="600" height="400" frameborder="0" src="{% url 'agenda-embed' %}?agenda_id={{object.id}}"></iframe>
                 {% else %}
                   <p>
                     {% trans 'Note: This agenda is private. It is only viewable by its editors. If you feel this agenda should be made public, contact us at' %}
@@ -77,7 +77,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-votes" 
-                    data-url="{% url agenda-detail-more-votes object.pk %}"
+                    data-url="{% url 'agenda-detail-more-votes' object.pk %}"
                     data-initial="{{INITIAL}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -92,7 +92,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-bills" 
-                    data-url="{% url agenda-detail-more-bills object.pk %}"
+                    data-url="{% url 'agenda-detail-more-bills' object.pk %}"
                     data-initial="{{INITIAL}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -107,7 +107,7 @@
                 <button class="btn btn-mini btn-expand" data-provide="okmore"
                     data-loading-text="{% trans "Loading" %} ..."
                     autocomplete="off" data-target="#recent-meetings" 
-                    data-url="{% url agenda-detail-more-meetings object.pk %}"
+                    data-url="{% url 'agenda-detail-more-meetings' object.pk %}"
                     data-initial="{{INITIAL}}">{% trans "More" %} +</button>
                 {% endif %}
                 </footer>
@@ -122,7 +122,7 @@
         		{% with parties|lookup:selected_party_id as selected_party %}
                     <li class="row">
                         <div class="span2">
-                            <a href="{% url party-detail selected_party.id %}">{{ selected_party }}</a>
+                            <a href="{% url 'party-detail' selected_party.id %}">{{ selected_party }}</a>
                         </div>
                         {% with agenda_party_values|lookup:selected_party.id as selected_party_score %}
                         <div class="numeric text-{% if selected_party_score < 0 %}error{%else%}success{% endif %}">

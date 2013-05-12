@@ -31,16 +31,16 @@
 {% block nav-committees %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'committee-list' %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         <li>
         {% for c in topic.committees.all %}
             {% if not forloop.first %} | {% endif %}
-            <a href="{% url committee-detail c.id %}">{{c}}</a>
+            <a href="{% url 'committee-detail' c.id %}">{{c}}</a>
             {% endfor%}
             <span class="divider">/</span>
         </li>
         <li>
-            <a href="{% url committee-topic-list topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a>
+            <a href="{% url 'committee-topic-list' topic.committees.all.0.id %}">{% trans "Suggested Topics for a committee meeting" %}</a>
             <span class="divider">/</span>
         </li>
         <li class="active">{{topic.title}}</li>
@@ -54,8 +54,8 @@
         <div class="row">
             <div class="span1">
                 <div class="spacer fill">
-                    <p><a href="{% url public-profile topic.creator.username %}">{% avatar topic.creator 64 %}</a></p>
-                    <p><a href="{% url public-profile topic.creator.username %}">{{ topic.creator }}</a></p>
+                    <p><a href="{% url 'public-profile' topic.creator.username %}">{% avatar topic.creator 64 %}</a></p>
+                    <p><a href="{% url 'public-profile' topic.creator.username %}">{{ topic.creator }}</a></p>
                     <p>{{topic.creator.get_full_name}}</p>
                 </div>
             </div>
@@ -69,8 +69,8 @@
                 </div>
         {% if user == topic.creator %}
                 <div class="object-actions">
-                    <a class="btn" href="{% url edit-committee-topic topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
-                    <a class="btn btn-danger" href="{% url delete-committee-topic topic.id %}">{% trans "Delete" %}</a>
+                    <a class="btn" href="{% url 'edit-committee-topic' topic.committees.all.0.id topic.id %}">{% trans "Edit" %}</a>
+                    <a class="btn btn-danger" href="{% url 'delete-committee-topic' topic.id %}">{% trans "Delete" %}</a>
                 </p>
         {% endif %}
             </div>
@@ -98,7 +98,7 @@
                     <li>
                     {% if not user.is_authenticated %}
                         <div class="alert alert-block">
-                            <a href="{% url login %}?next={{request.get_full_path}}">{% trans "Login to rank this topic" %}</a>
+                            <a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans "Login to rank this topic" %}</a>
                         </div>
                     {% else %}
                         {% trans "your rating" %}: 

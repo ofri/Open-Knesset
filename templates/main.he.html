@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url main-actions-feed %}" /> {% endblock %}
+{% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'main-actions-feed' %}" /> {% endblock %}
 {% load i18n i18ninclude search %}{% load static from staticfiles %}
 {% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}. {% trans 'Non partisan, non commercial site that brings you relevant, detailed and accurate information about the knesset' %}{% endblock %}
 {% block extratitle %}{% trans 'Home' %}{% endblock %}
@@ -22,38 +22,39 @@
 
 {% block divcontent %}
 
-<div class="row" style="margin-top:20px">
-  <div class="span8">
-    <div id="tidbitCarousel" class="carousel slide card card-main" >
-        {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
-        <!--ol class="carousel-indicators">
+<div id="tidbitCarousel" class="carousel slide card card-main" style="margin-top:20px">
+    {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
+    <!--ol class="carousel-indicators">
+    {% for tidbit in tidbits  %}
+        <li {% if forloop.first %} class="active"{% endif %} data-slide-to="{{forloop.counter0}}" data-target="#tidbitCarousel"> </li>
+    {% endfor %}
+    </ol-->
+    <!-- Carousel items -->
+    <div class="carousel-inner">
         {% for tidbit in tidbits  %}
-            <li {% if forloop.first %} class="active"{% endif %} data-slide-to="{{forloop.counter0}}" data-target="#tidbitCarousel"> </li>
-        {% endfor %}
-        </ol-->
-        <!-- Carousel items -->
-        <div class="carousel-inner">
-            {% for tidbit in tidbits  %}
-            <div class="item {% if forloop.first %}active{% endif %}">
-                <a class="btn btn-more" href="{{tidbit.button_link}}">{{tidbit.button_text}}</a>
-                <img class="tidbit-pic"
-                    src="{% if tidbit.photo %}{{tidbit.photo.url}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
-                    alt="Tidbit photo">
-                <strong class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</strong>
-                <div>{{tidbit.content|safe}}</div>
-            </div>
-            {% empty %}
-            <div class="item active">
-                <h1>No Tidbits</h1>
-                <div>Seems like the db is clean of tidbits.</div>
-                <a class="btn" href="admin/auxiliary/tidbit/add/">Add a tidbit</a>
-            </div>
-            {% endfor %}
+        <div class="item {% if forloop.first %}active{% endif %}">
+            <img class="tidbit-pic"
+                src="{% if tidbit.photo %}{{tidbit.photo.url}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
+                alt="Tidbit photo">
+            <strong class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</strong>
+            <div>{{tidbit.content|safe}}</div>
+            <a class="btn btn-more" href="{{tidbit.button_link}}">{{tidbit.button_text}}</a>
         </div>
-        <!-- Carousel nav -->
-        <a class="carousel-control left" href="#tidbitCarousel" data-slide="prev">&lsaquo;</a>
-        <a class="carousel-control right" href="#tidbitCarousel" data-slide="next">&rsaquo;</a>
-      </div>
+        {% empty %}
+        <div class="item active">
+            <h1>No Tidbits</h1>
+            <div>Seems like the db is clean of tidbits.</div>
+            <a class="btn" href="admin/auxiliary/tidbit/add/">Add a tidbit</a>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#tidbitCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#tidbitCarousel" data-slide="next">&rsaquo;</a>
+</div>
+
+<div class="row">
+    <div class="span8">
       <div class="card card-list card-list-latest">
         <header>
             <h2>{% trans "Upcoming Events" %}</h2>
@@ -72,36 +73,37 @@
         <button id="events-more" class="btn btn-mini btn-expand" data-provide="okmore"
             data-loading-text="{% trans "Loading" %} ..."
             autocomplete="off" data-target="#upcoming-events" 
-            data-url="{% url more-upcoming-events %}"
+            data-url="{% url 'more-upcoming-events' %}"
             data-initial="INITIAL_EVENTS"
             >{% trans "More" %} +</button>
         </footer>
         {% endif %}
       </div>
-  </div>
-  <div class="span4">
-        <aside style="margin: 0 auto 30px; text-align:center;">
-          <div><a href="http://www.indiegogo.com/projects/mobile-knesset">
+    </div>
+    <div class="span4">
+        <aside class="sidebar">
+          <a href="http://www.indiegogo.com/projects/mobile-knesset">
             <img src="{{STATIC_URL}}img/indiegogo.png" alt="indiegogo campaign">
-          </a></div>
+          </a>
         </aside>
+
         <aside class="sidebar">
             <h2>מה אפשר לעשות באתר?</h2>
             <ul>
               <li> 
-                  <a href="{% url help %}#follow-members">לעקוב אחרי הצעות חוק</a>
+                  <a href="{% url 'help' %}#follow-members">לעקוב אחרי הצעות חוק</a>
               </li>
               <li> 
-                  <a href="{% url help %}#search-bills">לחפש הצעות חוק לפי נושא</a>
+                  <a href="{% url 'help' %}#search-bills">לחפש הצעות חוק לפי נושא</a>
               </li>
               <li> 
-                  <a href="{% url help %}#follow-member-votes">מעקב הצבעות חבר כנסת</a>
+                  <a href="{% url 'help' %}#follow-member-votes">מעקב הצבעות חבר כנסת</a>
               </li>
               <li> 
-                  <a href="{% url help %}#members-data">להשוות נתוני חברי־הכנסת</a>
+                  <a href="{% url 'help' %}#members-data">להשוות נתוני חברי־הכנסת</a>
               </li>
               <li> 
-                  <a href="{% url help %}#protocols">לקרוא את הפרוטוקולים</a>
+                  <a href="{% url 'help' %}#protocols">לקרוא את הפרוטוקולים</a>
               </li>
             </ul>
         </aside>
@@ -148,6 +150,7 @@
           </ul>
         </aside>
     </div>
+</div>
 {% if FUTURE %}
 <div class="row">
     <div class="span6">

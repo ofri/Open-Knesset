@@ -5,9 +5,9 @@
             <div id="rating_{{t.id}}" data-rating="{{t.rating.get_rating}}" data-provider="rating"></div>
         </div>
         <header>
-            <a href="{% url public-profile t.creator.username %}">{% avatar t.creator 48 %}</a>
+            <a href="{% url 'public-profile' t.creator.username %}">{% avatar t.creator 48 %}</a>
             <h3>
-                <a href="{% url public-profile t.creator.username %}">{{t.creator}}</a><span>{{t.creator.get_full_name}}</span>
+                <a href="{% url 'public-profile' t.creator.username %}">{{t.creator}}</a><span>{{t.creator.get_full_name}}</span>
             </h3>
         </header>
           <div>
@@ -15,7 +15,7 @@
               <div>
               {% if not object %}
               {% for c in t.committees.all %}
-                  <a href="{% url committee-detail c.id %}" class="label">{{c}}</a>
+                  <a href="{% url 'committee-detail' c.id %}" class="label">{{c}}</a>
               {% endfor%}
               {% endif %}
               </div>

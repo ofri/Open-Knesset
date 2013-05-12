@@ -46,7 +46,7 @@
 
 {% block breadcrumbs %}
         {% ifnotequal object.type 'plenum' %}
-            <li><a href="{% url committee-list %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'committee-list' %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
         {% endifnotequal %}
         <li class="active">{{object}}</li>
 {% endblock %}
@@ -131,13 +131,13 @@
                         <li class="agenda-mini">
                         {% if user.is_authenticated %}
                             {% if perms.committees.add_topic %}
-                                <a class="btn" href="{% url edit-committee-topic object.id %}">{% trans "Suggest Topic" %}</a>
+                                <a class="btn" href="{% url 'edit-committee-topic' object.id %}">{% trans "Suggest Topic" %}</a>
                             {% else %}
                                 {% trans 'to suggest a topic' %}, {% trans 'Please' %} 
-                                <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a> 
+                                <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a> 
                             {% endif %}
                         {% else %}
-                                <a href='{% url login %}?next={{request.get_full_path}}'>{% trans 'Please login to suggest a topic' %}</a>
+                                <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to suggest a topic' %}</a>
                         {% endif %}
                         </li>
                     {% include "committees/_topics_summary.html" with object_list=topics%}
@@ -154,7 +154,7 @@
                                 "...{{a.selection}}..." ({{a.content_object.header}})
                                 <div class="tip" style="display:none">
                                     <div class="user_id">
-                                        <a href="{% url public-profile a.user.username %}">{% avatar a.user 45 %}
+                                        <a href="{% url 'public-profile' a.user.username %}">{% avatar a.user 45 %}
                                         {{ a.user }}</a>
                                     </div>
                                     {{a.comment|linebreaks}}

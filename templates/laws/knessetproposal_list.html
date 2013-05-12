@@ -8,14 +8,14 @@
 	<div class="item-list">
         {% for o in object_list %}
             <div class="item">
-                <a id="detail-{{ o.id }}" href="{% url knesset-proposal-detail o.id %}">{{ o.law }}: {{ o.title }}</a><br/>
+                <a id="detail-{{ o.id }}" href="{% url 'knesset-proposal-detail' o.id %}">{{ o.law }}: {{ o.title }}</a><br/>
                 <div class="info">
                     {% if o.originals.all %}
                         {% trans 'Based on' %}:
                         {% for orig in o.originals.all %}
                             {{ orig.title }} {% trans 'by' %} 
                             {% for proposer in orig.proposers.all %}
-                                <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url member-detail proposer.id %}">{{ proposer.name }}</a> 
+                                <a class="item dontwrap" id="detail-{{ proposer.id }}" href="{% url 'member-detail' proposer.id %}">{{ proposer.name }}</a> 
                             {% endfor %}<br>
                         {% endfor %}
                     {% endif %}

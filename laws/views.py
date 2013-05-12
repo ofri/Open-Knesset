@@ -1,38 +1,36 @@
 #encoding: utf-8
-import urllib, urllib2, difflib, logging, datetime, os
-from time import mktime
-from django.utils.translation import ugettext_lazy
-from django.utils.translation import ugettext as _
-from django.utils import simplejson as json
-from django.views.generic.list_detail import object_list, object_detail
-from django.conf import settings
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseNotAllowed, HttpResponseBadRequest
-from django.db.models import Count, Q
-from django.db import IntegrityError
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import loader, RequestContext
-from django.core.urlresolvers import reverse
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.decorators import method_decorator
-from django.core.files.storage import default_storage
-from django.views.decorators.csrf import ensure_csrf_cookie
+import datetime
+import os
 
-from tagging.models import Tag, TaggedItem
-from tagging.views import tagged_object_list
-from tagging.utils import get_tag
+import difflib
+import logging
 import tagging
 import voting
 from actstream import action
-from knesset.utils import limit_by_request, notify_responsible_adult
-from mks.models import Member
-from tagvotes.models import TagVote
-from hashnav import DetailView, ListView
-from agendas.models import Agenda,UserSuggestedVote
-from auxiliary.views import CsvView
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
+from django.core.urlresolvers import reverse
+from django.http import (HttpResponseRedirect, HttpResponse, Http404,
+                         HttpResponseBadRequest)
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from django.utils import simplejson as json
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy, ugettext as _
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import ListView
+from tagging.models import Tag, TaggedItem
+from tagging.utils import get_tag
+
+from agendas.models import Agenda, UserSuggestedVote
+from auxiliary.views import CsvView, BaseTagMemberListView
 from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
+from hashnav import DetailView, ListView as HashnavListView
+from knesset.utils import notify_responsible_adult
+from mks.models import Member
 from models import *
+
 
 logger = logging.getLogger("open-knesset.laws.views")
 
@@ -49,41 +47,94 @@ def bill_tags_cloud(request, min_posts_count=1):
     return render_to_response("laws/bill_tags_cloud.html",
         {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
 
-def bill_tag(request, tag):
-    tag_instance = get_tag(tag)
-    if tag_instance is None:
-        raise Http404(_('No Tag found matching "%s".') % tag)
 
-    extra_context = {'tag':tag_instance}
-    extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
-    if 'member' in request.GET:
-        try:
-            member_id = int(request.GET['member'])
-        except ValueError:
-            raise Http404(_('No Member found matching "%s".') % request.GET['member'])
-        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
-        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
-        extra_context['title'] = _('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
-        qs = extra_context['member'].bills.all()
-    else: # only tag is given
-        extra_context['title'] = _('Bills tagged %(tag)s') % {'tag': tag}
-        qs = Bill
+class BillTagsView(BaseTagMemberListView):
 
-    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    bill_proposers = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag_instance)]
-    d = {}
-    for bill in bill_proposers:
-        for p in bill:
-            d[p] = d.get(p,0)+1
-    # now d is a dict: MK -> number of proposals in this tag
-    mks = d.keys()
-    for mk in mks:
-        mk.count = d[mk]
-    mks = tagging.utils.calculate_cloud(mks)
-    extra_context['members'] = mks
-    return object_list(request, queryset,
-    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
-        template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
+    template_name = 'laws/bill_list_by_tag.html'
+    url_to_reverse = 'bill-tag'
+
+    def get_queryset(self):
+        tag_instance = self.tag_instance
+        member = self.member
+
+        if member:
+            qs = member.bills.all()
+        else:
+            qs = Bill
+
+        queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+        return queryset
+
+    def get_bill_proposers_cloud(self):
+        bill_proposers = [
+            b.proposers.all() for b in
+            TaggedItem.objects.get_by_model(Bill, self.tag_instance)]
+
+        d = {}
+        for bill in bill_proposers:
+            for p in bill:
+                d[p] = d.get(p, 0) + 1
+        # now d is a dict: MK -> number of proposals in this tag
+        mks = d.keys()
+        for mk in mks:
+            mk.count = d[mk]
+
+        return tagging.utils.calculate_cloud(mks)
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(BillTagsView, self).get_context_data(*args, **kwargs)
+        if self.member:
+            context['title'] = _('Bills tagged %(tag)s by %(member)s') % {
+                'tag': self.kwargs['tag'],
+                'member': self.member.name
+            }
+        else:  # only tag is given
+            context['title'] = _('Bills tagged %(tag)s') % {
+                'tag': self.kwargs['tag']}
+
+        context['members'] = self.get_bill_proposers_cloud()
+
+        return context
+
+# TODO: already converted to generic ListView above,
+# remove once verified working
+#
+#def bill_tag(request, tag):
+#    tag_instance = get_tag(tag)
+#    if tag_instance is None:
+#        raise Http404(_('No Tag found matching "%s".') % tag)
+#
+#    extra_context = {'tag':tag_instance}
+#    extra_context['tag_url'] = reverse('bill-tag',args=[tag_instance])
+#    if 'member' in request.GET:
+#        try:
+#            member_id = int(request.GET['member'])
+#        except ValueError:
+#            raise Http404(_('No Member found matching "%s".') % request.GET['member'])
+#        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
+#        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
+#        extra_context['title'] = _('Bills tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+#        qs = extra_context['member'].bills.all()
+#    else: # only tag is given
+#        extra_context['title'] = _('Bills tagged %(tag)s') % {'tag': tag}
+#        qs = Bill
+#
+#    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+#    bill_proposers = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag_instance)]
+#    d = {}
+#    for bill in bill_proposers:
+#        for p in bill:
+#            d[p] = d.get(p,0)+1
+#    # now d is a dict: MK -> number of proposals in this tag
+#    mks = d.keys()
+#    for mk in mks:
+#        mk.count = d[mk]
+#    mks = tagging.utils.calculate_cloud(mks)
+#    extra_context['members'] = mks
+#    return object_list(request, queryset,
+#    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
+#        template_name='laws/bill_list_by_tag.html', extra_context=extra_context)
 
 def bill_auto_complete(request):
     if request.method != 'GET':
@@ -116,48 +167,106 @@ def vote_tags_cloud(request, min_posts_count=1):
     return render_to_response("laws/vote_tags_cloud.html",
         {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
 
-def vote_tag(request, tag):
-    tag_instance = get_tag(tag)
-    if tag_instance is None:
-        raise Http404(_('No Tag found matching "%s".') % tag)
 
-    extra_context = {'tag':tag_instance}
-    extra_context['tag_url'] = reverse('vote-tag',args=[tag_instance])
-    if 'member' in request.GET:
-        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
-        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
-        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
-        qs = extra_context['member'].votes.all()
-    else: # only tag is given
-        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
-        qs = Vote
+class VoteTagsView(BaseTagMemberListView):
 
-    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    vote_attendence = [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag_instance)]
-    d = {}
-    for vote in vote_attendence:
-        for v in vote:
-            d[v] = d.get(v,0)+1
-    # now d is a dict: MK -> number of votes in this tag
-    mks = d.keys()
-    if mks:
-        for mk in mks:
-            mk.count = d[mk]
-        average = float(sum([mk.count for mk in mks]))/len(mks)
-        mks = [mk for mk in mks if mk.count>=average]
-        mks = tagging.utils.calculate_cloud(mks)
-        extra_context['members'] = mks
-    if request.user.is_authenticated():
-        extra_context['watched_members'] = \
-            request.user.get_profile().members
-    else:
-        extra_context['watched_members'] = False
+    template_name = 'laws/vote_list_by_tag.html'
+    url_to_reverse = 'vote-tag'
 
-    return object_list(request, queryset,
-    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
-        template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
+    def get_queryset(self):
+        tag_instance = self.tag_instance
+        member = self.member
 
+        if member:
+            qs = member.votes.all()
+        else:
+            qs = Vote
 
+        return TaggedItem.objects.get_by_model(qs, tag_instance)
+
+    def get_mks_cloud(self):
+        vote_attendence = [
+            v.votes.all() for v in
+            TaggedItem.objects.get_by_model(Vote, self.tag_instance)]
+
+        d = {}
+        for vote in vote_attendence:
+            for v in vote:
+                d[v] = d.get(v, 0) + 1
+        # now d is a dict: MK -> number of votes in this tag
+        mks = d.keys()
+        if mks:
+            for mk in mks:
+                mk.count = d[mk]
+            average = float(sum([mk.count for mk in mks])) / len(mks)
+            mks = [mk for mk in mks if mk.count >= average]
+            return tagging.utils.calculate_cloud(mks)
+        else:
+            return None
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(VoteTagsView, self).get_context_data(*args, **kwargs)
+
+        if self.member:
+            context['title'] = ugettext_lazy(
+                'Votes tagged %(tag)s by %(member)s') % {
+                    'tag': self.tag_instance.name, 'member': self.member.name}
+        else:  # only tag is given
+            context['title'] = ugettext_lazy('Votes tagged %(tag)s') % {
+                'tag': self.tag_instance.name}
+
+        mks = self.get_mks_cloud()
+
+        if mks:
+            context['members'] = mks
+
+        return context
+
+# TODO: already converted to generic ListView above,
+# remove once verified working
+#
+#def vote_tag(request, tag):
+#    tag_instance = get_tag(tag)
+#    if tag_instance is None:
+#        raise Http404(_('No Tag found matching "%s".') % tag)
+#
+#    extra_context = {'tag':tag_instance}
+#    extra_context['tag_url'] = reverse('vote-tag',args=[tag_instance])
+#    if 'member' in request.GET:
+#        extra_context['member'] = get_object_or_404(Member, pk=request.GET['member'])
+#        extra_context['member_url'] = reverse('member-detail',args=[extra_context['member'].id])
+#        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s by %(member)s') % {'tag': tag, 'member':extra_context['member'].name}
+#        qs = extra_context['member'].votes.all()
+#    else: # only tag is given
+#        extra_context['title'] = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
+#        qs = Vote
+#
+#    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+#    vote_attendence = [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag_instance)]
+#    d = {}
+#    for vote in vote_attendence:
+#        for v in vote:
+#            d[v] = d.get(v,0)+1
+#    # now d is a dict: MK -> number of votes in this tag
+#    mks = d.keys()
+#    if mks:
+#        for mk in mks:
+#            mk.count = d[mk]
+#        average = float(sum([mk.count for mk in mks]))/len(mks)
+#        mks = [mk for mk in mks if mk.count>=average]
+#        mks = tagging.utils.calculate_cloud(mks)
+#        extra_context['members'] = mks
+#    if request.user.is_authenticated():
+#        extra_context['watched_members'] = \
+#            request.user.get_profile().members
+#    else:
+#        extra_context['watched_members'] = False
+#
+#    return object_list(request, queryset,
+#    #return tagged_object_list(request, queryset_or_model=qs, tag=tag,
+#        template_name='laws/vote_list_by_tag.html', extra_context=extra_context)
+#
 
 def votes_to_bar_widths(v_count, v_for, v_against):
     """ a helper function to compute presentation widths for user votes bars.
@@ -462,7 +571,7 @@ class BillListMixin(object):
         return form
 
 
-class BillListView (BillListMixin, ListView):
+class BillListView (BillListMixin, HashnavListView):
 
     friend_pages = [
         ('stage','all',_('All stages')),
@@ -514,7 +623,7 @@ class BillMoreView(BillListMixin):
     pass
 
 
-class VoteListView(ListView):
+class VoteListView(HashnavListView):
 
     def get_queryset(self, **kwargs):
         form = self._get_filter_form()
@@ -663,13 +772,15 @@ class VoteDetailView(DetailView):
 
         return HttpResponseRedirect('.')
 
-
-def tagged(request,tag):
-    title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
-    try:
-        return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
-    except Http404:
-        return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
+# TODO: Looks like it's unused,
+# if so, needs to be removed as it's uses removed function based generic views
+#
+#def tagged(request,tag):
+#    title = ugettext_lazy('Votes tagged %(tag)s') % {'tag': tag}
+#    try:
+#        return tagged_object_list(request, queryset_or_model = Vote, tag=tag, extra_context={'title':title})
+#    except Http404:
+#        return object_list(request, queryset=Vote.objects.none(), extra_context={'title':title})
 
 def vote_auto_complete(request):
     if request.method != 'GET':
