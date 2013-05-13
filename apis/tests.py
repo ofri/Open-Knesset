@@ -36,7 +36,8 @@ class ApiViewsTest(TestCase):
         cache.cache.clear()
         Knesset.objects._current_knesset=None
         #self.vote_1 = Vote.objects.create(time=datetime.now(),title='vote 1')
-        self.knesset = Knesset.objects.create(number=1)
+        self.knesset = Knesset.objects.create(number=1,
+                start_date=datetime.date.today()-datetime.timedelta(days=30))
 
         self.party_1 = Party.objects.create(name='party 1', knesset=self.knesset)
         self.vote_1 = Vote.objects.create(title="vote 1", time=datetime.datetime.now())
@@ -240,6 +241,8 @@ class ApiViewsTest(TestCase):
 class MeetingApiTest(TestCase):
 
     def setUp(self):
+        self.knesset = Knesset.objects.create(number=1,
+                            start_date=datetime.date.today()-datetime.timedelta(days=1))
         self.committee_1 = Committee.objects.create(name='c1')
         self.committee_2 = Committee.objects.create(name='c2')
         self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),

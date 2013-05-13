@@ -30,8 +30,7 @@ class LinkType(models.Model):
         return self.title
 
 class Link(models.Model):
-    url = models.URLField(verbose_name='URL', max_length=1000,
-                          verify_exists=False)
+    url = models.URLField(verbose_name='URL', max_length=1000)
     title = models.CharField(max_length=200, verbose_name=_('title'))
     content_type   = models.ForeignKey(ContentType,
             verbose_name=_('content type'),

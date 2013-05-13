@@ -23,7 +23,7 @@
         <h1>{% trans 'Tags' %}</h1>
         <div class="text-center">
             {% for tag in tags_cloud %}
-                <a href="{% url tag-detail slug=tag %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
+                <a href="{% url 'tag-detail' slug=tag %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
             {% endfor %}
         </div>
     </div>

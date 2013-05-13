@@ -73,7 +73,7 @@
                 <ul>
                 {% for agenda in agendas %}
                     <li>
-                        <p class="item-title"><a href="{% url agenda-detail agenda.id %}">{{ agenda }}</a></p>
+                        <p class="item-title"><a href="{% url 'agenda-detail' agenda.id %}">{{ agenda }}</a></p>
                         <div class="row">
                             <span class="span1 numeric text-{% if agenda.score < 0 %}error{%else%}success{% endif %}">
                                 {{agenda.score|floatformat:"0"}}%

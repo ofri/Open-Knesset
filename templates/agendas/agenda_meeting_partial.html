@@ -8,7 +8,7 @@
     <p class="item-context">
         {% get_comment_count for agendameeting as comment_count %}
         <span class="badge {% if comment_count %}badge-success{% endif %}">{{ comment_count }}</span>
-        <a href="{% url agenda-meeting-detail agendameeting.id %}">{% trans "comments" %}</a>
+        <a href="{% url 'agenda-meeting-detail' agendameeting.id %}">{% trans "comments" %}</a>
     </p>
 </li>
 {% empty %}

@@ -6,8 +6,8 @@
 {% block nav-votes %}class="selected"{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url vote-list %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
-        <li><a href="{% url vote-tags-cloud %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'vote-list' %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'vote-tags-cloud' %}">{% trans "Tags" %}</a> <span class="divider">/</span></li>
         <li class="active">{{title}}</a>
 {% endblock %}
 
@@ -23,7 +23,7 @@
                         <h1>{% blocktrans %}{{ count }} Votes tagged <a href="{{ tag_url }}">{{ tag }}</a>{% endblocktrans %}</h1>
                     {% endif %}
                 {% endwith %}
-                    <a href="{% url vote-tags-cloud %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
+                    <a href="{% url 'vote-tags-cloud' %}{% if member %}?member={{member.id}}{% endif %}">{% trans 'Choose another tag' %}</a><br>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
                 <header><h2>{% blocktrans %}MKs attendance in votes related to {{ tag }}{% endblocktrans %}</h2></header>
                 <div class="text-center">
                 {% for mk in members %}
-                    <a href="{% url vote-tag tag=tag %}?member={{mk.id}}" class="label level{{ mk.font_size }}">{{ mk }}</a>
+                    <a href="{% url 'vote-tag' tag=tag %}?member={{mk.id}}" class="label level{{ mk.font_size }}">{{ mk }}</a>
                 {% endfor %}
             </div>
            </aside>

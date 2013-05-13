@@ -18,20 +18,22 @@
 <div class="row cards">
     <div class="span6">
         <div class="card card-list">
-            <header><h2>לעקוב אחרי <a href="{% url bill-list %}">הצעות חוק</a></h2></header>
+            <a name="follow-members"></a>
+            <header><h2>לעקוב אחרי <a href="{% url 'bill-list' %}">הצעות חוק</a></h2></header>
                 <ul>
                     <li>
                         <p>וההתקדמות שלהן בתהליך החקיקה.</p>
-                        <p> לדוגמה: <a href="{% url bill-detail bill.id %}">{{ bill }}</a>.</p>
+                        <p> לדוגמה: <a href="{% url 'bill-detail' bill.id %}">{{ bill }}</a>.</p>
                     </li>
                 </ul>
         </div>
 
         <div class="card card-list">
-            <header><h2>לחפש <a href="{% url bill-tags-cloud %}">הצעות חוק לפי נושא</a>, למשל</h2></header>
+            <a name="search-bills"></a>
+            <header><h2>לחפש <a href="{% url 'bill-tags-cloud' %}">הצעות חוק לפי נושא</a>, למשל</h2></header>
             <ul>
                 {% for tag in tags %}
-                <li><a href="{% url bill-tag tag %}">{{ tag }}</a></li>
+                <li><a href="{% url 'bill-tag' tag %}">{{ tag }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -40,17 +42,19 @@
     
     <div class="span6">
         <div class="card card-list">
+            <a name="follow-member-votes"></a>
             <header><h2>מעקב הצבעות חבר כנסת</h2></header>
             <ul>
                 <li>
-                    <p>בכל אחת מה<a href="{% url vote-list %}">הצבעות במליאת הכנסת</a>.</p>
-                    <p>לדוגמה: <a href="{% url vote-detail vote.id %}">{{ vote }}</a></p>
+                    <p>בכל אחת מה<a href="{% url 'vote-list' %}">הצבעות במליאת הכנסת</a>.</p>
+                    <p>לדוגמה: <a href="{% url 'vote-detail' vote.id %}">{{ vote }}</a></p>
                 </li>
             </ul>
         </div>
 
         <div class="card card-list">
-            <header><h2>נתונים על <a href="{% url member-list %}">חברי הכנסת</a></h3></header>
+            <a name="members-data"></a>
+            <header><h2>נתונים על <a href="{% url 'member-list' %}">חברי הכנסת</a></h3></header>
             <ul>
                 <li>
                     <p>קבלת מרב סטטיסטיקות על הפעילות הפרלמנטרית שלהם.</p>
@@ -60,10 +64,11 @@
         </div>
 
         <div class="card card-list">
+            <a name="protocols"></a>
             <header><h2>לקרוא את הפרוטוקולים</h2></header>
             <ul>
                 <li>
-                    <p>של כל <a href="{% url committee-list %}">וועדות הכנסת</a></p>
+                    <p>של כל <a href="{% url 'committee-list' %}">וועדות הכנסת</a></p>
                     <p>(למעט ועדת חוץ ובטחון שהפרוטוקולים של ישיבותיה לא גלויים לציבור)</p>
                 </li>
             </ul>

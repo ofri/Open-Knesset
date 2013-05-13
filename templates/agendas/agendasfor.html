@@ -60,13 +60,13 @@
         </script>
     {% else %}
         {% if suggest_agendas_login %}
-            <div class="alert alert-block"><a href='{% url login %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></div>
+            <div class="alert alert-block"><a href='{% url 'login' %}?next={{url}}'>{% trans 'Login to suggest an agenda' %}</a></div>
         {% endif %}
     {% endif %}
 
     {% if formset %}
     <h3>{% trans "Ascribe your agendas" %}</h3>
-    <form class="editors_agendas" action="{% url update-editors-agendas %}" method="post">
+    <form class="editors_agendas" action="{% url 'update-editors-agendas' %}" method="post">
     <table>
         {{ formset.management_form }}
         {% csrf_token %}

@@ -1,8 +1,8 @@
 {% load i18n %}
     <div class="alert alert-block suggest-login">
         {% trans "You have to be logged in to make a suggestion." %}<br>
-        <a href="{% url login %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
+        <a href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "login" %}</a>
         {% trans "or" %}
-        <a href="{% url register %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
+        <a href="{% url 'register' %}?next={{ request.get_full_path }}">{% trans "register" %}</a>
     </div>
 

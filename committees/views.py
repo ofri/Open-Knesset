@@ -1,41 +1,44 @@
-import logging, difflib, datetime, re, colorsys
-from django.utils.translation import ugettext_lazy
-from django.utils.translation import ugettext as _
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.utils import simplejson as json
-from django.views import generic
-from django.http import (HttpResponse, HttpResponseRedirect, Http404,
-    HttpResponseForbidden, HttpResponseBadRequest)
-from django.shortcuts import get_object_or_404,render_to_response
-from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.core.cache import cache
-from django.template import RequestContext
-from django.conf import settings
-from tagging.models import TaggedItem, Tag
-from tagging.utils import get_tag
+import datetime
+import re
+
+import colorsys
+import difflib
+import logging
 import tagging
 from actstream import action
-from hashnav import ListView, DetailView, method_decorator as hashnav_method_decorator
-from laws.models import Bill, PrivateProposal
-from mks.models import Member
-from events.models import Event
-from knesset.utils import clean_string
-from links.models import Link
-from models import Committee, CommitteeMeeting, Topic, COMMITTEE_PROTOCOL_PAGINATE_BY
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
+from django.core.urlresolvers import reverse
+from django.http import (HttpResponse, HttpResponseRedirect, Http404,
+                         HttpResponseForbidden)
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
+from django.utils import simplejson as json
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy, ugettext as _
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import DetailView, ListView
+from tagging.models import TaggedItem, Tag
+
 import models
+from .models import (Committee, CommitteeMeeting, Topic,
+                     COMMITTEE_PROTOCOL_PAGINATE_BY)
+from auxiliary.views import GetMoreView, BaseTagMemberListView
 from forms import EditTopicForm, LinksFormset
-from auxiliary.views import GetMoreView
+from hashnav import method_decorator as hashnav_method_decorator
+from knesset.utils import clean_string
+from laws.models import Bill, PrivateProposal
+from links.models import Link
+from mks.models import Member
+
 
 logger = logging.getLogger("open-knesset.committees.views")
 
-committees_list = ListView(queryset=Committee.objects.all(), paginate_by=20)
 
-
-class CommitteeListView(generic.ListView):
+class CommitteeListView(ListView):
     context_object_name = 'committees'
     queryset = Committee.objects.exclude(type='plenum')
     paginate_by = 20
@@ -128,8 +131,7 @@ class MeetingDetailView(DetailView):
         else:
             #get meeting members with presence calculation
             meeting_members_ids = set(m.id for m in cm.mks_attended.all())
-            context['members'] = [m for m in cm.committee.members_by_presence()
-                                  if m.id in meeting_members_ids]
+            context['members'] = cm.committee.members_by_presence(ids=meeting_members_ids)
             context['hide_member_presence'] = False
 
         return context
@@ -180,7 +182,7 @@ class MeetingDetailView(DetailView):
 _('added-bill-to-cm')
 _('added-mk-to-cm')
 
-class TopicListView(generic.ListView):
+class TopicListView(ListView):
     model = Topic
     context_object_name = 'topics'
 
@@ -289,22 +291,29 @@ def delete_topic(request, pk):
 
 class MeetingsListView(ListView):
 
-    def get_context(self):
-        context = super(MeetingsListView, self).get_context()
-        if not self.items:
-            raise Http404
-        committee = self.items[0].committee
-        if committee.type=='plenum':
-            committee_name=_('Knesset Plenum')
+    allow_empty = False
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MeetingsListView, self).get_context_data(*args,
+                                                                 **kwargs)
+        items = context['object_list']
+        committee = items[0].committee
+
+        if committee.type == 'plenum':
+            committee_name = _('Knesset Plenum')
         else:
-            committee_name=committee.name
-        context['title'] = _('All meetings by %(committee)s') % {'committee':committee_name}
-        context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural }
+            committee_name = committee.name
+
+        context['title'] = _('All meetings by %(committee)s') % {
+            'committee': committee_name}
+        context['none'] = _('No %(object_type)s found') % {
+            'object_type': CommitteeMeeting._meta.verbose_name_plural}
         context['committee'] = committee
-        context['committee_id'] = self.committee_id
+        context['committee_id'] = self.kwargs['committee_id']
+
         return context
 
-    def get_queryset (self):
+    def get_queryset(self):
         c_id = getattr(self, 'committee_id', None)
         if c_id:
             return CommitteeMeeting.objects.filter(committee__id=c_id)
@@ -333,30 +342,67 @@ def meeting_list_by_date(request, *args, **kwargs):
                               context, context_instance=RequestContext(request))
 
 
-def meeting_tag(request, tag):
-    tag_instance = get_tag(tag)
-    if tag_instance is None:
-        raise Http404(_('No Tag found matching "%s".') % tag)
+class MeetingTagListView(BaseTagMemberListView):
 
-    extra_context = {'tag':tag_instance}
-    extra_context['tag_url'] = reverse('committeemeeting-tag',args=[tag_instance])
-    extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
-    qs = CommitteeMeeting
-    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
-    mks = [cm.mks_attended.all() for cm in
-           TaggedItem.objects.get_by_model(CommitteeMeeting, tag_instance)]
-    d = {}
-    for mk in mks:
-        for p in mk:
-            d[p] = d.get(p,0)+1
-    # now d is a dict: MK -> number of meetings in this tag
-    mks = d.keys()
-    for mk in mks:
-        mk.count = d[mk]
-    mks = tagging.utils.calculate_cloud(mks)
-    extra_context['members'] = mks
-    return generic.list_detail.object_list(request, queryset,
-        template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
+    template_name = 'committees/committeemeeting_list_by_tag.html'
+    url_to_reverse = 'committeemeeting-tag'
+
+    def get_queryset(self):
+        return TaggedItem.objects.get_by_model(CommitteeMeeting,
+                                               self.tag_instance)
+
+    def get_mks_cloud(self):
+        mks = [cm.mks_attended.all() for cm in
+               TaggedItem.objects.get_by_model(
+                   CommitteeMeeting, self.tag_instance)]
+        d = {}
+        for mk in mks:
+            for p in mk:
+                d[p] = d.get(p, 0) + 1
+        # now d is a dict: MK -> number of meetings in this tag
+        mks = d.keys()
+        for mk in mks:
+            mk.count = d[mk]
+        return tagging.utils.calculate_cloud(mks)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MeetingTagListView, self).get_context_data(*args,
+                                                                   **kwargs)
+
+        context['title'] = ugettext_lazy(
+            'Committee Meetings tagged %(tag)s') % {
+                'tag': self.tag_instance.name}
+
+        context['members'] = self.get_mks_cloud()
+        return context
+
+# TODO: This has be replaced by the class based view above for Django 1.5.
+# Remove once working
+#
+#def meeting_tag(request, tag):
+#    tag_instance = get_tag(tag)
+#    if tag_instance is None:
+#        raise Http404(_('No Tag found matching "%s".') % tag)
+#
+#    extra_context = {'tag':tag_instance}
+#    extra_context['tag_url'] = reverse('committeemeeting-tag',args=[tag_instance])
+#    extra_context['title'] = ugettext_lazy('Committee Meetings tagged %(tag)s') % {'tag': tag}
+#    qs = CommitteeMeeting
+#    queryset = TaggedItem.objects.get_by_model(qs, tag_instance)
+#    mks = [cm.mks_attended.all() for cm in
+#           TaggedItem.objects.get_by_model(CommitteeMeeting, tag_instance)]
+#    d = {}
+#    for mk in mks:
+#        for p in mk:
+#            d[p] = d.get(p,0)+1
+#    # now d is a dict: MK -> number of meetings in this tag
+#    mks = d.keys()
+#    for mk in mks:
+#        mk.count = d[mk]
+#    mks = tagging.utils.calculate_cloud(mks)
+#    extra_context['members'] = mks
+#    return generic.list_detail.object_list(request, queryset,
+#        template_name='committees/committeemeeting_list_by_tag.html', extra_context=extra_context)
 
 def delete_topic_rating(request, object_id):
     if request.method=='POST':

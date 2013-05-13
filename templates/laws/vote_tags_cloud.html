@@ -6,7 +6,7 @@
 {% block nav-votes %}class="selected"{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url vote-list %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'vote-list' %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
         <li class="active">{{title}}</a>
 {% endblock %}
 
@@ -17,7 +17,7 @@
         <h1>{{ title }}</h1>
         <div class="text-center">
             {% for tag in tags_cloud %}
-                <a href="{% url vote-tag tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
+                <a href="{% url 'vote-tag' tag=tag %}{% if member %}?member={{member.id}}{% endif %}" class="label level{{ tag.font_size }}">{{ tag }}</a>
             {% endfor %}
         </div>
     </div>

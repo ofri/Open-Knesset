@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url vote-list %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'vote-list' %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>
         <li class="active">{{title}}</a>
 {% endblock %}
 
@@ -62,7 +62,7 @@
                 <ul class="items">
                 {% for bill in bills %}
                     <li>
-                        <p class="item-title"><a href={% url bill-detail bill.id %}>{% bill_full_name bill %}</a></p>
+                        <p class="item-title"><a href={% url 'bill-detail' bill.id %}>{% bill_full_name bill %}</a></p>
                     </li>
                 {% empty %}
                     <li>{% trans 'No bill is associated with this vote' %}</li>
@@ -115,7 +115,7 @@
                 <div id="tags">
                 {% if tags %}
                     {% for t in tags %}
-                    <a id="tag_{{t.id}}" href="{% url vote-tag tag=t %}" class="tag">{{ t }}</a>
+                    <a id="tag_{{t.id}}" href="{% url 'vote-tag' tag=t %}" class="tag">{{ t }}</a>
                     {% endfor %}
                 {% else %}
                     <span id="no-tags-yet">{% trans "No tags yet" %}</span>
@@ -137,12 +137,12 @@
                             <input type="submit" value="{% trans "Send" %}" class="btn">
                         </form>
                         {% else %}
-                        <div class="alert alert-block">{% trans 'Please' %} <a class="bold-link" href="{% url edit-profile %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}</div>
+                        <div class="alert alert-block">{% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}</div>
                         {% endif %}
                     </div>
                 </div>
                 {% else %}
-                <div class="alert alert-block"><a href="{% url login %}?next={{request.get_full_path}}">{% trans 'Login to edit tags' %}</a></div>
+                <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans 'Login to edit tags' %}</a></div>
                 {% endif %}
             </aside> <!-- tagging -->
 

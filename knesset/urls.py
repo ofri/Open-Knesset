@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.views.generic.simple import redirect_to
+from django.views.generic import RedirectView
 from django.views.decorators.cache import cache_page
 from django.contrib.sitemaps import views as sitemaps_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
@@ -40,7 +40,7 @@ planet_views.post_detail = post_details
 
 urlpatterns = patterns('',
     url(r'^$', main, name='main'),
-    (r'^topic/(?P<tail>(.*))', redirect_to, {'url': '/committee/topic/%(tail)s'}),
+    (r'^topic/(?P<tail>(.*))', RedirectView.as_view(url='/committee/topic/%(tail)s')),
     url(r'^about/$', AboutView.as_view(), name='about'),
     (r'^robots\.txt$', RobotsView.as_view()),
     (r'^api/', include('apis.urls')),

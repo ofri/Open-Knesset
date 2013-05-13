@@ -840,7 +840,7 @@ class Command(NoArgsCommand):
 
         mk_names = []
         mks = []
-        mk_persons = Person.objects.filter(mk__isnull=False)
+        mk_persons = Person.objects.filter(mk__isnull=False).select_related('mk')
         mks.extend([person.mk for person in mk_persons])
         mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
         mk_names.extend(mk_persons.values_list('name',flat=True))
@@ -910,7 +910,7 @@ class Command(NoArgsCommand):
 
     def find_attending_members(self,cm, mks, mk_names):
         try:
-            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
+            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(רישום|רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
             s = r.split('\n')
             for (i,name) in enumerate(mk_names):
                 for s0 in s:
@@ -922,7 +922,7 @@ class Command(NoArgsCommand):
                                                                     exceptionValue,
                                                                     exceptionTraceback)),
                          '\nCommitteeMeeting.id='+str(cm.id))
-        logger.debug('meeting %d now had %d attending members' % (cm.id,
+        logger.debug('meeting %d now has %d attending members' % (cm.id,
                                                                   cm.mks_attended.count()))
 
     def get_committee_protocol_text(self, url):
@@ -1060,7 +1060,7 @@ class Command(NoArgsCommand):
             if current_timestamp < min_timestamp: # we don't have info in the current file that goes back so far
                 current_timestamp = min_timestamp
 
-            while current_timestamp != end_timestamp: # loop over weeks
+            while current_timestamp <= end_timestamp: # loop over weeks
                 if current_timestamp in valid_weeks: # if we have valid data for this week
                     if current_timestamp in member_presence: # if this member was present this week
                         hours = member_presence[current_timestamp] # check how many hours

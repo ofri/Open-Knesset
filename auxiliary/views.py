@@ -14,9 +14,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
-from django.views.generic.base import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.list import BaseListView, ListView
+from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic.list import BaseListView
 from tagging.models import Tag, TaggedItem
 
 from .forms import TidbitSuggestionForm
@@ -26,6 +25,65 @@ from events.models import Event
 from knesset.utils import notify_responsible_adult
 from laws.models import Vote, Bill
 from mks.models import Member
+from tagging.utils import get_tag
+
+
+class BaseTagMemberListView(ListView):
+    """Generic helper for common tagged objects and optionally member
+    operations. Shoud be inherited by others"""
+
+    url_to_reverse = None  # override in inherited for reversing tag_url
+                           # in context
+
+    @property
+    def tag_instance(self):
+        if not hasattr(self, '_tag_instance'):
+            tag = self.kwargs['tag']
+            self._tag_instance = get_tag(tag)
+
+            if self._tag_instance is None:
+                raise Http404(_('No Tag found matching "%s".') % tag)
+
+        return self._tag_instance
+
+    @property
+    def member(self):
+        if not hasattr(self, '_member'):
+            member_id = self.request.GET.get('member', False)
+
+            if member_id:
+                try:
+                    member_id = int(member_id)
+                except ValueError:
+                    raise Http404(
+                        _('No Member found matching "%s".') % member_id)
+
+                self._member = get_object_or_404(Member, pk=member_id)
+            else:
+                self._member = None
+
+        return self._member
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BaseTagMemberListView, self).get_context_data(
+            *args, **kwargs)
+
+        context['tag'] = self.tag_instance
+        context['tag_url'] = reverse(self.url_to_reverse,
+                                     args=[self.tag_instance])
+
+        if self.member:
+            context['member'] = self.member
+            context['member_url'] = reverse(
+                'member-detail', args=[self.member.pk])
+
+        user = self.request.user
+        if user.is_authenticated():
+            context['watched_members'] = user.get_profile().members
+        else:
+            context['watched_members'] = False
+
+        return context
 
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
@@ -118,7 +176,7 @@ def main(request):
 
         return form.get_response()
 
-    NUMOF_EVENTS = 5
+    NUMOF_EVENTS = 8
     events = Event.objects.get_upcoming()
     context = {
         'title': _('Home'),
@@ -127,6 +185,7 @@ def main(request):
         'tidbits': Tidbit.active.all().order_by('?'),
         'suggestion_forms': {'tidbit': TidbitSuggestionForm()},
         'events': events[:NUMOF_EVENTS],
+        'INITIAL_EVENTS': NUMOF_EVENTS,
         'events_more': events.count() > NUMOF_EVENTS,
     }
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
