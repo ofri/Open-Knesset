@@ -30,10 +30,10 @@
 
         <div class="card card-list">
             <a name="search-bills"></a>
-            <header><h2>לחפש <a href="{% url 'bill-tags-cloud' %}">הצעות חוק לפי נושא</a>, למשל</h2></header>
+            <header><h2>לחפש <a href="{% url 'tags-list' %}">לפי נושא</a>, למשל</h2></header>
             <ul>
                 {% for tag in tags %}
-                <li><a href="{% url 'bill-tag' tag %}">{{ tag }}</a></li>
+                <li><a href="{% url 'tag-detail' tag %}">{{ tag }}</a></li>
                 {% endfor %}
             </ul>
         </div>
