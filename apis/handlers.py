@@ -178,11 +178,12 @@ class MemberHandler(BaseHandler, HandlerExtensions):
         return super(MemberHandler,self).read(request, **kwargs)
 
 class VoteHandler(BaseHandler, HandlerExtensions):
-    fields = ('url', 'title', 'time',
-              'summary','full_text',
-              'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
-              'agendas','bills',
-             )
+    fields = (
+        'url', 'title', 'time',
+        'summary','full_text',
+        'for_votes', 'against_votes', 'abstain_votes', 'didnt_vote',
+        ('agendavotes', (('agenda', ('name', 'image')), 'score', 'importance', 'reasoning'))
+        ,'bills')
     exclude = ('member')
     allowed_methods = ('GET',)
     model = Vote
