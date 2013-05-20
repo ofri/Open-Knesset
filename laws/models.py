@@ -20,7 +20,7 @@ from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action
 
-from mks.models import Member, Party
+from mks.models import Member, Party, Knesset
 from tagvotes.models import TagVote
 from knesset.utils import slugify_name
 from laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
@@ -770,9 +770,11 @@ def get_n_debated_bills(n=None):
     if not bill_votes:
         return None
 
-    if n is not None:
-        bill_votes = random.sample(bill_votes, n)
-    return Bill.objects.filter(pk__in=bill_votes)
+    bills = Bill.objects.filter(pk__in=bill_votes,
+                stage_date__gt=Knesset.objects.current_knesset().start_date)
+    if (n is not None) and (n<len(bill_votes)):
+        bills = random.sample(bills, n)
+    return bills
 
 def get_debated_bills():
     """
