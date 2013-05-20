@@ -1,6 +1,8 @@
+from __future__ import division
 from itertools import chain
 from operator import itemgetter, attrgetter
 from collections import defaultdict
+import math
 
 from django.db import connection
 from django.db import models
@@ -84,7 +86,7 @@ class AgendaVote(models.Model):
         return u"%s %s" % (self.agenda,self.vote)
 
     def update_monthly_counters(self):
-        agendaScore     = self.score * self.importance
+        agendaScore     = float(self.score) * float(self.importance)
         objMonth        = dateMonthTruncate(self.vote.time)
 
         summaryObjects  = SummaryAgenda.objects.filter( agenda=self.agenda,
@@ -104,6 +106,7 @@ class AgendaVote(models.Model):
         newObjects = []
         if agendaSummary:
             newObjects.append(agendaSummary)
+        voters = defaultdict(list)
         for vote_action in self.vote.voteaction_set.all():
             mkSummary = agendasByMk.get(vote_action.member_id,None)
             if not mkSummary:
@@ -112,10 +115,13 @@ class AgendaVote(models.Model):
                                             summary_type='MK',
                                             mk_id=vote_action.member_id,
                                             votes=1,
-                                            score=agendaScore)
+                                            score=agendaScore*(1 if vote_action.type == 'for' else -1))
                 newObjects.append(mkSummary)
+            else:
+                voters[vote_action.type].append(vote_action.member_id)
 
-        SummaryAgenda.objects.update(votes=F('votes')+1,score=F('score')+agendaScore)
+        SummaryAgenda.objects.filter(mk_id__in=voters['for']).update(votes=F('votes')+1,score=F('score')+agendaScore)
+        SummaryAgenda.objects.filter(mk_id__in=voters['against']).update(votes=F('votes')+1,score=F('score')-agendaScore)
         if newObjects:
             SummaryAgenda.objects.bulk_create(newObjects)
 
@@ -173,11 +179,11 @@ def get_top_bottom(lst, top, bottom):
     """
     if len(lst) < top+bottom:
         delta = top+bottom - len(lst)
-        bottom = bottom - delta/2
+        bottom = bottom - int(math.floor(delta/2))
         if delta%2:
-            top = top - delta/2 -1
+            top = top - int(math.floor(delta/2)) -1
         else:
-            top = top - delta/2
+            top = top - int(math.floor(delta/2))
     if top and bottom:
         top_lst = lst[-top:]
         bottom_lst = lst[:bottom]
@@ -238,6 +244,29 @@ class AgendaManager(models.Manager):
                             .exclude(agendavotes__vote=vote)\
                             .distinct()
         return agendas
+
+    def get_mks_values(self):
+        mks_values = cache.get('agendas_mks_values')
+        if not mks_values:
+            q = queries.agendas_mks_grade()
+            # outer join - add missing mks to agendas
+            newAgendaMkVotes = {}
+            # generates a set of all the current mk ids that have ever voted for any agenda
+            # its not perfect, but its better than creating another query to generate all known mkids
+            allMkIds = set(map(itemgetter(0),chain.from_iterable(q.values())))
+            for agendaId,agendaVotes in q.items():
+                # the newdict will have 0's for each mkid, the update will change the value for known mks
+                newDict = {}.fromkeys(allMkIds,(0,0,0))
+                newDict.update(dict(map(lambda (mkid,score,volume,numvotes):(mkid,(score,volume,numvotes)),agendaVotes)))
+                newAgendaMkVotes[agendaId]=newDict.items()
+            mks_values = {}
+            for agenda_id, scores in newAgendaMkVotes.items():
+                mks_values[agenda_id] = \
+                    map(lambda x: (x[1][0], dict(score=x[1][1][0], rank=x[0], volume=x[1][1][1], numvotes=x[1][1][2])),
+                        enumerate(sorted(scores,key=lambda x:x[1][0],reverse=True), 1))
+            cache.set('agendas_mks_values', mks_values, 1800)
+        return mks_values
+
 
     # def get_mks_values(self,ranges=[[None,None]]):
     #     mks_values = False
@@ -433,42 +462,78 @@ class Agenda(models.Model):
             results.append(Q(**queryRange))
         return results
 
+    def get_mks_totals(self, member):
+        "Get count for each vote type for a specific member on this agenda"
+
+        # let's split qs to make it more readable
+        qs = VoteAction.objects.filter(member=member, type__in=('for', 'against'), vote__agendavotes__agenda=self)
+        qs = list(qs.values('type').annotate(total=Count('id')))
+
+        totals = sum(x['total'] for x in qs)
+        qs.append({'type': 'no-vote', 'total': self.votes.count() - totals})
+
+        return qs
+
     def get_mks_values(self,ranges=[[None,None]]):
         mks_values = False
-        if ranges == [[None,None]]:
+        fullRange = ranges == [[None,None]]
+        if fullRange:
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
         if not mks_values:
             # get list of mk ids
-            allMkIds=Member.objects.values_list('id', flat=True)
+            mk_ids = Member.objects.all().values_list('id',flat=True)
 
             # generate summary query
             filterList = self.generateSummaryFilters(ranges)
-            filtersFolded = reduce(lambda x,y:x | y, filterList)
 
             # query summary
-            summaries = list(SummaryAgenda.objects.filter(agenda=self,filtersFolded))
+            baseQuerySet = SummaryAgenda.objects.filter(agenda=self)
+            if filterList:
+                filtersFolded = reduce(lambda x,y:x | y, filterList)
+                baseQuerySet.filter(filtersFolded)
+            summaries = list(baseQuerySet)
 
             # group summaries for respective ranges
             summariesForRanges = []
             for r in ranges:
                 summariesForRange = defaultdict(list)
                 for s in summaries:
-                    if (r[0] and s.month>=r[0]) or
-                        (r[1] and s.month<r[1]) or
+                    if (r[0] and s.month>=r[0]) or \
+                        (r[1] and s.month<r[1]) or \
                         (not r[0] and not r[1]):
-                    summariesForRange[s.summary_type].append(s)
+                        summariesForRange[s.summary_type].append(s)
                 summariesForRanges.append(summariesForRange)
 
-            # compute agenda measures per range
-            rangeResults = []
-            for summaries in 
-
-            #   add missing mks while you're there
-
-            # transpose results to be per mk instead of per range
-
-    def get_all_mks_values(self):
-        return Agenda.objects.get_mks_values()
+            # compute agenda measures, store results per MK
+            mk_results = dict(map(lambda mk_id:(mk_id,[]),mk_ids))
+            for summaries in summariesForRanges:
+                agenda_data             = summaries['AG']
+                total_votes             = sum(map(attrgetter('votes'),agenda_data))
+                total_score             = sum(map(attrgetter('score'),agenda_data))
+                current_mks_data        = indexby(summaries['MK'],attrgetter('id'))
+                # calculate results per mk
+                rangeMkResults          = []
+                for mk_id in mk_results.keys():
+                    mk_data     = current_mks_data[mk_id]
+                    if mk_data:
+                        mk_votes    = sum(map(attrgetter('votes'),mk_data))
+                        mk_volume   = mk_votes/total_votes
+                        mk_score    = sum(map(attrgetter('score'),mk_data))/total_score
+                        rangeMkResults.append((mk_id,mk_votes,mk_score,mk_volume))
+                    else:
+                        rangeMkResults.append(tuple([mk_id]+[None]*3))
+                # sort results by score descending
+                for rank,(mk_id,mk_votes,mk_score,mk_volume) in enumerate(sorted(rangeMkResults,key=itemgetter(2,0),reverse=True)):
+                    mk_range_data = dict(score=mk_score,rank=rank,volume=mk_volume,numvotes=mk_votes)
+                    if fullRange:
+                        mk_results[mk_id]=mk_range_data
+                    else:
+                        mk_results[mk_id].append=mk_range_data
+            if fullRange:
+                cache.set('agenda_%d_mks_values' % self.id, mks_values, 1800)
+        if fullRange:
+            mk_results = sorted(mk_results.items(),key=lambda (k,v):v['rank'],reverse=True)
+        return mk_results
 
     def get_party_values(self):
         party_grades = Agenda.objects.get_all_party_values()
@@ -526,4 +591,7 @@ def dateMonthTruncate(dt):
     return dt.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
 
 def indexby(data,fieldFunc):
-    return dict(map(lambda d:(fieldFunc(d),d),data))
+    d = defaultdict(list)
+    for k,v in map(lambda d:(fieldFunc(d),d),data):
+        d[k].append(v)
+    return d

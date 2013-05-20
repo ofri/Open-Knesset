@@ -87,11 +87,14 @@ class AgendaResource(BaseResource):
         list_fields = ['name', 'id', 'description', 'public_owner_name']
 
     def dehydrate_members(self, bundle):
-        rangesString = bundle.request.GET.get('ranges','-')
-        ranges = map(   lambda rangeString:[int(val) if val else None for val in rangeString.split('-')],
-                        rangesString.split(','))
-        fullRange = rangesString == '-'
-        mks_values = dict(bundle.obj.get_mks_values())
+        rangesString = bundle.request.GET.get('ranges',None)
+        fullRange = rangesString is None
+        if not fullRange:
+            ranges = map(   lambda rangeString:[int(val) if val else None for val in rangeString.split('-')],
+                            rangesString.split(','))
+            mks_values = dict(bundle.obj.get_mks_values(ranges))
+        else:
+            mks_values = dict(bundle.obj.get_mks_values())
         members = []
         for mk in Member.objects.filter(pk__in=mks_values.keys(),
                                         current_party__isnull=False).select_related('current_party'):
