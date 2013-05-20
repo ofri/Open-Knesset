@@ -76,7 +76,7 @@ class Committee(models.Model):
         def filter_this_year(res_set):
             return res_set.filter(date__gte='%d-01-01' % datetime.now().year)
 
-        if ids:
+        if ids is not None:
             members = list(Member.objects.filter(id__in=ids))
         else:
             members = list((self.members.filter(is_current=True) |
