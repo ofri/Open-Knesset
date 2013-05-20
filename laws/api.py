@@ -3,6 +3,7 @@ API for the laws app
 '''
 import logging
 
+from django.core.urlresolvers import reverse
 from tastypie.constants import ALL
 import tastypie.fields as fields
 
@@ -16,6 +17,7 @@ from links.api import LinkResource
 from models import Law, Bill, Vote, VoteAction, PrivateProposal
 
 from simple.management.commands.syncdata_globals import p_explanation
+from agendas.models import AgendaVote
 
 logger = logging.getLogger("open-knesset.laws.api")
 
@@ -35,6 +37,7 @@ class VoteActionResource(BaseResource):
     member = fields.ToOneField(MemberResource,
                               'member',
                               full=False)
+
 
 class VoteResource(BaseResource):
 
@@ -56,6 +59,7 @@ class VoteResource(BaseResource):
                                     vote=bundle.obj).select_related('member'),
                     null=True,
                     full=True)
+    agendas = fields.ListField()
 
     def build_filters(self, filters={}):
         orm_filters = super(VoteResource, self).build_filters(filters)
@@ -69,6 +73,31 @@ class VoteResource(BaseResource):
             orm_filters["voteaction__type"] = 'against'
 
         return orm_filters
+
+    def dehydrate_agendas(self, bundle):
+        agendavotes = bundle.obj.agendavotes.select_related('agenda')
+
+        result = []
+        for avote in agendavotes:
+            agenda = avote.agenda
+            resource_uri = reverse(
+                'api_dispatch_detail',
+                kwargs={
+                    'resource_name': 'agenda', 'api_name': 'v2',
+                    'pk': agenda.pk})
+
+            agenda_bundle = {
+                'name': agenda.name,
+                'image': agenda.image.url,
+                'resource_uri': resource_uri,
+                'score': avote.score,
+                'importance': avote.importance,
+                'reasoning': avote.reasoning,
+            }
+
+            result.append(agenda_bundle)
+
+        return result
 
 
 class PrivateProposalResource(BaseResource):
