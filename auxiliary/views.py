@@ -97,8 +97,15 @@ def help_page(request):
         votes = Vote.objects.filter_and_order(order='controversy')
         context['vote'] = votes[random.randrange(votes.count())]
         context['bill'] = Bill.objects.all()[random.randrange(Bill.objects.count())]
-        tags = Tag.objects.cloud_for_model(Bill)
-        context['tags'] = random.sample(tags, min(len(tags),8)) if tags else None
+
+        tags_cloud = cache.get('tags_cloud', None)
+        if not tags_cloud:
+            tags_cloud = calculate_cloud_from_models(Vote,Bill,CommitteeMeeting)
+            tags_cloud.sort(key=lambda x:x.name)
+            cache.set('tags_cloud', tags_cloud, settings.LONG_CACHE_TIME)
+        context['tags'] = random.sample(tags_cloud,
+                                        min(len(tags_cloud),8)
+                                       ) if tags_cloud else None
         context['has_search'] = False # enable the base template search
         cache.set('help_page_context', context, 300) # 5 Minutes
     template_name = '%s.%s%s' % ('help_page', settings.LANGUAGE_CODE, '.html')
@@ -337,8 +344,11 @@ class TagList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TagList, self).get_context_data(**kwargs)
-        tags_cloud = calculate_cloud_from_models(Vote,Bill,CommitteeMeeting)
-        tags_cloud.sort(key=lambda x:x.name)
+        tags_cloud = cache.get('tags_cloud', None)
+        if not tags_cloud:
+            tags_cloud = calculate_cloud_from_models(Vote,Bill,CommitteeMeeting)
+            tags_cloud.sort(key=lambda x:x.name)
+            cache.set('tags_cloud', tags_cloud, settings.LONG_CACHE_TIME)
         context['tags_cloud'] = tags_cloud
         return context
 
