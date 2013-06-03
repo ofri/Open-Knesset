@@ -126,20 +126,6 @@
                     <span>{% trans "Edit Tags" %}</span>
                     <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                     </span>
-                    <div id="create_tag" style='display:none'>
-                        {% if perms.tagging.add_tag %}
-                        <form id="create_tag_form" action="#">{% csrf_token %}
-                            <label for="tag">{% trans 'Create new tag' %}: </label>
-                            <input type="hidden" name="app_label" id="app_label" value="laws">
-                            <input type="hidden" name="object_type" value="vote">
-                            <input type="hidden" name="id" value="{{object.id}}">
-                            <input type="text" name="tag" id="tag">
-                            <input type="submit" value="{% trans "Send" %}" class="btn">
-                        </form>
-                        {% else %}
-                        <div class="alert alert-block">{% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}</div>
-                        {% endif %}
-                    </div>
                 </div>
                 {% else %}
                 <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans 'Login to edit tags' %}</a></div>

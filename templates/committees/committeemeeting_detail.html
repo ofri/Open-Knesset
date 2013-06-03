@@ -212,20 +212,6 @@
                         <h3>{% trans "Edit Tags" %}</h3>
                         <span id="possible_tags"></span><br>
                         <a href="javascript:get_tags_list('{% url 'related-tags' resource_name='tag' api_name='v2' app_label='committees' object_type='committee' object_id=object.committee.id related_name='meetings' %}');">{% trans "Click here for tags related to this committee" %}</a><br><a href="javascript:get_tags_list();">{% trans "Click here to see all available tags" %}</a>
-                        <div id="create_tag" style='display:none'>
-                            {% if perms.tagging.add_tag %}
-                                <form id="create_tag_form" action="#">{% csrf_token %}
-                                    <label for="tag">{% trans 'Create new tag' %}: </label>
-                                    <input type="hidden" name="app_label" id="app_label" value="committees">
-                                    <input type="hidden" name="object_type" value="committeemeeting">
-                                    <input type="hidden" name="id" value="{{object.id}}">
-                                    <input type="text" name="tag" id="tag">
-                                    <input type="submit" value="{% trans 'Send' %}">
-                                </form>
-                            {% else %}
-                                <div class="alert alert-block">{% trans "Please" %} <a href="{% url 'edit-profile' %}">{% trans "validate your email" %}</a>{% trans " to create new tags" %}</div>
-                            {% endif %}
-                        </div>
                     </div>
                 {% else %}
                     <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans "Login to edit tags" %}</a></div>

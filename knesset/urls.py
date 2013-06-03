@@ -81,7 +81,9 @@ urlpatterns = patterns('',
     (r'^act/', include('actstream.urls')),
     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/add-tag/$', add_tag_to_object, name='add-tag-to-object'),
     url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/remove-tag/$', remove_tag_from_object),
-    url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
+    # disabled for now, because we don't want users to add more tags.
+    # will be added back in the future, but for editors only.
+    #url(r'^tags/(?P<app>\w+)/(?P<object_type>\w+)/(?P<object_id>\d+)/create-tag/$', create_tag_and_add_to_item, name='create-tag'),
     url(r'^tags/$', TagList.as_view(), name='tags-list'),
     url(r'^tags/(?P<slug>.*)/$', TagDetail.as_view(), name='tag-detail'),
     url(r'^uservote/bill/(?P<object_id>\d+)/(?P<direction>\-?\d+)/?$',
