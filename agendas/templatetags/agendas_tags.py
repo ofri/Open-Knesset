@@ -93,7 +93,7 @@ def agenda_list_item(agenda, watched_agendas=None, agenda_votes_num=None, agenda
     #    selected_parties = agenda.selected_instances(Party, top=20,bottom=0)['top']
     #    cached_context = {'selected_parties': selected_parties }
     #    cache.set('agenda_parties_%d' % agenda.id, cached_context, 900)
-    party_scores = [(parties_lookup[val[0]], val[1]) for val in agenda_party_values]
+    party_scores = [(parties_lookup.get(val[0]), val[1]) for val in agenda_party_values]
     enumerated_party = [(idx+0.5, values[0]) for idx, values in enumerate(party_scores)]
     enumerated_score = [(idx, values[1]) for idx, values in enumerate(party_scores)]
     return {'agenda': agenda,
