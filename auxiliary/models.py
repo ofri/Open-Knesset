@@ -32,7 +32,8 @@ class Tidbit(models.Model):
     is_active = models.BooleanField(_('Active'), default=True)
     ordering = models.IntegerField(_('Ordering'), default=20, db_index=True)
 
-    suggested_by = models.ForeignKey(User, related_name='tidbits', blank=True,
+    suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
+                                     related_name='tidbits', blank=True,
                                      null=True)
     photo = models.ImageField(_('Photo'), upload_to='tidbits', max_length=200,
                               blank=True, null=True)

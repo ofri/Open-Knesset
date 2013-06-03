@@ -12,6 +12,7 @@ from django.utils import simplejson as json
 
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
+import unittest
 
 from laws.models import Vote,Law, Bill,KnessetProposal, BillBudgetEstimation
 from mks.models import Member, Party, Membership
@@ -197,6 +198,7 @@ class BillViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn(self.tag_1, self.bill_1.tags)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag_permission_required(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('create-tag',
@@ -204,6 +206,7 @@ class BillViewsTest(TestCase):
         res = self.client.post(url, {'tag':'new tag'})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
         url = reverse('create-tag',
@@ -422,6 +425,7 @@ class VoteViewsTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn(self.tag_1, self.vote_2.tags)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag_permission_required(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('create-tag',
@@ -429,6 +433,7 @@ class VoteViewsTest(TestCase):
         res = self.client.post(url, {'tag':'new tag'})
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url), status_code=302)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian', password='ADRIAN'))
         url = reverse('create-tag',

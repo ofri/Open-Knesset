@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User,Group,Permission
 from django.contrib.contenttypes.models import ContentType
+import unittest
 from annotatetext.models import Annotation
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem
@@ -229,6 +230,7 @@ I have a deadline''')
         self.assertEqual(res.status_code, 200)
         self.assertIn(self.tag_1, self.meeting_1.tags)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag_permission_required(self):
         self.assertTrue(self.client.login(username='jacob', password='JKM'))
         url = reverse('create-tag',
@@ -239,6 +241,7 @@ I have a deadline''')
         self.assertRedirects(res, "%s?next=%s" % (settings.LOGIN_URL, url),
                              status_code=302)
 
+    @unittest.skip("creating tags currently disabled")
     def test_create_tag(self):
         self.assertTrue(self.client.login(username='adrian',
                                           password='ADRIAN'))
