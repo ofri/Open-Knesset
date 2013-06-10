@@ -549,7 +549,7 @@
                     {% endif %}
                 </p>
                 {% if user.is_authenticated %}
-                <div id="add_tags">
+                <div id="add_tags" data-app-label="laws" data-object-type="bill" data-id="{{object.id}}">
                     <h3>{% trans "Edit Tags" %}</h3>
                     <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                     </span>
