@@ -208,6 +208,7 @@
                     </div>
                 </div>
                 {% if user.is_authenticated %}
+                    <div id="add_tags" data-app-label="committees" data-object-type="committeemeeting" data-id="{{object.id}}">
                     <div id="add_tags">
                         <h3>{% trans "Edit Tags" %}</h3>
                         <span id="possible_tags"></span><br>
