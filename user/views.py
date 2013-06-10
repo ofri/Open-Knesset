@@ -191,21 +191,20 @@ def user_follow_unfollow(request):
     return HttpResponse(json.dumps(res), content_type='application/json')
 
 
-@require_http_methods(['POST'])
 def user_is_following(request):
-    """Recieves POST parameters:
+    """Recieves GET parameters:
 
     what - string representing target object type ('member', 'agenda', ...)
     id - id of target object
 
     """
-    what = request.POST.get('what', None)
+    what = request.GET.get('what', None)
 
     if what not in FOLLOW_TYPES:
         return HttpResponseBadRequest(
             'what parameter has to be one of: %s' % ','.join(FOLLOW_TYPES.keys()))
 
-    target_id = request.POST.get('id', None)
+    target_id = request.GET.get('id', None)
     if not target_id:
         return HttpResponseBadRequest('need an id of an object to watch')
 
