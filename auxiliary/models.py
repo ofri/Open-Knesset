@@ -58,3 +58,8 @@ class Feedback(models.Model):
                                      null=True)
     ip_address = models.IPAddressField(_('IP Address'), blank=True, null=True)
     user_agent = models.TextField(_('user_agent'), blank=True, null=True)
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('Feedback message')
+        verbose_name_plural = _('Feedback messages')
