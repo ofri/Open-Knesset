@@ -42,3 +42,4 @@ django-devserver==0.6.1
 ipython
 django-tinymce==1.5.1b4
 django-crispy-forms==1.2.3
+python
