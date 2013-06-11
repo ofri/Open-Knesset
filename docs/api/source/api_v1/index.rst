@@ -1,5 +1,5 @@
-API Version 1 - Deprecated
-==============================
+API Version 1 - **Deprecated** - Use ApiV2
+=============================================
 
 .. warning::
     Version 1 of the API is unmaintained and kept for existing
