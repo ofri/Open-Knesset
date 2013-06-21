@@ -5734,6 +5734,11 @@ ol {
   font-size: 12px;
   text-align: center;
 }
+.party-member-extra {
+  display:inline;
+  position:absolute;
+  top:-8px;
+}
 .card-party-members .party-member-photo .party-member-extra p,
 .card-party-members .party-member-photo .party-member-extra div {
   margin: 0;
