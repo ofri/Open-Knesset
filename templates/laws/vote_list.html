@@ -4,7 +4,7 @@
 {% block extrahead %} <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'feeds-votes' %}"/> {% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-votes %}class="selected"{% endblock %}
+{% block nav-votes %}class="active"{% endblock %}
 
  {% block breadcrumbs %}
         <li class="active">{{title}}</a>

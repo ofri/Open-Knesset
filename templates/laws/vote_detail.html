@@ -5,7 +5,7 @@
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-votes %}class="selected"{% endblock %}
+{% block nav-votes %}class="active"{% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
 {% endblock %}
