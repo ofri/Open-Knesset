@@ -5308,7 +5308,7 @@ form .helptext {
   margin-bottom: 0;
 }
 #app-header .nav-pills li {
-  width: 20%;
+  width: 16.5%;
   margin-left: -1px;
   border-left: 1px solid #f1f1f1;
 }
@@ -5731,13 +5731,11 @@ ol {
   margin: 9px;
 }
 .card-party-members .party-member-photo .party-member-extra {
+  display: inline;
+  position: absolute;
+  top: -8px;
   font-size: 12px;
   text-align: center;
-}
-.party-member-extra {
-  display:inline;
-  position:absolute;
-  top:-8px;
 }
 .card-party-members .party-member-photo .party-member-extra p,
 .card-party-members .party-member-photo .party-member-extra div {
