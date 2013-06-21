@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load i18n search avatar_tags %}{% load static from staticfiles %}
+<!DOCTYPE html>{% load i18n search avatar_tags feedback %}{% load static from staticfiles %}
 <html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}" class="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
 <head>
     <meta charset="utf-8" >
@@ -83,6 +83,9 @@
         </ul>
 {% endif %}
         <div id="cse" class="main" style="display:none;"></div>
+        {% add_feedback_suggestion_form %}
+        {% trans "Feedback" as feedback_button_text %}
+        {% include "auxiliary/_suggestion_button.html" with suggest_for="feedback" button_text=feedback_button_text %}
         <div id="content-main" class="main">
             {% block content-main %}{% endblock %}
             <div class="clear"></div>

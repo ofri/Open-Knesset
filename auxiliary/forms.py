@@ -40,6 +40,10 @@ class FeedbackSuggestionForm(InstanceCreateSuggestionForm):
         model = Feedback
         caption = _('Send Feedback')
 
+    def __init__(self, *args, **kwargs):
+        super(FeedbackSuggestionForm, self).__init__(*args, **kwargs)
+        self.helper.form_action = 'feedback-post'
+
     def get_data(self, request):
         "Add suggested_by for the tidbit to the action data"
 

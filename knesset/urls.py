@@ -24,7 +24,7 @@ from laws.models import Bill
 from polyorg.urls import polyorgurlpatterns
 
 from auxiliary.views import (
-    main, post_annotation, post_details,
+    main, post_annotation, post_details, post_feedback,
     RobotsView, AboutView, CommentsView, add_tag_to_object,
     remove_tag_from_object, create_tag_and_add_to_item, help_page,
     TagList, TagDetail)
@@ -97,7 +97,10 @@ urlpatterns = patterns('',
     (r'^event/', include('events.urls')),
     (r'^tinymce/', include('tinymce.urls')),
     (r'^suggestions/', include('suggestions.urls')),
+    url(r'^feedback/', post_feedback, name="feedback-post"),
 )
+
+
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += polyorgurlpatterns + personsurlpatterns

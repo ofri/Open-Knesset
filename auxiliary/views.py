@@ -16,9 +16,10 @@ from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.list import BaseListView
+from django.views.decorators.http import require_http_methods
 from tagging.models import Tag, TaggedItem
 
-from .forms import TidbitSuggestionForm
+from .forms import TidbitSuggestionForm, FeedbackSuggestionForm
 from .models import Tidbit
 from committees.models import CommitteeMeeting
 from events.models import Event
@@ -198,6 +199,19 @@ def main(request):
     template_name = '%s.%s%s' % ('main', settings.LANGUAGE_CODE, '.html')
     return render_to_response(template_name, context,
                               context_instance=RequestContext(request))
+
+
+@require_http_methods(['POST'])
+def post_feedback(request):
+    "Post a feedback suggestion form"
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    form = FeedbackSuggestionForm(request.POST)
+    if form.is_valid():
+        form.save(request)
+
+    return form.get_response()
 
 
 def post_annotation(request):
