@@ -11,6 +11,11 @@
             <div class="party-member-info-text">
               <h3><a href="{{member.get_absolute_url}}">{{member.name}}</a></h3>
                 <p>{{member.get_role}}</p>
+                {% if member.current_party %}
+                <div>
+                    <a href="{% url 'party-detail' member.current_party.id %}">{{ member.current_party.name }}</a>
+                </div>
+                {% endif %}
             </div>
             <div class="party-member-info-links">
                 <ul>
