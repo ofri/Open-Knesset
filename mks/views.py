@@ -195,7 +195,9 @@ class MemberDetailView(DetailView):
     queryset = Member.objects.exclude(current_party__isnull=True)\
                              .select_related('current_party',
                                              'current_party__knesset',
-                                             'voting_statistics')
+                                             'voting_statistics')\
+                             .prefetch_related('parties')
+
     MEMBER_INITIAL_DATA = 2
 
     @method_decorator(ensure_csrf_cookie)
@@ -329,6 +331,9 @@ class MemberDetailView(DetailView):
             content_type = ContentType.objects.get_for_model(Member)
             num_followers = Follow.objects.filter(object_id=member.pk, content_type=content_type).count()
 
+
+            # since parties are prefetch_releated, will list and slice them
+            previous_parties = list(member.parties.all())[1:]
             cached_context = {
                 'watched_member': watched,
                 'num_followers': num_followers,
@@ -352,6 +357,7 @@ class MemberDetailView(DetailView):
                 'related_videos': related_videos,
                 'num_related_videos': related_videos.count(),
                 'INITIAL_DATA': self.MEMBER_INITIAL_DATA,
+                'previous_parties': previous_parties,
             }
 
             if not self.request.user.is_authenticated():
