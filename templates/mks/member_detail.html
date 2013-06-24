@@ -73,6 +73,15 @@
             <p>
                 <a href="{% url 'party-detail' object.current_party.id %}">{{ object.current_party }}</a>
                 <strong>({{object.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})</strong>
+                {% if previous_parties %}
+                <span id="member-previous-parties" style="display:none">
+                    {% for p in previous_parties  %}
+                      | <a href="{% url 'party-detail' p.id %}">{{ p }}</a>
+                        ({{p.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})
+                    {% endfor %}
+                </span>
+                | <a href="#" data-target="#member-previous-parties" data-toggle="oktoggle" data-text="{% trans "Previous Parties" %} +|{% trans "Less" %} -">{% trans "Previous Parties" %} +</a>
+                {% endif %}
             </p>
             <p>
                 {% for role in object.roles|slice:":2" %}
@@ -101,19 +110,6 @@
                 | <a href="#" data-target="#member-extra-committees" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
                 {% endif %} {% endif %}
 			</p>
-            {% if previous_parties %}
-            <p>
-                <h4>{% trans "Previous parties:" %}</h4>
-                <ul>
-                {% for p in previous_parties  %}
-                    <li>
-                        <a href="{% url 'party-detail' p.id %}">{{ p }}</a>
-                        ({{object.coalition_status|yesno:_("IN_COALITION,IN_OPPOSITION,PAST_MEMBER")}})
-                    </li>
-                {% endfor %}
-                </ul>
-            </p>
-            {% endif %}
             <div id="member-details" style="display:none">
                 {% if object.date_of_death %}
                 <div>{% trans "date of death" %} - {{ object.date_of_death }}</div>
