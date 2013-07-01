@@ -5,7 +5,7 @@
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-votes %}class="selected"{% endblock %}
+{% block nav-votes %}class="active"{% endblock %}
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
 {% endblock %}
@@ -122,7 +122,7 @@
                 {% endif %}
                 </div>
                 {% if user.is_authenticated %}
-                <div id="add_tags">
+                <div id="add_tags" data-app-label="laws" data-object-type="vote" data-id="{{vote.id}}">
                     <span>{% trans "Edit Tags" %}</span>
                     <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                     </span>

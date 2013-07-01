@@ -15,7 +15,7 @@
         followers = 0; 
 
     // First we check whether the user can watch at all
-    $.post(wdata.isFollowingUrl, {'id': wdata.watchId, 'what': wdata.watchType})
+    $.get(wdata.isFollowingUrl, {'id': wdata.watchId, 'what': wdata.watchType})
     .done(function(data){
         can_watch = data.can_watch;
         followers = data.followers;

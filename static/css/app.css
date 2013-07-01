@@ -5308,7 +5308,7 @@ form .helptext {
   margin-bottom: 0;
 }
 #app-header .nav-pills li {
-  width: 16.6%;
+  width: 16.5%;
   margin-left: -1px;
   border-left: 1px solid #f1f1f1;
 }
@@ -5731,6 +5731,9 @@ ol {
   margin: 9px;
 }
 .card-party-members .party-member-photo .party-member-extra {
+  display: inline;
+  position: absolute;
+  top: -8px;
   font-size: 12px;
   text-align: center;
 }
@@ -6464,4 +6467,23 @@ div#tidbitCarousel .btn-suggest:hover {
 }
 #suggest-viewDetails-modal li ul li:last-child {
   border-bottom: none;
+}
+#sugget-feedback-button {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  display: block;
+  transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  height: 40px;
+  right: -25px;
+  padding-top: 3px;
+  font-size: 120%;
+  opacity: 0.7;
+}
+#sugget-feedback-button:hover {
+  opacity: 1;
 }

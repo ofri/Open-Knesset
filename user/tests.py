@@ -168,7 +168,7 @@ class TestFollowing(TestCase):
         self.assertTrue(loggedin)
 
         follow(self.jacob, self.bill_1)
-        response = self.client.post(reverse('user-is-following'),
+        response = self.client.get(reverse('user-is-following'),
                                     {'id': self.bill_1.id,
                                      'what': 'bill'})
         self.assertEquals(response.status_code, 200)
@@ -176,7 +176,7 @@ class TestFollowing(TestCase):
         self.assertTrue(res_obj['watched'])
 
         unfollow(self.jacob, self.bill_1)
-        response = self.client.post(reverse('user-is-following'),
+        response = self.client.get(reverse('user-is-following'),
                                     {'id': self.bill_1.id,
                                      'what': 'bill'})
         self.assertEquals(response.status_code, 200)

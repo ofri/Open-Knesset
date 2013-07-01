@@ -3,7 +3,7 @@
 {% block extratitle %}{{ title }}{% endblock %}
 {% block keywords %}{{ title }}{% endblock %}
 {% block description %}{{ title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
-{% block nav-votes %}class="selected"{% endblock %}
+{% block nav-votes %}class="active"{% endblock %}
 
 {% block breadcrumbs %}
         <li><a href="{% url 'vote-list' %}">{% trans "Votes" %}</a> <span class="divider">/</span></li>

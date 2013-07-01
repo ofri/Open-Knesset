@@ -47,3 +47,19 @@ class Tidbit(models.Model):
 
     def __unicode__(self):
         return u'{0.title} {0.content}'.format(self)
+
+
+class Feedback(models.Model):
+    "Stores generic feedback suggestions/problems"
+
+    content = models.TextField(_('Content'))
+    suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
+                                     related_name='feedbacl', blank=True,
+                                     null=True)
+    ip_address = models.IPAddressField(_('IP Address'), blank=True, null=True)
+    user_agent = models.TextField(_('user_agent'), blank=True, null=True)
+    url = models.TextField(_('URL'))
+
+    class Meta:
+        verbose_name = _('Feedback message')
+        verbose_name_plural = _('Feedback messages')

@@ -25,14 +25,14 @@ function get_tags_list_callback(data) {
           });
     meta = data['meta'];
 
-	if (meta) {
+	if (meta) { 
 		$("#possible_tags").append('<br/>');
 		add_nav_button(gettext('previous'), meta['previous']);
 		add_nav_button(gettext('next'), meta['next']);
 	}
-    current_app = $('input[name="app_label"]').val();
-    current_object_type = $('input[name="object_type"]').val();
-    current_id = $('input[name="id"]').val();
+    current_app = $('#add_tags').data('appLabel');
+    current_object_type = $('#add_tags').data('objectType');
+    current_id = $('#add_tags').data('id');
     // currently committeemeeting urls have a unique structure. clean this up.
     if (current_id == 'meeting') {
         current_object_type = 'committeemeeting';

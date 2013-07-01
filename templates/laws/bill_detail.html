@@ -7,7 +7,7 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}?v=1"></script>
     <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
@@ -549,7 +549,7 @@
                     {% endif %}
                 </p>
                 {% if user.is_authenticated %}
-                <div id="add_tags">
+                <div id="add_tags" data-app-label="laws" data-object-type="bill" data-id="{{object.id}}">
                     <h3>{% trans "Edit Tags" %}</h3>
                     <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                     </span>

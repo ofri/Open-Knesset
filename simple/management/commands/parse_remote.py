@@ -19,7 +19,7 @@ def rtf(url):
     temp.write(data)
     temp.seek(0)
     try:
-        doc = Rtf15Reader.read(temp)
+        doc = Rtf15Reader.read(temp, errors='ignore')
         xhtml = XHTMLWriter.write(doc, pretty=True).read()
     except:
         xhtml = False
