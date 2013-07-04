@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-24 21:21+0300\n"
-"PO-Revision-Date: 2013-06-24 21:21+0300\n"
+"POT-Creation-Date: 2013-07-04 11:20+0300\n"
+"PO-Revision-Date: 2013-07-04 11:21+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -1517,7 +1517,7 @@ msgstr "אודות"
 #: templates/polyorg/candidatelist_compare.html:5
 #: templates/polyorg/candidatelist_detail.html:7
 #: templates/polyorg/candidatelist_list.html:7
-#: templates/video/video_list.html:5
+#: templates/replies/flatpages.html:5 templates/video/video_list.html:5
 msgid "Open Knesset - Opening the Knesset to the public"
 msgstr "כנסת פתוחה - פותחים את הכנסת לציבור"
 
@@ -3643,6 +3643,11 @@ msgstr "תוצאות הבחירות לכנסת ה- 19"
 msgid "Factions in the 19th Knesset"
 msgstr "סיעות בכנסת ה- 19"
 
+#: templates/replies/flatpages.html:3 templates/replies/flatpages.html.py:4
+#: templates/replies/flatpages.html:5
+msgid "Replies"
+msgstr "תגובות"
+
 #: templates/search/search.html:4 templates/search/search.html.py:7
 #: templates/search/search.html:17
 msgid "Search"
@@ -4290,10 +4295,6 @@ msgstr "פרופיל המשתמש עודכן"
 #, fuzzy
 #~ msgid "Uploaded by"
 #~ msgstr "הוצע על ידי"
-
-#, fuzzy
-#~ msgid "Replace"
-#~ msgstr "מ&quot;מ"
 
 #, fuzzy
 #~ msgid "File history"
