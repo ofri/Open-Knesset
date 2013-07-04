@@ -6487,3 +6487,6 @@ div#tidbitCarousel .btn-suggest:hover {
 #sugget-feedback-button:hover {
   opacity: 1;
 }
+.vote_input {
+  width: 75%;
+}

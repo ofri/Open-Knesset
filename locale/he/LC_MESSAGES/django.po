@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-04 11:20+0300\n"
-"PO-Revision-Date: 2013-07-04 11:21+0300\n"
+"POT-Creation-Date: 2013-07-04 11:53+0300\n"
+"PO-Revision-Date: 2013-07-04 11:55+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -2876,6 +2876,11 @@ msgstr "קריאה טרומית"
 #: templates/laws/bill_detail.html:449
 msgid "Suggest a matching vote"
 msgstr "הצעת הצבעה מתאימה"
+
+#: templates/laws/bill_detail.html:335 templates/laws/bill_detail.html:393
+#: templates/laws/bill_detail.html:452
+msgid "Start typing a bill title and choose one from the list"
+msgstr "יש להקליד כותרת הצבעה, ולבחור את ההצבעה המתאימה מתוך התוצאות"
 
 #: templates/laws/bill_detail.html:361
 msgid "Bill formulated by the committee"
