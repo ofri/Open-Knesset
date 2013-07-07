@@ -268,7 +268,9 @@ class AgendaManager(models.Manager):
         return mks_values
 
 
-    # def get_mks_values(self,ranges=[[None,None]]):
+    # def get_mks_values(self,ranges=None):
+    #     if ranges is None:
+    #         ranges = [[None,None]]
     #     mks_values = False
     #     if ranges == [[None,None]]:
     #         mks_values = cache.get('agendas_mks_values')
@@ -474,7 +476,9 @@ class Agenda(models.Model):
 
         return qs
 
-    def get_mks_values(self,ranges=[[None,None]]):
+    def get_mks_values(self,ranges=None):
+        if ranges is None:
+            ranges = [[None,None]]
         mks_values = False
         fullRange = ranges == [[None,None]]
         if fullRange:
