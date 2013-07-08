@@ -16,9 +16,10 @@ from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.list import BaseListView
+from django.views.decorators.http import require_http_methods
 from tagging.models import Tag, TaggedItem
 
-from .forms import TidbitSuggestionForm
+from .forms import TidbitSuggestionForm, FeedbackSuggestionForm
 from .models import Tidbit
 from committees.models import CommitteeMeeting
 from events.models import Event
@@ -200,6 +201,19 @@ def main(request):
                               context_instance=RequestContext(request))
 
 
+@require_http_methods(['POST'])
+def post_feedback(request):
+    "Post a feedback suggestion form"
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    form = FeedbackSuggestionForm(request.POST)
+    if form.is_valid():
+        form.save(request)
+
+    return form.get_response()
+
+
 def post_annotation(request):
     if request.user.has_perm('annotatetext.add_annotation'):
         return annotatetext_post_annotation(request)
@@ -297,7 +311,11 @@ def remove_tag_from_object(request, app, object_type, object_id):
 
 @permission_required('tagging.add_tag')
 def create_tag_and_add_to_item(request, app, object_type, object_id):
-    """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it"""
+    """adds tag with name=request.POST['tag'] to the tag list, and tags the given object with it
+    ****
+    Currently not used anywhere, sine we don't want to allow users to add
+    more tags for now.
+    """
     if request.method == 'POST' and 'tag' in request.POST:
         tag = request.POST['tag'].strip()
         msg = "user %s is creating tag %s on object_type %s and object_id %s".encode('utf8') % (request.user.username, tag, object_type, object_id)

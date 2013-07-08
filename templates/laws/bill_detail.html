@@ -7,7 +7,7 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/tagging.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/ok-watch.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/ok-watch.js" %}?v=1"></script>
     <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
@@ -329,11 +329,11 @@
                         {% trans 'No Info' %}<br>
                         {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
-                        <form method="post" action=".">{% csrf_token %}
+                        <form method="post" action="." class="form-inline">{% csrf_token %}
                             <input type="hidden" name="user_input_type" value="pre vote"></input>
-                            <input type="text" class="vote_input" name="vote_string"></input>
+                            <input type="text" class="vote_input" name="vote_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
                             <input type="hidden" name="vote_id"></input>
-                            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+                            <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
                         </form>
                     </li>
                     {% endif %}
@@ -386,12 +386,12 @@
                         {% trans 'No Info' %}<br>
                         {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
-                        <form method="post" action=".">
+                        <form method="post" action="." class="form-inline">
                             {% csrf_token %}
                             <input type="hidden" name="user_input_type" value="first vote"></input>
-                            <input type="text" class="vote_input" name="vote_string"></input>
+                            <input type="text" class="vote_input" name="vote_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
                             <input type="hidden" name="vote_id"></input>
-                            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+                            <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
                         </form>
                         {% endif %}
                     {% endif %}
@@ -446,11 +446,11 @@
                         {% trans 'No Info' %}<br>
                         {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
-                        <form method="post" action=".">{% csrf_token %}
+                        <form method="post" action="." class="form-inline">{% csrf_token %}
                             <input type="hidden" name="user_input_type" value="approval vote"></input>
-                            <input type="text" class="vote_input" name="vote_string"></input>
+                            <input type="text" class="vote_input" name="vote_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
                             <input type="hidden" name="vote_id"></input>
-                            <input type="submit" disabled value="{% trans 'Submit' %}"></input>
+                            <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
                         </form>
                         {% endif %}
                     </li>
@@ -549,24 +549,10 @@
                     {% endif %}
                 </p>
                 {% if user.is_authenticated %}
-                <div id="add_tags">
+                <div id="add_tags" data-app-label="laws" data-object-type="bill" data-id="{{object.id}}">
                     <h3>{% trans "Edit Tags" %}</h3>
                     <span id="possible_tags"><a href="javascript:get_tags_list();">{% trans "Click here" %}</a>
                     </span>
-                    <div id="create_tag" style='display:none'>
-                        {% if perms.tagging.add_tag %}
-                            <form id="create_tag_form" action="#">{% csrf_token %}
-                                <label for="tag">{% trans 'Create new tag' %}: </label>
-                                <input type="hidden" name="app_label" id="app_label" value="laws">
-                                <input type="hidden" name="object_type" value="bill">
-                                <input type="hidden" name="id" value="{{object.id}}">
-                                <input type="text" name="tag" id="tag">
-                                <input type="submit" value="{% trans 'Send' %}">
-                            </form>
-                        {% else %}
-                            {% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}
-                        {% endif %}
-                    </div>
                 </div>
                 {% endif %}
             </aside> <!-- tags -->

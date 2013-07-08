@@ -47,9 +47,21 @@ class AgendaListView(ListView):
         # store in context as dictionary votes[agendaid]=<votenum>
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
-        allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
+        parties_lookup = {party.id: party.name for
+                          party in Party.current_knesset.all()}
 
-        parties_lookup = dict(map(lambda party:(party.id,party.name),Party.objects.all()))
+        allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        if not allAgendaPartyVotes:
+            # filtering for current knesset is done here
+
+            allAgendaPartyVotes = queries.getAllAgendaPartyVotes()
+
+            for agenda_id, party_votes in allAgendaPartyVotes.iteritems():
+                allAgendaPartyVotes[agenda_id] = [
+                    x for x in party_votes if x[0] in parties_lookup]
+
+            cache.set('AllAgendaPartyVotes', allAgendaPartyVotes, 1800)
+
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = p.agendas
@@ -375,7 +387,7 @@ def agenda_add_view(request):
             agenda.description = form.cleaned_data['description']
             agenda.save()
             agenda.editors.add(request.user)
-            return HttpResponseRedirect('/agenda/') # Redirect after POST
+            return HttpResponseRedirect(agenda.get_absolute_url()) # Redirect after POST
     else:
         initial_data = {'public_owner_name': request.user.username}
         form = AddAgendaForm(initial=initial_data) # An unbound form with initial data

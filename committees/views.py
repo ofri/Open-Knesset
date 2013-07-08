@@ -24,8 +24,7 @@ from django.views.generic import DetailView, ListView
 from tagging.models import TaggedItem, Tag
 
 import models
-from .models import (Committee, CommitteeMeeting, Topic,
-                     COMMITTEE_PROTOCOL_PAGINATE_BY)
+from models import Committee, CommitteeMeeting, Topic
 from auxiliary.views import GetMoreView, BaseTagMemberListView
 from forms import EditTopicForm, LinksFormset
 from hashnav import method_decorator as hashnav_method_decorator
@@ -123,7 +122,7 @@ class MeetingDetailView(DetailView):
         for part in cm.parts.all():
             parts_lengths[part.id] = len(part.body)
         context['parts_lengths'] = json.dumps(parts_lengths)
-        context['paginate_by'] = COMMITTEE_PROTOCOL_PAGINATE_BY
+        context['paginate_by'] = models.COMMITTEE_PROTOCOL_PAGINATE_BY
 
         if cm.committee.type == 'plenum':
             context['members'] = cm.mks_attended.order_by('name')
@@ -224,7 +223,7 @@ def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'POST':
         if topic_id:
             t = Topic.objects.get(pk=topic_id)
-            if request.user != t.creator:
+            if not t.can_edit(request.user):
                 return HttpResponseForbidden()
         else:
             t = None
@@ -252,7 +251,7 @@ def edit_topic(request, committee_id, topic_id=None):
     if request.method == 'GET':
         if topic_id: # editing existing topic
             t = Topic.objects.get(pk=topic_id)
-            if request.user != t.creator:
+            if not t.can_edit(request.user):
                 return HttpResponseForbidden()
             edit_form = EditTopicForm(instance=t)
             ct = ContentType.objects.get_for_model(t)
@@ -271,7 +270,7 @@ def edit_topic(request, committee_id, topic_id=None):
 @login_required
 def delete_topic(request, pk):
     topic = get_object_or_404(Topic, pk=pk)
-    if request.user == topic.creator or request.user.is_staff:
+    if topic.can_edit(request.user):
         # Delete on POST
         if request.method == 'POST':
             topic.status = models.TOPIC_DELETED
@@ -409,6 +408,4 @@ def delete_topic_rating(request, object_id):
         topic= get_object_or_404(Topic, pk=object_id)
         topic.rating.delete(request.user, request.META['REMOTE_ADDR'])
         return HttpResponse('Vote deleted.')
-
-
 

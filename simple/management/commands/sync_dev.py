@@ -20,7 +20,7 @@ class Command(NoArgsCommand):
     ignore_models = (
         'sessions.session', 'auth.message', 'mailer',
         'accounts.email_validation', 'hitcount', 'actstream.follow',
-        'avatar')
+        'avatar', 'suggestions', 'auxiliary.feedback')
     only_latest = ('actstream.action', 'committees.protocolpart',
                    'committees.committeemeeting')
 
