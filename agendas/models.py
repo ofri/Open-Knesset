@@ -539,6 +539,27 @@ class Agenda(models.Model):
             mk_results = sorted(mk_results.items(),key=lambda (k,v):v['rank'],reverse=True)
         return mk_results
 
+
+    def get_mks_values_old(self, knesset_number=None):
+        """Return mks values.
+
+        :param knesset_number: The knesset numer of the mks. ``None`` will
+                               return current knesset (default: ``None``).
+        """
+        mks_grade = Agenda.objects.get_mks_values()
+
+        if knesset_number is None:
+            knesset = Knesset.objects.current_knesset()
+        else:
+            knesset = Knesset.objects.get(pk=knesset_number)
+
+        mks_ids = Member.objects.filter(
+            current_party__knesset=knesset).values_list('pk', flat=True)
+
+        grades = mks_grade.get(self.id, [])
+        current_grades = [x for x in grades if x[0] in mks_ids]
+        return current_grades
+
     def get_party_values(self):
         party_grades = Agenda.objects.get_all_party_values()
         return party_grades.get(self.id,[])
