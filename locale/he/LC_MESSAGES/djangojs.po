@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-04-14 22:38+0300\n"
-"PO-Revision-Date: 2013-04-14 22:39+0300\n"
+"PO-Revision-Date: 2013-07-15 18:22+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -49,7 +49,7 @@ msgstr "האירו"
 
 #: static/js/committeemeeting_detail.js:48
 msgid "Sorry, only logged users can annotate."
-msgstr "מצטער, רק משתמשים יכולים להאיר"
+msgstr "מצטער, רק משתמשים מחוברים יכולים להאיר"
 
 #: static/js/committeemeeting_detail.js:75
 msgid "Please make a selection."

@@ -45,7 +45,7 @@ $(function(){
     $(".annotationform-link").click(function(e){
       e.preventDefault();
       if (!window.logged_in) {
-          var msg = gettext("Sorry, only logged users can annotate.")+$("#message_login").html()
+          var msg = gettext("Sorry, only logged users can annotate.");
           $.jGrowl(msg, {sticky: true});
           return false
       }
