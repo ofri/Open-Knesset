@@ -307,6 +307,9 @@ class Member(models.Model):
             try:
                 return (self.end_date - self.start_date).days
             except TypeError:
+                logger.warn(
+                    'MK %d is not current, but missing end or start date' %
+                    self.id)
                 return None
 
     def average_weekly_presence(self):
@@ -360,13 +363,13 @@ class Member(models.Model):
         """Roles list (splitted by pipe)"""
 
         return [x.strip() for x in self.get_role.split('|')]
-	
+
 	@property
 	def committees(self):
 		"""Committee list (splitted by comma)"""
-		
+
 		return [x.strip() for x in self.committees.split(',')]
-	
+
     @property
     def is_minister(self):
         """Check if one of the roles starts with minister"""

@@ -2,7 +2,7 @@ from django import template
 from tagging.models import Tag, TaggedItem
 from tagvotes.models import TagVote
 from laws.models import VoteAction, VOTE_ACTION_TYPE_CHOICES, MemberVotingStatistics
-from mks.models import Member
+from mks.models import Member, Knesset
 from datetime import date, timedelta
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -46,6 +46,14 @@ def recent_votes_count(m):
         logger.error('%d is missing voting statistics' % m.id)
         return _('Not enough data')
 
+@register.filter
+def knesset_votes_count(m):
+    d = Knesset.objects.current_knesset().start_date
+    try:
+        return m.voting_statistics.votes_count(d)
+    except MemberVotingStatistics.DoesNotExist:
+        logger.error('%d is missing voting statistics' % m.id)
+        return _('Not enough data')
 
 @register.inclusion_tag('laws/_member_stand.html')
 def member_stand(v, m):

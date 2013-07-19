@@ -282,9 +282,13 @@
                         <label>{% trans "Number of votes" %}</label>
                         <span class="numeric">{{ object.voting_statistics.votes_count }}</span>
                     </li>
-                    <li class="agenda-mini">
+                    <li>
                         <label>{% trans "Last 30 days" %}</label>
                         <span class="numeric">{{object|recent_votes_count}}</span>
+                    </li>
+                    <li class="agenda-mini">
+                        <label>{% trans "In current Knesset" %}</label>
+                        <span class="numeric">{{object|knesset_votes_count}}</span>
                     </li>
                     <li>
                         <label>
