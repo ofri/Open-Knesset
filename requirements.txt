@@ -38,7 +38,7 @@ django-ratings
 django-debug-toolbar>=0.8.3
 nose
 django-nose
-django-devserver==0.6.1
+django-devserver==0.6.2
 ipython
 django-tinymce==1.5.1b4
 django-crispy-forms==1.2.3
