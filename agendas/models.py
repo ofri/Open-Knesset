@@ -459,9 +459,11 @@ class Agenda(models.Model):
             queryFields = {}
             if r[0]:
                 queryFields['month__gte']=r[0]
+                queryFields=Q(month__gte=r[0])
             if r[1]:
                 queryFields['month_lt']=r[1]
-            results.append(Q(**queryRange))
+#            results.append(Q(**queryFields))
+            results.append(queryFields)
         return results
 
     def get_mks_totals(self, member):
@@ -493,7 +495,12 @@ class Agenda(models.Model):
             # query summary
             baseQuerySet = SummaryAgenda.objects.filter(agenda=self)
             if filterList:
-                filtersFolded = reduce(lambda x,y:x | y, filterList)
+                if len(filterList)>1:
+                    filtersFolded = reduce(lambda x,y:x | y, filterList)
+                else:
+                    filtersFolded = filterList
+                import ipdb
+                ipdb.set_trace()
                 baseQuerySet.filter(filtersFolded)
             summaries = list(baseQuerySet)
 
