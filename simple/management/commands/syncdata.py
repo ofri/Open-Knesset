@@ -1053,7 +1053,7 @@ class Command(NoArgsCommand):
         min_timestamp = c[0]
         c = None
 
-        for m in Member.objects.all():
+        for m in Member.objects.filter(current_party__isnull=False):
             if m.id not in presence:
                 logger.error('member %s (id=%d) not found in presence data', m.name, m.id)
                 continue
