@@ -840,7 +840,9 @@ class Command(NoArgsCommand):
 
         mk_names = []
         mks = []
-        mk_persons = Person.objects.filter(mk__isnull=False).select_related('mk')
+        mk_persons = Person.objects.filter(
+            mk__isnull=False,
+            mk__current_party__isnull=False).select_related('mk')
         mks.extend([person.mk for person in mk_persons])
         mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
         mk_names.extend(mk_persons.values_list('name',flat=True))
