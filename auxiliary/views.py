@@ -377,18 +377,28 @@ class TagDetail(DetailView):
     template_name = 'auxiliary/tag_detail.html'
     slug_field = 'name'
 
-    def create_tag_cloud(self, tag, limit=30):
+    def create_tag_cloud(self, tag, limit=30, bills=None, votes=None,
+                         cms=None):
         """
         Create tag could for tag <tag>. Returns only the <limit> most tagged members
         """
 
         try:
-            mk_limit = int(self.request.GET.get('limit',limit))
+            mk_limit = int(self.request.GET.get('limit', limit))
         except ValueError:
             mk_limit = limit
-        mk_taggeds = [b.proposers.all() for b in TaggedItem.objects.get_by_model(Bill, tag)]
-        mk_taggeds += [v.votes.all() for v in TaggedItem.objects.get_by_model(Vote, tag)]
-        mk_taggeds += [cm.mks_attended.all() for cm in TaggedItem.objects.get_by_model(CommitteeMeeting, tag)]
+        if bills is None:
+            bills = TaggedItem.objects.get_by_model(Bill, tag)\
+                .prefetch_related('proposers')
+        if votes is None:
+            votes = TaggedItem.objects.get_by_model(Vote, tag)\
+                .prefetch_related('votes')
+        if cms is None:
+            cms = TaggedItem.objects.get_by_model(CommitteeMeeting, tag)\
+                .prefetch_related('mks_attended')
+        mk_taggeds = [b.proposers.all() for b in bills]
+        mk_taggeds += [v.votes.all() for v in votes]
+        mk_taggeds += [cm.mks_attended.all() for cm in cms]
         d = {}
         for tagged in mk_taggeds:
             for p in tagged:
@@ -405,16 +415,20 @@ class TagDetail(DetailView):
         context = super(TagDetail, self).get_context_data(**kwargs)
         tag = context['object']
         bills_ct = ContentType.objects.get_for_model(Bill)
-        bills = [ti.object for ti in
-                    TaggedItem.objects.filter(tag=tag, content_type=bills_ct)]
+        bill_ids = TaggedItem.objects.filter(
+            tag=tag,
+            content_type=bills_ct).values_list('object_id', flat=True)
+        bills = Bill.objects.filter(id__in=bill_ids)
         context['bills'] = bills
         votes_ct = ContentType.objects.get_for_model(Vote)
-        votes = [ti.object for ti in
-                    TaggedItem.objects.filter(tag=tag, content_type=votes_ct)]
+        vote_ids = TaggedItem.objects.filter(
+            tag=tag, content_type=votes_ct).values_list('object_id', flat=True)
+        votes = Vote.objects.filter(id__in=vote_ids)
         context['votes'] = votes
         cm_ct = ContentType.objects.get_for_model(CommitteeMeeting)
-        cms = [ti.object for ti in
-                    TaggedItem.objects.filter(tag=tag, content_type=cm_ct)]
+        cm_ids = TaggedItem.objects.filter(
+            tag=tag, content_type=cm_ct).values_list('object_id', flat=True)
+        cms = CommitteeMeeting.objects.filter(id__in=cm_ids)
         context['cms'] = cms
         context['members'] = self.create_tag_cloud(tag)
         return context
