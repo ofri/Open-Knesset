@@ -167,19 +167,37 @@ class MeetingDetailView(DetailView):
                 timestamp=datetime.datetime.now())
 
         if user_input_type == 'mk':
-            mk_names = Member.objects.values_list('name',flat=True)
-            mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
+            mk_names = Member.objects.values_list('name', flat=True)
+            mk_name = difflib.get_close_matches(request.POST.get('mk_name'),
+                                                mk_names)[0]
             mk = Member.objects.get(name=mk_name)
             cm.mks_attended.add(mk)
-            cm.save() # just to signal, so the attended Action gets created.
-            action.send(request.user, verb='added-mk-to-cm',
-                description=cm,
-                target=mk,
-                timestamp=datetime.datetime.now())
+            cm.save()  # just to signal, so the attended Action gets created.
+            action.send(request.user,
+                        verb='added-mk-to-cm',
+                        description=cm,
+                        target=mk,
+                        timestamp=datetime.datetime.now())
+
+        if user_input_type == 'remove-mk':
+            mk_names = Member.objects.values_list('name', flat=True)
+            mk_name = difflib.get_close_matches(request.POST.get('mk_name'),
+                                                mk_names)[0]
+            mk = Member.objects.get(name=mk_name)
+            cm.mks_attended.remove(mk)
+            cm.save()  # just to signal, so the attended Action gets created.
+            action.send(request.user,
+                        verb='removed-mk-to-cm',
+                        description=cm,
+                        target=mk,
+                        timestamp=datetime.datetime.now())
 
         return HttpResponseRedirect(".")
+
 _('added-bill-to-cm')
 _('added-mk-to-cm')
+_('removed-mk-from-cm')
+
 
 class TopicListView(ListView):
     model = Topic
