@@ -47,7 +47,6 @@ class AgendaListView(ListView):
         # store in context as dictionary votes[agendaid]=<votenum>
         agenda_votes_results = Agenda.objects.values("id").annotate(Count("votes"))
         agenda_votes = dict(map(lambda vote:(vote["id"],str(vote["votes__count"])),agenda_votes_results))
-
         parties_lookup = {party.id: party.name for
                           party in Party.current_knesset.all()}
 

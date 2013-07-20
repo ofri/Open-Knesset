@@ -120,7 +120,7 @@ class MemberAgendasResource(BaseResource):
                 amin = 200.0 ; amax = -200.0
                 pmin = 200.0 ; pmax = -200.0
                 av = agendas_values[a.id]
-                for mk_id, values in a.get_mks_values():
+                for mk_id, values in a.get_mks_values_old():
                     score = values['score']
                     if score < amin:
                         amin = score

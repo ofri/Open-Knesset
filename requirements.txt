@@ -9,7 +9,7 @@
 
 Django==1.5.1
 PIL
-South==0.7.6
+South==0.8.1
 django-extensions==1.1.1
 django-pagination==1.0.7
 django-tagging==0.3.1
@@ -24,7 +24,7 @@ oauth==1.0.1
 python-dateutil==1.5
 python-memcached==1.48
 -e git://github.com/openid/python-openid.git#egg=python-openid
-django-tastypie==0.9.12
+django-tastypie==0.9.15
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
 -e git://github.com/hasadna/django-activity-stream.git#egg=django-activity-stream
