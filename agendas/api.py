@@ -11,6 +11,7 @@ from models import Agenda, AgendaVote
 from apis.resources.base import BaseResource
 from mks.models import Member, Party
 
+from operator import itemgetter
 
 class UserResource(BaseResource):
     class Meta(BaseResource.Meta):
@@ -90,7 +91,7 @@ class AgendaResource(BaseResource):
         rangesString = bundle.request.GET.get('ranges',None)
         fullRange = rangesString is None
         if not fullRange:
-            ranges = map(   lambda rangeString:[int(val) if val else None for val in rangeString.split('-')],
+            ranges = map(   lambda rangeString:[datetime.strptime(val,"%Y%m") if val else None for val in rangeString.split('-')],
                             rangesString.split(','))
             mks_values = dict(bundle.obj.get_mks_values(ranges))
         else:
@@ -100,13 +101,14 @@ class AgendaResource(BaseResource):
                                         current_party__isnull=False).select_related('current_party'):
             # TODO: this sucks, performance wise
             current_party = mk.current_party
+            mk_data = mks_values[mk.id]
             members.append(dict(
                 id=mk.id,
                 name=mk.name,
-                score=mks_values[mk.id]['score'],
-                rank=mks_values[mk.id]['rank'],
-                volume=mks_values[mk.id]['volume'],
-                numvotes=mks_values[mk.id]['numvotes'],
+                score=map(itemgetter('score'),mk_data) if isinstance(mk_data,list) else mk_data['score'],
+                rank=map(itemgetter('rank'),mk_data) if isinstance(mk_data,list) else mk_data['rank'],
+                volume=map(itemgetter('volume'),mk_data) if isinstance(mk_data,list) else mk_data['volume'],
+                numvotes=map(itemgetter('numvotes'),mk_data) if isinstance(mk_data,list) else mk_data['numvotes'],
                 absolute_url=mk.get_absolute_url(),
                 party=current_party.name,
                 party_url=current_party.get_absolute_url(),

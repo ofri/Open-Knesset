@@ -459,11 +459,9 @@ class Agenda(models.Model):
             queryFields = {}
             if r[0]:
                 queryFields['month__gte']=r[0]
-                queryFields=Q(month__gte=r[0])
             if r[1]:
-                queryFields['month_lt']=r[1]
-#            results.append(Q(**queryFields))
-            results.append(queryFields)
+                queryFields['month__lt']=r[1]
+            results.append(Q(**queryFields))
         return results
 
     def get_mks_totals(self, member):
@@ -498,9 +496,7 @@ class Agenda(models.Model):
                 if len(filterList)>1:
                     filtersFolded = reduce(lambda x,y:x | y, filterList)
                 else:
-                    filtersFolded = filterList
-                import ipdb
-                ipdb.set_trace()
+                    filtersFolded = filterList[0]
                 baseQuerySet.filter(filtersFolded)
             summaries = list(baseQuerySet)
 
@@ -539,7 +535,7 @@ class Agenda(models.Model):
                     if fullRange:
                         mk_results[mk_id]=mk_range_data
                     else:
-                        mk_results[mk_id].append=mk_range_data
+                        mk_results[mk_id].append(mk_range_data)
             if fullRange:
                 cache.set('agenda_%d_mks_values' % self.id, mks_values, 1800)
         if fullRange:
