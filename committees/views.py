@@ -84,8 +84,8 @@ class CommitteeDetailView(DetailView):
             cur_date = datetime.datetime.now()
             cached_context['protocol_not_yet_published_list'] = \
                     cm.events.filter(when__gt = ref_date, when__lte = cur_date)
-            cache.set('committee_detail_%d' % cm.id, cached_context,
-                      settings.LONG_CACHE_TIME)
+            # cache.set('committee_detail_%d' % cm.id, cached_context,
+            #           settings.LONG_CACHE_TIME)
         context.update(cached_context)
         context['annotations'] = cm.annotations.order_by('-timestamp')
         context['topics'] = cm.topic_set.summary()[:5]
