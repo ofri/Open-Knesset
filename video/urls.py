@@ -1,5 +1,5 @@
 #encoding: UTF-8
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.utils.translation import ugettext
 from models import Video
 from views import VideoListView, videoListApproveAjaxView

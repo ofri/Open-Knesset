@@ -1,5 +1,5 @@
 #encoding: UTF-8
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from django.utils.translation import ugettext
 from django.views.generic import RedirectView
 from hashnav import ListView

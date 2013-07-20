@@ -1,5 +1,5 @@
 #encoding: UTF-8
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from views import send_validation_email, validate_email
 
 urlpatterns = patterns('',

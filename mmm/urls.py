@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from models import Document
 
 urlpatterns = patterns('mmm.views',

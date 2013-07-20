@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from django.utils.translation import ugettext
 from models import Person
 from views import PersonListView, PersonDetailView

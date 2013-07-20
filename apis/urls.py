@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns, include
+from django.conf.urls import url, patterns, include
 from piston.resource import Resource
 from django.views.decorators.cache import cache_page
 
