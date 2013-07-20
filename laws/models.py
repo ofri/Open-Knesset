@@ -186,6 +186,13 @@ class VoteManager(models.Manager):
         if kwargs.get('from_date', None):
             qs = qs.filter(time__gte=kwargs['from_date'])
 
+        exclude_agendas = kwargs.get('exclude_agendas', None)
+        if exclude_agendas:
+            # exclude votes that are ascribed to any of the given agendas
+            from agendas.models import AgendaVote
+            qs = qs.exclude(id__in=AgendaVote.objects.filter(
+                agenda__in=exclude_agendas).values('vote__id'))
+
         if 'order' in kwargs:
             if kwargs['order']=='controversy':
                 qs = qs.order_by('-controversy')

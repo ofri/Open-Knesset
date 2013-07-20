@@ -36,18 +36,30 @@ class BudgetEstimateForm(forms.Form):
                 pass
         #self.fields['tagged'].choices = new_choices
 
+
 class VoteSelectForm(forms.Form):
     """Votes filtering form"""
 
-    vtype = forms.ChoiceField(label=_('Vote types'), choices=TYPE_CHOICES,
-            required=False, initial='all')
-    tagged = forms.ChoiceField(label=_('Tags'), choices=TAGGED_CHOICES,
-            required=False, initial='all')
-    order = forms.ChoiceField(label=_('Order by'), choices=ORDER_CHOICES,
-            required=False, initial='time')
-    from_date = forms.DateField(label=_('From date'), required=False)
-    to_date = forms.DateField(label=_('To date'), required=False,
-            initial=date.today)
+    vtype = forms.ChoiceField(label=_('Vote types'),
+                              choices=TYPE_CHOICES,
+                              required=False,
+                              initial='all')
+    tagged = forms.ChoiceField(label=_('Tags'),
+                               choices=TAGGED_CHOICES,
+                               required=False,
+                               initial='all')
+    order = forms.ChoiceField(label=_('Order by'),
+                              choices=ORDER_CHOICES,
+                              required=False,
+                              initial='time')
+    from_date = forms.DateField(label=_('From date'),
+                                required=False)
+    to_date = forms.DateField(label=_('To date'),
+                              required=False,
+                              initial=date.today)
+    exclude_user_agendas = forms.BooleanField(label=_('Exclude my agendas'),
+                                              required=False,
+                                              initial=False)
 
     def __init__(self, *args, **kwargs):
         super(VoteSelectForm, self).__init__(*args, **kwargs)
@@ -87,7 +99,7 @@ class BillSelectForm(forms.Form):
         self.fields['tagged'].choices = new_choices
 
         new_stages = list(STAGE_CHOICES)
-        new_stages.extend(BILL_STAGE_CHOICES)       
+        new_stages.extend(BILL_STAGE_CHOICES)
         self.fields['stage'].choices = new_stages
 
     def clean(self):
@@ -106,11 +118,11 @@ class BillSelectForm(forms.Form):
             except ValueError:
                 raise forms.ValidationError(_('Invalid booklet number'))
                 self.cleaned_data['booklet']=''
-            else: 
+            else:
                 if not (KnessetProposal.objects.filter(booklet_number=booklet).exists()):
                     raise forms.ValidationError(_('Booklet does not exist'))
-                    self.cleaned_data['booklet']=''                
-            
+                    self.cleaned_data['booklet']=''
+
                 else:
                     self.cleaned_data['booklet']=booklet
 

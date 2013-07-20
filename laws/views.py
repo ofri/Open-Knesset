@@ -615,7 +615,7 @@ class BillListView (BillListMixin, HashnavListView):
         context['friend_pages'] = r
         context['form'] = self._get_filter_form()
         context['query_string'] = self.request.META['QUERY_STRING']
-        
+
         return context
 
 
@@ -633,6 +633,12 @@ class VoteListView(HashnavListView):
             options = form.cleaned_data
         else:
             options = {}
+
+        if options.get('exclude_user_agendas', False) and \
+           self.request.user.is_authenticated():
+            options['exclude_agendas'] = self.request.user.agendas.all()
+            print "\n\n\nXXXXXXX\n\n\n"
+            print options['exclude_agendas']
 
         return Vote.objects.filter_and_order(**options)
 
@@ -652,7 +658,7 @@ class VoteListView(HashnavListView):
 
         context['form'] = self._get_filter_form()
         context['query_string'] = self.request.META['QUERY_STRING']
-        
+
         return context
 
 
