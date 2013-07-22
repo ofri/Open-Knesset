@@ -2,6 +2,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from tinymce import models as tinymce_models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save, post_delete
+from tagging.models import TaggedItem, Tag
+from laws.models import Vote, Bill
+from committees.models import CommitteeMeeting
 
 
 ICON_CHOICES = (
@@ -63,3 +68,114 @@ class Feedback(models.Model):
     class Meta:
         verbose_name = _('Feedback message')
         verbose_name_plural = _('Feedback messages')
+
+
+def add_tags_to_related_objects(sender, instance, **kwargs):
+    """
+    When a tag is added to an object, we also tag other objects that are
+    related.
+    This currently only handles tagging of bills. When a bill is tagged it will
+    tag related votes and related committee meetings.
+
+    """
+    obj = instance.object
+    tag = instance.tag
+    if type(obj) is Bill:
+        # tag related votes
+        vote_ctype = ContentType.objects.get_for_model(Vote)
+        for v in obj.pre_votes.all():
+            (ti, created) = TaggedItem._default_manager.get_or_create(
+                tag=tag,
+                content_type=vote_ctype,
+                object_id=v.id)
+        v = obj.first_vote
+        if v:
+            (ti, created) = TaggedItem._default_manager.get_or_create(
+                tag=tag,
+                content_type=vote_ctype,
+                object_id=v.id)
+        v = obj.approval_vote
+        if v:
+            (ti, created) = TaggedItem._default_manager.get_or_create(
+                tag=tag,
+                content_type=vote_ctype,
+                object_id=v.id)
+
+        cm_ctype = ContentType.objects.get_for_model(CommitteeMeeting)
+        for cm in obj.first_committee_meetings.all():
+            (ti, created) = TaggedItem._default_manager.get_or_create(
+                tag=tag,
+                content_type=cm_ctype,
+                object_id=cm.id)
+        for cm in obj.second_committee_meetings.all():
+            (ti, created) = TaggedItem._default_manager.get_or_create(
+                tag=tag,
+                content_type=cm_ctype,
+                object_id=cm.id)
+
+
+post_save.connect(add_tags_to_related_objects, sender=TaggedItem)
+
+
+def remove_tags_from_related_objects(sender, instance, **kwargs):
+    obj = instance.object
+    try:
+        tag = instance.tag
+    except Tag.DoesNotExist:  # the tag itself was deleted,
+        return  # so we have nothing to do.
+    if type(obj) is Bill:
+        # untag related votes
+        vote_ctype = ContentType.objects.get_for_model(Vote)
+        for v in obj.pre_votes.all():
+            try:
+                ti = TaggedItem._default_manager.get(
+                    tag=tag,
+                    content_type=vote_ctype,
+                    object_id=v.id)
+                ti.delete()
+            except TaggedItem.DoesNotExist:
+                pass
+        v = obj.first_vote
+        if v:
+            try:
+                ti = TaggedItem._default_manager.get(
+                    tag=tag,
+                    content_type=vote_ctype,
+                    object_id=v.id)
+                ti.delete()
+            except TaggedItem.DoesNotExist:
+                pass
+        v = obj.approval_vote
+        if v:
+            try:
+                ti = TaggedItem._default_manager.get(
+                    tag=tag,
+                    content_type=vote_ctype,
+                    object_id=v.id)
+                ti.delete()
+            except TaggedItem.DoesNotExist:
+                pass
+
+        # untag related committee meetings
+        cm_ctype = ContentType.objects.get_for_model(CommitteeMeeting)
+        for cm in obj.first_committee_meetings.all():
+            try:
+                ti = TaggedItem._default_manager.get(
+                    tag=tag,
+                    content_type=cm_ctype,
+                    object_id=cm.id)
+                ti.delete()
+            except TaggedItem.DoesNotExist:
+                pass
+        for cm in obj.second_committee_meetings.all():
+            try:
+                ti = TaggedItem._default_manager.get(
+                    tag=tag,
+                    content_type=cm_ctype,
+                    object_id=cm.id)
+                ti.delete()
+            except TaggedItem.DoesNotExist:
+                pass
+
+
+post_delete.connect(remove_tags_from_related_objects, sender=TaggedItem)
