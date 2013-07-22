@@ -278,12 +278,20 @@ class CommentsView(ListView):
 
     paginate_by = 20
 
+
 def _add_tag_to_object(user, app, object_type, object_id, tag):
     ctype = ContentType.objects.get_by_natural_key(app, object_type)
-    (ti, created) = TaggedItem._default_manager.get_or_create(tag=tag, content_type=ctype, object_id=object_id)
-    action.send(user,verb='tagged', target=ti, description='%s' % (tag.name))
-    url = reverse('tag-detail', kwargs={'slug':tag.name})
-    return HttpResponse("{'id':%d,'name':'%s', 'url':'%s'}" % (tag.id,tag.name,url))
+    (ti, created) = TaggedItem._default_manager.get_or_create(
+        tag=tag,
+        content_type=ctype,
+        object_id=object_id)
+    action.send(user, verb='tagged', target=ti, description='%s' % (tag.name))
+    url = reverse('tag-detail', kwargs={'slug': tag.name})
+    return HttpResponse("{'id':%d, 'name':'%s', 'url':'%s'}" % (tag.id,
+                                                                tag.name,
+                                                                url))
+
+
 
 @login_required
 def add_tag_to_object(request, app, object_type, object_id):
