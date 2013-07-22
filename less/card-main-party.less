@@ -75,20 +75,24 @@
     
 	}
 		
+
+  @photo-height: 80px;
+
   .party-member-photo {
     position: relative;
-    height: 80px;
+    height: @photo-height;
     width: 60px;
     display: inline-block;
     margin: 9px;
+
     
     .party-member-extra {
       display:inline;
       position:absolute;
       top:-8px;
-      font-size: 12px;
+      font-size: 11px;
       text-align: center;
-      p, div {margin: 0;}
+      p, div {margin: 0; line-height: 1.1em;}
      }
 
      
@@ -168,6 +172,23 @@
                      1px 1px 0 rgba(0,0,0,0.5);
    }
 
+  &.committee-members {
+    @extra-height: 47px;
+
+    .party-member-photo {
+      height: @photo-height + @extra-height;
+
+      .party-member-extra {
+        bottom: 0px;
+        top: auto;
+      }
+    }
+
+    .party-member-name { 
+        bottom: -7px + @extra-height;
+
+    }
+  }
 }
 
 
