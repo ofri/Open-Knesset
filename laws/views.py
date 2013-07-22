@@ -637,8 +637,6 @@ class VoteListView(HashnavListView):
         if options.get('exclude_user_agendas', False) and \
            self.request.user.is_authenticated():
             options['exclude_agendas'] = self.request.user.agendas.all()
-            print "\n\n\nXXXXXXX\n\n\n"
-            print options['exclude_agendas']
 
         return Vote.objects.filter_and_order(**options)
 
