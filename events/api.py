@@ -5,7 +5,7 @@ import datetime
 from models import Event
 from tastypie.utils import trailing_slash
 from apis.resources.base import BaseResource
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 
 class EventResource(BaseResource):
     class Meta(BaseResource.Meta):
