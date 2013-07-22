@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
-from django.utils.text import truncate_words
+from django.utils.text import Truncator
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -159,7 +159,8 @@ class CommitteeMeeting(models.Model):
         verbose_name_plural = _('Committee Meetings')
 
     def title (self):
-        return truncate_words (self.topics, 12)
+        truncator = Truncator(self.topics)
+        return truncator.words(12)
 
     def __unicode__(self):
         cn = cache.get('committee_%d_name' % self.committee_id)
