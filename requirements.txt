@@ -27,11 +27,11 @@ python-memcached==1.48
 django-tastypie==0.9.15
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
--e git://github.com/hasadna/django-activity-stream.git#egg=django-activity-stream
+-e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
 -e git://github.com/hasadna/django-planet.git#egg=django-planet
 -e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
--e git://github.com/hasadna/django-avatar.git#egg=django-avatar
+-e git://github.com/hasadna/django-avatar.git@66a7d64fd1ff7ab922913be381b95e7e3365fb7a#egg=django-avatar
 -e git://github.com/hasadna/django-backlinks.git@014104cd38fd274020284e3b14d28f97ece7ea62#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git@1b51686a5b2ff547429d0b224319d521170f63e2#egg=django-piston
