@@ -11,7 +11,7 @@ from mks.models import Member
 from links.models import Link
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404

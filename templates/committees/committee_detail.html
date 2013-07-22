@@ -71,7 +71,7 @@
                 {% ifequal object.type 'committee' %}
                     <div class="span6 social-details">
                         <div class="spacer fill">
-                            {% include "committees/committee_member_photos.html" %}
+                            {% include "committees/committee_member_photos.html" with extra_class="committee-members"%}
                         </div>
                     </div>
                 {% endifequal %}
