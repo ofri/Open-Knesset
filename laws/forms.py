@@ -60,6 +60,10 @@ class VoteSelectForm(forms.Form):
     exclude_user_agendas = forms.BooleanField(label=_('Exclude my agendas'),
                                               required=False,
                                               initial=False)
+    exclude_ascribed = forms.BooleanField(
+        label=_('Exclude votes ascribed to bills'),
+        required=False,
+        initial=False)
 
     def __init__(self, *args, **kwargs):
         super(VoteSelectForm, self).__init__(*args, **kwargs)

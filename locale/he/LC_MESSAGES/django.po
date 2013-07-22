@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-20 13:52+0300\n"
-"PO-Revision-Date: 2013-07-20 13:52+0200\n"
+"POT-Creation-Date: 2013-07-22 19:27+0300\n"
+"PO-Revision-Date: 2013-07-22 19:29+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -693,7 +693,7 @@ msgid "Vote types"
 msgstr "סוגי הצבעות"
 
 #: laws/forms.py:47
-#: laws/forms.py:78
+#: laws/forms.py:82
 #: templates/auxiliary/tag_detail.html:8
 #: templates/auxiliary/tag_list.html:5
 #: templates/auxiliary/tag_list.html:7
@@ -726,23 +726,27 @@ msgstr "עד"
 msgid "Exclude my agendas"
 msgstr "ללא הצבעות המשויכות לאג'נדה בעריכתך"
 
-#: laws/forms.py:76
+#: laws/forms.py:64
+msgid "Exclude votes ascribed to bills"
+msgstr "ללא הצבעות המשויכות להצעות חוק"
+
+#: laws/forms.py:80
 msgid "Bill Stage"
 msgstr "שלב הצעת החוק"
 
-#: laws/forms.py:80
+#: laws/forms.py:84
 msgid "Stage Changed After:"
 msgstr "שלב השתנה אחרי:"
 
-#: laws/forms.py:82
+#: laws/forms.py:86
 msgid "Stage Chaged Before:"
 msgstr "שינוי סטטוס לפני:"
 
-#: laws/forms.py:119
+#: laws/forms.py:123
 msgid "Invalid booklet number"
 msgstr "מספר חוברת לא חוקי"
 
-#: laws/forms.py:123
+#: laws/forms.py:127
 msgid "Booklet does not exist"
 msgstr "חוברת לא קיימת"
 
@@ -788,13 +792,13 @@ msgstr "נוכח ולא הצביע"
 msgid "N/A"
 msgstr "לא ישים"
 
-#: laws/models.py:236
+#: laws/models.py:241
 #: templates/laws/bill_confirm_vote.html:22
 #: templates/laws/bill_unbind_vote.html:10
 msgid "Vote"
 msgstr "הצבעה"
 
-#: laws/models.py:237
+#: laws/models.py:242
 #: laws/urls.py:14
 #: laws/urls.py:17
 #: templates/base.html:71
@@ -809,45 +813,45 @@ msgstr "הצבעה"
 msgid "Votes"
 msgstr "הצבעות"
 
-#: laws/models.py:536
+#: laws/models.py:541
 #: templates/activity/proposed/action.html:5
 #: templates/laws/bill_unbind_vote.html:8
 #: templates/laws/vote_detail.html:61
 msgid "Bill"
 msgstr "הצעת חוק"
 
-#: laws/models.py:537
+#: laws/models.py:542
 #: laws/urls.py:15
 #: templates/committees/committeemeeting_detail.html:97
 #: templates/mks/member_detail.html:434
 msgid "Bills"
 msgstr "הצעות חוק"
 
-#: laws/models.py:830
+#: laws/models.py:835
 msgid "Estimation of"
 msgstr "הערכה של"
 
-#: laws/models.py:832
+#: laws/models.py:837
 msgid "Estimated on:"
 msgstr "הוערך ב:"
 
-#: laws/models.py:834
+#: laws/models.py:839
 msgid "One-time costs to government:"
 msgstr "עלות חד-פעמית לממשלה:"
 
-#: laws/models.py:836
+#: laws/models.py:841
 msgid "Yearly costs to government:"
 msgstr "עלות שנתית לממשלה:"
 
-#: laws/models.py:838
+#: laws/models.py:843
 msgid "One-time costs to external bodies:"
 msgstr "עלות חד-פעמית לגורמים אחרים:"
 
-#: laws/models.py:840
+#: laws/models.py:845
 msgid "Yearly costs to external bodies:"
 msgstr "עלות שנתית לגורמים אחרים:"
 
-#: laws/models.py:842
+#: laws/models.py:847
 msgid "Summary of the estimation:"
 msgstr "סיכום ההערכה:"
 

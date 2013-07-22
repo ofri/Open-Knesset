@@ -200,6 +200,11 @@ class VoteManager(models.Manager):
                 qs = qs.order_by('-against_party')
             if kwargs['order']=='votes':
                 qs = qs.order_by('-votes_count')
+
+        if kwargs.get('exclude_ascribed', False):  # exclude votes ascribed to
+                                                   # any bill.
+            qs = qs.exclude(bills_pre_votes__isnull=False).exclude(
+                bills_first__isnull=False).exclude(bill_approved__isnull=False)
         return qs
 
 class Vote(models.Model):
