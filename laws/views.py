@@ -35,18 +35,25 @@ from models import BILL_STAGE_CHOICES
 
 logger = logging.getLogger("open-knesset.laws.views")
 
+
 def bill_tags_cloud(request, min_posts_count=1):
     member = None
     if 'member' in request.GET:
-        member = get_object_or_404(Member, pk=request.GET['member'])
-        tags_cloud = Tag.objects.usage_for_queryset(member.bills.all(),counts=True)
+        try:
+            member = Member.objects.get(pk=request.GET['member'])
+        except (Member.DoesNotExist, ValueError):
+            raise Http404
+        tags_cloud = Tag.objects.usage_for_queryset(member.bills.all(),
+                                                    counts=True)
         tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
-        title = _('Bills by %(member)s by tag') % {'member':member.name}
+        title = _('Bills by %(member)s by tag') % {'member': member.name}
     else:
         title = _('Bills by tag')
         tags_cloud = Tag.objects.cloud_for_model(Bill)
-    return render_to_response("laws/bill_tags_cloud.html",
-        {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
+    return render_to_response(
+        "laws/bill_tags_cloud.html",
+        {"tags_cloud": tags_cloud, "title": title, "member": member},
+        context_instance=RequestContext(request))
 
 
 class BillTagsView(BaseTagMemberListView):
