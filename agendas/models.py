@@ -524,8 +524,8 @@ class Agenda(models.Model):
                     mk_data     = current_mks_data[mk_id]
                     if mk_data:
                         mk_votes    = sum(map(attrgetter('votes'),mk_data))
-                        mk_volume   = mk_votes/total_votes
-                        mk_score    = sum(map(attrgetter('score'),mk_data))/total_score
+                        mk_volume   = 100*mk_votes/total_votes
+                        mk_score    = 100*sum(map(attrgetter('score'),mk_data))/total_score
                         rangeMkResults.append((mk_id,mk_votes,mk_score,mk_volume))
                     else:
                         rangeMkResults.append(tuple([mk_id]+[0]*3))
@@ -539,7 +539,7 @@ class Agenda(models.Model):
             if fullRange:
                 cache.set('agenda_%d_mks_values' % self.id, mks_values, 1800)
         if fullRange:
-            mk_results = sorted(mk_results.items(),key=lambda (k,v):v['rank'],reverse=True)
+            mk_results = sorted(mk_results.items(),key=lambda (k,v):v['rank'])
         return mk_results
 
 
