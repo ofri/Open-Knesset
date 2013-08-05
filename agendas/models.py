@@ -505,9 +505,8 @@ class Agenda(models.Model):
             for r in ranges:
                 summariesForRange = defaultdict(list)
                 for s in summaries:
-                    if (r[0] and s.month>=r[0]) or \
-                        (r[1] and s.month<r[1]) or \
-                        (not r[0] and not r[1]):
+                    if (not r[0] or s.month>=r[0]) and \
+                        (not r[1] or s.month<r[1]):
                         summariesForRange[s.summary_type].append(s)
                 summariesForRanges.append(summariesForRange)
 
