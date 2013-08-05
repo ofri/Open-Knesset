@@ -485,7 +485,7 @@ class Agenda(models.Model):
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
         if not mks_values:
             # get list of mk ids
-            mk_ids = Member.objects.all().values_list('id',flat=True)
+            mk_ids = Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
 
             # generate summary query
             filterList = self.generateSummaryFilters(ranges)
@@ -517,7 +517,7 @@ class Agenda(models.Model):
                 agenda_data             = summaries['AG']
                 total_votes             = sum(map(attrgetter('votes'),agenda_data))
                 total_score             = sum(map(attrgetter('score'),agenda_data))
-                current_mks_data        = indexby(summaries['MK'],attrgetter('id'))
+                current_mks_data        = indexby(summaries['MK'],attrgetter('mk_id'))
                 # calculate results per mk
                 rangeMkResults          = []
                 for mk_id in mk_results.keys():
@@ -528,7 +528,7 @@ class Agenda(models.Model):
                         mk_score    = sum(map(attrgetter('score'),mk_data))/total_score
                         rangeMkResults.append((mk_id,mk_votes,mk_score,mk_volume))
                     else:
-                        rangeMkResults.append(tuple([mk_id]+[None]*3))
+                        rangeMkResults.append(tuple([mk_id]+[0]*3))
                 # sort results by score descending
                 for rank,(mk_id,mk_votes,mk_score,mk_volume) in enumerate(sorted(rangeMkResults,key=itemgetter(2,0),reverse=True)):
                     mk_range_data = dict(score=mk_score,rank=rank,volume=mk_volume,numvotes=mk_votes)
@@ -611,7 +611,7 @@ class SummaryAgenda(models.Model):
     db_updated      = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return '%s %s %s %s (%f,%d)' % (str(self.agenda),str(self.month),self.summary_type,str(self.mk) if self.mk else 'n/a',self.score,self.votes)
+        return "%s %s %s %s (%f,%d)" % (str(self.agenda_id),str(self.month),self.summary_type,str(self.mk_id) if self.mk else u'n/a',self.score,self.votes)
 
 from listeners import *
 
