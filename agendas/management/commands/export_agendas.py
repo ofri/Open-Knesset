@@ -1,15 +1,17 @@
-import os, csv
+import os
+import csv
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
-from mks.models import Member,Party
-from laws.models import Vote,VoteAction
+from mks.models import Member
 from agendas.models import Agenda, AgendaVote
+
 
 class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
-        mks = Member.objects.order_by('current_party').values('id','name','current_party')
+        mks = Member.objects.exclude(current_party__isnull=True).order_by(
+            'current_party').values('id', 'name', 'current_party')
         for agenda in Agenda.objects.all():
             f = open(os.path.join(settings.DATA_ROOT, 'agenda_%d.csv' %
                                   agenda.id), 'wt')
@@ -17,16 +19,19 @@ class Command(NoArgsCommand):
             header = []
             header.append('Vote id')
             header.append('Vote title')
+            header.append('Vote time')
             header.append('Score')
             header.append('Importance')
             for mk in mks:
                 header.append('%s %d' % (mk['name'].encode('utf8'), mk['id']))
             csv_writer.writerow(header)
 
-            for agenda_vote in AgendaVote.objects.filter(agenda=agenda):
+            for agenda_vote in AgendaVote.objects.filter(
+                    agenda=agenda).select_related('vote'):
                 row = []
                 row.append(agenda_vote.vote.id)
                 row.append(agenda_vote.vote.title.encode('utf8'))
+                row.append(agenda_vote.vote.time.isoformat())
                 row.append(agenda_vote.score)
                 row.append(agenda_vote.importance)
                 mks_for = agenda_vote.vote.get_voters_id('for')
@@ -40,10 +45,3 @@ class Command(NoArgsCommand):
                         row.append(0)
                 csv_writer.writerow(row)
             f.close()
-
-
-
-
-
-
-
