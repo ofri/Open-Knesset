@@ -89,16 +89,21 @@ class AgendaVote(models.Model):
         agendaScore     = float(self.score) * float(self.importance)
         objMonth        = dateMonthTruncate(self.vote.time)
 
-        summaryObjects  = SummaryAgenda.objects.filter( agenda=self.agenda,
-                                                        month=objMonth).all()
+        summaryObjects  = list(SummaryAgenda.objects.filter( agenda=self.agenda,
+                                                            month=objMonth).all())
 
         agendaSummary   = None
         if not filter(lambda summary:summary.summary_type=='AG',summaryObjects):
             agendaSummary   = SummaryAgenda(month=objMonth,
                                             agenda=self.agenda,
                                             summary_type='AG',
-                                            score=agendaScore,
+                                            score=abs(agendaScore),
                                             votes=1)
+        else:
+            existingAgenda = filter(lambda summary:summary.summary_type=='AG',summaryObjects)[0]
+            existingAgenda.votes += 1
+            existingAgenda.score += abs(agendaScore)
+            existingAgenda.save()
 
         agendasByMk     = dict(map(lambda summary:(summary.mk_id,summary),
                                    filter(lambda summary:summary.summary_type=='MK',
@@ -108,20 +113,20 @@ class AgendaVote(models.Model):
             newObjects.append(agendaSummary)
         voters = defaultdict(list)
         for vote_action in self.vote.voteaction_set.all():
-            mkSummary = agendasByMk.get(vote_action.member_id,None)
+            mkSummary = agendasByMk.get(vote_action.member_id, None)
             if not mkSummary:
-                mkSummary = SummaryAgenda(  month=objMonth,
-                                            agenda=self.agenda,
-                                            summary_type='MK',
-                                            mk_id=vote_action.member_id,
-                                            votes=1,
-                                            score=agendaScore*(1 if vote_action.type == 'for' else -1))
+                mkSummary = SummaryAgenda(month=objMonth,
+                                          agenda=self.agenda,
+                                          summary_type='MK',
+                                          mk_id=vote_action.member_id,
+                                          votes=1,
+                                          score=agendaScore * (1 if vote_action.type == 'for' else -1))
                 newObjects.append(mkSummary)
             else:
                 voters[vote_action.type].append(vote_action.member_id)
 
-        SummaryAgenda.objects.filter(mk_id__in=voters['for']).update(votes=F('votes')+1,score=F('score')+agendaScore)
-        SummaryAgenda.objects.filter(mk_id__in=voters['against']).update(votes=F('votes')+1,score=F('score')-agendaScore)
+        SummaryAgenda.objects.filter(mk_id__in=voters['for']).update(votes=F('votes') + 1, score=F('score')+agendaScore)
+        SummaryAgenda.objects.filter(mk_id__in=voters['against']).update(votes=F('votes') + 1, score=F('score')-agendaScore)
         if newObjects:
             SummaryAgenda.objects.bulk_create(newObjects)
 
@@ -499,7 +504,6 @@ class Agenda(models.Model):
                     filtersFolded = filterList[0]
                 baseQuerySet.filter(filtersFolded)
             summaries = list(baseQuerySet)
-
             # group summaries for respective ranges
             summariesForRanges = []
             for r in ranges:
