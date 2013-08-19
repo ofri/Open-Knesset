@@ -483,7 +483,7 @@ class Agenda(models.Model):
 
     def get_mks_values(self,ranges=None):
         if ranges is None:
-            ranges = [[None,None]]
+            ranges = [[dateMonthTruncate(Knesset.objects.current_knesset().start_date),None]]
         mks_values = False
         fullRange = ranges == [[None,None]]
         if fullRange:
@@ -619,7 +619,12 @@ class SummaryAgenda(models.Model):
 from listeners import *
 
 def dateMonthTruncate(dt):
-    return dt.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    dt = dt.replace(day=1)
+    if type(dt) == datetime.datetime:
+        dt = dt.replace(hour=0,minute=0,second=0,microsecond=0)
+    else:
+        dt = datetime.datetime(year=dt.year,month=dt.month,day=1)
+    return dt
 
 def indexby(data,fieldFunc):
     d = defaultdict(list)
