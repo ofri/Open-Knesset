@@ -165,7 +165,10 @@ def bill_auto_complete(request):
 def vote_tags_cloud(request, min_posts_count=1):
     member = None
     if 'member' in request.GET:
-        member = get_object_or_404(Member, pk=request.GET['member'])
+        try:
+            member = Member.objects.get(pk=request.GET['member'])
+        except (Member.DoesNotExist, ValueError):
+            raise Http404
         tags_cloud = Tag.objects.usage_for_queryset(member.votes.all(),counts=True)
         tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
         title = _('Votes by %(member)s by tag') % {'member':member.name}
