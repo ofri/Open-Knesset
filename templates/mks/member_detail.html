@@ -210,8 +210,8 @@
             </section>
 {% if not object.is_minister %}
             <section class="card card-list card-list-latest">
-                <header>
-                    <h2>{% trans "Legislation" %}</h2>
+                <header>				
+                    <a href="http://oknesset.org/bill/?member={{ object.id }}"><h2>{% trans "Legislation" %}</h2></a>
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-legislation">
