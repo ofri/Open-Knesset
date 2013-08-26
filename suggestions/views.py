@@ -93,6 +93,7 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
                         'suggestions_reject', kwargs={'pk': x.pk}),
                     'by': unicode(x.suggested_by),
                     'by_url': x.suggested_by.get_profile().get_absolute_url(),
+                    'by_email': x.suggested_by.email,
                 }
                 for x in result[key]]
 
