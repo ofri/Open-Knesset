@@ -52,6 +52,14 @@
 				})
 			}
 		})
+		.fail(function(data) {
+			var container = $('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert">&times;</a></div>'),
+			msg = $('<span/>').text(data.responseText.substring(0, 100));
+
+			msg.appendTo(container);
+
+			$this.prepend(container);
+		})
 		.always(function() {
 			$btn.button('reset');
 		})
