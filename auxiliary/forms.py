@@ -35,6 +35,7 @@ class FeedbackSuggestionForm(InstanceCreateSuggestionForm):
 
     content = forms.CharField(label=_('Content'),
                               widget=forms.Textarea(attrs={'rows': 3}))
+    url = forms.CharField(widget=forms.HiddenInput, max_length=400)
 
     class Meta:
         model = Feedback
@@ -59,7 +60,6 @@ class FeedbackSuggestionForm(InstanceCreateSuggestionForm):
             'suggested_by': request.user,
             'ip_address': ip,
             'user_agent': request.META.get('HTTP_USER_AGENT'),
-            'url': request.get_full_path(),
         })
 
         return data
