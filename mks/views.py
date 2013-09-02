@@ -1,5 +1,6 @@
 import urllib
 from operator import attrgetter
+from itertools import chain
 
 from django.conf import settings
 from django.db.models import Sum, Q
@@ -76,7 +77,7 @@ class MemberListView(ListView):
         context['friend_pages'] = self.pages
         context['stat_type'] = info
         context['title'] = dict(self.pages)[info]
-        context['csv_path'] = 'api/v2/member' + '?' + self.request.GET.urlencode() + '&format=csv&limit=0'     
+        context['csv_path'] = 'api/v2/member' + '?' + self.request.GET.urlencode() + '&format=csv&limit=0'
         context['past_mks'] = Member.current_knesset.filter(is_current=False)
 
         # We make sure qs are lists so that the template can get min/max
@@ -409,25 +410,22 @@ class PartyListView(ListView):
         context['friend_pages'] = self.pages
         context['stat_type'] = info
 
-        if info=='seats':
+        if info == 'seats':
             context['coalition']  =  context['coalition'].annotate(extra=Sum('number_of_seats')).order_by('-extra')
             context['opposition'] = context['opposition'].annotate(extra=Sum('number_of_seats')).order_by('-extra')
             context['norm_factor'] = 1
             context['baseline'] = 0
-        if info=='votes-per-seat':
+
+        if info == 'votes-per-seat':
             m = 0
-            for p in context['coalition']:
+            for p in chain(context['coalition'], context['opposition']):
                 p.extra = p.voting_statistics.votes_per_seat()
                 if p.extra > m:
                     m = p.extra
-            for p in context['opposition']:
-                p.extra = p.voting_statistics.votes_per_seat()
-                if p.extra > m:
-                    m = p.extra
-            context['norm_factor'] = m/20
+            context['norm_factor'] = m / 20
             context['baseline'] = 0
 
-        if info=='discipline':
+        if info == 'discipline':
             m = 100
             for p in context['coalition']:
                 p.extra = p.voting_statistics.discipline()
@@ -495,98 +493,94 @@ class PartyListView(ListView):
             context['norm_factor'] = (10.0-m)/15
             context['baseline'] = m-1
 
-        if info=='bills-proposed':
+        if info == 'bills-proposed':
             m = 9999
-            for p in context['coalition']:
-                p.extra = len(set(Bill.objects.filter(proposers__current_party=p).values_list('id',flat=True)))/p.number_of_seats
+            d = Knesset.objects.current_knesset().start_date
+            for p in chain(context['coalition'], context['opposition']):
+                p.extra = round(float(
+                    len(set(Bill.objects.filter(
+                        proposers__current_party=p,
+                        proposals__date__gt=d).values_list('id', flat=True))
+                        )) / p.number_of_seats, 1)
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                p.extra = len(set(Bill.objects.filter(proposers__current_party=p).values_list('id',flat=True)))/p.number_of_seats
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
-        if info=='bills-pre':
+        if info == 'bills-pre':
             m = 9999
-            for p in context['coalition']:
-                p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+            d = Knesset.objects.current_knesset().start_date
+            for p in chain(context['coalition'], context['opposition']):
+                p.extra = round(float(
+                    len(set(Bill.objects.filter(
+                        Q(stage='2') | Q(stage='3') | Q(stage='4') |
+                        Q(stage='5') | Q(stage='6'),
+                        proposers__current_party=p,
+                        proposals__date__gt=d).values_list('id', flat=True))
+                        )) / p.number_of_seats, 1)
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='2')|Q(stage='3')|Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
-        if info=='bills-first':
+        if info == 'bills-first':
             m = 9999
-            for p in context['coalition']:
-                p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
+            d = Knesset.objects.current_knesset().start_date
+            for p in chain(context['coalition'], context['opposition']):
+                p.extra = round(float(
+                    len(set(Bill.objects.filter(
+                        Q(stage='4') | Q(stage='5') | Q(stage='6'),
+                        proposers__current_party=p,
+                        proposals__date__gt=d).values_list('id', flat=True))
+                        )) / p.number_of_seats, 1)
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                p.extra = round(float(len(set(Bill.objects.filter(Q(proposers__current_party=p),Q(stage='4')|Q(stage='5')|Q(stage='6')).values_list('id',flat=True))))/p.number_of_seats,1)
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
-        if info=='bills-approved':
+        if info == 'bills-approved':
             m = 9999
-            for p in context['coalition']:
-                p.extra = round(float(len(set(Bill.objects.filter(proposers__current_party=p,stage='6').values_list('id',flat=True))))/p.number_of_seats,1)
+            d = Knesset.objects.current_knesset().start_date
+            for p in chain(context['coalition'], context['opposition']):
+                p.extra = round(float(
+                    len(set(Bill.objects.filter(
+                        proposers__current_party=p,
+                        proposals__date__gt=d,
+                        stage='6').values_list('id', flat=True))
+                        )) / p.number_of_seats, 1)
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                p.extra = round(float(len(set(Bill.objects.filter(proposers__current_party=p,stage='6').values_list('id',flat=True))))/p.number_of_seats,1)
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
-        if info=='presence':
+        if info == 'presence':
             m = 9999
-            for p in context['coalition']:
-                awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
+            for p in chain(context['coalition'], context['opposition']):
+                awp = [member.average_weekly_presence() for member in
+                       p.members.all()]
+                awp = [a for a in awp if a]
                 if awp:
-                    p.extra = round(float(sum(awp))/len(awp),1)
+                    p.extra = round(float(sum(awp)) / len(awp), 1)
                 else:
                     p.extra = 0
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                awp = [member.average_weekly_presence() for member in p.members.all() if member.average_weekly_presence()]
-                if awp:
-                    p.extra = round(float(sum(awp))/len(awp),1)
-                else:
-                    p.extra = 0
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
-        if info=='committees':
+        if info == 'committees':
             m = 9999
-            for p in context['coalition']:
-                cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
+            for p in chain(context['coalition'], context['opposition']):
+                cmpm = [member.committee_meetings_per_month() for member in
+                        p.members.all()]
+                cmpm = [c for c in cmpm if c]
                 if cmpm:
-                    p.extra = round(float(sum(cmpm))/len(cmpm),1)
+                    p.extra = round(float(sum(cmpm)) / len(cmpm), 1)
                 else:
                     p.extra = 0
                 if p.extra < m:
                     m = p.extra
-            for p in context['opposition']:
-                cmpm = [member.committee_meetings_per_month() for member in p.members.all() if member.committee_meetings_per_month()]
-                if cmpm:
-                    p.extra = round(float(sum(cmpm))/len(cmpm),1)
-                else:
-                    p.extra = 0
-                if p.extra < m:
-                    m = p.extra
-            context['norm_factor'] = m/2
+            context['norm_factor'] = m / 2
             context['baseline'] = 0
 
         context['title'] = _('Parties by %s') % dict(self.pages)[info]

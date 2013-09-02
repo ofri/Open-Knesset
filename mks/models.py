@@ -393,12 +393,18 @@ class Member(models.Model):
         return self.current_party.is_coalition
 
     def recalc_bill_statistics(self):
-        self.bills_stats_proposed = self.bills.count()
-        self.bills_stats_pre = self.bills.filter(
-            stage__in=['2', '3', '4', '5', '6']).count()
-        self.bills_stats_first = self.bills.filter(
-            stage__in=['4', '5', '6']).count()
-        self.bills_stats_approved = self.bills.filter(stage='6').count()
+        d = Knesset.objects.current_knesset().start_date
+        self.bills_stats_proposed = self.proposals_proposed.filter(
+            date__gte=d).count()
+        self.bills_stats_pre = self.proposals_proposed.filter(
+            date__gte=d,
+            bill__stage__in=['2', '3', '4', '5', '6']).count()
+        self.bills_stats_first = self.proposals_proposed.filter(
+            date__gte=d,
+            bill__stage__in=['4', '5', '6']).count()
+        self.bills_stats_approved = self.proposals_proposed.filter(
+            date__gte=d,
+            bill__stage='6').count()
         self.save()
 
     def recalc_average_weekly_presence_hours(self):

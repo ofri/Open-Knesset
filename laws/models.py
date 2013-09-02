@@ -63,7 +63,10 @@ class PartyVotingStatistics(models.Model):
         return VoteAction.objects.filter(member__current_party=self.party, against_party=True).count()
 
     def votes_count(self):
-        return VoteAction.objects.filter(member__current_party=self.party).exclude(type='no-vote').count()
+        d = Knesset.objects.current_knesset().start_date
+        return VoteAction.objects.filter(
+            member__current_party=self.party,
+            vote__time__gt=d).exclude(type='no-vote').count()
 
     def votes_per_seat(self):
         return round(float(self.votes_count()) / self.party.number_of_seats,1)
