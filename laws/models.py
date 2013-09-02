@@ -144,9 +144,9 @@ class VoteAction(models.Model):
     against_coalition = models.BooleanField(default=False)
     against_opposition = models.BooleanField(default=False)
     against_own_bill = models.BooleanField(default=False)
-    
+
     def __unicode__(self):
-        return "{} {} [}".format(self.member.name, self.type, self.vote.title)
+        return u"{} {} {}".format(self.member.name, self.type, self.vote.title)
 
 
 class VoteManager(models.Manager):
@@ -274,7 +274,7 @@ class Vote(models.Model):
         if self.full_text_url is None:
             return ''
         return '<a href="{}">link</a>'.format(self.full_text_url)
-        
+
     full_text_link.allow_tags = True
 
     def bills(self):
@@ -407,7 +407,7 @@ class Law(models.Model):
         return self.title
 
     def merge(self, another_law):
-        """ 
+        """
         Merges another_law into this one.
         Move all pointers from another_law to self,
         Then mark another_law as deleted by setting its merged_into field to self.
@@ -436,7 +436,7 @@ class BillProposal(models.Model):
     content_html = models.TextField(blank=True, default="")
     committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
     votes = models.ManyToManyField('Vote', related_name="%(app_label)s_%(class)s_related", blank=True, null=True)
-    
+
     class Meta:
         abstract = True
 
