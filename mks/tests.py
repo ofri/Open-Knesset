@@ -36,7 +36,11 @@ class MemberViewsTest(TestCase):
 
         cache.clear()
 
-        self.knesset = Knesset.objects.create(number=1)
+        d = datetime.date.today()
+
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=d-datetime.timedelta(10))
         self.party_1 = Party.objects.create(name='party 1',
                                             knesset=self.knesset)
         self.party_2 = Party.objects.create(name='party 2',
@@ -53,10 +57,12 @@ class MemberViewsTest(TestCase):
                                               'JKM')
 
         self.committee_1 = Committee.objects.create(name='c1')
-        self.meeting_1 = self.committee_1.meetings.create(date=datetime.date.today()-datetime.timedelta(1),
-                                 protocol_text='jacob:\nI am a perfectionist\nadrian:\nI have a deadline')
-        self.meeting_2 = self.committee_1.meetings.create(date=datetime.date.today()-datetime.timedelta(2),
-                                 protocol_text='adrian:\nYou are a perfectionist\njacob:\nYou have a deadline')
+        self.meeting_1 = self.committee_1.meetings.create(
+            date=d-datetime.timedelta(1),
+            protocol_text='jacob:\nI am a perfectionist\nadrian:\nI have a deadline')
+        self.meeting_2 = self.committee_1.meetings.create(
+            date=d-datetime.timedelta(2),
+            protocol_text='adrian:\nYou are a perfectionist\njacob:\nYou have a deadline')
         self.law = Law.objects.create(title='law 1')
         self.pp = PrivateProposal.objects.create(title='private proposal 1', date=datetime.date.today()-datetime.timedelta(3))
         self.pp.proposers.add(self.mk_1)
