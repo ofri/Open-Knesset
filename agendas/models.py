@@ -483,7 +483,7 @@ class Agenda(models.Model):
 
     def get_mks_values(self,ranges=None):
         if ranges is None:
-            ranges = [[None,None]]
+            ranges = [[dateMonthTruncate(Knesset.objects.current_knesset().start_date),None]]
         mks_values = False
         fullRange = ranges == [[None,None]]
         if fullRange:
@@ -535,13 +535,13 @@ class Agenda(models.Model):
                 # sort results by score descending
                 for rank,(mk_id,mk_votes,mk_score,mk_volume) in enumerate(sorted(rangeMkResults,key=itemgetter(2,0),reverse=True)):
                     mk_range_data = dict(score=mk_score,rank=rank,volume=mk_volume,numvotes=mk_votes)
-                    if fullRange:
+                    if len(ranges)==1:
                         mk_results[mk_id]=mk_range_data
                     else:
                         mk_results[mk_id].append(mk_range_data)
             if fullRange:
                 cache.set('agenda_%d_mks_values' % self.id, mks_values, 1800)
-        if fullRange:
+        if len(ranges)==1:
             mk_results = sorted(mk_results.items(),key=lambda (k,v):v['rank'])
         return mk_results
 
@@ -619,7 +619,12 @@ class SummaryAgenda(models.Model):
 from listeners import *
 
 def dateMonthTruncate(dt):
-    return dt.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    dt = dt.replace(day=1)
+    if type(dt) == datetime.datetime:
+        dt = dt.replace(hour=0,minute=0,second=0,microsecond=0)
+    else:
+        dt = datetime.datetime(year=dt.year,month=dt.month,day=1)
+    return dt
 
 def indexby(data,fieldFunc):
     d = defaultdict(list)
