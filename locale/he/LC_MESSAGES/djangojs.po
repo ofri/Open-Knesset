@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-14 22:38+0300\n"
-"PO-Revision-Date: 2013-07-15 18:22+0300\n"
+"POT-Creation-Date: 2013-08-26 20:19+0300\n"
+"PO-Revision-Date: 2013-08-26 20:21+0300\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -87,27 +87,49 @@ msgstr "תגים"
 msgid "Committees"
 msgstr "ועדות"
 
-#: static/js/ok-suggest.js:36
+#: static/js/ok-suggest.js:32
 msgid "Your suggestion is submitted. Thank you !"
 msgstr "הצעתך נשלחה. תודה רבה !"
 
-#: static/js/ok-suggest.js:85
+#: static/js/ok-suggest.js:100
 msgid "Pending suggestions"
 msgstr "הצעות ממתינות"
 
-#: static/js/ok-suggest.js:87
+#: static/js/ok-suggest.js:104
 msgid "View pending suggestions"
 msgstr "צפיה בהצעות ממתינות"
 
-#: static/js/ok-suggest.js:119
+#: static/js/ok-suggest.js:142
+msgid "Your Feedback message"
+msgstr "הודעת המשוב שלך"
+
+#: static/js/ok-suggest.js:143
+msgid ""
+"Hello %s\n"
+"\n"
+"%s"
+msgstr ""
+"שלום %s\n"
+"\n"
+"%s"
+
+#: static/js/ok-suggest.js:151
+msgid "Send email"
+msgstr "שליחת דוא\"ל"
+
+#: static/js/ok-suggest.js:158
 msgid "Apply"
 msgstr "יישם"
 
-#: static/js/ok-suggest.js:126
+#: static/js/ok-suggest.js:166
 msgid "Reject"
 msgstr "דחה"
 
-#: static/js/ok-suggest.js:139
+#: static/js/ok-suggest.js:190
+msgid "Reject reason"
+msgstr "סיבת דחיה"
+
+#: static/js/ok-suggest.js:244
 msgid "You have to be logged in to view suggestions."
 msgstr "עליך להתחבר כדי לצפות בהצעות"
 

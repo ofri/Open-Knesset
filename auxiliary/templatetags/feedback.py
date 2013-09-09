@@ -10,7 +10,10 @@ class FeedbackFormNode(template.Node):
 
     def render(self, context):
         forms = context.get('suggestion_forms', {})
-        forms['feedback'] = FeedbackSuggestionForm()
+
+        for_url = context['request'].get_full_path()
+        forms['feedback'] = FeedbackSuggestionForm(
+            initial={'url': for_url})
         context['suggestion_forms'] = forms
         return ''
 

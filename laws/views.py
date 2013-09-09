@@ -162,21 +162,25 @@ def bill_auto_complete(request):
 
     return HttpResponse(json.dumps(result), mimetype='application/json')
 
+
 def vote_tags_cloud(request, min_posts_count=1):
     member = None
     if 'member' in request.GET:
         try:
-            member = get_object_or_404(Member, pk=request.GET['member'])
-        except ValueError:  # usually means we got crap in the ?member param.
-            raise Http404()
-        tags_cloud = Tag.objects.usage_for_queryset(member.votes.all(),counts=True)
+            member = Member.objects.get(pk=request.GET['member'])
+        except (Member.DoesNotExist, ValueError):
+            raise Http404
+        tags_cloud = Tag.objects.usage_for_queryset(member.votes.all(),
+                                                    counts=True)
         tags_cloud = tagging.utils.calculate_cloud(tags_cloud)
-        title = _('Votes by %(member)s by tag') % {'member':member.name}
+        title = _('Votes by %(member)s by tag') % {'member': member.name}
     else:
         title = _('Votes by tag')
         tags_cloud = Tag.objects.cloud_for_model(Vote)
-    return render_to_response("laws/vote_tags_cloud.html",
-        {"tags_cloud": tags_cloud, "title":title, "member":member}, context_instance=RequestContext(request))
+    return render_to_response(
+        "laws/vote_tags_cloud.html",
+        {"tags_cloud": tags_cloud, "title": title, "member": member},
+        context_instance=RequestContext(request))
 
 
 class VoteTagsView(BaseTagMemberListView):

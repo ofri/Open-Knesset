@@ -331,7 +331,7 @@ class MeetingsListView(ListView):
         return context
 
     def get_queryset(self):
-        c_id = getattr(self, 'committee_id', None)
+        c_id = self.kwargs.get('committee_id', None)
         if c_id:
             return CommitteeMeeting.objects.filter(committee__id=c_id)
         else:

@@ -52,6 +52,14 @@
 				})
 			}
 		})
+		.fail(function(data) {
+			var container = $('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert">&times;</a></div>'),
+			msg = $('<span/>').text(data.responseText.substring(0, 100));
+
+			msg.appendTo(container);
+
+			$this.prepend(container);
+		})
 		.always(function() {
 			$btn.button('reset');
 		})
@@ -124,6 +132,25 @@
 		$('<a/>').attr({target:'_blank', href:suggest.by_url})
 		.text(suggest.by)
 		.prependTo(s_li);
+
+		if (suggest.by_email) {
+
+			// TODO make this an option
+			var TITLE_SEPARATOR = '|',
+				parts = document.title.split(TITLE_SEPARATOR),
+				title = $.trim(parts[parts.length -1]),
+				msg_subject = '[' + title + '] ' + gettext('Your Feedback message'),
+				msg_body_pre = gettext('Hello %s\n\n%s'),
+				msg_body = interpolate(msg_body_pre, [suggest.by, suggest.label.substring(0,150)]); // we must shorten the content, otherwise long urls will trigger an error
+
+			$('<a>').attr({
+				href: 'mailto:' + suggest.by_email + '?subject=' + encodeURIComponent(msg_subject) + '&body=' + encodeURIComponent(msg_body),
+				class: "btn btn-mini btn-info",
+				target: "_blank"
+			})
+			.text(gettext('Send email'))
+			.appendTo(s_actions);
+		}
 
 		if (suggest.apply_url) {
 			$('<a>')
