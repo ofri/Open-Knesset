@@ -66,13 +66,33 @@ class TagResource(BaseResource):
         allowed_methods = ['get']
         include_absolute_url = True
         list_fields = ['id', 'name']
+        filtering = {
+            'name': ALL,
+        }
 
     TAGGED_MODELS = (Vote, Bill, CommitteeMeeting)
 
-    def obj_get_list(self, filters=None, **kwargs):
+    def build_bundle(self, obj=None, data=None, request=None, objects_saved=None):
+        bundle=super(TagResource,self).build_bundle(obj,data,request,objects_saved)
+        if 'jquery_autocomplete' in request.GET and 'query' in request.GET:
+            bundle.request.GET=request.GET.copy()
+            bundle.request.GET['name__startswith']=request.GET['query']
+        return bundle
+
+    def create_response(self,request,data):
+        if 'jquery_autocomplete' in request.GET and 'query' in request.GET:
+            data={
+              "query":request.GET['query'],
+              'suggestions':[o.obj.name for o in data['objects']],
+              'data':[o.obj.id for o in data['objects']],
+            }
+        return super(TagResource,self).create_response(request,data)
+
+    def build_filters(self, filters=None):
+        filters=super(TagResource,self).build_filters(filters)
         all_tags = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
-        all_tags.sort(key=attrgetter('name'))
-        return all_tags
+        filters['id__in']=[tag.id for tag in all_tags]
+        return filters
 
     def dehydrate_absolute_url(self, bundle):
         return reverse('tag-detail', kwargs={'slug': bundle.obj.name})
