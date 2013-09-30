@@ -26,11 +26,21 @@ class PartyResource(BaseResource):
     '''
 
     class Meta(BaseResource.Meta):
-        queryset = Party.objects.filter(
-            knesset=Knesset.objects.current_knesset())
+        queryset = Party.objects.all()
         allowed_methods = ['get']
         excludes = ['end_date', 'start_date']
         include_absolute_url = True
+
+    def get_object_list(self, request):
+        knesset = request.GET.get('knesset','current')
+        if knesset == 'current':
+            return super(PartyResource, self).get_object_list(request).filter(
+            knesset=Knesset.objects.current_knesset())
+        elif knesset == 'all':
+            return super(PartyResource, self).get_object_list(request)
+        else:
+            return super(PartyResource, self).get_object_list(request).filter(
+            knesset=Knesset.objects.current_knesset())
 
 class DictStruct:
     def __init__(self, **entries):
