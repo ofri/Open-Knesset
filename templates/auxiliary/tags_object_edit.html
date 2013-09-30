@@ -3,7 +3,7 @@
 <div id="tags">
 {% if tags %}
     {% for t in tags %}
-    <a id="tag_{{t.id}}" href="{% url 'vote-tag' tag=t %}" class="tag label">{{ t }}</a>
+    <a id="tag_{{t.id}}" href="{% url 'tag-detail' slug=t %}" class="tag label">{{ t }}</a>
     {% endfor %}
 {% else %}
     <span id="no-tags-yet">{% trans "No tags yet" %}</span>
