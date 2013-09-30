@@ -406,9 +406,10 @@
             }
         };
         window.IMAGES_PATH = document.querySelector('base').getAttribute('href');
+        window.API_BASE_URL = 'http://localhost:8000/';
     </script>
     <!--<![endif]-->
-    <script src="{% static "js/require.js" %}" data-main="{% static "js/agenda-viz-1.0.2.js" %}"></script>
+    <script src="{% static "js/require.js" %}" data-main="{% static "js/agenda-viz-1.0.3.js" %}"></script>
     <script>window.IMAGES_PATH = "{% static "img/agenda-viz/" %}";</script>
 </body>
 </html>
