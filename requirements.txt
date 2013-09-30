@@ -28,7 +28,7 @@ django-tastypie==0.9.15
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
 -e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
--e git://github.com/hasadna/django-planet.git#egg=django-planet
+-e git://github.com/hasadna/django-planet.git@7a66a954b231391f2ac76e97f2a469f69fd29037#egg=django-planet
 -e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
 -e git://github.com/hasadna/django-avatar.git@66a7d64fd1ff7ab922913be381b95e7e3365fb7a#egg=django-avatar
