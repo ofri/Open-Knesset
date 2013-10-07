@@ -74,11 +74,6 @@ class TagResource(BaseResource):
 
     TAGGED_MODELS = (Vote, Bill, CommitteeMeeting)
 
-    def _get_all_valid_tags(self):
-        if self.Meta._all_valid_tag_ids is None:
-            self.Meta._all_valid_tag_ids = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
-        return self.Meta._all_valid_tag_ids
-
     def build_bundle(self, obj=None, data=None, request=None, objects_saved=None):
         bundle=super(TagResource,self).build_bundle(obj,data,request,objects_saved)
         if 'jquery_autocomplete' in request.GET and 'query' in request.GET:
@@ -89,7 +84,7 @@ class TagResource(BaseResource):
     def create_response(self,request,data):
         if 'jquery_autocomplete' in request.GET and 'query' in request.GET:
             tags=[o.obj for o in data['objects']]
-            vals=TagSynonym.objects.filter(synonym_tag__in=tags,tag__in=self._get_all_valid_tags()).values('tag__name','synonym_tag__name')
+            vals=TagSynonym.objects.filter(synonym_tag__in=tags).values('tag__name','synonym_tag__name')
             synonyms=dict([(val['synonym_tag__name'],val['tag__name']) for val in vals])
             suggestions=[]
             for obj in data['objects']:
@@ -107,7 +102,8 @@ class TagResource(BaseResource):
 
     def build_filters(self, filters=None):
         filters=super(TagResource,self).build_filters(filters)
-        filters['id__in']=[tag.id for tag in self._get_all_valid_tags()]
+        all_tags = list(set().union(*[Tag.objects.usage_for_model(model) for model in self.TAGGED_MODELS]))
+        filters['id__in']=[tag.id for tag in all_tags]+[o['tag_id'] for o in TagSynonym.objects.all().values('tag_id')]
         return filters
 
     def dehydrate_absolute_url(self, bundle):

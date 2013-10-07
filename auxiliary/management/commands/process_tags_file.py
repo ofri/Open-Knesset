@@ -27,20 +27,20 @@ class Command(BaseCommand):
     def _find_tag(self,id,name):
         tags=Tag.objects.filter(id=id)
         if len(tags)==0:
+            self.stdout.write('-- warning --')        
             self.stdout.write('could not find tag')
+            self.stdout.write('--------------------')
             return None
         else:
             tag=tags[0]
             dbName=tag.name
             csvName=name.strip().decode('utf-8')
             if csvName!=dbName:
-                self.stdout.write('-- error --')
-                self.stdout.write('tag id: '+str(tag.id))
-                self.stdout.write('tag name from csv:')
-                self.stdout.write(csvName)
+                self.stdout.write('-- warning --')
+                self.stdout.write('tag name does not match name in db')
                 self.stdout.write('tag name from db:')
                 self.stdout.write(dbName)
-                self.stdout.write('tag name does not match name in db')
+                self.stdout.write('--------------------')
                 return None
             else:
                 return tag
@@ -54,26 +54,31 @@ class Command(BaseCommand):
     
     def _synonym(self,item):
         tag=self._find_tag(item['id'],item['name'])
+        properTags=Tag.objects.filter(name=item['proper_name'])
+        if len(properTags)>0:
+            properTag=properTags[0]
+        else:
+            properTag=None
         if tag is not None:
-            properTags=Tag.objects.filter(name=item['proper_name'])
-            if len(properTags)>0:
-                properTag=properTags[0]
+            if properTag is None:
+                # got the synonym tag but not the proper tag
+                # create the proper tag - so we can link it to the synonym
+                properTag=Tag(name=item['proper_name'])
+                properTag.save()
+            if properTag is not None:
+                # got the synonym tag and the proper tag - just create the synonym
                 try:
                     ts=TagSynonym(tag=properTag,synonym_tag=tag)
                     if self._options['nodryrun']:
                         ts.save()
+                        self.stdout.write('done')
                 except IntegrityError as e:
                     if str(e)=='column synonym_tag_id is not unique':
+                        self.stdout.write('-- warning --')
                         self.stdout.write('synonym already exists')
+                        self.stdout.write('--------------------')
                     else:
                         raise e
-                    
-            else:
-                tag.name=item['proper_name']
-                self.stdout.write('proper tag does not exist - will rename the tag')
-                if self._options['nodryrun']:
-                    tag.save()
-            self.stdout.write('done')
     
     def _r(self,str):
         if self._options['hebrev']:
