@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 # create the proper tag - so we can link it to the synonym
                 properTag=Tag(name=item['proper_name'])
                 properTag.save()
-            if properTag is not None:
+            if properTag is not None and properTag!=tag:
                 # got the synonym tag and the proper tag - just create the synonym
                 try:
                     ts=TagSynonym(tag=properTag,synonym_tag=tag)

@@ -21,9 +21,8 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
         self._options=options
-        self.stdout.write('copying tagged objects')
         for ts in TagSynonym.objects.all():
-            if ts.synonym_tag.items.count()>0:
+            if ts.tag!=ts.synonym_tag and ts.synonym_tag.items.count()>0:
                 self.stdout.write('')
                 self.stdout.write('copying tagged items from tag:')
                 self.stdout.write(str(ts.synonym_tag.id)+': '+ts.synonym_tag.name)
