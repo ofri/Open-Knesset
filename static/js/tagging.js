@@ -17,37 +17,17 @@ window.tags={
         var _this=this;
         var name=_this._view.getAddTagName();
         if (name.length>0 && _this._view.lock()) {
-            /*
-                I wanted to add tag using it's id to prevent an extra ajax call
-                but there are bugs with it
-                disabled for now, need to investigate further
-            */
-            var id=false;//_this._view.getAddTagId();
-            if (id===false) {
-                _this._model.addByName(name,function(tmp,id){
-                    if (tmp===true) {
-                        _this._view.add(name,id);
-                        _this._view.clearAddTagName();
-                    } else {
-                        _this._view.error(tmp);
-                    };
-                    _this._view.unlock();
-                },function(id){
-                    return _this._view.isTagIdExists(id);
-                });
-            } else if (_this._view.isTagIdExists(id)) {
-                _this._view.error(gettext('tag is already attached to current object'));
+            _this._model.addByName(name,function(tmp,id,name){
+                if (tmp===true) {
+                    _this._view.add(name,id);
+                    _this._view.clearAddTagName();
+                } else {
+                    _this._view.error(tmp);
+                };
                 _this._view.unlock();
-            } else {
-                _this._model.add(id,function(tmp){
-                    if (tmp===true) {
-                        _this._view.add(name,id);
-                    } else {
-                        _this._view.error(tmp);
-                    };
-                    _this._view.unlock();
-                });
-            };
+            },function(id){
+                return _this._view.isTagIdExists(id);
+            });
         };
     },
     del:function(id){
@@ -90,6 +70,14 @@ window.tags={
                 }
             );
         },
+        _getProperName:function(name){
+            matches=name.match(/\[(.*)\]$/);
+            if (matches) {
+                return matches[1];
+            } else {
+                return name;
+            };
+        },
         init:function(csrf,app_label,object_type,object_id){
             this._csrf=csrf;
             this._app_label=app_label;
@@ -113,13 +101,14 @@ window.tags={
         },
         addByName:function(name,callback,isTagIdExists){
             var self=this;
+            name=this._getProperName(name)
             this._getTagId(name,function(tmp,id){
                 if (tmp===true) {
                     if (isTagIdExists(id)) {
                         callback(gettext('tag is already attached to current object'));
                     } else {
                         self.add(id,function(tmp){
-                            callback(tmp,id);
+                            callback(tmp,id,name);
                         });
                     };
                 } else {
