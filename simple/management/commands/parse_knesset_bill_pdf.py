@@ -52,8 +52,8 @@ def parse_pdf_text(filename=None, url=None):
         return None
 
     m = clean_string(m.group(1).decode('utf8'))
-    m2 = re.findall('^(הצעת חוק.*?) . '.decode('utf8'), m, re.UNICODE | re.DOTALL | re.MULTILINE)
-    m3 = re.findall('^(חוק.*?) . '.decode('utf8'),m, re.UNICODE | re.DOTALL | re.MULTILINE)
+    m2 = re.findall('^(הצעת חוק.*?) \. '.decode('utf8'), m, re.UNICODE | re.DOTALL | re.MULTILINE)
+    m3 = re.findall('^(חוק.*?) \. '.decode('utf8'),m, re.UNICODE | re.DOTALL | re.MULTILINE)
     m2.extend(m3)
     for title in m2:
         law = {}

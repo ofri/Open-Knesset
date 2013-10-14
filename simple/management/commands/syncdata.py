@@ -1120,6 +1120,7 @@ class Command(NoArgsCommand):
                                     should be the number of days back to look
            last_booklet - last knesset proposal booklet that you already have.
         """
+        k = Knesset.objects.current_knesset()
         mks = Member.objects.values('id','name')
         for mk in mks:
             mk['cn'] = cannonize(mk['name'])
@@ -1131,7 +1132,7 @@ class Command(NoArgsCommand):
         else:
             d = PrivateProposal.objects.aggregate(Max('date'))['date__max']
             if not d:
-                d = datetime.date(2009,2,24)
+                d = k.start_date
             days = (datetime.date.today() - d).days
 
 
@@ -1229,9 +1230,13 @@ class Command(NoArgsCommand):
                 title += ' ' + proposal['comment']
             if len(title)<=1:
                 title = 'חוק חדש'.decode('utf8')
-            (kl,created) = KnessetProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
-                                                                 source_url=proposal['link'],
-                                                                 title=title, law=law, date=proposal['date'])
+            (kl,created) = KnessetProposal.objects.get_or_create(
+                booklet_number=proposal['booklet'],
+                knesset_id=k.number,
+                source_url=proposal['link'],
+                title=title,
+                law=law,
+                date=proposal['date'])
             if created:
                 kl.save()
 
@@ -1244,7 +1249,7 @@ class Command(NoArgsCommand):
                     except:
                         logger.warn('knesset proposal %d doesn\'t have knesset id' % kl.id)
                         continue
-                    if knesset_id != 18:
+                    if knesset_id != k.number:
                         logger.warn('knesset proposal %d has wrong knesset id (%d)' % (kl.id, knesset_id))
                         continue
                     orig_id = int(orig.split('/')[0]) # find the PP id
