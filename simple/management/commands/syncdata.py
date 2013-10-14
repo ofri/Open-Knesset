@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max,Count
 
-from mks.models import Member,Party,Membership,WeeklyPresence
+from mks.models import Member, Party, Membership, WeeklyPresence, Knesset
 from persons.models import Person,PersonAlias
 from laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
      KnessetProposal, GovProposal, GovLegislationCommitteeDecision)
