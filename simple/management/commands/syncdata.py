@@ -143,7 +143,7 @@ class Command(NoArgsCommand):
                         logger.error(e)
 
             if v.full_text == None:
-                self.get_full_text(v)
+                self.get_approved_bill_text_for_vote(v)
         logger.debug("finished updating laws data")
 
     def update_vote_from_page(self, vote_id, vote_src_url, page):
@@ -973,44 +973,56 @@ class Command(NoArgsCommand):
                 logger.debug('committee meeting link %d created' % l.id)
 
 
-    def get_full_text(self,v):
+    def get_approved_bill_text(self, url):
+        """Retrieve the RTL file in the given url, assume approved bill file
+           format, and return the text from the file.
+        """
+        file_str = StringIO()
+        file_str.write(urllib2.urlopen(url).read())
+        doc = Rtf15Reader.read(file_str)
+        content_list = []
+        is_bold = False
+        for j in [1, 2]:
+            for i in range(len(doc.content[j].content)):
+                part = doc.content[j].content[i]
+                if 'bold' in part.properties:  # this part is bold
+                    if not is_bold:  # last part was not bold
+                        content_list.append('<br/><b>')  # add newline and bold
+                        is_bold = True  # remember that we are now in bold
+                    content_list.append(part.content[0] + ' ')  # add this part
+
+                else:  # this part is not bold
+                    if len(part.content[0]) <= 1:
+                        # this is a dummy node, ignore it
+                        pass
+                    else:  # this is a real node
+                        if is_bold:  # last part was bold. need to unbold
+                            content_list.append('</b>')
+                            is_bold = False
+                        # add this part in a new line
+                        content_list.append('<br/>' + part.content[0])
+
+            content_list.append('<br/>')
+        return ''.join(content_list)
+
+    def get_approved_bill_text_for_vote(self, v):
         try:
-            l = Link.objects.get(object_pk=str(v.id), title=u'מסמך הצעת החוק באתר הכנסת')
+            l = Link.objects.get(object_pk=str(v.id),
+                                 title=u'מסמך הצעת החוק באתר הכנסת')
         except Exception:
             return
         try:
             if l.url.endswith('.rtf'):
-                logger.info('get_full_text url=%s' % l.url)
-                file_str = StringIO()
-                file_str.write(urllib2.urlopen(l.url).read())
-                doc = Rtf15Reader.read(file_str)
-                content_list = []
-                is_bold = False
-                for j in [1,2]:
-                    for i in range(len(doc.content[j].content)):
-                        part = doc.content[j].content[i]
-                        if 'bold' in part.properties:           # this part is bold
-                            if not is_bold:                          # last part was not bold
-                                content_list.append('<br/><b>')         # add new line and bold
-                                is_bold = True                          # remember that we are now in bold
-                            content_list.append(part.content[0]+' ') # add this part
-
-                        else:                                   # this part is not bold
-                            if len(part.content[0]) <= 1:           # this is a dummy node, ignore it
-                                pass
-                            else:                                   # this is a real node
-                                if is_bold:                         # last part was bold. need to unbold
-                                    content_list.append('</b>')
-                                    is_bold = False
-                                content_list.append('<br/>'+part.content[0]) #add this part in a new line
-
-                    content_list.append('<br/>')
-
-                v.full_text = ''.join(content_list)
+                logger.info('get_approved_bill_text_for_vote url=%s' % l.url)
+                v.full_text = self.get_approved_bill_text(l.url)
                 v.save()
         except Exception:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            logger.error("%s%s", ''.join(traceback.format_exception(exceptionType, exceptionValue, exceptionTraceback)), '\nvote.title='+v.title.encode('utf8'))
+            logger.error("%s%s",
+                         ''.join(traceback.format_exception(exceptionType,
+                                                            exceptionValue,
+                                                            exceptionTraceback)
+                                 ), '\nvote.title=' + v.title.encode('utf8'))
 
     def dump_to_file(self):
         f = open('votes.tsv','wt')
