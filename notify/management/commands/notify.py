@@ -71,7 +71,6 @@ class Command(NoArgsCommand):
             return (model, _('Other Updates'), '<h2>%s</h2>' % _('Other Updates'))
 
     def get_email_for_user(self, user):
-        logger.debug('get_email_for_user %d' % user.id)
         updates = dict(zip(self.update_models, ([] for x in self.update_models))) # will contain the updates to be sent
         updates_html = dict(zip(self.update_models, ([] for x in self.update_models)))
         follows = Follow.objects.filter(user=user) # everything this user is following
