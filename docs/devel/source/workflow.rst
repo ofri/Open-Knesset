@@ -40,7 +40,7 @@ Enter the `Open-Knesset` directory, and run:
     git pull https://github.com/hasadna/Open-Knesset.git master
 
 If `requirements.txt` was modified, make sure all of them are installed (no harm
-running this command event in case of no changes):
+running this command even in case of no changes):
 
     `pip install -r requirements.txt`
 
