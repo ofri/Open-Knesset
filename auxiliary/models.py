@@ -73,6 +73,14 @@ class TagSynonym(models.Model):
     tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')
     synonym_tag = models.ForeignKey(Tag,related_name='synonym_synonym_tag',unique=True)
 
+class TagSuggestion(models.Model):
+    name = models.TextField(unique=True)
+    suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
+                                     related_name='tagsuggestion', blank=True,
+                                     null=True)
+    object_type = models.TextField(_('object type'), null=True)
+    object_id = models.PositiveIntegerField(_('object id'), null=True)
+
 def add_tags_to_related_objects(sender, instance, **kwargs):
     """
     When a tag is added to an object, we also tag other objects that are

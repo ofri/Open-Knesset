@@ -6644,3 +6644,9 @@ div#tidbitCarousel .btn-suggest:hover {
 .vote_input {
   width: 75%;
 }
+#tags_addnew {
+    margin:5px 0;
+}
+#tags_notexist {
+    margin: 5px 0 0;
+}
