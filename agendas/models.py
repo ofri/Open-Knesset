@@ -528,7 +528,7 @@ class Agenda(models.Model):
                     if mk_data:
                         mk_votes    = sum(map(attrgetter('votes'),mk_data))
                         mk_volume   = 100*mk_votes/total_votes
-                        mk_score    = 100*sum(map(attrgetter('score'),mk_data))/total_score
+                        mk_score    = 100*sum(map(attrgetter('score'),mk_data))/total_score if total_score != 0 else 0
                         rangeMkResults.append((mk_id,mk_votes,mk_score,mk_volume))
                     else:
                         rangeMkResults.append(tuple([mk_id]+[0]*3))
