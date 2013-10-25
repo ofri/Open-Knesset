@@ -104,4 +104,7 @@ urlpatterns = patterns('',
 
 urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += polyorgurlpatterns + personsurlpatterns
+# polyorg patterns are removed right now, the cache handling on it's views
+# seems broken, specially when trying to cache querysets
+# urlpatterns += polyorgurlpatterns + personsurlpatterns
+urlpatterns += personsurlpatterns
