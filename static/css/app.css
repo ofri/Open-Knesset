@@ -6429,6 +6429,12 @@ ul .btn-suggest {
 .label.level6 {
   margin: 2px;
 }
+#tags_addnew {
+    margin:5px 0;
+}
+#tags_notexist {
+    margin: 5px 0 0;
+}
 .video_400_300 {
   width: 400px;
   height: 300px;
@@ -6635,10 +6641,4 @@ div#tidbitCarousel .btn-suggest:hover {
 }
 .vote_input {
   width: 75%;
-}
-#tags_addnew {
-    margin:5px 0;
-}
-#tags_notexist {
-    margin: 5px 0 0;
 }
