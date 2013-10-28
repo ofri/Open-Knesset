@@ -222,10 +222,12 @@ def suggest_tag_post(request):
 
     form = TagSuggestionForm(request.POST)
     if form.is_valid():
+        content_type = ContentType.objects.get_by_natural_key(form.cleaned_data['app_label'], form.cleaned_data['object_type'])
+        object = content_type.get_object_for_this_type(pk=form.cleaned_data['object_id'])
         ts = TagSuggestion(
-            name = form.cleaned_data['name'], suggested_by = request.user,
-            object_type = form.cleaned_data['object_type'],
-            object_id = form.cleaned_data['object_id']
+            name=form.cleaned_data['name'],
+            suggested_by=request.user,
+            object=object
         )
         ts.save()
 

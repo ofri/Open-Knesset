@@ -8,20 +8,20 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'TagSuggestion.object_type'
-        db.add_column(u'auxiliary_tagsuggestion', 'object_type',
-                      self.gf('django.db.models.fields.TextField')(null=True),
+        # Adding field 'TagSuggestion.content_type'
+        db.add_column(u'auxiliary_tagsuggestion', 'content_type',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['contenttypes.ContentType']),
                       keep_default=False)
 
         # Adding field 'TagSuggestion.object_id'
         db.add_column(u'auxiliary_tagsuggestion', 'object_id',
-                      self.gf('django.db.models.fields.PositiveIntegerField')(null=True),
+                      self.gf('django.db.models.fields.PositiveIntegerField')(default=1, db_index=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'TagSuggestion.object_type'
-        db.delete_column(u'auxiliary_tagsuggestion', 'object_type')
+        # Deleting field 'TagSuggestion.content_type'
+        db.delete_column(u'auxiliary_tagsuggestion', 'content_type_id')
 
         # Deleting field 'TagSuggestion.object_id'
         db.delete_column(u'auxiliary_tagsuggestion', 'object_id')
@@ -68,10 +68,10 @@ class Migration(SchemaMigration):
         },
         u'auxiliary.tagsuggestion': {
             'Meta': {'object_name': 'TagSuggestion'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {'unique': 'True'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
-            'object_type': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'suggested_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'tagsuggestion'", 'null': 'True', 'to': u"orm['auth.User']"})
         },
         u'auxiliary.tagsynonym': {

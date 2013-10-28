@@ -22,7 +22,7 @@ window.tags={
                     _this._view.add(name,id);
                     _this._view.clearAddTagName();
                 } else {
-                    _this._view.error(tmp, _this._model.getObjectType(), _this._model.getObjectId());
+                    _this._view.error(tmp, _this._model.getObjectType(), _this._model.getObjectId(), _this._model.getAppLabel());
                 };
                 _this._view.unlock();
             },function(id){
@@ -89,6 +89,9 @@ window.tags={
         },
         getObjectId:function(){
             return this._object_id;
+        },
+        getAppLabel:function(){
+            return this._app_label;
         },
         del:function(id,callback){
             $.post(
@@ -252,11 +255,12 @@ window.tags={
         clearError:function(){
             $('#tags_notexist').hide();
         },
-        error:function(code, object_type, object_id){
+        error:function(code, object_type, object_id, app_label){
             if (code=='TAG_DOES_NOT_EXIST') {
                 $('#tags_notexist').show();
                 $('#suggest-tag-modal #id_name').val(this.getAddTagName());
                 $('#suggest-tag-modal #id_object_type').val(object_type);
+                $('#suggest-tag-modal #id_app_label').val(app_label);
                 $('#suggest-tag-modal #id_object_id').val(object_id);
             } else {
                 msg=this._errorMsgs[code];

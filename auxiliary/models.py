@@ -7,6 +7,7 @@ from django.db.models.signals import post_save, post_delete
 from tagging.models import TaggedItem, Tag
 from laws.models import Vote, Bill
 from committees.models import CommitteeMeeting
+from django.contrib.contenttypes import generic
 
 
 ICON_CHOICES = (
@@ -78,8 +79,9 @@ class TagSuggestion(models.Model):
     suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
                                      related_name='tagsuggestion', blank=True,
                                      null=True)
-    object_type = models.TextField(_('object type'), null=True)
-    object_id = models.PositiveIntegerField(_('object id'), null=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id    = models.PositiveIntegerField(db_index=True)
+    object       = generic.GenericForeignKey('content_type', 'object_id')
 
 def add_tags_to_related_objects(sender, instance, **kwargs):
     """

@@ -1,16 +1,7 @@
 from django.contrib import admin
 
 from .models import Tidbit, TagSuggestion, Tag
-
-
-def tags_suggestions_approve(modeladmin, request, queryset):
-    "approve the suggestions"
-    for ts in queryset:
-        t=Tag(name = ts.name)
-        t.save()
-        ts.delete()
-
-
+from auxiliary.tag_suggestions import approve as tag_suggestions_approve
 
 class TidibitAdmin(admin.ModelAdmin):
 
@@ -23,8 +14,8 @@ class TidibitAdmin(admin.ModelAdmin):
 class TagSuggestionAdmin(admin.ModelAdmin):
     
     model = TagSuggestion
-    list_display = ('name', 'suggested_by')
-    actions = [tags_suggestions_approve]
+    list_display = ('name', 'suggested_by', 'object')
+    actions = [tag_suggestions_approve]
 
 
 admin.site.register(Tidbit, TidibitAdmin)
