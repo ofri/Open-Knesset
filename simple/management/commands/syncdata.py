@@ -1116,12 +1116,25 @@ class Command(NoArgsCommand):
 
     def parse_laws(self, private_proposals_days=None, last_booklet=None):
         """parse private proposal, knesset proposals and gov proposals
-           private_proposals_days - override default "days-back" to look for in private proposals.
+           private_proposals_days - override default "days-back" to look for in
+                                    private proposals.
                                     should be the number of days back to look
            last_booklet - last knesset proposal booklet that you already have.
         """
         k = Knesset.objects.current_knesset()
-        mks = Member.objects.values('id','name')
+        mks = list(Member.objects.values('id', 'name'))
+
+        # add MK alias names, from person alias table
+        mk_persons = Person.objects.filter(
+            mk__isnull=False,
+            mk__current_party__isnull=False).select_related('mk')
+        mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
+        for mk_alias in mk_aliases:
+            mks.append({'id': mk_alias.person.mk_id,
+                        'name': mk_alias.name})
+
+        # pre-calculate cannonical represention of all names (without spaces,
+        # and funcky chars - makes more robust comparisons)
         for mk in mks:
             mk['cn'] = cannonize(mk['name'])
 
@@ -1168,23 +1181,27 @@ class Command(NoArgsCommand):
 
                 # update proposers and joiners
                 for m0 in proposal['proposers']:
+                    cm0 = cannonize(m0)
                     found = False
                     for mk in mks:
-                        if cannonize(m0)==mk['cn']:
+                        if cm0 == mk['cn']:
                             pl.proposers.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find proposer: %s" % m0)
+                        logger.warn(u"can't find proposer: %s (%s)" % (m0,
+                                                                       cm0))
                 for m0 in proposal['joiners']:
+                    cm0 = cannonize(m0)
                     found = False
                     for mk in mks:
-                        if cannonize(m0)==mk['cn']:
+                        if cm0 == mk['cn']:
                             pl.joiners.add(Member.objects.get(pk=mk['id']))
                             found = True
                             break
                     if not found:
-                        logger.warn(u"can't find joiner: %s" % m0)
+                        logger.warn(u"can't find joiner: %s (%s)" % (m0,
+                                                                     cm0))
 
                 # try to look for similar PPs already created:
                 p = PrivateProposal.objects.filter(title=title,law=law).exclude(id=pl.id)

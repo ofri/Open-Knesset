@@ -59,11 +59,11 @@ def clean_string(s):
         s = s.replace('\xe2\x80\x9d','').replace('\xe2\x80\x93','')
     return s
 
+
 def cannonize(s):
     s = clean_string(s)
-    s.replace('&nbsp',' ')
-    s.replace('\n','')
-    s = re.sub("""\d{4,4}""",'',s)
+    s = s.replace('&nbsp', ' ').replace('gt;', '').replace('\n', '')
+    s = re.sub("""\d{4,4}""", '', s)
     return re.sub("""["'`\(\) /.,\-\xa0]""", '', s) #@IndentOk
 
 try:
