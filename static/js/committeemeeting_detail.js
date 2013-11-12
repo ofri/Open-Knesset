@@ -130,4 +130,99 @@ $(function(){
      } else {var sel = $("#"+id+"-container");}
      sel.toggle();
   });
+
+    /** infinite scroll **/
+
+    (function(){
+        var _isFloat = false;
+        var _isFooterVisible = false;
+
+        var _isActive = function() {
+            return ($(window).width() > 1200 && $(window).height() > 500);
+        };
+
+        var _float = function() {
+            $('#app-header').css({
+                'position' : 'fixed',
+                'top' : '0',
+                'left' : 0,
+                'margin' : 0,
+                'padding-left' : $('#app-header').css('margin-left'),
+                'padding-right' : $('#app-header').css('margin-right'),
+                'z-index' : '999',
+                'background' : $('body').css('background')
+            });
+            $('#app-header .row').hide();
+            $('section.container > ul.breadcrumb').css({
+                'position' : 'fixed',
+                'top' : $('#app-header').height() + 'px',
+                'padding-top':'5px',
+                'z-index' : '950',
+                'background' : $('body').css('background'),
+                'width' : '100%',
+                'margin-right' : '-10px'
+            })
+            var headerHeight = $('section.container > ul.breadcrumb').height() + $('#app-header').height() + 25;
+            $('#content-main > div > div.row > div.span3').css({
+                'position' : 'fixed',
+                'top' : headerHeight+'px',
+                'left' : $('#content-main > div > div.row > div.span3').position().left + 'px',
+                'height' : ($.waypoints('viewportHeight') - headerHeight - 5) + 'px',
+                'overflow' : 'auto'
+            });
+        };
+
+        var _unfloat = function() {
+            $('#content-main > div > div.row > div.span3').removeAttr('style');
+            $('#app-header').removeAttr('style');
+            $('#app-header .row').show();
+            $('section.container > ul.breadcrumb').removeAttr('style');
+        };
+
+        var _onProtocolWaypoint = function(direction) {
+            if (!_isFooterVisible && _isActive()) {
+                if (direction == 'down' && !_isFloat) {
+                    _float();
+                    _isFloat = true;
+                } else if (direction == 'up' && _isFloat) {
+                    _unfloat();
+                    _isFloat = false;
+                };
+            };
+        };
+
+        var _onFooterWaypoint = function(direction) {
+            if (direction == 'down') {
+                _isFooterVisible = true;
+                if (_isFloat && _isActive()) {
+                    _unfloat();
+                };
+            } else {
+                _isFooterVisible = false;
+                if (_isFloat && _isActive()) {
+                    _float();
+                };
+            };
+        };
+
+        var _onWindowResize = function() {
+            if (_isActive()) {
+                if (!_isFooterVisible && _isFloat) {
+                    _unfloat();
+                    _float();
+                };
+            } else {
+                if (!_isFooterVisible && _isFloat) {
+                    _unfloat();
+                    _isFloat = false;
+                }
+            };
+        };
+
+        $('#app-footer').waypoint(_onFooterWaypoint, {offset: '130%'});
+        $('.protocol').waypoint(_onProtocolWaypoint, {offset: -50});
+        $(window).resize(_onWindowResize);
+
+    })();
+
 });
