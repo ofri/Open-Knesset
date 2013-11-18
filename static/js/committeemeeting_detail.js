@@ -142,60 +142,116 @@ $(function(){
         };
 
         var _float = function() {
-            $('#app-header').css({
-                'position' : 'fixed',
-                'top' : '0',
-                'left' : 0,
-                'margin' : 0,
-                'padding-left' : $('#app-header').css('margin-left'),
-                'padding-right' : $('#app-header').css('margin-right'),
-                'z-index' : '999',
-                'background' : $('body').css('background')
+            var appheader = $('#app-header');
+            var body = $('body');
+            var breadcrumb = $('section.container > ul.breadcrumb');
+            var sidebar = $('#content-main > div > div.row > div.span3');
+            var appheader_margin_left = appheader.css('margin-left');
+            var appheader_margin_right = appheader.css('margin-right');
+            var sidebar_left = sidebar.position().left;
+            var breadcrumbheight = breadcrumb.height();
+            body.addClass('infinity-protocol');
+            appheader.css({
+                'padding-left' : appheader_margin_left,
+                'padding-right' : appheader_margin_right,
+                'background' : body.css('background')
             });
-            $('#app-header .row').hide();
-            $('section.container > ul.breadcrumb').css({
-                'position' : 'fixed',
-                'top' : $('#app-header').height() + 'px',
-                'padding-top':'5px',
-                'z-index' : '950',
-                'background' : $('body').css('background'),
-                'width' : '100%',
-                'margin-right' : '-10px'
-            })
-            var headerHeight = $('section.container > ul.breadcrumb').height() + $('#app-header').height() + 25;
-            $('#content-main > div > div.row > div.span3').css({
-                'position' : 'fixed',
+            var appheader_height = appheader.height();
+            var headerHeight = breadcrumbheight + appheader_height + 25;
+            breadcrumb.css({
+                'top' : appheader_height + 'px',
+                'background' : body.css('background'),
+            });
+            sidebar.css({
                 'top' : headerHeight+'px',
-                'left' : $('#content-main > div > div.row > div.span3').position().left + 'px',
+                'left' : sidebar_left + 'px',
                 'height' : ($.waypoints('viewportHeight') - headerHeight - 5) + 'px',
-                'overflow' : 'auto'
             });
         };
 
         var _unfloat = function() {
+            $('body').removeClass('infinity-protocol');
             $('#content-main > div > div.row > div.span3').removeAttr('style');
             $('#app-header').removeAttr('style');
-            $('#app-header .row').show();
             $('section.container > ul.breadcrumb').removeAttr('style');
         };
 
+        var _showFooterInfinityLoader = function(){
+            $('#protocolinfiniloader').removeClass('hidden');
+        };
+
+        var _hideFooterInfinityLoader = function(){
+            $('#protocolinfiniloader').addClass('hidden');
+        };
+
+        var _curPage = null;
+        var _baseUrl = null;
+        var _getNextPageUrl = function() {
+            if (_curPage == null) {
+                var re = /page=([0-9]*)/;
+                var matches = window.location.href.match(re);
+                if (matches != null && matches.length == 2) {
+                    _curPage = parseInt(matches[1]);
+                    _baseUrl = window.location.href.replace(re, 'page=((PAGE))');
+                } else {
+                    _curPage = 1;
+                    if (window.location.href.indexOf('?')>-1) {
+                        _baseUrl = window.location.href + '&page=((PAGE))';
+                    } else {
+                        _baseUrl = window.location.href + '?page=((PAGE))';
+                    };
+                };
+            };
+            _curPage++;
+            return _baseUrl.replace('((PAGE))', _curPage);
+        };
+
+        var _isFooterAbove = function() {
+            var ans = false;
+            $.each($.waypoints('above'), function(i, elt) {
+                if (elt.id == 'app-footer') {
+                    ans = true;
+                }
+            });
+            return ans;
+        }
+
         var _onProtocolWaypoint = function(direction) {
             if (!_isFooterVisible && _isActive()) {
-                if (direction == 'down' && !_isFloat) {
-                    _float();
+                if (direction == 'down') {
                     _isFloat = true;
-                } else if (direction == 'up' && _isFloat) {
-                    _unfloat();
+                    _float();
+                } else if (direction == 'up') {
                     _isFloat = false;
+                    _unfloat();
                 };
             };
         };
 
+        var _noMorePages = false;
+        var _isLoadingNextPage = false;
         var _onFooterWaypoint = function(direction) {
             if (direction == 'down') {
                 _isFooterVisible = true;
-                if (_isFloat && _isActive()) {
-                    _unfloat();
+                _unfloat();
+                if (!_noMorePages && !_isLoadingNextPage) {
+                    var _nextPage = _getNextPageUrl();
+                    _showFooterInfinityLoader();
+                    _isLoadingNextPage = true;
+                    $("<div>").load(_nextPage+' #committeeprotocol', function(){
+                        var html=$(this).find('.protocol').html();
+                        html = $.trim(html);
+                        $('#committeeprotocol').append(html);
+                        if (html.length == 0) {
+                            _noMorePages = true;
+                        };
+                        _hideFooterInfinityLoader();
+                        _setFooterWaypoint();
+                        if (!_isFooterAbove()) {
+                            _onFooterWaypoint('up');
+                        }
+                        _isLoadingNextPage = false;
+                    });
                 };
             } else {
                 _isFooterVisible = false;
@@ -212,14 +268,16 @@ $(function(){
                     _float();
                 };
             } else {
-                if (!_isFooterVisible && _isFloat) {
-                    _unfloat();
-                    _isFloat = false;
-                }
+                _unfloat();
+                _isFloat = false;
             };
         };
 
-        $('#app-footer').waypoint(_onFooterWaypoint, {offset: '130%'});
+        var _setFooterWaypoint = function(){
+            $('#app-footer').waypoint('destroy');
+            $('#app-footer').waypoint(_onFooterWaypoint, {offset: '130%'});
+        };
+        _setFooterWaypoint();
         $('.protocol').waypoint(_onProtocolWaypoint, {offset: -50});
         $(window).resize(_onWindowResize);
 
