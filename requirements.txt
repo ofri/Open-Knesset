@@ -7,9 +7,9 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 
-Django==1.5.4
+Django==1.5.5
 PIL
-South==0.8.1
+South==0.8.4
 django-extensions==1.1.1
 django-pagination==1.0.7
 django-tagging==0.3.1
