@@ -6802,6 +6802,7 @@ form .helptext {
   border-radius: 0;
   color: #222222;
   font-size: 20px;
+  white-space: nowrap;
 }
 #app-header .nav-pills li a:hover {
   padding-bottom: 8px;
@@ -6813,6 +6814,7 @@ form .helptext {
   border-bottom: 4px solid #222222;
   color: #222222;
   font-weight: 700;
+  white-space: nowrap;
 }
 #app-header .nav-pills li.active a:hover {
   background: none;
