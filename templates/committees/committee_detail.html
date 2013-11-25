@@ -83,7 +83,7 @@
     <div class="row">
         <div class="cards span8">
             <section class="card card-list">
-                <header><h2>{% trans 'Future Meetings' %}</h2></header>
+                <header><h2><i class="fa fa-calendar"></i>{% trans 'Future Meetings' %}</h2></header>
                 <ul>
                 {% for o in future_meetings_list %}
                     {% include "events/_event_li.html" %}
@@ -93,7 +93,7 @@
                 </ul>
             </section>
             <section class="card card-list">
-                <header><h2>{% trans 'Meetings for which a protocol was not yet published' %}</h2></header>
+                <header><h2><i class="fa fa-minus-circle"></i>{% trans 'Meetings for which a protocol was not yet published' %}</h2></header>
                 <ul>
                 {% for o in protocol_not_yet_published_list %}
                     {% include "events/_event_li.html" %}
@@ -103,7 +103,7 @@
                 </ul>
             </section>
             <section class="card card-list card-list-latest">
-                <header><h2>{% trans 'Last Meetings' %}</h2></header>
+                <header><h2><i class="fa fa-clock-o"></i>{% trans 'Last Meetings' %}</h2></header>
                 <ul>
                 {% for o in meetings_list %}
                     {% include "committees/_meeting_li.html" with add_li=1 %}
@@ -115,7 +115,7 @@
             </section>
             {% ifnotequal object.type 'plenum' %}
                 <section class="card card-list">
-                    <header><h2>{% trans 'MMM Documents' %}</h2></header>
+                    <header><h2><i class="fa fa-file-text"></i>{% trans 'MMM Documents' %}</h2></header>
                     <ul id="recent-mmm">
                     {% include "mks/mmm_partials.html" with object_list=object.mmm_documents.all %}
                     </ul>

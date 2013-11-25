@@ -52,13 +52,13 @@
     <div class="row">
         <div class="span8 cards">
             <div class="card card-list">
-                <header><h2>{% trans "Links" %}</h2></header>
+                <header><h2><i class="fa fa-link"></i>{% trans "Links" %}</h2></header>
                 <ul>
                 {% object_links vote %}
                 </ul>
             </div>
             <div class="card card-list">
-                <header><h2>{% trans 'Bill' %}</h2></header>
+                <header><h2><i class="fa fa-gavel"></i>{% trans 'Bill' %}</h2></header>
                 <ul class="items">
                 {% for bill in bills %}
                     <li>
@@ -71,7 +71,7 @@
             </div>
         {% if vote.committee_meetings.count %}
             <div class="card card-list">
-                <header><h2>{% trans 'This vote is mentioned in the following committe meetings' %}</h2></header>
+                <header><h2><i class="fa fa-users"></i>{% trans 'This vote is mentioned in the following committe meetings' %}</h2></header>
                 <ul>
                 {% for cm in vote.committee_meetings.all %}
                     <li>
@@ -83,7 +83,7 @@
         {% endif %}
         {% if vote.summary %}
             <div class="card card-list">
-                <header><h2>{% trans 'summary' %}</h2></header>
+                <header><h2><i class="fa fa-file"></i>{% trans 'summary' %}</h2></header>
                 <ul>
                     <li>{{ vote.summary|safe }}</li>
                 </ul>
@@ -92,7 +92,7 @@
 
         {% if vote.full_text %}
             <div class="card card-list">
-                <header><h2>{% trans 'Bill Text' %}</h2></header>
+                <header><h2><i class="fa fa-file-text"></i>{% trans 'Bill Text' %}</h2></header>
                 <ul>
                     <li>{{ vote.full_text|safe }}</li>
                 </ul>

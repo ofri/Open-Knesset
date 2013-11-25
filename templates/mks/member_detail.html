@@ -192,7 +192,10 @@
         <div class="cards span9">
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>{% trans "Recent actions" %}</h2>
+                    <h2>
+                        <i class="fa fa-calendar"></i>
+                        {% trans "Recent actions" %}
+                    </h2>
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-actions">
@@ -211,7 +214,10 @@
 {% if not object.is_minister %}
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>{% trans "Legislation" %}</h2>
+                    <h2>
+                        <i class="fa fa-gavel"></i>
+                        {% trans "Legislation" %}
+                    </h2>
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-legislation">
@@ -230,7 +236,10 @@
 {% endif %}
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>{% trans "Committees" %}</h2>
+                    <h2>
+                        <i class="fa fa-users"></i>
+                        {% trans "Committees" %}
+                    </h2>
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-committees">
@@ -249,7 +258,10 @@
             {% if mmm_documents %}
             <section class="card card-list card-list-latest">
                 <header>
-                <h2>{% trans "M.M.M Documents" %}</h2>
+                <h2>
+                    <i class="fa fa-file-text"></i>
+                    {% trans "M.M.M Documents" %}
+                </h2>
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-mmm">
@@ -268,17 +280,20 @@
             </section>
 
             {% endif %}
-            
+
             {% if num_related_videos > 0 %}
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2>{% trans "Video" %}</h2>
+                    <h2>
+                        <i class="fa fa-video-camera"></i>
+                        {% trans "Video" %}
+                    </h2>
                 </header>
                 <ul id="related_videos">
                     {% video_playlist related_videos 'related_videos' %}
                 </ul>
             </section>
-            {% endif %}            
+            {% endif %}
         </div> <!-- /span9 -->
         <div class="span3">
 	 		<aside class="sidebar sidebar-stats">

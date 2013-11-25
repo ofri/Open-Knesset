@@ -68,7 +68,7 @@
             </section>
 
             <section class="card card-list card-list-latest">
-                <header><h2> {% trans "Ascribed Votes" %}</h2></header>
+                <header><h2><i class="fa fa-hand-o-up"></i>{% trans "Ascribed Votes" %}</h2></header>
                 <ul id="recent-votes">
                     {% include "agendas/agenda_vote_partial.html" with object_list=agenda_votes %}
                 </ul>
@@ -83,7 +83,7 @@
             </section>
 
             <section class="card card-list card-list-latest">
-                <header><h2>{% trans "Ascribed Bills" %}</h2></header>
+                <header><h2><i class="fa fa-gavel"></i>{% trans "Ascribed Bills" %}</h2></header>
                 <ul id="recent-bills">
                     {% include "agendas/agenda_bill_partial.html" with object_list=agenda_bills %}
                 </ul>
@@ -98,7 +98,7 @@
             </section>
 
             <section class="card card-list card-list-latest">
-                <header><h2>{% trans "Ascribed Committee Meetings" %}</h2></header>
+                <header><h2><i class="fa fa-users"></i>{% trans "Ascribed Committee Meetings" %}</h2></header>
                 <ul id="recent-meetings">
                     {% include "agendas/agenda_meeting_partial.html" with object_list=agenda_meetings %}
                 </ul>

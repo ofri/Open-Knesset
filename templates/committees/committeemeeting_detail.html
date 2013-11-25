@@ -84,7 +84,7 @@
         <div class="span9 cards">
             {% if object.bg_material %}
             <section class="card card-list">
-                <header><h2>{% trans "Background Material" %}</h2></header>
+                <header><h2><i class="fa fa-puzzle-piece"></i>{% trans "Background Material" %}</h2></header>
                 <ul>
                     {% for b in object.bg_material %}
                     <li><a href="{{ b.url}}">{{ b.title }}</a></li>
@@ -94,7 +94,7 @@
             {% endif %}
             {% ifnotequal object.committee.type 'plenum' %}
                 <section class="card card-list">
-                    <header><h2>{% trans "Bills" %}</h2></header>
+                    <header><h2><i class="fa fa-gavel"></i>{% trans "Bills" %}</h2></header>
                     <ul>
                     {% for b in object.bills_first.all %}<li><a href="{% url 'bill-detail' b.id %}">{{ b }}</a></li>{% endfor %}
                     {% for b in object.bills_second.all %}<li><a href="{% url 'bill-detail' b.id %}">{{ b }}</a></li>{% endfor %}
@@ -117,7 +117,7 @@
             {% autopaginate parts paginate_by %}
             <div class="text-center">{% paginate %}</div>
             <section class="card card-list">
-                <header><h2>{% trans 'Protocol' %}</h2></header>
+                <header><h2><i class="fa fa-list"></i>{% trans 'Protocol' %}</h2></header>
                     {% get_annotations_for parts as annotation_dict %}
                     <div class="protocol">
                     {% for speech_part in parts %}
