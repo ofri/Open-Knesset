@@ -51,6 +51,9 @@ class AgendaListView(ListView):
                           party in Party.current_knesset.all()}
 
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        import ipdb
+        ipdb.set_trace()
+        
         if not allAgendaPartyVotes:
             # filtering for current knesset is done here
 

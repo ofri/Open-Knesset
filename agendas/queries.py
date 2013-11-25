@@ -201,3 +201,61 @@ GROUP BY agenda_id,
          memberid,
          %(monthfunc)s,time)
 """
+
+BASE_PARTY_QUERY = """
+INSERT INTO agendas_summaryagenda (summary_type,agenda_id,party_id,month,score,votes,db_created,db_updated)
+SELECT 'PR' as summary_type,
+        d.agenda_id,
+        m.party_id,
+        d.month,
+        SUM(d.totalvotevalue),
+        SUM(d.numvotes),
+        %(nowfunc)s,%(nowfunc)s
+FROM
+  (SELECT agenda_id,
+         memberid,
+         %(monthfunc)s,time) as month,
+         SUM(forvotes) - SUM(againstvotes) totalvotevalue,
+        SUM(numvotes) numvotes
+  FROM
+    (SELECT a.agenda_id,
+            p.memberid,
+            a.time,
+            CASE p.vtype
+                WHEN 'for' THEN a.VALUE
+                ELSE 0
+            END forvotes,
+            CASE p.vtype
+                WHEN 'against' THEN a.VALUE
+                ELSE 0
+            END againstvotes,
+            1 as numvotes
+     FROM
+       (SELECT DISTINCT
+               m.id memberid,
+               v.vote_id voteid,
+               v.TYPE vtype
+        FROM laws_voteaction v
+        INNER JOIN mks_member m ON v.member_id = m.id
+        WHERE v.TYPE IN ('for',
+                         'against')
+        GROUP BY m.id,
+                 v.vote_id,
+                 v.TYPE) p
+     INNER JOIN
+       (SELECT a.vote_id,
+               a.agenda_id,
+               a.score * a.importance AS VALUE,
+               v.time as time
+        FROM agendas_agendavote a
+        JOIN laws_vote v ON a.vote_id = v.id
+  ) a ON p.voteid = a.vote_id) b
+  GROUP BY agenda_id,
+           memberid,
+           %(monthfunc)s,time)) d
+  INNER JOIN mks_membership m ON d.memberid = m.member_id AND
+           d.month >= m.start_date AND
+           (m.end_date IS NULL OR d.month < m.end_date)
+GROUP BY agenda_id,party_id,month
+"""
+
