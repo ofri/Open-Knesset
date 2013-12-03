@@ -45,7 +45,7 @@ class VoteResource(BaseResource):
         queryset = Vote.objects.all()
         allowed_methods = ['get']
         list_fields = [
-            'time', 'title', 'votes_count', 'for_votes_count',
+            'time', 'title', 'vote_type', 'votes_count', 'for_votes_count',
             'against_votes_count', 'meeting_number', 'vote_number',
             'importance', 'controversy', 'against_party ', 'against_coalition',
             'against_opposition', 'against_own_bill',
