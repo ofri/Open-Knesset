@@ -224,6 +224,8 @@ class Vote(models.Model):
     src_id = models.IntegerField(null=True, blank=True)
     src_url = models.URLField(max_length=1024, null=True, blank=True)
     title = models.CharField(max_length=1000)
+    vote_type = models.CharField(max_length=32, choices=TYPE_CHOICES,
+                                 blank=True)
     time = models.DateTimeField(db_index=True)
     time_string = models.CharField(max_length=100)
     votes = models.ManyToManyField('mks.Member', related_name='votes', blank=True, through='VoteAction')
@@ -277,10 +279,11 @@ class Vote(models.Model):
     def against_own_bill_votes(self):
         return self.votes.filter(voteaction__against_own_bill=True)
 
-    def vote_type(self):
+    def _vote_type(self):
         for vtype, vtype_prefix in VoteManager.VOTE_TYPES.iteritems():
             if self.title.startswith(vtype_prefix):
-                return dict(TYPE_CHOICES)[vtype]
+                return vtype
+        return ''
 
     def short_summary(self):
         if self.summary is None:
@@ -409,6 +412,7 @@ class Vote(models.Model):
         self.against_votes_count = VoteAction.objects.filter(vote=self,type='against').count()
         self.controversy = min(self.for_votes_count or 0,
                                self.against_votes_count or 0)
+        self.vote_type = self._vote_type()
         self.save()
 
 
