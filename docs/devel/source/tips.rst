@@ -107,7 +107,7 @@ A possible session might include:
         git pull git@github.com:hasadna/Open-Knesset.git master
 
         cd ..
-        pip-2.7 install -r Open-Knesset/requirements.txt
+        pip install -r Open-Knesset/requirements.txt
         cd Open-Knesset
 
         ./manage.py migrate
