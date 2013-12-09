@@ -7,7 +7,8 @@ from django.core.urlresolvers import reverse
 from django.core.files import File
 from django.contrib.sites.models import Site
 from django.template import Template, Context
-from links.models import Link, LinkType
+from links.models import Link, LinkType, ModelWithLinks
+from mks.models import Member
 
 class TestViews(unittest.TestCase):
 
@@ -34,7 +35,7 @@ class TestViews(unittest.TestCase):
 
     def testImageType(self):
         # test a link with  a type image
-        f = open(os.path.join("testdata", "testimage.png"),"r")
+        f = open(os.path.join(settings.PROJECT_ROOT, "testdata", "testimage.png"),"r")
         self.type_a.image=File(f)
         self.type_a.save()
         c = Context ({'obj': self.obj})
@@ -47,3 +48,17 @@ class TestViews(unittest.TestCase):
         self.l1.delete()
         self.type_a.delete()
         self.obj.delete()
+
+# from django.test import TestCase
+class TestModels(unittest.TestCase):
+
+    def setUp(self):
+        self.default_link = LinkType.objects.create(title='default')
+        self.mk = Member.objects.create(name='MK')
+        self.link = Link.objects.create(url='http://www.google.com/', title='google', content_object=self.mk)
+
+    def testLink(self):
+        self.assertEqual(self.link.link_type, self.default_link)
+        self.assertEqual(self.link.__unicode__(), u'google: http://www.google.com/')
+
+
