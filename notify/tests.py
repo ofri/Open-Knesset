@@ -13,6 +13,7 @@ from mks.models import Member
 from laws.models import  Vote
 from management.commands import notify
 from actstream import follow, action
+from models import LastSent
 
 
 class SimpleTest(TestCase):
@@ -42,19 +43,10 @@ class SimpleTest(TestCase):
         self.assertIn(u'supports mk 1', text)
         email, email_html = cmd.get_email_for_user(self.jacob)
         self.assertEqual(email, [])
-        
 
-
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
-
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
+    def test_LastsSent_unicode(self):
+        dt = datetime(2013, 2, 3)
+        lastsent = LastSent.objects.create(user = self.jacob, content_object = self.mk_1)
+        lastsent.time = dt
+        self.assertEqual(lastsent.__unicode__(), u'{} {} {}'.format(self.jacob, self.mk_1, dt))
 
