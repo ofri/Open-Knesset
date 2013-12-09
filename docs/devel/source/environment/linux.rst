@@ -96,7 +96,7 @@ run:
 
 .. code-block:: sh
 
-    pip-2.7 install -r Open-Knesset/requirements.txt
+    pip install -r Open-Knesset/requirements.txt
     
 And wait ...
 
