@@ -192,6 +192,14 @@
                       {% endwith %}
                       {% endwith %}
                       </div>
+                    {% empty %}
+                        <ul><li>{% trans "Sorry! we don't have the protocol." %}
+                        {% if object.src_url %}
+                            {% with object.src_url as url %}
+                            {% blocktrans %} <a href="{{url}}" >Try reading it at the knesset website</a>.{% endblocktrans %}
+                            {% endwith %}
+                        {% endif %}
+                        </li></ul>
                     {% endfor %}
                     </div>
             </section> <!-- protocol -->
