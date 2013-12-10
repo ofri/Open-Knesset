@@ -1,6 +1,8 @@
 # encoding: utf-8
 import re
 import logging
+import sys
+import traceback
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -136,10 +138,10 @@ class Committee(models.Model):
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
-    """Retunrs true if 'line' looks like something should should be a protocol part header"""
+    """Returns true if 'line' looks like something should be a protocol part header"""
     if re.match(r'^\<.*\>\W*$',line): # this is a <...> line.
         return True
-    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
+    if not(line.strip().endswith(':')) or len(line)>50 or not_header.search(line):
         return False
     return True
 
@@ -280,6 +282,28 @@ class CommitteeMeeting(models.Model):
         return Link.objects.filter(object_pk=self.id,
                     content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
 
+    def find_attending_members(self, mks, mk_names):
+        try:
+            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(ייעוץ|יועץ|רישום|רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'), self.protocol_text, re.DOTALL).group(1)
+            s = r.split('\n')
+            for (i, name) in enumerate(mk_names):
+                if not mks[i].party_at(self.date):  # not a member at time of
+                                                    # this meeting?
+                    continue  # then don't search for this MK.
+                for s0 in s:
+                    if s0.find(name) >= 0:
+                        self.mks_attended.add(mks[i])
+        except Exception:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.debug("%s%s",
+                         ''.join(traceback.format_exception(exceptionType,
+                                                            exceptionValue,
+                                                            exceptionTraceback)
+                                ),
+                         '\nCommitteeMeeting.id=' + str(self.id))
+        logger.debug('meeting %d now has %d attending members' % (
+            self.id,
+            self.mks_attended.count()))
 
 class ProtocolPartManager(models.Manager):
     def list(self):

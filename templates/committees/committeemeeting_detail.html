@@ -199,7 +199,16 @@
                             {% blocktrans %} <a href="{{url}}" >Try reading it at the knesset website</a>.{% endblocktrans %}
                             {% endwith %}
                         {% endif %}
-                        </li></ul>
+                        </li>
+                        {% if perms.committees.change_committeemeeting %}
+                        <li><form method="post" action="." class="form-inline">{% csrf_token %}
+                            <input type="hidden" name="user_input_type" value="protocol">
+                            <label for="id_protocol_text">{% trans "Add protocol text" %}</label>
+                            <textarea name="protocol_text" rows=6 style="width:95%" id="id_protocol_text"></textarea>
+                            <input type="submit" value="{% trans "Submit" %}" class="btn">
+                        </form></li>
+                        {% endif %}
+                    </ul>
                     {% endfor %}
                     </div>
             </section> <!-- protocol -->

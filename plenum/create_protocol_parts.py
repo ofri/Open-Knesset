@@ -3,8 +3,7 @@
 import re,logging
 from xml.etree import ElementTree
 import committees.models
-from mks.models import Member
-from persons.models import Person, PersonAlias
+from mks.utils import get_all_mk_names
 
 logger = logging.getLogger("open-knesset.plenum.create_protocol_parts")
 speaker_text_threshold=40
@@ -14,21 +13,6 @@ _mks_attended=set()
 _mks=None
 _mk_names=None
 
-def get_all_mk_names():
-    mks=[]
-    mk_names=[]
-    current_mks=Member.current_knesset.filter(is_current=True)
-    mks.extend(current_mks)
-    mk_names.extend(current_mks.values_list('name',flat=True))
-    current_mk_ids=[m.id for m in current_mks]
-    mk_persons = Person.objects.filter(mk__isnull=False,mk__id__in=current_mk_ids)
-    mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
-    mks.extend([person.mk for person in mk_persons])
-    mk_names.extend(mk_persons.values_list('name',flat=True))
-    mks.extend([alias.person.mk for alias in mk_aliases])
-    mk_names.extend(mk_aliases.values_list('name',flat=True))
-    return (mks,mk_names)
-    
 def _plenum_parseParaElement(para):
     isBold=False
     if para.find('emphasis') is not None:
