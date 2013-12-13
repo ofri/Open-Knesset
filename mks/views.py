@@ -64,8 +64,10 @@ class MemberListView(ListView):
 
         info = self.kwargs['stat_type']
 
-        original_context = super(MemberListView, self).get_context_data(**kwargs)
-        qs = original_context['object_list'].filter(is_current=True)
+        original_context = super(MemberListView,
+                                 self).get_context_data(**kwargs)
+        qs = original_context['object_list'].filter(
+            is_current=True).select_related('current_party')
 
         # Do we have it in the cache ? If so, update and return
         context = cache.get('object_list_by_%s' % info) or {}
@@ -143,14 +145,11 @@ class MemberListView(ListView):
                 x.extra = x.voting_statistics.average_votes_per_month()
             context['past_mks'].sort(key=lambda x: x.extra, reverse=True)
         elif info == 'presence':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.average_weekly_presence()
-            qs.sort(key=lambda x: x.extra or 0, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.average_weekly_presence()
-            context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
+            qs = qs.extra(select={'extra': 'average_weekly_presence_hours'}
+                          ).order_by('-extra')
+            context['past_mks'] = context['past_mks'].extra(
+                select={'extra': 'average_weekly_presence_hours'}).order_by(
+                    '-extra')
         elif info == 'committees':
             qs = list(qs)
             for x in qs:
