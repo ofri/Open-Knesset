@@ -315,7 +315,9 @@ class Member(models.Model):
                 return None
 
     def average_weekly_presence(self):
+        d = Knesset.objects.current_knesset().start_date
         hours = WeeklyPresence.objects.filter(
+            date__gt=d,
             member=self).values_list('hours', flat=True)
         if len(hours):
             return round(sum(hours) / len(hours), 1)
@@ -366,11 +368,11 @@ class Member(models.Model):
 
         return [x.strip() for x in self.get_role.split('|')]
 
-	@property
-	def committees(self):
-		"""Committee list (splitted by comma)"""
+    @property
+    def committees(self):
+        """Committee list (splitted by comma)"""
 
-		return [x.strip() for x in self.committees.split(',')]
+        return [x.strip() for x in self.committees.split(',')]
 
     @property
     def is_minister(self):
