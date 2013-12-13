@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-10 12:07+0200\n"
-"PO-Revision-Date: 2013-12-10 12:08+0200\n"
+"POT-Creation-Date: 2013-12-10 14:25+0200\n"
+"PO-Revision-Date: 2013-12-10 14:26+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -209,7 +209,7 @@ msgid ""
 "Main activity feed for the whole site, same as presented on the main page"
 msgstr "פיד ראשי עבור כל האתר, בדומה למוצג בדף הראשי"
 
-#: auxiliary/forms.py:14 committees/models.py:357 laws/views.py:681
+#: auxiliary/forms.py:14 committees/models.py:381 laws/views.py:681
 msgid "Title"
 msgstr "כותרת"
 
@@ -377,49 +377,49 @@ msgstr "עוקב אחר חבר כנסת"
 msgid "You are following an MK"
 msgstr "עוקב/ת אחר ח\"כ"
 
-#: committees/models.py:41
+#: committees/models.py:43
 msgid "Plenum"
 msgstr "מליאה"
 
-#: committees/models.py:158
+#: committees/models.py:160
 msgid "Committee Meeting"
 msgstr "ישיבת ועדה"
 
-#: committees/models.py:159 templates/laws/bill_detail.html:346
+#: committees/models.py:161 templates/laws/bill_detail.html:346
 #: templates/laws/bill_detail.html:404 templates/laws/law_detail.html:17
 #: templates/laws/law_detail.html.py:30 templates/laws/law_detail.html:43
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: committees/models.py:359
+#: committees/models.py:383
 msgid "Description"
 msgstr "תאור"
 
-#: committees/models.py:361
+#: committees/models.py:385
 msgid "published"
 msgstr "פורסמה"
 
-#: committees/models.py:362
+#: committees/models.py:386
 msgid "flagged"
 msgstr "חשודה"
 
-#: committees/models.py:363
+#: committees/models.py:387
 msgid "rejected"
 msgstr "נדחתה"
 
-#: committees/models.py:364
+#: committees/models.py:388
 msgid "accepted"
 msgstr "אושרה"
 
-#: committees/models.py:365
+#: committees/models.py:389
 msgid "appeal"
 msgstr "בערעור"
 
-#: committees/models.py:366
+#: committees/models.py:390
 msgid "deleted"
 msgstr "נמחקה"
 
-#: committees/models.py:375 templates/base.html:72 templates/base.html.py:127
+#: committees/models.py:399 templates/base.html:72 templates/base.html.py:127
 #: templates/committees/committee_detail.html:49
 #: templates/committees/committee_list.html:3
 #: templates/committees/committee_list.html:4
@@ -436,62 +436,62 @@ msgstr "נמחקה"
 msgid "Committees"
 msgstr "ועדות"
 
-#: committees/models.py:383
+#: committees/models.py:407
 msgid "Topic"
 msgstr "הצעה לסדר"
 
-#: committees/models.py:384 templates/committees/topic_list.html:4
+#: committees/models.py:408 templates/committees/topic_list.html:4
 #: templates/user/followed_topics.html:4
 msgid "Topics"
 msgstr "הצעות לסדר"
 
-#: committees/views.py:111
+#: committees/views.py:112
 #, python-format
 msgid "%(committee)s meeting on %(date)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  "
 
-#: committees/views.py:112
+#: committees/views.py:113
 #, python-format
 msgid "%(committee)s meeting on %(date)s on topic %(topic)s"
 msgstr "ישיבה של %(committee)s בתאריך %(date)s  בנושא %(topic)s"
 
-#: committees/views.py:119
+#: committees/views.py:120
 #, python-format
 msgid " page %(page)s"
 msgstr " עמוד %(page)s"
 
-#: committees/views.py:197
+#: committees/views.py:207
 msgid "added-bill-to-cm"
 msgstr "קישר/ה הצעת חוק לישיבת ועדה"
 
-#: committees/views.py:198
+#: committees/views.py:208
 msgid "added-mk-to-cm"
 msgstr "הוסיף/ה חבר כנסת לישיבת ועדה"
 
-#: committees/views.py:199
+#: committees/views.py:209
 msgid "removed-mk-from-cm"
 msgstr "הסיר/ה חבר כנסת מישיבת ועדה"
 
-#: committees/views.py:320 templates/committees/committee_detail.html:63
+#: committees/views.py:330 templates/committees/committee_detail.html:63
 msgid "Knesset Plenum"
 msgstr "מליאת הכנסת"
 
-#: committees/views.py:324
+#: committees/views.py:334
 #, python-format
 msgid "All meetings by %(committee)s"
 msgstr "כל הישיבות של %(committee)s "
 
-#: committees/views.py:326 committees/views.py:355
+#: committees/views.py:336 committees/views.py:365
 #, python-format
 msgid "No %(object_type)s found"
 msgstr "לא נמצאו %(object_type)s"
 
-#: committees/views.py:354
+#: committees/views.py:364
 #, python-format
 msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
-#: committees/views.py:390
+#: committees/views.py:400
 #, python-format
 msgid "Committee Meetings tagged %(tag)s"
 msgstr "ישיבות וועדה שתויגו %(tag)s"
@@ -2289,6 +2289,7 @@ msgstr "נא לבחור"
 #: templates/committees/committeemeeting_detail.html:69
 #: templates/committees/committeemeeting_detail.html:75
 #: templates/committees/committeemeeting_detail.html:108
+#: templates/committees/committeemeeting_detail.html:208
 #: templates/committees/committeemeeting_list.html:49
 #: templates/laws/bill_detail.html:221 templates/laws/bill_detail.html:337
 #: templates/laws/bill_detail.html:395 templates/laws/bill_detail.html:454
@@ -2694,6 +2695,10 @@ msgstr "מצטערים! אין לנו את הפרוטוקול."
 #, python-format
 msgid " <a href=\"%(url)s\" >Try reading it at the knesset website</a>."
 msgstr " <a href=\"%(url)s\" >ניתן לנסות לקרוא אותו באתר הכנסת</a>."
+
+#: templates/committees/committeemeeting_detail.html:206
+msgid "Add protocol text"
+msgstr "הוספת פרוטוקול"
 
 #: templates/committees/committeemeeting_list.html:28
 msgid "All meetings"
