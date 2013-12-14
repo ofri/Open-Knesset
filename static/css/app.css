@@ -7081,8 +7081,10 @@ ol {
 .card-main {
   margin-bottom: 60px;
 }
-.card-main [class*='span'] {
+.card-main.with-min-height [class*='span'] {
   min-height: 245px;
+}
+.card-main [class*='span'] {
   position: relative;
 }
 .card-main [class*='span'] + [class*='span']::before {
