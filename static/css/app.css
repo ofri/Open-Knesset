@@ -7028,6 +7028,11 @@ ol {
   text-align: center;
   border-left: 1px solid white;
 }
+.card-list header h1 .fa.fa-flip-horizontal:first-child,
+.card-list header h2 .fa.fa-flip-horizontal:first-child {
+  border-right: 1px solid white;
+  border-left: 0 none;
+}
 .card-list header h1 {
   font-size: 22px;
 }
