@@ -12,11 +12,21 @@
 {% if members %}
     <div class="card card-main">
         <div class="row">
-            <div class="span12">
+            <div class="span6">
                 <div class="spacer">
-                    <h1>{% blocktrans %}Active members for tag {{ tag }}{% endblocktrans %}</h1>
+                    <h1>{% blocktrans %}Active members for tag {{ tag }} in the current knesset{% endblocktrans %}</h1>
                     <div class="text-center">
                     {% for mk in members %}
+                        <a href="{% url 'member-detail' pk=mk.pk %}" class="label level{{ mk.font_size }}">{{ mk }}</a>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="spacer">
+                    <h1>{% blocktrans %}Active members for tag {{ tag }} in the past{% endblocktrans %}</h1>
+                    <div class="text-center">
+                    {% for mk in past_members %}
                         <a href="{% url 'member-detail' pk=mk.pk %}" class="label level{{ mk.font_size }}">{{ mk }}</a>
                     {% endfor %}
                     </div>
