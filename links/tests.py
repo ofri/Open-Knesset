@@ -40,8 +40,11 @@ class TestViews(unittest.TestCase):
         c = Context ({'obj': self.obj})
         t = Template('{% load links_tags %}{% object_links obj %}')
         r = re.sub('\s', '', t.render(c))
-        self.assertEquals(r,
-    '<li>&nbsp;<imgsrc="/media/icons/testimage.png"alt="a"><ahref="http://www.example.com/l1"target="_blank">l1</a></li>')
+        self.assertEquals(
+            r,
+            '<li>&nbsp;<imgsrc="' +
+            settings.MEDIA_URL +
+            'icons/testimage.png"alt="a"><ahref="http://www.example.com/l1"target="_blank">l1</a></li>')
 
     def tearDown(self):
         self.l1.delete()
