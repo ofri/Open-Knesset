@@ -31,14 +31,6 @@
                     <a href="{% url 'register' %}?next={{next}}">{% trans "New user? Register" %}</a>
                 </li>
                 <li>
-                    <form method="post" action="{% url 'login' %}">{% csrf_token %}
-                        {{ form|crispy }}
-                        <input type="submit" value="{% trans "login" %}" class="btn">
-                        <input type="hidden" name="next" value="{{ next }}">
-                        <a href="{% url 'password_reset' %}?next={{next}}">{% trans "Forgot password?" %}</a>
-                    </form>
-                </li>
-                <li>
                     <p><strong>{% trans "Enter using" %}</strong></p>
                     <p>
                         <a class="btn" href="{% url 'socialauth_begin' 'twitter' %}" title="Twitter"><i class="fa fa-2x fa-twitter"></i></a>
@@ -46,6 +38,14 @@
                         <a class="btn" href="{% url 'socialauth_begin' 'facebook' %}" title="Facebook"><i class="fa fa-2x fa-facebook"></i></a>
                         <a class="btn" href="{% url 'socialauth_begin' 'github' %}" title="GitHub"><i class="fa fa-2x fa-github"></i></a>
                     </p>
+                </li>
+                <li>
+                    <form method="post" action="{% url 'login' %}">{% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit" value="{% trans "login" %}" class="btn">
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <a href="{% url 'password_reset' %}?next={{next}}">{% trans "Forgot password?" %}</a>
+                    </form>
                 </li>
 {% endif %}
             </ul>
