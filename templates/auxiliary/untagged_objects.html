@@ -1,7 +1,7 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude laws_tags bills_tags committees_tags %}
-{% block extratitle %}{{ tag }}{% endblock %}
-{% block keywords %}{{ tag }}{% endblock %}
+{% block extratitle %}{% trans 'Untagged Objects' %}{% endblock %}
+{% block keywords %}{% trans 'Untagged Objects' %}{% endblock %}
 {% block description %}{% trans 'Untagged Objects' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-tags %}class="selected"{% endblock %}
 {% block breadcrumbs %}

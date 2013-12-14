@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-14 17:00+0200\n"
+"POT-Creation-Date: 2013-12-14 17:10+0200\n"
 "PO-Revision-Date: 2013-12-14 17:07+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -497,6 +497,7 @@ msgid "Meetings by %(committee)s on date %(date)s"
 msgstr "ישיבות של %(committee)s בתאריך %(date)s"
 
 #: committees/views.py:361
+#, python-format
 msgid "Parliamentary committees meetings on date %(date)s"
 msgstr "ישיבות של ועדות הכנסת בתאריך %(date)s"
 
