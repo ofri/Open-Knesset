@@ -471,9 +471,13 @@ from agendas.models import Agenda, AgendaVote
 class MKAgendasTest(TestCase):
 
     def setUp(self):
-        self.knesset = Knesset.objects.create(number=1)
-        self.party_1 = Party.objects.create(name='party 1', number_of_seats=1,
-                       knesset=self.knesset)
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=datetime.date(2010, 1, 1))
+        self.party_1 = Party.objects.create(
+            name='party 1',
+            number_of_seats=1,
+            knesset=self.knesset)
         self.mk_1 = Member.objects.create(name='mk_1',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)

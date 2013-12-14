@@ -300,40 +300,47 @@ class Member(models.Model):
         return ", ".join(strings)
 
     def service_time(self):
-        """returns the number of days this MK has been serving in the current knesset"""
+        """returns the number of days this MK has been serving in the current
+           knesset
+        """
         if not self.start_date:
             return 0
+        d = Knesset.objects.current_knesset().start_date
+        start_date = max(self.start_date, d)
         if self.is_current:
-            return (date.today() - self.start_date).days
+            end_date = date.today()
         else:
             try:
-                return (self.end_date - self.start_date).days
+                end_date = self.end_date
             except TypeError:
                 logger.warn(
                     'MK %d is not current, but missing end or start date' %
                     self.id)
                 return None
+        return (end_date - start_date).days
 
     def average_weekly_presence(self):
+        d = Knesset.objects.current_knesset().start_date
         hours = WeeklyPresence.objects.filter(
+            date__gt=d,
             member=self).values_list('hours', flat=True)
         if len(hours):
             return round(sum(hours) / len(hours), 1)
         else:
             return None
 
-    def committee_meetings_count(self):
-        return self.committee_meetings.count()
-
     def committee_meetings_per_month(self):
+        d = Knesset.objects.current_knesset().start_date
         service_time = self.service_time()
         if not service_time or not self.id:
             return 0
-        return round(self.committee_meetings.count() * 30.0 / self.service_time(), 2)
+        return round(self.committee_meetings.filter(
+            date__gt=d).count() * 30.0 / service_time, 2)
 
     @models.permalink
     def get_absolute_url(self):
-        return ('member-detail-with-slug', [str(self.id), self.name_with_dashes()])
+        return ('member-detail-with-slug',
+                [str(self.id), self.name_with_dashes()])
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)
@@ -366,11 +373,11 @@ class Member(models.Model):
 
         return [x.strip() for x in self.get_role.split('|')]
 
-	@property
-	def committees(self):
-		"""Committee list (splitted by comma)"""
+    @property
+    def committees(self):
+        """Committee list (splitted by comma)"""
 
-		return [x.strip() for x in self.committees.split(',')]
+        return [x.strip() for x in self.committees.split(',')]
 
     @property
     def is_minister(self):
