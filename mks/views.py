@@ -229,17 +229,17 @@ class MemberDetailView(DetailView):
         outdict[outvalprop] = member_val
         outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
 
-    def calc_bill_stats(self,member,bills_statistics,stattype):
-        self.calc_percentile( member,
-                              bills_statistics,
-                              'bills_stats_%s' % stattype,
-                              stattype,
-                              '%s_percentile' % stattype)
+    def calc_bill_stats(self, member, bills_statistics, stattype):
+        self.calc_percentile(member,
+                             bills_statistics,
+                             'bills_stats_%s' % stattype,
+                             stattype,
+                             '%s_percentile' % stattype)
 
     def get_context_data(self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
-
+        d = Knesset.objects.current_knesset().start_date
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
@@ -260,18 +260,20 @@ class MemberDetailView(DetailView):
                                  'average_monthly_committee_presence_percentile')
 
             bills_statistics = {}
-            self.calc_bill_stats(member,bills_statistics,'proposed')
-            self.calc_bill_stats(member,bills_statistics,'pre')
-            self.calc_bill_stats(member,bills_statistics,'first')
-            self.calc_bill_stats(member,bills_statistics,'approved')
+            self.calc_bill_stats(member, bills_statistics, 'proposed')
+            self.calc_bill_stats(member, bills_statistics, 'pre')
+            self.calc_bill_stats(member, bills_statistics, 'first')
+            self.calc_bill_stats(member, bills_statistics, 'approved')
 
             if self.request.user.is_authenticated():
-                agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+                agendas = Agenda.objects.get_selected_for_instance(
+                    member, user=self.request.user, top=3, bottom=3)
             else:
-                agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
+                agendas = Agenda.objects.get_selected_for_instance(
+                    member, user=None, top=3, bottom=3)
             agendas = agendas['top'] + agendas['bottom']
             for agenda in agendas:
-                agenda.watched=False
+                agenda.watched = False
                 agenda.totals = agenda.get_mks_totals(member)
             if self.request.user.is_authenticated():
                 watched_agendas = self.request.user.get_profile().agendas
@@ -279,18 +281,23 @@ class MemberDetailView(DetailView):
                     if watched_agenda in agendas:
                         agendas[agendas.index(watched_agenda)].watched = True
                     else:
-                        watched_agenda.score = watched_agenda.member_score(member)
+                        watched_agenda.score = watched_agenda.member_score(
+                            member)
                         watched_agenda.watched = True
                         agendas.append(watched_agenda)
             agendas.sort(key=attrgetter('score'), reverse=True)
 
             factional_discipline = VoteAction.objects.select_related(
-                'vote').filter(member = member, against_party=True)
+                'vote').filter(member=member,
+                               against_party=True,
+                               vote__time__gt=d)
 
             votes_against_own_bills = VoteAction.objects.select_related(
-                'vote').filter(member=member, against_own_bill=True)
+                'vote').filter(member=member,
+                               against_own_bill=True,
+                               vote__time__gt=d)
 
-            general_discipline_params = { 'member' : member }
+            general_discipline_params = {'member': member, 'vote__time__gt': d}
             is_coalition = member.current_party.is_coalition
             if is_coalition:
                 general_discipline_params['against_coalition'] = True
@@ -299,19 +306,18 @@ class MemberDetailView(DetailView):
             general_discipline = VoteAction.objects.filter(
                 **general_discipline_params).select_related('vote')
 
-
-            about_videos=get_videos_queryset(member,group='about')[:1]
+            about_videos = get_videos_queryset(member, group='about')[:1]
             if len(about_videos):
-                about_video=about_videos[0]
-                about_video_embed_link=about_video.embed_link
-                about_video_image_link=about_video.image_link
+                about_video = about_videos[0]
+                about_video_embed_link = about_video.embed_link
+                about_video_image_link = about_video.image_link
             else:
-                about_video_embed_link=''
-                about_video_image_link=''
+                about_video_embed_link = ''
+                about_video_image_link = ''
 
-            related_videos=get_videos_queryset(member,group='related')
-            related_videos=related_videos.filter(
-                Q(published__gt=date.today()-timedelta(days=30))
+            related_videos = get_videos_queryset(member, group='related')
+            related_videos = related_videos.filter(
+                Q(published__gt=date.today() - timedelta(days=30))
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
@@ -328,7 +334,9 @@ class MemberDetailView(DetailView):
             mmm_documents = member.mmm_documents.order_by('-publication_date')
 
             content_type = ContentType.objects.get_for_model(Member)
-            num_followers = Follow.objects.filter(object_id=member.pk, content_type=content_type).count()
+            num_followers = Follow.objects.filter(
+                object_id=member.pk,
+                content_type=content_type).count()
 
 
             # since parties are prefetch_releated, will list and slice them
