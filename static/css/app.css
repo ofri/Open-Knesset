@@ -7044,8 +7044,13 @@ ol {
   list-style: none;
 }
 .card-list ul li {
-  padding: 25px 58px 15px 15px;
+  padding: 15px;
   border-bottom: 1px solid #e6e6e6;
+}
+@media (min-width: 768px) {
+  .card-list ul li {
+    padding: 25px 58px 15px 15px;
+  }
 }
 .card-list ul li:last-child {
   border-bottom: none;
