@@ -1,5 +1,5 @@
 {% extends 'site_base.html' %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
 {% block extratitle %}{% trans "Create new user" %}{% endblock %}
 
@@ -12,7 +12,7 @@
     <div class="spacer fill">
         <h1>{% trans "Create new user" %}</h1>
         <form method="post" action=".">{% csrf_token %}
-            <table>{{ form.as_table }}</table>
+            <table>{{ form|crispy }}</table>
             <input type="submit" value="{% trans "register" %}" class="btn">
             <input type="hidden" name="next" value="{{ next }}">
         </form>
