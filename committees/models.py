@@ -164,7 +164,7 @@ class CommitteeMeetingManager(models.Manager):
         if kwargs.get('from_date'):
             qs = qs.filter(time__gte=kwargs['from_date'])
 
-        return qs
+        return qs.select_related('committee')
 
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
