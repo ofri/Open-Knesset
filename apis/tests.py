@@ -1,4 +1,4 @@
-import datetime
+import datetime, json, csv
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -9,7 +9,6 @@ from mks.models import Member, Party, Knesset
 from agendas.models import Agenda
 from committees.models import Committee
 from events.models import Event
-from django.utils import simplejson as json
 from django.core import cache
 from voting.models import Vote as UserVote
 
@@ -280,6 +279,50 @@ I have a deadline''')
         self.assertEqual(res_json['committee']['name'], self.committee_1.name)
         self.assertEqual(res_json['committee']['url'], self.committee_1.get_absolute_url())
         self.assertEqual(res_json['url'], self.meeting_1.get_absolute_url())
+
+    def testCommitteeMeetingV2(self):
+        url = reverse('api_dispatch_list', kwargs={'resource_name': 'committeemeeting', 'api_name': 'v2'})
+        url = url + str(self.meeting_1.id) + '/?format=json'
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        committee_url = reverse('api_dispatch_list', kwargs={'resource_name': 'committee', 'api_name': 'v2'})
+        committee_url = committee_url + str(self.committee_1.id) + '/'
+        self.assertEqual(res_json['committee'], committee_url)
+        self.assertEqual(res_json['absolute_url'], self.meeting_1.get_absolute_url())
+
+    def testCommitteeMeetingListV2(self):
+        url = reverse('api_dispatch_list', kwargs={'resource_name': 'committeemeeting', 'api_name': 'v2'})
+        url = url + '?format=json'
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(len(res_json['objects']), 2)
+        self.assertTrue(
+            res_json['objects'][0]['absolute_url'] == self.meeting_1.get_absolute_url()
+            or
+            res_json['objects'][0]['absolute_url'] == self.meeting_2.get_absolute_url()
+        )
+
+    def testCommitteeMeetingV2CSV(self):
+        url = reverse('api_dispatch_list', kwargs={'resource_name': 'committeemeeting', 'api_name': 'v2'})
+        url = url + '?format=csv'
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        for row in csv.DictReader(res.content.split('\n'), delimiter=','):
+            if row.has_key('absolute_url'):
+                absurl = row['absolute_url']
+            else:
+                # \ufeff is the BOM - which is required for excel compatibility
+                absurl = row[u'\ufeff'.encode('utf8')+'absolute_url']
+                self.assertTrue(
+                    absurl == self.meeting_1.get_absolute_url()
+                    or
+                    absurl == self.meeting_2.get_absolute_url()
+                )
+
+
+
 
 class EventTest(TestCase):
     def setUp(self):
