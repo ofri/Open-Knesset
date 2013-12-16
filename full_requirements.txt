@@ -6,4 +6,5 @@
 mimms>=3.2
 
 # Temporary, until pyth release a new pypi with pull #16
--e git://github.com/brendonh/pyth.git#egg=pyth
+# Using OriHoch's fork with a fix to ignore bad unicode characters in rtf reader
+-e git://github.com/OriHoch/pyth.git#egg=pyth
