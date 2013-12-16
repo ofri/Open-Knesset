@@ -650,11 +650,9 @@ class Bill(models.Model):
                 pass
         for ti in TaggedItem.objects.filter(content_type=bill_ct,
                                             object_id=another_bill.id):
-            try:
+            if ti.tag not in self.tags:
                 ti.object_id = self.id
                 ti.save()
-            except IntegrityError:  # self was already tagged in this tag
-                pass
         for ab in another_bill.agendabills.all():
             try:
                 ab.bill = self
