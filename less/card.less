@@ -32,6 +32,11 @@
         text-align: center;
         border-left: 1px solid white;
       }
+
+      .fa.fa-flip-horizontal:first-child {
+        border-right: 1px solid white;
+        border-left: 0 none;
+      }
 		}
 
     h1 { font-size: 22px; }
@@ -43,7 +48,12 @@
 		margin: 0 20px;
 		list-style: none;
 		li{
-			padding: 25px 58px 15px 15px;
+      padding: 15px;
+
+      @media (min-width: 768px) {
+			  padding: 25px 58px 15px 15px;
+      }
+
 			border-bottom: 1px solid @borderColor;
 
 			&:last-child{

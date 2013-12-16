@@ -1,8 +1,12 @@
 .card-main {
   margin-bottom: 60px;
 
+  &.with-min-height {
+    [class*='span']{
+      min-height: 245px;
+    }
+  }
   [class*='span']{
-    min-height: 245px;
     position: relative;
 
     &+[class*='span']::before{

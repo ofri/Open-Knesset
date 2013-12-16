@@ -7028,6 +7028,11 @@ ol {
   text-align: center;
   border-left: 1px solid white;
 }
+.card-list header h1 .fa.fa-flip-horizontal:first-child,
+.card-list header h2 .fa.fa-flip-horizontal:first-child {
+  border-right: 1px solid white;
+  border-left: 0 none;
+}
 .card-list header h1 {
   font-size: 22px;
 }
@@ -7039,8 +7044,13 @@ ol {
   list-style: none;
 }
 .card-list ul li {
-  padding: 25px 58px 15px 15px;
+  padding: 15px;
   border-bottom: 1px solid #e6e6e6;
+}
+@media (min-width: 768px) {
+  .card-list ul li {
+    padding: 25px 58px 15px 15px;
+  }
 }
 .card-list ul li:last-child {
   border-bottom: none;
@@ -7076,8 +7086,10 @@ ol {
 .card-main {
   margin-bottom: 60px;
 }
-.card-main [class*='span'] {
+.card-main.with-min-height [class*='span'] {
   min-height: 245px;
+}
+.card-main [class*='span'] {
   position: relative;
 }
 .card-main [class*='span'] + [class*='span']::before {

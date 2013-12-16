@@ -56,11 +56,11 @@
             </span>
           </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <li><a href="{% url 'edit-profile' %}">{% trans 'Edit Profile' %}</a></li>
-            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a></li>
+            <li><a href="{% url 'edit-profile' %}"><i class="fa fa-edit fa-flip-horizontal"></i> {% trans 'Edit Profile' %}</a></li>
+            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}"><i class="fa fa-sign-out fa-flip-horizontal"></i> {% trans 'Logout' %}</a></li>
           </ul>
           {% else %}
-              <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
+          <a href='{% url 'login' %}?next={{request.get_full_path}}'><i class="fa fa-sign-in fa-flip-horizontal"></i> {% trans 'login' %}</a>
           {% endif %}
         </div>
       </div>

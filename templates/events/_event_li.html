@@ -1,10 +1,10 @@
 {% load i18n %}
 <li>
     {% ifchanged %}
-        <div class="item-context">{% trans "day" %} {{o.when|date:"l, d/m/Y"}}&nbsp;</div>
+    <div class="item-context"><span class="label">{% trans "day" %} {{o.when|date:"l, d/m/Y"}}</span></div>
     {% endifchanged %}
     <p>
-     <span class="time">{{o.when|date:"H:i"}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;
+     <span class="label label-info time">{{o.when|date:"H:i"}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;
      <span class="title">{% if o.which %}{{o.which}}: {% endif %}{{o.what}}</span>
      </p>
 </li>
