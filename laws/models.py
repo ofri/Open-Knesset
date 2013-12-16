@@ -2,7 +2,7 @@
 import re, itertools, logging, random
 from datetime import date, timedelta
 
-from django.db import models
+from django.db import models, IntegrityError
 from django.contrib.contenttypes import generic
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -12,13 +12,14 @@ from django.db.models import Count, Q
 from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.comments.models import Comment
 
 from tagging.models import Tag, TaggedItem
 from tagging.forms import TagField
 import voting
 from tagging.utils import get_tag
 from actstream import Action
-from actstream.models import action
+from actstream.models import action, Follow
 
 from mks.models import Member, Party, Knesset
 from tagvotes.models import TagVote
@@ -586,21 +587,25 @@ class Bill(models.Model):
     def merge(self,another_bill):
         """Merges another_bill into self, and delete another_bill"""
         if not self.id:
-            logger.debug('trying to merge into a bill with id=None, title=%s', self.title)
+            logger.debug('trying to merge into a bill with id=None, title=%s',
+                         self.title)
             self.save()
         if not another_bill.id:
-            logger.debug('trying to merge a bill with id=None, title=%s', another_bill.title)
+            logger.debug('trying to merge a bill with id=None, title=%s',
+                         another_bill.title)
             another_bill.save()
 
         if self is another_bill:
             logger.debug('abort merging bill %d into itself' % self.id)
             return
-        logger.debug('merging bill %d into bill %d' % (another_bill.id, self.id))
+        logger.debug('merging bill %d into bill %d' % (another_bill.id,
+                                                       self.id))
 
         other_kp = KnessetProposal.objects.filter(bill=another_bill)
         my_kp = KnessetProposal.objects.filter(bill=self)
         if my_kp and other_kp:
-            logger.debug('abort merging bill %d into bill %d, because both have KPs' % (another_bill.id, self.id))
+            logger.debug('abort merging bill %d into bill %d, because both '
+                         'have KPs' % (another_bill.id, self.id))
             return
 
         for pv in another_bill.pre_votes.all():
@@ -621,6 +626,47 @@ class Bill(models.Model):
         if other_kp:
             other_kp[0].bill = self
             other_kp[0].save()
+
+        bill_ct = ContentType.objects.get_for_model(self)
+        Comment.objects.filter(content_type=bill_ct,
+                               object_pk=another_bill.id).update(
+                                   object_pk=self.id)
+        for v in voting.models.Vote.objects.filter(content_type=bill_ct,
+                                                   object_id=another_bill.id):
+            if voting.models.Vote.objects.filter(content_type=bill_ct,
+                                                 object_id=self.id,
+                                                 user=v.user).count() == 0:
+                # only if this user did not vote on self, copy the vote from
+                # another_bill
+                v.object_id = self.id
+                v.save()
+        for f in Follow.objects.filter(content_type=bill_ct,
+                                       object_id=another_bill.id):
+            try:
+                f.object_id = self.id
+                f.save()
+            except IntegrityError:  # self was already being followed by the
+                                    # same user
+                pass
+        for ti in TaggedItem.objects.filter(content_type=bill_ct,
+                                            object_id=another_bill.id):
+            try:
+                ti.object_id = self.id
+                ti.save()
+            except IntegrityError:  # self was already tagged in this tag
+                pass
+        for ab in another_bill.agendabills.all():
+            try:
+                ab.bill = self
+                ab.save()
+            except IntegrityError:  # self was already in this agenda
+                pass
+        for be in another_bill.budget_ests.all():
+            try:
+                be.bill = self
+                be.save()
+            except IntegrityError:  # same user already estimated self
+                pass
         another_bill.delete()
         self.update_stage()
 
