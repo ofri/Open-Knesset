@@ -146,21 +146,21 @@ $(function(){
             var body = $('body');
             var breadcrumb = $('section.container > ul.breadcrumb');
             var sidebar = $('#content-main > div > div.row > div.span3');
-            var appheader_margin_left = appheader.css('margin-left');
-            var appheader_margin_right = appheader.css('margin-right');
+            var appheader_margin_left = appheader.offset().left;
+            var appheader_margin_right = appheader_margin_left;
             var sidebar_left = sidebar.position().left;
             var breadcrumbheight = breadcrumb.height();
             body.addClass('infinity-protocol');
             appheader.css({
                 'padding-left' : appheader_margin_left,
                 'padding-right' : appheader_margin_right,
-                'background' : body.css('background')
+                'background' : body.css('background-color')
             });
             var appheader_height = appheader.height();
             var headerHeight = breadcrumbheight + appheader_height + 25;
             breadcrumb.css({
                 'top' : appheader_height + 'px',
-                'background' : body.css('background'),
+                'background' : body.css('background-color'),
             });
             sidebar.css({
                 'top' : headerHeight+'px',
