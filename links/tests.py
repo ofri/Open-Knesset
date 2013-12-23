@@ -1,6 +1,7 @@
 import unittest
 import re
 import os
+import datetime
 from django.conf import settings
 from django.test.client import Client
 from django.core.urlresolvers import reverse
@@ -8,7 +9,7 @@ from django.core.files import File
 from django.contrib.sites.models import Site
 from django.template import Template, Context
 from links.models import Link, LinkType, ModelWithLinks
-from mks.models import Member
+from mks.models import Member, Knesset
 
 class TestViews(unittest.TestCase):
 
@@ -56,6 +57,9 @@ class TestViews(unittest.TestCase):
 class TestModels(unittest.TestCase):
 
     def setUp(self):
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=datetime.date.today() - datetime.timedelta(10))
         self.default_link = LinkType.objects.create(title='default')
         self.mk = Member.objects.create(name='MK')
         self.link = Link.objects.create(url='http://www.google.com/', title='google', content_object=self.mk)
@@ -64,4 +68,8 @@ class TestModels(unittest.TestCase):
         self.assertEqual(self.link.link_type, self.default_link)
         self.assertEqual(self.link.__unicode__(), u'google: http://www.google.com/')
 
-
+    def tearDown(self):
+        self.knesset.delete()
+        self.default_link.delete()
+        self.mk.delete()
+        self.link.delete()
