@@ -352,7 +352,7 @@ def meeting_list_by_date(request, *args, **kwargs):
 
     context = {}
     if committee_id:
-        qs = CommitteeMeeting.objects.filter(comittee_id=committee_id)
+        qs = CommitteeMeeting.objects.filter(committee_id=committee_id)
         committee = qs[0].committee.name
         context['committee'] = committee
         context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee': committee, 'date': date}
