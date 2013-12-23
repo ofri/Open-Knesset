@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils import simplejson as json
 from actstream import action, follow, unfollow
-from mks.models import Member
+from mks.models import Member, Knesset
 from laws.models import Bill
 from committees.models import Committee
 from agendas.models import Agenda
@@ -12,6 +12,9 @@ from agendas.models import Agenda
 class TestProfile(TestCase):
 
     def setUp(self):
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=datetime.date.today() - datetime.timedelta(10))
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
         self.adrian = User.objects.create_user('adrian', 'adrian@example.com',
@@ -77,10 +80,14 @@ class TestProfile(TestCase):
     def tearDown(self):
         self.jacob.delete()
         self.adrian.delete()
+        self.knesset.delete()
 
 class TestFollowing(TestCase):
 
     def setUp(self):
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=datetime.date.today() - datetime.timedelta(10))
         self.jacob = User.objects.create_user('jacob', 'jacob@jacobian.org',
                                               'JKM')
         self.david = Member.objects.create(name='david', start_date=datetime.date(2010,1,1))
@@ -195,4 +202,5 @@ class TestFollowing(TestCase):
         self.agenda_1.delete()
         self.committee_1.delete()
         self.meeting_1.delete()
+        self.knesset.delete()
 
