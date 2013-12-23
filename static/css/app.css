@@ -8006,3 +8006,24 @@ div#tidbitCarousel .btn-suggest:hover {
 .vote_input {
   width: 75%;
 }
+body.infinity-protocol #app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  z-index: 999;
+}
+body.infinity-protocol #app-header .row {
+  display: none;
+}
+body.infinity-protocol section.container > ul.breadcrumb {
+  position: fixed;
+  padding-top: 5px;
+  z-index: 950;
+  width: 100%;
+  margin-right: -10px;
+}
+body.infinity-protocol #content-main > div > div.row > div.span3 {
+  position: fixed;
+  overflow: auto;
+}
