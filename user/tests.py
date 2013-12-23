@@ -72,7 +72,7 @@ class TestProfile(TestCase):
             },
             follow=True)
         # Now try to create another user with some email
-        self.assertContains(res, 'errorlist')
+        self.assertRegexpMatches(res.content, 'error_\d+_id_email')
 
     def tearDown(self):
         self.jacob.delete()
