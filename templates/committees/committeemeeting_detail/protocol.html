@@ -9,4 +9,6 @@
         {% include "committees/committeemeeting_detail/protocol_part.html" %}
     {% endwith %}
     {% endwith %}
+{% empty %}
+    {% include "committees/committeemeeting_detail/protocol_empty.html" %}
 {% endfor %}
