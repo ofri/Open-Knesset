@@ -254,6 +254,11 @@ class ParseGovLaws(ParseKnessetLaws):
                 link_file = files[0]
                 filename = link_file.link_file.path
                 logger.debug('reusing %s from %s' % (pdf_url, filename))
+                if not os.path.exists(filename):
+                    # for some reason the file can't be found, we'll just d/l
+                    # it again
+                    filename = None
+                    logger.debug('not reusing because file not found')
         if not filename:
             logger.debug('getting %s' % pdf_url)
             contents = urllib2.urlopen(pdf_url).read()
@@ -347,8 +352,19 @@ class ParseGovLaws(ParseKnessetLaws):
         else:
             b = Bill(**bill_params)
             b.save()
-        gp.bill = b
-        gp.save()
+
+        # see if the found bill is already linked to a gov proposal
+        try:
+            bill_gp_id = b.gov_proposal.id
+        except GovProposal.DoesNotExist:
+            bill_gp_id = None
+        if (bill_gp_id is None) or (gp.id == b.gov_proposal.id):
+            # b is not linked to gp, or linked to the current gp
+            gp.bill = b
+            gp.save()
+        else:
+            logger.debug("processing gp %d - matching bill (%d) already has gp"
+                         " (%d)" % (gp.id, b.id, b.gov_proposal.id))
         if link_file.link is None:
             link = Link(title=pdf_link, url=pdf_link,
                 content_type=ContentType.objects.get_for_model(gp),
