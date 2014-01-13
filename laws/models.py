@@ -281,8 +281,12 @@ class Vote(models.Model):
         return self.votes.filter(voteaction__against_own_bill=True)
 
     def _vote_type(self):
+        if type(self.title) == str:
+            f = str.decode
+        else:  # its already unicode, do nothing
+            f = lambda x, y: x
         for vtype, vtype_prefix in VoteManager.VOTE_TYPES.iteritems():
-            if self.title.startswith(vtype_prefix):
+            if f(self.title, 'utf8').startswith(vtype_prefix):
                 return vtype
         return ''
 
