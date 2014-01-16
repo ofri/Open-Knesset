@@ -360,11 +360,10 @@ class ParseGovLaws(ParseKnessetLaws):
         if gp is None:  # create new GovProposal, or look for an identical one
             (gp, created) = GovProposal.objects.get_or_create(
                 booklet_number=data['booklet'],
-                knesset_id=k_id,
                 source_url=data['link'],
                 title=title,
                 law=law,
-                date=data['date'])
+                date=data['date'], defaults={'knesset_id': k_id})
             if created:
                 gp.save()
                 logger.debug("created GovProposal id = %d" % gp.id)
