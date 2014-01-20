@@ -1,5 +1,10 @@
 {% load i18n %}
-<ul>
+{% comment %}
+    the data-noprotocol is used by the infinite scroll js to determine
+    if there is another protocol part or not - if you make any change here
+    make sure to check the infinite scroll as well
+{% endcomment %}
+<ul data-noprotocol="yes">
   <li>{% trans "Sorry! we don't have the protocol." %}
     {% if object.src_url %}
         {% with object.src_url as url %}

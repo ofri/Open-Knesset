@@ -242,9 +242,10 @@ $(function(){
                     _isLoadingNextPage = true;
                     $("<div>").load(_nextPage+' #committeeprotocol', function(){
                         var html=$(this).find('.protocol').html();
-                        html = $.trim(html);
                         $('#committeeprotocol').append(html);
-                        if (html.length == 0) {
+                        noprotocoluls = $('#committeeprotocol ul[data-noprotocol=yes]');
+                        if (noprotocoluls.length > 0) {
+                            noprotocoluls.remove();
                             _noMorePages = true;
                         };
                         _hideFooterInfinityLoader();
