@@ -86,6 +86,12 @@ class BillSelectForm(forms.Form):
     changed_before = forms.DateField(label=_('Stage Chaged Before:'), required=False,
             input_formats=["%d/%m/%Y", "%d/%m/%y"])
 
+    pp_id = forms.IntegerField(required=False,
+                               label=_('Private proposal ID'))
+    knesset_booklet = forms.IntegerField(required=False,
+                                         label=_('Knesset booklet'))
+    gov_booklet = forms.IntegerField(required=False,
+                                     label=_('Government booklet'))
 
     # TODO: add more filter options:
     # order = forms.ChoiceField(label=_('Order by'), choices=ORDER_CHOICES,
@@ -110,25 +116,9 @@ class BillSelectForm(forms.Form):
         super(BillSelectForm, self).clean()
 
         #override stage error on aggregate stages (when accessing from mk page)
-        if (self.data.get('stage') in BILL_AGRR_STAGES) and ('stage' in self._errors):
+        if ((self.data.get('stage') in BILL_AGRR_STAGES) and
+                ('stage' in self._errors)):
             del self._errors['stage']
-            self.cleaned_data['stage']=self.data.get('stage')
-
-        #clean booklet input
-        booklet = self.data.get('booklet')
-        if booklet:
-            try:
-                int(booklet)
-            except ValueError:
-                raise forms.ValidationError(_('Invalid booklet number'))
-                self.cleaned_data['booklet']=''
-            else:
-                if not (KnessetProposal.objects.filter(booklet_number=booklet).exists()):
-                    raise forms.ValidationError(_('Booklet does not exist'))
-                    self.cleaned_data['booklet']=''
-
-                else:
-                    self.cleaned_data['booklet']=booklet
+            self.cleaned_data['stage'] = self.data.get('stage')
 
         return self.cleaned_data
-

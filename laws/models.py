@@ -502,7 +502,9 @@ class BillManager(models.Manager):
     def filter_and_order(self, *args, **kwargs):
         stage = kwargs.get('stage', None)
         member = kwargs.get('member', None)
-        booklet = kwargs.get('booklet', None)
+        pp_id = kwargs.get('pp_id', None)
+        knesset_booklet = kwargs.get('knesset_booklet', None)
+        gov_booklet = kwargs.get('gov_booklet', None)
         changed_after = kwargs.get('changed_after', None)
         changed_before = kwargs.get('changed_before', None)
 
@@ -524,10 +526,30 @@ class BillManager(models.Manager):
             elif kwargs['tagged'] != 'all':
                 qs = TaggedItem.objects.get_by_model(qs,get_tag(kwargs['tagged']))
 
-        if booklet:
-            kps = KnessetProposal.objects.filter(booklet_number=booklet).values_list('id', flat=True)
+        if pp_id:
+            pps = PrivateProposal.objects.filter(
+                    proposal_id=pp_id).values_list(
+                            'id', flat=True)
+            if pps:
+                qs = qs.filter(proposals__in=pps)
+            else:
+                qs = qs.none()
+        if knesset_booklet:
+            kps = KnessetProposal.objects.filter(
+                    booklet_number=knesset_booklet).values_list(
+                            'id', flat=True)
             if kps:
                 qs = qs.filter(knesset_proposal__in=kps)
+            else:
+                qs = qs.none()
+
+        if gov_booklet:
+            gps = GovProposal.objects.filter(
+                    booklet_number=gov_booklet).values_list('id', flat=True)
+            if gps:
+                qs = qs.filter(gov_proposal__in=gps)
+            else:
+                qs = qs.none()
 
         if changed_after:
             qs = qs.filter(stage_date__gte=changed_after)
