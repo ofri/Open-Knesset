@@ -141,6 +141,10 @@ $(function(){
             return ($(window).width() > 1200 && $(window).height() > 500);
         };
 
+        var _isInfinityScrollActive = function() {
+            return ($('#committeeprotocol ul[data-noprotocol=yes]').length == 0);
+        };
+
         var _float = function() {
             var appheader = $('#app-header');
             var body = $('body');
@@ -188,8 +192,8 @@ $(function(){
         var _baseUrl = null;
         var _getNextPageUrl = function() {
             // remove everything after and including #
-            _baseUrl = window.location.href.split('#')[0];
             if (_curPage == null) {
+                _baseUrl = window.location.href.split('#')[0];
                 var re = /page=([0-9]*)/;
                 var matches = _baseUrl.match(re);
                 if (matches != null && matches.length == 2) {
@@ -205,7 +209,7 @@ $(function(){
                 };
             };
             _curPage++;
-            return _baseUrl.replace('((PAGE))', _curPage);
+            return _baseUrl.replace('((PAGE))', _curPage);s
         };
 
         var _isFooterAbove = function() {
@@ -236,7 +240,7 @@ $(function(){
             if (direction == 'down') {
                 _isFooterVisible = true;
                 _unfloat();
-                if (!_noMorePages && !_isLoadingNextPage) {
+                if (_isInfinityScrollActive() && !_noMorePages && !_isLoadingNextPage) {
                     var _nextPage = _getNextPageUrl();
                     _showFooterInfinityLoader();
                     _isLoadingNextPage = true;
