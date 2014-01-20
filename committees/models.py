@@ -113,28 +113,32 @@ class Committee(models.Model):
             the knesset committee id list is fixed and includes all committes ever.
         """
 
-        trans = { #key is our id, val is knesset id
-            1:'1', #כנסת
-            2:'3', #כלכלה
-            3:'27', #עליה
-            4:'5', #הפנים
-            5:'6', #החוקה
-            6:'8', #החינוך
-            7:'10', #ביקורת המדינה
-            8:'13', #מדע
-            9:'2', #כספים
-            10:'28', #עבודה
-            11:'11', #מעמד האישה
-            12:'15', #עובדים זרים
-            13:'33', #משנה סחר בנשים
-            14:'19', #פניות הציבור
-            15:'25', #זכויות הילד
-            16:'12', #סמים
-            17:'266', #עובדים ערבים
-            18:'321', #משותפת סביבה ובריאות
+        trans = {  #key is our id, val is knesset id
+            1: '1',  #כנסת
+            2: '3',  #כלכלה
+            3: '27',  #עליה
+            4: '5',  #הפנים
+            5: '6',  #החוקה
+            6: '8',  #החינוך
+            7: '10',  #ביקורת המדינה
+            8: '13',  #מדע
+            9: '2',  #כספים
+            10: '28',  #עבודה
+            11: '11',  #מעמד האישה
+            12: '15',  #עובדים זרים
+            13: '33',  #משנה סחר בנשים
+            14: '19',  #פניות הציבור
+            15: '25',  #זכויות הילד
+            16: '12',  #סמים
+            17: '266',  #עובדים ערבים
+            18: '321',  #משותפת סביבה ובריאות
         }
 
-        return trans[self.pk]
+        try:
+            return trans[self.pk]
+        except KeyError:
+            logger.error('Committee %d missing knesset id' % self.pk)
+            return None
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
@@ -291,6 +295,9 @@ class CommitteeMeeting(models.Model):
         time = re.findall(r'(\d\d:\d\d)',self.date_string)[0]
         date = self.date.strftime('%d/%m/%Y')
         cid = self.committee.get_knesset_id()
+        if cid is None:  # missing this committee knesset id
+            return []  # can't get bg material
+
         url = 'http://www.knesset.gov.il/agenda/heb/material.asp?c=%s&t=%s&d=%s' % (cid,time,date)
         data = urllib2.urlopen(url)
         bg_links = []
