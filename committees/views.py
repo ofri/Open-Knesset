@@ -5,6 +5,7 @@ import colorsys
 import difflib
 import logging
 import tagging
+import auxiliary.tag_suggestions
 from actstream import action
 from django.conf import settings
 from django.contrib import messages
@@ -132,6 +133,9 @@ class MeetingDetailView(DetailView):
             meeting_members_ids = set(m.id for m in cm.mks_attended.all())
             context['members'] = cm.committee.members_by_presence(ids=meeting_members_ids)
             context['hide_member_presence'] = False
+
+        meeting_text = [cm.topics] + [part.body for part in cm.parts.all()]
+        context['tag_suggestions'] = auxiliary.tag_suggestions.extract_suggested_tags(cm.tags, meeting_text)
 
         return context
 

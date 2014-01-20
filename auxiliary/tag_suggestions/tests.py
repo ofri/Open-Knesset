@@ -1,6 +1,6 @@
+import auxiliary.tag_suggestions 
 from django.test import TestCase
 from auxiliary.models import TagSuggestion
-from auxiliary.tag_suggestions import approve
 from django.contrib.auth.models import User
 from laws.models import Bill, Law
 from tagging.models import Tag
@@ -23,7 +23,7 @@ class TestApprove(TestCase):
             suggested_by=self.user,
             object=self.bill
         )
-        approve(None, None, [tag_suggestion])
+        auxiliary.tag_suggestions.approve(None, None, [tag_suggestion])
         tag = Tag.objects.get(name=tag_suggestion.name)
         self.assertEqual(tag.name, tag_suggestion.name)
         tagged_item = tag.items.all()[0]
@@ -38,7 +38,7 @@ class TestApprove(TestCase):
             suggested_by=self.user,
             object=self.bill
         )
-        approve(None, None, [tag_suggestion])
+        auxiliary.tag_suggestions.approve(None, None, [tag_suggestion])
 
 class TestForm(TestCase):
 
@@ -62,3 +62,12 @@ class TestForm(TestCase):
         tag_suggestion = TagSuggestion.objects.get(name='test form tag')
         self.assertEqual(tag_suggestion.object, self.committee_meeting)
         self.assertEqual(tag_suggestion.suggested_by, self.user)
+
+class TestSuggestions(TestCase):
+    def setUp(self):
+        auxiliary.tag_suggestions.all_tags_names = ['tag1']
+        
+    def test_get_tags_in_text(self):
+        text = "tag1 ate the cat"
+        tags_count = auxiliary.tag_suggestions.get_tags_in_text(text)
+        self.assertEqual(tags_count['tag1'], 1)
