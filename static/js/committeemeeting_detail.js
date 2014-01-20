@@ -96,7 +96,7 @@ $(function(){
       annotation_objects[aid].updateDefaultAnnotationColor("inherit");
     }
   });
-  $(".reallydelete").live("submit", function(e){
+  $(".reallydelete").on("submit", function(e){
     var anno_id = $(this).children('[name=annotation_id]').val();
     var username = $('#annotation-'+anno_id+' a.user-link').html();
 
@@ -121,7 +121,7 @@ $(function(){
       $("div.color_picker").css("background-color", color); 
     }
   });
-  $(".toggle").live("click", function(e){
+  $(".toggle").on("click", function(e){
      e.preventDefault();
      var id = $(this).attr("id");
      if (id == ""){
