@@ -44,3 +44,4 @@ django-tinymce==1.5.1b4
 django-crispy-forms==1.2.3
 django-storages==1.1.8
 boto==2.20.1
+BeautifulSoup4
