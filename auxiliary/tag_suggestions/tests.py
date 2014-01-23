@@ -65,7 +65,7 @@ class TestForm(TestCase):
 
 class TestSuggestions(TestCase):
     def setUp(self):
-        auxiliary.tag_suggestions.all_tags_names = ['tag1']
+        auxiliary.tag_suggestions._all_tags_names = ['tag1']
         
     def test_get_tags_in_text(self):
         text = "tag1 ate the cat"

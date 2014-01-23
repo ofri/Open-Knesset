@@ -32,17 +32,28 @@ def sum_add_two_dictionaries(dict, dict_to_add):
             dict[key] = dict_to_add[key]
 
 
-# Extract only used tags, to avoid irrelevant tags 
-vote_tags = Tag.objects.usage_for_model(Vote)
-bill_tags = Tag.objects.usage_for_model(Bill)
-cm_tags = Tag.objects.usage_for_model(CommitteeMeeting)
-all_tags = list(set(vote_tags).union(bill_tags).union(cm_tags))
 
-#A list of tags that have been tagged over 10 times in the website
-all_tags_names = [tag.name for tag in all_tags]
-  
 #A list of prefix charcters to use in tag extraction
 prefixes = [u'ב', u'ו', u'ה', u'מ', u'מה', u'ל', u'']
+_all_tags_names = []
+
+def all_tags_names():
+    '''Lazy intialization of tags list'''
+    
+    if (_all_tags_names == []):
+        # Extract only used tags, to avoid irrelevant tags 
+        vote_tags = Tag.objects.usage_for_model(Vote)
+        bill_tags = Tag.objects.usage_for_model(Bill)
+        cm_tags = Tag.objects.usage_for_model(CommitteeMeeting)
+        all_tags = list(set(vote_tags).union(bill_tags).union(cm_tags))
+        
+        #A list of tags that have been tagged over 10 times in the website
+        global _all_tags_names
+        _all_tags_names = [tag.name for tag in all_tags]
+          
+    return _all_tags_names
+
+
 
 def get_tags_in_text(text):
     """Returns a dictionary, the keys are tags found in text, and the values are the number of occurrences in text"""
@@ -51,7 +62,7 @@ def get_tags_in_text(text):
     words = text.split()
     
     #look for tag in word 
-    for tag in all_tags_names:
+    for tag in all_tags_names():
         #create tag variations according to prefixes
         tag_variations = [(p + tag) for p in prefixes]
 

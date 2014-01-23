@@ -346,7 +346,7 @@ form > p > select { width:250px; }
 }
 
 
-#content-main .tag-suggested .tag {
+#content-main .tag-suggested, .tag {
     background-color:#C0C0C0;
     border-bottom:1px solid #251C1F;
     border-right:1px solid #251C1F;
