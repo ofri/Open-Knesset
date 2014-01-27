@@ -20,6 +20,13 @@
     <div><a href='javascript:tags.add();'>{% trans "Add" %}</a></div>
 </div>
 <h3 id='tags_edit'><a href='javascript:tags.edit();'>{% trans "Edit Tags" %}</a></h3>
+{% if tag_suggestions %}
+	<span id="tag_suggestions" style='display:none;'><br>{% trans "Suggested Tags" %}<br>
+		{% for tag, tag_count in tag_suggestions %}
+			<a data-tag="{{tag}}" class="tag-suggested label">{{tag}}&nbsp;({{tag_count}})</a>
+		{% endfor %}
+	</span>
+{% endif %}
 <h3 id='tags_doneedit' style='display:none;'><a href='javascript:tags.doneEdit();'>{% trans "Done Edit Tags" %}</a></h3>
 {% else %}
 <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans 'Login to edit tags' %}</a></div>

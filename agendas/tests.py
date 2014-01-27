@@ -88,7 +88,7 @@ class SimpleTest(TestCase):
                                                       reasoning="agenda bill 1")
         self.committee_1 = Committee.objects.create(name='c1')
         self.committee_1 = Committee.objects.create(name='c1')
-        self.meeting_1 = self.committee_1.meetings.create(date=datetime.datetime.now(),
+        self.meeting_1 = self.committee_1.meetings.create(topics='My Meeting', date=datetime.datetime.now(),
                                  protocol_text='''jacob:
 I am a perfectionist
 adrian:
