@@ -125,8 +125,8 @@ class AgendaVote(models.Model):
             else:
                 voters[vote_action.type].append(vote_action.member_id)
 
-        SummaryAgenda.objects.filter(mk_id__in=voters['for'],month=objMonth).update(votes=F('votes') + 1, score=F('score')+agendaScore)
-        SummaryAgenda.objects.filter(mk_id__in=voters['against'],month=objMonth).update(votes=F('votes') + 1, score=F('score')-agendaScore)
+        SummaryAgenda.objects.filter(agenda=self.agenda,mk_id__in=voters['for'],month=objMonth).update(votes=F('votes') + 1, score=F('score')+agendaScore)
+        SummaryAgenda.objects.filter(agenda=self.agenda,mk_id__in=voters['against'],month=objMonth).update(votes=F('votes') + 1, score=F('score')-agendaScore)
         if newObjects:
             SummaryAgenda.objects.bulk_create(newObjects)
 
