@@ -1,3 +1,7 @@
+{% comment %}
+    this is used by the infinite scroll js in unexpected ways
+    if you make any change here be sure to check the infinite scroll
+{% endcomment %}
 {% load annotatetags hashtag %}
 {% get_annotations_for parts as annotation_dict %}
 {% for speech_part in parts %}

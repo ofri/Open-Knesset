@@ -96,7 +96,7 @@ $(function(){
       annotation_objects[aid].updateDefaultAnnotationColor("inherit");
     }
   });
-  $(".reallydelete").live("submit", function(e){
+  $(".reallydelete").on("submit", function(e){
     var anno_id = $(this).children('[name=annotation_id]').val();
     var username = $('#annotation-'+anno_id+' a.user-link').html();
 
@@ -121,7 +121,7 @@ $(function(){
       $("div.color_picker").css("background-color", color); 
     }
   });
-  $(".toggle").live("click", function(e){
+  $(".toggle").on("click", function(e){
      e.preventDefault();
      var id = $(this).attr("id");
      if (id == ""){
@@ -139,6 +139,10 @@ $(function(){
 
         var _isActive = function() {
             return ($(window).width() > 1200 && $(window).height() > 500);
+        };
+
+        var _isInfinityScrollActive = function() {
+            return ($('#committeeprotocol ul[data-noprotocol=yes]').length == 0);
         };
 
         var _float = function() {
@@ -188,8 +192,8 @@ $(function(){
         var _baseUrl = null;
         var _getNextPageUrl = function() {
             // remove everything after and including #
-            _baseUrl = window.location.href.split('#')[0];
             if (_curPage == null) {
+                _baseUrl = window.location.href.split('#')[0];
                 var re = /page=([0-9]*)/;
                 var matches = _baseUrl.match(re);
                 if (matches != null && matches.length == 2) {
@@ -205,7 +209,7 @@ $(function(){
                 };
             };
             _curPage++;
-            return _baseUrl.replace('((PAGE))', _curPage);
+            return _baseUrl.replace('((PAGE))', _curPage);s
         };
 
         var _isFooterAbove = function() {
@@ -236,15 +240,16 @@ $(function(){
             if (direction == 'down') {
                 _isFooterVisible = true;
                 _unfloat();
-                if (!_noMorePages && !_isLoadingNextPage) {
+                if (_isInfinityScrollActive() && !_noMorePages && !_isLoadingNextPage) {
                     var _nextPage = _getNextPageUrl();
                     _showFooterInfinityLoader();
                     _isLoadingNextPage = true;
                     $("<div>").load(_nextPage+' #committeeprotocol', function(){
                         var html=$(this).find('.protocol').html();
-                        html = $.trim(html);
                         $('#committeeprotocol').append(html);
-                        if (html.length == 0) {
+                        noprotocoluls = $('#committeeprotocol ul[data-noprotocol=yes]');
+                        if (noprotocoluls.length > 0) {
+                            noprotocoluls.remove();
                             _noMorePages = true;
                         };
                         _hideFooterInfinityLoader();
