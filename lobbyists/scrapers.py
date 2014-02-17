@@ -6,10 +6,9 @@ from okscraper.sources import UrlSource, ScraperSource
 from okscraper.storages import ListStorage
 from models import Lobbyist, LobbyistRepresent
 from persons.models import Person
-from okscraper.django.storages.model import ModelDictStorage, ModelListDictStorage
-import okscraper.django.storages.fields as okscraper_django_fields
-import okscraper.django.storages.source_fields as okscraper_django_source_fields
-
+from okscraper_django.storages.model import ModelDictStorage, ModelListDictStorage
+import okscraper_django.storages.fields as okscraper_django_fields
+import okscraper_django.storages.source_fields as okscraper_django_source_fields
 
 class MainScraper(BaseScraper):
 

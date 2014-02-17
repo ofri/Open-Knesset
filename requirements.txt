@@ -46,3 +46,5 @@ django-storages==1.1.8
 boto==2.20.1
 BeautifulSoup4
 -e git://github.com/OriHoch/okscraper.git#egg=okscraper
+-e git://github.com/OriHoch/okscraper-django.git#egg=okscraper-django
+

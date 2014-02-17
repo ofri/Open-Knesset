@@ -172,7 +172,7 @@ INSTALLED_APPS = (
     'plenum',
     'tinymce',
     'suggestions',
-    'okscraper',
+    'okscraper_django',
     'lobbyists',
 )
 
