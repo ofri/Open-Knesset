@@ -5,6 +5,7 @@ import colorsys
 import difflib
 import logging
 import tagging
+import auxiliary.tag_suggestions
 from actstream import action
 from django.conf import settings
 from django.contrib import messages
@@ -32,6 +33,7 @@ from knesset.utils import clean_string
 from laws.models import Bill, PrivateProposal
 from links.models import Link
 from mks.models import Member
+from mks.utils import get_all_mk_names
 
 
 logger = logging.getLogger("open-knesset.committees.views")
@@ -133,6 +135,9 @@ class MeetingDetailView(DetailView):
             context['members'] = cm.committee.members_by_presence(ids=meeting_members_ids)
             context['hide_member_presence'] = False
 
+        meeting_text = [cm.topics] + [part.body for part in cm.parts.all()]
+        context['tag_suggestions'] = auxiliary.tag_suggestions.extract_suggested_tags(cm.tags, meeting_text)
+
         return context
 
     @hashnav_method_decorator(login_required)
@@ -191,6 +196,14 @@ class MeetingDetailView(DetailView):
                         description=cm,
                         target=mk,
                         timestamp=datetime.datetime.now())
+
+        if user_input_type == "protocol":
+            if not cm.protocol_text:  # don't override existing protocols
+                cm.protocol_text = request.POST.get('protocol_text')
+                cm.save()
+                cm.create_protocol_parts()
+                mks, mk_names = get_all_mk_names()
+                cm.find_attending_members(mks, mk_names)
 
         return HttpResponseRedirect(".")
 

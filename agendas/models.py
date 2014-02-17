@@ -120,13 +120,15 @@ class AgendaVote(models.Model):
                                           summary_type='MK',
                                           mk_id=vote_action.member_id,
                                           votes=1,
-                                          score=agendaScore * (1 if vote_action.type == 'for' else -1))
+                                          score=agendaScore * (1 if vote_action.type == 'for' else -1),
+                                          for_votes=(1 if vote_action.type == 'for' else 0),
+                                          against_votes=(1 if vote_action.type == 'against' else -1))
                 newObjects.append(mkSummary)
             else:
                 voters[vote_action.type].append(vote_action.member_id)
 
-        SummaryAgenda.objects.filter(mk_id__in=voters['for'],month=objMonth).update(votes=F('votes') + 1, score=F('score')+agendaScore)
-        SummaryAgenda.objects.filter(mk_id__in=voters['against'],month=objMonth).update(votes=F('votes') + 1, score=F('score')-agendaScore)
+        SummaryAgenda.objects.filter(agenda=self.agenda,mk_id__in=voters['for'],month=objMonth).update(votes=F('votes') + 1, score=F('score')+agendaScore, for_votes=F('for_votes') + 1)
+        SummaryAgenda.objects.filter(agenda=self.agenda,mk_id__in=voters['against'],month=objMonth).update(votes=F('votes') + 1, score=F('score')-agendaScore, against_votes=F('against_votes') + 1)
         if newObjects:
             SummaryAgenda.objects.bulk_create(newObjects)
 
@@ -519,6 +521,8 @@ class Agenda(models.Model):
             for summaries in summariesForRanges:
                 agenda_data             = summaries['AG']
                 total_votes             = sum(map(attrgetter('votes'),agenda_data))
+                total_for_votes         = sum(map(attrgetter('for_votes'),agenda_data))
+                total_against_votes     = sum(map(attrgetter('against_votes'),agenda_data))                
                 total_score             = sum(map(attrgetter('score'),agenda_data))
                 current_mks_data        = indexby(summaries['MK'],attrgetter('mk_id'))
                 # calculate results per mk
@@ -526,15 +530,17 @@ class Agenda(models.Model):
                 for mk_id in mk_results.keys():
                     mk_data     = current_mks_data[mk_id]
                     if mk_data:
-                        mk_votes    = sum(map(attrgetter('votes'),mk_data))
-                        mk_volume   = 100*mk_votes/total_votes
-                        mk_score    = 100*sum(map(attrgetter('score'),mk_data))/total_score if total_score != 0 else 0
-                        rangeMkResults.append((mk_id,mk_votes,mk_score,mk_volume))
+                        mk_votes            = sum(map(attrgetter('votes'),mk_data))
+                        mk_for_votes        = sum(map(attrgetter('for_votes'),mk_data))
+                        mk_against_votes    = sum(map(attrgetter('against_votes'),mk_data))
+                        mk_volume           = 100*mk_votes/total_votes
+                        mk_score            = 100*sum(map(attrgetter('score'),mk_data))/total_score if total_score != 0 else 0
+                        rangeMkResults.append((mk_id,mk_votes,mk_for_votes,mk_against_votes,mk_score,mk_volume))
                     else:
-                        rangeMkResults.append(tuple([mk_id]+[0]*3))
+                        rangeMkResults.append(tuple([mk_id]+[0]*5))
                 # sort results by score descending
-                for rank,(mk_id,mk_votes,mk_score,mk_volume) in enumerate(sorted(rangeMkResults,key=itemgetter(2,0),reverse=True)):
-                    mk_range_data = dict(score=mk_score,rank=rank,volume=mk_volume,numvotes=mk_votes)
+                for rank,(mk_id,mk_votes,mk_for_votes,mk_against_votes,mk_score,mk_volume) in enumerate(sorted(rangeMkResults,key=itemgetter(4,0),reverse=True)):
+                    mk_range_data = dict(score=mk_score,rank=rank,volume=mk_volume,numvotes=mk_votes,numforvotes=mk_for_votes,numagainstvotes=mk_against_votes)
                     if len(ranges)==1:
                         mk_results[mk_id]=mk_range_data
                     else:
@@ -609,6 +615,8 @@ class SummaryAgenda(models.Model):
     summary_type    = models.CharField(max_length=2, choices=SUMMARY_TYPES)
     score           = models.FloatField(default=0.0)
     votes           = models.BigIntegerField(default=0)
+    for_votes       = models.BigIntegerField(default=0)
+    against_votes   = models.BigIntegerField(default=0)
     mk              = models.ForeignKey(Member,blank=True, null=True, related_name='agenda_summaries')
     db_created      = models.DateTimeField(auto_now_add=True)
     db_updated      = models.DateTimeField(auto_now=True)
