@@ -54,6 +54,7 @@ class MemberListView(ListView):
         ('votes', _('By number of votes per month')),
         ('presence', _('By average weekly hours of presence')),
         ('committees', _('By average monthly committee meetings')),
+        ('followers', _('By number of followers')),
         ('graph', _('Graphical view'))
     )
 
@@ -64,8 +65,10 @@ class MemberListView(ListView):
 
         info = self.kwargs['stat_type']
 
-        original_context = super(MemberListView, self).get_context_data(**kwargs)
-        qs = original_context['object_list'].filter(is_current=True)
+        original_context = super(MemberListView,
+                                 self).get_context_data(**kwargs)
+        qs = original_context['object_list'].filter(
+            is_current=True).select_related('current_party')
 
         # Do we have it in the cache ? If so, update and return
         context = cache.get('object_list_by_%s' % info) or {}
@@ -143,14 +146,11 @@ class MemberListView(ListView):
                 x.extra = x.voting_statistics.average_votes_per_month()
             context['past_mks'].sort(key=lambda x: x.extra, reverse=True)
         elif info == 'presence':
-            qs = list(qs)
-            for x in qs:
-                x.extra = x.average_weekly_presence()
-            qs.sort(key=lambda x: x.extra or 0, reverse=True)
-            context['past_mks'] = list(context['past_mks'])
-            for x in context['past_mks']:
-                x.extra = x.average_weekly_presence()
-            context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
+            qs = qs.extra(select={'extra': 'average_weekly_presence_hours'}
+                          ).order_by('-extra')
+            context['past_mks'] = context['past_mks'].extra(
+                select={'extra': 'average_weekly_presence_hours'}).order_by(
+                    '-extra')
         elif info == 'committees':
             qs = list(qs)
             for x in qs:
@@ -159,6 +159,21 @@ class MemberListView(ListView):
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.committee_meetings_per_month()
+            context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
+        elif info == 'followers':
+            mct = ContentType.objects.get_for_model(Member)
+            mk_follows = Follow.objects.filter(content_type=mct).values_list(
+                'object_id', flat=True)
+            mk_follows_dict = {}
+            for mf in mk_follows:
+                mk_follows_dict[mf] = mk_follows_dict.get(mf, 0) + 1
+            qs = list(qs)
+            for x in qs:
+                x.extra = mk_follows_dict.get(x.id, 0)
+            qs.sort(key=lambda x: x.extra or 0, reverse=True)
+            context['past_mks'] = list(context['past_mks'])
+            for x in context['past_mks']:
+                x.extra = mk_follows_dict.get(x.id, 0)
             context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
         elif info == 'graph':
             pass
@@ -230,17 +245,17 @@ class MemberDetailView(DetailView):
         outdict[outvalprop] = member_val
         outdict[outpercentileprop] = percentile(avg,var,member_val) if var != 0 else 0
 
-    def calc_bill_stats(self,member,bills_statistics,stattype):
-        self.calc_percentile( member,
-                              bills_statistics,
-                              'bills_stats_%s' % stattype,
-                              stattype,
-                              '%s_percentile' % stattype)
+    def calc_bill_stats(self, member, bills_statistics, stattype):
+        self.calc_percentile(member,
+                             bills_statistics,
+                             'bills_stats_%s' % stattype,
+                             stattype,
+                             '%s_percentile' % stattype)
 
     def get_context_data(self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
-
+        d = Knesset.objects.current_knesset().start_date
         if self.request.user.is_authenticated():
             p = self.request.user.get_profile()
             watched = member in p.members
@@ -261,18 +276,20 @@ class MemberDetailView(DetailView):
                                  'average_monthly_committee_presence_percentile')
 
             bills_statistics = {}
-            self.calc_bill_stats(member,bills_statistics,'proposed')
-            self.calc_bill_stats(member,bills_statistics,'pre')
-            self.calc_bill_stats(member,bills_statistics,'first')
-            self.calc_bill_stats(member,bills_statistics,'approved')
+            self.calc_bill_stats(member, bills_statistics, 'proposed')
+            self.calc_bill_stats(member, bills_statistics, 'pre')
+            self.calc_bill_stats(member, bills_statistics, 'first')
+            self.calc_bill_stats(member, bills_statistics, 'approved')
 
             if self.request.user.is_authenticated():
-                agendas = Agenda.objects.get_selected_for_instance(member, user=self.request.user, top=3, bottom=3)
+                agendas = Agenda.objects.get_selected_for_instance(
+                    member, user=self.request.user, top=3, bottom=3)
             else:
-                agendas = Agenda.objects.get_selected_for_instance(member, user=None, top=3, bottom=3)
+                agendas = Agenda.objects.get_selected_for_instance(
+                    member, user=None, top=3, bottom=3)
             agendas = agendas['top'] + agendas['bottom']
             for agenda in agendas:
-                agenda.watched=False
+                agenda.watched = False
                 agenda.totals = agenda.get_mks_totals(member)
             if self.request.user.is_authenticated():
                 watched_agendas = self.request.user.get_profile().agendas
@@ -280,18 +297,23 @@ class MemberDetailView(DetailView):
                     if watched_agenda in agendas:
                         agendas[agendas.index(watched_agenda)].watched = True
                     else:
-                        watched_agenda.score = watched_agenda.member_score(member)
+                        watched_agenda.score = watched_agenda.member_score(
+                            member)
                         watched_agenda.watched = True
                         agendas.append(watched_agenda)
             agendas.sort(key=attrgetter('score'), reverse=True)
 
             factional_discipline = VoteAction.objects.select_related(
-                'vote').filter(member = member, against_party=True)
+                'vote').filter(member=member,
+                               against_party=True,
+                               vote__time__gt=d)
 
             votes_against_own_bills = VoteAction.objects.select_related(
-                'vote').filter(member=member, against_own_bill=True)
+                'vote').filter(member=member,
+                               against_own_bill=True,
+                               vote__time__gt=d)
 
-            general_discipline_params = { 'member' : member }
+            general_discipline_params = {'member': member, 'vote__time__gt': d}
             is_coalition = member.current_party.is_coalition
             if is_coalition:
                 general_discipline_params['against_coalition'] = True
@@ -300,19 +322,18 @@ class MemberDetailView(DetailView):
             general_discipline = VoteAction.objects.filter(
                 **general_discipline_params).select_related('vote')
 
-
-            about_videos=get_videos_queryset(member,group='about')[:1]
+            about_videos = get_videos_queryset(member, group='about')[:1]
             if len(about_videos):
-                about_video=about_videos[0]
-                about_video_embed_link=about_video.embed_link
-                about_video_image_link=about_video.image_link
+                about_video = about_videos[0]
+                about_video_embed_link = about_video.embed_link
+                about_video_image_link = about_video.image_link
             else:
-                about_video_embed_link=''
-                about_video_image_link=''
+                about_video_embed_link = ''
+                about_video_image_link = ''
 
-            related_videos=get_videos_queryset(member,group='related')
-            related_videos=related_videos.filter(
-                Q(published__gt=date.today()-timedelta(days=30))
+            related_videos = get_videos_queryset(member, group='related')
+            related_videos = related_videos.filter(
+                Q(published__gt=date.today() - timedelta(days=30))
                 | Q(sticky=True)
             ).order_by('sticky').order_by('-published')[:5]
 
@@ -329,7 +350,9 @@ class MemberDetailView(DetailView):
             mmm_documents = member.mmm_documents.order_by('-publication_date')
 
             content_type = ContentType.objects.get_for_model(Member)
-            num_followers = Follow.objects.filter(object_id=member.pk, content_type=content_type).count()
+            num_followers = Follow.objects.filter(
+                object_id=member.pk,
+                content_type=content_type).count()
 
 
             # since parties are prefetch_releated, will list and slice them

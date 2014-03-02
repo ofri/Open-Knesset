@@ -1,9 +1,13 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude %}
 {% block extratitle %}{% trans 'About' %}{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'about' %}">{% trans 'About' %}</a></li>
+{% endblock %}
+
 {% block description %}{% trans "About" %} {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 {% block nav-about %} class="selected" {% endblock %}
-{% block header %}<h1>{% trans 'About' %}</h1>{% endblock %}
 {% block divcontent %}
 	{% i18ninclude "about.html" LANGUAGE_CODE %}
 {% endblock %}

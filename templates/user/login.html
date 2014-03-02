@@ -1,5 +1,5 @@
 {% extends 'site_base.html' %}
-{% load i18n %}{% load static from staticfiles %}
+{% load i18n crispy_forms_tags %}{% load static from staticfiles %}
 
 {% block extratitle %}{% trans "login" %}{% endblock %}
 
@@ -10,46 +10,47 @@
 {% block breadcrumbs %}
     <li class="active">{% trans "login" %}</li>
 {% endblock %}
+
 {% block content %}
+
+<div class="row">
+    <div class="cards span4 offset4">
+        <section class="card card-list">
+            <header>
+                <h2><i class="fa fa-sign-in fa-flip-horizontal"></i>{% trans "login" %}</h2>
+            </header>
+            <ul>
 {% if user.is_authenticated %}
 
-<p>
-    {% trans "You are already logged in."%} <a href="{% url 'logout' %}">{% trans 'Logout' %}</a>?
-</p>
+                <li>
+                    {% trans "You are already logged in."%} <a href="{% url 'logout' %}">{% trans 'Logout' %}</a>?
+                </li>
 
 {% else %}
-
-<div class="card card-main">
-    <div class="row">
-        <div class="span4" id="login">
-            <div class="spacer fill">
-                <form method="post" action="{% url 'login' %}">{% csrf_token %}
-                    <table>{{ form.as_p }}</table>
-                    <input type="submit" value="{% trans "login" %}" class="btn">
-                    <input type="hidden" name="next" value="{{ next }}">
-                </form>
-            </div>
-        </div>
-        <div class="span4" id="social-login">
-            <div class="spacer fill text-center">
-                <p><a class="btn-auth btn-twitter" href="{% url 'socialauth_begin' 'twitter' %}">{% trans "Enter using" %} Twitter</a></p>
-                <p><a class="btn-auth btn-google" href="{% url 'socialauth_begin' 'google' %}">{% trans "Enter using" %} Gmail</a></p>
-                <p><a class="btn-auth btn-facebook" href="{% url 'socialauth_begin' 'facebook' %}">{% trans "Enter using" %} Facebook</a></p>
-                <p><a class="btn-auth btn-github" href="{% url 'socialauth_begin' 'github' %}">{% trans "Enter using" %} GitHub</a></p>
-            </div>
-        </div>
-        <div class="span4">
-            <div class="spacer fill">
-                <div class="alert alert-block">
+                <li class="text-xcenter">
                     <a href="{% url 'register' %}?next={{next}}">{% trans "New user? Register" %}</a>
-                </div>
-                <div class="alert alert-block">
-                    <a href="{% url 'password_reset' %}?next={{next}}">{% trans "Forgot password?" %}</a>
-                </div>
-            </div>
-        </div>
+                </li>
+                <li>
+                    <p><strong>{% trans "Enter using" %}</strong></p>
+                    <p>
+                        <a class="btn" href="{% url 'socialauth_begin' 'twitter' %}" title="Twitter"><i class="fa fa-lg fa-twitter"></i></a>
+                        <a class="btn" href="{% url 'socialauth_begin' 'google' %}" title="Google"><i class="fa fa-lg fa-google-plus"></i></a>
+                        <a class="btn" href="{% url 'socialauth_begin' 'facebook' %}" title="Facebook"><i class="fa fa-lg fa-facebook"></i></a>
+                        <a class="btn" href="{% url 'socialauth_begin' 'github' %}" title="GitHub"><i class="fa fa-lg fa-github"></i></a>
+                    </p>
+                </li>
+                <li>
+                    <form method="post" action="{% url 'login' %}">{% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit" value="{% trans "login" %}" class="btn">
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <a href="{% url 'password_reset' %}?next={{next}}">{% trans "Forgot password?" %}</a>
+                    </form>
+                </li>
+{% endif %}
+            </ul>
+        </section>
     </div>
 </div>
-{% endif %}
 {% endblock %}
 

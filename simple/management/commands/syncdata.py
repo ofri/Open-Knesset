@@ -17,6 +17,7 @@ from laws.models import (Vote, VoteAction, Bill, Law, PrivateProposal,
 from links.models import Link
 from committees.models import Committee,CommitteeMeeting
 from knesset.utils import cannonize
+from mks.utils import get_all_mk_names
 
 import mk_info_html_parser as mk_parser
 import parse_presence, parse_laws, mk_roles_parser, parse_remote
@@ -838,16 +839,7 @@ class Command(NoArgsCommand):
         (last_page, page_res) = self.get_protocols_page(page, page_num)
         res = page_res[:]
 
-        mk_names = []
-        mks = []
-        mk_persons = Person.objects.filter(
-            mk__isnull=False,
-            mk__current_party__isnull=False).select_related('mk')
-        mks.extend([person.mk for person in mk_persons])
-        mk_aliases = PersonAlias.objects.filter(person__in=mk_persons)
-        mk_names.extend(mk_persons.values_list('name',flat=True))
-        mk_names.extend(mk_aliases.values_list('name',flat=True))
-        mks.extend([alias.person.mk for alias in mk_aliases])
+        mks, mk_names = get_all_mk_names()
         while (not last_page) and (page_num < max_page):
             page_num += 1
             params = "__EVENTTARGET=gvProtocol&__EVENTARGUMENT=Page%%24%d&__LASTFOCUS=&__VIEWSTATE=%s&ComId=-1&knesset_id=-1&DtFrom=24%%2F02%%2F2009&DtTo=&subj=&__EVENTVALIDATION=%s" % (page_num, view_state, event_validation)
@@ -906,32 +898,9 @@ class Command(NoArgsCommand):
             if updated_protocol:
                 cm.create_protocol_parts()
 
-            self.find_attending_members(cm, mks, mk_names)
+            cm.find_attending_members(mks, mk_names)
 
             self.get_bg_material(cm)
-
-    def find_attending_members(self, cm, mks, mk_names):
-        try:
-            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(ייעוץ|יועץ|רישום|רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'),cm.protocol_text, re.DOTALL).group(1)
-            s = r.split('\n')
-            for (i, name) in enumerate(mk_names):
-                if not mks[i].party_at(cm.date):  # not a member at time of
-                                                  # this meeting?
-                    continue  # then don't search for this MK.
-                for s0 in s:
-                    if s0.find(name) >= 0:
-                        cm.mks_attended.add(mks[i])
-        except Exception:
-            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            logger.debug("%s%s",
-                         ''.join(traceback.format_exception(exceptionType,
-                                                            exceptionValue,
-                                                            exceptionTraceback)
-                                ),
-                         '\nCommitteeMeeting.id=' + str(cm.id))
-        logger.debug('meeting %d now has %d attending members' % (
-            cm.id,
-            cm.mks_attended.count()))
 
     def get_committee_protocol_text(self, url):
         logger.debug('get_committee_protocol_text. url=%s' % url)

@@ -32,10 +32,10 @@
     <div class="carousel-inner">
         {% for tidbit in tidbits  %}
         <div class="item {% if forloop.first %}active{% endif %}">
-            <img class="pull-left tidbit-pic"
+            <img class="pull-right tidbit-pic"
                 src="{% if tidbit.photo %}{{tidbit.photo.url}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
                 alt="Tidbit photo">            
-            <div class='pull-right'>
+            <div class='pull-left'>
                 {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
             </div>
             <strong class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</strong>
@@ -59,7 +59,10 @@
     <div class="span8">
       <div class="card card-list card-list-latest">
         <header>
-            <h2>{% trans "Upcoming Events" %}</h2>
+            <h2>
+                <i class="fa fa-calendar"></i>
+                {% trans "Upcoming Events" %}
+            </h2>
         </header>
         <ul id="upcoming-events">
         {% if events %}

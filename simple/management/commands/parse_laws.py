@@ -15,12 +15,14 @@ from django.contrib.contenttypes.models import ContentType
 from links.models import Link, LinkedFile
 import parse_knesset_bill_pdf
 from parse_government_bill_pdf import GovProposalParser
-from laws.models import (Bill, Law, GovProposal)
+from laws.models import Bill, Law, GovProposal
+from mks.models import Knesset
 
 logger = logging.getLogger("open-knesset.parse_laws")
 
 # don't parse laws from an older knesset
-CUTOFF_DATE = datetime.date(2009,02,24)
+CUTOFF_DATE = datetime.date(2009, 02, 24)
+
 
 class ParseLaws(object):
     """partially abstract class for parsing laws. contains one function used in few
@@ -254,6 +256,11 @@ class ParseGovLaws(ParseKnessetLaws):
                 link_file = files[0]
                 filename = link_file.link_file.path
                 logger.debug('reusing %s from %s' % (pdf_url, filename))
+                if not os.path.exists(filename):
+                    # for some reason the file can't be found, we'll just d/l
+                    # it again
+                    filename = None
+                    logger.debug('not reusing because file not found')
         if not filename:
             logger.debug('getting %s' % pdf_url)
             contents = urllib2.urlopen(pdf_url).read()
@@ -271,88 +278,143 @@ class ParseGovLaws(ParseKnessetLaws):
         return x
 
     def update_single_bill(self, pdf_link, booklet=None, alt_title=None):
+        gp = None
         if booklet is None:
             # get booklet from existing bill
-            if GovProposal.objects.filter(source_url=pdf_link).count() < 1:
-                logger.error('no existing object with given pdf link and no booklet given. pdf_link = %s' % pdf_link)
+            gps = GovProposal.objects.filter(source_url=pdf_link)
+            if gps.count() < 1:
+                logger.error('no existing object with given pdf link and no '
+                             'booklet given. pdf_link = %s' % pdf_link)
                 return
-            booklet = GovProposal.objects.filter(source_url=pdf_link)[0].booklet_number
+            gp = gps[0]
+            booklet = gp.booklet_number
         pdf_data = self.parse_pdf(pdf_link)
-        for j in range(len(pdf_data)): # sometime there is more than 1 law in a pdf
-            if alt_title: # just use the given title
+        for j in range(len(pdf_data)):  # sometime there is more than 1 gov
+                                        # billl in a pdf
+            if alt_title:  # just use the given title
                 title = alt_title
-            else: # get the title from the PDF file itself. doesn't work so well
+            else:  # get the title from the PDF file itself.
+                   # doesn't work so well
                 title = pdf_data[j]['title']
-            m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]',title)
+            m = re.findall('[^\(\)]*\((.*?)\)[^\(\)]', title)
             try:
-                comment = m[-1].strip().replace('\n','').replace('&nbsp;',' ')
-                law = title[:title.find(comment)-1]
+                comment = m[-1].strip().replace('\n', '').replace(
+                    '&nbsp;', ' ')
+                law = title[:title.find(comment) - 1]
             except:
                 comment = None
-                law = title.replace(',','')
+                law = title.replace(',', '')
             try:
-                correction = m[-2].strip().replace('\n','').replace('&nbsp;',' ')
-                law = title[:title.find(correction)-1]
+                correction = m[-2].strip().replace('\n', '').replace(
+                    '&nbsp;', ' ')
+                law = title[:title.find(correction) - 1]
             except:
                 correction = None
             correction = fix_dash(correction)
-            law = law.strip().replace('\n','').replace('&nbsp;',' ')
-            if law.find("הצעת ".decode("utf8"))==0:
+            law = law.strip().replace('\n', '').replace('&nbsp;', ' ')
+            if law.find("הצעת ".decode("utf8")) == 0:
                 law = law[5:]
 
-            law_data = {'booklet':booklet,'link':pdf_link, 'law':law, 'correction':correction,
-                                   'comment':comment, 'date':pdf_data[j]['date']}
+            law_data = {'booklet': booklet, 'link': pdf_link,
+                        'law': law, 'correction': correction,
+                        'comment': comment, 'date': pdf_data[j]['date']}
             if 'original_ids' in pdf_data[j]:
                 law_data['original_ids'] = pdf_data[j]['original_ids']
             if 'bill' in pdf_data[j]:
                 law_data['bill'] = pdf_data[j]['bill']
             self.laws_data.append(law_data)
-            self.create_or_update_single_bill(proposal=law_data, pdf_link=pdf_link,
-                                              link_file=pdf_data[j]['link_file'])
+            self.create_or_update_single_bill(
+                data=law_data,
+                pdf_link=pdf_link,
+                link_file=pdf_data[j]['link_file'],
+                gp=gp)
 
-    def create_or_update_single_bill(self, proposal, pdf_link, link_file):
-        if not(proposal['date']) or CUTOFF_DATE and proposal['date'] < CUTOFF_DATE:
+    def create_or_update_single_bill(self, data, pdf_link, link_file, gp=None):
+        """
+        data - a dict of data for this gov proposal
+        pdf_link - the source url from which the bill is taken
+        link_file - a cached version of the pdf
+        gp - an existing GovProposal objects. if this is given, it will be
+            updated, instead of creating a new object
+        """
+        if not(data['date']) or CUTOFF_DATE and data['date'] < CUTOFF_DATE:
             return
-        law_name = proposal['law']
+        law_name = data['law']
         (law, created) = Law.objects.get_or_create(title=law_name)
         if created:
             law.save()
         if law.merged_into:
             law = law.merged_into
         title = u''
-        if proposal['correction']:
-            title += proposal['correction']
-        if proposal['comment']:
-            title += ' ' + proposal['comment']
-        if len(title)<=1:
+        if data['correction']:
+            title += data['correction']
+        if data['comment']:
+            title += ' ' + data['comment']
+        if len(title) <= 1:
             title = u'חוק חדש'
-        (gp,created) = GovProposal.objects.get_or_create(booklet_number=proposal['booklet'], knesset_id=18,
-                                                             source_url=proposal['link'],
-                                                             title=title, law=law, date=proposal['date'])
-        if created:
-            gp.save()
-            logger.debug("created GovProposal id = %d" % gp.id)
-
-        bill_params = dict(law=law, title=title, stage='3', stage_date=proposal['date'])
-        similar_bills = Bill.objects.filter(**bill_params).order_by('id')
-        if len(similar_bills) >= 1:
-            b = similar_bills[0]
-            if len(similar_bills) > 1:
-                logger.debug("multiple bills detected")
-                for bill in similar_bills:
-                    if bill.id == b.id:
-                        logger.debug("bill being used now   - %d" % bill.id)
-                    else:
-                        logger.debug("bill with same fields - %d" % bill.id)
+        if data['date'] > Knesset.objects.current_knesset().start_date:
+            k_id = 19
         else:
-            b = Bill(**bill_params)
-            b.save()
-        gp.bill = b
-        gp.save()
-        if link_file.link is None:
+            k_id = 18
+
+        if gp is None:  # create new GovProposal, or look for an identical one
+            (gp, created) = GovProposal.objects.get_or_create(
+                booklet_number=data['booklet'],
+                source_url=data['link'],
+                title=title,
+                law=law,
+                date=data['date'], defaults={'knesset_id': k_id})
+            if created:
+                gp.save()
+                logger.debug("created GovProposal id = %d" % gp.id)
+
+            # look for similar bills
+            bill_params = dict(law=law, title=title, stage='3',
+                            stage_date=data['date'])
+            similar_bills = Bill.objects.filter(**bill_params).order_by('id')
+            if len(similar_bills) >= 1:
+                b = similar_bills[0]
+                if len(similar_bills) > 1:
+                    logger.debug("multiple bills detected")
+                    for bill in similar_bills:
+                        if bill.id == b.id:
+                            logger.debug("bill being used now: %d" % bill.id)
+                        else:
+                            logger.debug("bill with same fields: %d" % bill.id)
+            else:  # create a bill
+                b = Bill(**bill_params)
+                b.save()
+
+            # see if the found bill is already linked to a gov proposal
+            try:
+                bill_gp_id = b.gov_proposal.id
+            except GovProposal.DoesNotExist:
+                bill_gp_id = None
+            if (bill_gp_id is None) or (gp.id == b.gov_proposal.id):
+                # b is not linked to gp, or linked to the current gp
+                gp.bill = b
+                gp.save()
+            else:
+                logger.debug("processing gp %d - matching bill (%d) already has gp"
+                            " (%d)" % (gp.id, b.id, b.gov_proposal.id))
+        else:  # update a given GovProposal
+            gp.booklet_number = data['booklet']
+            gp.knesset_id = k_id
+            gp.source_url = data['link']
+            gp.title = title
+            gp.law = law
+            gp.date = data['date']
+            gp.save()
+
+            gp.bill.title = title
+            gp.bill.law = law
+            gp.bill.save()
+            b = gp.bill
+
+        if (link_file is not None) and (link_file.link is None):
             link = Link(title=pdf_link, url=pdf_link,
-                content_type=ContentType.objects.get_for_model(gp),
-                object_pk=str(gp.id))
+                        content_type=ContentType.objects.get_for_model(gp),
+                        object_pk=str(gp.id))
             link.save()
             link_file.link = link
             link_file.save()

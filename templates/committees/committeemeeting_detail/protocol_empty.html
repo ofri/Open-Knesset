@@ -1,0 +1,23 @@
+{% load i18n %}
+{% comment %}
+    the data-noprotocol is used by the infinite scroll js to determine
+    if there is another protocol part or not - if you make any change here
+    make sure to check the infinite scroll as well
+{% endcomment %}
+<ul data-noprotocol="yes">
+  <li>{% trans "Sorry! we don't have the protocol." %}
+    {% if object.src_url %}
+        {% with object.src_url as url %}
+        {% blocktrans %} <a href="{{url}}" >Try reading it at the knesset website</a>.{% endblocktrans %}
+        {% endwith %}
+    {% endif %}
+    </li>
+    {% if perms.committees.change_committeemeeting %}
+    <li><form method="post" action="." class="form-inline">{% csrf_token %}
+        <input type="hidden" name="user_input_type" value="protocol">
+        <label for="id_protocol_text">{% trans "Add protocol text" %}</label>
+        <textarea name="protocol_text" rows=6 style="width:95%" id="id_protocol_text"></textarea>
+        <input type="submit" value="{% trans "Submit" %}" class="btn">
+    </form></li>
+    {% endif %}
+</ul>

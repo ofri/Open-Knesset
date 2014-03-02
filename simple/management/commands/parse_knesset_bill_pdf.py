@@ -72,12 +72,12 @@ def parse_pdf_text(filename=None, url=None):
         if m:
             d = date(int(m.group(1)[::-1]), int(m.group(2)[::-1]), int(m.group(3)[::-1]))
 
-        m = re.search('הצעת חוק מס.*?\w+/\d+/\d+.*?[הועברה|הועברו]'.decode('utf8'), line.decode('utf8'), re.UNICODE)
+        m = re.search('[הצעת|הצעות] חוק מס.*?\d+/\d+.*?[הועברה|הועברו]'.decode('utf8'), line.decode('utf8'), re.UNICODE)
         if m:
             try:
                 result[count]['references'] = line
-                m2 = re.findall('\w+/\d+/\d+',line.decode('utf8'), re.UNICODE) # find IDs of original proposals
-                result[count]['original_ids'] = [a[-1:0:-1]+a[0] for a in m2] # reverse
+                m2 = re.findall('\d+/\d+',line.decode('utf8'), re.UNICODE) # find IDs of original proposals
+                result[count]['original_ids'] = [a[::-1] for a in m2]
                 count += 1
             except IndexError:
                 exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()

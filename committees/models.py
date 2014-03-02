@@ -1,6 +1,8 @@
 # encoding: utf-8
 import re
 import logging
+import sys
+import traceback
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -11,7 +13,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from tagging.models import Tag
+from tagging.models import Tag, TaggedItem
 from djangoratings.fields import RatingField
 from annotatetext.models import Annotation
 from events.models import Event
@@ -111,37 +113,62 @@ class Committee(models.Model):
             the knesset committee id list is fixed and includes all committes ever.
         """
 
-        trans = { #key is our id, val is knesset id
-            1:'1', #כנסת
-            2:'3', #כלכלה
-            3:'27', #עליה
-            4:'5', #הפנים
-            5:'6', #החוקה
-            6:'8', #החינוך
-            7:'10', #ביקורת המדינה
-            8:'13', #מדע
-            9:'2', #כספים
-            10:'28', #עבודה
-            11:'11', #מעמד האישה
-            12:'15', #עובדים זרים
-            13:'33', #משנה סחר בנשים
-            14:'19', #פניות הציבור
-            15:'25', #זכויות הילד
-            16:'12', #סמים
-            17:'266', #עובדים ערבים
-            18:'321', #משותפת סביבה ובריאות
+        trans = {  #key is our id, val is knesset id
+            1: '1',  #כנסת
+            2: '3',  #כלכלה
+            3: '27',  #עליה
+            4: '5',  #הפנים
+            5: '6',  #החוקה
+            6: '8',  #החינוך
+            7: '10',  #ביקורת המדינה
+            8: '13',  #מדע
+            9: '2',  #כספים
+            10: '28',  #עבודה
+            11: '11',  #מעמד האישה
+            12: '15',  #עובדים זרים
+            13: '33',  #משנה סחר בנשים
+            14: '19',  #פניות הציבור
+            15: '25',  #זכויות הילד
+            16: '12',  #סמים
+            17: '266',  #עובדים ערבים
+            18: '321',  #משותפת סביבה ובריאות
         }
 
-        return trans[self.pk]
+        try:
+            return trans[self.pk]
+        except KeyError:
+            logger.error('Committee %d missing knesset id' % self.pk)
+            return None
 
 not_header = re.compile(r'(^אני )|((אלה|אלו|יבוא|מאלה|ייאמר|אומר|אומרת|נאמר|כך|הבאים|הבאות):$)|(\(.\))|(\(\d+\))|(\d\.)'.decode('utf8'))
 def legitimate_header(line):
-    """Retunrs true if 'line' looks like something should should be a protocol part header"""
+    """Returns true if 'line' looks like something should be a protocol part header"""
     if re.match(r'^\<.*\>\W*$',line): # this is a <...> line.
         return True
-    if not(line.endswith(':')) or len(line)>50 or not_header.search(line):
+    if not(line.strip().endswith(':')) or len(line)>50 or not_header.search(line):
         return False
     return True
+
+class CommitteeMeetingManager(models.Manager):
+
+    def filter_and_order(self, *args, **kwargs):
+        qs = self.all()
+        # In dealing with 'tagged' we use an ugly workaround for the fact that generic relations
+        # don't work as expected with annotations.
+        # please read http://code.djangoproject.com/ticket/10461 before trying to change this code
+        if kwargs.get('tagged'):
+            if kwargs['tagged'] == ['false']:
+                qs = qs.exclude(tagged_items__isnull=False)
+            elif kwargs['tagged'] != ['all']:
+                qs = qs.filter(tagged_items__tag__name__in=kwargs['tagged'])
+
+        if kwargs.get('to_date'):
+            qs = qs.filter(time__lte=kwargs['to_date']+timedelta(days=1))
+
+        if kwargs.get('from_date'):
+            qs = qs.filter(time__gte=kwargs['from_date'])
+
+        return qs.select_related('committee')
 
 class CommitteeMeeting(models.Model):
     committee = models.ForeignKey(Committee, related_name='meetings')
@@ -152,6 +179,10 @@ class CommitteeMeeting(models.Model):
     protocol_text = models.TextField(null=True,blank=True)
     topics = models.TextField(null=True,blank=True)
     src_url  = models.URLField(max_length=1024,null=True,blank=True)
+    tagged_items = generic.GenericRelation(TaggedItem,
+                                           object_id_field="object_id",
+                                           content_type_field="content_type")
+    objects = CommitteeMeetingManager()
 
     class Meta:
         ordering = ('-date',)
@@ -264,6 +295,9 @@ class CommitteeMeeting(models.Model):
         time = re.findall(r'(\d\d:\d\d)',self.date_string)[0]
         date = self.date.strftime('%d/%m/%Y')
         cid = self.committee.get_knesset_id()
+        if cid is None:  # missing this committee knesset id
+            return []  # can't get bg material
+
         url = 'http://www.knesset.gov.il/agenda/heb/material.asp?c=%s&t=%s&d=%s' % (cid,time,date)
         data = urllib2.urlopen(url)
         bg_links = []
@@ -280,6 +314,28 @@ class CommitteeMeeting(models.Model):
         return Link.objects.filter(object_pk=self.id,
                     content_type=ContentType.objects.get_for_model(CommitteeMeeting).id)
 
+    def find_attending_members(self, mks, mk_names):
+        try:
+            r = re.search("חברי הו?ועדה(.*?)(\n[^\n]*(ייעוץ|יועץ|רישום|רש(מים|מות|מו|מ|מת|ם|מה)|קצר(נים|ניות|ן|נית))[\s|:])".decode('utf8'), self.protocol_text, re.DOTALL).group(1)
+            s = r.split('\n')
+            for (i, name) in enumerate(mk_names):
+                if not mks[i].party_at(self.date):  # not a member at time of
+                                                    # this meeting?
+                    continue  # then don't search for this MK.
+                for s0 in s:
+                    if s0.find(name) >= 0:
+                        self.mks_attended.add(mks[i])
+        except Exception:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            logger.debug("%s%s",
+                         ''.join(traceback.format_exception(exceptionType,
+                                                            exceptionValue,
+                                                            exceptionTraceback)
+                                ),
+                         '\nCommitteeMeeting.id=' + str(self.id))
+        logger.debug('meeting %d now has %d attending members' % (
+            self.id,
+            self.mks_attended.count()))
 
 class ProtocolPartManager(models.Manager):
     def list(self):

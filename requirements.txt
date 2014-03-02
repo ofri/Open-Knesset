@@ -7,10 +7,10 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 
-Django==1.5.4
+Django==1.5.5
 PIL
-South==0.8.1
-django-extensions==1.1.1
+South==0.8.4
+django-extensions==1.2.5
 django-pagination==1.0.7
 django-tagging==0.3.1
 django_compressor==1.2
@@ -35,10 +35,12 @@ django-ratings
 -e git://github.com/hasadna/django-backlinks.git@a90c5db5b4794965b7559ca4631bef8984957a9b#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git@1b51686a5b2ff547429d0b224319d521170f63e2#egg=django-piston
-django-debug-toolbar>=0.8.3
+django-debug-toolbar>=1.0
 nose
 django-nose
-django-devserver==0.6.2
+django-devserver==0.7.0
 ipython
 django-tinymce==1.5.1b4
 django-crispy-forms==1.2.3
+django-storages==1.1.8
+boto==2.20.1

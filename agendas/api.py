@@ -109,6 +109,8 @@ class AgendaResource(BaseResource):
                 rank=map(itemgetter('rank'),mk_data) if type(mk_data) is not dict else mk_data['rank'],
                 volume=map(itemgetter('volume'),mk_data) if type(mk_data) is not dict else mk_data['volume'],
                 numvotes=map(itemgetter('numvotes'),mk_data) if type(mk_data) is not dict else mk_data['numvotes'],
+                numforvotes=map(itemgetter('numforvotes'),mk_data) if type(mk_data) is not dict else mk_data['numforvotes'],
+                numagainstvotes=map(itemgetter('numagainstvotes'),mk_data) if type(mk_data) is not dict else mk_data['numagainstvotes'],
                 absolute_url=mk.get_absolute_url(),
                 party=current_party.name,
                 party_url=current_party.get_absolute_url(),

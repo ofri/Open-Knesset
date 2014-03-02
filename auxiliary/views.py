@@ -19,13 +19,13 @@ from django.views.generic.list import BaseListView
 from django.views.decorators.http import require_http_methods
 from tagging.models import Tag, TaggedItem
 
-from .forms import TidbitSuggestionForm, FeedbackSuggestionForm
-from .models import Tidbit
+from .forms import TidbitSuggestionForm, FeedbackSuggestionForm, TagSuggestionForm
+from .models import Tidbit, TagSuggestion
 from committees.models import CommitteeMeeting
 from events.models import Event
 from knesset.utils import notify_responsible_adult
 from laws.models import Vote, Bill
-from mks.models import Member
+from mks.models import Member, Knesset
 from tagging.utils import get_tag
 from auxiliary.models import TagSynonym
 
@@ -214,6 +214,24 @@ def post_feedback(request):
 
     return form.get_response()
 
+@require_http_methods(['POST'])
+def suggest_tag_post(request):
+    "Post a tag suggestion form"
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    form = TagSuggestionForm(request.POST)
+    if form.is_valid():
+        content_type = ContentType.objects.get_by_natural_key(form.cleaned_data['app_label'], form.cleaned_data['object_type'])
+        object = content_type.get_object_for_this_type(pk=form.cleaned_data['object_id'])
+        ts = TagSuggestion(
+            name=form.cleaned_data['name'],
+            suggested_by=request.user,
+            object=object
+        )
+        ts.save()
+
+    return form.get_response()
 
 def post_annotation(request):
     if request.user.has_perm('annotatetext.add_annotation'):
@@ -405,30 +423,44 @@ class TagDetail(DetailView):
         if cms is None:
             cms = TaggedItem.objects.get_by_model(CommitteeMeeting, tag)\
                 .prefetch_related('mks_attended')
-        mk_taggeds = [b.proposers.all() for b in bills]
-        mk_taggeds += [v.votes.all() for v in votes]
-        mk_taggeds += [cm.mks_attended.all() for cm in cms]
+        mk_taggeds = [(b.proposers.all(), b.stage_date) for b in bills]
+        mk_taggeds += [(v.votes.all(), v.time.date()) for v in votes]
+        mk_taggeds += [(cm.mks_attended.all(), cm.date) for cm in cms]
+        current_k_start = Knesset.objects.current_knesset().start_date
         d = {}
-        for tagged in mk_taggeds:
-            for p in tagged:
-                d[p] = d.get(p,0)+1
-        # now d is a dict: MK -> number of tagged in Bill, Vote and CommitteeMeeting in this tag
-        mks = dict(sorted(d.items(),lambda x,y:cmp(y[1],x[1]))[:mk_limit])
+        d_previous = {}
+        for tagged, date in mk_taggeds:
+            if date and (date > current_k_start):
+                for p in tagged:
+                    d[p] = d.get(p, 0) + 1
+            else:  # not current knesset
+                for p in tagged:
+                    d_previous[p] = d.get(p, 0) + 1
+        # now d is a dict: MK -> number of tagged in Bill, Vote and
+        # CommitteeMeeting in this tag, in the current knesset
+        # d_previous is similar, but for all non current knesset data
+        mks = dict(sorted(d.items(), lambda x, y: cmp(y[1], x[1]))[:mk_limit])
         # Now only the most tagged are in the dict (up to the limit param)
         for mk in mks:
             mk.count = d[mk]
         mks = tagging.utils.calculate_cloud(mks)
-        return mks
 
-    def get(self,*args,**kwargs):
-        tag=self.get_object()
-        ts=TagSynonym.objects.filter(synonym_tag=tag)
-        if len(ts)>0:
-            proper=ts[0].tag
+        mks_previous = dict(sorted(d_previous.items(),
+                                   lambda x, y: cmp(y[1], x[1]))[:mk_limit])
+        for mk in mks_previous:
+            mk.count = d_previous[mk]
+        mks_previous = tagging.utils.calculate_cloud(mks_previous)
+        return mks, mks_previous
+
+    def get(self, *args, **kwargs):
+        tag = self.get_object()
+        ts = TagSynonym.objects.filter(synonym_tag=tag)
+        if len(ts) > 0:
+            proper = ts[0].tag
             url = reverse('tag-detail', kwargs={'slug': proper.name})
             return HttpResponsePermanentRedirect(url)
         else:
-            return super(TagDetail, self).get(*args, **kwargs);
+            return super(TagDetail, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(TagDetail, self).get_context_data(**kwargs)
@@ -449,8 +481,10 @@ class TagDetail(DetailView):
             tag=tag, content_type=cm_ct).values_list('object_id', flat=True)
         cms = CommitteeMeeting.objects.filter(id__in=cm_ids)
         context['cms'] = cms
-        context['members'] = self.create_tag_cloud(tag)
+        (context['members'],
+         context['past_members']) = self.create_tag_cloud(tag)
         return context
+
 
 class CsvView(BaseListView):
     """A view which generates CSV files with information for a model queryset.
@@ -559,3 +593,15 @@ class GetMoreView(ListView):
 
         return HttpResponse(json.dumps(result, ensure_ascii=False),
                             content_type='application/json')
+
+def untagged_objects(request):
+    return render_to_response('auxiliary/untagged_objects.html', {
+            'cms': CommitteeMeeting.objects.filter_and_order(tagged=['false'])[:100],
+            'cms_count': CommitteeMeeting.objects.filter_and_order(tagged=['false']).count(),
+            'bills': Bill.objects.filter_and_order(tagged='false')[:100],
+            'bill_count': Bill.objects.filter_and_order(tagged='false').count(),
+            'votes': Vote.objects.filter_and_order(tagged='false')[:100],
+            'vote_count': Vote.objects.filter_and_order(tagged='false').count(),
+            },
+            context_instance=RequestContext(request))
+

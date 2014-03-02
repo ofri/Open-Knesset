@@ -604,7 +604,9 @@ class BillListView (BillListMixin, HashnavListView):
         context = super(BillListView, self).get_context()
         r = [['?%s=%s'% (x[0],x[1]),x[2],False,x[1]] for x in self.friend_pages]
         stage = self.request.GET.get('stage', False)
-        booklet = self.request.GET.get('booklet', False)
+        pp_id = self.request.GET.get('pp_id', False)
+        knesset_booklet = self.request.GET.get('knesset_booklet', False)
+        gov_booklet = self.request.GET.get('gov_booklet', False)
         member = self.request.GET.get('member', False)
         if stage and stage!='all':
             for x in r:
@@ -613,9 +615,17 @@ class BillListView (BillListMixin, HashnavListView):
                     break
             if stage in self.bill_stages_names:
                 context['stage'] = self.bill_stages_names.get(stage)
-                context['title'] = _('Bills %(stage)s') % {'stage':context['stage']}
-        elif booklet:
-            context['title']=_('Bills published in knesset booklet number %s') % booklet
+                context['title'] = _('Bills %(stage)s') % {'stage':
+                                                           context['stage']}
+        elif pp_id:
+            context['title'] = _('Bills based on private proposal with id '
+                                 '%s') % pp_id
+        elif knesset_booklet:
+            context['title'] = _('Bills published in knesset booklet '
+                                 'number %s') % knesset_booklet
+        elif gov_booklet:
+            context['title'] = _('Bills published in government booklet '
+                                 'number %s') % gov_booklet
         else:
             r[0][2] = True
         if member:

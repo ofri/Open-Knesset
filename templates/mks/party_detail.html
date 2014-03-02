@@ -16,7 +16,7 @@
                 for ( k in data ) {
                     pie_data.push({type : k, votes : data[k]});
                 }
-                
+
                 new MKPieChart(this, {
                     width       : 90,
                     height      : 89,
@@ -41,7 +41,7 @@
 
 {% block divcontent %}
 
-    <section class="card card-main">
+    <section class="card card-main with-min-height">
         <div class="row">
             <div class="span3 card-details">
                 <div class="spacer fill">
@@ -74,7 +74,12 @@
     <div class="row">
         <div class="cards span8">
             <section class="card card-list card-list-latest">
-                <header><h2>{% trans "Agendas" %}</h2></header>
+                <header>
+                    <h2>
+                        <i class="fa fa-dot-circle-o"></i>
+                        {% trans "Agendas" %}
+                    </h2>
+                </header>
                 <ul>
                 {% for agenda in agendas %}
                     <li>

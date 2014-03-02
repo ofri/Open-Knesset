@@ -56,11 +56,11 @@
             </span>
           </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <li><a href="{% url 'edit-profile' %}">{% trans 'Edit Profile' %}</a></li>
-            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}">{% trans 'Logout' %}</a></li>
+            <li><a href="{% url 'edit-profile' %}"><i class="fa fa-edit fa-flip-horizontal"></i> {% trans 'Edit Profile' %}</a></li>
+            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}"><i class="fa fa-sign-out fa-flip-horizontal"></i> {% trans 'Logout' %}</a></li>
           </ul>
           {% else %}
-              <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'login' %}</a>
+          <a href='{% url 'login' %}?next={{request.get_full_path}}'><i class="fa fa-sign-in fa-flip-horizontal"></i> {% trans 'login' %}</a>
           {% endif %}
         </div>
       </div>
@@ -127,6 +127,7 @@
                         <li><a href="{% url 'committee-list' %}">{% trans 'Committees' %}</a> </li>
                         <li><a href="{% url 'plenum' %}">מליאה</a></li>
                         <li><a href="{% url 'agenda-list' %}">{% trans 'Agendas' %}</a> </li>
+                        <li><a href="{% url 'about' %}">{% trans 'About' %}</a> </li>
                     </ul>
                 </nav>
                 <div id="search-bottom" class="span4">
@@ -172,8 +173,8 @@
             </div>
             <div class="row">
                 <div class="span9">
-                    {% trans "Some rights reserved. Using data from the site requires credit" %}
-                    <a href="{% url 'about' %}">{% trans "Details in the link" %}</a>
+                    {% trans "Some rights reserved. Using data from the site requires credit" %} - 
+                    <a href="{% url 'about' %}#terms">{% trans "Details in the link" %}</a>
                 </div>
                 <div class="span3">
                 <a href="https://play.google.com/store/apps/details?id=org.oknesset" target="_blank">
