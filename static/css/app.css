@@ -85,16 +85,12 @@ sub {
 }
 img {
   /* Responsive images (ensure images don't scale beyond their parents) */
-
   max-width: 100%;
   /* Part 1: Set a maxium relative to the parent */
-
   width: auto\9;
   /* IE7-8 need help adjusting responsive images */
-
   height: auto;
   /* Part 2: Scale the height according to the width, otherwise you get stretching */
-
   vertical-align: middle;
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -189,7 +185,7 @@ textarea {
   img {
     max-width: 100% !important;
   }
-  @page  {
+  @page {
     margin: 0.5cm;
   }
   p,
@@ -356,158 +352,158 @@ a:focus {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   float: right;
-  margin-right: 2.127659574468085%;
-  *margin-right: 2.074468085106383%;
+  margin-right: 2.12765957%;
+  *margin-right: 2.07446809%;
 }
 .row-fluid [class*="span"]:first-child {
   margin-right: 0;
 }
 .row-fluid .controls-row [class*="span"] + [class*="span"] {
-  margin-right: 2.127659574468085%;
+  margin-right: 2.12765957%;
 }
 .row-fluid .span12 {
   width: 100%;
-  *width: 99.94680851063829%;
+  *width: 99.94680851%;
 }
 .row-fluid .span11 {
-  width: 91.48936170212765%;
-  *width: 91.43617021276594%;
+  width: 91.4893617%;
+  *width: 91.43617021%;
 }
 .row-fluid .span10 {
-  width: 82.97872340425532%;
-  *width: 82.92553191489361%;
+  width: 82.9787234%;
+  *width: 82.92553191%;
 }
 .row-fluid .span9 {
-  width: 74.46808510638297%;
-  *width: 74.41489361702126%;
+  width: 74.46808511%;
+  *width: 74.41489362%;
 }
 .row-fluid .span8 {
-  width: 65.95744680851064%;
-  *width: 65.90425531914893%;
+  width: 65.95744681%;
+  *width: 65.90425532%;
 }
 .row-fluid .span7 {
-  width: 57.44680851063829%;
-  *width: 57.39361702127659%;
+  width: 57.44680851%;
+  *width: 57.39361702%;
 }
 .row-fluid .span6 {
-  width: 48.93617021276595%;
-  *width: 48.88297872340425%;
+  width: 48.93617021%;
+  *width: 48.88297872%;
 }
 .row-fluid .span5 {
-  width: 40.42553191489362%;
-  *width: 40.37234042553192%;
+  width: 40.42553191%;
+  *width: 40.37234043%;
 }
 .row-fluid .span4 {
-  width: 31.914893617021278%;
-  *width: 31.861702127659576%;
+  width: 31.91489362%;
+  *width: 31.86170213%;
 }
 .row-fluid .span3 {
-  width: 23.404255319148934%;
-  *width: 23.351063829787233%;
+  width: 23.40425532%;
+  *width: 23.35106383%;
 }
 .row-fluid .span2 {
-  width: 14.893617021276595%;
-  *width: 14.840425531914894%;
+  width: 14.89361702%;
+  *width: 14.84042553%;
 }
 .row-fluid .span1 {
-  width: 6.382978723404255%;
-  *width: 6.329787234042553%;
+  width: 6.38297872%;
+  *width: 6.32978723%;
 }
 .row-fluid .offset12 {
-  margin-right: 104.25531914893617%;
-  *margin-right: 104.14893617021275%;
+  margin-right: 104.25531915%;
+  *margin-right: 104.14893617%;
 }
 .row-fluid .offset12:first-child {
-  margin-right: 102.12765957446808%;
-  *margin-right: 102.02127659574467%;
+  margin-right: 102.12765957%;
+  *margin-right: 102.0212766%;
 }
 .row-fluid .offset11 {
-  margin-right: 95.74468085106382%;
-  *margin-right: 95.6382978723404%;
+  margin-right: 95.74468085%;
+  *margin-right: 95.63829787%;
 }
 .row-fluid .offset11:first-child {
-  margin-right: 93.61702127659574%;
-  *margin-right: 93.51063829787232%;
+  margin-right: 93.61702128%;
+  *margin-right: 93.5106383%;
 }
 .row-fluid .offset10 {
-  margin-right: 87.23404255319149%;
-  *margin-right: 87.12765957446807%;
+  margin-right: 87.23404255%;
+  *margin-right: 87.12765957%;
 }
 .row-fluid .offset10:first-child {
-  margin-right: 85.1063829787234%;
-  *margin-right: 84.99999999999999%;
+  margin-right: 85.10638298%;
+  *margin-right: 85%;
 }
 .row-fluid .offset9 {
-  margin-right: 78.72340425531914%;
-  *margin-right: 78.61702127659572%;
+  margin-right: 78.72340426%;
+  *margin-right: 78.61702128%;
 }
 .row-fluid .offset9:first-child {
-  margin-right: 76.59574468085106%;
-  *margin-right: 76.48936170212764%;
+  margin-right: 76.59574468%;
+  *margin-right: 76.4893617%;
 }
 .row-fluid .offset8 {
-  margin-right: 70.2127659574468%;
-  *margin-right: 70.10638297872339%;
+  margin-right: 70.21276596%;
+  *margin-right: 70.10638298%;
 }
 .row-fluid .offset8:first-child {
-  margin-right: 68.08510638297872%;
-  *margin-right: 67.9787234042553%;
+  margin-right: 68.08510638%;
+  *margin-right: 67.9787234%;
 }
 .row-fluid .offset7 {
-  margin-right: 61.70212765957446%;
-  *margin-right: 61.59574468085106%;
+  margin-right: 61.70212766%;
+  *margin-right: 61.59574468%;
 }
 .row-fluid .offset7:first-child {
-  margin-right: 59.574468085106375%;
-  *margin-right: 59.46808510638297%;
+  margin-right: 59.57446809%;
+  *margin-right: 59.46808511%;
 }
 .row-fluid .offset6 {
-  margin-right: 53.191489361702125%;
-  *margin-right: 53.085106382978715%;
+  margin-right: 53.19148936%;
+  *margin-right: 53.08510638%;
 }
 .row-fluid .offset6:first-child {
-  margin-right: 51.063829787234035%;
-  *margin-right: 50.95744680851063%;
+  margin-right: 51.06382979%;
+  *margin-right: 50.95744681%;
 }
 .row-fluid .offset5 {
-  margin-right: 44.68085106382979%;
-  *margin-right: 44.57446808510638%;
+  margin-right: 44.68085106%;
+  *margin-right: 44.57446809%;
 }
 .row-fluid .offset5:first-child {
-  margin-right: 42.5531914893617%;
-  *margin-right: 42.4468085106383%;
+  margin-right: 42.55319149%;
+  *margin-right: 42.44680851%;
 }
 .row-fluid .offset4 {
-  margin-right: 36.170212765957444%;
-  *margin-right: 36.06382978723405%;
+  margin-right: 36.17021277%;
+  *margin-right: 36.06382979%;
 }
 .row-fluid .offset4:first-child {
-  margin-right: 34.04255319148936%;
-  *margin-right: 33.93617021276596%;
+  margin-right: 34.04255319%;
+  *margin-right: 33.93617021%;
 }
 .row-fluid .offset3 {
-  margin-right: 27.659574468085104%;
-  *margin-right: 27.5531914893617%;
+  margin-right: 27.65957447%;
+  *margin-right: 27.55319149%;
 }
 .row-fluid .offset3:first-child {
-  margin-right: 25.53191489361702%;
-  *margin-right: 25.425531914893618%;
+  margin-right: 25.53191489%;
+  *margin-right: 25.42553191%;
 }
 .row-fluid .offset2 {
-  margin-right: 19.148936170212764%;
-  *margin-right: 19.04255319148936%;
+  margin-right: 19.14893617%;
+  *margin-right: 19.04255319%;
 }
 .row-fluid .offset2:first-child {
-  margin-right: 17.02127659574468%;
-  *margin-right: 16.914893617021278%;
+  margin-right: 17.0212766%;
+  *margin-right: 16.91489362%;
 }
 .row-fluid .offset1 {
-  margin-right: 10.638297872340425%;
-  *margin-right: 10.53191489361702%;
+  margin-right: 10.63829787%;
+  *margin-right: 10.53191489%;
 }
 .row-fluid .offset1:first-child {
-  margin-right: 8.51063829787234%;
-  *margin-right: 8.404255319148938%;
+  margin-right: 8.5106383%;
+  *margin-right: 8.40425532%;
 }
 [class*="span"].hide,
 .row-fluid [class*="span"].hide {
@@ -702,7 +698,6 @@ ol.inline > li {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   padding-right: 5px;
   padding-left: 5px;
@@ -981,7 +976,6 @@ input[type="color"]:focus,
   outline: 0;
   outline: thin dotted \9;
   /* IE6-9 */
-
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
@@ -991,10 +985,8 @@ input[type="checkbox"] {
   margin: 4px 0 0;
   *margin-top: 0;
   /* IE7 */
-
   margin-top: 1px \9;
   /* IE8-9 */
-
   line-height: normal;
 }
 input[type="file"],
@@ -1010,10 +1002,8 @@ select,
 input[type="file"] {
   height: 30px;
   /* In IE7, the height of the select element cannot be changed by height, only font-size */
-
   *margin-top: 4px;
   /* For IE7, add top margin to align select with labels */
-
   line-height: 30px;
 }
 select {
@@ -1411,7 +1401,6 @@ select:focus:invalid:focus {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   vertical-align: middle;
   padding-right: 5px;
@@ -1562,7 +1551,6 @@ input.search-query {
   padding-right: 14px;
   padding-right: 4px \9;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
-
   margin-bottom: 0;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -1619,7 +1607,6 @@ input.search-query {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   margin-bottom: 0;
   vertical-align: middle;
@@ -2677,7 +2664,6 @@ button.close {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   padding: 4px 12px;
   margin-bottom: 0;
@@ -2700,7 +2686,6 @@ button.close {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #e6e6e6;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   border: 1px solid #cccccc;
   *border: 0;
@@ -2836,7 +2821,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #5571c6;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-primary:hover,
@@ -2868,7 +2852,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #f89406;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-warning:hover,
@@ -2900,7 +2883,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #bd362f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-danger:hover,
@@ -2932,7 +2914,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #51a351;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-success:hover,
@@ -2964,7 +2945,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #2f96b4;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-info:hover,
@@ -2996,7 +2976,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #222222;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-inverse:hover,
@@ -3071,7 +3050,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   font-size: 0;
   vertical-align: middle;
@@ -3247,7 +3225,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
 }
 .btn-group-vertical > .btn {
@@ -3944,7 +3921,6 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #e5e5e5;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
@@ -4178,7 +4154,6 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #040404;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .navbar-inverse .btn-navbar:hover,
@@ -4208,7 +4183,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   text-shadow: 0 1px 0 #ffffff;
 }
@@ -4226,7 +4200,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   margin-right: 0;
   margin-bottom: 0;
@@ -4427,7 +4400,6 @@ input[type="submit"].btn.btn-mini {
   border: 1px solid rgba(0, 0, 0, 0.3);
   *border: 1px solid #999;
   /* IE6-7 */
-
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
@@ -5362,7 +5334,6 @@ blockquote p {
 form .helptext {
   color: #3A87AD;
   /* Use bootstrap's text-info color */
-
 }
 /* fix for carousel scroller */
 .carousel-inner > .item {
@@ -5371,14 +5342,12 @@ form .helptext {
   -o-transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
   transition: right 1000ms cubic-bezier(0.645, 0.045, 0.355, 1);
   /* easeInOutQuad */
-
   -webkit-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   -moz-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   -ms-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   -o-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   /* easeInOutQuad */
-
 }
 .carousel-indicators {
   list-style: none outside none;
@@ -5954,13 +5923,10 @@ ol {
     transition-delay: 0.4s;
     -moz-transition-delay: 0.4s;
     /* Firefox 4 */
-  
     -webkit-transition-delay: 0.4s;
     /* Safari and Chrome */
-  
     -o-transition-delay: 0.4s;
     /* Opera */
-  
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -6635,4 +6601,7 @@ div#tidbitCarousel .btn-suggest:hover {
 }
 .vote_input {
   width: 75%;
+}
+.autocomplete > div[title] {
+  white-space: normal;
 }
