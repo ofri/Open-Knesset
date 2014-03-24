@@ -152,7 +152,7 @@ I have a deadline''')
                          'object_id': part.id,
                          'content_type': ContentType.objects.get_for_model(part).id,
                         })
-        self.assertEqual(res.status_code, 403) # 403 Forbidden. 302 means a user with unverified email has posted an annotation. 
+        self.assertEqual(res.status_code, 403) # 403 Forbidden. 302 means a user with unverified email has posted an annotation.
 
     def testCommitteeList(self):
         res = self.client.get(reverse('committee-list'))
@@ -413,11 +413,11 @@ I have a deadline''')
         res = self.client.get(reverse('topic-list'))
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed(res, 'committees/topic_list.html')
-        self.assertQuerysetEqual(res.context['topics'],
+        self.assertQuerysetEqual(res.context['topics'].order_by('pk'),
                                  ["<Topic: hello>", "<Topic: bye>"])
 
     def testRanking(self):
-        self.assertQuerysetEqual(Topic.objects.all(),
+        self.assertQuerysetEqual(Topic.objects.order_by('pk'),
                                  ["<Topic: hello>", "<Topic: bye>"])
         self.topic2.rating.add(score=4, user=self.ofri, ip_address="127.0.0.1")
         self.assertQuerysetEqual(Topic.objects.by_rank(),
