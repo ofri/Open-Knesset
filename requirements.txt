@@ -7,7 +7,7 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 
-Django==1.5.5
+Django==1.6.2
 PIL
 South==0.8.4
 django-extensions==1.2.5
@@ -26,13 +26,13 @@ python-memcached==1.48
 -e git://github.com/openid/python-openid.git#egg=python-openid
 django-tastypie==0.9.15
 django-ratings
--e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
+-e git://github.com/thornomad/django-hitcount.git@178680e43766982f5ebf05b6b5620e9fea70b37c#egg=django-hitcount
 -e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
--e git://github.com/hasadna/django-planet.git@7a66a954b231391f2ac76e97f2a469f69fd29037#egg=django-planet
--e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
+-e git://github.com/hasadna/django-planet.git@903de33db55bfb8d965ae4e2319fa348075351fd#egg=django-planet
+-e git://github.com/hasadna/django-annotatetext.git@72e1e69459b1efe3efad85eec1dd162f5ab03250#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
 -e git://github.com/hasadna/django-avatar.git@e6ed23b44764d75d1f3955472f5afc2c4ddf7bcc#egg=django-avatar
--e git://github.com/hasadna/django-backlinks.git@a90c5db5b4794965b7559ca4631bef8984957a9b#egg=django-backlinks
+-e git://github.com/hasadna/django-backlinks.git@df00163eee41cc2c090e6a703c03610cc7979f66#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git@1b51686a5b2ff547429d0b224319d521170f63e2#egg=django-piston
 django-debug-toolbar>=1.0
@@ -40,7 +40,7 @@ nose
 django-nose
 django-devserver==0.7.0
 ipython
-django-tinymce==1.5.1b4
+django-tinymce==1.5.2
 django-crispy-forms==1.2.3
 django-storages==1.1.8
 boto==2.20.1
