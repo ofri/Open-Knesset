@@ -38,7 +38,8 @@ django-ratings
 django-debug-toolbar>=1.0
 nose
 django-nose
-django-devserver==0.7.0
+#django-devserver==0.7.0
+-e git://github.com/dcramer/django-devserver.git@b65bee8e22adf777181147a7e80fb16ace1fd776#egg=django-devserver
 ipython
 django-tinymce==1.5.2
 django-crispy-forms==1.2.3
