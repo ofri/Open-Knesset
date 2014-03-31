@@ -1,9 +1,21 @@
 # encoding: utf-8
 
 from okscraper.base import ParsingFromFileTestCase
-from scrapers import LobbyistScraper
-from scrapers import LobbyistRepresentScraper
-from scrapers import LobbyistsIndexScraper
+from lobbyists.scrapers import LobbyistScraper
+from lobbyists.scrapers import LobbyistRepresentScraper
+from lobbyists.scrapers import LobbyistsIndexScraper
+from lobbyists.scrapers import LobbyistScraperDictStorage
+from lobbyists.models import Lobbyist, LobbyistData, LobbyistRepresent
+from django.core.exceptions import ObjectDoesNotExist
+
+class LobbyistScraperDictStorage_withoutRepresents(LobbyistScraperDictStorage):
+
+    def __init__(self, *args, **kwargs):
+        self._represents_data = kwargs.pop('represents_data')
+        super(LobbyistScraperDictStorage_withoutRepresents, self).__init__(*args, **kwargs)
+
+    def _get_represents_data(self, source_id):
+        return self._represents_data
 
 class testLobbyistScraper(ParsingFromFileTestCase):
 
@@ -12,6 +24,9 @@ class testLobbyistScraper(ParsingFromFileTestCase):
 
     def _getFilename(self):
         return 'View_lobbyist_<<id>>.xml'
+
+    def _get_latest_data(self, lobbyist):
+        return lobbyist.latest_data()
 
     def testParsing(self):
         self.assertScrape(
@@ -28,6 +43,41 @@ class testLobbyistScraper(ParsingFromFileTestCase):
                 'profession': u''
             }
         )
+
+    def testStorage(self):
+        scraper = LobbyistScraper()
+        scraper.source = self._getSource()
+        scraper.storage = LobbyistScraperDictStorage_withoutRepresents(represents_data=[])
+        lobbyist = scraper.scrape(220)
+        self.assertEqual(lobbyist.source_id, u'220')
+        self.assertEqual(lobbyist.person.name, u'יותם אביזוהר')
+        self.assertEqual(self._get_latest_data(lobbyist).first_name, u'יותם')
+        self.assertEqual(self._get_latest_data(lobbyist).family_name, u'אביזוהר')
+        self.assertEqual(self._get_latest_data(lobbyist).profession, u'')
+        self.assertEqual(self._get_latest_data(lobbyist).corporation_name, u'')
+        self.assertEqual(self._get_latest_data(lobbyist).corporation_id, u'')
+        self.assertEqual(self._get_latest_data(lobbyist).faction_member, u'לא')
+        self.assertEqual(self._get_latest_data(lobbyist).faction_name, u'')
+        self.assertEqual(self._get_latest_data(lobbyist).permit_type, u'קבוע')
+        # now, if we scrape this lobbyist again, it will use the same object
+        scraper = LobbyistScraper()
+        scraper.source = self._getSource()
+        scraper.storage = LobbyistScraperDictStorage_withoutRepresents(represents_data=[])
+        lobbyist2 = scraper.scrape(220)
+        lobbyist2_data = self._get_latest_data(lobbyist2)
+        self.assertEqual(lobbyist, lobbyist2)
+        self.assertEqual(self._get_latest_data(lobbyist), self._get_latest_data(lobbyist2))
+        # now, same lobbyist but different represents
+        scraper = LobbyistScraper()
+        scraper.source = self._getSource()
+        lobbyist_represent_1 = LobbyistRepresent.objects.create(source_id=u'1')
+        lobbyist_represent_2 = LobbyistRepresent.objects.create(source_id=u'2')
+        scraper.storage = LobbyistScraperDictStorage_withoutRepresents(represents_data=[
+            lobbyist_represent_1, lobbyist_represent_2
+        ])
+        lobbyist3 = scraper.scrape(220)
+        self.assertNotEqual(lobbyist2_data, self._get_latest_data(lobbyist3))
+
 
 class testLobbyistRepresentScraper(ParsingFromFileTestCase):
 

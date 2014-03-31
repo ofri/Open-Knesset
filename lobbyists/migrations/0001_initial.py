@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -8,11 +8,37 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'LobbyistHistory'
+        db.create_table(u'lobbyists_lobbyisthistory', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('scrape_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+        ))
+        db.send_create_signal(u'lobbyists', ['LobbyistHistory'])
+
+        # Adding M2M table for field lobbyists on 'LobbyistHistory'
+        m2m_table_name = db.shorten_name(u'lobbyists_lobbyisthistory_lobbyists')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('lobbyisthistory', models.ForeignKey(orm[u'lobbyists.lobbyisthistory'], null=False)),
+            ('lobbyist', models.ForeignKey(orm[u'lobbyists.lobbyist'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['lobbyisthistory_id', 'lobbyist_id'])
+
         # Adding model 'Lobbyist'
         db.create_table(u'lobbyists_lobbyist', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('person', self.gf('django.db.models.fields.related.ForeignKey')(related_name='lobbyist', to=orm['persons.Person'])),
-            ('knesset_id', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('person', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='lobbyist', null=True, to=orm['persons.Person'])),
+            ('source_id', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'lobbyists', ['Lobbyist'])
+
+        # Adding model 'LobbyistData'
+        db.create_table(u'lobbyists_lobbyistdata', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('lobbyist', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='data', null=True, to=orm['lobbyists.Lobbyist'])),
+            ('scrape_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('family_name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('profession', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('corporation_name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('corporation_id', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
@@ -20,12 +46,57 @@ class Migration(SchemaMigration):
             ('faction_name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('permit_type', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
         ))
-        db.send_create_signal(u'lobbyists', ['Lobbyist'])
+        db.send_create_signal(u'lobbyists', ['LobbyistData'])
+
+        # Adding M2M table for field represents on 'LobbyistData'
+        m2m_table_name = db.shorten_name(u'lobbyists_lobbyistdata_represents')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('lobbyistdata', models.ForeignKey(orm[u'lobbyists.lobbyistdata'], null=False)),
+            ('lobbyistrepresent', models.ForeignKey(orm[u'lobbyists.lobbyistrepresent'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['lobbyistdata_id', 'lobbyistrepresent_id'])
+
+        # Adding model 'LobbyistRepresent'
+        db.create_table(u'lobbyists_lobbyistrepresent', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('source_id', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'lobbyists', ['LobbyistRepresent'])
+
+        # Adding model 'LobbyistRepresentData'
+        db.create_table(u'lobbyists_lobbyistrepresentdata', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('lobbyist_represent', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='data', null=True, to=orm['lobbyists.LobbyistRepresent'])),
+            ('scrape_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('domain', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('type', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'lobbyists', ['LobbyistRepresentData'])
 
 
     def backwards(self, orm):
+        # Deleting model 'LobbyistHistory'
+        db.delete_table(u'lobbyists_lobbyisthistory')
+
+        # Removing M2M table for field lobbyists on 'LobbyistHistory'
+        db.delete_table(db.shorten_name(u'lobbyists_lobbyisthistory_lobbyists'))
+
         # Deleting model 'Lobbyist'
         db.delete_table(u'lobbyists_lobbyist')
+
+        # Deleting model 'LobbyistData'
+        db.delete_table(u'lobbyists_lobbyistdata')
+
+        # Removing M2M table for field represents on 'LobbyistData'
+        db.delete_table(db.shorten_name(u'lobbyists_lobbyistdata_represents'))
+
+        # Deleting model 'LobbyistRepresent'
+        db.delete_table(u'lobbyists_lobbyistrepresent')
+
+        # Deleting model 'LobbyistRepresentData'
+        db.delete_table(u'lobbyists_lobbyistrepresentdata')
 
 
     models = {
@@ -67,15 +138,44 @@ class Migration(SchemaMigration):
         },
         u'lobbyists.lobbyist': {
             'Meta': {'object_name': 'Lobbyist'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'lobbyist'", 'null': 'True', 'to': u"orm['persons.Person']"}),
+            'source_id': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'})
+        },
+        u'lobbyists.lobbyistdata': {
+            'Meta': {'object_name': 'LobbyistData'},
             'corporation_id': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'corporation_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'faction_member': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'faction_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'family_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'knesset_id': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'lobbyist': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'data'", 'null': 'True', 'to': u"orm['lobbyists.Lobbyist']"}),
             'permit_type': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'lobbyist'", 'to': u"orm['persons.Person']"}),
-            'profession': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
+            'profession': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'represents': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['lobbyists.LobbyistRepresent']", 'symmetrical': 'False'}),
+            'scrape_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
+        },
+        u'lobbyists.lobbyisthistory': {
+            'Meta': {'object_name': 'LobbyistHistory'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'lobbyists': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['lobbyists.Lobbyist']", 'symmetrical': 'False'}),
+            'scrape_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
+        },
+        u'lobbyists.lobbyistrepresent': {
+            'Meta': {'object_name': 'LobbyistRepresent'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'source_id': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'})
+        },
+        u'lobbyists.lobbyistrepresentdata': {
+            'Meta': {'object_name': 'LobbyistRepresentData'},
+            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'lobbyist_represent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'data'", 'null': 'True', 'to': u"orm['lobbyists.LobbyistRepresent']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'scrape_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
         },
         u'mks.knesset': {
             'Meta': {'object_name': 'Knesset'},
