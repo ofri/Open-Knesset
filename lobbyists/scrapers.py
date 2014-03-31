@@ -50,10 +50,12 @@ class MainScraper(BaseScraper):
 
     def _scrape(self):
         lobbyist_ids = self.source.fetch()
+        i = 1
         for lobbyist_id in lobbyist_ids:
             lobbyist = LobbyistScraper().scrape(lobbyist_id)
             self.storage.store(lobbyist)
-            break
+            i+=1
+            if i==5: break
 
 
 class LobbyistScraperDictStorage(DictStorage):
@@ -67,7 +69,7 @@ class LobbyistScraperDictStorage(DictStorage):
         return LobbyistRepresentScraper().scrape(source_id)
 
     def _get_latest_lobbyist_data(self, lobbyist):
-        return lobbyist.latest_data()
+        return lobbyist.latest_data
 
     def _get_last_lobbyist_data(self, lobbyist, data):
         try:

@@ -2,6 +2,12 @@
 
 from django.db import models
 
+class LobbyistHistoryManager(models.Manager):
+
+    def latest(self):
+        return self.filter(scrape_time__isnull=False).latest('scrape_time')
+
+
 class LobbyistHistory(models.Model):
     """
     this model allows to see an overview over time of the lobbyists in the knesset
@@ -10,6 +16,9 @@ class LobbyistHistory(models.Model):
     """
     scrape_time = models.DateTimeField(blank=True, null=True)
     lobbyists = models.ManyToManyField('lobbyists.Lobbyist', related_name='histories')
+
+    objects = LobbyistHistoryManager()
+
 
 class Lobbyist(models.Model):
     """
@@ -23,6 +32,7 @@ class Lobbyist(models.Model):
     person = models.ForeignKey('persons.Person', blank=True, null=True, related_name='lobbyist')
     source_id = models.CharField(blank=True, null=True, max_length=20)
 
+    @property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
@@ -54,6 +64,10 @@ class LobbyistRepresent(models.Model):
     if you want just the current representation data, get the latest record according to scrape_end_time
     """
     source_id = models.CharField(blank=True, null=True, max_length=20)
+
+    @property
+    def latest_data(self):
+        return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
 class LobbyistRepresentData(models.Model):
     """

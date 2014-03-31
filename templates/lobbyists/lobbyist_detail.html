@@ -1,0 +1,50 @@
+{% extends "site_base.html" %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
+{% block extratitle %}{{ object }}{% endblock %}
+{% block keywords %}{{ object.person.name }}{% endblock %}
+{% block description %}{{ object.person.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block breadcrumbs %}
+        <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
+        <li class="active">{{ object.person.name }}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="cards span12">
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{{ object.person.name }}</h2></header>
+                <ul>
+                    {% ifnotequal object.latest_data.corporation_name '' %}
+                        <li>{% trans "Corporation" %}: {{ object.latest_data.corporation_name }}</li>
+                    {% endifnotequal %}
+                    {% ifnotequal object.latest_data.corporation_id '' %}
+                        <li>{% trans "Corporation Id" %}: {{ object.latest_data.corporation_id }}</li>
+                    {% endifnotequal %}
+                    {% ifnotequal object.latest_data.profession '' %}
+                        <li>{% trans "Profession" %}: {{ object.latest_data.profession }}</li>
+                    {% endifnotequal %}
+                    {% ifnotequal object.latest_data.faction_member 'לא' %}
+                        {% ifnotequal object.latest_data.faction_member '' %}
+                            <li>{% trans "Faction Member?" %} {{ object.latest_data.faction_member }}</li>
+                        {% endifnotequal %}
+                    {% endifnotequal %}
+                    {% ifnotequal object.latest_data.faction_name '' %}
+                        <li>{% trans "Faction Name" %}: {{ object.latest_data.faction_name }}</li>
+                    {% endifnotequal %}
+                    {% ifnotequal object.latest_data.permit_type '' %}
+                        <li>{% trans "Permit Type" %}: {{ object.latest_data.permit_type }}</li>
+                    {% endifnotequal %}
+                </ul>
+            </section>
+        <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Represents" %}</h2></header>
+                <ul>
+                    {% for represent in represents %}
+                        <li>{{ represent.latest_data.name }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </div>
+{% endblock %}

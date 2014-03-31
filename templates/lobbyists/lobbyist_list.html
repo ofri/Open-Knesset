@@ -1,0 +1,30 @@
+{% extends "site_base.html" %}
+{% load i18n i18ninclude mks_tags %}{% load static from staticfiles %}
+{% block extratitle %}{% trans "Lobbyists" %}{% endblock %}
+{% block keywords %}{{% trans "Lobbyists" %}{% endblock %}
+{% block description %}{% trans "Lobbyists" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block breadcrumbs %}
+            <li class="active">{% trans "Lobbyists" %}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="cards span12">
+            <section class="card card-list">
+                <header>
+                    <h2><i class="fa fa-users"></i>{% trans "Lobbyists" %}</h2>
+                </header>
+                <ul>
+                    {% for lobbyist in object_list %}
+                    <li>
+                        <p class="item-title">
+                        <a id="detail-{{ lobbyist.id }}" href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
+                        {% comment %}<p class="item-context">{{ o.description|linebreaksbr }}</p>{% endcomment %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </div>
+{% endblock %}
