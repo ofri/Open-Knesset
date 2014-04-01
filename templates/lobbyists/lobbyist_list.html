@@ -5,7 +5,13 @@
 {% block description %}{% trans "Lobbyists" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block breadcrumbs %}
-            <li class="active">{% trans "Lobbyists" %}</li>
+    {% if is_historical %}
+        <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
+        <li class="active">{% trans "Historical Data" %} <span class="divider">/</span></li>
+        <li class="active">{{ lobbyist_history.scrape_time | date:"d/m/y H:i"}}</li>
+    {% else %}
+        <li class="active">{% trans "Lobbyists" %}</li>
+    {% endif %}
 {% endblock %}
 
 {% block divcontent %}
@@ -18,13 +24,32 @@
                 <ul>
                     {% for lobbyist in object_list %}
                     <li>
-                        <p class="item-title">
-                        <a id="detail-{{ lobbyist.id }}" href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
-                        {% comment %}<p class="item-context">{{ o.description|linebreaksbr }}</p>{% endcomment %}
+                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
                     </li>
                     {% endfor %}
                 </ul>
             </section>
+            
+            {% if history %}
+            <section class="card card-list">
+                <header>
+                    <h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2>
+                </header>
+                <ul>
+                    {% for lobbyist_history in history %}
+                    <li>
+                        <p class="item-title">{{ lobbyist_history.scrape_time | date:"d/m/y H:i" }}</p>
+                        {% if forloop.first %}
+                        <p class="item-context">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %} - {% trans "Current Lobbyists" %}</p>
+                        {% else %}
+                        <p class="item-context"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %}</a></p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
+
