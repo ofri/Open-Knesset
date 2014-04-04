@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-{% load i18n i18ninclude mks_tags %}{% load static from staticfiles %}
+{% load i18n i18ninclude mks_tags lobbyists_tags %}{% load static from staticfiles %}
 {% block extratitle %}{% trans "Lobbyists" %}{% endblock %}
 {% block keywords %}{{% trans "Lobbyists" %}{% endblock %}
 {% block description %}{% trans "Lobbyists" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
@@ -25,6 +25,20 @@
                     {% for lobbyist in object_list %}
                     <li>
                         <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
+                        <p class="item-context">
+                            {% if lobbyist.latest_data.profession %}{{ lobbyist.latest_data.profession }}, {% endif %}
+                            {% if lobbyist.latest_corporation.name %}<a href="{% url 'lobbyist-corporation' lobbyist.latest_corporation.id %}">{{ lobbyist.latest_corporation.name }}</a>, {% endif %}
+                            {% if lobbyist.latest_data.faction_member and lobbyist.latest_data.faction_member != "לא" %}
+                                {% trans "Faction member" %}: {% if lobbyist.latest_data.faction_name %}
+                                    {{ lobbyist.latest_data.faction_name }}
+                                {% else %}
+                                    {% trans "Unknown" %}
+                                {% endif %},
+                            {% endif %}
+                            {% trans "Permit type" %}: {% if lobbyist.latest_data.permit_type %}{{ lobbyist.latest_data.permit_type }}{% else %}{% trans "Unknown" %}{% endif %}
+                            <br/>
+                            {% trans "Last change" %}: {{ lobbyist.latest_data.scrape_time }}
+                        </p>
                     </li>
                     {% endfor %}
                 </ul>
@@ -39,10 +53,11 @@
                         {% if corporation.name or corporation.source_id %}
                             <li>
                                 <p class="item-title">
-                                    {% if corporation.name %}{{ corporation.name }}{% else %}{{ corporation.source_id }}{% endif %}
+                                    <a href="{% url 'lobbyist-corporation' corporation.id %}">{% if corporation.name %}{{ corporation.name }}{% else %}{{ corporation.source_id }}{% endif %}</a>
                                 </p>
                                 <p class="item-context">
-                                    <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation.latest_data.lobbyists.count }} {% trans "Lobbyists" %}</a>
+                                    {{ corporation.latest_data.lobbyists.count }} {% trans "Lobbyists" %},
+                                    {% trans "Last change" %}: {{ corporation.latest_data.scrape_time }}
                                 </p>
                             </li>
                         {% endif %}
@@ -59,11 +74,11 @@
                     <ul>
                         {% for lobbyist_history in history %}
                         <li>
-                            <p class="item-title">{{ lobbyist_history.scrape_time }}</p>
-                            {% if forloop.first %}
-                            <p class="item-context">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %} - {% trans "Current Lobbyists" %}</p>
+                            <p class="item-title"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.scrape_time }}</a></p>
+                            {% if not forloop.first %}
+                            <p class="item-context">{% trans "Current Lobbyists" %}</p>
                             {% else %}
-                            <p class="item-context"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %}</a></p>
+                            <p class="item-context">{% lobbyists_diff lobbyist_history %}</p>
                             {% endif %}
                         </li>
                         {% endfor %}

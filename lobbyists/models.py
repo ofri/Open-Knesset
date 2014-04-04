@@ -28,6 +28,18 @@ class LobbyistHistory(models.Model):
                 corporation_ids.append(corporation.id)
         return LobbyistCorporation.objects.filter(id__in=corporation_ids)
 
+    # def get_lobbyists_diff(self):
+    #     added = []
+    #     deleted = []
+    #     next_history = LobbyistHistory.objects.filter(scrape_time__isnull=False, scrape_time__gt=self.scrape_time).order_by('scrape_time')[0]
+    #     for lobbyist in next_history.lobbyists:
+    #         if lobbyist not in self.lobbyists:
+    #             added.append(lobbyist)
+    #     for lobbyist in self.lobbyists:
+    #         if lobbyist not in next_history.lobbyists:
+    #             deleted.append(lobbyist)
+    #     return (added, deleted)
+
 
 class Lobbyist(models.Model):
     """

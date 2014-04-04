@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from models import LobbyistHistory, Lobbyist, LobbyistCorporation, LobbyistCorporationData, LobbyistData
+from django.core.exceptions import ObjectDoesNotExist
 
 class LobbyistsIndexView(ListView):
 
@@ -20,7 +21,10 @@ class LobbyistsIndexView(ListView):
         else:
             context['is_historical'] = True
             context['lobbyist_history'] = LobbyistHistory.objects.get(id=pk)
-            context['corporations'] = context['lobbyist_history'].corporations.order_by('name')
+            try:
+                context['corporations'] = context['lobbyist_history'].corporations.order_by('name')
+            except ObjectDoesNotExist:
+                pass
         return context
 
 
