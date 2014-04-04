@@ -19,6 +19,15 @@ class LobbyistHistory(models.Model):
 
     objects = LobbyistHistoryManager()
 
+    @property
+    def corporations(self):
+        corporation_ids = []
+        for lobbyist in self.lobbyists.all():
+            corporation = lobbyist.latest_corporation
+            if corporation.id not in corporation_ids:
+                corporation_ids.append(corporation.id)
+        return LobbyistCorporation.objects.filter(id__in=corporation_ids)
+
 
 class Lobbyist(models.Model):
     """
@@ -39,6 +48,9 @@ class Lobbyist(models.Model):
     @property
     def latest_corporation(self):
         return self.lobbyistcorporationdata_set.filter(scrape_time__isnull=False).latest('scrape_time').corporation
+
+    def __unicode__(self):
+        return self.person
 
         
 class LobbyistData(models.Model):
@@ -61,16 +73,14 @@ class LobbyistData(models.Model):
     permit_type = models.CharField(blank=True, null=True, max_length=100)
     represents = models.ManyToManyField('lobbyists.LobbyistRepresent')
 
+    def __unicode__(self):
+        return '%s %s'%(self.first_name, self.family_name)
+
 
 class LobbyistCorporationManager(models.Manager):
 
     def current_corporations(self):
-        corporation_ids = []
-        for lobbyist in LobbyistHistory.objects.latest().lobbyists.all():
-            corporation = lobbyist.latest_corporation
-            if corporation.id not in corporation_ids:
-                corporation_ids.append(corporation.id)
-        return self.filter(id__in=corporation_ids)
+        return LobbyistHistory.objects.latest().corporations
 
 
 class LobbyistCorporation(models.Model):
@@ -82,12 +92,15 @@ class LobbyistCorporation(models.Model):
     """
     name = models.CharField(blank=True, null=True, max_length=100)
     source_id = models.CharField(blank=True, null=True, max_length=20)
-    
+
+    objects = LobbyistCorporationManager()
+
     @property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
-    objects = LobbyistCorporationManager()
+    def __unicode__(self):
+        return self.name
         
     
 class LobbyistCorporationData(models.Model):
@@ -100,7 +113,10 @@ class LobbyistCorporationData(models.Model):
     name = models.CharField(blank=True, null=True, max_length=100)
     source_id = models.CharField(blank=True, null=True, max_length=20)
     lobbyists = models.ManyToManyField('lobbyists.Lobbyist')
-    
+
+    def __unicode__(self):
+        return self.name
+
     
 class LobbyistRepresent(models.Model):
     """

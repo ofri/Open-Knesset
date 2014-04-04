@@ -99,7 +99,7 @@ class LobbyistScraper(BaseScraper):
             'first_name': soup.find('d:first_name').text.strip(),
             'family_name': soup.find('d:family_name').text.strip(),
             'profession': soup.find('d:profession').text.strip(),
-            'corporation_name': soup.find('d:corporation_name').text.strip()+'x',
+            'corporation_name': soup.find('d:corporation_name').text.strip(),
             'corporation_id': soup.find('d:corporation_id').text.strip(),
             'faction_member': soup.find('d:faction_member').text.strip(),
             'faction_name': soup.find('d:faction_name').text.strip(),

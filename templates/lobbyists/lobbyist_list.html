@@ -29,25 +29,47 @@
                     {% endfor %}
                 </ul>
             </section>
-            
-            {% if history %}
-            <section class="card card-list">
-                <header>
-                    <h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2>
-                </header>
-                <ul>
-                    {% for lobbyist_history in history %}
-                    <li>
-                        <p class="item-title">{{ lobbyist_history.scrape_time | date:"d/m/y H:i" }}</p>
-                        {% if forloop.first %}
-                        <p class="item-context">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %} - {% trans "Current Lobbyists" %}</p>
-                        {% else %}
-                        <p class="item-context"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %}</a></p>
+            {% if corporations %}
+                <section class="card card-list">
+                    <header>
+                        <h2><i class="fa fa-users"></i>{% trans "Corporations" %}</h2>
+                    </header>
+                    <ul>
+                        {% for corporation in corporations %}
+                        {% if corporation.name or corporation.source_id %}
+                            <li>
+                                <p class="item-title">
+                                    {% if corporation.name %}{{ corporation.name }}{% else %}{{ corporation.source_id }}{% endif %}
+                                </p>
+                                <p class="item-context">
+                                    <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation.latest_data.lobbyists.count }} {% trans "Lobbyists" %}</a>
+                                </p>
+                            </li>
                         {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </section>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+            {% if not is_historical %}
+                {% if history %}
+                <section class="card card-list">
+                    <header>
+                        <h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2>
+                    </header>
+                    <ul>
+                        {% for lobbyist_history in history %}
+                        <li>
+                            <p class="item-title">{{ lobbyist_history.scrape_time }}</p>
+                            {% if forloop.first %}
+                            <p class="item-context">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %} - {% trans "Current Lobbyists" %}</p>
+                            {% else %}
+                            <p class="item-context"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.lobbyists.count }} {% trans "Lobbyists" %}</a></p>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endif %}
             {% endif %}
         </div>
     </div>

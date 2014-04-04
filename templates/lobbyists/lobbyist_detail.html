@@ -6,38 +6,39 @@
 
 {% block breadcrumbs %}
         <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
-        <li class="active">{{ object.person.name }}</li>
+        {% if is_historical %}
+            <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a> <span class="divider">/</span></li>
+            <li>{% trans "Historical Data" %} <span class="divider">/</span></li>
+            <li class="active">{{ object.scrape_time }}</li>
+        {% else %}
+            <li class="active">{{ object }}</li>
+        {% endif %}
 {% endblock %}
 
 {% block divcontent %}
     <div class="row">
         <div class="cards span12">
             <section class="card card-list">
-                <header><h2><i class="fa fa-users"></i>{{ object.person.name }}</h2></header>
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
                 <ul>
-                    {% ifnotequal object.latest_data.corporation_name '' %}
-                        <li>{% trans "Corporation" %}: {{ object.latest_data.corporation_name }}</li>
-                    {% endifnotequal %}
-                    {% ifnotequal object.latest_data.corporation_id '' %}
-                        <li>{% trans "Corporation Id" %}: {{ object.latest_data.corporation_id }}</li>
-                    {% endifnotequal %}
-                    {% ifnotequal object.latest_data.profession '' %}
-                        <li>{% trans "Profession" %}: {{ object.latest_data.profession }}</li>
-                    {% endifnotequal %}
-                    {% ifnotequal object.latest_data.faction_member 'לא' %}
-                        {% ifnotequal object.latest_data.faction_member '' %}
-                            <li>{% trans "Faction Member?" %} {{ object.latest_data.faction_member }}</li>
+                    <li>{% trans "Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a></li>
+                    {% if data.profession %}
+                        <li>{% trans "Profession" %}: {{ data.profession }}</li>
+                    {% endif %}
+                    {% if data.faction_member %}
+                        {% ifnotequal data.faction_member 'לא' %}
+                            <li>{% trans "Faction Member?" %} {{ data.faction_member }}</li>
                         {% endifnotequal %}
-                    {% endifnotequal %}
-                    {% ifnotequal object.latest_data.faction_name '' %}
-                        <li>{% trans "Faction Name" %}: {{ object.latest_data.faction_name }}</li>
-                    {% endifnotequal %}
-                    {% ifnotequal object.latest_data.permit_type '' %}
-                        <li>{% trans "Permit Type" %}: {{ object.latest_data.permit_type }}</li>
-                    {% endifnotequal %}
+                    {% endif %}
+                    {% if data.faction_name %}
+                        <li>{% trans "Faction Name" %}: {{ data.faction_name }}</li>
+                    {% endif %}
+                    {% if data.permit_type %}
+                        <li>{% trans "Permit Type" %}: {{ data.permit_type }}</li>
+                    {% endif %}
                 </ul>
             </section>
-        <section class="card card-list">
+            <section class="card card-list">
                 <header><h2><i class="fa fa-users"></i>{% trans "Represents" %}</h2></header>
                 <ul>
                     {% for represent in represents %}
@@ -45,6 +46,22 @@
                     {% endfor %}
                 </ul>
             </section>
+            {% if history %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2></header>
+                <ul>
+                    {% for lobbyist_data in history %}
+                    <li>
+                        {% if forloop.first %}
+                            <p class="item-context">{{ lobbyist_data.scrape_time }} - {% trans "Current Data" %}</p>
+                        {% else %}
+                            <p class="item-context"><a href="{% url 'lobbyist-detail' object.id lobbyist_data.id %}">{{ lobbyist_data.scrape_time }}</a></p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
