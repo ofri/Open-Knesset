@@ -16,7 +16,13 @@ class LobbyistsIndexView(ListView):
         pk = self.kwargs.get('pk', None)
         if pk is None:
             context['is_historical'] = False
-            context['history'] = LobbyistHistory.objects.filter(scrape_time__isnull=False).order_by('-scrape_time')
+            context['history'] = []
+            prev_lobbyist_history = None
+            for lobbyist_history in LobbyistHistory.objects.filter(scrape_time__isnull=False).order_by('-scrape_time'):
+                if prev_lobbyist_history is not None:
+                    context['history'].append((prev_lobbyist_history, lobbyist_history))
+                prev_lobbyist_history = lobbyist_history
+            context['history'].append((prev_lobbyist_history, None))
             context['corporations'] = LobbyistCorporation.objects.current_corporations().order_by('name')
         else:
             context['is_historical'] = True

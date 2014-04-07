@@ -1,0 +1,8 @@
+{% load i18n %}
+{% if added %}
+    {% trans "Added" %} {{ added|length }} {% trans "Lobbyists" %}
+{% endif %}
+{% if added and deleted %}, {% endif %}
+{% if deleted %}
+    {% trans "Deleted" %} {{ deleted|length }} {% trans "Lobbyists" %}
+{% endif %}

@@ -28,17 +28,21 @@ class LobbyistHistory(models.Model):
                 corporation_ids.append(corporation.id)
         return LobbyistCorporation.objects.filter(id__in=corporation_ids)
 
-    # def get_lobbyists_diff(self):
-    #     added = []
-    #     deleted = []
-    #     next_history = LobbyistHistory.objects.filter(scrape_time__isnull=False, scrape_time__gt=self.scrape_time).order_by('scrape_time')[0]
-    #     for lobbyist in next_history.lobbyists:
-    #         if lobbyist not in self.lobbyists:
-    #             added.append(lobbyist)
-    #     for lobbyist in self.lobbyists:
-    #         if lobbyist not in next_history.lobbyists:
-    #             deleted.append(lobbyist)
-    #     return (added, deleted)
+    def diff(self, other_history):
+        """
+        returns a diff with added and deleted lobbyists between this history and the other_history
+        e.g. if this history has lobbyists 1,2,3 and other_history has lobbyists 3,4,5
+        then the result will be: added = 4,5  deleted = 1,2
+        """
+        added = []
+        deleted = []
+        for lobbyist in other_history.lobbyists.all():
+            if lobbyist not in self.lobbyists.all():
+                added.append(lobbyist)
+            for lobbyist in self.lobbyists.all():
+                if lobbyist not in other_history.lobbyists.all():
+                    deleted.append(lobbyist)
+        return (added, deleted)
 
 
 class Lobbyist(models.Model):

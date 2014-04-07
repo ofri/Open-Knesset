@@ -98,9 +98,9 @@ class MainScraper(BaseScraper):
 
     def _scrape(self):
         lobbyist_ids = self.source.fetch()
-        #i=0
+        i=0
         for lobbyist_id in lobbyist_ids:
             lobbyist = LobbyistScraper().scrape(lobbyist_id)
             self.storage.store(lobbyist)
-            #i+=1
-            #if i>5: break
+            i+=1
+            if i>5: break

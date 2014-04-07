@@ -24,7 +24,7 @@
                 <ul>
                     {% for lobbyist in object_list %}
                     <li>
-                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
+                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist}}</a></p>
                         <p class="item-context">
                             {% if lobbyist.latest_data.profession %}{{ lobbyist.latest_data.profession }}, {% endif %}
                             {% if lobbyist.latest_corporation.name %}<a href="{% url 'lobbyist-corporation' lobbyist.latest_corporation.id %}">{{ lobbyist.latest_corporation.name }}</a>, {% endif %}
@@ -37,7 +37,7 @@
                             {% endif %}
                             {% trans "Permit type" %}: {% if lobbyist.latest_data.permit_type %}{{ lobbyist.latest_data.permit_type }}{% else %}{% trans "Unknown" %}{% endif %}
                             <br/>
-                            {% trans "Last change" %}: {{ lobbyist.latest_data.scrape_time }}
+                            {% trans "Last change" %}: {{ lobbyist.latest_data.scrape_time|date:"DATE_FORMAT" }}
                         </p>
                     </li>
                     {% endfor %}
@@ -57,7 +57,7 @@
                                 </p>
                                 <p class="item-context">
                                     {{ corporation.latest_data.lobbyists.count }} {% trans "Lobbyists" %},
-                                    {% trans "Last change" %}: {{ corporation.latest_data.scrape_time }}
+                                    {% trans "Last change" %}: {{ corporation.latest_data.scrape_time|date:"DATE_FORMAT" }}
                                 </p>
                             </li>
                         {% endif %}
@@ -72,13 +72,14 @@
                         <h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2>
                     </header>
                     <ul>
-                        {% for lobbyist_history in history %}
+                        {% for lobbyist_history, next_lobbyist_history in history %}
                         <li>
-                            <p class="item-title"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.scrape_time }}</a></p>
-                            {% if not forloop.first %}
-                            <p class="item-context">{% trans "Current Lobbyists" %}</p>
-                            {% else %}
-                            <p class="item-context">{% lobbyists_diff lobbyist_history %}</p>
+                            <p class="item-title"><a href="{% url 'lobbyists' lobbyist_history.id %}">{{ lobbyist_history.scrape_time|date:"DATE_FORMAT" }}</a></p>
+                            {% if next_lobbyist_history %}
+                                {% if forloop.first %}
+                                    <p class="item-context">{% trans "Current Lobbyists" %}</p>
+                                {% endif  %}
+                                <p class="item-context">{% lobbyists_diff next_lobbyist_history lobbyist_history %}</p>
                             {% endif %}
                         </li>
                         {% endfor %}
