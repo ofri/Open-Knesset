@@ -31,9 +31,9 @@ Python
     Python 2.7 install (click to enlarge)
 
 `Download the latest Python 2.7`_ MSI installer matching your architecture
-(32 or 64 bit). As of this writing, the latest one is `2.7.3`_.
+(32 or 64 bit). As of this writing, the latest one is `2.7.6`_.
 
-.. _2.7.3: http://www.python.org/download/releases/2.7.3/
+.. _2.7.6: http://www.python.org/download/releases/2.7.6/
 .. _Download the latest Python 2.7: http://python.org/download/releases/
 
 Once downloaded, run the installer, and accept defaults.
