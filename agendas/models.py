@@ -122,7 +122,7 @@ class AgendaVote(models.Model):
                                           votes=1,
                                           score=agendaScore * (1 if vote_action.type == 'for' else -1),
                                           for_votes=(1 if vote_action.type == 'for' else 0),
-                                          against_votes=(1 if vote_action.type == 'against' else -1))
+                                          against_votes=(1 if vote_action.type == 'against' else 0))
                 newObjects.append(mkSummary)
             else:
                 voters[vote_action.type].append(vote_action.member_id)
