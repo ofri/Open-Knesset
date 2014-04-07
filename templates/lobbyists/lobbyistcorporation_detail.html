@@ -1,0 +1,73 @@
+{% extends "site_base.html" %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
+{% block extratitle %}{{ object }}{% endblock %}
+{% block keywords %}{{ object }}{% endblock %}
+{% block description %}{{ object }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
+    <li>{% trans "Corporations" %} <span class="divider">/</span></li>
+    {% if is_historical %}
+        <li><a href="{% url 'lobbyist-corporation' corporation.id %}">{{ object }}</a> <span class="divider">/</span></li>
+        <li>{% trans "Historical Data" %} <span class="divider">/</span></li>
+        <li class="active">{{ object.scrape_time }}</li>
+    {% else %}
+        <li class="active">{{ object }}</li>
+    {% endif %}
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="cards span12">
+            {% if warning_old_corporation %}
+                <section class="card card-list">
+                    <header><h2><i class="fa fa-users"></i>{% trans "Warning" %}</h2></header>
+                    <ul>
+                        <li>{% trans "This corporation is old - all the lobbyists related to it are not currently active" %}</li>
+                    </ul>
+                </section>
+            {% endif %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Corporation" %}</h2></header>
+                <ul>
+                    {% if is_historical %}
+                        <li>{% trans "Scrape Time" %}: {{ object.scrape_time }}</li>
+                    {% endif %}
+                    {% if object.name %}
+                        <li>{% trans "Name" %}: {{ object.name }}</li>
+                    {% endif %}
+                    {% if object.source_id %}
+                        <li>{% trans "Corporation Id" %}: {{ object.source_id }}</li>
+                    {% endif %}
+                </ul>
+            </section>
+            {% if lobbyists %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyists" %}</h2></header>
+                <ul>
+                    {% for lobbyist in lobbyists %}
+                        <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+            {% if history %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2></header>
+                <ul>
+                    {% for corporation_data in history %}
+                    <li>
+                        <p class="item-title">{{ corporation_data.scrape_time }}</p>
+                        {% if forloop.first %}
+                            <p class="item-context">{{ corporation_data.lobbyists.count }} {% trans "Lobbyists" %} - {% trans "Current Lobbyists" %}</p>
+                        {% else %}
+                            <p class="item-context"><a href="{% url 'lobbyist-corporation' object.id corporation_data.id %}">{{ corporation_data.lobbyists.count }} {% trans "Lobbyists" %}</a></p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

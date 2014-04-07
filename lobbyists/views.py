@@ -1,5 +1,6 @@
-from django.views.generic import ListView, DetailView, TemplateView
-from models import LobbyistHistory, Lobbyist, LobbyistData
+from django.views.generic import ListView, DetailView
+from models import LobbyistHistory, Lobbyist, LobbyistCorporation, LobbyistCorporationData, LobbyistData
+from django.core.exceptions import ObjectDoesNotExist
 
 class LobbyistsIndexView(ListView):
 
@@ -16,9 +17,14 @@ class LobbyistsIndexView(ListView):
         if pk is None:
             context['is_historical'] = False
             context['history'] = LobbyistHistory.objects.filter(scrape_time__isnull=False).order_by('-scrape_time')
+            context['corporations'] = LobbyistCorporation.objects.current_corporations().order_by('name')
         else:
             context['is_historical'] = True
             context['lobbyist_history'] = LobbyistHistory.objects.get(id=pk)
+            try:
+                context['corporations'] = context['lobbyist_history'].corporations.order_by('name')
+            except ObjectDoesNotExist:
+                pass
         return context
 
 
@@ -28,19 +34,41 @@ class LobbyistDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LobbyistDetailView, self).get_context_data(**kwargs)
-        context['represents'] = context['object'].latest_data.represents.all()
+        data_id = self.kwargs.get('sk', None)
+        if data_id is None:
+            context['is_historical'] = False
+            context['represents'] = context['object'].latest_data.represents.all()
+            context['history'] = context['object'].data.order_by('-scrape_time')
+            context['corporation'] = context['object'].latest_corporation
+            context['data'] = context['object'].latest_data
+        else:
+            context['is_historical'] = True
+            data = LobbyistData.objects.get(id=data_id)
+            context['lobbyist'] = context['object']
+            context['object'] = data
+            context['data'] = data
+            context['represents'] = data.represents.all()
+            context['corporation'] = LobbyistCorporation.objects.get(source_id=data.corporation_id, name=data.corporation_name)
         return context
 
 
-class LobbyistCorporationDetailView(TemplateView):
+class LobbyistCorporationDetailView(DetailView):
 
-    template_name = "lobbyists/lobbyist_corporation_detail.html"
+    model = LobbyistCorporation
 
     def get_context_data(self, **kwargs):
-        corporation_id = self.kwargs.get('hp', None)
-        lobbyist = LobbyistData.objects.latest_lobbyist_corporation(corporation_id = corporation_id)
-        return {
-            'corporation_name': lobbyist.corporation_name,
-            'corporation_id': corporation_id,
-            'lobbyists': LobbyistData.objects.get_corporation_lobbyists(corporation_id=corporation_id)
-        }
+        context = super(LobbyistCorporationDetailView, self).get_context_data(**kwargs)
+        data_id = self.kwargs.get('sk', None)
+        if data_id is None:
+            context['is_historical'] = False
+            context['lobbyists'] = context['object'].latest_data.lobbyists.order_by('person__name')
+            context['history'] = context['object'].data.order_by('-scrape_time')
+            if context['object'] not in LobbyistCorporation.objects.current_corporations():
+                context['warning_old_corporation'] = True
+        else:
+            data = LobbyistCorporationData.objects.get(id=data_id)
+            context['is_historical'] = True
+            context['corporation'] = context['object']
+            context['object'] = data
+            context['lobbyists'] = data.lobbyists.order_by('person__name')
+        return context
