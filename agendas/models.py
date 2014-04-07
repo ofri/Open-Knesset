@@ -117,7 +117,7 @@ class AgendaVote(models.Model):
             newObjects.append(agendaSummary)
         voters = defaultdict(list)
         #TODO: Parties should be a sub dict, aggregating total +/- for party
-        parties = defaultdict(int)
+        parties = defaultdict(list)
         for vote_action in self.vote.voteaction_set.all():
             mkSummary = agendasByMk.get(vote_action.member_id, None)
             partySummary = agendasByParty.get(vote_action.member.current_party_id, None)
@@ -129,7 +129,7 @@ class AgendaVote(models.Model):
                                           votes=1,
                                           score=agendaScore * (1 if vote_action.type == 'for' else -1),
                                           for_votes=(1 if vote_action.type == 'for' else 0),
-                                          against_votes=(1 if vote_action.type == 'against' else -1))
+                                          against_votes=(1 if vote_action.type == 'against' else 0))
                 newObjects.append(mkSummary)
             else:
                 voters[vote_action.type].append(vote_action.member_id)
