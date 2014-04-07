@@ -1,5 +1,5 @@
-from django.views.generic import ListView, DetailView
-from models import LobbyistHistory, Lobbyist
+from django.views.generic import ListView, DetailView, TemplateView
+from models import LobbyistHistory, Lobbyist, LobbyistData
 
 class LobbyistsIndexView(ListView):
 
@@ -30,3 +30,17 @@ class LobbyistDetailView(DetailView):
         context = super(LobbyistDetailView, self).get_context_data(**kwargs)
         context['represents'] = context['object'].latest_data.represents.all()
         return context
+
+
+class LobbyistCorporationDetailView(TemplateView):
+
+    template_name = "lobbyists/lobbyist_corporation_detail.html"
+
+    def get_context_data(self, **kwargs):
+        corporation_id = self.kwargs.get('hp', None)
+        lobbyist = LobbyistData.objects.latest_lobbyist_corporation(corporation_id = corporation_id)
+        return {
+            'corporation_name': lobbyist.corporation_name,
+            'corporation_id': corporation_id,
+            'lobbyists': LobbyistData.objects.get_corporation_lobbyists(corporation_id=corporation_id)
+        }

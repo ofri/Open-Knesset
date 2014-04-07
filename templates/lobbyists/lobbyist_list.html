@@ -24,7 +24,21 @@
                 <ul>
                     {% for lobbyist in object_list %}
                     <li>
-                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.person.name}}</a></p>
+                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist.person }}</a></p>
+                        {% if not is_historical %}
+                            <p class="item-context">
+                                {{ lobbyist.latest_data.profession }}
+                                {% if lobbyist.latest_data.profession and lobbyist.latest_data.corporation_name %}, {% endif %}
+                                {% if lobbyist.latest_data.corporation_id %}
+                                    <a href="{% url 'lobbyist-corporation' lobbyist.latest_data.corporation_id %}">{{ lobbyist.latest_data.corporation_name }}</a>
+                                {% else %}
+                                    {{ lobbyist.latest_data.corporation_name }}
+                                {% endif %}
+                            </p>
+                            <p class="item-context">
+                                {{ lobbyist.latest_data.corporation_id }}
+                            </p>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>

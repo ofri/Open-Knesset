@@ -2,6 +2,7 @@
 
 from django.db import models
 
+
 class LobbyistHistoryManager(models.Manager):
 
     def latest(self):
@@ -36,6 +37,19 @@ class Lobbyist(models.Model):
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
+
+class LobbyistDataManager(models.Manager):
+
+    def latest_lobbyist_corporation(self, corporation_id):
+        return self.filter(corporation_id = corporation_id, scrape_time__isnull=False).latest('scrape_time')
+
+    def get_corporation_lobbyists(self, corporation_id):
+        lobbyists = []
+        for lobbyist in LobbyistHistory.objects.latest().lobbyists.all():
+            lobbyists.append(lobbyist) if lobbyist.latest_data.corporation_id == corporation_id else None
+        return lobbyists
+
+
 class LobbyistData(models.Model):
     """
     this model represents the data of a lobbyist in a certain point of time
@@ -55,6 +69,9 @@ class LobbyistData(models.Model):
     permit_type = models.CharField(blank=True, null=True, max_length=100)
     represents = models.ManyToManyField('lobbyists.LobbyistRepresent')
 
+    objects = LobbyistDataManager()
+
+
 class LobbyistRepresent(models.Model):
     """
     this model represents a single represent record and is connected to the LobbyistData represents field
@@ -68,6 +85,7 @@ class LobbyistRepresent(models.Model):
     @property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
+
 
 class LobbyistRepresentData(models.Model):
     """
