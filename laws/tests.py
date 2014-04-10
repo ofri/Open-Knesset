@@ -1,5 +1,5 @@
 # encoding: utf-8
-from datetime import date,datetime
+from datetime import date, datetime, timedelta
 import urllib
 from django.test import TestCase
 from django.conf import settings
@@ -15,7 +15,7 @@ from tagging.models import Tag, TaggedItem
 import unittest
 
 from laws.models import Vote,Law, Bill,KnessetProposal, BillBudgetEstimation
-from mks.models import Member, Party, Membership
+from mks.models import Member, Party, Membership, Knesset
 from agendas.models import Agenda, AgendaVote
 
 just_id = lambda x: x.id
@@ -24,6 +24,11 @@ APP='laws'
 class BillViewsTest(TestCase):
 
     def setUp(self):
+
+        d = date.today()
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=d - timedelta(10))
         self.vote_1 = Vote.objects.create(time=datetime.now(),
                                           title='vote 1')
         self.vote_2 = Vote.objects.create(time=datetime.now(),
@@ -81,8 +86,8 @@ class BillViewsTest(TestCase):
         res = self.client.get(reverse('bill-list'), {'member':'0'})
         self.assertEqual(res.status_code,404)
 
-    def testBillListByBooklet(self):
-        res = self.client.get(reverse('bill-list'), {'booklet': '2'})
+    def testBillListByKnessetBooklet(self):
+        res = self.client.get(reverse('bill-list'), {'knesset_booklet': '2'})
         object_list = res.context['object_list']
         self.assertEqual(map(just_id, object_list), [self.bill_1.id])
 
@@ -518,6 +523,10 @@ class ProposalModelTest(TestCase):
 class APIv2Test(TestCase):
 
     def setUp(self):
+        d = date.today()
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=d - timedelta(10))
         self.url_prefix = '/api/v2'
         self.vote_1 = Vote.objects.create(time=datetime.now(),
                                           title='vote 1')
