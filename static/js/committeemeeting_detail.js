@@ -42,7 +42,7 @@ $(function(){
         annotation_objects[a].importQuotes();
         annotation_objects[a].insertQuotes();
     }
-    $(".annotationform-link").live("click", function(e){
+    $(document).on("click", ".annotationform-link", function(e){
       e.preventDefault();
       if (!window.logged_in) {
           var msg = gettext("Sorry, only logged users can annotate.");
