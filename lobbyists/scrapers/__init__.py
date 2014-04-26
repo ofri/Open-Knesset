@@ -103,4 +103,4 @@ class MainScraper(BaseScraper):
             lobbyist = LobbyistScraper().scrape(lobbyist_id)
             self.storage.store(lobbyist)
             i+=1
-            if i>5: break
+            #if i>5: break

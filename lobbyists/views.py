@@ -1,13 +1,14 @@
 from django.views.generic import ListView, DetailView
 from models import LobbyistHistory, Lobbyist, LobbyistCorporation, LobbyistCorporationData, LobbyistData
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import cache
 
 class LobbyistsIndexView(ListView):
 
     def get_queryset(self):
         pk = self.kwargs.get('pk', None)
         if pk is None:
-            return LobbyistHistory.objects.latest().lobbyists.order_by('person__name')
+            return LobbyistHistory.objects.latest().lobbyists.select_related('person').order_by('person__name')
         else:
             return LobbyistHistory.objects.get(id=pk).lobbyists.order_by('person__name')
         
@@ -24,6 +25,7 @@ class LobbyistsIndexView(ListView):
                 prev_lobbyist_history = lobbyist_history
             context['history'].append((prev_lobbyist_history, None))
             context['corporations'] = LobbyistCorporation.objects.current_corporations().order_by('name')
+            object_list_cache_key_suffix = 'LobbyistsIndexView'
         else:
             context['is_historical'] = True
             context['lobbyist_history'] = LobbyistHistory.objects.get(id=pk)
@@ -31,6 +33,8 @@ class LobbyistsIndexView(ListView):
                 context['corporations'] = context['lobbyist_history'].corporations.order_by('name')
             except ObjectDoesNotExist:
                 pass
+            object_list_cache_key_suffix = 'LobbyistsIndexView_%d' % pk
+        context['object_list'] = LobbyistHistory.objects.get_cache_lobbyists_data(context['object_list'], object_list_cache_key_suffix)
         return context
 
 

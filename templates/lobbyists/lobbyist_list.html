@@ -24,7 +24,7 @@
                 <ul>
                     {% for lobbyist in object_list %}
                     <li>
-                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist}}</a></p>
+                        <p class="item-title"><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{lobbyist.display_name}}</a></p>
                         <p class="item-context">
                             {% if lobbyist.latest_data.profession %}{{ lobbyist.latest_data.profession }}, {% endif %}
                             {% if lobbyist.latest_corporation.name %}<a href="{% url 'lobbyist-corporation' lobbyist.latest_corporation.id %}">{{ lobbyist.latest_corporation.name }}</a>, {% endif %}
@@ -43,7 +43,7 @@
                     {% endfor %}
                 </ul>
             </section>
-            {% if corporations %}
+            {% comment %}{% if corporations %}
                 <section class="card card-list">
                     <header>
                         <h2><i class="fa fa-users"></i>{% trans "Corporations" %}</h2>
@@ -86,7 +86,7 @@
                     </ul>
                 </section>
                 {% endif %}
-            {% endif %}
+            {% endif %}{% endcomment %}
         </div>
     </div>
 {% endblock %}

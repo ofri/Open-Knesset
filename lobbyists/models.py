@@ -1,13 +1,41 @@
 # encoding: utf-8
 
 from django.db import models
-
+from django.core.cache import cache
+from django.utils.functional import cached_property
 
 class LobbyistHistoryManager(models.Manager):
 
     def latest(self):
         return self.filter(scrape_time__isnull=False).latest('scrape_time')
 
+    def get_cache_lobbyists_data(self, lobbyists, cache_key_suffix):
+        """
+        A common operation but quite expensive is to show data about a list of lobbyists
+        This method allows to cache all the data in a consistent manner
+        """
+        cache_key = 'LobbyistHistoryManager_lobbyistsdata_%s' % cache_key_suffix
+        lobbyists_data = cache.get(cache_key)
+        if not lobbyists_data:
+            lobbyists_data = []
+            for lobbyist in lobbyists:
+                lobbyists_data.append({
+                    'id': lobbyist.id,
+                    'display_name': unicode(lobbyist.person),
+                    'latest_data': {
+                        'profession': lobbyist.latest_data.profession,
+                        'faction_member': lobbyist.latest_data.faction_member,
+                        'faction_name': lobbyist.latest_data.faction_name,
+                        'permit_type': lobbyist.latest_data.permit_type,
+                        'scrape_time': lobbyist.latest_data.scrape_time,
+                    },
+                    'latest_corporation': {
+                        'name': lobbyist.latest_corporation.name,
+                        'id': lobbyist.latest_corporation.id,
+                    },
+                })
+            cache.set(cache_key, lobbyists_data, 86400)
+        return lobbyists_data
 
 class LobbyistHistory(models.Model):
     """
@@ -21,11 +49,19 @@ class LobbyistHistory(models.Model):
 
     @property
     def corporations(self):
-        corporation_ids = []
-        for lobbyist in self.lobbyists.all():
-            corporation = lobbyist.latest_corporation
-            if corporation.id not in corporation_ids:
-                corporation_ids.append(corporation.id)
+        """
+        Returns all the corporations associated with this point in time of the lobbyist history
+        Because it executes a lot of queries - it is cached for 1 day
+        TODO: optimize it
+        """
+        corporation_ids = cache.get('LobbyistHistory_%d_corporation_ids' % self.id)
+        if not corporation_ids:
+            corporation_ids = []
+            for lobbyist in self.lobbyists.all():
+                corporation = lobbyist.latest_corporation
+                if corporation.id not in corporation_ids:
+                    corporation_ids.append(corporation.id)
+            cache.set('LobbyistHistory_%d_corporation_ids' % self.id, corporation_ids, 86400)
         return LobbyistCorporation.objects.filter(id__in=corporation_ids)
 
     def diff(self, other_history):
@@ -57,18 +93,17 @@ class Lobbyist(models.Model):
     person = models.ForeignKey('persons.Person', blank=True, null=True, related_name='lobbyist')
     source_id = models.CharField(blank=True, null=True, max_length=20)
 
-    @property
+    @cached_property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
-    @property
+    @cached_property
     def latest_corporation(self):
         return self.lobbyistcorporationdata_set.filter(scrape_time__isnull=False).latest('scrape_time').corporation
 
     def __unicode__(self):
         return self.person
 
-        
 
 class LobbyistDataManager(models.Manager):
 
