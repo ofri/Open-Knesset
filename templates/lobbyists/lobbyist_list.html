@@ -43,21 +43,21 @@
                     {% endfor %}
                 </ul>
             </section>
-            {% comment %}{% if corporations %}
+            {% if corporations %}
                 <section class="card card-list">
                     <header>
                         <h2><i class="fa fa-users"></i>{% trans "Corporations" %}</h2>
                     </header>
                     <ul>
                         {% for corporation in corporations %}
-                        {% if corporation.name or corporation.source_id %}
+                        {% if corporation.cached_data.name or corporation.cached_data.source_id %}
                             <li>
                                 <p class="item-title">
-                                    <a href="{% url 'lobbyist-corporation' corporation.id %}">{% if corporation.name %}{{ corporation.name }}{% else %}{{ corporation.source_id }}{% endif %}</a>
+                                    <a href="{% url 'lobbyist-corporation' corporation.id %}">{% if corporation.cached_data.name %}{{ corporation.cached_data.name }}{% else %}{{ corporation.cached_data.source_id }}{% endif %}</a>
                                 </p>
                                 <p class="item-context">
-                                    {{ corporation.latest_data.lobbyists.count }} {% trans "Lobbyists" %},
-                                    {% trans "Last change" %}: {{ corporation.latest_data.scrape_time|date:"DATE_FORMAT" }}
+                                    {{ corporation.cached_data.latest_data.lobbyists_count }} {% trans "Lobbyists" %},
+                                    {% trans "Last change" %}: {{ corporation.cached_data.latest_data.scrape_time|date:"DATE_FORMAT" }}
                                 </p>
                             </li>
                         {% endif %}
@@ -65,7 +65,7 @@
                     </ul>
                 </section>
             {% endif %}
-            {% if not is_historical %}
+            {% comment %}{% if not is_historical %}
                 {% if history %}
                 <section class="card card-list">
                     <header>

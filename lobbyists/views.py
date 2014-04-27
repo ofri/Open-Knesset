@@ -25,7 +25,6 @@ class LobbyistsIndexView(ListView):
                 prev_lobbyist_history = lobbyist_history
             context['history'].append((prev_lobbyist_history, None))
             context['corporations'] = LobbyistCorporation.objects.current_corporations().order_by('name')
-            object_list_cache_key_suffix = 'LobbyistsIndexView'
         else:
             context['is_historical'] = True
             context['lobbyist_history'] = LobbyistHistory.objects.get(id=pk)
@@ -33,8 +32,10 @@ class LobbyistsIndexView(ListView):
                 context['corporations'] = context['lobbyist_history'].corporations.order_by('name')
             except ObjectDoesNotExist:
                 pass
-            object_list_cache_key_suffix = 'LobbyistsIndexView_%d' % pk
-        context['object_list'] = LobbyistHistory.objects.get_cache_lobbyists_data(context['object_list'], object_list_cache_key_suffix)
+        lobbyists_cached_data = []
+        for lobbyist in context['object_list']:
+            lobbyists_cached_data.append(lobbyist.cached_data)
+        context['object_list'] = lobbyists_cached_data
         return context
 
 

@@ -9,33 +9,6 @@ class LobbyistHistoryManager(models.Manager):
     def latest(self):
         return self.filter(scrape_time__isnull=False).latest('scrape_time')
 
-    def get_cache_lobbyists_data(self, lobbyists, cache_key_suffix):
-        """
-        A common operation but quite expensive is to show data about a list of lobbyists
-        This method allows to cache all the data in a consistent manner
-        """
-        cache_key = 'LobbyistHistoryManager_lobbyistsdata_%s' % cache_key_suffix
-        lobbyists_data = cache.get(cache_key)
-        if not lobbyists_data:
-            lobbyists_data = []
-            for lobbyist in lobbyists:
-                lobbyists_data.append({
-                    'id': lobbyist.id,
-                    'display_name': unicode(lobbyist.person),
-                    'latest_data': {
-                        'profession': lobbyist.latest_data.profession,
-                        'faction_member': lobbyist.latest_data.faction_member,
-                        'faction_name': lobbyist.latest_data.faction_name,
-                        'permit_type': lobbyist.latest_data.permit_type,
-                        'scrape_time': lobbyist.latest_data.scrape_time,
-                    },
-                    'latest_corporation': {
-                        'name': lobbyist.latest_corporation.name,
-                        'id': lobbyist.latest_corporation.id,
-                    },
-                })
-            cache.set(cache_key, lobbyists_data, 86400)
-        return lobbyists_data
 
 class LobbyistHistory(models.Model):
     """
@@ -58,9 +31,9 @@ class LobbyistHistory(models.Model):
         if not corporation_ids:
             corporation_ids = []
             for lobbyist in self.lobbyists.all():
-                corporation = lobbyist.latest_corporation
-                if corporation.id not in corporation_ids:
-                    corporation_ids.append(corporation.id)
+                corporation_id = lobbyist.cached_data['latest_corporation']['id']
+                if corporation_id not in corporation_ids:
+                    corporation_ids.append(corporation_id)
             cache.set('LobbyistHistory_%d_corporation_ids' % self.id, corporation_ids, 86400)
         return LobbyistCorporation.objects.filter(id__in=corporation_ids)
 
@@ -100,6 +73,28 @@ class Lobbyist(models.Model):
     @cached_property
     def latest_corporation(self):
         return self.lobbyistcorporationdata_set.filter(scrape_time__isnull=False).latest('scrape_time').corporation
+
+    @cached_property
+    def cached_data(self):
+        data = cache.get('Lobbyist_cached_data_%s' % self.id)
+        if not data:
+            data = {
+                'id': self.id,
+                'display_name': unicode(self.person),
+                'latest_data': {
+                    'profession': self.latest_data.profession,
+                    'faction_member': self.latest_data.faction_member,
+                    'faction_name': self.latest_data.faction_name,
+                    'permit_type': self.latest_data.permit_type,
+                    'scrape_time': self.latest_data.scrape_time,
+                },
+                'latest_corporation': {
+                    'name': self.latest_corporation.name,
+                    'id': self.latest_corporation.id,
+                },
+            }
+            cache.set('Lobbyist_cached_data_%s' % self.id, data, 86400)
+        return data
 
     def __unicode__(self):
         return self.person
@@ -162,9 +157,26 @@ class LobbyistCorporation(models.Model):
 
     objects = LobbyistCorporationManager()
 
-    @property
+    @cached_property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
+
+    @cached_property
+    def cached_data(self):
+        data = cache.get('LobbyistCorporation_cached_data_%s' % self.id)
+        if not data:
+            data = {
+                'id': self.id,
+                'name': self.name,
+                'latest_data': {
+                    'scrape_time': self.latest_data.scrape_time,
+                    'name': self.latest_data.name,
+                    'source_id': self.latest_data.source_id,
+                    'lobbyists_count': self.latest_data.lobbyists.count()
+                }
+            }
+            cache.set('LobbyistCorporation_cached_data_%s' % self.id, data, 86400)
+        return data
 
     def __unicode__(self):
         return self.name
