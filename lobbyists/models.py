@@ -180,7 +180,31 @@ class LobbyistCorporation(models.Model):
 
     def __unicode__(self):
         return self.name
-        
+
+
+class LobbyistCorporationAliasManager(models.Manager):
+
+    def create(self, *args, **kwargs):
+        if len(args) > 1:
+            for id in args[1:]:
+                kwargs = {'main_corporation_id': args[0], 'alias_corporation_id': id}
+                super(LobbyistCorporationAliasManager, self).create(**kwargs)
+        else:
+            return super(LobbyistCorporationAliasManager, self).create(**kwargs)
+
+
+class LobbyistCorporationAlias(models.Model):
+    """
+    In the source data there are sometimes different coroprations
+    which are actually the same one.
+    For example - there are sometimes typos in the corporation id which cause
+    our scraper to think it's different corporations
+    This model allows to link this corporations so we can treat them as the same corporation
+    """
+    main_corporation = models.ForeignKey('lobbyists.LobbyistCorporation', related_name='lobbyistcorporationalias_main')
+    alias_corporation = models.ForeignKey('lobbyists.LobbyistCorporation', related_name='lobbyistcorporationalias_alias', unique=True)
+
+    objects = LobbyistCorporationAliasManager()
     
 class LobbyistCorporationData(models.Model):
     """
@@ -211,6 +235,9 @@ class LobbyistRepresent(models.Model):
     @property
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
+
+    def __unicode__(self):
+        return self.latest_data.name
 
         
 class LobbyistRepresentData(models.Model):

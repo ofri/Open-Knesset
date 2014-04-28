@@ -12,4 +12,6 @@ lobbyistpatterns = patterns ('',
         LobbyistCorporationDetailView.as_view(), name='lobbyist-corporation'),
     url(r'^lobbyist/corporation/(?P<pk>\d+)/(?P<sk>\d+)$',
         LobbyistCorporationDetailView.as_view(), name='lobbyist-corporation'),
+    url(r'^lobbyist/represent/(?P<pk>\d+)$',
+        LobbyistRepresentDetailView.as_view(), name='lobbyist-represent'),
 )

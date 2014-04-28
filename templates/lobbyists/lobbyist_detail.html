@@ -42,26 +42,10 @@
                 <header><h2><i class="fa fa-users"></i>{% trans "Represents" %}</h2></header>
                 <ul>
                     {% for represent in represents %}
-                        <li>{{ represent.latest_data.name }}</li>
+                        <li><a href="{% url 'lobbyist-represent' represent.id %}">{{ represent.name }}</a></li>
                     {% endfor %}
                 </ul>
             </section>
-            {% if history %}
-            <section class="card card-list">
-                <header><h2><i class="fa fa-users"></i>{% trans "Changes" %}</h2></header>
-                <ul>
-                    {% for lobbyist_data in history %}
-                    <li>
-                        {% if forloop.first %}
-                            <p class="item-context">{{ lobbyist_data.scrape_time }} - {% trans "Current Data" %}</p>
-                        {% else %}
-                            <p class="item-context"><a href="{% url 'lobbyist-detail' object.id lobbyist_data.id %}">{{ lobbyist_data.scrape_time }}</a></p>
-                        {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </section>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
