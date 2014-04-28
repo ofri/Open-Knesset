@@ -31,9 +31,9 @@ Python
     Python 2.7 install (click to enlarge)
 
 `Download the latest Python 2.7`_ MSI installer matching your architecture
-(32 or 64 bit). As of this writing, the latest one is `2.7.3`_.
+(32 or 64 bit). As of this writing, the latest one is `2.7.6`_.
 
-.. _2.7.3: http://www.python.org/download/releases/2.7.3/
+.. _2.7.6: http://www.python.org/download/releases/2.7.6/
 .. _Download the latest Python 2.7: http://python.org/download/releases/
 
 Once downloaded, run the installer, and accept defaults.
@@ -69,21 +69,22 @@ We'll install them with distribute. Open a command window, and::
     easy_install pip
     pip install virtualenv
 
-PIL and lxml
-~~~~~~~~~~~~~~
+Pillow and lxml
+~~~~~~~~~~~~~~~~
 
 Since compiling those packages (inside the virtualenv) is not an easy task,
 we'll install them separately and instruct virtualenv to use python's
 global site-packages (not pure, but will make things easier for MS
 Windows developers).
 
-* Download and run the installer matching your architecture for `lxml`_ (version 2.3.x)
+* Download and run the exe installer matching your architecture for `lxml`_
+  (version 2.3.x)
 
-.. _lxml: http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+.. _lxml: https://pypi.python.org/pypi/lxml/2.3
 
-* Install easy_install by running::
+* Install `Pillow` with easy_install by running::
 
-    easy_install http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe
+    easy_install Pillow==2.4.0
 
 
 git and GitHub tools
