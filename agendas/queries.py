@@ -203,20 +203,22 @@ GROUP BY agenda_id,
 """
 
 BASE_PARTY_QUERY = """
-INSERT INTO agendas_summaryagenda (summary_type,agenda_id,party_id,month,score,votes,db_created,db_updated)
+INSERT INTO agendas_summaryagenda (summary_type,agenda_id,party_id,month,score,votes,for_votes,against_votes,db_created,db_updated)
 SELECT 'PR' as summary_type,
         d.agenda_id,
         m.party_id,
         d.month,
         SUM(d.totalvotevalue),
-        SUM(d.numvotes),
+        SUM(d.numvotes),SUM(d.numforvotes),SUM(d.numagainstvotes),
         %(nowfunc)s,%(nowfunc)s
 FROM
   (SELECT agenda_id,
          memberid,
          %(monthfunc)s,time) as month,
          SUM(forvotes) - SUM(againstvotes) totalvotevalue,
-        SUM(numvotes) numvotes
+        SUM(numvotes) numvotes,
+        SUM(numforvotes) numforvotes,
+        SUM(numagainstvotes) numagainstvotes
   FROM
     (SELECT a.agenda_id,
             p.memberid,
@@ -229,7 +231,16 @@ FROM
                 WHEN 'against' THEN a.VALUE
                 ELSE 0
             END againstvotes,
-            1 as numvotes
+            1 as numvotes,
+            CASE p.vtype
+                WHEN 'for' THEN 1
+                ELSE 0
+            END numforvotes,
+            CASE p.vtype
+                WHEN 'against' THEN 1
+                ELSE 0
+            END numagainstvotes          
+
      FROM
        (SELECT DISTINCT
                m.id memberid,
