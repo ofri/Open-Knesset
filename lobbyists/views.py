@@ -1,7 +1,10 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
+from django.http import HttpResponse
+import json
+import sys
 
 
 class LobbyistsIndexView(ListView):
@@ -39,6 +42,15 @@ class LobbyistsIndexView(ListView):
         return context
 
 
+class LobbyistCorporationsListView(TemplateView):
+    template_name = 'lobbyists/lobbyistcorporation_list.html'
+
+    def get_context_data(self):
+        return {
+            'corporations': 
+        }
+
+
 class LobbyistDetailView(DetailView):
 
     model = Lobbyist
@@ -70,3 +82,13 @@ class LobbyistRepresentDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LobbyistRepresentDetailView, self).get_context_data(**kwargs)
+
+
+def LobbyistCorporationMarkAliasView(request, alias, main):
+    res = {'ok': True}
+    try:
+        LobbyistCorporationAlias.objects.create(main_corporation_id=main, alias_corporation_id=alias)
+    except:
+        res['ok'] = False
+        res['msg'] = unicode(sys.exc_info()[1])
+    return HttpResponse(json.dumps(res), content_type="application/json")

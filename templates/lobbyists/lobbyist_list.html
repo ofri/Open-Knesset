@@ -8,6 +8,10 @@
     <li class="active">{% trans "Lobbyists" %}</li>
 {% endblock %}
 
+{% block extrajs %}
+    <script type="text/javascript" src="{% static "js/lobbyists.js" %}"></script>
+{% endblock %}
+
 {% block divcontent %}
     <div class="row">
         <div class="cards span12">
@@ -30,8 +34,6 @@
                                 {% endif %},
                             {% endif %}
                             {% trans "Permit type" %}: {% if lobbyist.latest_data.permit_type %}{{ lobbyist.latest_data.permit_type }}{% else %}{% trans "Unknown" %}{% endif %}
-                            <br/>
-                            {% trans "Last change" %}: {{ lobbyist.latest_data.scrape_time|date:"DATE_FORMAT" }}
                         </p>
                     </li>
                     {% endfor %}
@@ -45,7 +47,7 @@
                     <ul>
                         {% for corporation in corporations %}
                         {% if corporation.cached_data.name or corporation.cached_data.source_id %}
-                            <li>
+                            <li class="lobbyist-corporation" data-corporation-id="{{ corporation.id }}">
                                 <p class="item-title">
                                     <a href="{% url 'lobbyist-corporation' corporation.id %}">{% if corporation.cached_data.name %}{{ corporation.cached_data.name }}{% else %}{{ corporation.cached_data.source_id }}{% endif %}</a>
                                 </p>
@@ -53,6 +55,11 @@
                                     {{ corporation.cached_data.latest_data.lobbyists_count }} {% trans "Lobbyists" %},
                                     {% trans "Last change" %}: {{ corporation.cached_data.latest_data.scrape_time|date:"DATE_FORMAT" }}
                                 </p>
+                                {% if perms.lobbyists.can_edit %}
+                                    <p class="lobbyist-corporation-edit-box">
+                                        <a href="javascript:lobbyists.mark_alias_corporation('{{ corporation.id }}');">{% trans "Mark as alias corporation" %}</a>
+                                    </p>
+                                {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
