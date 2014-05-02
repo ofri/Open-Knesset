@@ -3,6 +3,7 @@
 from django.db import models
 from django.core.cache import cache
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext as _
 
 class LobbyistHistoryManager(models.Manager):
 
@@ -37,21 +38,16 @@ class LobbyistHistory(models.Model):
             cache.set('LobbyistHistory_%d_corporation_ids' % self.id, corporation_ids, 86400)
         return LobbyistCorporation.objects.filter(id__in=corporation_ids)
 
-    def diff(self, other_history):
+    @property
+    def main_corporations(self):
         """
-        returns a diff with added and deleted lobbyists between this history and the other_history
-        e.g. if this history has lobbyists 1,2,3 and other_history has lobbyists 3,4,5
-        then the result will be: added = 4,5  deleted = 1,2
+        Returns all the main corporations (e.g. without alias corporations and without 1 lobbyist corporations)
         """
-        added = []
-        deleted = []
-        for lobbyist in other_history.lobbyists.all():
-            if lobbyist not in self.lobbyists.all():
-                added.append(lobbyist)
-            for lobbyist in self.lobbyists.all():
-                if lobbyist not in other_history.lobbyists.all():
-                    deleted.append(lobbyist)
-        return (added, deleted)
+        alias_corporation_ids = [ca.alias_corporation.id for ca in LobbyistCorporationAlias.objects.all()]
+        return self.corporations.exclude(id__in = alias_corporation_ids)
+
+    def clear_corporations_cache(self):
+        cache.delete('LobbyistHistory_%d_corporation_ids' % self.id)
 
 
 class Lobbyist(models.Model):
@@ -161,6 +157,17 @@ class LobbyistCorporation(models.Model):
     def latest_data(self):
         return self.data.filter(scrape_time__isnull=False).latest('scrape_time')
 
+    @property
+    def lobbyists_count(self):
+        return self.latest_data.lobbyists.count()
+
+    @property
+    def combined_lobbyists_count(self):
+        lobbyists_count = self.lobbyists_count
+        for ca in LobbyistCorporationAlias.objects.filter(main_corporation__id=self.id):
+            lobbyists_count = lobbyists_count + ca.alias_corporation.combined_lobbyists_count
+        return lobbyists_count
+
     @cached_property
     def cached_data(self):
         data = cache.get('LobbyistCorporation_cached_data_%s' % self.id)
@@ -168,15 +175,14 @@ class LobbyistCorporation(models.Model):
             data = {
                 'id': self.id,
                 'name': self.name,
-                'latest_data': {
-                    'scrape_time': self.latest_data.scrape_time,
-                    'name': self.latest_data.name,
-                    'source_id': self.latest_data.source_id,
-                    'lobbyists_count': self.latest_data.lobbyists.count()
-                }
+                'source_id': self.latest_data.source_id,
+                'combined_lobbyists_count': self.combined_lobbyists_count
             }
             cache.set('LobbyistCorporation_cached_data_%s' % self.id, data, 86400)
         return data
+
+    def clear_cache(self):
+        cache.delete('LobbyistCorporation_cached_data_%s' % self.id)
 
     def __unicode__(self):
         return self.name
@@ -205,7 +211,8 @@ class LobbyistCorporationAlias(models.Model):
     alias_corporation = models.ForeignKey('lobbyists.LobbyistCorporation', related_name='lobbyistcorporationalias_alias', unique=True)
 
     objects = LobbyistCorporationAliasManager()
-    
+
+
 class LobbyistCorporationData(models.Model):
     """
     This represents data about a corporation which might change over time

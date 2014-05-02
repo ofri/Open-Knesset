@@ -29,5 +29,8 @@ lobbyists = {
             $('.lobbyist-corporation-edit-box').show();
             lobbyists._ui_disabled = false;
         });
+    },
+    open_corporation: function(corporation_id) {
+        $(".lobbyist-corporation[data-corporation-id='"+corporation_id+"'] .corporation-lobbyists").toggleClass('hidden');
     }
 };

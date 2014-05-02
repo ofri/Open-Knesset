@@ -46,8 +46,25 @@ class LobbyistCorporationsListView(TemplateView):
     template_name = 'lobbyists/lobbyistcorporation_list.html'
 
     def get_context_data(self):
+        corporations = [c.cached_data for c in LobbyistHistory.objects.latest().main_corporations.order_by('name')]
+        if not self.request.GET.get('order_by_name', ''):
+            corporations = sorted(corporations, key=lambda c: c['combined_lobbyists_count'], reverse=True)
+        fcs = []
+        private_lobbyists_count = 0
+        private_corporation = {}
+        for corporation in corporations:
+            if not corporation['name'] and not corporation['source_id']:
+                private_corporation = corporation
+                private_lobbyists_count = private_lobbyists_count + corporation['combined_lobbyists_count']
+            elif corporation['combined_lobbyists_count'] > 1:
+                fcs.append(corporation)
+            else:
+                private_lobbyists_count = private_lobbyists_count + corporation['combined_lobbyists_count']
+        private_corporation['is_private_lobbyists'] = True
+        fcs.insert(0, private_corporation)
+        private_corporation['combined_lobbyists_count'] = private_lobbyists_count
         return {
-            'corporations': 
+            'corporations': fcs
         }
 
 
@@ -88,6 +105,9 @@ def LobbyistCorporationMarkAliasView(request, alias, main):
     res = {'ok': True}
     try:
         LobbyistCorporationAlias.objects.create(main_corporation_id=main, alias_corporation_id=alias)
+        LobbyistCorporation.objects.get(id=main).clear_cache()
+        LobbyistCorporation.objects.get(id=alias).clear_cache()
+        LobbyistHistory.objects.latest().clear_corporations_cache()
     except:
         res['ok'] = False
         res['msg'] = unicode(sys.exc_info()[1])
