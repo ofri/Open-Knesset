@@ -226,18 +226,19 @@
     <section class="card card-main-party">
         <div class="row">
             <div class="span9 card-details">
-                <div class="spacer">
+              <div class="row">
+                  <div class="span6 spacer">
                     <header>
+                        <p>
+        {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
+                        </p>
                         <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
                         <h1>{% bill_full_name object %}</h1>
                     </header>
-                    <p>
-                        {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
-                        {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
-                    </p>
-                    <div id="bill-canvas"> </div>
-                </div>
+                  </div>
+              </div>
             </div>
+
             <div class="span3 social-details">
               <div class="spacer actions-panel">
                 {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
@@ -247,6 +248,12 @@
                 {% endif %}
             </div>
     </section>
+    <div class="card card-party-members">
+      <p class="span12">
+                          {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
+      </p>
+      <div id="bill-canvas"></div>
+    </div>
     {% if proposers %}
     <div class="card card-party-members">
         <div>
