@@ -10,7 +10,6 @@ install_requires = [
     'django-nose',
     'django-pagination',
     'django-tagging',
-    'django_compressor',
     'feedparser',
     'gdata',
     'gunicorn',
