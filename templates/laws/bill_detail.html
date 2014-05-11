@@ -223,95 +223,144 @@
         </form>       
     </div>
     {% endif %}
-    <section class="card card-main-party">
-        <div class="row">
-            <div class="span9 card-details">
-              <div class="row">
-                  <div class="span6 spacer">
-                    <header>
-                        <p>
-        {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
-                        </p>
-                        <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
-                        <h1>{% bill_full_name object %}</h1>
-                    </header>
-                  </div>
+      <div class="row">
+        <div class="span12">
+            <section class="card card-list">
+              <header style="background-color: #EFEFEF;">
+                <h2>
+                  {% trans 'stage date' %}: {{ object.stage_date }}
+                  <!-- add next event -->
+                </h2>
+              </header>
+              <div class="span8 spacer" style="text-align:center;">
+                      <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
+                      <h1>{% bill_full_name object %}</h1>
               </div>
-            </div>
-
-            <div class="span3 social-details">
-              <div class="spacer actions-panel">
-                {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
-                <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
-                {% if perms.laws.change_bill %}
-                <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
-                {% endif %}
-            </div>
-    </section>
-    <div class="card card-party-members">
-      <p class="span12">
-                          {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
-      </p>
-      <div id="bill-canvas"></div>
-    </div>
-    {% if proposers %}
-    <div class="card card-party-members">
-        <div>
-            {% include "mks/member_photos.html" with members=proposers %}
-        </div>
-    </div>
-    {%endif%}
-
-    <div class="row">
-        <div class="cards span8">
-    {% comment %} Note that the stage names must remain in sync with embed_bill_detail.html {% endcomment %}
-            <section class="card card-list" id="bill-initiation">
-                <header><h2>{% trans 'Bill initiation' %}</h2></header>
-                <ul>
-                {% if object.gov_proposal %}
-                    <li>
-                        <p class="item-action">{% trans 'Government Proposal' %}</p>
-                        <p class="item-title">
-                            <a rel="tooltip" title="{% trans 'Bill on knesset website' %}" href="{{ object.gov_proposal.source_url }}">{{ object.gov_proposal.title }} {% trans 'booklet' %} {{ object.gov_proposal.booklet_number }} </a>
-                        </p>
-                        <p class="item-context">{{ object.gov_proposal.date }}</p>
-                    </li>
-                {% else %}
-                    {% for pp in object.proposals.all %}
-                    <li>
-                        <p class="item-action">פ/&rlm;{{pp.knesset_id}}/&rlm;{{pp.proposal_id}}</p>
-                        <p class="item-title">
-                            <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.title }}</a>
-                        </p>
-                        <p class="item-context">{{ pp.date }}</p>
-                        <div id="pp{{ pp.pk }}" class="modal hide fade"
-                            tabindex="-1" role="dialog" aria-labelledby="pp{{pp.pk}}ModalLabel" aria-hidden="true">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                                <h3 id="pp{{pp.pk}}ModalLabel">{{pp.title}}</h3>
-                                <div class="modal-body">
-                                    <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a>
-                                    <p>
-                            {% if pp.content_html %}
-                                {{ pp.content_html|safe }}
-                            {% else %}
-                                {% trans 'Sorry, Proposal text not available' %}
-                            {% endif %}
-                                    </p>
-                                </div>
-                                <div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button></div>
-                            </div>
-                        </div>
-                        
-                        <div class="proposal_content">
-                        </div>
-                        </li>
-                    {% empty %}
-                        <li>{% trans 'No Info' %}</li>
-                    {% endfor %}
-                {% endif %}
-                </ul>
+              <div class="span3" style="border: dashed 1px; position:absolute; top:-1em; left: 2em; z-index:100">
+                TODO: 6 Slides show
+                {% if proposers %}
+                  {% include "mks/member_photos.html" with members=proposers %}
+                {%endif%}
+              </div>
             </section>
+         </div>
+       </div>
+    <div class="card card-party-members">
+      <div class="span12"><section class="card card-list">
+        <header><h2>
+          {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
+        </h2></header>
+        <div id="bill-canvas"></div>
+      </section></div>
+    </div>
+
+    <div class="row" style="padding-bottom: 1em;">
+      <div class="span4">
+        <div class="spacer actions-panel">
+          {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
+          <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
+          {% if perms.laws.change_bill %}
+          <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="span4">
+          <header><h2>{% trans "Public Opinion" %}</h2></header>
+          <div id="public-opinion">
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</div>
+              </div>
+              {% if party_voting_score %}
+              <h4>{% trans 'Public Opinion - party members' %}</h4>
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{party_voting_score.for_percent}}%">{{ party_voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{party_voting_score.against_percent}}%">{{ party_voting_score.against }}</div>
+              </div>
+              {% endif %}
+              {% if user_party_voting_score %}
+              <h4>{% trans 'Public Opinion - your party members' %}</h4>
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{user_party_voting_score.for_percent}}%">{{ user_party_voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{user_party_voting_score.against_percent}}%">{{ user_party_voting_score.against }}</div>
+              </div>
+              {% endif %}
+              {% if user.is_authenticated %}
+                  {% vote_by_user user on object as vote_dict %}
+                  {% if vote_dict and vote_dict.direction %}
+                  {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
+                  <form action="{% url 'vote-on-bill' bill.id 0 %}" method="post">{% csrf_token %}
+                      <input type="submit" name="submit" value="{% trans "Delete" %}" class="btn"/>
+                  </form>
+                  {% else %}
+                  <div class="row">
+                      <form class="span1" action="{% url 'vote-on-bill' bill.id 1 %}" method="post">{% csrf_token %}
+                          <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
+                      </form>
+                      <form class="span1" action="{% url 'vote-on-bill' bill.id -1 %}" method="post">{% csrf_token %}
+                          <input type="submit" name="submit" value="{% trans "I'm against" %}" />
+                      </form>
+                  </div>
+                  {% endif %}
+              {% else %}
+                  <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
+              {% endif %}
+          </div>
+      </div>
+      <div class="span4">
+          {% agendas_for user object 'bill' %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="cards span8">
+  {% comment %} Note that the stage names must remain in sync with embed_bill_detail.html {% endcomment %}
+          <section class="card card-list" id="bill-initiation">
+              <header><h2>{% trans 'Bill initiation' %}</h2></header>
+              <ul>
+              {% if object.gov_proposal %}
+                  <li>
+                      <p class="item-action">{% trans 'Government Proposal' %}</p>
+                      <p class="item-title">
+                          <a rel="tooltip" title="{% trans 'Bill on knesset website' %}" href="{{ object.gov_proposal.source_url }}">{{ object.gov_proposal.title }} {% trans 'booklet' %} {{ object.gov_proposal.booklet_number }} </a>
+                      </p>
+                      <p class="item-context">{{ object.gov_proposal.date }}</p>
+                  </li>
+              {% else %}
+                  {% for pp in object.proposals.all %}
+                  <li>
+                      <p class="item-action">פ/&rlm;{{pp.knesset_id}}/&rlm;{{pp.proposal_id}}</p>
+                      <p class="item-title">
+                          <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.title }}</a>
+                      </p>
+                      <p class="item-context">{{ pp.date }}</p>
+                      <div id="pp{{ pp.pk }}" class="modal hide fade"
+                          tabindex="-1" role="dialog" aria-labelledby="pp{{pp.pk}}ModalLabel" aria-hidden="true">
+                          <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                              <h3 id="pp{{pp.pk}}ModalLabel">{{pp.title}}</h3>
+                              <div class="modal-body">
+                                  <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a>
+                                  <p>
+                          {% if pp.content_html %}
+                              {{ pp.content_html|safe }}
+                          {% else %}
+                              {% trans 'Sorry, Proposal text not available' %}
+                          {% endif %}
+                                  </p>
+                              </div>
+                              <div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button></div>
+                          </div>
+                      </div>
+                      
+                      <div class="proposal_content">
+                      </div>
+                      </li>
+                  {% empty %}
+                      <li>{% trans 'No Info' %}</li>
+                  {% endfor %}
+              {% endif %}
+              </ul>
+          </section>
 
             <section class="card card-list" id="bill-pre-vote">
                 <header><h2>{% trans 'Pre Vote' %}</h2></header>
@@ -497,52 +546,6 @@
         </div> <!-- span8 -->
 
         <div class="span4">
-            <aside class="sidebar">
-                {% agendas_for user object 'bill' %}
-            </aside>
-            <aside class="sidebar">
-                <header><h2>{% trans "Public Opinion" %}</h2></header>
-                <div id="public-opinion">
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</div>
-                    </div>
-                    {% if party_voting_score %}
-                    <h4>{% trans 'Public Opinion - party members' %}</h4>
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{party_voting_score.for_percent}}%">{{ party_voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{party_voting_score.against_percent}}%">{{ party_voting_score.against }}</div>
-                    </div>
-                    {% endif %}
-                    {% if user_party_voting_score %}
-                    <h4>{% trans 'Public Opinion - your party members' %}</h4>
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{user_party_voting_score.for_percent}}%">{{ user_party_voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{user_party_voting_score.against_percent}}%">{{ user_party_voting_score.against }}</div>
-                    </div>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                        {% vote_by_user user on object as vote_dict %}
-                        {% if vote_dict and vote_dict.direction %}
-                        {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
-                        <form action="{% url 'vote-on-bill' bill.id 0 %}" method="post">{% csrf_token %}
-                            <input type="submit" name="submit" value="{% trans "Delete" %}" class="btn"/>
-                        </form>
-                        {% else %}
-                        <div class="row">
-                            <form class="span1" action="{% url 'vote-on-bill' bill.id 1 %}" method="post">{% csrf_token %}
-                                <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
-                            </form>
-                            <form class="span1" action="{% url 'vote-on-bill' bill.id -1 %}" method="post">{% csrf_token %}
-                                <input type="submit" name="submit" value="{% trans "I'm against" %}" />
-                            </form>
-                        </div>
-                        {% endif %}
-                    {% else %}
-                        <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
-                    {% endif %}
-                </div>
-            </aside>
 	 		<aside class="sidebar" id="tagging-container">
                 {% include "auxiliary/tags_object_edit.html" with tags=tags %}
             </aside>
