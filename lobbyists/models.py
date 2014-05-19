@@ -169,6 +169,11 @@ class LobbyistCorporation(models.Model):
         return lobbyists_count
 
     @cached_property
+    def alias_corporations(self):
+        alias_corporation_ids = [ac.alias_corporation.id for ac in LobbyistCorporationAlias.objects.filter(main_corporation=self)]
+        return LobbyistCorporation.objects.filter(id__in = alias_corporation_ids)
+
+    @cached_property
     def cached_data(self):
         data = cache.get('LobbyistCorporation_cached_data_%s' % self.id)
         if not data:

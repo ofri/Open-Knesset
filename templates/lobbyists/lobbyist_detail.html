@@ -21,7 +21,8 @@
             <section class="card card-list">
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
                 <ul>
-                    <li>{% trans "Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a></li>
+                    <li>{% trans "Name" %}: {{ object }}</li>
+                    <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a></li>
                     {% if data.profession %}
                         <li>{% trans "Profession" %}: {{ data.profession }}</li>
                     {% endif %}
@@ -39,10 +40,10 @@
                 </ul>
             </section>
             <section class="card card-list">
-                <header><h2><i class="fa fa-users"></i>{% trans "Represents" %}</h2></header>
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Represents" %}</h2></header>
                 <ul>
                     {% for represent in represents %}
-                        <li><a href="{% url 'lobbyist-represent' represent.id %}">{{ represent.name }}</a></li>
+                        <li>{{ represent.name }}</li>
                     {% endfor %}
                 </ul>
             </section>

@@ -5,7 +5,7 @@
 {% block description %}{% trans "Lobbyists" %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block breadcrumbs %}
-    <li class="active">{% trans "Lobbyists" %}</li>
+    <li class="active">{% trans "Lobbying Corporations" %}</li>
 {% endblock %}
 
 {% block extrajs %}
@@ -34,12 +34,7 @@
                                 </a>
                             </p>
                             <p class="item-context">
-                                <a href="javascript:lobbyists.open_corporation('{{ corporation.id }}')">
-                                    {{ corporation.combined_lobbyists_count }} {% trans "Lobbyists" %}
-                                </a>
-                            </p>
-                            <p class="corporation-lobbyists hidden">
-                                The corporation's lobbyists!
+                                {{ corporation.combined_lobbyists_count }} {% trans "Lobbyists" %}
                             </p>
                             {% if perms.lobbyists.can_edit %}
                                 <p class="lobbyist-corporation-edit-box">

@@ -56,10 +56,11 @@ class LobbyistCorporationsListView(TemplateView):
             if not corporation['name'] and not corporation['source_id']:
                 private_corporation = corporation
                 private_lobbyists_count = private_lobbyists_count + corporation['combined_lobbyists_count']
-            elif corporation['combined_lobbyists_count'] > 1:
-                fcs.append(corporation)
             else:
-                private_lobbyists_count = private_lobbyists_count + corporation['combined_lobbyists_count']
+            #elif corporation['combined_lobbyists_count'] > 1:
+                fcs.append(corporation)
+            #else:
+            #    private_lobbyists_count = private_lobbyists_count + corporation['combined_lobbyists_count']
         private_corporation['is_private_lobbyists'] = True
         fcs.insert(0, private_corporation)
         private_corporation['combined_lobbyists_count'] = private_lobbyists_count
@@ -104,6 +105,7 @@ class LobbyistRepresentDetailView(DetailView):
 def LobbyistCorporationMarkAliasView(request, alias, main):
     res = {'ok': True}
     try:
+        # TODO: make sure an alias corporation is not an alias for another alias corporation
         LobbyistCorporationAlias.objects.create(main_corporation_id=main, alias_corporation_id=alias)
         LobbyistCorporation.objects.get(id=main).clear_cache()
         LobbyistCorporation.objects.get(id=alias).clear_cache()
