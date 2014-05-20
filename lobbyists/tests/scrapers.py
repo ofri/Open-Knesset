@@ -1,10 +1,10 @@
 # encoding: utf-8
 
 from okscraper.base import ParsingFromFileTestCase
-from lobbyists.scrapers import LobbyistScraper
-from lobbyists.scrapers import LobbyistRepresentScraper
-from lobbyists.scrapers import LobbyistsIndexScraper
-from lobbyists.scrapers import LobbyistScraperDictStorage
+from lobbyists.scrapers.lobbyist import LobbyistScraper
+from lobbyists.scrapers.lobbyist_represent import LobbyistRepresentScraper
+from lobbyists.scrapers.lobbyists_index import LobbyistsIndexScraper
+from lobbyists.scrapers.lobbyist import LobbyistScraperDictStorage
 from lobbyists.models import Lobbyist, LobbyistData, LobbyistRepresent
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -26,7 +26,7 @@ class testLobbyistScraper(ParsingFromFileTestCase):
         return 'View_lobbyist_<<id>>.xml'
 
     def _get_latest_data(self, lobbyist):
-        return lobbyist.latest_data()
+        return lobbyist.latest_data
 
     def testParsing(self):
         self.assertScrape(
