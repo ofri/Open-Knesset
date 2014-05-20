@@ -285,6 +285,15 @@ TINYMCE_DEFAULT_CONFIG = {
 DEVSERVER_DEFAULT_ADDR = '127.0.0.1'
 DEVSERVER_DEFAULT_PORT = 8000
 
+# This is for socialauth is it can't serilaize correctly datetime.datetime. A
+# JSON serialzer is preferred and changed to be the default in 1.6, but we'll
+# have to keep it for now. For more info, see:
+# https://docs.djangoproject.com/en/1.5/topics/http/sessions/#session-serialization
+#
+# TODO: Look into switching to django-allauth instead and using the session
+# serializer.
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try:

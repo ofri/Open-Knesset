@@ -42,7 +42,7 @@ $(function(){
         annotation_objects[a].importQuotes();
         annotation_objects[a].insertQuotes();
     }
-    $(".annotationform-link").click(function(e){
+    $(document).on("click", ".annotationform-link", function(e){
       e.preventDefault();
       if (!window.logged_in) {
           var msg = gettext("Sorry, only logged users can annotate.");
@@ -247,6 +247,14 @@ $(function(){
                     $("<div>").load(_nextPage+' #committeeprotocol', function(){
                         var html=$(this).find('.protocol').html();
                         $('#committeeprotocol').append(html);
+
+                        $(this).find(".annotation-content").each(function(){
+                            var annoid = $(this).attr("id").split("-")[1];
+                            annotation_objects[annoid] = new Annotations(annoid);
+                            annotation_objects[annoid].importQuotes();
+                            annotation_objects[annoid].insertQuotes();
+                        });
+
                         noprotocoluls = $('#committeeprotocol ul[data-noprotocol=yes]');
                         if (noprotocoluls.length > 0) {
                             noprotocoluls.remove();
