@@ -491,16 +491,16 @@ class Agenda(models.Model):
         if fullRange:
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
 
-	# fix the mks part from https://github.com/hasadna/Open-Knesset/issues/228
-    	if ranges[0][1] is None:
+	if not mks_values:
+	    # fix the mks part from https://github.com/hasadna/Open-Knesset/issues/228
+	    if ranges[0][1] is None:
 		# if there are no end in the range object check only if the start date greater
 		# or equal to the start of the range 
 		mk_ids = Member.objects.filter(current_party__isnull=False,start_date__gte = ranges[0][0]).values_list('id',flat=True)
-	else:
+	    else:
 		# else check also that the start date is less then the end date 
 		mk_ids = Member.objects.filter(current_party__isnull=False,start_date__gte = ranges[0][0],start_date__lte = ranges[0][1]).values_list('id',flat=True)
-
-        if not mks_values:
+        
 
             # generate summary query
             filterList = self.generateSummaryFilters(ranges)
