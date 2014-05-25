@@ -5,12 +5,19 @@
 {% block description %}{{ object.person.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block breadcrumbs %}
-        <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'lobbyists' %}">{% trans "Lobbying Corporations" %}</a> <span class="divider">/</span></li>
         {% if is_historical %}
             <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a> <span class="divider">/</span></li>
             <li>{% trans "Historical Data" %} <span class="divider">/</span></li>
             <li class="active">{{ object.scrape_time }}</li>
         {% else %}
+            <li><a href="{% url 'lobbyist-corporation' corporation.id %}">
+                {% if not corporation.name %}
+                    {% trans "Private Lobbyists" %}
+                {% else %}
+                    {{ corporation }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
             <li class="active">{{ object }}</li>
         {% endif %}
 {% endblock %}
@@ -22,7 +29,13 @@
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
                 <ul>
                     <li>{% trans "Name" %}: {{ object }}</li>
-                    <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a></li>
+                    <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">
+                        {% if not corporation.name %}
+                            {% trans "Private Lobbyists" %}
+                        {% else %}
+                            {{ corporation }}
+                        {% endif %}
+                    </a></li>
                     {% if data.profession %}
                         <li>{% trans "Profession" %}: {{ data.profession }}</li>
                     {% endif %}

@@ -88,9 +88,10 @@ class LobbyistCorporationDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LobbyistCorporationDetailView, self).get_context_data(**kwargs)
-        context['lobbyists'] = context['object'].latest_data.lobbyists.order_by('person__name')
+        context['lobbyists'] = Lobbyist.objects.filter(id__in=context['object'].cached_data['combined_lobbyist_ids']).order_by('person__name')
         if context['object'] not in LobbyistCorporation.objects.current_corporations():
             context['warning_old_corporation'] = True
+
         return context
 
 
@@ -106,6 +107,8 @@ def LobbyistCorporationMarkAliasView(request, alias, main):
     res = {'ok': True}
     try:
         # TODO: make sure an alias corporation is not an alias for another alias corporation
+        if LobbyistCorporationAlias.objects.filter(alias_corporation__id = main).count() > 0:
+            raise Exception('An alias corporation cannot be used as a main corporation')
         LobbyistCorporationAlias.objects.create(main_corporation_id=main, alias_corporation_id=alias)
         LobbyistCorporation.objects.get(id=main).clear_cache()
         LobbyistCorporation.objects.get(id=alias).clear_cache()

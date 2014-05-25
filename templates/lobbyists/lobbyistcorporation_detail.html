@@ -5,7 +5,7 @@
 {% block description %}{{ object }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 
 {% block breadcrumbs %}
-    <li><a href="{% url 'lobbyists' %}">{% trans "Corporations" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'lobbyists' %}">{% trans "Lobbying Corporations" %}</a> <span class="divider">/</span></li>
     <li class="active">
         {% if not object.name and not object.source_id %}
             {% trans "Private Lobbyists" %}

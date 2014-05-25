@@ -168,6 +168,15 @@ class LobbyistCorporation(models.Model):
             lobbyists_count = lobbyists_count + ca.alias_corporation.combined_lobbyists_count
         return lobbyists_count
 
+    @property
+    def combined_lobbyist_ids(self):
+        lobbyist_ids = [l.id for l in self.latest_data.lobbyists.all()]
+        for ca in LobbyistCorporationAlias.objects.filter(main_corporation__id=self.id):
+            for l in ca.alias_corporation.combined_lobbyist_ids:
+                if l not in lobbyist_ids:
+                    lobbyist_ids.append(l)
+        return lobbyist_ids
+
     @cached_property
     def alias_corporations(self):
         alias_corporation_ids = [ac.alias_corporation.id for ac in LobbyistCorporationAlias.objects.filter(main_corporation=self)]
@@ -181,7 +190,8 @@ class LobbyistCorporation(models.Model):
                 'id': self.id,
                 'name': self.name,
                 'source_id': self.latest_data.source_id,
-                'combined_lobbyists_count': self.combined_lobbyists_count
+                'combined_lobbyists_count': self.combined_lobbyists_count,
+                'combined_lobbyist_ids': self.combined_lobbyist_ids,
             }
             cache.set('LobbyistCorporation_cached_data_%s' % self.id, data, 86400)
         return data
