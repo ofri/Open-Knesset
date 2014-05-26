@@ -127,7 +127,7 @@ OS X
 
     sudo easy_install pip
     sudo pip install virtualenv
-- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install homebrew: ``ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"``
 - Install binary python libraries build dependencies::
 
   brew install jpeg libpng libxml2 libxslt
