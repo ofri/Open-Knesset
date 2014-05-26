@@ -157,6 +157,7 @@ class MemberVotingStatistics(models.Model):
 class VoteAction(models.Model):
     type   = models.CharField(max_length=10, choices=VOTE_ACTION_TYPE_CHOICES)
     member = models.ForeignKey('mks.Member')
+    party  = models.ForeignKey('mks.Party')
     vote   = models.ForeignKey('Vote')
     against_party = models.BooleanField(default=False)
     against_coalition = models.BooleanField(default=False)
