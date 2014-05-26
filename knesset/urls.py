@@ -22,6 +22,7 @@ from persons.urls import personsurlpatterns
 from mks.views import get_mk_entry, mk_is_backlinkable
 from laws.models import Bill
 from polyorg.urls import polyorgurlpatterns
+from lobbyists.urls import lobbyistpatterns
 
 from auxiliary.views import (
     main, post_annotation, post_details, post_feedback,
@@ -103,7 +104,7 @@ urlpatterns = patterns('',
 )
 
 
-urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns
+urlpatterns += mksurlpatterns + lawsurlpatterns + committeesurlpatterns + plenumurlpatterns + lobbyistpatterns
 urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # polyorg patterns are removed right now, the cache handling on it's views
 # seems broken, specially when trying to cache querysets
