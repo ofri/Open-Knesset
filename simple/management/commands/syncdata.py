@@ -198,7 +198,7 @@ class Command(NoArgsCommand):
                 continue
 
             # add the current member's vote
-            va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+            va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote, party = m.current_party)
             if created:
                 va.save()
 
@@ -617,7 +617,7 @@ class Command(NoArgsCommand):
 
                 # add the current member's vote
 
-                va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+                va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote, party = m.current_party)
                 if created:
                     va.save()
 
