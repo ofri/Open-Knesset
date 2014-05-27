@@ -157,6 +157,7 @@
                   // Can be '#' + one of the "bill-stage" class divs.
                     $(location.hash).get(0).scrollIntoView();
                 }
+                $('#tidbitCarousel').carousel({interval: 4000})
             });
     </script>
 {% endblock %}
@@ -223,48 +224,48 @@
         </form>       
     </div>
     {% endif %}
-      <div class="row">
-        <div class="span12">
-            <section class="card card-list">
-              <header style="background-color: #EFEFEF;">
-                <h2>
-                  {% trans 'stage date' %}: {{ object.stage_date }}
-                  <!-- add next event -->
-                </h2>
-              </header>
-              <div class="span8 spacer" style="text-align:center;">
-                      <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
-                      <h1>{% bill_full_name object %}</h1>
-              </div>
-              <div class="span3" style="border: dashed 1px; position:absolute; top:-1em; left: 2em; z-index:100">
-                TODO: 6 Slides show
-                {% if proposers %}
-                  {% include "mks/member_photos.html" with members=proposers %}
-                {%endif%}
-              </div>
-            </section>
-         </div>
-       </div>
-    <div class="card card-party-members">
-      <div class="span12"><section class="card card-list">
-        <header><h2>
-          {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
-        </h2></header>
-        <div id="bill-canvas"></div>
-      </section></div>
+    <div class="row">
+      <div class="cards span12">
+          <section class="card card-list padded">
+              <p>
+                {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
+                <!-- add next event -->
+              </p>
+              <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
+              <h1>{% bill_full_name object %}</h1>
+              {% if proposers %}
+                {% include "mks/member_photos.html" with members=proposers %}
+              {%endif%}
+          </section>
+          <section class="card card-list padded">
+            <p>
+              {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
+            </p>
+            <div id="bill-canvas"></div>
+          </section>
+      </div>
     </div>
 
     <div class="row" style="padding-bottom: 1em;">
       <div class="span4">
-        <div class="spacer actions-panel">
-          {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
-          <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
-          {% if perms.laws.change_bill %}
-          <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
-          {% endif %}
-        </div>
+        <aside class="sidebar">
+          <div class="spacer actions-panel">
+            {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
+            <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
+            {% if perms.laws.change_bill %}
+            <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
+            {% endif %}
+          </div>
+        </aside>
+        <aside class="sidebar" id="tagging-container">
+          {% include "auxiliary/tags_object_edit.html" with tags=tags %}
+        </aside>
+        <aside class="sidebar sidebar-agendas">
+        {% include 'comments/object_comment_list.html' %}
+        </aside>
       </div>
       <div class="span4">
+        <aside class="sidebar">
           <header><h2>{% trans "Public Opinion" %}</h2></header>
           <div id="public-opinion">
               <div class="progress">
@@ -306,9 +307,52 @@
                   <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
               {% endif %}
           </div>
+        </aside>
+            <aside class="sidebar">
+                <header><h2>{% trans "Links" %}</h2></header>
+                {% object_links object %}
+            </aside>
+
       </div>
       <div class="span4">
+          <aside class="sidebar">
           {% agendas_for user object 'bill' %}
+          </aside>
+            <aside class="sidebar">
+                <header><h2>{% trans "Budget Estimations" %}</h2></header>
+                <div id="budget_ests">
+                    {% if budget_ests %}
+                        {% for b in budget_ests %}
+                            {{ b.as_p }}
+                        {% endfor %}
+                    {% else %}
+                        <span id="no-budgets-yet">{% trans "No budget estimations yet" %}</span>
+                    {% endif %}
+                </div>
+            {% if user.is_authenticated %}
+                <div id="add_budget_ests">
+                    {% if user_has_be %}
+                    <span>{% trans "Update Budget Estimations (all in thousands of NIS)" %}</span>
+                    {% else %}
+                    <span>{% trans "Add Budget Estimations (all in thousands of NIS)" %}</span>
+                    {% endif %}
+                    <!--<div id="create_budget_est" style='display:none'>-->
+                        <!--{% if perms.tagging.add_tag %}-->
+                            <form action="." method="post" id="create_budget_est_form">{% csrf_token %}
+                            <input type="hidden" name="user_input_type" value="budget_est"></input>
+                            {{ budget_ests_form.as_p }}
+                            <input type="submit" value="{% trans "Send" %}" id="be_submit" class="btn">
+                            </form>
+                        <!--{% else %}-->
+                            <!--{% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}-->
+                        <!--{% endif %}-->
+                    <!--</div>-->
+                </div>
+                {% else %}
+                    <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to edit budget estimates' %}</a>
+                {% endif %}
+            </aside> <!-- budgets -->
+
       </div>
     </div>
     <div class="row">
@@ -545,53 +589,5 @@
 
         </div> <!-- span8 -->
 
-        <div class="span4">
-	 		<aside class="sidebar" id="tagging-container">
-                {% include "auxiliary/tags_object_edit.html" with tags=tags %}
-            </aside>
-            <aside class="sidebar">
-                <header><h2>{% trans "Links" %}</h2></header>
-                {% object_links object %}
-            </aside>
-
-            <aside class="sidebar">
-                <header><h2>{% trans "Budget Estimations" %}</h2></header>
-                <div id="budget_ests">
-                    {% if budget_ests %}
-                        {% for b in budget_ests %}
-                            {{ b.as_p }}
-                        {% endfor %}
-                    {% else %}
-                        <span id="no-budgets-yet">{% trans "No budget estimations yet" %}</span>
-                    {% endif %}
-                </div>
-            {% if user.is_authenticated %}
-                <div id="add_budget_ests">
-                    {% if user_has_be %}
-                    <span>{% trans "Update Budget Estimations (all in thousands of NIS)" %}</span>
-                    {% else %}
-                    <span>{% trans "Add Budget Estimations (all in thousands of NIS)" %}</span>
-                    {% endif %}
-                    <!--<div id="create_budget_est" style='display:none'>-->
-                        <!--{% if perms.tagging.add_tag %}-->
-                            <form action="." method="post" id="create_budget_est_form">{% csrf_token %}
-                            <input type="hidden" name="user_input_type" value="budget_est"></input>
-                            {{ budget_ests_form.as_p }}
-                            <input type="submit" value="{% trans "Send" %}" id="be_submit" class="btn">
-                            </form>
-                        <!--{% else %}-->
-                            <!--{% trans 'Please' %} <a class="bold-link" href="{% url 'edit-profile' %}">{% trans 'validate your email' %}</a>{% trans ' to create new tags' %}-->
-                        <!--{% endif %}-->
-                    <!--</div>-->
-                </div>
-                {% else %}
-                    <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to edit budget estimates' %}</a>
-                {% endif %}
-            </aside> <!-- budgets -->
-
-            <aside class="sidebar sidebar-agendas">
-            {% include 'comments/object_comment_list.html' %}
-            </aside>
-        </div> <!-- span4 -->
     </div> <!-- row -->
 {% endblock %}
