@@ -8006,6 +8006,9 @@ div#tidbitCarousel .btn-suggest:hover {
 .vote_input {
   width: 75%;
 }
+.autocomplete > div[title] {
+  white-space:normal;
+}
 body.infinity-protocol #app-header {
   position: fixed;
   top: 0;
