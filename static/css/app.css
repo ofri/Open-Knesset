@@ -8033,7 +8033,7 @@ body.infinity-protocol #content-main > div > div.row > div.span3 {
 .padded { padding:1em;}
 .bill-stage {width:136px; padding:0.4em; float:right; margin-left: 13px; height: 200px;}
 .gov-decision {width:783px; padding:0.4em; float:right; margin-right: 162px;
-               overflow: hidden; height: 100px; margin-top:10px;}
+               overflow: hidden; min-height: 100px; margin-top:10px;}
 .past-stage {background-color: #bde7ff; }
 .future-stage {background-color: #f1f1f1; }
 ul.dates-list { margin:0; }
