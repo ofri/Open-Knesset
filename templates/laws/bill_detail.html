@@ -483,9 +483,6 @@ var third_vote_score = {{ object.approval_vote.for_votes_count}} - {{ object.app
         <aside class="sidebar" id="tagging-container">
           {% include "auxiliary/tags_object_edit.html" with tags=tags %}
         </aside>
-        <aside class="sidebar sidebar-agendas">
-        {% include 'comments/object_comment_list.html' %}
-        </aside>
       </div>
       <div class="span4">
         <aside class="sidebar">
@@ -576,6 +573,13 @@ var third_vote_score = {{ object.approval_vote.for_votes_count}} - {{ object.app
                 {% endif %}
             </aside> <!-- budgets -->
 
+      </div>
+    </div>
+    <div class="row">
+      <div class="span8">
+        <aside class="sidebar sidebar-agendas">
+        {% include 'comments/object_comment_list.html' %}
+        </aside>
       </div>
     </div>
 {% endblock %}
