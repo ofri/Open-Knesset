@@ -26,10 +26,15 @@ class SimpleTest(TestCase):
         self.mk_2 = Member.objects.create(name='mk_2',
                                           start_date=datetime.date(2010,1,1),
                                           current_party=self.party_1)
+	# create new mk for the 19's knesset 
+ 	self.mk_from_knesset_19 = Member.objects.create(name='mk_from_knesset_19',
+                                          start_date=datetime.date(2013,1,1),
+                                          current_party=self.party_1)
 
 
         Membership.objects.create(member=self.mk_1, party=self.party_1)
         Membership.objects.create(member=self.mk_2, party=self.party_1)
+	Membership.objects.create(member=self.mk_from_knesset_19, party=self.party_1)
 
         self.user_1 = User.objects.create_user('jacob', 'jacob@jacobian.org', 'JKM')
         self.user_2 = User.objects.create_user('john', 'lennon@thebeatles.com', 'LSD')
@@ -57,14 +62,18 @@ class SimpleTest(TestCase):
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
         self.vote_3 = Vote.objects.create(title='vote 3',time=datetime.datetime.now())
+	self.vote_4 = Vote.objects.create(title='vote 4',time=datetime.datetime.now())
+
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name='kill bill')
         self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
         self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
         self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
+	self.voteaction_4 = VoteAction.objects.create(vote=self.vote_4, member=self.mk_from_knesset_19, type='for')
 
         self.vote_1. update_vote_properties()
         self.vote_2. update_vote_properties()
         self.vote_3. update_vote_properties()
+	self.vote_4. update_vote_properties()
 
         self.agendavote_1 = AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,
@@ -82,6 +91,11 @@ class SimpleTest(TestCase):
                                                       vote=self.vote_3,
                                                       score=0.5,
                                                       reasoning="there's got to be a reason 3")
+ 	self.agendavote_5 = AgendaVote.objects.create(agenda=self.agenda_3,
+                                                      vote=self.vote_4,
+                                                      score=0.5,
+                                                      reasoning="there's got to be a reason 3")
+
         self.agendabill_1 = AgendaBill.objects.create(agenda=self.agenda_1,
                                                       bill=self.bill_1,
                                                       score=0.5,
@@ -154,7 +168,7 @@ I have a deadline''')
         self.assertEqual(res.context['object'].description, self.agenda_1.description)
         self.assertEqual(res.context['object'].public_owner_name, self.agenda_1.public_owner_name)
         self.assertEqual(list(res.context['object'].editors.all()), [self.user_1])
-        self.assertEqual(len(res.context['all_mks_ids']), 2)
+        self.assertEqual(len(res.context['all_mks_ids']), 3)
 
     def testAgendaUnauthorized(self):
         # Access non-public agenda without authorization
@@ -332,6 +346,20 @@ I have a deadline''')
         self.assertEqual(int(res.context['score']), -33)
         self.assertEqual(len(res.context['related_votes']), 2)
 
+    def testAgendaMkDetailForKnesset19NotInRange(self):
+	res = self.client.get('/api/v2/agenda/%s/?ranges=201205-201208&format=json' % self.agenda_1.id)
+
+        self.assertEqual(res.status_code, 200)
+        todo = json.loads(res.content)
+
+        def _validate_members_list(mn):
+            members = todo["members"]
+            for m in members:
+                self.assertNotContains(m, mn)
+
+        _validate_members_list("852")
+	
+
     def testAgendaDetailOptCacheFail(self):
         res = self.client.get(reverse('agenda-detail',
                                       kwargs={'pk': self.agenda_1.id}))
@@ -391,7 +419,7 @@ I have a deadline''')
             self.assertIn(list_key, todo, 'Got a todo with no votes for new agenda')
             votes = todo[list_key]
             print votes
-            self.assertEquals(len(votes), 2, 'Got wrong number of "votes" for existing agenda')
+            self.assertEquals(len(votes), 3, 'Got wrong number of "votes" for existing agenda')
             vote = votes[0]
             self._validate_vote(vote)
             self.assertEqual(vote['id'], self.vote_1.id, "Expected vote not returned for existing agenda")
