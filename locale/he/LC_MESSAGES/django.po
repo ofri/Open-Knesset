@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-19 21:47+0300\n"
-"PO-Revision-Date: 2014-05-19 21:52+0200\n"
+"POT-Creation-Date: 2014-06-09 18:53+0300\n"
+"PO-Revision-Date: 2014-06-09 18:54+0200\n"
 "Last-Translator: Ori Hoch <ori@uumpa.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -272,9 +272,9 @@ msgstr "הצעת הידעת"
 #: mks/views.py:197
 #: mks/views.py:641
 #: polyorg/models.py:6
-#: templates/lobbyists/lobbyist_detail.html:24
-#: templates/lobbyists/lobbyistcorporation_detail.html:28
-#: templates/lobbyists/lobbyistcorporation_detail.html:31
+#: templates/lobbyists/lobbyist_detail.html:31
+#: templates/lobbyists/lobbyistcorporation_detail.html:33
+#: templates/lobbyists/lobbyistcorporation_detail.html:36
 #: templates/lobbyists/lobbyistrepresent_detail.html:20
 msgid "Name"
 msgstr "שם"
@@ -623,7 +623,7 @@ msgid "Bills feed"
 msgstr "הזנה של הצעות חוק"
 
 #: knesset/feeds.py:83
-#: templates/main.he.html:169
+#: templates/main.he.html:170
 #: templates/user/annotated_items.html:4
 #: templates/user/annotated_items.html:9
 #: templates/user/public_profile.html:41
@@ -1867,7 +1867,7 @@ msgstr "טוען"
 msgid "More"
 msgstr "עוד"
 
-#: templates/main.he.html:162
+#: templates/main.he.html:163
 #: templates/agendas/agenda_meeting_partial.html:11
 #: templates/agendas/agendasfor.html:23
 msgid "comments"
@@ -3321,57 +3321,81 @@ msgstr "הצביע שונה ממרבית חברי הקואליציה"
 msgid "Voted differently than majority of the opposition"
 msgstr "הצביע שונה ממרבית חברי האופוזיציה"
 
+#: templates/lobbyists/_suggest_change_section.html:4
+msgid "Suggest a change"
+msgstr "הציעו שינויים"
+
+#: templates/lobbyists/_suggest_change_section.html:6
+msgid "Think the data contains an error?"
+msgstr "חושבים שיש טעות במידע?"
+
+#: templates/lobbyists/_suggest_change_section.html:7
+msgid "Click here to suggest a change"
+msgstr "ליחצו כאן לדווח על טעויות במידע"
+
 #: templates/lobbyists/lobbyist_detail.html:8
+#: templates/lobbyists/lobbyistcorporation_detail.html:8
+#: templates/lobbyists/lobbyistcorporation_list.html:8
+#: templates/lobbyists/lobbyistcorporation_list.html:20
+msgid "Lobbying Corporations"
+msgstr "תאגידי שדלנים"
+
+#: templates/lobbyists/lobbyist_detail.html:11
+msgid "Historical Data"
+msgstr "נתונים היסטוריים"
+
+#: templates/lobbyists/lobbyist_detail.html:16
+#: templates/lobbyists/lobbyist_detail.html:34
+#: templates/lobbyists/lobbyistcorporation_detail.html:11
+#: templates/lobbyists/lobbyistcorporation_detail.html:33
+#: templates/lobbyists/lobbyistcorporation_list.html:32
+msgid "Private Lobbyists"
+msgstr "שדלנים פרטיים"
+
+#: templates/lobbyists/lobbyist_detail.html:29
+msgid "Lobbyist"
+msgstr "שדלן"
+
+#: templates/lobbyists/lobbyist_detail.html:32
+#: templates/lobbyists/lobbyistcorporation_detail.html:30
+msgid "Lobbyist Corporation"
+msgstr "תאגיד שדלנים"
+
+#: templates/lobbyists/lobbyist_detail.html:40
+msgid "Profession"
+msgstr "מקצוע"
+
+#: templates/lobbyists/lobbyist_detail.html:44
+msgid "Faction Member?"
+msgstr "חבר בגוף בוחר של מפלגה?"
+
+#: templates/lobbyists/lobbyist_detail.html:48
+msgid "Faction Name"
+msgstr "שם המפלגה"
+
+#: templates/lobbyists/lobbyist_detail.html:51
+msgid "Permit Type"
+msgstr "סוג אישור"
+
+#: templates/lobbyists/lobbyist_detail.html:56
+#: templates/lobbyists/lobbyistrepresent_detail.html:17
+msgid "Lobbyist Represents"
+msgstr "לקוחות"
+
 #: templates/lobbyists/lobbyist_list.html:3
 #: templates/lobbyists/lobbyist_list.html:4
 #: templates/lobbyists/lobbyist_list.html:5
 #: templates/lobbyists/lobbyist_list.html:8
 #: templates/lobbyists/lobbyist_list.html:20
 #: templates/lobbyists/lobbyist_list.html:55
-#: templates/lobbyists/lobbyistcorporation_detail.html:8
-#: templates/lobbyists/lobbyistcorporation_detail.html:53
+#: templates/lobbyists/lobbyistcorporation_detail.html:58
 #: templates/lobbyists/lobbyistcorporation_list.html:3
 #: templates/lobbyists/lobbyistcorporation_list.html:4
 #: templates/lobbyists/lobbyistcorporation_list.html:5
-#: templates/lobbyists/lobbyistcorporation_list.html:8
 #: templates/lobbyists/lobbyistcorporation_list.html:37
 #: templates/lobbyists/lobbyistrepresent_detail.html:8
 msgid "Lobbyists"
 msgstr "שדלנים"
-
-#: templates/lobbyists/lobbyist_detail.html:11
-msgid "Historical Data"
-msgstr "נתונים היסטוריים"
-
-#: templates/lobbyists/lobbyist_detail.html:22
-msgid "Lobbyist"
-msgstr "שדלן"
-
-#: templates/lobbyists/lobbyist_detail.html:25
-#: templates/lobbyists/lobbyistcorporation_detail.html:25
-msgid "Lobbyist Corporation"
-msgstr "תאגיד שדלנים"
-
-#: templates/lobbyists/lobbyist_detail.html:27
-msgid "Profession"
-msgstr "מקצוע"
-
-#: templates/lobbyists/lobbyist_detail.html:31
-msgid "Faction Member?"
-msgstr "חבר בגוף בוחר של מפלגה?"
-
-#: templates/lobbyists/lobbyist_detail.html:35
-msgid "Faction Name"
-msgstr "שם המפלגה"
-
-#: templates/lobbyists/lobbyist_detail.html:38
-msgid "Permit Type"
-msgstr "סוג אישור"
-
-#: templates/lobbyists/lobbyist_detail.html:43
-#: templates/lobbyists/lobbyistrepresent_detail.html:17
-msgid "Lobbyist Represents"
-msgstr "לקוחות"
 
 #: templates/lobbyists/lobbyist_list.html:30
 msgid "Faction member"
@@ -3382,7 +3406,6 @@ msgid "Permit type"
 msgstr "סוג אישור"
 
 #: templates/lobbyists/lobbyist_list.html:45
-#: templates/lobbyists/lobbyistcorporation_detail.html:9
 msgid "Corporations"
 msgstr "תאגידי שדלנים"
 
@@ -3395,30 +3418,21 @@ msgstr "שינוי אחרון"
 msgid "Mark as alias corporation"
 msgstr "סמן כשם נוסף לתאגיד אחר"
 
-#: templates/lobbyists/lobbyistcorporation_detail.html:18
+#: templates/lobbyists/lobbyistcorporation_detail.html:23
 msgid "Warning"
 msgstr "אזהרה"
 
-#: templates/lobbyists/lobbyistcorporation_detail.html:20
+#: templates/lobbyists/lobbyistcorporation_detail.html:25
 msgid "This corporation is old - all the lobbyists related to it are not currently active"
 msgstr "תאגיד זה ישן - כל השדלנים המשוייכים אליו אינם פעילים"
 
-#: templates/lobbyists/lobbyistcorporation_detail.html:28
-#: templates/lobbyists/lobbyistcorporation_list.html:32
-msgid "Private Lobbyists"
-msgstr "שדלנים פרטיים"
-
-#: templates/lobbyists/lobbyistcorporation_detail.html:34
+#: templates/lobbyists/lobbyistcorporation_detail.html:39
 msgid "Corporation Id"
 msgstr "ח.פ."
 
-#: templates/lobbyists/lobbyistcorporation_detail.html:38
+#: templates/lobbyists/lobbyistcorporation_detail.html:43
 msgid "Alias Corporations"
 msgstr "שמות תאגיד נוספים"
-
-#: templates/lobbyists/lobbyistcorporation_list.html:20
-msgid "Lobbying Corporations"
-msgstr "תאגידי שדלנים"
 
 #: templates/lobbyists/lobbyistcorporation_list.html:30
 msgid "No name"
