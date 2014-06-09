@@ -2,6 +2,7 @@
 Api for the committees app
 '''
 import tastypie.fields as fields
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
 from apis.resources.base import BaseResource
 from models import Committee, CommitteeMeeting, ProtocolPart
@@ -19,6 +20,9 @@ class CommitteeResource(BaseResource):
         allowed_methods = ['get']
         include_absolute_url = True
         list_fields = ['description', 'name']
+        filtering = {
+            'id': ALL
+        }
 
     def dehydrate_recent_meetings(self, bundle):
         return [
@@ -46,6 +50,10 @@ class CommitteeMeetingResource(BaseResource):
         include_absolute_url = True
         list_fields = ['committee', 'mks_attended', 'date', 'topics']
         excludes = ['protocol_text']
+        filtering = {
+            'date': ALL,
+            'committee': ALL_WITH_RELATIONS
+        }
         limit = 500
 
 

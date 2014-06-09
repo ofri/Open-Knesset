@@ -13,7 +13,6 @@ South==0.8.4
 django-extensions==1.2.5
 django-pagination==1.0.7
 django-tagging==0.3.1
-django_compressor==1.2
 BeautifulSoup
 vobject
 feedparser
@@ -45,3 +44,5 @@ django-tinymce==1.5.2
 django-crispy-forms==1.2.3
 django-storages==1.1.8
 boto==2.20.1
+BeautifulSoup4
+okscraper-django==0.0.8

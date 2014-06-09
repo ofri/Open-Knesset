@@ -1,0 +1,65 @@
+{% extends "site_base.html" %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
+{% block extratitle %}{{ object }}{% endblock %}
+{% block keywords %}{{ object.person.name }}{% endblock %}
+{% block description %}{{ object.person.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block breadcrumbs %}
+        <li><a href="{% url 'lobbyists' %}">{% trans "Lobbying Corporations" %}</a> <span class="divider">/</span></li>
+        {% if is_historical %}
+            <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a> <span class="divider">/</span></li>
+            <li>{% trans "Historical Data" %} <span class="divider">/</span></li>
+            <li class="active">{{ object.scrape_time }}</li>
+        {% else %}
+            <li><a href="{% url 'lobbyist-corporation' corporation.id %}">
+                {% if not corporation.name %}
+                    {% trans "Private Lobbyists" %}
+                {% else %}
+                    {{ corporation }}
+                {% endif %}
+            </a> <span class="divider">/</span></li>
+            <li class="active">{{ object }}</li>
+        {% endif %}
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="cards span12">
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
+                <ul>
+                    <li>{% trans "Name" %}: {{ object }}</li>
+                    <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">
+                        {% if not corporation.name %}
+                            {% trans "Private Lobbyists" %}
+                        {% else %}
+                            {{ corporation }}
+                        {% endif %}
+                    </a></li>
+                    {% if data.profession %}
+                        <li>{% trans "Profession" %}: {{ data.profession }}</li>
+                    {% endif %}
+                    {% if data.faction_member %}
+                        {% ifnotequal data.faction_member 'לא' %}
+                            <li>{% trans "Faction Member?" %} {{ data.faction_member }}</li>
+                        {% endifnotequal %}
+                    {% endif %}
+                    {% if data.faction_name %}
+                        <li>{% trans "Faction Name" %}: {{ data.faction_name }}</li>
+                    {% endif %}
+                    {% if data.permit_type %}
+                        <li>{% trans "Permit Type" %}: {{ data.permit_type }}</li>
+                    {% endif %}
+                </ul>
+            </section>
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Represents" %}</h2></header>
+                <ul>
+                    {% for represent in represents %}
+                        <li>{{ represent.name }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </div>
+{% endblock %}

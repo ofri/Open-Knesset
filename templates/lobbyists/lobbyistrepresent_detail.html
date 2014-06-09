@@ -1,0 +1,26 @@
+{% extends "site_base.html" %}
+{% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
+{% block extratitle %}{{ object }}{% endblock %}
+{% block keywords %}{{ object }}{% endblock %}
+{% block description %}{{ object }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'lobbyists' %}">{% trans "Lobbyists" %}</a> <span class="divider">/</span></li>
+    <li>{% trans "Represents" %} <span class="divider">/</span></li>
+    <li class="active">{{ object }}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="cards span12">
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Represents" %}</h2></header>
+                <ul>
+                    {% if object.name %}
+                        <li>{% trans "Name" %}: {{ object.name }}</li>
+                    {% endif %}
+                </ul>
+            </section>
+        </div>
+    </div>
+{% endblock %}
