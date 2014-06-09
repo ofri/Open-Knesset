@@ -1556,17 +1556,26 @@ class Command(NoArgsCommand):
             self.dump_to_file()
 
         if update:
-            self.update_votes()
-            self.update_laws_data()
-            self.update_presence()
-            self.get_protocols()
-            self.parse_laws()
-            self.find_proposals_in_other_data()
-            self.merge_duplicate_laws()
-            self.update_mk_role_descriptions()
-            self.update_mks_is_current()
-            self.update_gov_law_decisions()
-            self.correct_votes_matching()
+            for func in ['update_votes',
+                         'update_laws_data',
+                         'update_presence',
+                         'get_protocols',
+                         'parse_laws',
+                         'find_proposals_in_other_data',
+                         'merge_duplicate_laws',
+                         'update_mk_role_descriptions',
+                         'update_mks_is_current',
+                         'update_gov_law_decisions',
+                         'correct_votes_matching']:
+                try:
+                    self.__getattribute__(func).__call__()
+                except:
+                    exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                    logger.error("Caught execption in syncdata update phase %s\n%s",
+                                 func,
+                                 ''.join(traceback.format_exception(exceptionType,
+                                                                    exceptionValue,
+                                                                    exceptionTraceback)))
             logger.debug('finished update')
 
         if committees:
