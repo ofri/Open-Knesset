@@ -46,16 +46,10 @@ Linux
       sudo yum install git python python-devel python-setuptools python-virtualenv python-pip libjpeg-turbo-devel libpng-devel libxml2-devel libxslt-devel
 
 
-- If you haven't done so already:
+- If you haven't done so already::
 
-  - ``git config --local user.name "Your Name"``
-  - ``git config --local user.email "your@email.com"``
-
-- Create the virtual environment. In the terminal cd to the directory you want
-  the environment create it and run ``virtualenv oknesset``.
-
-- Activate the virutalenv ``cd oknesset; . bin/activate`` Note the changed
-  prompt which includes the virtualenv's name.
+    git config --local user.name "Your Name"
+    git config --local user.email "your@email.com"
 
 - Clone the repository::
 
@@ -63,13 +57,19 @@ Linux
 
   This creates a copy of the project on your local machine.
 
-- Install required packages: ``pip install -r Open-Knesset/requirements.txt``
-  and wait ...
-- Run the tests::
+- Create the virtual environment, activate it and install dependecies::
 
     cd Open-Knesset
+    virtualenv .
+    . bin/activate
+    pip install -r requirements.txt
+
+  and wait ...
+
+- Run the tests::
+
     python manage.py test
-    
+
 
 MS Windows
 -----------
@@ -127,10 +127,10 @@ OS X
 
     sudo easy_install pip
     sudo pip install virtualenv
-- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install homebrew: ``ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"``
 - Install binary python libraries build dependencies::
 
-  brew install jpeg libpng libxml2 libxslt
+    brew install jpeg libpng libxml2 libxslt
 
 - We need UTF-8, Add locale settings (in case you're not UTF-8),
   put in your ``~/.profile``::

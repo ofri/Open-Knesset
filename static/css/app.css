@@ -8006,6 +8006,9 @@ div#tidbitCarousel .btn-suggest:hover {
 .vote_input {
   width: 75%;
 }
+.autocomplete > div[title] {
+  white-space:normal;
+}
 body.infinity-protocol #app-header {
   position: fixed;
   top: 0;
@@ -8027,3 +8030,13 @@ body.infinity-protocol #content-main > div > div.row > div.span3 {
   position: fixed;
   overflow: auto;
 }
+.padded { padding:1em;}
+.bill-stage {width:136px; padding:0.4em; float:right; margin-left: 13px; height: 200px;}
+.gov-decision {width:783px; padding:0.4em; float:right; margin-right: 162px;
+               overflow: hidden; min-height: 100px; margin-top:10px;}
+.past-stage {background-color: #bde7ff; }
+.future-stage {background-color: #f1f1f1; }
+ul.dates-list { margin:0; }
+ul.dates-list li {padding:0; border:none; overflow: hidden;}
+.bill-stage header {background: inherit;}
+.bill-stage h2 { line-height:30px;}
