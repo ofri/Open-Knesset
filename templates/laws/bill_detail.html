@@ -280,7 +280,8 @@
                 <h2>{% trans 'Pre Vote' %}</h2>
                 <ul class="dates-list">
                 {% for v in object.pre_votes.all %}
-                    <li><a class="item" href="{% url 'vote-detail' v.id %}">
+                <li {% if forloop.counter > 3 %}class="list-more" {% endif %}>
+                    <a class="item" href="{% url 'vote-detail' v.id %}">
                         <p class="pull-left">
                           <span class="badge badge-success">{{ v.for_votes_count }}</span><br/>
                             <span class="badge badge-important">{{ v.against_votes_count }}</span>
@@ -319,9 +320,11 @@ var pre_vote_score = {{ v.for_votes_count}} - {{ v.against_votes_count }};
                 <h2>{% trans 'Committee Meetings' %}</h2>
                 <ul class="dates-list">
                 {% for cm in object.first_committee_meetings.all %}
-                    <li><a class="item" href="{% url 'committee-meeting' cm.id %}">
+                    <li {% if forloop.counter > 5 %}class="list-more" {% endif %}>
+                      <a class="item" href="{% url 'committee-meeting' cm.id %}">
                         {{ cm.date }}
-                    </a></li>
+                      </a>
+                    </li>
                 {% endfor %}
 
                 </ul>
@@ -374,27 +377,13 @@ var first_vote_score = {{ object.first_vote.for_votes_count}} - {{ object.first_
             <section class="bill-stage {% if object.second_committee_meetings.all %}past-stage{% else %}future-stage{% endif %}">
                 <h2>{% trans 'Committee Meetings' %}</h2>
                 <ul class="dates-list">
-                {% for cm in object.second_committee_meetings.all|slice:":4" %}
-                    <li>
+                {% for cm in object.second_committee_meetings.all %}
+                    <li {% if forloop.counter > 5 %}class="list-more" {% endif %}>
                         <a href="{% url 'committee-meeting' cm.id %}">
                         {{ cm.date }}</a>
                     </li>
                 {% endfor %}
                 </ul>
-                {% if object.second_committee_meetings.count > 4 %}
-                <ul id="more-meetings" style="display:none">
-                {% for cm in object.second_committee_meetings.all|slice:"4:" %}
-                    <li>
-                        <p class="item-title"><a href="{% url 'committee-meeting' cm.id %}">{{ cm.committee.name }}</a></p>
-                        <p class="item-context">{{ cm.date }}</p>
-                    </li>
-                {% endfor %}
-                </ul>
-                <footer>
-                  <a href="#" class="btn btn-mini btn-expand" data-target="#more-meetings"
-                      data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Collapse" %} -">{% trans "More" %} +</a>
-                </footer>
-                {% endif %}
             </section>
 
             <section id="third-vote" class="bill-stage {% if object.approval_vote %}past-stage{% else %}future-stage{% endif %}">
@@ -430,7 +419,6 @@ var third_vote_score = {{ object.approval_vote.for_votes_count}} - {{ object.app
                 </ul>
             </section>
             <div class="clearfix"></div>
-
             <section class="gov-decision {% if object.gov_decisions.all %}past-stage{% else %}future-stage{% endif %}">
                 <h2>{% trans 'Government Stand' %}</h2>
                 <ul class="dates-list">
@@ -465,6 +453,12 @@ var third_vote_score = {{ object.approval_vote.for_votes_count}} - {{ object.app
 
             <!-- div id="bill-canvas"></div -->
             <div class="clearfix"></div>
+            {% if object.first_committee_meetings.count > 5 or object.pre_votes.count > 3 or object.second_committee_meetings.count > 5%}
+                <footer>
+                  <a href="#" class="btn btn-mini btn-expand" data-target=".list-more"
+                      data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Collapse" %} -">{% trans "More" %} +</a>
+                </footer>
+            {% endif %}
           </section>
       </div>
     </div>
