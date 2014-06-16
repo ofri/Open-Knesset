@@ -32,7 +32,7 @@
             } else {
                 path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
             }
-            var l = paper.path(["M",realx,y,"h",-90,"l",-15,30,"l",15,30,"h",90,"l",-15,-30,"Z"]).attr(path_params);
+            var l = paper.path(["M",realx,y,"h",-120,"v",60,"h",120,"v",-60,"Z"]).attr(path_params);
 
 
             function add_animation(el,l) {
@@ -65,7 +65,8 @@
             } else {
                  path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
             }
-            var l = paper.path(["M",realx,y,"h",-500,"l",-7,15,"l",7,15,"h",500,"l",7,-15,"Z"]).attr(path_params);
+            // var l = paper.path(["M",realx,y,"h",-500,"l",-7,15,"l",7,15,"h",500,"l",7,-15,"Z"]).attr(path_params);
+            var l = paper.path(["M",realx,y,"h",-500,"v",30,"h",500,"v",-30,"Z"]).attr(path_params);
 
 
             function add_animation(el,l) {
@@ -111,35 +112,11 @@
             return s;
         }
         $(document).ready(function() {
-                $("[rel=tooltip]").tooltip({placement:'bottom'});
-                var paper = Raphael("bill-canvas", 850, 150);
-                var titles = paper.image("{% static "img/bill-view-stage-labels.png" %}",137,10,699,130);
-                var rect1 = paper.my_box(105,80,"gov-decision",{% if object.gov_decisions.all %}true{% else %}false{% endif %});
-                var rect1 = paper.my_arrow(10,10,"bill-initiation", {% if object.proposals.all or object.gov_proposal %} true {% else %} false {% endif %});
-                var rect2 = paper.my_arrow(110,10,"bill-pre-vote", {% if object.pre_votes.all %} true {% else %} false {% endif %});
-                var rect3 = paper.my_arrow(210,10,"bill-first-committee-meetings", {% if object.first_committee_meetings.all %} true {% else %} false {% endif %});
-                {% for v in object.pre_votes.all %}
-                    var im2 = paper.approved(235,25,{{ v.for_votes_count }}  > {{ v.against_votes_count }});
-                {% endfor %}
-                var rect4 = paper.my_arrow(310,10,"bill-after-committee", {% if object.knesset_proposal %} true {% else %} false {% endif %});
-                var rect5 = paper.my_arrow(410,10,"bill-first-vote", {% if object.first_vote %} true {% else %} false {% endif %});
-                var rect6 = paper.my_arrow(510,10,"bill-second-committee-meetings", {% if object.second_committee_meetings.all %} true {% else %} false {% endif %});
-                {% if object.first_vote %}
-                    var im5 = paper.approved(535,25,{{ object.first_vote.for_votes_count }}  > {{ object.first_vote.against_votes_count }});
-                {% endif %}
-                var rect7 = paper.my_arrow(610,10,"bill-approval", {% if object.approval_vote %} true {% else %} false {% endif %});
-                {% if object.approval_vote %}
-                    var im7 = paper.approved(735,25,{{ object.approval_vote.for_votes_count }}  > {{ object.approval_vote.against_votes_count }});
-                    var bg = paper.circle(70,40,38).attr({"fill":"#fff","stroke-width":"3px","stroke":"#ff8"}),
-                    law = paper.image("{% static "img/law.png" %}",40,8,60,66);
-                {% endif %}
-                $(titles.node).attr("pointer-events","none");
 
                 var options = {
                      serviceUrl:'/vote/auto_complete/',
                      minChars:2,
                      maxHeight:400,
-                     width:600,
                      deferRequestBy: 100, //miliseconds
                      onSelect: function(value, data, me){
                         me.siblings("input[name$='vote_id']").val(data);
@@ -157,6 +134,21 @@
                 if (location.hash) {
                   // Can be '#' + one of the "bill-stage" class divs.
                     $(location.hash).get(0).scrollIntoView();
+                }
+                if (typeof pre_vote_score != 'undefined') {
+                  $("#pre-vote").css('background', pre_vote_score>0?"#39b44a":"#A60600");
+                  $("#pre-vote").css('color', "white");
+                  $("#pre-vote a").css('color', "white");
+                }
+                if (typeof first_vote_score != 'undefined') {
+                  $("#first-vote").css('background', first_vote_score>0?"#39b44a":"#A60600");
+                  $("#first-vote").css('color', "white");
+                  $("#first-vote a").css('color', "white");
+                }
+                if (typeof third_vote_score != 'undefined') {
+                  $("#third-vote").css('background', third_vote_score>0?"#39b44a":"#A60600");
+                  $("#third-vote").css('color', "white");
+                  $("#third-vote a").css('color', "white");
                 }
             });
     </script>
@@ -224,110 +216,91 @@
         </form>       
     </div>
     {% endif %}
-    <section class="card card-main-party">
-        <div class="row">
-            <div class="span9 card-details">
-                <div class="spacer">
-                    <header>
-                        <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
-                        <h1>{% bill_full_name object %}</h1>
-                    </header>
-                    <p>
-                        {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
-                        {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
-                    </p>
-                    <div id="bill-canvas"> </div>
-                </div>
-            </div>
-            <div class="span3 social-details">
-              <div class="spacer actions-panel">
-                {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
-                <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
-                {% if perms.laws.change_bill %}
-                <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
-                {% endif %}
-            </div>
-    </section>
-    {% if proposers %}
-    <div class="card card-party-members">
-        <div>
-            {% include "mks/member_photos.html" with members=proposers %}
-        </div>
-    </div>
-    {%endif%}
-
     <div class="row">
-        <div class="cards span8">
-    {% comment %} Note that the stage names must remain in sync with embed_bill_detail.html {% endcomment %}
-            <section class="card card-list" id="bill-initiation">
-                <header><h2>{% trans 'Bill initiation' %}</h2></header>
-                <ul>
-                {% if object.gov_proposal %}
-                    <li>
-                        <p class="item-action">{% trans 'Government Proposal' %}</p>
-                        <p class="item-title">
-                            <a rel="tooltip" title="{% trans 'Bill on knesset website' %}" href="{{ object.gov_proposal.source_url }}">{{ object.gov_proposal.title }} {% trans 'booklet' %} {{ object.gov_proposal.booklet_number }} </a>
-                        </p>
-                        <p class="item-context">{{ object.gov_proposal.date }}</p>
-                    </li>
-                {% else %}
-                    {% for pp in object.proposals.all %}
-                    <li>
-                        <p class="item-action">פ/&rlm;{{pp.knesset_id}}/&rlm;{{pp.proposal_id}}</p>
-                        <p class="item-title">
-                            <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.title }}</a>
-                        </p>
-                        <p class="item-context">{{ pp.date }}</p>
-                        <div id="pp{{ pp.pk }}" class="modal hide fade"
-                            tabindex="-1" role="dialog" aria-labelledby="pp{{pp.pk}}ModalLabel" aria-hidden="true">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                                <h3 id="pp{{pp.pk}}ModalLabel">{{pp.title}}</h3>
-                                <div class="modal-body">
-                                    <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a>
-                                    <p>
-                            {% if pp.content_html %}
-                                {{ pp.content_html|safe }}
-                            {% else %}
-                                {% trans 'Sorry, Proposal text not available' %}
-                            {% endif %}
-                                    </p>
-                                </div>
-                                <div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button></div>
-                            </div>
-                        </div>
-                        
-                        <div class="proposal_content">
-                        </div>
-                        </li>
-                    {% empty %}
-                        <li>{% trans 'No Info' %}</li>
-                    {% endfor %}
-                {% endif %}
-                </ul>
+      <div class="cards span12">
+          <section class="card card-list padded">
+              <p>
+                {% trans 'stage date' %}: <strong>{{ object.stage_date }}</strong>
+                <!-- add next event -->
+              </p>
+              <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
+              <h1>{% bill_full_name object %}</h1>
+              {% if proposers %}
+                {% include "mks/member_photos.html" with members=proposers %}
+              {%endif%}
+          </section>
+          <section class="card card-list padded">
+            <p>
+              {% trans 'stage' %}:<strong{% if object.frozen %} class="text-error"{% endif %}>{% trans object.get_stage_display %}</strong>
+            </p>
+            <div>
+
+            <section class="bill-stage {% if object.proposals.all or object.gov_proposal %}past-stage{% else %}future-stage{% endif %}">
+              <h2>{% trans 'Bill initiation' %}</h2>
+              <ul class="dates-list">
+              {% if object.gov_proposal %}
+                  <li>
+                    <a rel="tooltip" title="{% trans 'Bill on knesset website' %}" href="{{ object.gov_proposal.source_url }}">
+                      <p >{% trans 'Government Proposal' %}</p>
+                      <p >{{ object.gov_proposal.date }}</p>
+                    </a>
+                  </li>
+              {% else %}
+                  {% for pp in object.proposals.all %}
+                  <li>
+                      <a href="#pp{{ pp.pk }}" data-toggle="modal">{{ pp.date }}</a></p>
+                      <div id="pp{{ pp.pk }}" class="modal hide fade"
+                          tabindex="-1" role="dialog" aria-labelledby="pp{{pp.pk}}ModalLabel" aria-hidden="true">
+                          <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                              <h3 id="pp{{pp.pk}}ModalLabel">{{pp.title}}</h3>
+                              <div class="modal-body">
+                                  <a href="{{ pp.source_url }}">{% trans 'Bill on knesset website' %}</a>
+                                  <p>
+                          {% if pp.content_html %}
+                              {{ pp.content_html|safe }}
+                          {% else %}
+                              {% trans 'Sorry, Proposal text not available' %}
+                          {% endif %}
+                                  </p>
+                              </div>
+                              <div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button></div>
+                          </div>
+                      </div>
+                      
+                      </li>
+                  {% empty %}
+                      <li>{% trans 'No Info' %}</li>
+                  {% endfor %}
+              {% endif %}
+              </ul>
             </section>
 
-            <section class="card card-list" id="bill-pre-vote">
-                <header><h2>{% trans 'Pre Vote' %}</h2></header>
-                <ul>
+            <section id="pre-vote" class="bill-stage {% if object.pre_votes.all %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Pre Vote' %}</h2>
+                <ul class="dates-list">
                 {% for v in object.pre_votes.all %}
-                    <li>
-                        <p class="item-action">
-                            {% trans 'For' %} <span class="badge badge-success">{{ v.for_votes_count }}</span>
-                            {% trans 'Against' %} <span class="badge badge-important">{{ v.against_votes_count }}</span>
+                    <li><a class="item" href="{% url 'vote-detail' v.id %}">
+                        <p class="pull-left">
+                          <span class="badge badge-success">{{ v.for_votes_count }}</span><br/>
+                            <span class="badge badge-important">{{ v.against_votes_count }}</span>
                         </p>
+                        {{ v.time|date:"N d, Y" }}
+                        {% if user.is_authenticated %}
                         <p class="item-title">
-                        {% if user.is_authenticated %}
                             <a href="{% url 'bill-unbind-vote' object.id v.id %}"><img src="{% static "img/X.png" %}"></a>
-                        {% endif %}
-                            <a class="item" href="{% url 'vote-detail' v.id %}">{{ v.title }}</a>
                         </p>
-                        <p class="item-context">{{ v.time }}</p>
-                    </li>
+                        {% endif %}
+                      </a>
+                  {% if forloop.last %}
+                  <script>
+var pre_vote_score = {{ v.for_votes_count}} - {{ v.against_votes_count }};
+                  </script>
+                  {% endif %}
+                  </li>
                 {% empty %}
+                    {% if user.is_authenticated %}
                     <li>
-                        {% trans 'No Info' %}<br>
-                        {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
                         <form method="post" action="." class="form-inline">{% csrf_token %}
                             <input type="hidden" name="user_input_type" value="pre vote"></input>
@@ -336,54 +309,53 @@
                             <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
                         </form>
                     </li>
-                    {% endif %}
+                  {% endif %}
+
                 {% endfor %}
                 </ul>
             </section>
 
-            <section class="card card-list" id="bill-first-committee-meetings">
-                <header><h2>{% trans 'Committee Meetings' %}</h2></header>
-                <ul>
+            <section class="bill-stage {% if object.first_committee_meetings.all %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Committee Meetings' %}</h2>
+                <ul class="dates-list">
                 {% for cm in object.first_committee_meetings.all %}
-                    <li>
-                        <p class="item-title"><a class="item" href="{% url 'committee-meeting' cm.id %}">{{ cm.committee.name }}</a></p>
-                        <p class="item-context">{{ cm.date }}</p>
-                    </li>
-                {% empty %}
-                <li>{% trans 'No Info' %}</li>
+                    <li><a class="item" href="{% url 'committee-meeting' cm.id %}">
+                        {{ cm.date }}
+                    </a></li>
                 {% endfor %}
 
                 </ul>
             </section>
 
-            <section class="card card-list" id="bill-after-committee">
-                <header><h2>{% trans 'Bill formulated by the committee' %}</h2></header>
-                <ul>
-                    <li> 
-                    {% if object.knesset_proposal %}
-                        <p class="item-title"><a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a></p>
-                    {% else %}
-                        {% trans 'No Info' %}
-                    {% endif %}
+            <section class="bill-stage {% if object.knesset_proposal %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Bill formulated by the committee' %}</h2>
+                {% if object.knesset_proposal %}
+                <ul class="dates-list">
+                    <li>
+                        <a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a>
                     </li>
                 </ul>
+                {% endif %}
             </section>
 
-            <section class="card card-list" id="bill-first-vote">
-                <header><h2>{% trans 'First Vote' %}</h2></header>
-                <ul>
-                    <li>
+            <section id="first-vote" class="bill-stage {% if object.first_vote %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'First Vote' %}</h2>
+                <ul class="dates-list">
                     {% if object.first_vote %}
-                        <p class="item-action">{% trans 'For' %}: {{ object.first_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.first_vote.against_votes_count }}</p>
-                        <p class="item-title">
+                    <li><a class="item" href="{% url 'vote-detail' object.first_vote.id %}">
+                        <p class="pull-left">
+                          <span class="badge badge-success">{{ object.first_vote.for_votes_count }}</span><br/>
+                            <span class="badge badge-important">{{ object.first_vote.against_votes_count }}</span>
+                        </p>
+                        {{ object.first_vote.time|date:"N d, Y" }}
                         {% if user.is_authenticated %}
                             <a href="{% url 'bill-unbind-vote' object.id object.first_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                         {% endif %}
-                            <a href="{% url 'vote-detail' object.first_vote.id %}">{{ object.first_vote.title }}</a>
-                        </p>
-                        <p class="item-context">{{ object.first_vote.time }}</p>
+                    </a></li>
+                  <script>
+var first_vote_score = {{ object.first_vote.for_votes_count}} - {{ object.first_vote.against_votes_count }};
+                  </script>
                     {% else %}
-                        {% trans 'No Info' %}<br>
                         {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
                         <form method="post" action="." class="form-inline">
@@ -399,16 +371,14 @@
                 </ul>
             </section>
 
-            <section class="card card-list" id="bill-second-committee-meetings">
-                <header><h2>{% trans 'Committee Meetings' %}</h2></header>
-                <ul>
+            <section class="bill-stage {% if object.second_committee_meetings.all %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Committee Meetings' %}</h2>
+                <ul class="dates-list">
                 {% for cm in object.second_committee_meetings.all|slice:":4" %}
                     <li>
-                        <p class="item-title"><a href="{% url 'committee-meeting' cm.id %}">{{ cm.committee }}</a></p>
-                        <p class="item-context">{{ cm.date }}</p>
+                        <a href="{% url 'committee-meeting' cm.id %}">
+                        {{ cm.date }}</a>
                     </li>
-                {% empty %}
-                    <li>{% trans 'No Info' %}</li>
                 {% endfor %}
                 </ul>
                 {% if object.second_committee_meetings.count > 4 %}
@@ -427,24 +397,26 @@
                 {% endif %}
             </section>
 
-            <section class="card card-list" id="bill-approval">
-                <header><h2>{% trans 'Bill Approval' %}</h2></header>
-                <ul>
-                    <li>
+            <section id="third-vote" class="bill-stage {% if object.approval_vote %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Bill Approval' %}</h2>
+                <ul class="dates-list">
                 {% if object.approval_vote %}
-                    <p class="item-action">{% trans 'For' %}: {{ object.approval_vote.for_votes_count }}  {% trans 'Against' %}: {{ object.approval_vote.against_votes_count }}</p>
-                    <p class="item-title">
+                    <li><a class="item" href="{% url 'vote-detail' object.approval_vote.id %}">
+                        <p class="pull-left">
+                          <span class="badge badge-success">{{ object.approval_vote.for_votes_count }}</span><br/>
+                            <span class="badge badge-important">{{ object.approval_vote.against_votes_count }}</span>
+                        </p>
+                        {{ object.approval_vote.time|date:"N d, Y" }}
                         {% if user.is_authenticated %}
                             <a href="{% url 'bill-unbind-vote' object.id object.approval_vote.id %}"><img src="{% static "img/X.png" %}"></a>
                         {% endif %}
-                        <a href="{% url 'vote-detail' object.approval_vote.id %}">{{ object.approval_vote.title }}</a>
-                    </p>
-                    <p class="item-context">{{ object.approval_vote.time }}</p>
-                    </li>
+                    </a></li>
+                  <script>
+var third_vote_score = {{ object.approval_vote.for_votes_count}} - {{ object.approval_vote.against_votes_count }};
+                  </script>
                 {% else %}
+                    {% if user.is_authenticated %}
                     <li>
-                        {% trans 'No Info' %}<br>
-                        {% if user.is_authenticated %}
                         {% trans 'Suggest a matching vote' %}
                         <form method="post" action="." class="form-inline">{% csrf_token %}
                             <input type="hidden" name="user_input_type" value="approval vote"></input>
@@ -452,17 +424,32 @@
                             <input type="hidden" name="vote_id"></input>
                             <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
                         </form>
-                        {% endif %}
                     </li>
+                    {% endif %}
                 {% endif %}
                 </ul>
             </section>
+            <div class="clearfix"></div>
 
-            <section class="card card-list" id="gov-decision">
-                <header><h2>{% trans 'Government Stand' %}</h2></header>
-                <ul>
+            <section class="gov-decision {% if object.gov_decisions.all %}past-stage{% else %}future-stage{% endif %}">
+                <h2>{% trans 'Government Stand' %}</h2>
+                <ul class="dates-list">
                 {% for d in object.gov_decisions.all %}
                     <li>
+                        <a href="#gd{{ d.id }}" data-toggle="modal">{{ d.date }}</a>
+                        <div id="gd{{ d.id }}" class="modal hide fade"
+                            tabindex="-1" role="dialog" aria-labelledby="gd{{d.id}}ModalLabel" aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                <h3 id="pp{{pp.pk}}ModalLabel">{% trans 'Government Stand' %}</h3>
+                                <div class="modal-body">
+                                  <a href="{{ d.source_url }}">{{d.title|safe}}</a>
+{{ d.subtitle }}
+                                  <p> {{d.text|safe}} </p>
+                                </div>
+                                <div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button></div>
+                            </div>
+                        </div>
                         <p class="item-action">
                         {% if d.stand == 1 %}
                             {% trans 'For' %},
@@ -471,80 +458,86 @@
                                 {% trans 'Against' %},
                             {% endif %}
                         {% endif %}
-                            {{ d.date }}
-                        </p>
-                        <p class="item-title">{{ d.title }}</p>
-                        <p class="item-context">
-                            <h4>{{ d.subtitle }}</h4>
-                            {{ d.text|safe }}
-                        </p>
-                        <p class="item-context">
-                            <a href="{{ d.source_url }}">{% trans 'Decision on government website' %}</a>
-                        </p>
                     </li>
-                {% empty %}
-                    {% trans 'No Info' %}
                 {% endfor %}
                 </ul>
             </section>
 
-        </div> <!-- span8 -->
+            <!-- div id="bill-canvas"></div -->
+            <div class="clearfix"></div>
+          </section>
+      </div>
+    </div>
 
-        <div class="span4">
-            <aside class="sidebar">
-                {% agendas_for user object 'bill' %}
-            </aside>
-            <aside class="sidebar">
-                <header><h2>{% trans "Public Opinion" %}</h2></header>
-                <div id="public-opinion">
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</div>
-                    </div>
-                    {% if party_voting_score %}
-                    <h4>{% trans 'Public Opinion - party members' %}</h4>
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{party_voting_score.for_percent}}%">{{ party_voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{party_voting_score.against_percent}}%">{{ party_voting_score.against }}</div>
-                    </div>
-                    {% endif %}
-                    {% if user_party_voting_score %}
-                    <h4>{% trans 'Public Opinion - your party members' %}</h4>
-                    <div class="progress">
-                        <div class="bar bar-success" style="width:{{user_party_voting_score.for_percent}}%">{{ user_party_voting_score.for }}</div>
-                        <div class="bar bar-danger" style="width:{{user_party_voting_score.against_percent}}%">{{ user_party_voting_score.against }}</div>
-                    </div>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                        {% vote_by_user user on object as vote_dict %}
-                        {% if vote_dict and vote_dict.direction %}
-                        {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
-                        <form action="{% url 'vote-on-bill' bill.id 0 %}" method="post">{% csrf_token %}
-                            <input type="submit" name="submit" value="{% trans "Delete" %}" class="btn"/>
-                        </form>
-                        {% else %}
-                        <div class="row">
-                            <form class="span1" action="{% url 'vote-on-bill' bill.id 1 %}" method="post">{% csrf_token %}
-                                <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
-                            </form>
-                            <form class="span1" action="{% url 'vote-on-bill' bill.id -1 %}" method="post">{% csrf_token %}
-                                <input type="submit" name="submit" value="{% trans "I'm against" %}" />
-                            </form>
-                        </div>
-                        {% endif %}
-                    {% else %}
-                        <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
-                    {% endif %}
-                </div>
-            </aside>
-	 		<aside class="sidebar" id="tagging-container">
-                {% include "auxiliary/tags_object_edit.html" with tags=tags %}
-            </aside>
+    <div class="row" style="padding-bottom: 1em;">
+      <div class="span4">
+        <aside class="sidebar">
+          <div class="spacer actions-panel">
+            {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="bill"%}
+            <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
+            {% if perms.laws.change_bill %}
+            <a href="#edit-bill-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "Edit Bill" %}</a>
+            {% endif %}
+          </div>
+        </aside>
+        <aside class="sidebar" id="tagging-container">
+          {% include "auxiliary/tags_object_edit.html" with tags=tags %}
+        </aside>
+      </div>
+      <div class="span4">
+        <aside class="sidebar">
+          <header><h2>{% trans "Public Opinion" %}</h2></header>
+          <div id="public-opinion">
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{voting_score.for_percent}}%">{{ voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{voting_score.against_percent}}%">{{ voting_score.against }}</div>
+              </div>
+              {% if party_voting_score %}
+              <h4>{% trans 'Public Opinion - party members' %}</h4>
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{party_voting_score.for_percent}}%">{{ party_voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{party_voting_score.against_percent}}%">{{ party_voting_score.against }}</div>
+              </div>
+              {% endif %}
+              {% if user_party_voting_score %}
+              <h4>{% trans 'Public Opinion - your party members' %}</h4>
+              <div class="progress">
+                  <div class="bar bar-success" style="width:{{user_party_voting_score.for_percent}}%">{{ user_party_voting_score.for }}</div>
+                  <div class="bar bar-danger" style="width:{{user_party_voting_score.against_percent}}%">{{ user_party_voting_score.against }}</div>
+              </div>
+              {% endif %}
+              {% if user.is_authenticated %}
+                  {% vote_by_user user on object as vote_dict %}
+                  {% if vote_dict and vote_dict.direction %}
+                  {% trans 'You voted '%} <b>{{ vote_dict.get_direction_display }}</b>
+                  <form action="{% url 'vote-on-bill' bill.id 0 %}" method="post">{% csrf_token %}
+                      <input type="submit" name="submit" value="{% trans "Delete" %}" class="btn"/>
+                  </form>
+                  {% else %}
+                  <div class="row">
+                      <form class="span1" action="{% url 'vote-on-bill' bill.id 1 %}" method="post">{% csrf_token %}
+                          <input type="submit" name="submit" value="{% trans "I'm for" %}"/>
+                      </form>
+                      <form class="span1" action="{% url 'vote-on-bill' bill.id -1 %}" method="post">{% csrf_token %}
+                          <input type="submit" name="submit" value="{% trans "I'm against" %}" />
+                      </form>
+                  </div>
+                  {% endif %}
+              {% else %}
+                  <a href='{% url 'login' %}?next={{request.get_full_path}}'>{% trans 'Please login to vote' %}</a>
+              {% endif %}
+          </div>
+        </aside>
             <aside class="sidebar">
                 <header><h2>{% trans "Links" %}</h2></header>
                 {% object_links object %}
             </aside>
 
+      </div>
+      <div class="span4">
+          <aside class="sidebar">
+          {% agendas_for user object 'bill' %}
+          </aside>
             <aside class="sidebar">
                 <header><h2>{% trans "Budget Estimations" %}</h2></header>
                 <div id="budget_ests">
@@ -580,9 +573,13 @@
                 {% endif %}
             </aside> <!-- budgets -->
 
-            <aside class="sidebar sidebar-agendas">
-            {% include 'comments/object_comment_list.html' %}
-            </aside>
-        </div> <!-- span4 -->
-    </div> <!-- row -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="span8">
+        <aside class="sidebar sidebar-agendas">
+        {% include 'comments/object_comment_list.html' %}
+        </aside>
+      </div>
+    </div>
 {% endblock %}

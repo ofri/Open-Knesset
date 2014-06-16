@@ -823,8 +823,10 @@ def vote_auto_complete(request):
     data = []
     suggestions = []
     for i in options:
+        formatted_date = i.time.date().strftime('%d/%m/%Y')
+        title = u'{0} - {1}'.format(formatted_date, i.title)
         data.append(i.id)
-        suggestions.append(i.title)
+        suggestions.append(title)
 
     result = { 'query': request.GET['query'], 'suggestions':suggestions, 'data':data }
 

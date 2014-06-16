@@ -127,7 +127,7 @@ OS X
 
     sudo easy_install pip
     sudo pip install virtualenv
-- Install homebrew: ``ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"``
+- Install homebrew: ``ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"``
 - Install binary python libraries build dependencies::
 
     brew install jpeg libpng libxml2 libxslt
@@ -198,6 +198,21 @@ Working process
 ===================
 
 Let's describe some development workflow.
+
+Commits and Pull Requests
+----------------------------------------
+
+Make it easier for you and the maintainers, increasing the chances of a pull
+request getting accepted:
+
+- No big Pull Requests. It makes reviewing and ensuring correctness hard. If
+  possible, break it to smaller commits/pulls, each related to a specific issue.
+- Always work on a specific issue from our `issue tracker`_. Open new issue if
+  needed and claim it in the comments.
+- Discuss big things in the `Open Knesset Developers group`_.
+
+.. _issue tracker: https://github.com/hasadna/Open-Knesset/issues?state=open
+.. _Open Knesset Developers group: https://groups.google.com/forum/#!forum/oknesset-dev
 
 Before you code
 ----------------

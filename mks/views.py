@@ -54,6 +54,7 @@ class MemberListView(ListView):
         ('votes', _('By number of votes per month')),
         ('presence', _('By average weekly hours of presence')),
         ('committees', _('By average monthly committee meetings')),
+        ('followers', _('By number of followers')),
         ('graph', _('Graphical view'))
     )
 
@@ -158,6 +159,21 @@ class MemberListView(ListView):
             context['past_mks'] = list(context['past_mks'])
             for x in context['past_mks']:
                 x.extra = x.committee_meetings_per_month()
+            context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
+        elif info == 'followers':
+            mct = ContentType.objects.get_for_model(Member)
+            mk_follows = Follow.objects.filter(content_type=mct).values_list(
+                'object_id', flat=True)
+            mk_follows_dict = {}
+            for mf in mk_follows:
+                mk_follows_dict[mf] = mk_follows_dict.get(mf, 0) + 1
+            qs = list(qs)
+            for x in qs:
+                x.extra = mk_follows_dict.get(x.id, 0)
+            qs.sort(key=lambda x: x.extra or 0, reverse=True)
+            context['past_mks'] = list(context['past_mks'])
+            for x in context['past_mks']:
+                x.extra = mk_follows_dict.get(x.id, 0)
             context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
         elif info == 'graph':
             pass

@@ -20,10 +20,12 @@ from links.api import LinkResource
 
 from django.db.models import Count
 
+
 class PartyResource(BaseResource):
     ''' Party API
     TBD: create a party app
     '''
+    knesset_id = fields.IntegerField('knesset_id', null=True)
 
     class Meta(BaseResource.Meta):
         queryset = Party.objects.all()

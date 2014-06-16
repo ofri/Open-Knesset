@@ -5,14 +5,29 @@ Development Workflow
 =========================
 
 Congratulations, we have everything installed, now it's time to start working on
-the project. The following describes various scenarios.
+the project. Here are some guidelines and scenarios to help you get started.
 
 .. important::
 
     - MS Windows users: replace ``./manage.py`` with ``python manage.py``
-    - Run the manage.py commands from the `Open-Knesset` directory, with the
+    - Run ``manage.py`` commands from the `Open-Knesset` directory, with the
       **virtualenv activated**.
 
+
+Commits and Pull Requests
+========================================
+
+Make it easier for you and the maintainers, increasing the chances of a pull
+request getting accepted:
+
+- No big Pull Requests. It makes reviewing and ensuring correctness hard. If
+  possible, break it to smaller commits/pulls, each related to a specific issue.
+- Always work on a specific issue from our `issue tracker`_. Open new issue if
+  needed and claim it in the comments.
+- Discuss big things in the `Open Knesset Developers group`_.
+
+.. _issue tracker: https://github.com/hasadna/Open-Knesset/issues?state=open
+.. _Open Knesset Developers group: https://groups.google.com/forum/#!forum/oknesset-dev
 
 Before Coding
 ==========================
@@ -63,7 +78,7 @@ Run migrations and tests
     ./manage.py migrate
     ./manage.py test
 
-if there are any failures, contact the other developers in the `oknesset-dev`_
+If there are any failures, contact the other developers in the `oknesset-dev`_
 group to see if that's something you should worry about.
 
 .. _oknesset-dev: https://groups.google.com/forum/#!forum/oknesset-dev
