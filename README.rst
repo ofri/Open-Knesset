@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/hasadna/Open-Knesset.svg?branch=master
+    :target: https://travis-ci.org/hasadna/Open-Knesset
+    
 .. important::
 
     This document contains quick start instruction.
