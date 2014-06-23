@@ -93,7 +93,7 @@ class Lobbyist(models.Model):
         return data
 
     def __unicode__(self):
-        return self.person
+        return unicode(self.person)
 
 
 class LobbyistDataManager(models.Manager):

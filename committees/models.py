@@ -185,6 +185,9 @@ class CommitteeMeeting(models.Model):
     tagged_items = generic.GenericRelation(TaggedItem,
                                            object_id_field="object_id",
                                            content_type_field="content_type")
+    lobbyists_mentioned = models.ManyToManyField('lobbyists.Lobbyist', related_name='committee_meetings')
+    lobbyist_corporations_mentioned = models.ManyToManyField('lobbyists.LobbyistCorporation', related_name='committee_meetings')
+
     objects = CommitteeMeetingManager()
 
     class Meta:

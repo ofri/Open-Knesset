@@ -6,9 +6,10 @@ from okscraper.sources import UrlSource, ScraperSource
 from okscraper.storages import ListStorage, DictStorage
 from lobbyists.models import LobbyistHistory, LobbyistCorporation, LobbyistCorporationData, Lobbyist
 from persons.models import Person
+from committees.models import ProtocolPart
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-
+from django.db.models import Q
 from lobbyist import LobbyistScraper
 from lobbyists_index import LobbyistsIndexScraper
 
@@ -104,3 +105,41 @@ class MainScraper(BaseScraper):
             self.storage.store(lobbyist)
             i+=1
             #if i>5: break
+
+
+class LobbyistCommitteeMeetingsScraper(BaseScraper):
+    """
+    Scraper that links committee meetings with a lobbyist
+    """
+
+    def __init__(self):
+        super(LobbyistCommitteeMeetingsScraper, self).__init__()
+        self.storage = ListStorage()
+
+    def _scrape(self):
+        for lobbyist in Lobbyist.objects.all():
+            self._getLogger().info('processing lobbyist %s'%lobbyist.id)
+            name = lobbyist.person.name
+            for pp in ProtocolPart.objects.filter(Q(body__contains=name) | Q(header__contains=name)):
+                if lobbyist.committee_meetings.filter(id=pp.meeting.id).count() == 0:
+                    self._getLogger().info('mentioned in meeting id %s'%pp.meeting.id)
+                    lobbyist.committee_meetings.add(pp.meeting)
+
+
+class LobbyistCorporationCommitteeMeetingsScraper(BaseScraper):
+    """
+    Scraper that links committee meetings with a lobbyist corporation
+    """
+
+    def __init__(self):
+        super(LobbyistCorporationCommitteeMeetingsScraper, self).__init__()
+        self.storage = ListStorage()
+
+    def _scrape(self):
+        for corporation in LobbyistCorporation.objects.all():
+            self._getLogger().info('processing lobbyist corporation %s'%corporation.id)
+            name = corporation.name
+            for pp in ProtocolPart.objects.filter(Q(body__contains=name) | Q(header__contains=name)):
+                if corporation.committee_meetings.filter(id=pp.meeting.id).count() == 0:
+                    self._getLogger().info('mentioned in meeting id %s'%pp.meeting.id)
+                    corporation.committee_meetings.add(pp.meeting)
