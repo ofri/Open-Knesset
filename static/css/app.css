@@ -8031,7 +8031,8 @@ body.infinity-protocol #content-main > div > div.row > div.span3 {
   overflow: auto;
 }
 .padded { padding:1em;}
-.bill-stage {width:136px; padding:0.4em; float:right; margin-left: 13px; height: 200px;}
+.bill-stage {width:136px; padding:0.4em; float:right; margin-left: 13px;
+             min-height: 200px; }
 .gov-decision {width:783px; padding:0.4em; float:right; margin-right: 162px;
                overflow: hidden; min-height: 100px; margin-top:10px;}
 .past-stage {background-color: #bde7ff; }
@@ -8040,3 +8041,4 @@ ul.dates-list { margin:0; }
 ul.dates-list li {padding:0; border:none; overflow: hidden;}
 .bill-stage header {background: inherit;}
 .bill-stage h2 { line-height:30px;}
+.bill-stage .list-more { display: none;}

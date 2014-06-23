@@ -58,9 +58,9 @@ class SimpleTest(TestCase):
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
         self.vote_3 = Vote.objects.create(title='vote 3',time=datetime.datetime.now())
         self.bill_1 = Bill.objects.create(stage='1', title='bill 1', popular_name='kill bill')
-        self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for')
-        self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for')
-        self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for')
+        self.voteaction_1 = VoteAction.objects.create(vote=self.vote_1, member=self.mk_1, type='for', party=self.mk_1.current_party)
+        self.voteaction_2 = VoteAction.objects.create(vote=self.vote_2, member=self.mk_1, type='for', party=self.mk_1.current_party)
+        self.voteaction_3 = VoteAction.objects.create(vote=self.vote_3, member=self.mk_2, type='for', party=self.mk_2.current_party)
 
         self.vote_1. update_vote_properties()
         self.vote_2. update_vote_properties()
