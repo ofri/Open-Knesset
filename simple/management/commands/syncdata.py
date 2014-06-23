@@ -58,7 +58,8 @@ class Command(NoArgsCommand):
             help="online update of data."),
         make_option('--committees', action='store_true', dest='committees',
             help="online update of committees data."),
-
+        make_option('--update-run-only', action='store', dest='update-run-only',
+            help="only run update for the provided functions. Should contain comma-seperated list of functions to run.")
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
 
@@ -1520,6 +1521,17 @@ class Command(NoArgsCommand):
         laws = options.get('laws',False)
         committees = options.get('committees', False)
 
+        verbosity = int(options.get('verbosity', '0'))
+        if verbosity > 0:
+            levels = {
+                1: logging.WARN,
+                2: logging.INFO,
+                3: logging.DEBUG
+            }
+            handler = logging.StreamHandler()
+            handler.setLevel(levels[verbosity])
+            logger.addHandler(handler)
+
         if all_options:
             download = True
             load = True
@@ -1556,6 +1568,11 @@ class Command(NoArgsCommand):
             self.dump_to_file()
 
         if update:
+            update_run_only = options.get('update-run-only', '')
+            if update_run_only != '':
+                update_run_only = update_run_only.split(',')
+            else:
+                update_run_only = None
             for func in ['update_votes',
                          'update_laws_data',
                          'update_presence',
@@ -1567,15 +1584,17 @@ class Command(NoArgsCommand):
                          'update_mks_is_current',
                          'update_gov_law_decisions',
                          'correct_votes_matching']:
-                try:
-                    self.__getattribute__(func).__call__()
-                except:
-                    exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-                    logger.error("Caught execption in syncdata update phase %s\n%s",
-                                 func,
-                                 ''.join(traceback.format_exception(exceptionType,
-                                                                    exceptionValue,
-                                                                    exceptionTraceback)))
+                if update_run_only is not None and func in update_run_only:
+                    try:
+                        logger.debug('update: running %s', func)
+                        self.__getattribute__(func).__call__()
+                    except:
+                        exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                        logger.error("Caught execption in syncdata update phase %s\n%s",
+                                     func,
+                                     ''.join(traceback.format_exception(exceptionType,
+                                                                        exceptionValue,
+                                                                        exceptionTraceback)))
             logger.debug('finished update')
 
         if committees:
