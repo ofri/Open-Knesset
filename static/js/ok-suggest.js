@@ -129,6 +129,9 @@
 		var s_li = $('<li/>').text(': ' + suggest.label),
 			s_actions = $('<div class="suggestion-actions"/>').appendTo(s_li);
 
+		$('<span/>').text(suggest.suggested_at)
+		.prependTo(s_li);
+
 		$('<a/>').attr({target:'_blank', href:suggest.by_url})
 		.text(suggest.by)
 		.prependTo(s_li);
