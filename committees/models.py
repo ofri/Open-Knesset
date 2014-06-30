@@ -10,6 +10,7 @@ from django.utils.text import Truncator
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.utils.functional import cached_property
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
@@ -20,6 +21,7 @@ from events.models import Event
 from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
 from mks.models import Knesset
+from lobbyists.models import LobbyistHistory
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -341,6 +343,17 @@ class CommitteeMeeting(models.Model):
         logger.debug('meeting %d now has %d attending members' % (
             self.id,
             self.mks_attended.count()))
+
+    @cached_property
+    def main_lobbyist_corporations_mentioned(self):
+        ret = []
+        main_corporations = LobbyistHistory.objects.latest().main_corporations
+        for corporation in self.lobbyist_corporations_mentioned.all():
+            if corporation in main_corporations:
+                ret.append(corporation)
+        return ret
+
+
 
 class ProtocolPartManager(models.Manager):
     def list(self):

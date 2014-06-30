@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 21:23+0300\n"
-"PO-Revision-Date: 2014-06-23 14:34-0500\n"
+"POT-Creation-Date: 2014-06-30 22:30+0300\n"
+"PO-Revision-Date: 2014-06-30 22:31+0200\n"
 "Last-Translator: Ori Hoch <ori@uumpa.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
 "Language: \n"
@@ -231,7 +231,7 @@ msgid "Main activity feed for the whole site, same as presented on the main page
 msgstr "פיד ראשי עבור כל האתר, בדומה למוצג בדף הראשי"
 
 #: auxiliary/forms.py:14
-#: committees/models.py:413
+#: committees/models.py:416
 #: laws/views.py:691
 msgid "Title"
 msgstr "כותרת"
@@ -423,11 +423,11 @@ msgstr "עוקב/ת אחר ח\"כ"
 msgid "Plenum"
 msgstr "מליאה"
 
-#: committees/models.py:189
+#: committees/models.py:192
 msgid "Committee Meeting"
 msgstr "ישיבת ועדה"
 
-#: committees/models.py:190
+#: committees/models.py:193
 #: templates/laws/bill_detail.html:320
 #: templates/laws/bill_detail.html:378
 #: templates/laws/law_detail.html:17
@@ -436,35 +436,35 @@ msgstr "ישיבת ועדה"
 msgid "Committee Meetings"
 msgstr "ישיבות הוועדה"
 
-#: committees/models.py:415
+#: committees/models.py:418
 msgid "Description"
 msgstr "תאור"
 
-#: committees/models.py:417
+#: committees/models.py:420
 msgid "published"
 msgstr "פורסמה"
 
-#: committees/models.py:418
+#: committees/models.py:421
 msgid "flagged"
 msgstr "חשודה"
 
-#: committees/models.py:419
+#: committees/models.py:422
 msgid "rejected"
 msgstr "נדחתה"
 
-#: committees/models.py:420
+#: committees/models.py:423
 msgid "accepted"
 msgstr "אושרה"
 
-#: committees/models.py:421
+#: committees/models.py:424
 msgid "appeal"
 msgstr "בערעור"
 
-#: committees/models.py:422
+#: committees/models.py:425
 msgid "deleted"
 msgstr "נמחקה"
 
-#: committees/models.py:431
+#: committees/models.py:434
 #: templates/base.html:72
 #: templates/base.html.py:127
 #: templates/committees/committee_detail.html:49
@@ -485,11 +485,11 @@ msgstr "נמחקה"
 msgid "Committees"
 msgstr "ועדות"
 
-#: committees/models.py:439
+#: committees/models.py:442
 msgid "Topic"
 msgstr "הצעה לסדר"
 
-#: committees/models.py:440
+#: committees/models.py:443
 #: templates/committees/topic_list.html:4
 #: templates/user/followed_topics.html:4
 msgid "Topics"
@@ -2819,6 +2819,14 @@ msgstr "הוספת הצעת חוק מתאימה"
 msgid "Protocol"
 msgstr "פרוטוקול"
 
+#: templates/committees/committeemeeting_detail.html:144
+msgid "Lobbyists mentioned"
+msgstr "לוביסטים מאוזכרים"
+
+#: templates/committees/committeemeeting_detail.html:154
+msgid "Lobbyist corporations mentioned"
+msgstr "תאגידי לוביסטים"
+
 #: templates/committees/committeemeeting_list.html:32
 msgid "All meetings"
 msgstr "רשימת הישיבות המלאה"
@@ -3362,6 +3370,11 @@ msgstr "סוג אישור כניסה"
 #: templates/lobbyists/lobbyistrepresent_detail.html:17
 msgid "Lobbyist Represents"
 msgstr "לקוחות"
+
+#: templates/lobbyists/lobbyist_detail.html:65
+#: templates/lobbyists/lobbyistcorporation_detail.html:68
+msgid "Mentiond in Committee Meetings"
+msgstr "אזכורים בישיבות ועדה"
 
 #: templates/lobbyists/lobbyist_list.html:3
 #: templates/lobbyists/lobbyist_list.html:4

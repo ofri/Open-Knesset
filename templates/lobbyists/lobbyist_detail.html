@@ -60,8 +60,16 @@
                     {% endfor %}
                 </ul>
             </section>
-        </div>
-        <div class="span3">
+            {% if object.committee_meetings.count > 0 %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Mentiond in Committee Meetings" %}</h2></header>
+                <ul>
+                    {% for committee_meeting in object.committee_meetings.all %}
+                        <li><a href="{% url 'committee-meeting' committee_meeting.id %}">{{ committee_meeting }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
             {% include "lobbyists/_suggest_change_section.html" %}
         </div>
     </div>
