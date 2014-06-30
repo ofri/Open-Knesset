@@ -347,6 +347,14 @@ class MemberDetailView(DetailView):
 
             committee_actions = actor_stream(member).filter(verb='attended')
 
+            committees_presence = []
+            for committee in member.committees.all():
+                committee_member = committee.members_by_presence(ids=[member.id])[0]
+                committees_presence.append({"committee": committee, 
+                    "presence": committee_member.meetings_percentage})
+
+            committees_presence.sort(cmp=lambda x,y: y["presence"] - x["presence"])
+
             mmm_documents = member.mmm_documents.order_by('-publication_date')
 
             content_type = ContentType.objects.get_for_model(Member)
@@ -381,6 +389,7 @@ class MemberDetailView(DetailView):
                 'num_related_videos': related_videos.count(),
                 'INITIAL_DATA': self.MEMBER_INITIAL_DATA,
                 'previous_parties': previous_parties,
+                'committees_presence': committees_presence,
             }
 
             if not self.request.user.is_authenticated():
