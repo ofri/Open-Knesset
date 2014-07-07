@@ -138,22 +138,22 @@
                 {% agendas_for user object 'committeemeeting' %}
             </aside>
 
-            {% if object.lobbyists_mentioned.count > 0 or object.lobbyist_corporations_mentioned.count > 0 %}
+            {% if mentioned_lobbyists or mentioned_lobbyist_corporations %}
             <aside class="sidebar sidebar-lobbyists">
-                {% if object.lobbyists_mentioned.count > 0 %}
+                {% if mentioned_lobbyists %}
                 <header><h2>{% trans "Lobbyists mentioned" %}</h2></header>
                 <ul>
-                    {% for lobbyist in object.lobbyists_mentioned.all %}
+                    {% for lobbyist in mentioned_lobbyists %}
                         <li>
                             <a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a>
                         </li>
                     {% endfor %}
                 </ul>
                 {% endif %}
-                {% if object.lobbyist_corporations_mentioned.count > 0 %}
+                {% if mentioned_lobbyist_corporations %}
                 <header><h2>{% trans "Lobbyist corporations mentioned" %}</h2></header>
                 <ul>
-                    {% for corporation in object.main_lobbyist_corporations_mentioned %}
+                    {% for corporation in mentioned_lobbyist_corporations %}
                         <li>
                             <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a>
                         </li>

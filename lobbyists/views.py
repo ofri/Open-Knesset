@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 import sys
 
@@ -85,6 +85,14 @@ class LobbyistDetailView(DetailView):
 class LobbyistCorporationDetailView(DetailView):
 
     model = LobbyistCorporation
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.main_corporation == self.object:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            return HttpResponseRedirect(self.object.main_corporation.get_absolute_url())
 
     def get_context_data(self, **kwargs):
         context = super(LobbyistCorporationDetailView, self).get_context_data(**kwargs)

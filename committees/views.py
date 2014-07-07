@@ -138,6 +138,9 @@ class MeetingDetailView(DetailView):
         meeting_text = [cm.topics] + [part.body for part in cm.parts.all()]
         context['tag_suggestions'] = auxiliary.tag_suggestions.extract_suggested_tags(cm.tags, meeting_text)
 
+        context['mentioned_lobbyists'] = cm.main_lobbyists_mentioned
+        context['mentioned_lobbyist_corporations'] = cm.main_lobbyist_corporations_mentioned
+
         return context
 
     @hashnav_method_decorator(login_required)

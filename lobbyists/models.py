@@ -196,8 +196,25 @@ class LobbyistCorporation(models.Model):
             cache.set('LobbyistCorporation_cached_data_%s' % self.id, data, 86400)
         return data
 
+    @cached_property
+    def main_corporation(self):
+        lcas =  LobbyistCorporationAlias.objects.filter(main_corporation = self)
+        if lcas.count() > 0:
+            return self
+        else:
+            lcas = LobbyistCorporationAlias.objects.filter(alias_corporation = self)
+            if lcas.count() > 0:
+                for lca in lcas:
+                    return lca.main_corporation
+            else:
+                return self
+
     def clear_cache(self):
         cache.delete('LobbyistCorporation_cached_data_%s' % self.id)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('lobbyist-corporation', [str(self.id)])
 
     def __unicode__(self):
         return self.name

@@ -21,7 +21,7 @@ from events.models import Event
 from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
 from mks.models import Knesset
-from lobbyists.models import LobbyistHistory
+from lobbyists.models import LobbyistHistory, LobbyistCorporation
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -347,12 +347,19 @@ class CommitteeMeeting(models.Model):
     @cached_property
     def main_lobbyist_corporations_mentioned(self):
         ret = []
-        main_corporations = LobbyistHistory.objects.latest().main_corporations
         for corporation in self.lobbyist_corporations_mentioned.all():
-            if corporation in main_corporations:
+            main_corporation = corporation.main_corporation
+            if main_corporation not in ret:
+                ret.append(main_corporation)
+        for lobbyist in self.main_lobbyists_mentioned:
+            corporation = LobbyistCorporation.objects.get(id=lobbyist.cached_data['latest_corporation']['id'])
+            if corporation not in ret and corporation.main_corporation == corporation:
                 ret.append(corporation)
         return ret
 
+    @cached_property
+    def main_lobbyists_mentioned(self):
+        return self.lobbyists_mentioned.all()
 
 
 class ProtocolPartManager(models.Manager):
