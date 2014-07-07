@@ -343,27 +343,11 @@ class Agenda(models.Model):
         return ('agenda-detail-edit', [str(self.id)])
 
     def member_score(self, member):
-        # Find all votes that
-        #   1) This agenda is ascribed to
-        #   2) the member participated in and either voted for or against
-        qs = AgendaVote.objects.filter(
-            agenda = self,
-            vote__voteaction__member = member,
-            vote__voteaction__type__in=['for','against']).extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}
-            ).values_list('weighted_score','vote__voteaction__type')
-
-        for_score = against_score = 0
-        for score, action_type in qs:
-            if action_type == 'against':
-                against_score += score
-            else:
-                for_score += score
-
-        max_score = sum([abs(x.score*x.importance) for x in
-                         self.agendavotes.all()])
-        if max_score > 0:
-            return (for_score - against_score) / max_score * 100
+        values = self.get_mks_values(mks=[member])
+        if values:
+            if len(values)>1:
+                raise Member.MultipleObjectsReturned
+            return values[0][1]['score']
         else:
             return 0.0
 
@@ -483,16 +467,22 @@ class Agenda(models.Model):
 
         return qs
 
-    def get_mks_values(self,ranges=None):
+    def get_mks_values(self, ranges=None, mks=None):
         if ranges is None:
             ranges = [[dateMonthTruncate(Knesset.objects.current_knesset().start_date),None]]
         mks_values = False
+        mk_ids = [mk.id for mk in mks] if mks else []
+
         fullRange = ranges == [[None,None]]
         if fullRange:
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
+            if mks:
+                mks_values = [(mk_id, values)
+                              for (mk_id, values) in mks_values
+                              if mk_id in mk_ids]
         if not mks_values:
             # get list of mk ids
-            mk_ids = Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
+            mk_ids = mk_ids or Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
 
             # generate summary query
             filterList = self.generateSummaryFilters(ranges)
