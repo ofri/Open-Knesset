@@ -87,6 +87,12 @@ Replace `your-username` with the username you've registered at git hub.
 
 .. _github guide on ssh keys: https://help.github.com/articles/generating-ssh-keys#platform-linux
 
+.. note::
+    If you have forked Open-Knesset in the past, make sure you have the latest version before proceeding to installation, by invoking:
+
+        git remote add hasadna https://github.com/hasadna/Open-Knesset.git
+        git pull hasadna master
+        git push origin master
 
 Installing requirements
 =============================
