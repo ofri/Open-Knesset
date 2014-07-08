@@ -152,7 +152,9 @@ class MemberListView(ListView):
                 select={'extra': 'average_weekly_presence_hours'}).order_by(
                     '-extra')
             # sort again because db sort freaks when some values are None.
+            qs = list(qs)
             qs.sort(key=lambda x: x.extra or 0, reverse=True)
+            context['past_mks'] = list(context['past_mks'])
             context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
         elif info == 'committees':
             qs = list(qs)
