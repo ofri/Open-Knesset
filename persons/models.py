@@ -16,6 +16,7 @@ class Title(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class PersonAlias(models.Model):
     name = models.CharField(max_length=64)
     person = models.ForeignKey('Person', related_name='aliases')
@@ -27,6 +28,7 @@ GENDER_CHOICES = (
     (u'M', _('Male')),
     (u'F', _('Female')),
 )
+
 
 class Person(models.Model):
     name = models.CharField(max_length=64)
@@ -65,7 +67,7 @@ class Person(models.Model):
         if self.mk:
             return self.mk.get_absolute_url()
         else:
-            return reverse('person-detail', kwargs={'pk':self.id})
+            return reverse('person-detail', kwargs={'pk': self.id})
 
     def number_of_meetings(self):
         return self.protocol_parts.values('meeting').distinct().count()
