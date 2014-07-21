@@ -1569,8 +1569,11 @@ class Command(NoArgsCommand):
 
         if update:
             update_run_only = options.get('update-run-only', '')
-            if update_run_only != '':
-                update_run_only = update_run_only.split(',')
+            if update_run_only:
+                try:
+                    update_run_only = update_run_only.split(',')
+                except AttributeError, e:
+                    logger.error("Error in syncdata update:" + e)
             else:
                 update_run_only = None
             for func in ['update_votes',
@@ -1584,7 +1587,8 @@ class Command(NoArgsCommand):
                          'update_mks_is_current',
                          'update_gov_law_decisions',
                          'correct_votes_matching']:
-                if update_run_only is not None and func in update_run_only:
+                # in case update_run_only is none, we run all stages
+                if (update_run_only is None) or (func in update_run_only):
                     try:
                         logger.debug('update: running %s', func)
                         self.__getattribute__(func).__call__()
