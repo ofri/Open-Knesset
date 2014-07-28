@@ -17,7 +17,7 @@
 
 {% block divcontent %}
     <div class="row">
-        <div class="cards span12">
+        <div class="cards span9">
             {% if warning_old_corporation %}
                 <section class="card card-list">
                     <header><h2><i class="fa fa-users"></i>{% trans "Warning" %}</h2></header>
@@ -27,14 +27,20 @@
                 </section>
             {% endif %}
             <section class="card card-list">
-                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Corporation" %}</h2></header>
+                <header>
+                    <h2>
+                        <i class="fa fa-users"></i>{% trans "Lobbyist Corporation" %}: 
+                        {% if not object.name and not object.source_id %}
+                            {% trans "Private Lobbyists" %}
+                        {% endif %}
+                        {% if object.name %}
+                            {{ object.name }}
+                        {% elif not corporation.is_private_lobbyists %}
+                            {% trans "No name" %}
+                        {% endif %}
+                    </h2>
+                </header>
                 <ul>
-                    {% if not object.name and not object.source_id %}
-                        <li>{% trans "Name" %}: {% trans "Private Lobbyists" %}</li>
-                    {% endif %}
-                    {% if object.name %}
-                        <li>{% trans "Name" %}: {{ object.name }}</li>
-                    {% endif %}
                     {% if object.source_id %}
                         <li>{% trans "Corporation Id" %}: {{ object.source_id }}</li>
                     {% endif %}
@@ -63,6 +69,8 @@
                 </ul>
             </section>
             {% endif %}
+        </div>
+        <div class="span3">
             {% include "lobbyists/_suggest_change_section.html" %}
         </div>
     </div>
