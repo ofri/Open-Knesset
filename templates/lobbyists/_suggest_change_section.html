@@ -1,9 +1,9 @@
 {% load i18n %}
 
-<section class="card card-list">
-    <header><h2><i class="fa fa-users"></i>{% trans "Suggest a change" %}</h2></header>
+<aside class="sidebar">
+    <h2>{% trans "Suggest a change" %}</h2>
     <ul>
-        <li>{% trans "Think the data contains an error?" %}</li>
+        {% trans "Think the data contains an error?" %}
         <li><a href='#suggest-feedback-modal' data-role="button" data-toggle="modal">{% trans "Click here to suggest a change" %}</a></li>
     </ul>
 </section>

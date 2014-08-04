@@ -14,7 +14,7 @@
 
 {% block divcontent %}
     <div class="row">
-        <div class="cards span12">
+        <div class="cards span8">
             <section class="card card-list">
                 <header>
                     <h2><i class="fa fa-users"></i>{% trans "Lobbying Corporations" %}</h2>
@@ -45,6 +45,8 @@
                     {% endfor %}
                 </ul>
             </section>
+        </div>
+        <div class="span4">
             {% include "lobbyists/_suggest_change_section.html" %}
         </div>
     </div>
