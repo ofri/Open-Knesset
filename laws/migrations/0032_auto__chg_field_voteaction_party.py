@@ -8,16 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'VoteAction.party'
-        db.add_column(u'laws_voteaction', 'party',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=-1, to=orm['mks.Party']),
-                      keep_default=False)
 
+        # Changing field 'VoteAction.party'
+        db.alter_column(u'laws_voteaction', 'party_id', self.gf('django.db.models.fields.related.ForeignKey')(default=15, to=orm['mks.Party']))
 
     def backwards(self, orm):
-        # Deleting field 'VoteAction.party'
-        db.delete_column(u'laws_voteaction', 'party_id')
 
+        # Changing field 'VoteAction.party'
+        db.alter_column(u'laws_voteaction', 'party_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mks.Party'], null=True))
 
     models = {
         u'auth.group': {
@@ -223,7 +221,7 @@ class Migration(SchemaMigration):
             'against_party': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'member': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Member']"}),
-            'party': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Party']", 'null': 'True'}),
+            'party': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Party']"}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'vote': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['laws.Vote']"})
         },

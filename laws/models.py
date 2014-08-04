@@ -167,6 +167,12 @@ class VoteAction(models.Model):
     def __unicode__(self):
         return u"{} {} {}".format(self.member.name, self.type, self.vote.title)
 
+    def save(self, **kwargs):
+        if not self.party_id:
+            party = self.member.party_at(self.vote.time.date())
+            if party:
+                self.party_id = party.id
+        super(VoteAction,self).save(**kwargs)
 
 class VoteManager(models.Manager):
     # TODO: add i18n to the types so we'd have

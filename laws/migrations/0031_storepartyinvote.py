@@ -3,31 +3,104 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.db import transaction
+from pprint import pprint
+from operator import attrgetter
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        # Note: Don't use "from appname.models import ModelName". 
+        # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         if not db.dry_run:
             t = datetime.time()
+            print 'Updating End Date of 18th Knesset to Start Date of 19th Knesset'
+            new_end_date = orm['mks.Knesset'].objects.get(number=19).start_date
+            knesset18 = orm['mks.Knesset'].objects.get(number=18)
+            old_end_date = knesset18.end_date
+            knesset18.end_date = new_end_date
+            knesset18.save()
+            print 'Updating End Date of Party Memberships for Membership ending on 18th knesset'
+            old_memberships = orm['mks.Membership'].objects.filter(end_date = old_end_date)
+            for m in old_memberships:
+                m.end_date = new_end_date
+                m.save()
+            print 'Caching mk parties...'
             mkPartyLookup = {}
             for mk in orm['mks.Member'].objects.all():
                 mkPartyLookup[mk.id] = [(o.party_id, o.start_date, o.end_date) for o in mk.membership_set.all()]
-            for action in orm.VoteAction.objects.all():
-                parties = mkPartyLookup[action.member.id]
-                action_time = action.vote.time
+            cnt = 0
+
+            print 'Caching votes...'
+            voteLookup = {}
+            for vote in orm.Vote.objects.all().only('id','time'):
+                voteLookup[vote.id] = vote
+
+            print 'This might take a while, there are %d VoteAction objects' % orm.VoteAction.objects.count()
+            for i,action in enumerate(orm.VoteAction.objects.all()):
+                parties = mkPartyLookup[action.member_id]
+                action_time = voteLookup[action.vote_id].time
+                cnt+=1
                 for party_id, start_date, end_date in parties:
                     start_time = datetime.datetime.combine(start_date, t) if start_date else None
                     end_time = datetime.datetime.combine(end_date, t) if end_date else None
                     if (start_time is None and action_time < end_time) or \
-                       (start_time >= action_time and end_time is None) or \
-                       (start_time >= action_time and action_time < end_time):
+                       (start_time <= action_time and end_time is None) or \
+                       (start_time <= action_time and action_time < end_time):
                         action.party_id = party_id
                         action.save()
                         break
+                if action.party_id is None:
+                    print 'Could not find party for va %d at %s' % (action.id, str(action_time))
+                    print 'Parties was:'
+                    pprint(parties)
+                if cnt%5000 == 0:
+                    transaction.commit()
+                    print '%s: Migration At VoteAction %d' % (str(datetime.datetime.now()), cnt)
+
+            transaction.commit()
+
+            print 'Migration complete, validating results'
+
+            print 'Caching mks membership...'
+            membershipsLookup = {}
+            for m in orm['mks.Membership'].objects.all():
+                if m.member_id in membershipsLookup:
+                    membershipsLookup[m.member_id].append(m)
+                else:
+                    membershipsLookup[m.member_id] = [m]
+
+            #copied from mks/models.py because orm.VoteAction objects are
+            #frozen, not actual instance
+            def party_at(mk_id, date):
+                """Returns the party this memeber was at given date
+                """
+                memberships = membershipsLookup.get(mk_id, [])
+                for membership in memberships:
+                    if (not membership.start_date or membership.start_date <= date) and\
+                       (not membership.end_date or membership.end_date > date):
+                        return membership.party_id
+                return None
+
+            print 'Caching party ids...'
+            partyIds = set(orm['mks.Party'].objects.values_list('id', flat=True))
+
+            print 'Validating...'
+            # validate results
+            cnt = 0
+            for va in orm.VoteAction.objects.all():
+                cnt+=1
+                if not va.party_id in partyIds:
+                    print "VA %d party does not exist" % va.id
+                    continue
+                p1 = va.party_id
+                p2 = party_at(va.member_id, voteLookup[va.vote_id].time.date())
+                if p1 != p2:
+                    print "mismatch in VA %d, %d vs %d" % (va.id, p1, p2)
+                if cnt%10000 == 0:
+                    print '%s: Validation At VoteAction %d' % (str(datetime.datetime.now()), cnt)
 
     def backwards(self, orm):
         "Write your backwards methods here."

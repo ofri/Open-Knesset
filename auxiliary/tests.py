@@ -100,9 +100,9 @@ class InternalLinksTest(TestCase):
             wp.save()
             self.mks.append(mk)
             if i<2:
-                self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
+                self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1, party=mk.current_party))
             else:
-                self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1))
+                self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1, party=mk.current_party))
         self.vote_1.controversy = min(self.vote_1.for_votes_count, self.vote_1.against_votes_count)
         self.vote_1.save()
         self.tags = []

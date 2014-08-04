@@ -355,6 +355,7 @@ class MeetingsListView(ListView):
             qs = qs.filter(committee__id=c_id)
         return qs
 
+
 def meeting_list_by_date(request, *args, **kwargs):
     committee_id = kwargs.get('committee_id')
     date_string = kwargs.get('date')
@@ -362,24 +363,33 @@ def meeting_list_by_date(request, *args, **kwargs):
         date = datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
     except:
         raise Http404()
-
     context = {}
     if committee_id:
-        qs = CommitteeMeeting.objects.filter(committee_id=committee_id)
-        committee = qs[0].committee.name
-        context['committee'] = committee
-        context['title'] = _('Meetings by %(committee)s on date %(date)s') % {'committee': committee, 'date': date}
-        context['committee_id'] = committee_id
+        committee = Committee.objects.filter(pk=committee_id)[:1]
+        if not committee:  # someone tried this with a non-existent committee
+            raise Http404()
+        else:
+            committee = committee[0]
+            context['committee'] = committee
+            qs = CommitteeMeeting.objects.filter(committee_id=committee_id)
+            context['title'] = _(
+                'Meetings by %(committee)s on date %(date)s') % {
+                    'committee': committee, 'date': date}
+            context['committee_id'] = committee_id
     else:
-        context['title'] = _('Parliamentary committees meetings on date %(date)s') % {'date': date}
+        context['title'] = _(
+            'Parliamentary committees meetings on date %(date)s') % {
+                'date': date}
         qs = CommitteeMeeting.objects.all()
     qs = qs.filter(date=date)
 
     context['object_list'] = qs
-    context['none'] = _('No %(object_type)s found') % {'object_type': CommitteeMeeting._meta.verbose_name_plural}
+    context['none'] = _('No %(object_type)s found') % {
+        'object_type': CommitteeMeeting._meta.verbose_name_plural}
 
     return render_to_response("committees/committeemeeting_list.html",
-                              context, context_instance=RequestContext(request))
+                              context,
+                              context_instance=RequestContext(request))
 
 
 class MeetingTagListView(BaseTagMemberListView):

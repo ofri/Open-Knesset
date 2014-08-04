@@ -66,7 +66,6 @@ class Committee(models.Model):
                               "%s.committee_id=%%s" % meeting_tn],
                     params = [ self.id ]).distinct()
 
-
     def members_by_presence(self, ids=None):
         """Return the members with computed presence percentage.
         If ids is not provided, this will return committee members. if ids is
@@ -86,15 +85,19 @@ class Committee(models.Model):
                             self.replacements.all()).distinct())
 
         d = Knesset.objects.current_knesset().start_date
-        all_meet_count = self.meetings.filter(date__gte=d).count()
-
-        year_meet_count = filter_this_year(self.meetings).count()
+        meetings_with_mks = self.meetings.filter(
+            mks_attended__isnull=False).distinct()
+        all_meet_count = meetings_with_mks.filter(
+            date__gte=d).count()
+        year_meet_count = filter_this_year(meetings_with_mks).count()
         for m in members:
             all_member_meetings = m.committee_meetings.filter(committee=self,
                                                               date__gte=d)
             year_member_meetings = filter_this_year(all_member_meetings)
-            m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
-            m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
+            m.meetings_percentage = count_percentage(all_member_meetings,
+                                                     all_meet_count)
+            m.meetings_percentage_year = count_percentage(year_member_meetings,
+                                                          year_meet_count)
 
         members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
@@ -104,7 +107,7 @@ class Committee(models.Model):
 
     def future_meetings(self):
         cur_date = datetime.now()
-        return self.events.filter(when__gt = cur_date)
+        return self.events.filter(when__gt=cur_date)
 
     def get_knesset_id(self):
         """

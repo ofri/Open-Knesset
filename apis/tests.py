@@ -46,7 +46,7 @@ class ApiViewsTest(TestCase):
         for i in range(self.num_mks):
             mk = Member.objects.create(name='mk %d' % i,current_party=self.party_1)
             self.mks.append(mk)
-            self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
+            self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1, party=mk.current_party))
         self.tags = []
         self.tags.append(Tag.objects.create(name = 'tag1'))
         self.tags.append(Tag.objects.create(name = 'tag2'))
