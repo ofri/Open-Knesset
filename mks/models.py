@@ -472,5 +472,25 @@ class WeeklyPresence(models.Model):
         super(WeeklyPresence, self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
 
+
+class AwardType(models.Model):
+    name = models.CharField(max_length=100)
+    valence = models.FloatField(default=0)
+    description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return u"%s (%d)" % (self.name, self.valence)
+
+
+class Award(models.Model):
+    award_type = models.ForeignKey('AwardType', related_name='awards')
+    member = models.ForeignKey('Member', related_name='awards')
+    date_given = models.DateField()
+    reference = models.URLField(blank=True)
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.member, self.award_type)
+
+
 # force signal connections
 from listeners import *
