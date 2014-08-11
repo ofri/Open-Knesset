@@ -100,22 +100,18 @@
                 | <a href="#" data-target="#member-extra-roles" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
                 {% endif %}
             </p>
-			<p>
-				{% if object.committees.all|length > 0 %}
-				<strong>{% trans "Committees" %}:</strong>
-				{% for committee in object.committees.all|slice:":2" %}
-				{% if not forloop.first %} | {% endif %} 
-                <a href="{{ committee.get_absolute_url }}">{{committee}}</a>
+            <p>
+                {% if committee_presence|length > 0 %}
+                <strong>{% trans "Committees" %}:</strong>
+                {% for committee_presence in committees_presence %}
+                {% if not forloop.first %} | {% endif %} 
+                <a href="{{ committee_presence.committee.get_absolute_url }}">
+                    {{committee_presence.committee}}
+                    ({% trans 'Presence:' %} {{committee_presence.presence}}%)
+                </a>
                 {% endfor %}
-				{% if object.committees.all|length > 2 %}
-				<span id="member-extra-committees" style="display:none">
-                    {% for committee in object.committees.all|slice:"2:" %}
-					| <a href="{{ committee.get_absolute_url }}">{{committee}}</a>
-					{% endfor %}
-                </span>
-                | <a href="#" data-target="#member-extra-committees" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
-                {% endif %} {% endif %}
-			</p>
+                {% endif %}
+            </p>
             <div id="member-details" style="display:none">
                 {% if object.date_of_death %}
                 <div>{% trans "date of death" %} - {{ object.date_of_death }}</div>
@@ -296,7 +292,7 @@
             {% endif %}
         </div> <!-- /span9 -->
         <div class="span3">
-	 		<aside class="sidebar sidebar-stats">
+            <aside class="sidebar sidebar-stats">
                 <h2>{% trans "Votes" %}</h2>
                 <ul>
                     <li>
@@ -427,7 +423,7 @@
                 </ul>
             </aside> <!-- votes stats -->
 
-	 		<aside class="sidebar sidebar-stats">
+            <aside class="sidebar sidebar-stats">
                 <h2>{% trans "Attendance" %}</h2>
                 <ul>
                     <li class="agenda-mini">
@@ -447,16 +443,16 @@
                 </ul>
             </aside> <!-- Attendance -->
 
-	 		<!--aside class="sidebar sidebar-stats">
+            <!--aside class="sidebar sidebar-stats">
                 <h2>{% trans "Bills" %}</h2>
                 <ul>
                     <li></li>
                 </ul>
             </aside--> <!-- Bills -->
 
-	 		<aside class="sidebar sidebar-agendas">
-	 			<h2>{% trans "Notable agendas" %}</h2>
-	 			<!--a class="btn btn-mini btn-question" href="#">?</a-->
+            <aside class="sidebar sidebar-agendas">
+                <h2>{% trans "Notable agendas" %}</h2>
+                <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 <ul>
                 {% include "mks/agenda_partials.html" with object_list=agendas %}
                 </ul>

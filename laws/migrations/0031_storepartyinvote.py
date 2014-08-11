@@ -11,10 +11,10 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        # Note: Don't use "from appname.models import ModelName". 
+        # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        if not db.dry_run:            
+        if not db.dry_run:
             t = datetime.time()
             print 'Updating End Date of 18th Knesset to Start Date of 19th Knesset'
             new_end_date = orm['mks.Knesset'].objects.get(number=19).start_date

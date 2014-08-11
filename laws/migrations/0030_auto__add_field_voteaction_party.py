@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'VoteAction.party'
         db.add_column(u'laws_voteaction', 'party',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mks.Party'], null=True),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=-1, to=orm['mks.Party']),
                       keep_default=False)
 
 
