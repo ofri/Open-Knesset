@@ -102,5 +102,6 @@ admin.site.register(AwardType, AwardTypeAdmin)
 
 
 class AwardAdmin(admin.ModelAdmin):
+    list_display = ('member', 'award_type', 'date_given')
     raw_id_fields = ('member',)
 admin.site.register(Award, AwardAdmin)
