@@ -105,7 +105,7 @@
                 <strong>{% trans "Committees" %}:</strong>
                 {% for committee_presence in committees_presence %}
                 {% if not forloop.first %} | {% endif %} 
-                <a href="{{ committee.get_absolute_url }}">
+                <a href="{{ committee_presence.committee.get_absolute_url }}">
                     {{committee_presence.committee}}
                     ({% trans 'Presence:' %} {{committee_presence.presence}}%)
                 </a>
