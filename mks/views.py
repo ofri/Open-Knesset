@@ -215,7 +215,9 @@ class MemberDetailView(DetailView):
     queryset = Member.objects.exclude(current_party__isnull=True)\
                              .select_related('current_party',
                                              'current_party__knesset',
-                                             'voting_statistics')\
+                                             'voting_statistics',
+                                             'awards',
+                                             'awards__award_type')\
                              .prefetch_related('parties')
 
     MEMBER_INITIAL_DATA = 2
