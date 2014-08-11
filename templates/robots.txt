@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /users/*
 Disallow: /ajax/hit/
+Allow: /api/event/icalendar/
 Disallow: /api/*
 Crawl-delay: 60
 
