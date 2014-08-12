@@ -113,19 +113,35 @@
                 {% endif %}
             </p>
 			<p>
-				{% if object.awards.all|length > 0 %}
-				<strong>{% trans "Awards and convictions" %}:</strong>
-				{% for award in object.awards.all|slice:":2" %}
+				{% if object.awards|length > 0 %}
+				<strong>{% trans "Awards" %}:</strong>
+				{% for award in object.awards|slice:":2" %}
                     {% if not forloop.first %} | {% endif %} 
                     <a href="{{ award.reference }}">{{ award.award_type.name }} ({{ award.date_given }})</a>
                 {% endfor %}
-				{% if object.awards.all|length > 2 %}
+				{% if object.awards|length > 2 %}
 				<span id="member-extra-awards" style="display:none">
-                    {% for award in object.awards.all|slice:"2:" %}
+                    {% for award in object.awards|slice:"2:" %}
 					| <a href="{{ award.reference }}">{{ award.award_type.name }} ({{ award.date_given }})</a>
 					{% endfor %}
                 </span>
                 | <a href="#" data-target="#member-extra-awards" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
+                {% endif %} {% endif %}
+			</p>
+			<p>
+				{% if object.convictions|length > 0 %}
+				<strong>{% trans "Convictions" %}:</strong>
+				{% for award in object.convictions|slice:":2" %}
+                    {% if not forloop.first %} | {% endif %} 
+                    <a href="{{ award.reference }}">{{ award.award_type.name }} ({{ award.date_given }})</a>
+                {% endfor %}
+				{% if object.convictions|length > 2 %}
+				<span id="member-extra-convictions" style="display:none">
+                    {% for award in object.convictions|slice:"2:" %}
+					| <a href="{{ award.reference }}">{{ award.award_type.name }} ({{ award.date_given }})</a>
+					{% endfor %}
+                </span>
+                | <a href="#" data-target="#member-extra-convictions" data-toggle="oktoggle" data-text="{% trans "More" %} +|{% trans "Less" %} -">{% trans "More" %} +</a>
                 {% endif %} {% endif %}
 			</p>
             <div id="member-details" style="display:none">

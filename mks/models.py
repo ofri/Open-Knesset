@@ -458,6 +458,15 @@ class Member(models.Model):
     def age(self):
         return relativedelta(date.today(), self.date_of_birth)
 
+    @property
+    def awards(self):
+        return self.awards_and_convictions.filter(award_type__valence__gt=0)
+
+    @property
+    def convictions(self):
+        return self.awards_and_convictions.filter(award_type__valence__lt=0)
+
+
 
 class WeeklyPresence(models.Model):
     member = models.ForeignKey('Member')
@@ -484,7 +493,7 @@ class AwardType(models.Model):
 
 class Award(models.Model):
     award_type = models.ForeignKey('AwardType', related_name='awards')
-    member = models.ForeignKey('Member', related_name='awards')
+    member = models.ForeignKey('Member', related_name='awards_and_convictions')
     date_given = models.DateField()
     reference = models.URLField(blank=True)
 
