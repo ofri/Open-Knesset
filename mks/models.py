@@ -500,6 +500,8 @@ class Award(models.Model):
     def __unicode__(self):
         return u"%s - %s" % (self.member, self.award_type)
 
+    class Meta:
+        ordering = ('-date_given', )
 
 # force signal connections
 from listeners import *
