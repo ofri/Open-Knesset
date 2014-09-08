@@ -7,7 +7,6 @@
 {% block extrajs %}
     <script type="text/javascript" src="{% static "js/jquery.autocomplete.js" %}"></script>
     <script type="text/javascript" src="{% static "js/ok-watch.js" %}?v=1"></script>
-    <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
     {% include "auxiliary/tags_object_edit_extrajs.html" with app_label="laws" object_type="bill" object_id=object.id %}
     <script type="text/javascript">
         function show_only_vote_stage_div( div ) {
@@ -23,94 +22,7 @@
             } );
         }
 
-        Raphael.fn.my_arrow = function ( x,y,div,active ) {
-            var paper = this;
-            var realx = 850 - x;
-            var path_params;
-            if ( active ) {
-                path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
-            } else {
-                path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
-            }
-            var l = paper.path(["M",realx,y,"h",-120,"v",60,"h",120,"v",-60,"Z"]).attr(path_params);
 
-
-            function add_animation(el,l) {
-                el.hover(function () {
-                    l.attr({"stroke-width": "2px",
-                            "stroke":"#224",
-                            "scale": [1.1,1.1]});
-                    return true;
-                },
-                function () {
-                    l.attr({"stroke-width": "1px",
-                            "stroke":"#777",
-                            "scale": [1,1]});
-                    return true;
-                });
-            }
-            l.toBack();
-            $(l.node).css("cursor","pointer");
-            add_animation(l,l);
-            connect_el_to_div(l,div);
-            return l;
-        };
-
-        Raphael.fn.my_box = function ( x,y,div,active ) {
-            var paper = this;
-            var realx = 850 - x;
-            var path_params;
-            if ( active ) {
-                 path_params = {"stroke":"#777", "fill":"90-#ccf-#aaf"};
-            } else {
-                 path_params = {"stroke":"#999", "fill":"#ccc", "fill-opacity":0.5};
-            }
-            // var l = paper.path(["M",realx,y,"h",-500,"l",-7,15,"l",7,15,"h",500,"l",7,-15,"Z"]).attr(path_params);
-            var l = paper.path(["M",realx,y,"h",-500,"v",30,"h",500,"v",-30,"Z"]).attr(path_params);
-
-
-            function add_animation(el,l) {
-                el.hover(function () {
-                    l.attr({"stroke-width": "2px",
-                            "stroke":"#224",
-                            "scale": [1.01,1.1]});
-                    return true;
-                },
-                function () {
-                    l.attr({"stroke-width": "1px",
-                            "stroke":"#777",
-                            "scale": [1,1]});
-                    return true;
-                });
-            }
-            l.toBack();
-            $(l.node).css("cursor","pointer");
-            add_animation(l,l);
-            connect_el_to_div(l,div);
-            return l;
-        };
-
-        Raphael.fn.approved = function ( _x,y,approved ) {
-            var paper = this;
-            var s=paper.set(),
-                im,
-                x = 850-_x,
-                circle_radius = 15,
-                circle_x = x + circle_radius,
-                circle_y = y + circle_radius,
-                c = paper.circle(circle_x,circle_y,circle_radius);
-            if ( approved == null ) {
-                im = paper.image("{% static "img/unknown.png" %}",x,y,30,30);
-            } else if ( approved ) {
-                c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#4c4"});
-                im = paper.image("{% static "img/ok.png" %}",x,y,30,30);
-            } else {
-                c.attr({"fill":"fff","fill-opacity":0.8, "stroke-width":"2px","stroke":"#c44"});
-                im = paper.image("{% static "img/stop.png" %}",x,y,30,30);
-            }
-            s.push(c,im);
-            return s;
-        }
         $(document).ready(function() {
 
                 var options = {
