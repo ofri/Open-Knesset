@@ -8,6 +8,8 @@ from tastypie.resources import ModelResource
 from tastypie.throttle import CacheThrottle
 from tastypie.serializers import Serializer
 
+import ujson
+
 # are we using DummyCache ?
 _cache = getattr(settings, 'CACHES', {})
 _cache_default = _cache.get('default')
@@ -38,7 +40,8 @@ class IterJSONAndCSVSerializer(Serializer):
         options = options or {}
 
         data = self.to_simple(data, options)
-        return ''.join(json.DjangoJSONEncoder(sort_keys=True).iterencode(data))
+        return ujson.dumps(data)
+        # return ''.join(json.DjangoJSONEncoder(sort_keys=True).iterencode(data))
 
     def to_csv(self, data, options=None):
         options = options or {}
