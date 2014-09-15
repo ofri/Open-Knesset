@@ -16,7 +16,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from actstream.models import Follow
 from laws.models import VoteAction, Vote
-from mks.models import Party, Member, Knesset
+from mks.models import Party, Member, Knesset, Membership
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -490,7 +490,7 @@ class Agenda(models.Model):
                               if mk_id in mk_ids]
         if not mks_values:
             # get list of mk ids
-            mk_ids = mk_ids or Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
+            mk_ids = mk_ids or Membership.objects.membership_in_range(ranges)
 
             # generate summary query
             filters_folded = self.generateSummaryFilters(ranges, 'month', 'month')
