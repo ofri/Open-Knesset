@@ -1,0 +1,50 @@
+{% extends "site_base.html" %}
+{% load i18n laws_tags %}
+{% block extratitle %}{{ title }}{% endblock %}
+
+{% block extrajs %}
+    <script>
+        $('#datelookup_submit').click(function(){
+            var d = $('#datelookup_input').val();
+            if (d){
+                window.location = '{% url 'committee-mmm-documents-list-by-date' committee_id "1970-1-1" %}'.replace('1970-1-1', d);
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block keywords %}{{ title }}{% endblock %}
+{% block description %}{{ title }} - {% endblock %}
+
+{% block nav-committees %}class="active"{% endblock %}
+
+{% block breadcrumbs %}
+        <li><a href="{% url 'committee-list' %}">{% trans "Committees" %}</a> <span class="divider">/</span></li>
+        <li><a href="{{ committee_url }}">{{ committee }}</a> <span class="divider">/</span></l1>
+        <li class="active">{% trans "All MMM Documents" %}</li>
+{% endblock %}
+
+{% block divcontent %}
+    <div class="row">
+        <div class="span8 cards">
+            <section class="card card-list">
+            <header><h2><i class="fa fa-file-text"></i>{% trans 'All MMM Documents' %}</h2></header>
+            <ul id="recent-mmm">
+                {% include "mks/mmm_partials.html" with object_list=object_list %}
+            </ul>
+            </section>
+        </div>
+        <div class="span4">
+                <aside class="sidebar">
+                    <h2>{% trans 'Lookup by date' %}</h2>
+                    <p>
+                        <input type="text" id="datelookup_input" value="{{ object_list.0.date|date:"Y-m-d" }}"/>
+                        <input class="btn" type="submit" id="datelookup_submit" value="{% trans "Submit" %}"/>
+                    </p>
+                </aside>
+        </div>
+    </div>
+    {% if page_obj %}
+        {% pagination page_obj paginator request %}
+    {% endif %}
+{% endblock %}

@@ -1,13 +1,11 @@
 #encoding: UTF-8
 from django.conf.urls import url, patterns
 from djangoratings.views import AddRatingFromModel
-
-from .models import CommitteeMeeting
 from views import (
     MeetingsListView, MeetingDetailView, MeetingTagListView,
     CommitteeListView, CommitteeDetailView, TopicListView, TopicsMoreView,
     TopicDetailView, delete_topic, delete_topic_rating, meeting_list_by_date,
-    edit_topic)
+    edit_topic, CommitteeMMMDocuments)
 
 
 meetings_list = MeetingsListView.as_view()
@@ -41,4 +39,9 @@ committeesurlpatterns = patterns('',
         name='rate-topic'),
     url(r'^committee/topic/(?P<object_id>\d+)/null/$', delete_topic_rating,
         name='delete-topic-rating'),
+    url(r'^committee/(?P<committee_id>\d+)/mmm_documents/$', CommitteeMMMDocuments.as_view(),
+        name='committee-mmm-documents-list'),
+    url(r'^committee/(?P<committee_id>\d+)/mmm_documents/date/(?P<date>[\d\-]+)/$',
+        CommitteeMMMDocuments.as_view(),
+        name='committee-mmm-documents-list-by-date'),
 )
