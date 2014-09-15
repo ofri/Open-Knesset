@@ -1,6 +1,7 @@
 import difflib
 from django.core.cache import cache
 from django.db import models
+from agendas.models import Agenda
 
 
 class KnessetManager(models.Manager):
@@ -43,6 +44,12 @@ class BetterManager(models.Manager):
                 return [m]
             ret[possible_names.index(m.name)] = m
         return ret
+
+
+class PartyManager(BetterManager):
+    def parties_during_range(self, ranges=None):
+        filters_folded = Agenda.generateSummaryFilters(ranges, 'start_date', 'end_date')
+        return self.filter(filters_folded)
 
 
 class CurrentKnessetPartyManager(models.Manager):

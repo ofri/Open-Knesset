@@ -12,7 +12,7 @@ from knesset.utils import cannonize
 from links.models import Link
 import difflib
 from mks.managers import (
-    BetterManager, KnessetManager, CurrentKnessetMembersManager,
+    BetterManager, PartyManager, KnessetManager, CurrentKnessetMembersManager,
     CurrentKnessetPartyManager)
 
 GENDER_CHOICES = (
@@ -74,7 +74,7 @@ class Party(models.Model):
 
     logo = models.ImageField(blank=True,null=True,upload_to='partyLogos')
 
-    objects = BetterManager()
+    objects = PartyManager()
     current_knesset = CurrentKnessetPartyManager()
 
     class Meta:
