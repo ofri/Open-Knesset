@@ -45,11 +45,12 @@ class Command(NoArgsCommand):
                         end_date = None
                         logger.warn(u"failed for parse end_date for: {} {} {}".format(
                             org, person, role))
-                    role, created = Role.objects.get_or_create(person=person,
+
+                    r, created = Role.objects.get_or_create(person=person,
                             start_date=datetime.strptime(start_date,"%d/%m/%Y"),
                             end_date=end_date,
                             text=role,
                             org=org,
                             )
                     if created:
-                        logger.info(role)
+                        logger.info(r)
