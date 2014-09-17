@@ -91,16 +91,15 @@ class MembershipManager(models.Manager):
             query_fields = []
             query_parameters = []
             if r[0]:
-                query_fields.append("((end_date is not null) and end_date < %s)")
+                query_fields.append("coalesce(end_date, '2037-01-01') < %s")
                 query_parameters.append(r[0])
             if r[1]:
-                query_fields.append("((start_date is not null) and start_date >= %s)")
+                query_fields.append("coalesce(start_date, '1947-01-01') >= %s")
                 query_parameters.append(r[1])
-            filter_list.append(' AND '.join(query_fields))
+            filter_list.append(' OR '.join(query_fields))
 
         filters_folded = ' AND '.join(filter_list)
         query = "SELECT member_id FROM mks_membership WHERE NOT (%s)" % filters_folded
-        print query
         cursor = connection.cursor()
         cursor.execute(query, query_parameters)
         results = cursor.fetchall()
