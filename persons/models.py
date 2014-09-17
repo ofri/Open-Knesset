@@ -109,11 +109,16 @@ def member_post_save(sender, **kwargs):
 
 
 class Role(models.Model):
-    text = models.CharField(blank=True,null=True, max_length=1024)
+    start_date  = models.DateField(null=True)
+    end_date  = models.DateField(blank=True, null=True)
+    text = models.CharField(blank=True, null=True, max_length=1024)
+    org = models.TextField(blank=True, null=True)
     person = models.ForeignKey(Person, related_name='roles')
 
     def __unicode__(self):
-        return self.text
+        return _('{person} serverd as {text} in {org} from {start_date} to {end_date}').format(
+                person=self.person, text=self.text, org=self.org,
+                start_date=self.start_date, end_date=self.end_date)
 
 class ProcessedProtocolPart(models.Model):
     """This model is used to keep track of protocol parts already searched for creating persons.

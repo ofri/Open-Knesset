@@ -37,7 +37,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
               'committee_meetings_per_month',#'bills',
               'bills_proposed','bills_passed_pre_vote',
               'bills_passed_first_vote','bills_approved',
-              'roles', 'average_weekly_presence_rank', 'committees',
+              'roles', 'detailed_roles', 'average_weekly_presence_rank', 'committees',
               'is_current', 'start_date', 'end_date',
               'phone', 'fax', 'email', 'family_status', 'number_of_children',
               'date_of_birth', 'place_of_birth', 'date_of_death',
@@ -109,6 +109,18 @@ class MemberHandler(BaseHandler, HandlerExtensions):
     @classmethod
     def roles (self, member):
         return member.get_role
+
+    @classmethod
+    def detailed_roles (self, member):
+        person = member.person.all()[0]
+        ret = []
+        for role in person.roles.all():
+            ret.append({'title': role.text,
+                        'organization': role.org,
+                        'start_date': role.start_date,
+                        'end_date': role.end_date,
+                        })
+        return ret
 
     @classmethod
     def average_weekly_presence(cls, member):
