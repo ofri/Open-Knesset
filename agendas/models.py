@@ -60,6 +60,9 @@ class AgendaVoteManager(models.Manager):
 
         mk_query = queries.BASE_MK_QUERY % db_functions
         cursor.execute(mk_query)
+        
+        party_query = queries.BASE_PARTY_QUERY % db_functions
+        cursor.execute(party_query)
 
 
 class AgendaVote(models.Model):
