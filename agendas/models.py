@@ -484,10 +484,11 @@ class Agenda(models.Model):
         fullRange = ranges == [[None,None]]
         if fullRange:
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
-            if mks:
+            if mks_values and mks:
                 mks_values = [(mk_id, values)
                               for (mk_id, values) in mks_values
                               if mk_id in mk_ids]
+
         if not mks_values:
             # get list of mk ids
             mk_ids = mk_ids or Membership.objects.membership_in_range(ranges)
