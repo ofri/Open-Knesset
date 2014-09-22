@@ -12,8 +12,8 @@ from knesset.utils import cannonize
 from links.models import Link
 import difflib
 from mks.managers import (
-    BetterManager, KnessetManager, CurrentKnessetMembersManager,
-    CurrentKnessetPartyManager)
+    BetterManager, PartyManager, KnessetManager, CurrentKnessetMembersManager,
+    CurrentKnessetPartyManager, MembershipManager)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -74,7 +74,7 @@ class Party(models.Model):
 
     logo = models.ImageField(blank=True,null=True,upload_to='partyLogos')
 
-    objects = BetterManager()
+    objects = PartyManager()
     current_knesset = CurrentKnessetPartyManager()
 
     class Meta:
@@ -155,6 +155,7 @@ class Membership(models.Model):
     end_date = models.DateField(blank=True, null=True)
     position = models.PositiveIntegerField(blank=True, default=999)
 
+    objects = MembershipManager()
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name, self.party.name, str(self.start_date), str(self.end_date))
 

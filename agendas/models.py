@@ -16,7 +16,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from actstream.models import Follow
 from laws.models import VoteAction, Vote
-from mks.models import Party, Member, Knesset
+from mks.models import Party, Member, Knesset, Membership
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -442,18 +442,26 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def generateSummaryFilters(self,ranges):
-        results = []
+    @staticmethod
+    def generateSummaryFilters(ranges, start_fieldname, end_fieldname):
+        if not ranges:
+            return
+        filter_list = []
         for r in ranges:
             if not r[0] and not r[1]:
-                return None # might as well not filter at all
-            queryFields = {}
+                return None  # might as well not filter at all
+            query_fields = {}
             if r[0]:
-                queryFields['month__gte']=r[0]
+                query_fields[start_fieldname + '__gte']=r[0]
             if r[1]:
-                queryFields['month__lt']=r[1]
-            results.append(Q(**queryFields))
-        return results
+                query_fields[end_fieldname + '__lt']=r[1]
+            filter_list.append(Q(**query_fields))
+
+        if len(filter_list) == 1:
+            filters_folded = filter_list[0]
+        else:  # len(filter_list) > 1
+            filters_folded = reduce(lambda x, y: x | y, filter_list)
+        return filters_folded
 
     def get_mks_totals(self, member):
         "Get count for each vote type for a specific member on this agenda"
@@ -482,19 +490,15 @@ class Agenda(models.Model):
                               if mk_id in mk_ids]
         if not mks_values:
             # get list of mk ids
-            mk_ids = mk_ids or Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
+            mk_ids = mk_ids or Membership.objects.membership_in_range(ranges)
 
             # generate summary query
-            filterList = self.generateSummaryFilters(ranges)
+            filters_folded = self.generateSummaryFilters(ranges, 'month', 'month')
 
             # query summary
             baseQuerySet = SummaryAgenda.objects.filter(agenda=self)
-            if filterList:
-                if len(filterList)>1:
-                    filtersFolded = reduce(lambda x,y:x | y, filterList)
-                else:
-                    filtersFolded = filterList[0]
-                baseQuerySet.filter(filtersFolded)
+            if filters_folded:
+                baseQuerySet.filter(filters_folded)
             summaries = list(baseQuerySet)
             # group summaries for respective ranges
             summariesForRanges = []
