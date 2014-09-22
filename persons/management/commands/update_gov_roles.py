@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
     )
     
     #TODO: scrape for the last gov
-    GOVS = range(28,34)
+    GOVS = range(20,34)
     URI = "http://www.knesset.gov.il/govt/heb/GovtByNumber.asp?govt={}"
     
     
