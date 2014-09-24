@@ -44,6 +44,7 @@ class BrowserTestCase(LiveServerTestCase):
 
     def tearDown(self):
         if browser == 'Sauce':
+            print("\nLink to your job: \n https://saucelabs.com/jobs/%s \n" % self.driver.session_id)
             try:
                 if sys.exc_info() == (None, None, None):
                     self.sauce.jobs.update_job(self.driver.session_id, passed=True)

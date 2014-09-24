@@ -77,6 +77,8 @@ Run migrations and tests
 
     ./manage.py migrate
     ./manage.py test
+    # by default the browser tests use firefox - make sure it's installed first
+    ./manage.py test --testrunner=knesset.browser_test_runner.Runner
 
 If there are any failures, contact the other developers in the `oknesset-dev`_
 group to see if that's something you should worry about.
@@ -116,6 +118,7 @@ After you code
 ~~~~~~~~~~~~~~~~
 
 - ``./manage.py test`` # make sure you didn't break anything
+- ``./manage.py test --testrunner=knesset.browser_test_runner.Runner`` # run the browser tests (see :ref:`browser_tests`)
 - ``git status`` # to see what changes you made
 - ``git diff filename`` # to see what changed in a specific file
 - ``git add filename`` # for each file you changed/added.
