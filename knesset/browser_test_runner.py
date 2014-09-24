@@ -6,6 +6,7 @@ from django_nose import NoseTestSuiteRunner
 from optparse import make_option
 from django.core import management
 from django.contrib.auth.management.commands import changepassword
+from unittest.result import TestResult
 
 browser = 'Firefox'
 sauce_username = ''
@@ -81,4 +82,9 @@ class Runner(DiscoverRunner):
     def teardown_databases(self, old_config, **kwargs):
         pass
 
-
+    def run_suite(self, suite, **kwargs):
+        if browser == 'Sauce' and sauce_accesskey == '' and sauce_username == '':
+            print('Sauce selected but no accesskey and username - test suite will not run')
+            return TestResult()
+        else:
+            return super(Runner, self).run_suite(suite, **kwargs)
