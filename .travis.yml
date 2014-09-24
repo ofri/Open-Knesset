@@ -16,4 +16,4 @@ script:
   - wget http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
   - bunzip2 dev.db.bz2
   - ./manage.py migrate
-  - ./manage.py test --testrunner=knesset.browser_test_runner.Runner --browser=Sauce
+  - ./manage.py test --testrunner=knesset.browser_test_runner.Runner --browser=Sauce --full-initialization

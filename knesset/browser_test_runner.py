@@ -3,6 +3,9 @@
 import os
 from django.test.runner import DiscoverRunner
 from optparse import make_option
+from django.core import management
+from django.contrib.auth.management.commands import changepassword
+
 
 browser = 'Firefox'
 sauce_username = ''
@@ -28,6 +31,9 @@ class Runner(DiscoverRunner):
         make_option('-p', '--pattern', action='store', dest='pattern',
             default="browser_test*.py",
             help='The test matching pattern. Defaults to browser_test*.py.'),
+        make_option('--full-initialization', action='store_true', dest='fullinitialization',
+            default=False,
+            help='this should only be used when running ci - it initializes the environment from scratch'),
         make_option('--sauce-user', action='store', dest='sauceuser',
             default='',
             help='SauceLabs username (required if browser=Sauce, see https://docs.saucelabs.com/reference/sauce-connect/#managing-multiple-tunnels)'),
@@ -54,7 +60,19 @@ class Runner(DiscoverRunner):
                 sauce_accesskey = os.environ.get('SAUCE_ACCESS_KEY')
             else:
                 sauce_accesskey = kwargs['sauceaccesskey']
+        if 'fullinitialization' in kwargs and kwargs['fullinitialization'] == True:
+            self.full_initialization()
         super(Runner, self).__init__(*args, **kwargs)
+
+    def full_initialization(self):
+        self.create_superuser()
+
+    def create_superuser(self):
+        print('Creating test superuser (admin/123456)')
+        management.call_command('createsuperuser', interactive=False, username='admin', email='OpenKnessetAdmin@mailinator.com')
+        command = changepassword.Command()
+        command._get_pass = lambda *args: '123456'
+        command.execute('admin')
 
     def setup_databases(self, **kwargs):
         pass
