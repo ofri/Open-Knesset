@@ -15,7 +15,7 @@ Instead, you have to specify a different test runner:
 
     ./manage.py test --testrunner=knesset.browser_test_runner.Runner
 
-This test runner looks for files that start with browser_test and runs only the tests contained in those files.
+This test runner looks for files that start with browser_cases and runs only the tests contained in those files.
 
 You can run the tests locally - on your own browser, or remotely:
 
@@ -52,8 +52,8 @@ Writing tests
 
 Tests are written using the python selenium bindings and the standard django unit tests framework.
 
-All browser test file names must be in the format browser_test*.py
+All browser test file names must be in the format browser_cases*.py
 
-You can see a simple test in knesset/browser_test.py - it is commented with useful details.
+You can see a simple test in knesset/browser_cases.py - it is commented with useful details.
 
 Refer to the selenium python documentation for help on using selenium: http://selenium-python.readthedocs.org

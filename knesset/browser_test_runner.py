@@ -2,10 +2,10 @@
 
 import os
 from django.test.runner import DiscoverRunner
+from django_nose import NoseTestSuiteRunner
 from optparse import make_option
 from django.core import management
 from django.contrib.auth.management.commands import changepassword
-
 
 browser = 'Firefox'
 sauce_username = ''
@@ -30,8 +30,8 @@ class Runner(DiscoverRunner):
             action='store', dest='top_level', default=None,
             help='Top level of project for unittest discovery.'),
         make_option('-p', '--pattern', action='store', dest='pattern',
-            default="browser_test*.py",
-            help='The test matching pattern. Defaults to browser_test*.py.'),
+            default="browser_cases*.py",
+            help='The test matching pattern. Defaults to browser_cases*.py.'),
         make_option('--full-initialization', action='store_true', dest='fullinitialization',
             default=False,
             help='this should only be used when running ci - it initializes the environment from scratch'),
