@@ -12,7 +12,7 @@ install:
   - pip install -r requirements.txt --timeout 30
 # command to run tests, e.g. python setup.py test
 script:
-#  - ./manage.py test
+  - ./manage.py test
   - wget http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
   - bunzip2 dev.db.bz2
   - ./manage.py migrate
