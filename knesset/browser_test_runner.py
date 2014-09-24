@@ -22,6 +22,7 @@ class Runner(DiscoverRunner):
     The browser test runner modifies the following from the default django runner:
     1. default test files pattern is browser_test*.py
     2. doesn't use the test databases - it uses the actual configured database
+    3. adds some options for selecting browser to test with / remotely with SauceLabs
     """
 
     option_list = (

@@ -13,6 +13,7 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
   - ./manage.py test
+  # for the browser tests we need a real db with full data
   - wget http://oknesset-devdb.s3.amazonaws.com/dev.db.bz2
   - bunzip2 dev.db.bz2
   - ./manage.py migrate

@@ -7,6 +7,9 @@ from knesset.browser_test_case import BrowserTestCase, on_platforms
 
 @on_platforms()
 class MyTestCase(BrowserTestCase):
+    """
+    Simple demo test case - just makes sure the tidbit carousel appears on the homepage
+    """
 
     def testHomepage(self):
         # inside the tests you can use self.drive which will have a ready selenium driver to use

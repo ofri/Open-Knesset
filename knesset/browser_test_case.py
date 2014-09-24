@@ -8,6 +8,11 @@ from knesset.browser_test_runner import browser, sauce_accesskey, sauce_username
 
 
 def on_platforms():
+    """
+    class decorator for the browser test case
+    it runs the test case several times for each desired browser/platform
+    this decorator must be used on the extending class - not directly on BrowserTestCase
+    """
     if browser == 'Sauce':
         platforms = sauce_platforms
     else:
@@ -23,6 +28,9 @@ def on_platforms():
 
 
 class BrowserTestCase(LiveServerTestCase):
+    """
+    Base class that initializes the selenium driver for the desired browser/s
+    """
 
     def setUp(self):
         if browser == 'Sauce':
