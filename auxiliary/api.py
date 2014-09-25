@@ -15,6 +15,7 @@ from django.conf.urls import url
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.db.utils import OperationalError
 
 from laws.models import Vote, Bill
 from committees.models import CommitteeMeeting
@@ -73,13 +74,17 @@ def get_proper_synonyms(tag):
 #TODO: save this in cache
 synonyms_dict = {}
 proper_names_dict = {}
-l = TagSynonym.objects.values_list('tag_id', 'synonym_tag_id')
-for (t, s) in l:
-    proper_names_dict[s] = t
-    if t in synonyms_dict:
-        synonyms_dict[t].append(s)
-    else:
-        synonyms_dict[t] = [s]
+try:
+    l = TagSynonym.objects.values_list('tag_id', 'synonym_tag_id')
+    for (t, s) in l:
+        proper_names_dict[s] = t
+        if t in synonyms_dict:
+            synonyms_dict[t].append(s)
+        else:
+            synonyms_dict[t] = [s]
+except OperationalError as e:
+    # this code is run before migrations - so it fails first time running migrations
+    pass
 
 
 class TagResource(BaseResource):
