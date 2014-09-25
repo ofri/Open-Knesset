@@ -53,6 +53,7 @@ Contents:
     workflow
     css_docs
     tips
+    browsertests
 
 Indices and tables
 ==================

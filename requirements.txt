@@ -46,3 +46,5 @@ boto==2.20.1
 BeautifulSoup4
 okscraper-django==0.0.8
 ujson
+selenium
+sauceclient
