@@ -352,7 +352,24 @@ class MemberDetailView(DetailView):
             legislation_actions = actor_stream(member).filter(
                 verb__in=('proposed', 'joined'))
 
-            committee_actions = actor_stream(member).filter(verb='attended')
+            # this ugly code groups all the committee actions according to plenum and committee
+            # it stop iterating when both committee and plenum actions reach the maximum (MEMBER_INITIAL_DATA)
+            # it also stops iterating when reaching 20 iterations
+            committee_actions_more = {'committee': False, 'plenum': False}
+            committee_actions = {'committee': [], 'plenum': []}
+            i = 0
+            for action in actor_stream(member).filter(verb='attended'):
+                i = i + 1
+                if i == 20:
+                    break
+                committee_type = action.target.committee.type
+                if committee_type in ['plenum', 'committee']:
+                    if len(committee_actions[committee_type]) == self.MEMBER_INITIAL_DATA:
+                        committee_actions_more[committee_type] = True
+                        if committee_actions_more['plenum'] == True and committee_actions_more['committee'] == True:
+                            break
+                    else:
+                        committee_actions[committee_type].append(action)
 
             committees_presence = []
             for committee in member.committees.all():
@@ -379,8 +396,10 @@ class MemberDetailView(DetailView):
                 'actions': actions[:self.MEMBER_INITIAL_DATA],
                 'legislation_actions_more': legislation_actions.count() > self.MEMBER_INITIAL_DATA,
                 'legislation_actions': legislation_actions[:self.MEMBER_INITIAL_DATA],
-                'committee_actions_more': committee_actions.count() > self.MEMBER_INITIAL_DATA,
-                'committee_actions': committee_actions[:self.MEMBER_INITIAL_DATA],
+                'committee_actions_more': committee_actions_more['committee'],
+                'committee_actions': committee_actions['committee'],
+                'plenum_actions_more': committee_actions_more['plenum'],
+                'plenum_actions': committee_actions['plenum'],
                 'mmm_documents_more': mmm_documents.count() > self.MEMBER_INITIAL_DATA,
                 'mmm_documents': mmm_documents[:self.MEMBER_INITIAL_DATA],
                 'bills_statistics': bills_statistics,
@@ -755,8 +774,23 @@ class MemeberMoreCommitteeView(MemeberMoreActionsView):
     """Get partially rendered member committee actions content for AJAX calls to 'More'"""
 
     def get_queryset(self):
-        actions = super(MemeberMoreCommitteeView, self).get_queryset()
-        return actions.filter(verb='attended')
+        qs = super(MemeberMoreCommitteeView, self).get_queryset()
+        action_ids = []
+        for action in qs.filter(verb='attended'):
+            if action.target.committee.type == 'committee':
+                action_ids.append(action.id)
+        return qs.filter(id__in=action_ids)
+
+class MemeberMorePlenumView(MemeberMoreActionsView):
+    """Get partially rendered member plenum actions content for AJAX calls to 'More'"""
+
+    def get_queryset(self):
+        qs = super(MemeberMorePlenumView, self).get_queryset()
+        action_ids = []
+        for action in qs.filter(verb='attended'):
+            if action.target.committee.type == 'plenum':
+                action_ids.append(action.id)
+        return qs.filter(id__in=action_ids)
 
 
 class MemeberMoreMMMView(MemeberMoreActionsView):

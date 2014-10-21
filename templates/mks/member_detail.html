@@ -262,6 +262,7 @@
                 </footer>
             </section>
 {% endif %}
+            {% if committee_actions %}
             <section class="card card-list card-list-latest">
                 <header>
                     <h2>
@@ -271,7 +272,9 @@
                     <!--a class="btn btn-mini btn-question" href="#">?</a-->
                 </header>
                 <ul id="recent-committees">
-                {% for action in committee_actions %}{% display_action action %}{% endfor %}
+                {% for action in committee_actions %}
+                    {% display_action action %}
+                {% endfor %}
                 </ul>
                 <footer>
                 {% if committee_actions_more %}
@@ -283,6 +286,32 @@
                 {% endif %}
                 </footer>
             </section>
+            {% endif %}
+            {% if plenum_actions %}
+            <section class="card card-list card-list-latest">
+                <header>
+                    <h2>
+                        <i class="fa fa-users"></i>
+                        {% trans "Plenum" %}
+                    </h2>
+                    <!--a class="btn btn-mini btn-question" href="#">?</a-->
+                </header>
+                <ul id="recent-plenums">
+                {% for action in plenum_actions %}
+                    {% display_action action %}
+                {% endfor %}
+                </ul>
+                <footer>
+                {% if plenum_actions_more %}
+                <button class="btn btn-mini btn-expand" data-provide="okmore"
+                    data-loading-text="{% trans "Loading" %} ..."
+                    autocomplete="off" data-target="#recent-plenums"
+                    data-url="{% url 'member-more-plenums' object.pk %}"
+                    data-initial="{{INITIAL_DATA}}">{% trans "More" %} +</button>
+                {% endif %}
+                </footer>
+            </section>
+            {% endif %}
             {% if mmm_documents %}
             <section class="card card-list card-list-latest">
                 <header>
