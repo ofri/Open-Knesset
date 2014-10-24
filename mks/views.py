@@ -362,7 +362,9 @@ class MemberDetailView(DetailView):
                 i = i + 1
                 if i == 20:
                     break
-                committee_type = action.target.committee.type
+                committee_type = (action and action.target and
+                                  action.target.committee and
+                                  action.target.committee.type)
                 if committee_type in ['plenum', 'committee']:
                     if len(committee_actions[committee_type]) == self.MEMBER_INITIAL_DATA:
                         committee_actions_more[committee_type] = True
@@ -374,7 +376,7 @@ class MemberDetailView(DetailView):
             committees_presence = []
             for committee in member.committees.all():
                 committee_member = committee.members_by_presence(ids=[member.id])[0]
-                committees_presence.append({"committee": committee, 
+                committees_presence.append({"committee": committee,
                     "presence": committee_member.meetings_percentage})
 
             committees_presence.sort(cmp=lambda x,y: y["presence"] - x["presence"])
