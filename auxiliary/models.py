@@ -200,3 +200,11 @@ def remove_tags_from_related_objects(sender, instance, **kwargs):
 
 
 post_delete.connect(remove_tags_from_related_objects, sender=TaggedItem)
+
+
+class TagKeyphrase(models.Model):
+    tag = models.ForeignKey('tagging.Tag')
+    phrase = models.CharField(max_length=100, blank=False, null=False)
+
+    def __unicode__(self):
+        return "%s %s" % (self.tag, self.phrase)
