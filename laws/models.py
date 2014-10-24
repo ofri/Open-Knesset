@@ -427,6 +427,32 @@ class Vote(models.Model):
         self.vote_type = self._vote_type()
         self.save()
 
+    def auto_tag(self):
+        vote_ct = ContentType.objects.get_for_model(Vote)
+        title_words = self.title.split(' ')
+        for i in range(len(title_words) - 1):
+            token = ' '.join(title_words[i:i + 2])
+            token_votes = Vote.objects.filter(title__contains=token).exclude(id=self.id)
+            token_votes_count = token_votes.count()
+            if token_votes_count < 10:  # this token is not common enough
+                continue
+            token_tags = TaggedItem.objects.filter(content_type=vote_ct,
+                                                   object_id__in=token_votes)\
+                .distinct().values_list('tag', flat=True)
+            if len(token_tags) > 25:  # this token is too wide, give up
+                continue
+            for tag in token_tags:  # check if tags are common
+                c = TaggedItem.objects.filter(content_type=vote_ct,
+                                              object_id__in=token_votes,
+                                              tag=tag).count()
+                if float(c) / token_votes_count > 0.75:
+                    t = Tag.objects.get(pk=tag)
+                    print "\n***"
+                    print self.id, self
+                    print token.encode('utf8')
+                    print t, t in self.tags
+                    print token_votes
+
 
 class TagForm(forms.Form):
     tags = TagField()
