@@ -30,7 +30,10 @@ def yearend(year):
     return datetime(year,12,31)
 
 def slugify_name(name):
-    return smart_str(name).replace("'",'"').replace(' ','-')
+    s = smart_str(name).replace("'",'"').replace(' ','-')
+    if isinstance(name, unicode):
+        return s.decode('utf8')
+    return s
 
 
 def comment_post_wrapper(request):
