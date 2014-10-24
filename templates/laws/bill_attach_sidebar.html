@@ -10,6 +10,7 @@
         <option value="approval vote">{% trans "Approval Vote" %}</option>
     </select>
     <label>{% trans "Bill" %}</label>
-    <input type="text" name="bill_id" required>
+    <input type="text" class="bill_input" name="bill_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
+    <input type="hidden" name="bill_id"></input>
     <input type="submit" value="{% trans "Submit" %}" class="btn">
 </form>

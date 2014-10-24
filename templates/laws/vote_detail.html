@@ -8,6 +8,27 @@
 {% block nav-votes %}class="active"{% endblock %}
 {% block extrajs %}
     {% include "auxiliary/tags_object_edit_extrajs.html" with app_label="laws" object_type="vote" object_id=vote.id %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var $attachBillAutocomplete = $('[name="bill_string"]')
+
+            $attachBillAutocomplete.keydown(function() {
+                $attachBillAutocomplete.siblings("input[name$='bill_id']").val('');
+                $attachBillAutocomplete.siblings("input[type$='submit']").attr('disabled', 'disabled');
+            });
+
+            $attachBillAutocomplete.autocomplete({
+                serviceUrl:'/bill/auto_complete/',
+                minChars:2,
+                maxHeight:400,
+                deferRequestBy: 100, //miliseconds
+                onSelect: function(value, data, me) {
+                    me.siblings("input[name$='bill_id']").val(data);
+                    me.siblings("input[type$='submit']").removeAttr('disabled');
+                }
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block breadcrumbs %}
