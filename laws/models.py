@@ -8,7 +8,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.db.models import Count, Q
 from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -21,11 +20,11 @@ from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action, Follow
 
-from mks.models import Member, Party, Knesset
+from mks.models import Party, Knesset
 from tagvotes.models import TagVote
-from knesset.utils import slugify_name
+from knesset.utils import slugify_name, trans_clean
 from laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
-                                       BILL_AGRR_STAGES)
+                               BILL_AGRR_STAGES)
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -36,6 +35,7 @@ VOTE_ACTION_TYPE_CHOICES = (
 )
 
 CONVERT_TO_DISCUSSION_HEADERS = ('להעביר את הנושא'.decode('utf8'), 'העברת הנושא'.decode('utf8'))
+
 
 class CandidateListVotingStatistics(models.Model):
     candidates_list = models.OneToOneField('polyorg.CandidateList', related_name='voting_statistics')
@@ -427,31 +427,6 @@ class Vote(models.Model):
         self.vote_type = self._vote_type()
         self.save()
 
-    def auto_tag(self):
-        vote_ct = ContentType.objects.get_for_model(Vote)
-        title_words = self.title.split(' ')
-        for i in range(len(title_words) - 1):
-            token = ' '.join(title_words[i:i + 2])
-            token_votes = Vote.objects.filter(title__contains=token).exclude(id=self.id)
-            token_votes_count = token_votes.count()
-            if token_votes_count < 10:  # this token is not common enough
-                continue
-            token_tags = TaggedItem.objects.filter(content_type=vote_ct,
-                                                   object_id__in=token_votes)\
-                .distinct().values_list('tag', flat=True)
-            if len(token_tags) > 25:  # this token is too wide, give up
-                continue
-            for tag in token_tags:  # check if tags are common
-                c = TaggedItem.objects.filter(content_type=vote_ct,
-                                              object_id__in=token_votes,
-                                              tag=tag).count()
-                if float(c) / token_votes_count > 0.75:
-                    t = Tag.objects.get(pk=tag)
-                    print "\n***"
-                    print self.id, self
-                    print token.encode('utf8')
-                    print t, t in self.tags
-                    print token_votes
 
 
 class TagForm(forms.Form):
