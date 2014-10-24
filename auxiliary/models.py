@@ -60,6 +60,7 @@ class Feedback(models.Model):
 
     content = models.TextField(_('Content'))
     suggested_at = models.DateTimeField(verbose_name=_('Suggested at'),
+                                        auto_now_add=True,
                                         blank=True,
                                         null=True)
     suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
