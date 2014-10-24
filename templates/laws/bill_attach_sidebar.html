@@ -1,0 +1,15 @@
+{% load i18n %}
+<header><h2>{% trans "Bills" %}</h2></header>
+<form method="post" action="." class="clearfix">
+    {% csrf_token %}
+    <input type="hidden" name="user_input_type" value="add-bill">
+    <label>{% trans "Vote Type" %}</label>
+    <select name="vote_type" required>
+        <option value="pre vote">{% trans "Pre Vote" %}</option>
+        <option value="first vote">{% trans "First Vote" %}</option>
+        <option value="approval vote">{% trans "Approval Vote" %}</option>
+    </select>
+    <label>{% trans "Bill" %}</label>
+    <input type="text" name="bill_id" required>
+    <input type="submit" value="{% trans "Submit" %}" class="btn">
+</form>

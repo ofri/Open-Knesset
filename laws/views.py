@@ -780,6 +780,27 @@ class VoteDetailView(DetailView):
                                 reasoning = reasoning)
                 usv.save()
 
+        elif user_input_type == 'add-bill':
+            bill_id = request.POST.get('bill_id')
+            vote_type = request.POST.get('vote_type')
+            bill = get_object_or_404(Bill, pk=bill_id)
+
+            # TODO: next block is almost exact dup of lines 466-477
+            vote_types = ['approval vote','first vote','pre vote']
+            i = vote_types.index(vote_type)
+
+            if i == 0:
+                bill.approval_vote = vote
+            elif i == 1:
+                bill.first_vote = vote
+            elif i == 2:
+                bill.pre_votes.add(vote)
+            else:
+                #FIXME: maybe different response.
+                return HttpResponseRedirect(".")
+
+            bill.update_stage()
+
         else: # adding an MK (either for or against)
             mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
             mk = Member.objects.get(name=mk_name)

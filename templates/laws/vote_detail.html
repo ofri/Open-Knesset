@@ -114,6 +114,12 @@
                 {% include "auxiliary/tags_object_edit.html" %}
             </aside> <!-- tagging -->
 
+            {% if user.is_authenticated %}
+            <aside class="sidebar">
+                {% include "laws/bill_attach_sidebar.html" with object=vote %}
+            </aside>
+            {% endif %}
+
             <aside class="sidebar">
                 {% agendas_for user vote 'vote' %}
             </aside>
