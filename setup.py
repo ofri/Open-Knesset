@@ -15,7 +15,7 @@ install_requires = [
     'gunicorn',
     'mimeparse',
     'mimms',
-    'django-social-auth',
+    'python-social-auth',
     'nose',
     'oauth',
     'pil',
