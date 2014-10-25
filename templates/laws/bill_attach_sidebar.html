@@ -3,18 +3,6 @@
 <form method="post" action="." class="clearfix">
     {% csrf_token %}
     <input type="hidden" name="user_input_type" value="add-bill">
-    <label>{% trans "Vote Type" %}</label>
-    <select name="vote_type" required>
-        <option value="">{% trans "Please select vote type" %}</option>
-        {% for vote_type in vote_types %}
-        <option value="{{ vote_type }}"
-            {% if vote_type == default_vote_type %}selected{% endif %}>
-            {% trans vote_type.title %}
-        </option>
-        {% endfor %}
-    </select>
-    <label>{% trans "Bill" %}</label>
-    <input type="text" class="bill_input" name="bill_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
-    <input type="hidden" name="bill_id"></input>
+    {{ bill_form.as_p }}
     <input type="submit" value="{% trans "Submit" %}" class="btn">
 </form>

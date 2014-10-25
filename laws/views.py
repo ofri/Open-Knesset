@@ -26,12 +26,12 @@ from tagging.utils import get_tag
 from agendas.models import Agenda, UserSuggestedVote
 from auxiliary.views import CsvView, BaseTagMemberListView
 from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
+from forms import AttachBillFromVoteForm
 from hashnav import DetailView, ListView as HashnavListView
 from knesset.utils import notify_responsible_adult
 from mks.models import Member
 from models import Bill, BillBudgetEstimation, Vote
-from models import TYPE_CHOICES, BILL_STAGE_CHOICES
-from models import CONVERT_TO_DISCUSSION_HEADERS
+from models import BILL_STAGE_CHOICES
 
 
 logger = logging.getLogger("open-knesset.laws.views")
@@ -745,10 +745,15 @@ class VoteDetailView(DetailView):
              'next_v':next_v,
              'prev_v':prev_v,
              'tags':vote.tags,
-             'vote_types': ['pre vote','first vote','approval vote'],
-             'default_vote_type': get_default_vote_type(vote)
             }
         context.update(c)
+
+        # Add bill form
+        if 'bill_form' in kwargs:
+            context['bill_form'] = kwargs['bill_form']
+        else:
+            context['bill_form'] = AttachBillFromVoteForm(vote)
+
         return context
 
     @method_decorator(login_required)
@@ -784,25 +789,24 @@ class VoteDetailView(DetailView):
                 usv.save()
 
         elif user_input_type == 'add-bill':
-            bill_id = request.POST.get('bill_id')
-            vote_type = request.POST.get('vote_type')
-            bill = get_object_or_404(Bill, pk=bill_id)
+            form = AttachBillFromVoteForm(vote,request.POST)
 
-            # TODO: next block is almost exact dup of lines 466-477
-            vote_types = ['approval vote','first vote','pre vote']
-            i = vote_types.index(vote_type)
+            if form.is_valid():
+                vote_type = form.cleaned_data['vote_type']
+                bill = form.cleaned_data['bill_model']
 
-            if i == 0:
-                bill.approval_vote = vote
-            elif i == 1:
-                bill.first_vote = vote
-            elif i == 2:
-                bill.pre_votes.add(vote)
+                if vote_type == 'approve vote':
+                    bill.approval_vote = vote
+
+                elif vote_type == 'first vote':
+                    bill.first_vote = vote
+
+                elif vote_type == 'pre vote':
+                    bill.pre_votes.add(vote)
+
+                bill.update_stage()
             else:
-                #FIXME: maybe different response.
-                return HttpResponseRedirect(".")
-
-            bill.update_stage()
+                return self.get(request,bill_form=form)
 
         else: # adding an MK (either for or against)
             mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]
@@ -863,14 +867,3 @@ def embed_bill_details(request, object_id):
 
     context = RequestContext (request,{'bill': bill})
     return render_to_response("laws/embed_bill_detail.html", context)
-
-def get_default_vote_type(vote):
-    for h in CONVERT_TO_DISCUSSION_HEADERS:
-        if vote.title.find(h) >= 0:
-            return 'pre vote'
-
-    if vote.vote_type == TYPE_CHOICES[1][0]: # law-approve
-        return 'approval vote'
-
-    return None
-
