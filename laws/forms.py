@@ -17,20 +17,24 @@ STAGE_CHOICES = (
 class AttachBillFromVoteForm(forms.Form):
     """Form for attaching a vote to a bill from the vote page."""
 
+    vote_model = forms.ModelChoiceField(queryset=Vote.objects.all(),
+                                        widget=forms.HiddenInput,
+                                        required=True)
+
     vote_type = forms.ChoiceField(label=_('Vote Type'),
                                   choices=SIMPLE_TYPE_CHOICES,
                                   required=True)
 
     bill_model = forms.ModelChoiceField(label=_('Bill'),
-                                     queryset=Bill.objects.all(),
-                                     widget=forms.TextInput,
-                                     required=True)
+                                        queryset=Bill.objects.all(),
+                                        widget=forms.TextInput,
+                                        required=True)
 
     def __init__(self, vote, *args, **kwargs):
         super(AttachBillFromVoteForm, self).__init__(*args, **kwargs)
 
-        if vote is not None:
-            self.fields['vote_type'].initial = self.get_default_vote_type(vote)
+        self.fields['vote_model'].initial = vote
+        self.fields['vote_type'].initial = self.get_default_vote_type(vote)
 
 
     def clean(self):
@@ -43,10 +47,20 @@ class AttachBillFromVoteForm(forms.Form):
                 _('Bill already has a First Vote linked to it'),
                 code="cannot-link")
 
-        elif vote_type == 'approve vote' and bill.approval_vote is not None:
-            raise forms.ValidationError(
-                _('Bill already has an Approval Vote linked to it'),
-                code="cannot-link")
+        elif vote_type == 'approve vote':
+            if bill.approval_vote is not None:
+                raise forms.ValidationError(
+                    _('Bill already has an Approval Vote linked to it'),
+                    code="cannot-link")
+
+            vote = cleaned_data.get('vote_model')
+            vote_already_linked = Bill.objects\
+                .filter(approval_vote=vote).count() > 0
+
+            if vote_already_linked:
+                raise forms.ValidationError(
+                    _('Vote is already linked as Approval Vote of another bill'),
+                    code="cannot-link")
 
         return cleaned_data
 
