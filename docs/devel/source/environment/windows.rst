@@ -31,9 +31,9 @@ Python
     Python 2.7 install (click to enlarge)
 
 `Download the latest Python 2.7`_ MSI installer matching your architecture
-(32 or 64 bit). As of this writing, the latest one is `2.7.6`_.
+(32 or 64 bit). As of this writing, the latest one is `2.7.8`_.
 
-.. _2.7.6: http://www.python.org/download/releases/2.7.6/
+.. _2.7.8: http://www.python.org/download/releases/2.7.8/
 .. _Download the latest Python 2.7: http://python.org/download/releases/
 
 Once downloaded, run the installer, and accept defaults.
@@ -69,8 +69,8 @@ We'll install them with distribute. Open a command window, and::
     easy_install pip
     pip install virtualenv
 
-Pillow and lxml
-~~~~~~~~~~~~~~~~
+Pillow, lxml and ujson
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since compiling those packages (inside the virtualenv) is not an easy task,
 we'll install them separately and instruct virtualenv to use python's
@@ -85,6 +85,12 @@ Windows developers).
 * Install `Pillow` with easy_install by running::
 
     easy_install Pillow==2.4.0
+
+
+* Download and run the exex install matching you architecture for 'ujson'_
+	(version 1.33)
+
+.. _ujson: http://www.lfd.uci.edu/~gohlke/pythonlibs/#ujson
 
 
 git and GitHub tools
