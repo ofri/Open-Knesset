@@ -161,7 +161,6 @@ INSTALLED_APPS = (
     'links',
     'user',
     'agendas',
-    'badges',
     'notify',
     'persons',
     'events',
