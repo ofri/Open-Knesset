@@ -1,10 +1,9 @@
 from django.db.models import Count
 from django.views.generic import DetailView, ListView
-from models import Badge, BadgeType
 
 
 class BadgeTypeDetailView(DetailView):
-    model = BadgeType
+    #model = BadgeType
     template_name = 'badges/badge_detail.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -17,6 +16,6 @@ class BadgeTypeDetailView(DetailView):
 
 
 class BadgeTypeListView(ListView):
-    queryset = BadgeType.objects.all().annotate(
-        amount=Count('badges')).order_by('-amount')
+    # queryset = BadgeType.objects.all().annotate(
+    #     amount=Count('badges')).order_by('-amount')
     template_name = 'badges/all_badge_list.html'

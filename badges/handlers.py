@@ -7,7 +7,7 @@ from actstream.models import Follow
 
 from user.models import UserProfile
 from mks.models import Member
-from models import Badge, BadgeType
+#from models import Badge, BadgeType
 
 class BadgeHandler(object):
     def __init__(self, badge_name, badge_description):
