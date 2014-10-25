@@ -83,21 +83,23 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.google.GoogleBackend',
-    'social_auth.backends.contrib.github.GithubBackend',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.google.GoogleOAuth',
+    'social.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 SOCIAL_AUTH_CREATE_USERS = True
 SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 SOCIAL_AUTH_ASSOCIATE_BY_MAIL = True
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
 # These keys will work for 127.0.0.1:8000
 # and are overriden in the production server.
-TWITTER_CONSUMER_KEY = 'KFZkQgImAyECXDS6tQTvOw'
-TWITTER_CONSUMER_SECRET = 's6ir2FMqw4fqXQbX4QCE6Ka1lRjycXxJuG6k8tYc'
+SOCIAL_AUTH_TWITTER_KEY = 'KFZkQgImAyECXDS6tQTvOw'
+SOCIAL_AUTH_TWITTER_SECRET = 's6ir2FMqw4fqXQbX4QCE6Ka1lRjycXxJuG6k8tYc'
 
 ROOT_URLCONF = 'knesset.urls'
 
@@ -145,7 +147,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'djangoratings',
     'voting',
-    'social_auth',
+    'social.apps.django_app.default',
     'devserver',
     'crispy_forms',
     'storages',
@@ -183,9 +185,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.request",
     "knesset.context.processor",
-    "social_auth.context_processors.social_auth_by_name_backends",
-    "social_auth.context_processors.social_auth_backends",
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
+
 INTERNAL_IPS = ()
 # Add the following line to your local_settings.py files to enable django-debug-toolar:
 #INTERNAL_IPS = ('127.0.0.1',)
