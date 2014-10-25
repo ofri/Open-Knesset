@@ -30,7 +30,8 @@ from hashnav import DetailView, ListView as HashnavListView
 from knesset.utils import notify_responsible_adult
 from mks.models import Member
 from models import Bill, BillBudgetEstimation, Vote
-from models import BILL_STAGE_CHOICES
+from models import TYPE_CHOICES, BILL_STAGE_CHOICES
+from models import CONVERT_TO_DISCUSSION_HEADERS
 
 
 logger = logging.getLogger("open-knesset.laws.views")
@@ -744,6 +745,8 @@ class VoteDetailView(DetailView):
              'next_v':next_v,
              'prev_v':prev_v,
              'tags':vote.tags,
+             'vote_types': ['pre vote','first vote','approval vote'],
+             'default_vote_type': get_default_vote_type(vote)
             }
         context.update(c)
         return context
@@ -860,3 +863,14 @@ def embed_bill_details(request, object_id):
 
     context = RequestContext (request,{'bill': bill})
     return render_to_response("laws/embed_bill_detail.html", context)
+
+def get_default_vote_type(vote):
+    for h in CONVERT_TO_DISCUSSION_HEADERS:
+        if vote.title.find(h) >= 0:
+            return 'pre vote'
+
+    if vote.vote_type == TYPE_CHOICES[1][0]: # law-approve
+        return 'approval vote'
+
+    return None
+
