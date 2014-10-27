@@ -11,6 +11,7 @@ from committees.models import Committee
 from events.models import Event
 from django.core import cache
 from voting.models import Vote as UserVote
+import apis
 
 class TestAPIV2(TestCase):
     """
@@ -336,3 +337,26 @@ class EventTest(TestCase):
         self.assertEqual(len(res_json), 1)
         self.assertEqual(res_json[0]['what'], 'ev2')
 
+class SwaggerTest(TestCase):
+    def testSwaggerUI(self):
+        "Swagger UI static resources should be properly mounted and served"
+        res = self.client.get(reverse('tastypie_swagger:index'))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("<title>Swagger UI</title>", res.content)
+
+    def testSwaggerResources(self):
+        "Swagger should find all the apis and list them as resources"
+        res = self.client.get(reverse('tastypie_swagger:resources'))
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json["swaggerVersion"], "1.1")
+        rendered_apis = [api_obj_path['path'].lstrip('/') for api_obj_path in res_json["apis"]]
+        for api in apis.resources.v2_api._canonicals:
+            self.assertIn(api, rendered_apis)
+
+    def testSwaggerSchema(self):
+        "The schema for swagger should be generated properly for at least one controller"
+        res = self.client.get('/api/v2/doc/schema/agenda/')
+        self.assertEqual(res.status_code, 200)
+        res_json = json.loads(res.content)
+        self.assertEqual(res_json["swaggerVersion"], "1.1")
