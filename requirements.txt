@@ -13,6 +13,7 @@ South==1.0
 django-extensions==1.2.5
 django-pagination==1.0.7
 django-tagging==0.3.1
+django-tastypie-swagger==0.1.2
 BeautifulSoup
 vobject
 feedparser
