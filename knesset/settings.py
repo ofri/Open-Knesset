@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tastypie_swagger',
     'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
@@ -293,6 +294,8 @@ DEVSERVER_DEFAULT_PORT = 8000
 # TODO: Look into switching to django-allauth instead and using the session
 # serializer.
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+TASTYPIE_SWAGGER_API_MODULE = 'apis.resources.v2_api'
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
