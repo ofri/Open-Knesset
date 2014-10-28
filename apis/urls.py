@@ -50,4 +50,6 @@ urlpatterns = patterns('',
       url(r'^event/icalendar/$', 'events.views.icalendar', name='event-icalendar'),
       url(r'^event/icalendar/(?P<summary_length>\d+)/$', 'events.views.icalendar', name='event-icalendar'),
       (r'^', include(v2_api.urls)),
+      url(r'^v2/doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger'),
+          kwargs={"tastypie_api_module":"apis.resources.v2_api", "namespace":"tastypie_swagger", "version": "2.0"})
       )
