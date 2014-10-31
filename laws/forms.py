@@ -13,6 +13,12 @@ STAGE_CHOICES = (
     ('all', _('All')),
 )
 
+LINK_ERRORS = {
+    'DUP_FIRST': _('Bill already has a First Vote linked to it'),
+    'DUP_APPROVE': _('Bill already has an Approval Vote linked to it'),
+    'ALREADY_LINKED': _('Vote is already linked as Approval Vote of another bill'),
+}
+
 
 class AttachBillFromVoteForm(forms.Form):
     """Form for attaching a vote to a bill from the vote page."""
@@ -44,13 +50,13 @@ class AttachBillFromVoteForm(forms.Form):
 
         if vote_type == 'first vote' and bill.first_vote is not None:
             raise forms.ValidationError(
-                _('Bill already has a First Vote linked to it'),
+                LINK_ERRORS['DUP_FIRST'],
                 code="cannot-link")
 
         elif vote_type == 'approve vote':
             if bill.approval_vote is not None:
                 raise forms.ValidationError(
-                    _('Bill already has an Approval Vote linked to it'),
+                    LINK_ERRORS['DUP_APPROVE'],
                     code="cannot-link")
 
             vote = cleaned_data.get('vote_model')
@@ -59,7 +65,7 @@ class AttachBillFromVoteForm(forms.Form):
 
             if vote_already_linked:
                 raise forms.ValidationError(
-                    _('Vote is already linked as Approval Vote of another bill'),
+                    LINK_ERRORS['ALREADY_LINKED'],
                     code="cannot-link")
 
         return cleaned_data
