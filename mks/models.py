@@ -320,11 +320,10 @@ class Member(models.Model):
         if self.is_current:
             end_date = date.today()
         else:
-            try:
-                end_date = self.end_date
-            except TypeError:
+            end_date = self.end_date
+            if not end_date:
                 logger.warn(
-                    'MK %d is not current, but missing end or start date' %
+                    'MK %d is not current, but end date is None' %
                     self.id)
                 return None
         return (end_date - start_date).days
