@@ -779,7 +779,8 @@ class MemeberMoreCommitteeView(MemeberMoreActionsView):
         qs = super(MemeberMoreCommitteeView, self).get_queryset()
         action_ids = []
         for action in qs.filter(verb='attended'):
-            if action.target.committee.type == 'committee':
+            if (action.target and action.target.committee and
+                    action.target.committee.type == 'committee'):
                 action_ids.append(action.id)
         return qs.filter(id__in=action_ids)
 
