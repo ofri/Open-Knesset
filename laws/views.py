@@ -1,5 +1,6 @@
 #encoding: utf-8
 import datetime
+import json
 import os
 
 import difflib
@@ -15,7 +16,6 @@ from django.http import (HttpResponseRedirect, HttpResponse, Http404,
                          HttpResponseBadRequest)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils import simplejson as json
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy, ugettext as _
 from django.views.decorators.csrf import ensure_csrf_cookie

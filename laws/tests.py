@@ -1,5 +1,6 @@
 # encoding: utf-8
 from datetime import date, datetime, timedelta
+import json
 import urllib
 from django.test import TestCase
 from django.conf import settings
@@ -8,7 +9,6 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_str, smart_unicode
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.utils import simplejson as json
 
 from actstream.models import Action
 from tagging.models import Tag, TaggedItem

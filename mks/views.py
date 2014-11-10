@@ -1,4 +1,5 @@
 import urllib
+import json
 from operator import attrgetter
 from itertools import chain
 
@@ -10,7 +11,6 @@ from django.views.generic import ListView, TemplateView, RedirectView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.utils import simplejson as json, simplejson
 from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
