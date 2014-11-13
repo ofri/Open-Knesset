@@ -1,6 +1,8 @@
 .. image:: https://travis-ci.org/hasadna/Open-Knesset.svg?branch=master
     :target: https://travis-ci.org/hasadna/Open-Knesset
-    
+.. image:: https://coveralls.io/repos/hasadna/Open-Knesset/badge.png?branch=master
+  :target: https://coveralls.io/r/hasadna/Open-Knesset?branch=master
+
 .. important::
 
     This document contains quick start instruction.
