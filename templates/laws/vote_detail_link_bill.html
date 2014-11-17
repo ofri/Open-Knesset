@@ -1,0 +1,12 @@
+{% load i18n %}
+<header><h2>{% trans "Bills" %}</h2></header>
+{% if user.is_authenticated %}
+    <form method="post" action="." class="clearfix">
+        {% csrf_token %}
+        <input type="hidden" name="user_input_type" value="add-bill">
+        {{ bill_form.as_p }}
+        <input type="submit" value="{% trans "Submit" %}" class="btn">
+    </form>
+{% else %}
+    <div class="alert alert-block"><a href="{% url 'login' %}?next={{request.get_full_path}}">{% trans 'Login to edit bills' %}</a></div>
+{% endif %}
