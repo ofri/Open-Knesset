@@ -209,6 +209,8 @@ class Member(models.Model):
         max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     current_role_descriptions = models.CharField(
         blank=True, null=True, max_length=1024)
+    calendar_url = models.CharField(blank=True, null=True, max_length=1024)
+    calendar_sync_token = models.CharField(blank=True, null=True, max_length=1024)
 
     bills_stats_proposed = models.IntegerField(default=0)
     bills_stats_pre = models.IntegerField(default=0)
@@ -511,6 +513,17 @@ class Award(models.Model):
 
     class Meta:
         ordering = ('-date_given', )
+
+
+class Event(models.Model):
+    member = models.ForeignKey('Member', related_name='events')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    link = models.URLField(blank=True, null=True)
+    summary = models.TextField()
+    description = models.TextField(blank=True, null=True)
+    data = models.TextField(blank=True, null=True)
+
 
 # force signal connections
 from listeners import *
