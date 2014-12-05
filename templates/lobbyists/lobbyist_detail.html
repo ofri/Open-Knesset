@@ -50,6 +50,9 @@
                     {% if data.permit_type %}
                         <li>{% trans "Permit Type" %}: {{ data.permit_type }}</li>
                     {% endif %}
+                    {% for link in links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
                 </ul>
             </section>
             <section class="card card-list">

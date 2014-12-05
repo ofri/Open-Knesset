@@ -56,6 +56,9 @@
                             {% endfor %}
                         </li>
                     {% endif %}
+                    {% for link in links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
                 </ul>
             </section>
             {% if lobbyists %}
