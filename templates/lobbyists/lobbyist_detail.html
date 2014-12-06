@@ -29,6 +29,14 @@
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
                 <ul>
                     <li>{% trans "Name" %}: {{ object }}</li>
+                    {% if object.large_image_url %}
+                        <li><img src="{{object.large_image_url}}"/></li>
+                    {% elif object.image_url %}
+                        <li><img src="{{object.image_url}}"/></li>
+                    {% endif %}
+                    {% if object.description %}
+                        <li>{{ object.description | linebreaks }}</li>
+                    {% endif %}
                     <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">
                         {% if not corporation.name %}
                             {% trans "Private Lobbyists" %}

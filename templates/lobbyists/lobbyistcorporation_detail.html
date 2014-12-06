@@ -41,6 +41,9 @@
                     </h2>
                 </header>
                 <ul>
+                    {% if object.description %}
+                        <li>{{ object.description | linebreaks }}</li>
+                    {% endif %}
                     {% if object.source_id %}
                         <li>{% trans "Corporation Id" %}: {{ object.source_id }}</li>
                     {% endif %}
@@ -66,7 +69,18 @@
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyists" %}</h2></header>
                 <ul>
                     {% for lobbyist in lobbyists %}
-                        <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a></li>
+                        <li class="card-party-members">
+                        {% if lobbyist.image_url %}
+                            <div class="party-member-photo">
+                                <a href="{% url 'lobbyist-detail' lobbyist.id %}">
+                                    <img width="75" height="110" src="{{ lobbyist.image_url }}"/>
+                                    <span class="party-member-name">{{ lobbyist }}</span>
+                                </a>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a>
+                        {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </section>

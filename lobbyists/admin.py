@@ -11,21 +11,15 @@ class LinksInline(generic.GenericTabularInline):
 
 
 class LobbyistAdmin(admin.ModelAdmin):
+    fields = ('person', 'description', 'image_url', 'large_image_url',)
+    readonly_fields = ('person',)
     inlines = (LinksInline,)
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return self.readonly_fields + ('person', 'source_id',)
-        return self.readonly_fields
 
 
 class LobbyistCorporationAdmin(admin.ModelAdmin):
+    fields = ('name', 'description',)
+    readonly_fields = ('name',)
     inlines = (LinksInline,)
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return self.readonly_fields + ('name', 'source_id',)
-        return self.readonly_fields
 
 
 admin.site.register(Lobbyist, LobbyistAdmin)
