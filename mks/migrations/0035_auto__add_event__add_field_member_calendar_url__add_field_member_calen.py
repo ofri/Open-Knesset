@@ -18,6 +18,9 @@ class Migration(SchemaMigration):
             ('summary', self.gf('django.db.models.fields.TextField')()),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('data', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('icaluid', self.gf('django.db.models.fields.TextField')(unique=True)),
+            ('colorid', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('update_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
         db.send_create_signal(u'mks', ['Event'])
 
@@ -113,14 +116,17 @@ class Migration(SchemaMigration):
         },
         u'mks.event': {
             'Meta': {'object_name': 'Event'},
+            'colorid': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'data': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'end_date': ('django.db.models.fields.DateTimeField', [], {}),
+            'icaluid': ('django.db.models.fields.TextField', [], {'unique': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'link': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'member': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'events'", 'to': u"orm['mks.Member']"}),
             'start_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'summary': ('django.db.models.fields.TextField', [], {})
+            'summary': ('django.db.models.fields.TextField', [], {}),
+            'update_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
         },
         u'mks.knesset': {
             'Meta': {'object_name': 'Knesset'},

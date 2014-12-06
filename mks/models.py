@@ -523,6 +523,9 @@ class Event(models.Model):
     summary = models.TextField()
     description = models.TextField(blank=True, null=True)
     data = models.TextField(blank=True, null=True)
+    icaluid = models.TextField(unique=True)
+    colorid = models.TextField(blank=True, null=True)
+    update_date = models.DateTimeField(blank=True, null=True)
 
 
 # force signal connections

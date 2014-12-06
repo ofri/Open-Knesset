@@ -28,7 +28,7 @@ class MksEventsScraper(BaseScraper):
             param = '&pageToken=%s'%quote(page_token)
         else:
             param = '&syncToken=%s'%quote(sync_token) if sync_token is not None else ''
-        url = 'https://content.googleapis.com/calendar/v3/calendars/%s/events?singleEvents=true%s&key=%s' % (quote(calendar_id), param, quote(api_key))
+        url = 'https://content.googleapis.com/calendar/v3/calendars/%s/events?showDeleted=true&singleEvents=true%s&key=%s' % (quote(calendar_id), param, quote(api_key))
         response = urllib2.urlopen(url)
         data = json.load(response)
         self._getLogger().debug(data)
@@ -41,19 +41,44 @@ class MksEventsScraper(BaseScraper):
     def _process_items(self, mk, items):
         self._getLogger().info('processing %s items' % len(items))
         for item in items:
+            status = item['status'] if 'status' in item else None
+            icaluid = item['iCalUID'] if 'iCalUID' in item else None
             start_date = dateutil.parser.parse(item['start']['dateTime']) if 'start' in item and 'dateTime' in item['start'] else None
             end_date = dateutil.parser.parse(item['end']['dateTime']) if 'end' in item and 'dateTime' in item['end'] else None
-            if start_date is None or end_date is None:
-                self._getLogger().error('invalid start / end date')
+            if start_date is None or end_date is None or status is None or icaluid is None:
+                self._getLogger().error('invalid start / end date / status / iCalUID')
+            elif status == 'cancelled':
+                res = Event.objects.filter(icaluid=icaluid)
+                if res.count() == 1:
+                    self._getLogger().info('deleted event')
+                    res.delete()
+                else:
+                    self._getLogger().info('failed to delete event')
             else:
                 # assuming timezone is always israel because I can't seem to save timezone to sqlite
                 start_date = start_date.replace(tzinfo=None)
                 end_date = end_date.replace(tzinfo=None)
+                update_date = dateutil.parser.parse(item['updated']).replace(tzinfo=None) if 'updated' in item else None
                 link = item['htmlLink'] if 'htmlLink' in item else None
                 summary = item['summary'] if 'summary' in item else None
                 description = item['description'] if 'description' in item else None
+                # it seems that google never returns the color, although the colorId field is documented
+                colorId = item['colorId'] if 'colorId' in item else None
                 data = unicode(item)
-                Event(member=mk, start_date=start_date, end_date=end_date, link=link, summary=summary, description=description, data=data).save()
+                kwargs = {
+                    'member': mk, 'start_date':start_date, 'end_date':end_date, 'link':link, 'summary':summary, 'description':description, 'data':data,
+                    'update_date': update_date, 'colorid': colorId
+                }
+                res = Event.objects.filter(icaluid=icaluid)
+                if res.count() > 1:
+                    self._getLogger().error('invalid event icaluid')
+                elif res.count() == 1:
+                    self._getLogger().info('updated event')
+                    res.update(**kwargs)
+                else:
+                    self._getLogger().info('created new event')
+                    kwargs['icaluid'] = icaluid
+                    Event(**kwargs).save()
         
     def _scrape(self):
         for mk in Member.objects.filter(calendar_url__isnull=False):
