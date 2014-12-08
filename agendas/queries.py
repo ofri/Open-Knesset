@@ -12,7 +12,7 @@ def getAllAgendaPartyVotes():
 PARTY_QUERY = """
 SELECT a.agendaid,
        a.partyid,
-       round(coalesce(cast(coalesce(v.totalvotevalue,0.0)/a.totalscore*100.0 as numeric),0.0),2) score,
+       round(coalesce(cast(coalesce(v.totalvotevalue,0.0)/(case when a.totalscore = 0 then 1 else a.totalscore end)*100.0 as numeric),0.0),2) score,
        round(coalesce(cast(coalesce(v.numvotes,0.0)/a.totalvolume*100.0 as numeric),0.0),2) volume
 FROM   (SELECT agid                   agendaid,
                m.id                   partyid,
