@@ -73,10 +73,10 @@ def agendas_mks_grade():
 MK_QUERY = """
 SELECT a.agendaid, 
        v.memberid, 
-       Round(Coalesce(CAST(Coalesce(v.totalvotevalue, 0.0) / a.totalscore * 100.0 AS 
+       Round(Coalesce(CAST(Coalesce(v.totalvotevalue, 0.0) / (case when a.totalscore = 0 then 1 else a.totalscore end) * 100.0 AS 
                   NUMERIC),0.0), 2 
        ) score,
-       Round(Coalesce(CAST(Coalesce(v.numvotes,0.0) / a.numvotes * 100.0 AS
+       Round(Coalesce(CAST(Coalesce(v.numvotes,0.0) / (case when a.numvotes = 0 then 1 else a.numvotes end) * 100.0 AS
                   NUMERIC),0.0), 2
        ) volume,
        CAST(Coalesce(v.numvotes,0) AS NUMERIC) numvotes 
