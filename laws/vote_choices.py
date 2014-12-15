@@ -11,6 +11,13 @@ TYPE_CHOICES = (
     ('continuation', _('Continuation')),
 )
 
+SIMPLE_TYPE_CHOICES = (
+    ('', '---'),
+    ('pre vote', _('Pre Vote')),
+    ('first vote', _('First Vote')),
+    ('approve vote', _('Approval Vote')),
+)
+
 TAGGED_CHOICES = (
     ('all', _('All')),
     ('false', _('Untagged Votes')),

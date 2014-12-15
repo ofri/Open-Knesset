@@ -1,4 +1,5 @@
 import datetime
+import json
 import re
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -12,7 +13,6 @@ from mks.models import Member,Party,WeeklyPresence,Knesset
 from committees.models import Committee
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
-from django.utils import simplejson as json
 from auxiliary.views import CsvView
 from django.core import cache
 

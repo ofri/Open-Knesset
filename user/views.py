@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import json
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, \
                         HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed
@@ -15,7 +16,6 @@ from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.http import require_http_methods
-from django.utils import simplejson as json
 
 from annotatetext.models import Annotation
 from actstream import unfollow, follow

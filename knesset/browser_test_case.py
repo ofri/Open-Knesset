@@ -62,3 +62,7 @@ class BrowserTestCase(LiveServerTestCase):
                 self.driver.quit()
         else:
             self.driver.quit()
+
+    def _databases_names(self, include_mirrors=True):
+            return []
+

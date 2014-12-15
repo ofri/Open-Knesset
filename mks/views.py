@@ -1,4 +1,5 @@
 import urllib
+import json
 from operator import attrgetter
 from itertools import chain
 
@@ -10,7 +11,6 @@ from django.views.generic import ListView, TemplateView, RedirectView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.utils import simplejson as json, simplejson
 from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
@@ -779,7 +779,8 @@ class MemeberMoreCommitteeView(MemeberMoreActionsView):
         qs = super(MemeberMoreCommitteeView, self).get_queryset()
         action_ids = []
         for action in qs.filter(verb='attended'):
-            if action.target.committee.type == 'committee':
+            if (action.target and action.target.committee and
+                    action.target.committee.type == 'committee'):
                 action_ids.append(action.id)
         return qs.filter(id__in=action_ids)
 

@@ -14,6 +14,7 @@ from committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
+import json
 from backlinks.tests.xmlrpc import TestClientServerProxy
 from xmlrpclib import Fault, loads
 from urllib import urlencode
@@ -21,7 +22,6 @@ from backlinks.models import InboundBacklink
 from backlinks.pingback.server import PingbackServer
 from django import template
 from mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
-from django.utils import simplejson as json
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
 

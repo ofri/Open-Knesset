@@ -65,6 +65,7 @@ class MemberAdmin(admin.ModelAdmin):
     inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline,
                MemberRelatedVideosInline)
     list_filter = ('current_party__knesset', 'gender')
+    readonly_fields = ('calendar_sync_token',)
 
     # A template for a very customized change view:
     change_form_template = 'admin/simple/change_form_with_extra.html'
