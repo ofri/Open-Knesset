@@ -23,6 +23,7 @@ from mks.views import get_mk_entry, mk_is_backlinkable
 from laws.models import Bill
 from polyorg.urls import polyorgurlpatterns
 from lobbyists.urls import lobbyistpatterns
+from auxiliary.urls import auxiliarysurlpatterns
 
 from auxiliary.views import (
     main, post_annotation, post_details, post_feedback,
@@ -109,3 +110,4 @@ urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_r
 # seems broken, specially when trying to cache querysets
 # urlpatterns += polyorgurlpatterns + personsurlpatterns
 urlpatterns += personsurlpatterns
+urlpatterns += auxiliarysurlpatterns
