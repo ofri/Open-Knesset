@@ -1,0 +1,25 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans 'Scraper Run Detail' %}{% endblock %}
+{% block keywords %}{% trans 'Scraper Run Detail' %}{% endblock %}
+{% block description %}{% trans 'Scraper Run Detail' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block breadcrumbs %}
+        <li><a href="{% url 'main-scrapers-status' %}">{% trans "Scrapers Status" %}</a> <span class="divider">/</span></li>
+        <li><a href="#">{{ object }}</a></li>
+{% endblock %}
+{% block divcontent %}
+    <div class="row">
+        <div class="cards">
+            <div class="card card-list compact">
+                <header><h2>{{ object }}</h2></header>
+                <ul>
+                    <li>
+                        <pre dir="ltr" style="text-align:left;">{% for log in object.logs.all %}{{ log }}{% endfor %}</pre>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
