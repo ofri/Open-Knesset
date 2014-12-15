@@ -791,7 +791,7 @@ class MemeberMorePlenumView(MemeberMoreActionsView):
         qs = super(MemeberMorePlenumView, self).get_queryset()
         action_ids = []
         for action in qs.filter(verb='attended'):
-            if action.target.committee.type == 'plenum':
+            if action.target and action.target.committee.type == 'plenum':
                 action_ids.append(action.id)
         return qs.filter(id__in=action_ids)
 
