@@ -9,6 +9,7 @@ class PersonAdmin(admin.ModelAdmin):
     inlines = [
         RoleInline,
     ]
+    readonly_fields = ('calendar_sync_token',)
 
 admin.site.register(Person, PersonAdmin)
 

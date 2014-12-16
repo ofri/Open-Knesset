@@ -8,42 +8,39 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Event'
-        db.create_table(u'mks_event', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('member', self.gf('django.db.models.fields.related.ForeignKey')(related_name='events', to=orm['mks.Member'])),
-            ('start_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('end_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('link', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
-            ('summary', self.gf('django.db.models.fields.TextField')()),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('data', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('icaluid', self.gf('django.db.models.fields.TextField')(unique=True)),
-            ('colorid', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('update_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'mks', ['Event'])
-
-        # Adding field 'Member.calendar_url'
-        db.add_column(u'mks_member', 'calendar_url',
-                      self.gf('django.db.models.fields.CharField')(max_length=1024, null=True, blank=True),
+        # Adding field 'Event.icaluid'
+        db.add_column(u'events_event', 'icaluid',
+                      self.gf('django.db.models.fields.TextField')(unique=True, null=True),
                       keep_default=False)
 
-        # Adding field 'Member.calendar_sync_token'
-        db.add_column(u'mks_member', 'calendar_sync_token',
-                      self.gf('django.db.models.fields.CharField')(max_length=1024, null=True, blank=True),
+        # Adding field 'Event.cancelled'
+        db.add_column(u'events_event', 'cancelled',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
+
+        # Adding field 'Event.update_date'
+        db.add_column(u'events_event', 'update_date',
+                      self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'Event.link'
+        db.add_column(u'events_event', 'link',
+                      self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Event'
-        db.delete_table(u'mks_event')
+        # Deleting field 'Event.icaluid'
+        db.delete_column(u'events_event', 'icaluid')
 
-        # Deleting field 'Member.calendar_url'
-        db.delete_column(u'mks_member', 'calendar_url')
+        # Deleting field 'Event.cancelled'
+        db.delete_column(u'events_event', 'cancelled')
 
-        # Deleting field 'Member.calendar_sync_token'
-        db.delete_column(u'mks_member', 'calendar_sync_token')
+        # Deleting field 'Event.update_date'
+        db.delete_column(u'events_event', 'update_date')
+
+        # Deleting field 'Event.link'
+        db.delete_column(u'events_event', 'link')
 
 
     models = {
@@ -83,50 +80,22 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'mks.award': {
-            'Meta': {'ordering': "('-date_given',)", 'object_name': 'Award'},
-            'award_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'awards'", 'to': u"orm['mks.AwardType']"}),
-            'date_given': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'member': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'awards_and_convictions'", 'to': u"orm['mks.Member']"}),
-            'reference': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})
-        },
-        u'mks.awardtype': {
-            'Meta': {'object_name': 'AwardType'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'valence': ('django.db.models.fields.FloatField', [], {'default': '0'})
-        },
-        u'mks.coalitionmembership': {
-            'Meta': {'ordering': "('party', 'start_date')", 'object_name': 'CoalitionMembership'},
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'party': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'coalition_memberships'", 'to': u"orm['mks.Party']"}),
-            'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
-        },
-        u'mks.correlation': {
-            'Meta': {'object_name': 'Correlation'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'm1': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'m1'", 'to': u"orm['mks.Member']"}),
-            'm2': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'m2'", 'to': u"orm['mks.Member']"}),
-            'normalized_score': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
-            'not_same_party': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'score': ('django.db.models.fields.IntegerField', [], {'default': '0'})
-        },
-        u'mks.event': {
+        u'events.event': {
             'Meta': {'object_name': 'Event'},
-            'colorid': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'data': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'end_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'icaluid': ('django.db.models.fields.TextField', [], {'unique': 'True'}),
+            'cancelled': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'icaluid': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'link': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'member': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'events'", 'to': u"orm['mks.Member']"}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'summary': ('django.db.models.fields.TextField', [], {}),
-            'update_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
+            'update_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'what': ('django.db.models.fields.TextField', [], {}),
+            'when': ('django.db.models.fields.DateTimeField', [], {}),
+            'when_over': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'when_over_guessed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'where': ('django.db.models.fields.TextField', [], {'default': "u'earth'"}),
+            'which_pk': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'which_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_for_event'", 'null': 'True', 'to': u"orm['contenttypes.ContentType']"}),
+            'who': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['persons.Person']", 'null': 'True', 'symmetrical': 'False'}),
+            'why': ('django.db.models.fields.TextField', [], {'null': 'True'})
         },
         u'mks.knesset': {
             'Meta': {'object_name': 'Knesset'},
@@ -145,8 +114,6 @@ class Migration(SchemaMigration):
             'bills_stats_pre': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'bills_stats_proposed': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'blog': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['planet.Blog']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'calendar_sync_token': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
-            'calendar_url': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
             'current_party': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'members'", 'null': 'True', 'to': u"orm['mks.Party']"}),
             'current_position': ('django.db.models.fields.PositiveIntegerField', [], {'default': '999', 'blank': 'True'}),
             'current_role_descriptions': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
@@ -175,12 +142,6 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'year_of_aliyah': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
         },
-        u'mks.memberaltname': {
-            'Meta': {'object_name': 'MemberAltname'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'member': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Member']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'})
-        },
         u'mks.membership': {
             'Meta': {'object_name': 'Membership'},
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
@@ -203,20 +164,36 @@ class Migration(SchemaMigration):
             'split_from': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Party']", 'null': 'True', 'blank': 'True'}),
             'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
         },
-        u'mks.partyseats': {
-            'Meta': {'object_name': 'PartySeats'},
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+        u'persons.person': {
+            'Meta': {'ordering': "('name',)", 'object_name': 'Person'},
+            'area_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'calendar_sync_token': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'calendar_url': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'date_of_death': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'family_status': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'number_of_seats': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'party': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Party']"}),
-            'start_date': ('django.db.models.fields.DateField', [], {})
+            'img_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
+            'mk': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'person'", 'null': 'True', 'to': u"orm['mks.Member']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            'number_of_children': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'place_of_birth': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence_lat': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
+            'place_of_residence_lon': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
+            'residence_centrality': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'residence_economy': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'titles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'persons'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['persons.Title']"}),
+            'year_of_aliyah': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
         },
-        u'mks.weeklypresence': {
-            'Meta': {'object_name': 'WeeklyPresence'},
-            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'hours': ('django.db.models.fields.FloatField', [], {'blank': 'True'}),
+        u'persons.title': {
+            'Meta': {'object_name': 'Title'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'member': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['mks.Member']"})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '64'})
         },
         u'planet.blog': {
             'Meta': {'ordering': "('title', 'url')", 'object_name': 'Blog'},
@@ -227,4 +204,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['mks']
+    complete_apps = ['events']
