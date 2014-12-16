@@ -52,6 +52,8 @@ class Person(models.Model):
     residence_centrality = models.IntegerField(blank=True, null=True)
     residence_economy = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    calendar_url = models.CharField(blank=True, null=True, max_length=1024)
+    calendar_sync_token = models.CharField(blank=True, null=True, max_length=1024)
 
     objects = PersonManager()
 
