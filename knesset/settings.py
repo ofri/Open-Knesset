@@ -70,6 +70,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'sslify.middleware.SSLifyMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -298,6 +299,10 @@ DEVSERVER_DEFAULT_PORT = 8000
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 TASTYPIE_SWAGGER_API_MODULE = 'apis.resources.v2_api'
+
+# By default auto-SSL disabled, on production machines local_settings overrides
+# to False
+SSLIFY_DISABLE = True
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

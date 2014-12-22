@@ -61,6 +61,10 @@ class Lobbyist(models.Model):
     """
     person = models.ForeignKey('persons.Person', blank=True, null=True, related_name='lobbyist')
     source_id = models.CharField(blank=True, null=True, max_length=20)
+    description = models.TextField(blank=True, null=True)
+    image_url = models.URLField(blank=True, null=True, help_text="This image dimensions should be 75x110, it will be displayed on lists of lobbyists")
+    large_image_url = models.URLField(blank=True, null=True, help_text="This image can be larger and will be displayed in the lobbyist page")
+
 
     @cached_property
     def latest_data(self):
@@ -150,6 +154,7 @@ class LobbyistCorporation(models.Model):
     """
     name = models.CharField(blank=True, null=True, max_length=100)
     source_id = models.CharField(blank=True, null=True, max_length=20)
+    description = models.TextField(blank=True, null=True)
 
     objects = LobbyistCorporationManager()
 
