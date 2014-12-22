@@ -53,7 +53,7 @@ class PersonsEventsScraper(BaseScraper):
                 if res.count() == 1:
                     self._getLogger().info('deleted event')
                     res = res[0]
-                    res.cancelled=False
+                    res.cancelled=True
                     res.save()
                 else:
                     self._getLogger().info('failed to delete event')
