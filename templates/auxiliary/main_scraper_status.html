@@ -1,0 +1,27 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+{% block extratitle %}{% trans 'Scrapers Status' %}{% endblock %}
+{% block keywords %}{% trans 'Scrapers Status' %}{% endblock %}
+{% block description %}{% trans 'Scrapers Status' %} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
+{% block breadcrumbs %}
+        <li><a href="{% url 'main-scrapers-status' %}">{% trans "Scrapers Status" %}</a></li>
+{% endblock %}
+{% block divcontent %}
+    <div class="row">
+        <div class="cards">
+            <div class="card card-list compact">
+                <header><h2>{% trans 'Last scraper logs' %}</h2></header>
+                <ul>
+                    {% for object in object_list %}
+                        <li>
+                            <p class="item-context">{{ object.start_time }}</p>
+                            <a href="{% url 'scraper-log' object.id %}">{{ object.scraper_label}} - {{ object.status }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

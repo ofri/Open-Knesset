@@ -49,3 +49,4 @@ okscraper-django==0.0.8
 ujson
 selenium
 sauceclient
+django-sslify>=0.2.0

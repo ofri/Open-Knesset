@@ -29,6 +29,8 @@ from mks.models import Member, Knesset
 from tagging.utils import get_tag
 from auxiliary.models import TagSynonym
 
+from okscraper_django.models import ScraperRun, ScraperRunLog
+
 
 class BaseTagMemberListView(ListView):
     """Generic helper for common tagged objects and optionally member
@@ -86,6 +88,26 @@ class BaseTagMemberListView(ListView):
             context['watched_members'] = False
 
         return context
+
+
+class MainScraperStatusView(ListView):
+    queryset = ScraperRun.objects.all().order_by('-start_time')
+    template_name = 'auxiliary/main_scraper_status.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListView, self).get_context_data(*args, **kwargs)
+        for object in context['object_list']:
+            status = 'SUCCESS'
+            failedLogs = object.logs.exclude(status = 'INFO')
+            if failedLogs.count() > 0:
+                status = failedLogs.order_by('-id')[0].status
+            object.status = status
+        return context
+
+
+class ScraperRunDetailView(DetailView):
+    model = ScraperRun
+    template_name = 'auxiliary/scraper_run_detail.html'
 
 
 logger = logging.getLogger("open-knesset.auxiliary.views")
