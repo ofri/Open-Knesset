@@ -56,13 +56,13 @@ def _chown(to_user, directory=env.project_dir):
 
 
 @roles('web')
-def deploy_web(buildout=False):
+def deploy_web(requirements=False):
     web_apache_cmd('stop')
     with cd(_venv_root()):
         _chown(env.ok_user)
         with cd(env.project_dir):
             _git_pull()
-            if buildout:
+            if requirements:
                 _install_requirements()
             virtualenv('./manage.py collectstatic --noinput')
             _update_commit()
@@ -146,6 +146,6 @@ def all_sudo_cmd(cmd):
 
 def deploy_all(repo='origin', branch='master', install_requirements=False, use_migration=False, reset_memcache=False):
     deploy_backend(requirements=install_requirements, migration=use_migration)
-    deploy_web(buildout=install_requirements)
+    deploy_web(requirements=install_requirements)
     if reset_memcache:
         mc_flushall()

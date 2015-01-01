@@ -102,19 +102,6 @@ class MemberViewsTest(TestCase):
                                 'mks/member_detail.html')
         self.assertEqual(res.context['object'].id, self.mk_1.id)
 
-    def testMemberSearch(self):
-        res = self.client.get(reverse('member-handler'),
-                                      {'q': 'mk_'},
-                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)
-        self.assertEqual(set(map(lambda x: x['id'], p)), set((self.mk_1.id, self.mk_2.id)))
-
-        res = self.client.get(reverse('member-handler'),
-                                      {'q': 'mk_1'},
-                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)
-        self.assertEqual(map(lambda x:x['id'], p), [self.mk_1.id])
-
     def testPartyList(self):
         # party list should redirect to stats by seat
         res = self.client.get(reverse('party-list'))
@@ -130,19 +117,6 @@ class MemberViewsTest(TestCase):
                               args=[self.party_1.id]))
         self.assertTemplateUsed(res, 'mks/party_detail.html')
         self.assertEqual(res.context['object'].id, self.party_1.id)
-
-    def testPartySearch(self):
-        res = self.client.get(reverse('party-handler'),
-                                      {'q': 'party'},
-                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)
-        self.assertEqual(set(map(lambda x: x['id'], p)), set((self.party_1.id,self.party_2.id)))
-
-        res = self.client.get(reverse('party-handler'),
-                                      {'q': 'party%201'},
-                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        p = json.loads(res.content)
-        self.assertEqual(map(lambda x:x['id'], p), [self.party_1.id])
 
     def testMemberDetailsContext(self):
 
@@ -214,13 +188,6 @@ class MemberViewsTest(TestCase):
         self.assertEqual(res.status_code,200)
         parsed = feedparser.parse(res.content)
         self.assertEqual(len(parsed['entries']),0)
-
-    def testPartyAPI(self):
-        res = self.client.get(reverse('party-handler')) #, kwargs={'object_id': self.mk_1.id}),{'verbs':'posted'})
-        self.assertEqual(res.status_code,200)
-        parties = json.loads(res.content)
-        self.assertEqual(map(lambda x:x['id'], parties), [self.party_1.id, self.party_2.id])
-
 
     def tearDown(self):
         self.party_1.delete()

@@ -7,17 +7,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.db.models import Count
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render_to_response, redirect
+from django.http import (HttpResponseRedirect, HttpResponseNotAllowed,
+                         HttpResponseForbidden)
+from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from hashnav import DetailView, ListView
-from laws.models import Vote
 from mks.models import Member, Party
-from apis.urls import vote_handler
 
 from forms import (EditAgendaForm, AddAgendaForm, VoteLinkingFormSet,
                    MeetingLinkingFormSet)
@@ -25,8 +24,6 @@ from models import Agenda, AgendaVote, AgendaMeeting, AgendaBill
 
 import queries
 
-from django.test import Client
-from django.core.handlers.wsgi import WSGIRequest
 from auxiliary.views import GetMoreView
 
 
@@ -51,7 +48,7 @@ class AgendaListView(ListView):
                           party in Party.current_knesset.all()}
 
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
-        
+
         if not allAgendaPartyVotes:
             # filtering for current knesset is done here
 
@@ -350,26 +347,6 @@ class AgendaDetailEditView (DetailView):
             self.form = form
             return super(AgendaDetailEditView, self).get(request, *args, **kwargs)
 
-class MockApiCaller(Client):
-    def get_vote_api(self,vote):
-        return vote_handler( self.get('/api/vote/%d/' % vote.id) )  # TODO: get the url from somewhere else?
-
-    def request(self, **request):
-        environ = {
-            'HTTP_COOKIE': self.cookies,
-            'PATH_INFO': '/',
-            'QUERY_STRING': '',
-            'REQUEST_METHOD': 'GET',
-            'SCRIPT_NAME': '',
-            'SERVER_NAME': 'testserver',
-            'SERVER_PORT': 80,
-            'SERVER_PROTOCOL': 'HTTP/1.1',
-        }
-        environ.update(self.defaults)
-        environ.update(request)
-        return WSGIRequest(environ)
-
-mock_api = MockApiCaller()
 
 @login_required
 def agenda_add_view(request):
