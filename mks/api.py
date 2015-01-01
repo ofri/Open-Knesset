@@ -214,7 +214,8 @@ class MemberResource(BaseResource):
             null = True)
 
     def dehydrate_committees (self, bundle):
-        temp_list = bundle.obj.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
+        temp_list = bundle.obj.committee_meetings.exclude(committee__type='plenum')
+        temp_list = temp_list.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
         return (map(lambda item: (item['committee__name'], reverse('committee-detail', args=[item['committee']])), temp_list))
 
     def dehydrate_bills_uri(self, bundle):
