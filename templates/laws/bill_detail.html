@@ -43,6 +43,25 @@
                      $(this).autocomplete(options);
 
                 });
+                var options_kp = {
+                     serviceUrl:'/bill/auto_complete_knesset_proposal/',
+                     minChars:2,
+                     maxHeight:400,
+                     deferRequestBy: 100, //miliseconds
+                     onSelect: function(value, data, me){
+                        me.siblings("input[name$='kp_id']").val(data);
+                        me.siblings("input[type$='submit']").removeAttr('disabled');
+                     }
+                 };
+                $('.kp_input').each(function(item) {
+                     $(this).keydown(function() {
+                        $(this).siblings("input[name$='kp_id']").val('');
+                        $(this).siblings("input[type$='submit']").attr('disabled', 'disabled');
+                     });
+                     $(this).autocomplete(options_kp);
+
+                });
+
                 if (location.hash) {
                   // Can be '#' + one of the "bill-stage" class divs.
                     $(location.hash).get(0).scrollIntoView();
@@ -250,6 +269,20 @@ var pre_vote_score = {{ v.for_votes_count}} - {{ v.against_votes_count }};
                         <a href="{{ object.knesset_proposal.source_url }}">{% trans 'Bill on knesset website' %}</a>
                     </li>
                 </ul>
+                {% else %}
+                    {% if user.is_authenticated %}
+                    <ul class="dates-list">
+                        <li>
+                            {% trans 'Suggest a Knesset Proposal' %}
+                            <form method="post" action="." class="form-inline">{% csrf_token %}
+                                <input type="hidden" name="user_input_type" value="knesset_proposal"></input>
+                                <input type="text" class="kp_input" name="kp_string" placeholder="{% trans 'Start typing a bill title and choose one from the list' %}" autocomplete="off"></input>
+                                <input type="hidden" name="kp_id"></input>
+                                <input type="submit" disabled value="{% trans 'Submit' %}" class="btn" autocomplete="off"></input>
+                            </form>
+                        </li>
+                    </ul>
+                  {% endif %}
                 {% endif %}
             </section>
 
