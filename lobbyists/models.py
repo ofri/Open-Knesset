@@ -72,7 +72,11 @@ class Lobbyist(models.Model):
 
     @cached_property
     def latest_corporation(self):
-        return self.lobbyistcorporationdata_set.filter(scrape_time__isnull=False).latest('scrape_time').corporation
+        return self.lobbyistcorporationdata_set.filter(
+            scrape_time__isnull=False)\
+            .select_related('corporation')\
+            .latest('scrape_time')\
+            .corporation
 
     @cached_property
     def cached_data(self):
@@ -264,7 +268,7 @@ class LobbyistCorporationData(models.Model):
     def __unicode__(self):
         return self.name
 
-    
+
 class LobbyistRepresent(models.Model):
     """
     this model represents a single represent record and is connected to the LobbyistData represents field
@@ -283,7 +287,7 @@ class LobbyistRepresent(models.Model):
     def __unicode__(self):
         return self.latest_data.name
 
-        
+
 class LobbyistRepresentData(models.Model):
     """
     the lobbyist represents data, related to LobbyistRepresent model

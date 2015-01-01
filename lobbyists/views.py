@@ -12,7 +12,7 @@ class LobbyistsIndexView(ListView):
 
     def get_queryset(self):
         return LobbyistHistory.objects.latest().lobbyists.select_related('person').order_by('person__name')
-        
+
     def get_context_data(self, **kwargs):
         context = super(LobbyistsIndexView, self).get_context_data(**kwargs)
         corporations = LobbyistCorporation.objects.current_corporations().order_by('name')
@@ -73,6 +73,10 @@ class LobbyistCorporationsListView(TemplateView):
 class LobbyistDetailView(DetailView):
 
     model = Lobbyist
+
+    queryset = Lobbyist.objects.all()\
+        .prefetch_related('committee_meetings')\
+        .prefetch_related('committee_meetings__committee')
 
     def get_context_data(self, **kwargs):
         context = super(LobbyistDetailView, self).get_context_data(**kwargs)
