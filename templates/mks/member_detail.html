@@ -177,6 +177,7 @@
         <div class="span3 social-details">
           <div class="spacer actions-panel">
             {% include "auxiliary/_watch.html" with watched_id=object.id watched_type="member"%}
+            <a href="#embed-information-modal" class="btn btn-big" role="button" data-toggle="modal">{% trans "embed" %}</a>
             {% if object.is_current %}
             <a href="#contact-information-modal" class="btn btn-big btn-contact" role="button" data-toggle="modal">{% trans "Contact Information" %}</a>
             {% endif %}
@@ -519,6 +520,22 @@
                 </ul>
                 <a href="#" class="btn btn-more">{% trans "More" %}</a>
             </aside>
+        </div>
+    </div>
+    <div id="embed-information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="embedModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="embedModalLabel">קחו את החוק לידיים!</h3>
+        </div>
+        <div class="modal-body">
+            בדיוק כמו שסרטוני יוטוב יכולים להיות מוטמעים באתרים אחרים, גם כרטיס ח&quot;כ זה יכול להופיע בבלוגים, כתבות, פייסבוק וכן הלאה...<br>
+            <b>העתיקו את קוד ההטמעה (html):</b><br>
+            <input type="text" readonly="readonly" value='&lt;iframe width="400" height="200" scrolling="no" style="border:0" src="https://oknesset.org/static/html/oknesset-iframe.html?id={{object.id}}"&gt;&lt;/iframe&gt;'></br>
+            <b>העתיקו את הלינק (להטמעה בפייסבוק):</b><br>
+            <input type="text" readonly="readonly" value='https://oknesset.org/member/{{object.id}}'/>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
 {% comment %}
