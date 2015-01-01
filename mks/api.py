@@ -2,6 +2,7 @@
 Api for the members app
 '''
 import urllib
+import math
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from tastypie.constants import ALL
@@ -212,6 +213,8 @@ class MemberResource(BaseResource):
             attribute = lambda b: Person.objects.get(mk=b.obj).roles.all(),
             full = True,
             null = True)
+    fields.ToOneField(PartyResource, 'current_party', full=True)
+    average_weekly_presence_rank = fields.IntegerField()
 
     def dehydrate_committees (self, bundle):
         temp_list = bundle.obj.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
@@ -254,7 +257,32 @@ class MemberResource(BaseResource):
 
         return count
 
-    fields.ToOneField(PartyResource, 'current_party', full=True)
+    def dehydrate_average_weekly_presence_rank (self, bundle):
+        ''' Calculate the distribution of presence and place the user on a 5 level scale '''
+        SCALE = 5
+        member = bundle.obj
+
+        rel_location = cache.get('average_presence_location_%d' % member.id)
+        if not rel_location:
+
+            presence_list = sorted(map(lambda member: member.average_weekly_presence_hours,
+                                       Member.objects.all()))
+            presence_groups = int(math.ceil(len(presence_list) / float(SCALE)))
+
+            # Generate cache for all members
+            for mk in Member.objects.all():
+                avg = mk.average_weekly_presence_hours
+                if avg:
+                    mk_location = 1 + (presence_list.index(avg) / presence_groups)
+                else:
+                    mk_location = 0
+
+                cache.set('average_presence_location_%d' % mk.id, mk_location, 60*60*24)
+
+                if mk.id == member.id:
+                    rel_location = mk_location
+
+        return rel_location
 
     def build_filters(self, filters=None):
         if filters is None:
