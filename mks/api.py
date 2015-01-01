@@ -128,7 +128,11 @@ class MemberAgendasResource(BaseResource):
 
         if not agendas:
             agendas_values = mk.get_agendas_values()
-            friends = mk.current_party.current_members().values_list('id', flat=True).order_by()
+            if mk.current_party:
+                friends = (mk.current_party.current_members()
+                           .values_list('id', flat=True))
+            else:
+                friends = [] 
             agendas = []
             for a in Agenda.objects.filter(pk__in = agendas_values.keys(),
                     is_public = True):
