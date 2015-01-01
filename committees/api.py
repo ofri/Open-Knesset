@@ -14,22 +14,15 @@ class CommitteeResource(BaseResource):
     '''
     recent_meetings = fields.ListField()
     future_meetings = fields.ListField()
-    female_presence = fields.IntegerField()
-    male_presence = fields.IntegerField()
 
     class Meta(BaseResource.Meta):
         queryset = Committee.objects.all()
         allowed_methods = ['get']
         include_absolute_url = True
-        list_fields = ['description', 'name', 'female_presence', 'male_presence']
+        list_fields = ['description', 'name']
         filtering = {
             'id': ALL
         }
-
-    def dehydrate_female_presence(self, bundle):
-        return bundle.obj.gender_presence[0]
-    def dehydrate_male_presence(self, bundle):
-        return bundle.obj.gender_presence[1]
 
     def dehydrate_recent_meetings(self, bundle):
         return [
