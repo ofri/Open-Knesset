@@ -31,7 +31,7 @@ django-ratings
 -e git://github.com/hasadna/django-planet.git@903de33db55bfb8d965ae4e2319fa348075351fd#egg=django-planet
 -e git://github.com/hasadna/django-annotatetext.git@72e1e69459b1efe3efad85eec1dd162f5ab03250#egg=django-annotatetext
 -e git://github.com/pinax/django-mailer.git#egg=django-mailer
--e git://github.com/hasadna/django-avatar.git@e6ed23b44764d75d1f3955472f5afc2c4ddf7bcc#egg=django-avatar
+django-avatar==2.0
 -e git://github.com/hasadna/django-backlinks.git@df00163eee41cc2c090e6a703c03610cc7979f66#egg=django-backlinks
 -e git://github.com/spreeker/django-voting2.git#egg=django-voting2
 -e git://github.com/hasadna/django-piston.git@1b51686a5b2ff547429d0b224319d521170f63e2#egg=django-piston
