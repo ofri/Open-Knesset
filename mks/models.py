@@ -68,14 +68,16 @@ class Party(models.Model):
     end_date = models.DateField(blank=True, null=True)
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
-    number_of_seats = models.IntegerField(blank=True, null=True)
+    number_of_seats = models.IntegerField(blank=True, null=True, help_text='Last known number of seats')
     knesset = models.ForeignKey(Knesset, related_name='parties', db_index=True,
                                 null=True, blank=True)
 
-    logo = models.ImageField(blank=True,null=True,upload_to='partyLogos')
+    logo = models.ImageField(blank=True, null=True, upload_to='partyLogos')
 
     objects = PartyManager()
     current_knesset = CurrentKnessetPartyManager()
+
+    split_from = models.ForeignKey('self', blank=True, null=True)
 
     class Meta:
         verbose_name = _('Party')
@@ -146,6 +148,13 @@ class Party(models.Model):
     @property
     def is_current(self):
         return self.knesset == Knesset.objects.current_knesset()
+
+
+class PartySeats(models.Model):
+    party = models.ForeignKey(Party)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    number_of_seats = models.IntegerField(blank=True, null=True)
 
 
 class Membership(models.Model):
@@ -311,11 +320,10 @@ class Member(models.Model):
         if self.is_current:
             end_date = date.today()
         else:
-            try:
-                end_date = self.end_date
-            except TypeError:
+            end_date = self.end_date
+            if not end_date:
                 logger.warn(
-                    'MK %d is not current, but missing end or start date' %
+                    'MK %d is not current, but end date is None' %
                     self.id)
                 return None
         return (end_date - start_date).days

@@ -1,8 +1,8 @@
 import os
+import json
 from datetime import datetime
 
 from django.core.management.base import NoArgsCommand, CommandError
-from django.utils import simplejson
 
 from mmm.models import Document
 from knesset.settings import DATA_ROOT
@@ -16,7 +16,7 @@ class Command(NoArgsCommand):
 
         try:
             f =  open(DATA_ROOT + FIXTURE_FILE, 'rt')
-            j = simplejson.load(f)
+            j = json.load(f)
             for m in j['objects']['matches']:
                 # we're promised iso8601
                 m['pub_date'] = datetime.strptime(m['pub_date'], '%Y-%m-%d').date()

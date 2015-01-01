@@ -1,5 +1,4 @@
-# -*- coding: utf -*-
-# encoding:utf-8
+# -*- coding: utf-8 -*-
 
 from tagging.models import Tag, TaggedItem
 from django.contrib.contenttypes.models import ContentType

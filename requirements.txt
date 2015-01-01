@@ -7,18 +7,19 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 
-Django==1.6.7
+Django==1.6.8
 Pillow==2.4.0
-South==0.8.4
+South==1.0
 django-extensions==1.2.5
 django-pagination==1.0.7
 django-tagging==0.3.1
+django-tastypie-swagger==0.1.2
 BeautifulSoup
 vobject
 feedparser
 gdata
 gunicorn
-django-social-auth>=0.7.19
+python-social-auth==0.2.1
 oauth==1.0.1
 python-dateutil==1.5
 python-memcached==1.48
@@ -48,3 +49,4 @@ okscraper-django==0.0.8
 ujson
 selenium
 sauceclient
+django-sslify>=0.2.0

@@ -7,12 +7,12 @@ Replace these with more appropriate tests for your application.
 
 import datetime
 from datetime import timedelta
+import json
 
 import vobject
 
 from django.test import TestCase
 from django.utils import translation
-from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 
 from models import Event

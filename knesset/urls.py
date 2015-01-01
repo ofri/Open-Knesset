@@ -23,6 +23,7 @@ from mks.views import get_mk_entry, mk_is_backlinkable
 from laws.models import Bill
 from polyorg.urls import polyorgurlpatterns
 from lobbyists.urls import lobbyistpatterns
+from auxiliary.urls import auxiliarysurlpatterns
 
 from auxiliary.views import (
     main, post_annotation, post_details, post_feedback,
@@ -47,8 +48,7 @@ urlpatterns = patterns('',
     (r'^api/', include('apis.urls')),
     (r'^agenda/', include('agendas.urls')),
     (r'^users/', include('user.urls')),
-    (r'^badges/', include('badges.urls')),
-    url(r'', include('social_auth.urls')),
+    url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^help/$', help_page, name="help"),
     (r'^admin/', include(admin.site.urls)),
     (r'^comments/$', CommentsView.as_view()),
@@ -110,3 +110,4 @@ urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_r
 # seems broken, specially when trying to cache querysets
 # urlpatterns += polyorgurlpatterns + personsurlpatterns
 urlpatterns += personsurlpatterns
+urlpatterns += auxiliarysurlpatterns

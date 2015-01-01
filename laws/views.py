@@ -1,5 +1,6 @@
 #encoding: utf-8
 import datetime
+import json
 import os
 
 import difflib
@@ -15,7 +16,6 @@ from django.http import (HttpResponseRedirect, HttpResponse, Http404,
                          HttpResponseBadRequest)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils import simplejson as json
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy, ugettext as _
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -26,6 +26,7 @@ from tagging.utils import get_tag
 from agendas.models import Agenda, UserSuggestedVote
 from auxiliary.views import CsvView, BaseTagMemberListView
 from forms import VoteSelectForm, BillSelectForm, BudgetEstimateForm
+from forms import AttachBillFromVoteForm
 from hashnav import DetailView, ListView as HashnavListView
 from knesset.utils import notify_responsible_adult
 from mks.models import Member
@@ -746,6 +747,13 @@ class VoteDetailView(DetailView):
              'tags':vote.tags,
             }
         context.update(c)
+
+        # Add bill form
+        if 'bill_form' in kwargs:
+            context['bill_form'] = kwargs['bill_form']
+        else:
+            context['bill_form'] = AttachBillFromVoteForm(vote)
+
         return context
 
     @method_decorator(login_required)
@@ -779,6 +787,26 @@ class VoteDetailView(DetailView):
                                 vote = vote,
                                 reasoning = reasoning)
                 usv.save()
+
+        elif user_input_type == 'add-bill':
+            form = AttachBillFromVoteForm(vote,request.POST)
+
+            if form.is_valid():
+                vote_type = form.cleaned_data['vote_type']
+                bill = form.cleaned_data['bill_model']
+
+                if vote_type == 'approve vote':
+                    bill.approval_vote = vote
+
+                elif vote_type == 'first vote':
+                    bill.first_vote = vote
+
+                elif vote_type == 'pre vote':
+                    bill.pre_votes.add(vote)
+
+                bill.update_stage()
+            else:
+                return self.get(request,bill_form=form)
 
         else: # adding an MK (either for or against)
             mk_name = difflib.get_close_matches(request.POST.get('mk_name'), mk_names)[0]

@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseRedirect
 import json
 import sys
+from links.models import Link
 
 
 class LobbyistsIndexView(ListView):
@@ -79,6 +80,7 @@ class LobbyistDetailView(DetailView):
         context['represents'] = lobbyist.latest_data.represents.all()
         context['corporation'] = lobbyist.latest_corporation
         context['data'] = lobbyist.latest_data
+        context['links'] = Link.objects.for_model(context['object'])
         return context
 
 
@@ -99,7 +101,7 @@ class LobbyistCorporationDetailView(DetailView):
         context['lobbyists'] = Lobbyist.objects.filter(id__in=context['object'].cached_data['combined_lobbyist_ids']).order_by('person__name')
         if context['object'] not in LobbyistCorporation.objects.current_corporations():
             context['warning_old_corporation'] = True
-
+        context['links'] = Link.objects.for_model(context['object'])
         return context
 
 

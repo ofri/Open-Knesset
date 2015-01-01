@@ -48,7 +48,7 @@ class MainScraperListStorage(ListStorage):
             try:
                 corporation_data = corporation.latest_data
                 if corporation_data.name == corporation.name and corporation_data.source_id == corporation.source_id:
-                    last_lobbyist_ids = sorted(corporation_data.lobbyists.all(), key=lambda lobbyist: lobbyist.id)
+                    last_lobbyist_ids = map(lambda lobbyist: lobbyist.id, sorted(corporation_data.lobbyists.all(), key=lambda lobbyist: lobbyist.id))
                     if last_lobbyist_ids == lobbyist_ids:
                         need_corporation_data = False
             except ObjectDoesNotExist:
