@@ -8,7 +8,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.db.models import Count, Q
 from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -21,11 +20,11 @@ from tagging.utils import get_tag
 from actstream import Action
 from actstream.models import action, Follow
 
-from mks.models import Member, Party, Knesset
+from mks.models import Party, Knesset
 from tagvotes.models import TagVote
-from knesset.utils import slugify_name
+from knesset.utils import slugify_name, trans_clean
 from laws.vote_choices import (TYPE_CHOICES, BILL_STAGE_CHOICES,
-                                       BILL_AGRR_STAGES)
+                               BILL_AGRR_STAGES)
 
 logger = logging.getLogger("open-knesset.laws.models")
 VOTE_ACTION_TYPE_CHOICES = (
@@ -36,6 +35,7 @@ VOTE_ACTION_TYPE_CHOICES = (
 )
 
 CONVERT_TO_DISCUSSION_HEADERS = ('להעביר את הנושא'.decode('utf8'), 'העברת הנושא'.decode('utf8'))
+
 
 class CandidateListVotingStatistics(models.Model):
     candidates_list = models.OneToOneField('polyorg.CandidateList', related_name='voting_statistics')
@@ -426,6 +426,7 @@ class Vote(models.Model):
                                self.against_votes_count or 0)
         self.vote_type = self._vote_type()
         self.save()
+
 
 
 class TagForm(forms.Form):
