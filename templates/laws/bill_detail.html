@@ -29,6 +29,7 @@
                      serviceUrl:'/vote/auto_complete/',
                      minChars:2,
                      maxHeight:400,
+                     width:300,
                      deferRequestBy: 100, //miliseconds
                      onSelect: function(value, data, me){
                         me.siblings("input[name$='vote_id']").val(data);
@@ -47,6 +48,7 @@
                      serviceUrl:'/bill/auto_complete_knesset_proposal/',
                      minChars:2,
                      maxHeight:400,
+                     width:300,
                      deferRequestBy: 100, //miliseconds
                      onSelect: function(value, data, me){
                         me.siblings("input[name$='kp_id']").val(data);
