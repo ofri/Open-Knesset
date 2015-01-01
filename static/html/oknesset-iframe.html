@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" language="he" content="text/html;charset=utf-8">
-        <link rel="stylesheet" href="../css/oknesset-iframe.css" />
+        <link rel="stylesheet" href="../css/oknesset-iframe.css?v=2" />
     </head>
     <body>
       <div id="oknesset_container"></div>
@@ -57,21 +57,15 @@
             .attr({class:"oknesset_proposals",
               href:okURI + "/bill/?member="+data.id+"&stage=proposed", target: "_blank"
             });
-          oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_number"}).html(data.bills_stats_proposed));
-          oknesset_proposals.append($E("div").attr({class:"oknesset_proposals_desc"}).html("הצעות חוק"));
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_number"}).html(data.bills_stats_proposed));
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_desc"}).html("הצעות חוק"));
 
           oknesset_law_flow.append(oknesset_proposals);
-          oknesset_law_flow.append($E("img")
-              .attr({src:"../img/arrow_left.gif"}));
-          oknesset_law_flow.append($E("img")
-              .attr({src:"../img/mini_knesset.gif"}));
-          oknesset_law_flow.append($E("img")
-              .attr({src:"../img/arrow_left.gif"}));
           var oknesset_laws = $E("a")
             .attr({class:"oknesset_laws", href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"});
-          oknesset_laws.append($E("div")
+          oknesset_laws.append($E("span")
               .attr({class:"oknesset_laws_number"}).html(data.bills_stats_approved));
-          oknesset_laws.append($E("div").attr({class:"oknesset_laws_desc"})
+          oknesset_laws.append($E("span").attr({class:"oknesset_laws_desc"})
               .html("חוקים התקבלו"));
           oknesset_law_flow.append(oknesset_laws);
           oknesset_content_top.append(oknesset_law_flow);
