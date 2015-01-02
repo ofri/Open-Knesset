@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" language="he" content="text/html;charset=utf-8">
+        <link rel="stylesheet" href="../css/mk-iframe.css?v=3" />
+    </head>
+    <body>
+      <div id="oknesset_container"></div>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript">
+    function getUrlVars(){
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++){
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    $(function () {
+      var okURI = '',
+          mkId = getUrlVars()["id"],
+          mkURI = okURI + "/api/v2/member/" + mkId + '/';
+
+      jQuery.ajax({
+        url:mkURI, processData:false,
+        success: function(data){
+          function $E(s){
+            return $(document.createElement(s));
+          }
+
+          var average_weekly_presence_des = ["אין מספיק נתונים","מועטה מאד","מועטה","בינונית","רבה","רבה מאד"];
+
+          var divId = "oknesset_mk_"+ data.id;
+          var oknesset_main = $E('div')
+            .attr({id:divId,class:"oknesset_frame"});
+          var oknesset_content_top = $E("div")
+            .attr({class:"oknesset_content_top"});
+          oknesset_content_top.append($E("img").attr({
+            src: data.img_url,
+            class:"oknesset_image"}));
+          oknesset_content_top.append($E("div").attr({class:"oknesset_name"})
+              .append($E("a")
+                .attr({href: okURI + "/member/"+data.id, target: "_blank"})
+                .html(data.name))
+              .append(" - " + data.party_name));
+
+          if (data.roles != 'Unknown')
+            oknesset_content_top.append($E("div").attr({class:"oknesset_roles"}).html(data.roles));
+
+          var oknesset_law_flow = $E("div")
+            .attr({class:"oknesset_law_flow"});
+          var oknesset_proposals = $E("a")
+            .attr({class:"oknesset_proposals",
+              href:okURI + "/bill/?member="+data.id+"&stage=proposed", target: "_blank"
+            });
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_number"}).html(data.bills_stats_proposed));
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_desc"}).html("הצעות חוק"));
+
+          oknesset_law_flow.append(oknesset_proposals);
+          var oknesset_laws = $E("a")
+            .attr({class:"oknesset_laws", href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"});
+          oknesset_laws.append($E("span")
+              .attr({class:"oknesset_laws_number"}).html(data.bills_stats_approved));
+          oknesset_laws.append($E("span").attr({class:"oknesset_laws_desc"})
+              .html("חוקים התקבלו"));
+          oknesset_law_flow.append(oknesset_laws);
+          oknesset_content_top.append(oknesset_law_flow);
+          oknesset_content_top.append($E("div").attr({class:"oknesset_attendance"}).html("נוכחות במשכן הכנסת: ").append($E("span").attr({class:"oknesset_attendance_value"}).html(average_weekly_presence_des[data.average_weekly_presence_rank])));
+          oknesset_main.append(oknesset_content_top);
+
+          var $oknesset_content_bottom = $E("div").attr({class:"oknesset_content_bottom"});
+
+          if (typeof(data.committees) != 'undefined' && data.committees.length > 0) {
+            var $oknesset_committees = $E("div").attr({class:"oknesset_committees"}).html("נוכחות עיקרית בוועדות:");
+            var $oknesset_committees_ul = $E("ul");
+            for (var i = 0; (i < 3) && (i < data.committees.length); ++i) {
+              $oknesset_committees_ul.append($E("li").append($E("a")
+                    .attr({
+                      href: okURI + data.committees[i][1], target: "_blank"
+                    })
+                    .html(data.committees[i][0])));
+            }
+
+            $oknesset_committees.append($oknesset_committees_ul);
+            $oknesset_content_bottom.append($oknesset_committees);
+          }
+
+          var $oknesset_link = $E("div").attr({class:"oknesset_link"})
+            .append($E("a")
+                .attr({
+                  href:okURI + "/member/"+data.id, target: "_blank"
+                })
+                .html( "לדף האישי של "+data.name+" בכנסת הפתוחה" ) );
+
+          oknesset_main.append($oknesset_content_bottom);
+          oknesset_main.append($oknesset_link);
+
+
+          $("#oknesset_container").append(oknesset_main);
+        }})});
+        </script>
+    </body>
+</html>
