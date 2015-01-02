@@ -50,7 +50,7 @@
               .append($E("a")
                 .attr({href: okURI + "/member/"+data.id, target: "_blank"})
                 .html(data.name))
-              .append(" - " + mk_title[data.gender][data.is_current] ));
+              .append(" - " + mk_title[data.gender][data.is_current]));
 
           if (data.roles != 'Unknown')
             oknesset_content_top.append($E("div").attr({class:"oknesset_roles"}).html(data.roles));
@@ -78,6 +78,16 @@
 
           var $oknesset_content_bottom = $E("div").attr({class:"oknesset_content_bottom"});
 
+          $oknesset_content_bottom.append($E("div").attr({class:"oknesset_link"})
+            .append($E("a")
+                .attr({
+                  href:okURI + "/member/"+data.id, target: "_blank"
+                })
+                .html('<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABCCAMAAAAhdHtqAAAB+1BMVEVDQ0T///9DQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0R/MmxgAAAAqXRSTlMAAAECAwQFBwgLDA0ODxAREhMUFRYXGBkaGxwdHh8gIiMlJigpKissLS4vMDEyMzQ1Njc5Ojs8PT9AQUJDRkdKS0xNTk9QUVJTVFVWV1hZW1xdX2BiY2RlaGlqbG1ub3Bxc3R1dnd5enx9fn+AgoOIiYqLjI2Oj5CRkpSVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW4ubq7vL2+v8DBwsPEh640/AAAA3FJREFUWMPt1/lbEkEYB/BJiYgjNSmLyEojsUM7PHI7N0wOK6xMO7XDomyzFBE7NCvKUoQO09UOMTO/f2azQwQWcv9Qz8P7A+zOzPPhnWNnFrIss0Gy3j/okTTC6BCLMublH3204GvVZMgzXPkI/KglJBOe+rBrHjTmLuVmwCu98l7C8K69NDft/DRHnN8lbL7/kIoVpOUVnx9nqY3fMISKUveUXM9XCVsYrF8VLk3VK77oC6Z2rSwnsjwlT3nwwQzThkz5f1Sl4OnPBlP7dH2X7K/KZD1FTRcbNQyYtdHqk/P09hGGfb5TIYveIglPUSt8YdqLxnVLNkrYW2v3Mmy6s0oe40cT8+SVnVNMe9NUFHtEEvGK7J7gqAn75PHmK64nr+j8zDTPqfUJLKY4nvbkiwUJmxWqFQkt9Vhe7o6O4KgNN29K9Dlc2tNah1hqM0KNIvFdYgkvZ+ev1Maa9UltYVG91ccHWWrfuzllkhtsFK/kxixLzXuhJPndP4rX9qljFoFubmUqZ1MUT6MkwqXNKR6c0eeDHlRkXYGhVFFSrs4vpzOy3GBUqoylMpJLSzTbNysM2wp1ZIuxkBCV0SAvNq7JK9ev18RaLx0fIOr8qDOhkx6xIsqqIaqI7A2qOAwVz8HqyBnGaUL2IqB1ovUAutprYnk3wTzuGO7SJEQYaiCqiWyEefpvsDjIK9gJ2R30ONxri+l1AJM6Hzheyk81IXmT1HuNqjoM6gOw3CIeyavEjLYbrXUQsl4cb0JFloc9xyKPS8pTTmBrpLchAPMt8hJNzCtMKb/aiP7qAmhY5LXsh3A5nicGvbtBrzrkcXgq5efICXnansT6K+regjNBYP2l3hRbz9XU08/BIpBhafz2YFbbixb6fLTFfN+9APhVLlRV4Do9lXzYUIlB+lIwhLIKuNU+1JlJFyyEbAz4VrShaRda7DuW8M49dPe5RoGvTj88bvhcbtcX9D/Hu163axqPByD2TGHA6RrBiMvdOzfl9GDsEZ49f9LX11/+p7dCoznYaLPZGnjeRD/MNr6B3pl4m4U/Ti/qeauVr6dfFqkJq6q3mfkGK2+xWBsbT2xRqWWLPKM4+dbr9Y6OelmMhiN097siolkoxt6P+/MivDPt95Fu3L4a9vz07E43gLCXtzoDUZD9P531sl7W+5+8nyR+I3ng9uF9AAAAAElFTkSuQmCC"\
+                alt="לדף האישי של "+data.name+" בכנסת הפתוחה" />' ))
+          );
+
+
           if (typeof(data.committees) != 'undefined' && data.committees.length > 0) {
             var $oknesset_committees = $E("div").attr({class:"oknesset_committees"}).html("נוכחות עיקרית בוועדות:");
             var $oknesset_committees_ul = $E("ul");
@@ -93,16 +103,7 @@
             $oknesset_content_bottom.append($oknesset_committees);
           }
 
-          var $oknesset_link = $E("div").attr({class:"oknesset_link"})
-            .append($E("a")
-                .attr({
-                  href:okURI + "/member/"+data.id, target: "_blank"
-                })
-                .html( "לדף האישי של "+data.name+" בכנסת הפתוחה" ) );
-
           oknesset_main.append($oknesset_content_bottom);
-          oknesset_main.append($oknesset_link);
-
 
           $("#oknesset_container").append(oknesset_main);
         }})});
