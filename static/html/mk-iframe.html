@@ -43,9 +43,12 @@
             .attr({id:divId,class:"oknesset_frame"});
           var oknesset_content_top = $E("div")
             .attr({class:"oknesset_content_top"});
-          oknesset_content_top.append($E("img").attr({
-            src: data.img_url,
-            class:"oknesset_image"}));
+          oknesset_content_top.append($E("a")
+                .attr({
+                  href:okURI + "/member/"+data.id, target: "_blank"
+                })
+            .append($E("img").attr({ src: data.img_url, class:"oknesset_image"})
+          ));
           oknesset_content_top.append($E("div").attr({class:"oknesset_name"})
               .append($E("a")
                 .attr({href: okURI + "/member/"+data.id, target: "_blank"})
