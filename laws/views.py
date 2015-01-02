@@ -875,6 +875,7 @@ def knesset_proposal_auto_complete(request):
 
     q = request.GET['query']
     options = KnessetProposal.objects.filter(
+        Q(booklet_number=q) |
         Q(title__icontains=q) |
         Q(law__title__icontains=q))[:30]
 
