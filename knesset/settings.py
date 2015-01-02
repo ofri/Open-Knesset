@@ -130,7 +130,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tastypie_swagger',
-    'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
     'south',
