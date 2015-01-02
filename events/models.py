@@ -43,6 +43,10 @@ class Event(models.Model):
     which_pk = models.TextField(_('object ID'), null=True)
     which_object = generic.GenericForeignKey(ct_field="which_type", fk_field="which_pk")
     why = models.TextField(null=True)
+    icaluid = models.TextField(unique=True, null=True)
+    cancelled = models.BooleanField(default=False)
+    update_date = models.DateTimeField(blank=True, null=True)
+    link = models.URLField(blank=True, null=True)
 
     objects = EventManager()
     @property

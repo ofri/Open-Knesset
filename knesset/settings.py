@@ -130,7 +130,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tastypie_swagger',
-    'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
     'south',
@@ -194,9 +193,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 INTERNAL_IPS = ()
 # Add the following line to your local_settings.py files to enable django-debug-toolar:
 #INTERNAL_IPS = ('127.0.0.1',)
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-}
 
 LOCAL_DEV = True
 
