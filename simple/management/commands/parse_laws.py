@@ -241,13 +241,13 @@ class ParseGovLaws(ParseKnessetLaws):
         """ entry point to start parsing """
         self.parse_pages_booklet()
 
-    def parse_pdf(self,pdf_url):
+    def parse_pdf(self, pdf_url):
         """ Grab a single pdf url, using cache via LinkedFile
         """
         existing_count = Link.objects.filter(url=pdf_url).count()
         if existing_count >= 1:
             if existing_count > 1:
-                print "WARNING: you have two objects with the url %s. Taking the first" % pdf_url
+                logger.warn("found two objects with the url %s. Taking the first" % pdf_url)
             link = Link.objects.filter(url=pdf_url).iterator().next()
         filename = None
         if existing_count > 0:
@@ -268,14 +268,17 @@ class ParseGovLaws(ParseKnessetLaws):
             saved_filename = os.path.basename(urlparse(pdf_url).path)
             link_file.link_file.save(saved_filename, ContentFile(contents))
             filename = link_file.link_file.path
-        prop = GovProposalParser(filename)
-
+        try:
+            prop = GovProposalParser(filename)
+        except Exception, e:
+            logger.info(e)
+            return None
         # TODO: check if parsing handles more than 1 prop in a booklet
-        x = [{'title':prop.get_title(),
-              'date':prop.get_date(),
+        x = {'title': prop.get_title(),
+              'date': prop.get_date(),
               #'bill':prop,
-              'link_file': link_file}]
-        return x
+             'link_file': link_file}
+        return [x]
 
     def update_single_bill(self, pdf_link, booklet=None, alt_title=None):
         gp = None
@@ -289,6 +292,8 @@ class ParseGovLaws(ParseKnessetLaws):
             gp = gps[0]
             booklet = gp.booklet_number
         pdf_data = self.parse_pdf(pdf_link)
+        if pdf_data is None:
+            return
         for j in range(len(pdf_data)):  # sometime there is more than 1 gov
                                         # billl in a pdf
             if alt_title:  # just use the given title
@@ -384,6 +389,7 @@ class ParseGovLaws(ParseKnessetLaws):
             else:  # create a bill
                 b = Bill(**bill_params)
                 b.save()
+                logger.debug("created bill %d" % b.id)
 
             # see if the found bill is already linked to a gov proposal
             try:
@@ -420,19 +426,25 @@ class ParseGovLaws(ParseKnessetLaws):
             link_file.save()
             logger.debug("check updated %s" % b.get_absolute_url())
 
-    def parse_laws_page(self,soup):
+    def parse_laws_page(self, soup):
         # Fall back to regex, because these pages are too broken to get the
         # <td> element we need with BS"""
         u = unicode(soup)
-        m = re.findall('class="LawText1">(.*?)</',u)
-        # get the link to the PDF file
-        name_tag = soup.findAll(lambda tag: tag.name == 'a' and tag.has_key('href') and tag['href'].find(".pdf")>=0)
-        for title,tag in zip(m,name_tag):
-            pdf_link = self.pdf_url + tag['href']
-            booklet = re.search(r"/(\d+)/",tag['href']).groups(1)[0]
+        pairs = []
+        curr_href = None
+        for line in u.split('\n'):
+            if '.pdf' in line:
+                curr_href = re.search('href="(.*?)"', line).group(1)
+            if 'LawText1">' in line:
+                curr_title = re.search('LawText1">(.*?)</', line).group(1)
+                pairs.append((curr_title, curr_href))
+        if not pairs:
+            return False
+        for title, href in pairs:
+            pdf_link = self.pdf_url + href
+            booklet = re.search(r"/(\d+)/", href).groups(1)[0]
             if int(booklet) <= self.min_booklet:
                 return False
-            #title = tag.findNext(attrs={"class":"LawText1"}).findNext(attrs={"class":"LawText1"}).text
             self.update_single_bill(pdf_link, booklet=booklet, alt_title=title)
         return True
 
