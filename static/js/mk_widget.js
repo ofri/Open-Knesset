@@ -1,7 +1,7 @@
 function generateMkFrameSet(params) {
   $(function () {
   var targetId = typeof(params.targetId) != 'undefined' ? params.targetId : false;
-  var okURL = typeof(params.okURL) != 'undefined' ? params.okURL : guessScriptURI();
+  var okURL = typeof(params.okURL) != 'undefined' ? params.okURL : guessScriptURI()[0];
   var classHook = typeof(params.classHook) != 'undefined' ? params.classHook : false;
 	
 	if ( okURL.charAt( okURL.length-1 ) != '/' )
