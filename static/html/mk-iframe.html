@@ -28,6 +28,10 @@
       jQuery.ajax({
         url:mkURI, processData:false,
         success: function(data){
+          var mk_title = {'נקבה': {true: 'ח"כית מכהנת',
+                                   false: 'ח"כית לשעבר' },
+                          'זכר': {true: 'ח"כ מכהן',
+                                  false: 'ח"כ לשעבר'}};
           function $E(s){
             return $(document.createElement(s));
           }
@@ -46,7 +50,7 @@
               .append($E("a")
                 .attr({href: okURI + "/member/"+data.id, target: "_blank"})
                 .html(data.name))
-              .append(" - " + data.party_name));
+              .append(" - " + mk_title[data.gender][data.is_current] ));
 
           if (data.roles != 'Unknown')
             oknesset_content_top.append($E("div").attr({class:"oknesset_roles"}).html(data.roles));
