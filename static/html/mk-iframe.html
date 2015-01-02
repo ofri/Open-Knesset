@@ -22,11 +22,19 @@
 
     $(function () {
       var okURI = '',
-          mkId = getUrlVars()["id"],
-          mkURI = okURI + "/api/v2/member/" + mkId + '/';
+          mk = getUrlVars()["id"],
+          mkId = Number(mk),
+          params = {};
 
-      jQuery.ajax({
-        url:mkURI, processData:false,
+      if (isNaN(mkId)) {
+          mkURI = okURI + "/api/v2/member/";
+          params = ["name="+mk,
+                "extra_fields=gender,is_current,roles,committees,bills_stats_proposed,bills_stats_approved,average_weekly_presence_rank"].join("&")
+      } else {
+          mkURI = okUoRI + "/api/v2/member/" + mkId + '/'
+      };
+
+      jQuery.ajax(mkURI, {processData: false, data :params,
         success: function(data){
           var mk_title = {'נקבה': {true: 'ח"כית מכהנת',
                                    false: 'ח"כית לשעבר' },
@@ -38,6 +46,8 @@
 
           var average_weekly_presence_des = ["אין מספיק נתונים","מועטה מאד","מועטה","בינונית","רבה","רבה מאד"];
 
+          if (data.objects !== undefined)
+            data = data.objects[0];
           var divId = "oknesset_mk_"+ data.id;
           var oknesset_main = $E('div')
             .attr({id:divId,class:"oknesset_frame"});
@@ -109,7 +119,8 @@
           oknesset_main.append($oknesset_content_bottom);
 
           $("#oknesset_container").append(oknesset_main);
-        }})});
+        }})
+    });
         </script>
     </body>
 </html>

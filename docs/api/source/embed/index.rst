@@ -4,6 +4,8 @@ Embedding widgets
 Member
 ----------
 
+To see a demo of a page using the Member widget visit http://oknesset.org/static/html/demo-article.html".
+
 To embed a Knesset member's card, use:
 
 .. code-block:: html
