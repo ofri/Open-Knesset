@@ -46,7 +46,7 @@ function generateMkFrameSet(params) {
 
   function createMkFrame( mkId, width ){
     var mkFrame = document.createElement("iframe");
-    mkFrame.src = okURL + "static/html/oknesset-iframe.html?id="+mkId;
+    mkFrame.src = okURL + "static/html/mk-iframe.html?id="+mkId;
     mkFrame.style.border =  "0px";
     mkFrame.style.margin =  "3px 0";
     mkFrame.style.width = "414px";
