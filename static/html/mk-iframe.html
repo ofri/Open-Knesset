@@ -81,7 +81,7 @@
           var oknesset_laws = $E("a")
             .attr({class:"oknesset_laws", href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"});
           oknesset_laws.append($E("span")
-              .attr({class:"oknesset_laws_number"}).html(data.bills_stats_approved));
+              .attr({class:"oknesset_laws_number"}).html(data.bills_stats_approved+'~'));
           oknesset_laws.append($E("span").attr({class:"oknesset_laws_desc"})
               .html("חוקים התקבלו"));
           oknesset_law_flow.append(oknesset_laws);
