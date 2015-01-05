@@ -1,7 +1,6 @@
 function generateMkFrameSet(params) {
-  $(function () {
   var targetId = typeof(params.targetId) != 'undefined' ? params.targetId : false;
-  var okURL = typeof(params.okURL) != 'undefined' ? params.okURL : guessScriptURI()[0];
+  var okURL = guessScriptURI();
   var classHook = typeof(params.classHook) != 'undefined' ? params.classHook : false;
 	
 	if ( okURL.charAt( okURL.length-1 ) != '/' )
@@ -30,20 +29,16 @@ function generateMkFrameSet(params) {
 
   /* end of main */
   function guessScriptURI() {
-    var myDomain = (function(scripts) {
-        var scripts = document.getElementsByTagName('script'),
-            script = scripts[scripts.length - 2];
-
-        if (script.getAttribute.length !== undefined) {
-            return script.src.match('http://[^/]*/')
+        var re = /(http:\/\/[^\/]*)\/static\/js\/mk_widget.js/;
+        var scripts = document.getElementsByTagName('script');
+        for (var i=0; i<scripts.length; i++) {
+          console.log(scripts[i].src);
+          var m = scripts[i].src.match(re);
+          if (m !== null)
+            return m[1];
         }
-
-        return script.getAttribute('src', -1)
-      }());
-      
-    return myDomain;
+        return 'http://oknesset.org';
   }
-
   function createMkFrame( mkId, width ){
     var mkFrame = document.createElement("iframe");
     mkFrame.src = okURL + "static/html/mk-iframe.html?id="+mkId;
@@ -58,7 +53,16 @@ function generateMkFrameSet(params) {
     frameNum++;
     return mkFrame;
   }
-})}
+}
+$(document).ready( function () {
+  var re = /(אביגדור ליברמן|אבי וורצמן|אבישי ברוורמן|אברהים צרצור|אברהם מיכאלי|אופיר אקוניס|אורי אורבך|אורי יהודה אריאל|אורי מקלב|אורית סטרוק|אורלי לוי-אבקסיס|אחמד טיבי|איילת שקד|אילן גילאון|איציק שמולי|איתן כבל|אלי בן-דהן|אליהו ישי|אלכס מילר|אלעזר שטרן|אמנון כהן|אראל מרגלית|באסל גטאס|בועז טופורובסקי|בנימין נתניהו|גילה גמליאל|גלעד ארדן|ג`מאל זחאלקה|דב חנין|דב ליפמן|דוד אזולאי|דוד צור|דוד רותם|דני דנון|זאב אלקין|זבולון כלפה|זהבה גלאון|חיים כץ|חיליק בר|חמד עמאר|חנא סוייד|חנין זועבי|טלב אבו עראר|יאיר לפיד|יאיר שמיר|יואב בן צור|יואל רזבוזוב|יובל צלנר|יובל שטייניץ|יולי - יואל אדלשטיין|יוני שטבון|יעל גרמן|יעקב אשר|יעקב ליצמן|יעקב מרגי|יעקב פרי|יפעת קריב|יצחק אהרונוביץ|יצחק הרצוג|יצחק וקנין|יצחק כהן|יריב לוין|ישראל אייכלר|ישראל כץ|לאון ליטינצקי|לימור לבנת|מאיר כהן|מאיר פרוש|מאיר שטרית|מוחמד ברכה|מיכל בירן|מיכל רוזין|מיקי לוי|מיקי רוזנטל|מירי רגב|מנחם אליעזר מוזס|מסעוד גנאים|מרב מיכאלי|מרדכי יוגב|משה גפני|משה זלמן פייגלין|משה יעלון|משה מזרחי|משולם נהרי|נחמן שי|ניסן סלומינסקי|ניצן הורוביץ|נסים זאב|נפתלי בנט|סופה לנדבר|סילבן שלום|סתיו שפיר|עדי קול|עוזי לנדאו|עיסאווי פריג`|עליזה לביא|עמיר פרץ|עמר בר-לב|עמרם מצנע|עפו אגבאריה|עפר שלח|פאינה (פניה) קירשנבאום|פנינה תמנו-שטה|צחי הנגבי|ציפי חוטובלי|ציפי לבני|קארין אלהרר|רוברט אילטוב|רונן הופמן|רות קלדרון|רינה פרנקל|שאול מופז|שולי מועלם-רפאלי|שי פירון|שלי יחימוביץ|שמעון אוחיון|שמעון סולומון|תמר זנדברג|אביגדור ליברמן|אבי וורצמן|אבישי ברוורמן|אברהים צרצור|אברהם מיכאלי|אופיר אקוניס|אורי אורבך|אורי יהודה אריאל|אורי מקלב|אורית סטרוק|אורלי לוי-אבקסיס|אחמד טיבי|איילת שקד|אילן גילאון|איציק שמולי|איתן כבל|אלי בן-דהן|אליהו ישי|אלכס מילר|אלעזר שטרן|אמנון כהן|אראל מרגלית|באסל גטאס|בועז טופורובסקי|בנימין נתניהו|גילה גמליאל|גלעד ארדן|ג`מאל זחאלקה|דב חנין|דב ליפמן|דוד אזולאי|דוד צור|דוד רותם|דני דנון|זאב אלקין|זבולון כלפה|זהבה גלאון|חיים כץ|חיליק בר|חמד עמאר|חנא סוייד|חנין זועבי|טלב אבו עראר|יאיר לפיד|יאיר שמיר|יואב בן צור|יואל רזבוזוב|יובל צלנר|יובל שטייניץ|יולי - יואל אדלשטיין|יוני שטבון|יעל גרמן|יעקב אשר|יעקב ליצמן|יעקב מרגי|יעקב פרי|יפעת קריב|יצחק אהרונוביץ|יצחק הרצוג|יצחק וקנין|יצחק כהן|יריב לוין|ישראל אייכלר|ישראל כץ|לאון ליטינצקי|לימור לבנת|מאיר כהן|מאיר פרוש|מאיר שטרית|מוחמד ברכה|מיכל בירן|מיכל רוזין|מיקי לוי|מיקי רוזנטל|מירי רגב|מנחם אליעזר מוזס|מסעוד גנאים|מרב מיכאלי|מרדכי יוגב|משה גפני|משה זלמן פייגלין|משה יעלון|משה מזרחי|משולם נהרי|נחמן שי|ניסן סלומינסקי|ניצן הורוביץ|נסים זאב|נפתלי בנט|סופה לנדבר|סילבן שלום|סתיו שפיר|עדי קול|עוזי לנדאו|עיסאווי פריג`|עליזה לביא|עמיר פרץ|עמר בר-לב|עמרם מצנע|עפו אגבאריה|עפר שלח|פאינה (פניה) קירשנבאום|פנינה תמנו-שטה|צחי הנגבי|ציפי חוטובלי|ציפי לבני|קארין אלהרר|רוברט אילטוב|רונן הופמן|רות קלדרון|רינה פרנקל|שאול מופז|שולי מועלם-רפאלי|שי פירון|שלי יחימוביץ|שמעון אוחיון|שמעון סולומון|תמר זנדברג|איברהים צרצור|אורי אריאל|אורלי לוי אבקסיס|גמאל זחאלקה|חאמד עמר|חנא סוויד|ניצן הורביץ|ניסים זאב|עפו אגבריה|פאינה קירשנבאום|פניה קירשנבאום|פאינה קירשנבוים|יחיאל חיליק בר|זבולון קלפה)/g;
+
+  $('body>[type!="text/javascript"]').each(function (i, el) {
+    $(el).html($(el).html().replace(re, '<span class="oknesset_mk">$1</span>'));
+  })
+  generateMkFrameSet({classHook:'oknesset_mk'});
+});
+
 (function(f){function p(a,b,c){var h=c.relative?a.position().top:a.offset().top,d=c.relative?a.position().left:a.offset().left,i=c.position[0];h-=b.outerHeight()-c.offset[0];d+=a.outerWidth()+c.offset[1];if(/iPad/i.test(navigator.userAgent))h-=f(window).scrollTop();var j=b.outerHeight()+a.outerHeight();if(i=="center")h+=j/2;if(i=="bottom")h+=j;i=c.position[1];a=b.outerWidth()+a.outerWidth();if(i=="center")d-=a/2;if(i=="left")d-=a;return{top:h,left:d}}function u(a,b){var c=this,h=a.add(c),d,i=0,j=
 0,m=a.attr("title"),q=a.attr("data-tooltip"),r=o[b.effect],l,s=a.is(":input"),v=s&&a.is(":checkbox, :radio, select, :button, :submit"),t=a.attr("type"),k=b.events[t]||b.events[s?v?"widget":"input":"def"];if(!r)throw'Nonexistent effect "'+b.effect+'"';k=k.split(/,\s*/);if(k.length!=2)throw"Tooltip: bad events configuration for "+t;a.bind(k[0],function(e){clearTimeout(i);if(b.predelay)j=setTimeout(function(){c.show(e)},b.predelay);else c.show(e)}).bind(k[1],function(e){clearTimeout(j);if(b.delay)i=
 setTimeout(function(){c.hide(e)},b.delay);else c.hide(e)});if(m&&b.cancelDefault){a.removeAttr("title");a.data("title",m)}f.extend(c,{show:function(e){if(!d){if(q)d=f(q);else if(b.tip)d=f(b.tip).eq(0);else if(m)d=f(b.layout).addClass(b.tipClass).appendTo(document.body).hide().append(m);else{d=a.next();d.length||(d=a.parent().next())}if(!d.length)throw"Cannot find tooltip for "+a;}if(c.isShown())return c;d.stop(true,true);var g=p(a,d,b);b.tip&&d.html(a.data("title"));e=e||f.Event();e.type="onBeforeShow";
