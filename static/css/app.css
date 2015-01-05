@@ -7288,7 +7288,7 @@ ol {
   width: 130px;
   top: 14px;
   right: 10px;
-  background: #ffffff url("../img/ajax-loader.gif") 50% 50% no-repeat;
+  background: white url("../img/ajax-loader.gif") 50% 50% no-repeat;
 }
 .card-party-members .party-member-photo .party-member-info .party-member-info-photo img {
   width: 100%;
@@ -7976,6 +7976,9 @@ div#tidbitCarousel .btn-suggest {
   background: transparent;
   color: #797878;
   border-color: #797878;
+  position: absolute;
+  top: 30px;
+  left: 30px;
 }
 div#tidbitCarousel .btn-suggest:hover {
   color: #ffffff;
