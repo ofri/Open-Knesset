@@ -219,26 +219,27 @@ FROM
           a.time,
           a.vote_id,
           CASE p.vtype
-              WHEN 'for' THEN a.VALUE
+              WHEN 'for' THEN a.VALUE*p.numoccurences
               ELSE 0
           END forvotes,
           CASE p.vtype
-              WHEN 'against' THEN a.VALUE
+              WHEN 'against' THEN a.VALUE*p.numoccurences
               ELSE 0
           END againstvotes,
-          1 as numvotes,
+          p.numoccurences as numvotes,
           CASE p.vtype
-              WHEN 'for' THEN 1
+              WHEN 'for' THEN p.numoccurences
               ELSE 0
           END numforvotes,
           CASE p.vtype
-            WHEN 'against' THEN 1
+            WHEN 'against' THEN p.numoccurences
               ELSE 0
           END numagainstvotes          
     FROM
      (SELECT v.party_id partyid,
              v.vote_id voteid,
-             v.TYPE vtype
+             v.TYPE vtype,
+             count(*) numoccurences
       FROM laws_voteaction v
       WHERE v.TYPE IN ('for',
                        'against')
