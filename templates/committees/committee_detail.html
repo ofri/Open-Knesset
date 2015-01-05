@@ -117,7 +117,8 @@
                 <section class="card card-list">
                     <header><h2><i class="fa fa-file-text"></i>{% trans 'MMM Documents' %}</h2></header>
                     <ul id="recent-mmm">
-                    {% include "mks/mmm_partials.html" with object_list=object.mmm_documents.all %}
+                    {% include "mks/mmm_partials.html" with object_list=object.sorted_mmm_documents %}
+                    <li><a href="mmm_documents/">{% trans 'more...'%}</a></li>
                     </ul>
                 </section>
             {% endifnotequal %}
