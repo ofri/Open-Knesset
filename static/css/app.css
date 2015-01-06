@@ -7970,6 +7970,9 @@ div#tidbitCarousel .btn {
   font-size: 120%;
   padding: 15px 40px;
 }
+div#tidbitCarousel .btn-more {
+  margin-left: 0;
+}
 div#tidbitCarousel .btn-suggest {
   font-size: inherit;
   padding: 5px;
@@ -7979,6 +7982,7 @@ div#tidbitCarousel .btn-suggest {
   position: absolute;
   top: 30px;
   left: 30px;
+  width: 45px;
 }
 div#tidbitCarousel .btn-suggest:hover {
   color: #ffffff;

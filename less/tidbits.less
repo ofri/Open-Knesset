@@ -10,7 +10,7 @@ div#tidbitCarousel {
 
   .item {
     padding: 30px 30px 0 30px;
-    
+
     img{
       width: 200px;
       height: auto;
@@ -20,7 +20,7 @@ div#tidbitCarousel {
       .box-shadow(2px 3px 6px rgba(112,168,220,.5));
     }
 
-    strong { 
+    strong {
         display: block;
         padding: 0 0px 20px 0;
         background-position: 100% 30%;
@@ -44,6 +44,10 @@ div#tidbitCarousel {
     padding: 15px 40px;
   }
 
+  .btn-more {
+    margin-left: 0;
+  }
+
   .btn-suggest {
     font-size: inherit;
     padding: 5px;
@@ -53,10 +57,11 @@ div#tidbitCarousel {
     position: absolute;
     top: 30px;
     left: 30px;
+    width: 45px;
 
     &:hover {
-		  color: @white;
-      background: lighten(@textColor,20%);	
+      color: @white;
+      background: lighten(@textColor,20%);
     }
 
   }
