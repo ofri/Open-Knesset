@@ -307,3 +307,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
