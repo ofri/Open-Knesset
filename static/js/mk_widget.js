@@ -6,6 +6,8 @@ function generateMkFrameSet(params) {
 	if ( okURL.charAt( okURL.length-1 ) != '/' )
 	  okURL += '/';
 	
+  // add our stylesheet
+  $('head').append('<link rel="stylesheet" href="'+okURL+'static/css/mk-iframe.css" type="text/css" />');
   var frameNum = 0;
   if (classHook) {
       var elements = jQuery('.'+classHook);
@@ -40,19 +42,121 @@ function generateMkFrameSet(params) {
         return 'http://oknesset.org';
   }
   function createMkFrame( mkId, width ){
-    var mkFrame = document.createElement("iframe");
+    var mkFrame = document.createElement("div");
     mkFrame.src = okURL + "static/html/mk-iframe.html?id="+mkId;
     mkFrame.style.border =  "0px";
     mkFrame.style.margin =  "3px 0";
     mkFrame.style.width = "414px";
-    mkFrame.style.height = "240px";
+    mkFrame.style.height = "200px";
     // mkFrame.style.height = "100%";
 	mkFrame.className = "autoHeight oknesset_frame";
     mkFrame.scrolling = "no";
     mkFrame.id = "mkFrame_"+frameNum;
+    createMkPopup(mkFrame, mkId);
     frameNum++;
     return mkFrame;
   }
+  // TODO: rinse! this function was copied from static/html/mk-iframe.html
+  function createMkPopup(elem, mk) {
+      var okURI = okURL.substr(0, okURL.length-1),
+          mkId = Number(mk),
+          params = {};
+
+      if (isNaN(mkId)) {
+          mkURI = okURI + "/api/v2/member/";
+          params = ["name="+mk,
+                "extra_fields=gender,is_current,roles,committees,bills_stats_proposed,bills_stats_approved,average_weekly_presence_rank"].join("&")
+      } else {
+          mkURI = okURI + "/api/v2/member/" + mkId + '/'
+      };
+
+      jQuery.ajax(mkURI, {processData: false, data :params,
+        success: function(data){
+          var mk_title = {'נקבה': {true: 'ח"כית מכהנת',
+                                   false: 'ח"כית לשעבר' },
+                          'זכר': {true: 'ח"כ מכהן',
+                                  false: 'ח"כ לשעבר'}};
+          function $E(s){
+            return $(document.createElement(s));
+          }
+
+          var average_weekly_presence_des = ["אין מספיק נתונים","מועטה מאד","מועטה","בינונית","רבה","רבה מאד"];
+
+          if (data.objects !== undefined)
+            data = data.objects[0];
+          var divId = "oknesset_mk_"+ data.id;
+          var oknesset_main = $E('div')
+            .attr({id:divId,class:"oknesset_frame"});
+          var oknesset_content_top = $E("div")
+            .attr({class:"oknesset_content_top"});
+          oknesset_content_top.append($E("a")
+                .attr({
+                  href:okURI + "/member/"+data.id, target: "_blank"
+                })
+            .append($E("img").attr({ src: data.img_url, class:"oknesset_image"})
+          ));
+          oknesset_content_top.append($E("div").attr({class:"oknesset_name"})
+              .append($E("a")
+                .attr({href: okURI + "/member/"+data.id, target: "_blank"})
+                .html(data.name))
+              .append(" - " + mk_title[data.gender][data.is_current]));
+
+          if (data.roles != 'Unknown')
+            oknesset_content_top.append($E("div").attr({class:"oknesset_roles"}).html(data.roles));
+
+          var oknesset_law_flow = $E("div")
+            .attr({class:"oknesset_law_flow"});
+          var oknesset_proposals = $E("a")
+            .attr({class:"oknesset_proposals",
+              href:okURI + "/bill/?member="+data.id+"&stage=proposed", target: "_blank"
+            });
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_number"}).html(data.bills_stats_proposed));
+          oknesset_proposals.append($E("span").attr({class:"oknesset_proposals_desc"}).html("הצעות חוק"));
+
+          oknesset_law_flow.append(oknesset_proposals);
+          var oknesset_laws = $E("a")
+            .attr({class:"oknesset_laws", href:okURI + "/bill/?member="+data.id+"&stage=approved", target:"_blank"});
+          oknesset_laws.append($E("span")
+              .attr({class:"oknesset_laws_number"}).html(data.bills_stats_approved+'~'));
+          oknesset_laws.append($E("span").attr({class:"oknesset_laws_desc"})
+              .html("חוקים התקבלו"));
+          oknesset_law_flow.append(oknesset_laws);
+          oknesset_content_top.append(oknesset_law_flow);
+          oknesset_content_top.append($E("div").attr({class:"oknesset_attendance"}).html("נוכחות במשכן הכנסת: ").append($E("span").attr({class:"oknesset_attendance_value"}).html(average_weekly_presence_des[data.average_weekly_presence_rank])));
+          oknesset_main.append(oknesset_content_top);
+
+          var $oknesset_content_bottom = $E("div").attr({class:"oknesset_content_bottom"});
+
+          $oknesset_content_bottom.append($E("div").attr({class:"oknesset_link"})
+            .append($E("a")
+                .attr({
+                  href:okURI + "/member/"+data.id, target: "_blank"
+                })
+                .html('<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABCCAMAAAAhdHtqAAAB+1BMVEVDQ0T///9DQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0RDQ0R/MmxgAAAAqXRSTlMAAAECAwQFBwgLDA0ODxAREhMUFRYXGBkaGxwdHh8gIiMlJigpKissLS4vMDEyMzQ1Njc5Ojs8PT9AQUJDRkdKS0xNTk9QUVJTVFVWV1hZW1xdX2BiY2RlaGlqbG1ub3Bxc3R1dnd5enx9fn+AgoOIiYqLjI2Oj5CRkpSVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW4ubq7vL2+v8DBwsPEh640/AAAA3FJREFUWMPt1/lbEkEYB/BJiYgjNSmLyEojsUM7PHI7N0wOK6xMO7XDomyzFBE7NCvKUoQO09UOMTO/f2azQwQWcv9Qz8P7A+zOzPPhnWNnFrIss0Gy3j/okTTC6BCLMublH3204GvVZMgzXPkI/KglJBOe+rBrHjTmLuVmwCu98l7C8K69NDft/DRHnN8lbL7/kIoVpOUVnx9nqY3fMISKUveUXM9XCVsYrF8VLk3VK77oC6Z2rSwnsjwlT3nwwQzThkz5f1Sl4OnPBlP7dH2X7K/KZD1FTRcbNQyYtdHqk/P09hGGfb5TIYveIglPUSt8YdqLxnVLNkrYW2v3Mmy6s0oe40cT8+SVnVNMe9NUFHtEEvGK7J7gqAn75PHmK64nr+j8zDTPqfUJLKY4nvbkiwUJmxWqFQkt9Vhe7o6O4KgNN29K9Dlc2tNah1hqM0KNIvFdYgkvZ+ev1Maa9UltYVG91ccHWWrfuzllkhtsFK/kxixLzXuhJPndP4rX9qljFoFubmUqZ1MUT6MkwqXNKR6c0eeDHlRkXYGhVFFSrs4vpzOy3GBUqoylMpJLSzTbNysM2wp1ZIuxkBCV0SAvNq7JK9ev18RaLx0fIOr8qDOhkx6xIsqqIaqI7A2qOAwVz8HqyBnGaUL2IqB1ovUAutprYnk3wTzuGO7SJEQYaiCqiWyEefpvsDjIK9gJ2R30ONxri+l1AJM6Hzheyk81IXmT1HuNqjoM6gOw3CIeyavEjLYbrXUQsl4cb0JFloc9xyKPS8pTTmBrpLchAPMt8hJNzCtMKb/aiP7qAmhY5LXsh3A5nicGvbtBrzrkcXgq5efICXnansT6K+regjNBYP2l3hRbz9XU08/BIpBhafz2YFbbixb6fLTFfN+9APhVLlRV4Do9lXzYUIlB+lIwhLIKuNU+1JlJFyyEbAz4VrShaRda7DuW8M49dPe5RoGvTj88bvhcbtcX9D/Hu163axqPByD2TGHA6RrBiMvdOzfl9GDsEZ49f9LX11/+p7dCoznYaLPZGnjeRD/MNr6B3pl4m4U/Ti/qeauVr6dfFqkJq6q3mfkGK2+xWBsbT2xRqWWLPKM4+dbr9Y6OelmMhiN097siolkoxt6P+/MivDPt95Fu3L4a9vz07E43gLCXtzoDUZD9P531sl7W+5+8nyR+I3ng9uF9AAAAAElFTkSuQmCC"\
+                alt="לדף האישי של "+data.name+" בכנסת הפתוחה" />' ))
+          );
+
+
+          if (typeof(data.committees) != 'undefined' && data.committees.length > 0) {
+            var $oknesset_committees = $E("div").attr({class:"oknesset_committees"}).html("נוכחות עיקרית בוועדות:");
+            var $oknesset_committees_ul = $E("ul");
+            for (var i = 0; (i < 3) && (i < data.committees.length); ++i) {
+              $oknesset_committees_ul.append($E("li").append($E("a")
+                    .attr({
+                      href: okURI + data.committees[i][1], target: "_blank"
+                    })
+                    .html(data.committees[i][0])));
+            }
+
+            $oknesset_committees.append($oknesset_committees_ul);
+            $oknesset_content_bottom.append($oknesset_committees);
+          }
+
+          oknesset_main.append($oknesset_content_bottom);
+
+          $(elem).append(oknesset_main);
+        }})
+    };
 }
 $(document).ready( function () {
   var re = /(אביגדור ליברמן|אבי וורצמן|אבישי ברוורמן|אברהים צרצור|אברהם מיכאלי|אופיר אקוניס|אורי אורבך|אורי יהודה אריאל|אורי מקלב|אורית סטרוק|אורלי לוי-אבקסיס|אחמד טיבי|איילת שקד|אילן גילאון|איציק שמולי|איתן כבל|אלי בן-דהן|אליהו ישי|אלכס מילר|אלעזר שטרן|אמנון כהן|אראל מרגלית|באסל גטאס|בועז טופורובסקי|בנימין נתניהו|גילה גמליאל|גלעד ארדן|ג`מאל זחאלקה|דב חנין|דב ליפמן|דוד אזולאי|דוד צור|דוד רותם|דני דנון|זאב אלקין|זבולון כלפה|זהבה גלאון|חיים כץ|חיליק בר|חמד עמאר|חנא סוייד|חנין זועבי|טלב אבו עראר|יאיר לפיד|יאיר שמיר|יואב בן צור|יואל רזבוזוב|יובל צלנר|יובל שטייניץ|יולי - יואל אדלשטיין|יוני שטבון|יעל גרמן|יעקב אשר|יעקב ליצמן|יעקב מרגי|יעקב פרי|יפעת קריב|יצחק אהרונוביץ|יצחק הרצוג|יצחק וקנין|יצחק כהן|יריב לוין|ישראל אייכלר|ישראל כץ|לאון ליטינצקי|לימור לבנת|מאיר כהן|מאיר פרוש|מאיר שטרית|מוחמד ברכה|מיכל בירן|מיכל רוזין|מיקי לוי|מיקי רוזנטל|מירי רגב|מנחם אליעזר מוזס|מסעוד גנאים|מרב מיכאלי|מרדכי יוגב|משה גפני|משה זלמן פייגלין|משה יעלון|משה מזרחי|משולם נהרי|נחמן שי|ניסן סלומינסקי|ניצן הורוביץ|נסים זאב|נפתלי בנט|סופה לנדבר|סילבן שלום|סתיו שפיר|עדי קול|עוזי לנדאו|עיסאווי פריג`|עליזה לביא|עמיר פרץ|עמר בר-לב|עמרם מצנע|עפו אגבאריה|עפר שלח|פאינה (פניה) קירשנבאום|פנינה תמנו-שטה|צחי הנגבי|ציפי חוטובלי|ציפי לבני|קארין אלהרר|רוברט אילטוב|רונן הופמן|רות קלדרון|רינה פרנקל|שאול מופז|שולי מועלם-רפאלי|שי פירון|שלי יחימוביץ|שמעון אוחיון|שמעון סולומון|תמר זנדברג|אביגדור ליברמן|אבי וורצמן|אבישי ברוורמן|אברהים צרצור|אברהם מיכאלי|אופיר אקוניס|אורי אורבך|אורי יהודה אריאל|אורי מקלב|אורית סטרוק|אורלי לוי-אבקסיס|אחמד טיבי|איילת שקד|אילן גילאון|איציק שמולי|איתן כבל|אלי בן-דהן|אליהו ישי|אלכס מילר|אלעזר שטרן|אמנון כהן|אראל מרגלית|באסל גטאס|בועז טופורובסקי|בנימין נתניהו|גילה גמליאל|גלעד ארדן|ג`מאל זחאלקה|דב חנין|דב ליפמן|דוד אזולאי|דוד צור|דוד רותם|דני דנון|זאב אלקין|זבולון כלפה|זהבה גלאון|חיים כץ|חיליק בר|חמד עמאר|חנא סוייד|חנין זועבי|טלב אבו עראר|יאיר לפיד|יאיר שמיר|יואב בן צור|יואל רזבוזוב|יובל צלנר|יובל שטייניץ|יולי - יואל אדלשטיין|יוני שטבון|יעל גרמן|יעקב אשר|יעקב ליצמן|יעקב מרגי|יעקב פרי|יפעת קריב|יצחק אהרונוביץ|יצחק הרצוג|יצחק וקנין|יצחק כהן|יריב לוין|ישראל אייכלר|ישראל כץ|לאון ליטינצקי|לימור לבנת|מאיר כהן|מאיר פרוש|מאיר שטרית|מוחמד ברכה|מיכל בירן|מיכל רוזין|מיקי לוי|מיקי רוזנטל|מירי רגב|מנחם אליעזר מוזס|מסעוד גנאים|מרב מיכאלי|מרדכי יוגב|משה גפני|משה זלמן פייגלין|משה יעלון|משה מזרחי|משולם נהרי|נחמן שי|ניסן סלומינסקי|ניצן הורוביץ|נסים זאב|נפתלי בנט|סופה לנדבר|סילבן שלום|סתיו שפיר|עדי קול|עוזי לנדאו|עיסאווי פריג`|עליזה לביא|עמיר פרץ|עמר בר-לב|עמרם מצנע|עפו אגבאריה|עפר שלח|פאינה (פניה) קירשנבאום|פנינה תמנו-שטה|צחי הנגבי|ציפי חוטובלי|ציפי לבני|קארין אלהרר|רוברט אילטוב|רונן הופמן|רות קלדרון|רינה פרנקל|שאול מופז|שולי מועלם-רפאלי|שי פירון|שלי יחימוביץ|שמעון אוחיון|שמעון סולומון|תמר זנדברג|איברהים צרצור|אורי אריאל|אורלי לוי אבקסיס|גמאל זחאלקה|חאמד עמר|חנא סוויד|ניצן הורביץ|ניסים זאב|עפו אגבריה|פאינה קירשנבאום|פניה קירשנבאום|פאינה קירשנבוים|יחיאל חיליק בר|זבולון קלפה)/g;

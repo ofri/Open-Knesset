@@ -1,12 +1,10 @@
-body { margin: 0; }
-
 .oknesset_frame {
     background-color:#EFEFEF;
     border:1px solid #E6E6E6;
     direction:rtl;
     font-family:tahoma,arial;
     font-size:14px;
-    height:186px;
+    height:190px;
     min-width:370px;
     padding:5px;
     position:relative;
@@ -19,12 +17,12 @@ body { margin: 0; }
     border: 2px solid #777777;
 }
 
-a:visited, a:link {
+.oknesset_frame a:visited, .oknesset_frame a:link {
     color:#464545;
     text-decoration:none;
 }
 
-a:hover, a:active {
+.oknesset_frame a:hover, .oknesset_frame a:active {
     color:#464545;
     text-decoration:underline;
 }
@@ -111,4 +109,3 @@ a:hover, a:active {
     font-size:12px;
 }
 
-.clear {height:0; overflow:hidden; clear:both;}
