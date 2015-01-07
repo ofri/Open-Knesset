@@ -130,7 +130,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tastypie_swagger',
-    'piston',                       # friends apps
     'debug_toolbar',
     'tagging',
     'south',
@@ -307,3 +306,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
+DEBUG_TOOLBAR_PATCH_SETTINGS = False

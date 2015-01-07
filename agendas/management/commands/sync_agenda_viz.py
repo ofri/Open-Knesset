@@ -11,7 +11,7 @@ from zipfile import ZipFile
 class Command(NoArgsCommand):
 
     help = "Sync ok-agenda-wiz media from ydaniv's repo"
-    ZIP_URL = 'https://github.com/ydaniv/ok-agenda-viz/archive/master.zip'
+    ZIP_URL = 'https://github.com/hasadna/ok-agenda-viz/archive/master.zip'
     _static_root = settings.STATICFILES_DIRS[0]
     _templates_root = settings.TEMPLATE_DIRS[0]
 

@@ -3,8 +3,10 @@ Api for the members app
 '''
 import urllib
 import math
+import logging
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.db.models.query import EmptyQuerySet
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
@@ -19,10 +21,11 @@ from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
 from persons.api import RoleResource
-from persons.models import Person
+from persons.models import Person, PersonAlias
 
 from django.db.models import Count
 
+logger = logging.getLogger(__name__)
 
 class PartyResource(BaseResource):
     ''' Party API
@@ -219,6 +222,23 @@ class MemberResource(BaseResource):
             null = True)
     fields.ToOneField(PartyResource, 'current_party', full=True)
     average_weekly_presence_rank = fields.IntegerField()
+
+    def obj_get_list(self, bundle, **kwargs):
+        simple = super(MemberResource, self).obj_get_list(bundle, **kwargs)
+
+        if hasattr(bundle.request, 'GET'):
+            # Grab a mutable copy.
+            filters = bundle.request.GET.copy()
+
+        # Update with the provided kwargs.
+        filters.update(kwargs)
+        name = filters.get('name')
+        if name and not simple:
+            try:
+                return Member.objects.filter(person__aliases__name=name)
+            except PersonAlias.DoesNotExist:
+                return simple
+        return simple
 
     def dehydrate_committees (self, bundle):
         temp_list = bundle.obj.committee_meetings.exclude(committee__type='plenum')

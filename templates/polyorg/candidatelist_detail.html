@@ -9,8 +9,6 @@
     <link rel="stylesheet" type="text/css" href="{% static "css/polyorg.css" %}?v=1" />
 {% endblock %}
 {% block nav-elections %}class="active"{% endblock %}
-{% block help-section %}
-{% endblock %}
 {% block breadcrumbs %}
     <li><a href="{% url 'candidate-list-list' %}">{% trans "Knesset 19 Factions" %}</a> <span class="divider">/</span></li>
     <li class="active">{{ object.name }}</li>
