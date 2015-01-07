@@ -133,6 +133,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.debug('Events objects count before update: %d' % Event.objects.count())
         r = self.parse_future_committee_meetings()
-        logger.debug(r)
+        #logger.debug(r)
         self.update_future_committee_meetings_db(r)
         logger.debug('Events objects count after update: %d' % Event.objects.count())

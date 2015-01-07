@@ -1,17 +1,14 @@
 # encoding: utf-8
 
-from bs4 import BeautifulSoup
 from okscraper.base import BaseScraper
-from okscraper.sources import UrlSource, ScraperSource
-from okscraper.storages import ListStorage, DictStorage
+from okscraper.sources import ScraperSource
+from okscraper.storages import ListStorage
 from lobbyists.models import LobbyistHistory, LobbyistCorporation, LobbyistCorporationData, Lobbyist
-from persons.models import Person
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-
 from lobbyist import LobbyistScraper
 from lobbyists_index import LobbyistsIndexScraper
-
+from lobbyists_committeemeetings import *
 
 class MainScraperListStorage(ListStorage):
     """
@@ -51,7 +48,7 @@ class MainScraperListStorage(ListStorage):
             try:
                 corporation_data = corporation.latest_data
                 if corporation_data.name == corporation.name and corporation_data.source_id == corporation.source_id:
-                    last_lobbyist_ids = sorted(corporation_data.lobbyists.all(), key=lambda lobbyist: lobbyist.id)
+                    last_lobbyist_ids = map(lambda lobbyist: lobbyist.id, sorted(corporation_data.lobbyists.all(), key=lambda lobbyist: lobbyist.id))
                     if last_lobbyist_ids == lobbyist_ids:
                         need_corporation_data = False
             except ObjectDoesNotExist:
@@ -103,4 +100,9 @@ class MainScraper(BaseScraper):
             lobbyist = LobbyistScraper().scrape(lobbyist_id)
             self.storage.store(lobbyist)
             i+=1
-            #if i>5: break
+            #if i>0: break
+        self._getLogger().info('looking for mentions of lobbyists in committee meetings')
+        LobbyistsCommiteeMeetingsScraper().scrape()
+        LobbyistCorporationsCommitteeMeetingsScraper().scrape()
+
+

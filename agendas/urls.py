@@ -1,5 +1,5 @@
 #encoding: UTF-8
-from django.conf.urls import url, patterns
+from django.conf.urls import url, patterns, include
 from django.utils.translation import ugettext
 from django.views.generic.base import TemplateView
 
@@ -29,11 +29,13 @@ agenda_meeting_detail_view  = AgendaMeetingDetailView.as_view()
 urlpatterns = patterns('',
     url(r'^$', agenda_list_view, name='agenda-list'),
     url(r'^(?P<pk>\d+)/$', agenda_detail_view, name='agenda-detail'),
-    url(r'^(?P<pk>\d+)/more-votes/$', AgendaVotesMoreView.as_view(), name='agenda-detail-more-votes'),
-    url(r'^(?P<pk>\d+)/more-bills/$', AgendaBillsMoreView.as_view(), name='agenda-detail-more-bills'),
-    url(r'^(?P<pk>\d+)/more-meetings/$', AgendaMeetingsMoreView.as_view(), name='agenda-detail-more-meetings'),
-    url(r'^(?P<pk>\d+)/member/(?P<member_id>\d+)/$', agenda_mk_detail_view, name='mk-agenda-detail'),
-    url(r'^(?P<pk>\d+)/edit/$', agenda_detail_edit_view, name='agenda-detail-edit'),
+    url(r'^(?P<pk>\d+)/', include(patterns('',
+                                    url(r'^more-votes/$', AgendaVotesMoreView.as_view(), name='agenda-detail-more-votes'),
+                                    url(r'^more-bills/$', AgendaBillsMoreView.as_view(), name='agenda-detail-more-bills'),
+                                    url(r'^more-meetings/$', AgendaMeetingsMoreView.as_view(), name='agenda-detail-more-meetings'),
+                                    url(r'^member/(?P<member_id>\d+)/$', agenda_mk_detail_view, name='mk-agenda-detail'),
+                                    url(r'^edit/$', agenda_detail_edit_view, name='agenda-detail-edit'),
+                                   ))),
     url(r'^vote/(?P<pk>\d+)/$', agenda_vote_detail_view, name='agenda-vote-detail'),
     url(r'^bill/(?P<pk>\d+)/$', agenda_bill_detail_view, name='agenda-bill-detail'),
     url(r'^meeting/(?P<pk>\d+)/$', agenda_meeting_detail_view, name='agenda-meeting-detail'),

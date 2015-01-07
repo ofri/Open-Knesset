@@ -37,7 +37,7 @@
       <div class="row"><div class="span12"><div class="alert alert-error">{% trans 'This is a development server, all data in it should be considered fictional.  users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div></div></div>
 {% endif %}
       <div class="row">
-        <div id="logo" class="span4">
+        <div id="logo" class="span4 clearfix">
           <a href="/">
             <img src="{% static "img/oknesset-logo.png" %}" alt="oknesset-logo" />
             <span>כנסת פתוחה</span>
@@ -206,7 +206,6 @@
 
     <script src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     <script src="{% static "js/jquery.jgrowl.js" %}"></script>
-    <script src="{% static "js/raphael-min.js" %}"></script>
     <script src="{% static "js/okhelptexts.js" %}"></script>
     <script src="{% static "js/togglehelpextended.js" %}"></script>
 

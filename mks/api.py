@@ -17,6 +17,8 @@ from video.utils import get_videos_queryset
 from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
+from persons.api import RoleResource
+from persons.models import Person
 
 from django.db.models import Count
 
@@ -206,6 +208,10 @@ class MemberResource(BaseResource):
     bills_uri = fields.CharField()
     agendas_uri = fields.CharField()
     committees = fields.ListField()
+    detailed_roles = fields.ToManyField(RoleResource,
+            attribute = lambda b: Person.objects.get(mk=b.obj).roles.all(),
+            full = True,
+            null = True)
 
     def dehydrate_committees (self, bundle):
         temp_list = bundle.obj.committee_meetings.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]

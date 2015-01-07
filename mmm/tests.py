@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import json
 
 from django.test import TestCase
-from django.utils import simplejson
 from knesset.settings import PROJECT_ROOT
 from mks.models import Member
 from committees.models import Committee
@@ -62,7 +62,7 @@ class MmmTest(TestCase):
             pass
 
         with open(MMM_FIXTURE) as f:
-            j = simplejson.load(f)
+            j = json.load(f)
             mks = set()
             comms = set()
 

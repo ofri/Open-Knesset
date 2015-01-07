@@ -94,6 +94,7 @@ class PendingSuggestionsView(PendingSuggestionsCountView):
                     'by': unicode(x.suggested_by),
                     'by_url': x.suggested_by.get_profile().get_absolute_url(),
                     'by_email': can_apply and x.suggested_by.email,
+                    'suggested_at': x.suggested_at.strftime('%Y-%m-%d %H:%M'),
                 }
                 for x in result[key]]
 

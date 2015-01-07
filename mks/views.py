@@ -1,4 +1,5 @@
 import urllib
+import json
 from operator import attrgetter
 from itertools import chain
 
@@ -10,7 +11,6 @@ from django.views.generic import ListView, TemplateView, RedirectView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.utils import simplejson as json, simplejson
 from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
@@ -151,6 +151,11 @@ class MemberListView(ListView):
             context['past_mks'] = context['past_mks'].extra(
                 select={'extra': 'average_weekly_presence_hours'}).order_by(
                     '-extra')
+            # sort again because db sort freaks when some values are None.
+            qs = list(qs)
+            qs.sort(key=lambda x: x.extra or 0, reverse=True)
+            context['past_mks'] = list(context['past_mks'])
+            context['past_mks'].sort(key=lambda x: x.extra or 0, reverse=True)
         elif info == 'committees':
             qs = list(qs)
             for x in qs:
@@ -210,7 +215,9 @@ class MemberDetailView(DetailView):
     queryset = Member.objects.exclude(current_party__isnull=True)\
                              .select_related('current_party',
                                              'current_party__knesset',
-                                             'voting_statistics')\
+                                             'voting_statistics',
+                                             'awards',
+                                             'awards__award_type')\
                              .prefetch_related('parties')
 
     MEMBER_INITIAL_DATA = 2
@@ -345,7 +352,34 @@ class MemberDetailView(DetailView):
             legislation_actions = actor_stream(member).filter(
                 verb__in=('proposed', 'joined'))
 
-            committee_actions = actor_stream(member).filter(verb='attended')
+            # this ugly code groups all the committee actions according to plenum and committee
+            # it stop iterating when both committee and plenum actions reach the maximum (MEMBER_INITIAL_DATA)
+            # it also stops iterating when reaching 20 iterations
+            committee_actions_more = {'committee': False, 'plenum': False}
+            committee_actions = {'committee': [], 'plenum': []}
+            i = 0
+            for action in actor_stream(member).filter(verb='attended'):
+                i = i + 1
+                if i == 20:
+                    break
+                committee_type = (action and action.target and
+                                  action.target.committee and
+                                  action.target.committee.type)
+                if committee_type in ['plenum', 'committee']:
+                    if len(committee_actions[committee_type]) == self.MEMBER_INITIAL_DATA:
+                        committee_actions_more[committee_type] = True
+                        if committee_actions_more['plenum'] == True and committee_actions_more['committee'] == True:
+                            break
+                    else:
+                        committee_actions[committee_type].append(action)
+
+            committees_presence = []
+            for committee in member.committees.all():
+                committee_member = committee.members_by_presence(ids=[member.id])[0]
+                committees_presence.append({"committee": committee,
+                    "presence": committee_member.meetings_percentage})
+
+            committees_presence.sort(cmp=lambda x,y: y["presence"] - x["presence"])
 
             mmm_documents = member.mmm_documents.order_by('-publication_date')
 
@@ -364,8 +398,10 @@ class MemberDetailView(DetailView):
                 'actions': actions[:self.MEMBER_INITIAL_DATA],
                 'legislation_actions_more': legislation_actions.count() > self.MEMBER_INITIAL_DATA,
                 'legislation_actions': legislation_actions[:self.MEMBER_INITIAL_DATA],
-                'committee_actions_more': committee_actions.count() > self.MEMBER_INITIAL_DATA,
-                'committee_actions': committee_actions[:self.MEMBER_INITIAL_DATA],
+                'committee_actions_more': committee_actions_more['committee'],
+                'committee_actions': committee_actions['committee'],
+                'plenum_actions_more': committee_actions_more['plenum'],
+                'plenum_actions': committee_actions['plenum'],
                 'mmm_documents_more': mmm_documents.count() > self.MEMBER_INITIAL_DATA,
                 'mmm_documents': mmm_documents[:self.MEMBER_INITIAL_DATA],
                 'bills_statistics': bills_statistics,
@@ -381,6 +417,7 @@ class MemberDetailView(DetailView):
                 'num_related_videos': related_videos.count(),
                 'INITIAL_DATA': self.MEMBER_INITIAL_DATA,
                 'previous_parties': previous_parties,
+                'committees_presence': committees_presence,
             }
 
             if not self.request.user.is_authenticated():
@@ -739,8 +776,24 @@ class MemeberMoreCommitteeView(MemeberMoreActionsView):
     """Get partially rendered member committee actions content for AJAX calls to 'More'"""
 
     def get_queryset(self):
-        actions = super(MemeberMoreCommitteeView, self).get_queryset()
-        return actions.filter(verb='attended')
+        qs = super(MemeberMoreCommitteeView, self).get_queryset()
+        action_ids = []
+        for action in qs.filter(verb='attended'):
+            if (action.target and action.target.committee and
+                    action.target.committee.type == 'committee'):
+                action_ids.append(action.id)
+        return qs.filter(id__in=action_ids)
+
+class MemeberMorePlenumView(MemeberMoreActionsView):
+    """Get partially rendered member plenum actions content for AJAX calls to 'More'"""
+
+    def get_queryset(self):
+        qs = super(MemeberMorePlenumView, self).get_queryset()
+        action_ids = []
+        for action in qs.filter(verb='attended'):
+            if action.target and action.target.committee.type == 'plenum':
+                action_ids.append(action.id)
+        return qs.filter(id__in=action_ids)
 
 
 class MemeberMoreMMMView(MemeberMoreActionsView):

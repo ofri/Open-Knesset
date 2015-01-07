@@ -24,11 +24,19 @@
 
 {% block divcontent %}
     <div class="row">
-        <div class="cards span12">
+        <div class="cards span9">
             <section class="card card-list">
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist" %}</h2></header>
                 <ul>
                     <li>{% trans "Name" %}: {{ object }}</li>
+                    {% if object.large_image_url %}
+                        <li><img src="{{object.large_image_url}}"/></li>
+                    {% elif object.image_url %}
+                        <li><img src="{{object.image_url}}"/></li>
+                    {% endif %}
+                    {% if object.description %}
+                        <li>{{ object.description | linebreaks }}</li>
+                    {% endif %}
                     <li>{% trans "Lobbyist Corporation" %}: <a href="{% url 'lobbyist-corporation' corporation.id %}">
                         {% if not corporation.name %}
                             {% trans "Private Lobbyists" %}
@@ -50,6 +58,9 @@
                     {% if data.permit_type %}
                         <li>{% trans "Permit Type" %}: {{ data.permit_type }}</li>
                     {% endif %}
+                    {% for link in links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
                 </ul>
             </section>
             <section class="card card-list">
@@ -60,6 +71,17 @@
                     {% endfor %}
                 </ul>
             </section>
+            {% if object.committee_meetings.count > 0 %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Mentiond in Committee Meetings" %}</h2></header>
+                <ul>
+                    {% for committee_meeting in object.committee_meetings.all %}
+                        <li><a href="{% url 'committee-meeting' committee_meeting.id %}">{{ committee_meeting }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+            {% include "lobbyists/_suggest_change_section.html" %}
         </div>
     </div>
 {% endblock %}

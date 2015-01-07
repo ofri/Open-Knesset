@@ -59,8 +59,11 @@ class Feedback(models.Model):
     "Stores generic feedback suggestions/problems"
 
     content = models.TextField(_('Content'))
+    suggested_at = models.DateTimeField(verbose_name=_('Suggested at'),
+                                        blank=True,
+                                        null=True)
     suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
-                                     related_name='feedbacl', blank=True,
+                                     related_name='feedback', blank=True,
                                      null=True)
     ip_address = models.IPAddressField(_('IP Address'), blank=True, null=True)
     user_agent = models.TextField(_('user_agent'), blank=True, null=True)
@@ -70,9 +73,13 @@ class Feedback(models.Model):
         verbose_name = _('Feedback message')
         verbose_name_plural = _('Feedback messages')
 
+
 class TagSynonym(models.Model):
     tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')
-    synonym_tag = models.ForeignKey(Tag,related_name='synonym_synonym_tag',unique=True)
+    synonym_tag = models.ForeignKey(Tag,
+                                    related_name='synonym_synonym_tag',
+                                    unique=True)
+
 
 class TagSuggestion(models.Model):
     name = models.TextField(unique=True)

@@ -1,4 +1,5 @@
-from django.utils import simplejson as json
+import json
+
 from hashnav import ListView
 from django.http import HttpResponse
 from models import Video

@@ -137,7 +137,33 @@
             <aside class="sidebar">
                 {% agendas_for user object 'committeemeeting' %}
             </aside>
+
+            {% if mentioned_lobbyists or mentioned_lobbyist_corporations %}
+            <aside class="sidebar sidebar-lobbyists">
+                {% if mentioned_lobbyists %}
+                <header><h2>{% trans "Lobbyists mentioned" %}</h2></header>
+                <ul>
+                    {% for lobbyist in mentioned_lobbyists %}
+                        <li>
+                            <a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if mentioned_lobbyist_corporations %}
+                <header><h2>{% trans "Lobbyist corporations mentioned" %}</h2></header>
+                <ul>
+                    {% for corporation in mentioned_lobbyist_corporations %}
+                        <li>
+                            <a href="{% url 'lobbyist-corporation' corporation.id %}">{{ corporation }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </aside>
+            {% endif %}
         </div>
+
     </div>
 
 {% endblock %}

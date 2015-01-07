@@ -12,8 +12,8 @@ from knesset.utils import cannonize
 from links.models import Link
 import difflib
 from mks.managers import (
-    BetterManager, KnessetManager, CurrentKnessetMembersManager,
-    CurrentKnessetPartyManager)
+    BetterManager, PartyManager, KnessetManager, CurrentKnessetMembersManager,
+    CurrentKnessetPartyManager, MembershipManager)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -68,14 +68,16 @@ class Party(models.Model):
     end_date = models.DateField(blank=True, null=True)
     is_coalition = models.BooleanField(default=False)
     number_of_members = models.IntegerField(blank=True, null=True)
-    number_of_seats = models.IntegerField(blank=True, null=True)
+    number_of_seats = models.IntegerField(blank=True, null=True, help_text='Last known number of seats')
     knesset = models.ForeignKey(Knesset, related_name='parties', db_index=True,
                                 null=True, blank=True)
 
-    logo = models.ImageField(blank=True,null=True,upload_to='partyLogos')
+    logo = models.ImageField(blank=True, null=True, upload_to='partyLogos')
 
-    objects = BetterManager()
+    objects = PartyManager()
     current_knesset = CurrentKnessetPartyManager()
+
+    split_from = models.ForeignKey('self', blank=True, null=True)
 
     class Meta:
         verbose_name = _('Party')
@@ -148,6 +150,13 @@ class Party(models.Model):
         return self.knesset == Knesset.objects.current_knesset()
 
 
+class PartySeats(models.Model):
+    party = models.ForeignKey(Party)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    number_of_seats = models.IntegerField(blank=True, null=True)
+
+
 class Membership(models.Model):
     member = models.ForeignKey('Member')
     party = models.ForeignKey('Party')
@@ -155,6 +164,7 @@ class Membership(models.Model):
     end_date = models.DateField(blank=True, null=True)
     position = models.PositiveIntegerField(blank=True, default=999)
 
+    objects = MembershipManager()
     def __unicode__(self):
         return "%s-%s (%s-%s)" % (self.member.name, self.party.name, str(self.start_date), str(self.end_date))
 
@@ -310,11 +320,10 @@ class Member(models.Model):
         if self.is_current:
             end_date = date.today()
         else:
-            try:
-                end_date = self.end_date
-            except TypeError:
+            end_date = self.end_date
+            if not end_date:
                 logger.warn(
-                    'MK %d is not current, but missing end or start date' %
+                    'MK %d is not current, but end date is None' %
                     self.id)
                 return None
         return (end_date - start_date).days
@@ -458,6 +467,15 @@ class Member(models.Model):
     def age(self):
         return relativedelta(date.today(), self.date_of_birth)
 
+    @property
+    def awards(self):
+        return self.awards_and_convictions.filter(award_type__valence__gt=0)
+
+    @property
+    def convictions(self):
+        return self.awards_and_convictions.filter(award_type__valence__lt=0)
+
+
 
 class WeeklyPresence(models.Model):
     member = models.ForeignKey('Member')
@@ -471,6 +489,28 @@ class WeeklyPresence(models.Model):
     def save(self, **kwargs):
         super(WeeklyPresence, self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
+
+
+class AwardType(models.Model):
+    name = models.CharField(max_length=100)
+    valence = models.FloatField(default=0)
+    description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return u"%s (%d)" % (self.name, self.valence)
+
+
+class Award(models.Model):
+    award_type = models.ForeignKey('AwardType', related_name='awards')
+    member = models.ForeignKey('Member', related_name='awards_and_convictions')
+    date_given = models.DateField()
+    reference = models.URLField(blank=True, max_length=1000)
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.member, self.award_type)
+
+    class Meta:
+        ordering = ('-date_given', )
 
 # force signal connections
 from listeners import *

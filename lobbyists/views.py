@@ -2,9 +2,10 @@ from django.views.generic import ListView, DetailView, TemplateView
 from models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 import sys
+from links.models import Link
 
 
 class LobbyistsIndexView(ListView):
@@ -79,6 +80,7 @@ class LobbyistDetailView(DetailView):
         context['represents'] = lobbyist.latest_data.represents.all()
         context['corporation'] = lobbyist.latest_corporation
         context['data'] = lobbyist.latest_data
+        context['links'] = Link.objects.for_model(context['object'])
         return context
 
 
@@ -86,12 +88,20 @@ class LobbyistCorporationDetailView(DetailView):
 
     model = LobbyistCorporation
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.main_corporation == self.object:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            return HttpResponseRedirect(self.object.main_corporation.get_absolute_url())
+
     def get_context_data(self, **kwargs):
         context = super(LobbyistCorporationDetailView, self).get_context_data(**kwargs)
         context['lobbyists'] = Lobbyist.objects.filter(id__in=context['object'].cached_data['combined_lobbyist_ids']).order_by('person__name')
         if context['object'] not in LobbyistCorporation.objects.current_corporations():
             context['warning_old_corporation'] = True
-
+        context['links'] = Link.objects.for_model(context['object'])
         return context
 
 

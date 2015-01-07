@@ -17,7 +17,7 @@
 
 {% block divcontent %}
     <div class="row">
-        <div class="cards span12">
+        <div class="cards span9">
             {% if warning_old_corporation %}
                 <section class="card card-list">
                     <header><h2><i class="fa fa-users"></i>{% trans "Warning" %}</h2></header>
@@ -27,13 +27,22 @@
                 </section>
             {% endif %}
             <section class="card card-list">
-                <header><h2><i class="fa fa-users"></i>{% trans "Lobbyist Corporation" %}</h2></header>
+                <header>
+                    <h2>
+                        <i class="fa fa-users"></i>{% trans "Lobbyist Corporation" %}: 
+                        {% if not object.name and not object.source_id %}
+                            {% trans "Private Lobbyists" %}
+                        {% endif %}
+                        {% if object.name %}
+                            {{ object.name }}
+                        {% elif not corporation.is_private_lobbyists %}
+                            {% trans "No name" %}
+                        {% endif %}
+                    </h2>
+                </header>
                 <ul>
-                    {% if not object.name and not object.source_id %}
-                        <li>{% trans "Name" %}: {% trans "Private Lobbyists" %}</li>
-                    {% endif %}
-                    {% if object.name %}
-                        <li>{% trans "Name" %}: {{ object.name }}</li>
+                    {% if object.description %}
+                        <li>{{ object.description | linebreaks }}</li>
                     {% endif %}
                     {% if object.source_id %}
                         <li>{% trans "Corporation Id" %}: {{ object.source_id }}</li>
@@ -50,7 +59,9 @@
                             {% endfor %}
                         </li>
                     {% endif %}
-                    <li></li>
+                    {% for link in links %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
                 </ul>
             </section>
             {% if lobbyists %}
@@ -58,11 +69,33 @@
                 <header><h2><i class="fa fa-users"></i>{% trans "Lobbyists" %}</h2></header>
                 <ul>
                     {% for lobbyist in lobbyists %}
-                        <li><a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a></li>
+                        <li class="card-party-members">
+                        {% if lobbyist.image_url %}
+                            <div class="party-member-photo">
+                                <a href="{% url 'lobbyist-detail' lobbyist.id %}">
+                                    <img width="75" height="110" src="{{ lobbyist.image_url }}"/>
+                                    <span class="party-member-name">{{ lobbyist }}</span>
+                                </a>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'lobbyist-detail' lobbyist.id %}">{{ lobbyist }}</a>
+                        {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </section>
             {% endif %}
+            {% if object.committee_meetings.count > 0 %}
+            <section class="card card-list">
+                <header><h2><i class="fa fa-users"></i>{% trans "Mentiond in Committee Meetings" %}</h2></header>
+                <ul>
+                    {% for committee_meeting in object.committee_meetings.all %}
+                        <li><a href="{% url 'committee-meeting' committee_meeting.id %}">{{ committee_meeting }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+            {% include "lobbyists/_suggest_change_section.html" %}
         </div>
     </div>
 {% endblock %}

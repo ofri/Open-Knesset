@@ -16,7 +16,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from actstream.models import Follow
 from laws.models import VoteAction, Vote
-from mks.models import Party, Member, Knesset
+from mks.models import Party, Member, Knesset, Membership
 import queries
 
 AGENDAVOTE_SCORE_CHOICES = (
@@ -60,6 +60,9 @@ class AgendaVoteManager(models.Manager):
 
         mk_query = queries.BASE_MK_QUERY % db_functions
         cursor.execute(mk_query)
+        
+        party_query = queries.BASE_PARTY_QUERY % db_functions
+        cursor.execute(party_query)
 
 
 class AgendaVote(models.Model):
@@ -343,27 +346,11 @@ class Agenda(models.Model):
         return ('agenda-detail-edit', [str(self.id)])
 
     def member_score(self, member):
-        # Find all votes that
-        #   1) This agenda is ascribed to
-        #   2) the member participated in and either voted for or against
-        qs = AgendaVote.objects.filter(
-            agenda = self,
-            vote__voteaction__member = member,
-            vote__voteaction__type__in=['for','against']).extra(
-                select={'weighted_score':'agendas_agendavote.score*agendas_agendavote.importance'}
-            ).values_list('weighted_score','vote__voteaction__type')
-
-        for_score = against_score = 0
-        for score, action_type in qs:
-            if action_type == 'against':
-                against_score += score
-            else:
-                for_score += score
-
-        max_score = sum([abs(x.score*x.importance) for x in
-                         self.agendavotes.all()])
-        if max_score > 0:
-            return (for_score - against_score) / max_score * 100
+        values = self.get_mks_values(mks=[member])
+        if values:
+            if len(values)>1:
+                raise Member.MultipleObjectsReturned
+            return values[0][1]['score']
         else:
             return 0.0
 
@@ -458,18 +445,26 @@ class Agenda(models.Model):
         instances['bottom'].sort(key=attrgetter('score'), reverse=True)
         return instances
 
-    def generateSummaryFilters(self,ranges):
-        results = []
+    @staticmethod
+    def generateSummaryFilters(ranges, start_fieldname, end_fieldname):
+        if not ranges:
+            return
+        filter_list = []
         for r in ranges:
             if not r[0] and not r[1]:
-                return None # might as well not filter at all
-            queryFields = {}
+                return None  # might as well not filter at all
+            query_fields = {}
             if r[0]:
-                queryFields['month__gte']=r[0]
+                query_fields[start_fieldname + '__gte']=r[0]
             if r[1]:
-                queryFields['month__lt']=r[1]
-            results.append(Q(**queryFields))
-        return results
+                query_fields[end_fieldname + '__lt']=r[1]
+            filter_list.append(Q(**query_fields))
+
+        if len(filter_list) == 1:
+            filters_folded = filter_list[0]
+        else:  # len(filter_list) > 1
+            filters_folded = reduce(lambda x, y: x | y, filter_list)
+        return filters_folded
 
     def get_mks_totals(self, member):
         "Get count for each vote type for a specific member on this agenda"
@@ -483,28 +478,31 @@ class Agenda(models.Model):
 
         return qs
 
-    def get_mks_values(self,ranges=None):
+    def get_mks_values(self, ranges=None, mks=None):
         if ranges is None:
             ranges = [[dateMonthTruncate(Knesset.objects.current_knesset().start_date),None]]
         mks_values = False
+        mk_ids = [mk.id for mk in mks] if mks else []
+
         fullRange = ranges == [[None,None]]
         if fullRange:
             mks_values = cache.get('agenda_%d_mks_values' % self.id)
+            if mks_values and mks:
+                mks_values = [(mk_id, values)
+                              for (mk_id, values) in mks_values
+                              if mk_id in mk_ids]
+
         if not mks_values:
             # get list of mk ids
-            mk_ids = Member.objects.filter(current_party__isnull=False).values_list('id',flat=True)
+            mk_ids = mk_ids or Membership.objects.membership_in_range(ranges)
 
             # generate summary query
-            filterList = self.generateSummaryFilters(ranges)
+            filters_folded = self.generateSummaryFilters(ranges, 'month', 'month')
 
             # query summary
             baseQuerySet = SummaryAgenda.objects.filter(agenda=self)
-            if filterList:
-                if len(filterList)>1:
-                    filtersFolded = reduce(lambda x,y:x | y, filterList)
-                else:
-                    filtersFolded = filterList[0]
-                baseQuerySet.filter(filtersFolded)
+            if filters_folded:
+                baseQuerySet.filter(filters_folded)
             summaries = list(baseQuerySet)
             # group summaries for respective ranges
             summariesForRanges = []

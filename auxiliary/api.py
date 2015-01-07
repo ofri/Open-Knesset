@@ -15,6 +15,7 @@ from django.conf.urls import url
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.db.utils import OperationalError
 
 from laws.models import Vote, Bill
 from committees.models import CommitteeMeeting
@@ -55,18 +56,59 @@ class PostResource(BaseResource):
         return orm_filters
 
 
+def get_synonyms(tag):
+    #return Tag.objects.filter(synonym_synonym_tag__tag=tag)
+    if tag.id in synonyms_dict:
+        return Tag.objects.filter(id__in=synonyms_dict[tag.id])
+    else:
+        return []
+
+
+def get_proper_synonyms(tag):
+    #return Tag.objects.filter(synonym_proper_tag__synonym_tag=tag)
+    if tag.id in proper_names_dict:
+        return Tag.objects.filter(id=proper_names_dict[tag.id])
+    else:
+        return []
+
+#TODO: save this in cache
+synonyms_dict = {}
+proper_names_dict = {}
+try:
+    l = TagSynonym.objects.values_list('tag_id', 'synonym_tag_id')
+    for (t, s) in l:
+        proper_names_dict[s] = t
+        if t in synonyms_dict:
+            synonyms_dict[t].append(s)
+        else:
+            synonyms_dict[t] = [s]
+except OperationalError as e:
+    # this code is run before migrations - so it fails first time running migrations
+    pass
+
+
 class TagResource(BaseResource):
     ''' Tagging API
     '''
-
     number_of_items = fields.IntegerField()
     absolute_url = fields.CharField()
+    synonyms = fields.ToManyField('auxiliary.api.TagResource',
+                                  attribute=lambda t: get_synonyms(t.obj),
+                                  null=True,
+                                  full=False)
+
+    proper_name = fields.ToManyField(
+        'auxiliary.api.TagResource',
+        attribute=lambda t: get_proper_synonyms(t.obj),
+        null=True,
+        full=False)
 
     class Meta(BaseResource.Meta):
-        queryset = Tag.objects.all().order_by('name')
+        queryset = Tag.objects.all().order_by('name').prefetch_related(
+            'synonym_proper_tag__synonym_tag', 'synonym_synonym_tag__tag')
         allowed_methods = ['get']
         include_absolute_url = True
-        list_fields = ['id', 'name']
+        list_fields = ['id', 'name', 'synonyms', 'proper_name']
         filtering = {
             'name': ALL,
         }

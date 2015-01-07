@@ -1,3 +1,9 @@
+'''
+  API v1 - FROZEN!!!
+
+  To make changes to the api please use api.py under the app you want to change
+
+'''
 import datetime, urllib, math
 from operator import attrgetter
 from django.db.models import Q
@@ -48,6 +54,7 @@ class MemberHandler(BaseHandler, HandlerExtensions):
 
     allowed_methods = ('GET')
     model = Member
+
     qs = Member.current_knesset.all()
 
     def queryset(self, request):

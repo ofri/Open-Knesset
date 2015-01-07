@@ -51,6 +51,7 @@ class AgendaListView(ListView):
                           party in Party.current_knesset.all()}
 
         allAgendaPartyVotes = cache.get('AllAgendaPartyVotes')
+        
         if not allAgendaPartyVotes:
             # filtering for current knesset is done here
 

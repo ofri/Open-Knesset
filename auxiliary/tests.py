@@ -1,4 +1,5 @@
 import datetime
+import json
 import re
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -12,7 +13,6 @@ from mks.models import Member,Party,WeeklyPresence,Knesset
 from committees.models import Committee
 from agendas.models import Agenda
 from knesset.sitemap import sitemaps
-from django.utils import simplejson as json
 from auxiliary.views import CsvView
 from django.core import cache
 
@@ -100,9 +100,9 @@ class InternalLinksTest(TestCase):
             wp.save()
             self.mks.append(mk)
             if i<2:
-                self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1))
+                self.voteactions.append(VoteAction.objects.create(member=mk,type='for',vote=self.vote_1, party=mk.current_party))
             else:
-                self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1))
+                self.voteactions.append(VoteAction.objects.create(member=mk,type='against',vote=self.vote_1, party=mk.current_party))
         self.vote_1.controversy = min(self.vote_1.for_votes_count, self.vote_1.against_votes_count)
         self.vote_1.save()
         self.tags = []

@@ -11,10 +11,10 @@ from views import bill_tags_cloud, embed_bill_details
 from views import vote_tags_cloud, vote_auto_complete
 import feeds
 
-vote_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes':True,'title':ugettext('Votes')})
-bill_list_view = BillListView(queryset=Bill.objects.all().filter(law__merged_into=None).order_by('-stage_date'), paginate_by=20,extra_context={'title':ugettext('Bills')})
+vote_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes': True, 'title': ugettext('Votes')})
+bill_list_view = BillListView(queryset=Bill.objects.all().filter(law__merged_into=None).order_by('-stage_date'), paginate_by=20, extra_context={'title': ugettext('Bills')})
 bill_detail_view = BillDetailView.as_view()
-vote_list_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes':True,'title':ugettext('Votes')})
+vote_list_view = VoteListView(queryset = Vote.objects.all(),paginate_by=20, extra_context={'votes': True,'title': ugettext('Votes')})
 vote_detail_view = VoteDetailView.as_view()
 
 lawsurlpatterns = patterns ('',

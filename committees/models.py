@@ -10,6 +10,7 @@ from django.utils.text import Truncator
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.utils.functional import cached_property
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
@@ -20,6 +21,7 @@ from events.models import Event
 from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
 from mks.models import Knesset
+from lobbyists.models import LobbyistHistory, LobbyistCorporation
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -27,7 +29,7 @@ logger = logging.getLogger("open-knesset.committees.models")
 
 class Committee(models.Model):
     name = models.CharField(max_length=256)
-    # comma seperated list of names used as name aliases for harvesting
+    # comma separated list of names used as name aliases for harvesting
     aliases = models.TextField(null=True,blank=True)
     members = models.ManyToManyField('mks.Member', related_name='committees', blank=True)
     chairpersons = models.ManyToManyField('mks.Member', related_name='chaired_committees', blank=True)
@@ -36,20 +38,20 @@ class Committee(models.Model):
        object_id_field="which_pk")
     description = models.TextField(null=True,blank=True)
     portal_knesset_broadcasts_url = models.URLField(max_length=1000, blank=True)
-    type = models.CharField(max_length=10,default='committee')
+    type = models.CharField(max_length=10, default='committee')
 
     def __unicode__(self):
-        if self.type=='plenum':
+        if self.type == 'plenum':
             return "%s" % ugettext('Plenum')
         else:
             return "%s" % self.name
 
     @models.permalink
     def get_absolute_url(self):
-        if self.type=='plenum':
-            return('plenum', [])
+        if self.type == 'plenum':
+            return 'plenum', []
         else:
-            return ('committee-detail', [str(self.id)])
+            return 'committee-detail', [str(self.id)]
 
     @property
     def annotations(self):
@@ -65,7 +67,6 @@ class Committee(models.Model):
                               "%s.meeting_id=%s.id" % (protocol_part_tn, meeting_tn),
                               "%s.committee_id=%%s" % meeting_tn],
                     params = [ self.id ]).distinct()
-
 
     def members_by_presence(self, ids=None):
         """Return the members with computed presence percentage.
@@ -86,15 +87,19 @@ class Committee(models.Model):
                             self.replacements.all()).distinct())
 
         d = Knesset.objects.current_knesset().start_date
-        all_meet_count = self.meetings.filter(date__gte=d).count()
-
-        year_meet_count = filter_this_year(self.meetings).count()
+        meetings_with_mks = self.meetings.filter(
+            mks_attended__isnull=False).distinct()
+        all_meet_count = meetings_with_mks.filter(
+            date__gte=d).count()
+        year_meet_count = filter_this_year(meetings_with_mks).count()
         for m in members:
             all_member_meetings = m.committee_meetings.filter(committee=self,
                                                               date__gte=d)
             year_member_meetings = filter_this_year(all_member_meetings)
-            m.meetings_percentage = count_percentage(all_member_meetings, all_meet_count)
-            m.meetings_percentage_year = count_percentage(year_member_meetings, year_meet_count)
+            m.meetings_percentage = count_percentage(all_member_meetings,
+                                                     all_meet_count)
+            m.meetings_percentage_year = count_percentage(year_member_meetings,
+                                                          year_meet_count)
 
         members.sort(key=lambda x: x.meetings_percentage, reverse=True)
         return members
@@ -104,7 +109,7 @@ class Committee(models.Model):
 
     def future_meetings(self):
         cur_date = datetime.now()
-        return self.events.filter(when__gt = cur_date)
+        return self.events.filter(when__gt=cur_date)
 
     def get_knesset_id(self):
         """
@@ -182,6 +187,9 @@ class CommitteeMeeting(models.Model):
     tagged_items = generic.GenericRelation(TaggedItem,
                                            object_id_field="object_id",
                                            content_type_field="content_type")
+    lobbyists_mentioned = models.ManyToManyField('lobbyists.Lobbyist', related_name='committee_meetings')
+    lobbyist_corporations_mentioned = models.ManyToManyField('lobbyists.LobbyistCorporation', related_name='committee_meetings')
+
     objects = CommitteeMeetingManager()
 
     class Meta:
@@ -248,11 +256,11 @@ class CommitteeMeeting(models.Model):
             return # then we don't need to do anything here.
 
         if self.committee.type=='plenum':
-            create_plenum_protocol_parts(self,mks=mks,mk_names=mk_names)
+            create_plenum_protocol_parts(self, mks=mks, mk_names=mk_names)
             return
 
         # break the protocol to its parts
-        # first, fix places where the colon is in the begining of next line
+        # first, fix places where the colon is in the beginning of next line
         # (move it to the end of the correct line)
         protocol_text = []
         for line in re.sub("[ ]+"," ", self.protocol_text).split('\n'):
@@ -276,14 +284,13 @@ class CommitteeMeeting(models.Model):
                     ProtocolPart(meeting=self, order=i,
                         header=header, body='\n'.join(section)).save()
                 i += 1
-                header = re.sub('[\>:]+$','',re.sub('^[\< ]+','',line))
+                header = re.sub('[\>:]+$', '', re.sub('^[\< ]+', '', line))
                 section = []
             else:
-                section.append (line)
+                section.append(line)
 
         # don't forget the last section
-        ProtocolPart(meeting=self, order=i,
-            header=header, body='\n'.join(section)).save()
+        ProtocolPart(meeting=self, order=i, header=header, body='\n'.join(section)).save()
 
     def get_bg_material(self):
         """
@@ -301,7 +308,7 @@ class CommitteeMeeting(models.Model):
         url = 'http://www.knesset.gov.il/agenda/heb/material.asp?c=%s&t=%s&d=%s' % (cid,time,date)
         data = urllib2.urlopen(url)
         bg_links = []
-        if data.url == url: #if no bg material exists we get redirected to a diffrent page
+        if data.url == url: #if no bg material exists we get redirected to a different page
             bgdata = BeautifulSoup(data.read()).findAll('a')
 
             for i in bgdata:
@@ -336,6 +343,24 @@ class CommitteeMeeting(models.Model):
         logger.debug('meeting %d now has %d attending members' % (
             self.id,
             self.mks_attended.count()))
+
+    @cached_property
+    def main_lobbyist_corporations_mentioned(self):
+        ret = []
+        for corporation in self.lobbyist_corporations_mentioned.all():
+            main_corporation = corporation.main_corporation
+            if main_corporation not in ret:
+                ret.append(main_corporation)
+        for lobbyist in self.main_lobbyists_mentioned:
+            corporation = LobbyistCorporation.objects.get(id=lobbyist.cached_data['latest_corporation']['id'])
+            if corporation not in ret and corporation.main_corporation == corporation:
+                ret.append(corporation)
+        return ret
+
+    @cached_property
+    def main_lobbyists_mentioned(self):
+        return self.lobbyists_mentioned.all()
+
 
 class ProtocolPartManager(models.Manager):
     def list(self):

@@ -55,7 +55,7 @@ class UserProfile(models.Model):
         if related:
             lst = lst.prefetch_related(*related)
         return [x.actor for x in lst]
-    
+
     @property
     def members(self):
         return self.get_actors(Member, 'actor')
@@ -80,10 +80,6 @@ class UserProfile(models.Model):
     @property
     def topics(self):
         return self.get_actors(Topic, 'actor')
-
-
-    def get_badges(self):
-        return self.badges.all()
 
     @models.permalink
     def get_absolute_url(self):

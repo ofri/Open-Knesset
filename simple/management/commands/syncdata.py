@@ -58,7 +58,8 @@ class Command(NoArgsCommand):
             help="online update of data."),
         make_option('--committees', action='store_true', dest='committees',
             help="online update of committees data."),
-
+        make_option('--update-run-only', action='store', dest='update-run-only',
+            help="only run update for the provided functions. Should contain comma-seperated list of functions to run.")
     )
     help = "Downloads data from sources, parses it and loads it to the Django DB."
 
@@ -198,7 +199,7 @@ class Command(NoArgsCommand):
                 continue
 
             # add the current member's vote
-            va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+            va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote, party = m.current_party)
             if created:
                 va.save()
 
@@ -617,7 +618,7 @@ class Command(NoArgsCommand):
 
                 # add the current member's vote
 
-                va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote)
+                va,created = VoteAction.objects.get_or_create(vote = v, member = m, type = vote, party = m.current_party)
                 if created:
                     va.save()
 
@@ -1520,6 +1521,17 @@ class Command(NoArgsCommand):
         laws = options.get('laws',False)
         committees = options.get('committees', False)
 
+        verbosity = int(options.get('verbosity', '0'))
+        if verbosity > 0:
+            levels = {
+                1: logging.WARN,
+                2: logging.INFO,
+                3: logging.DEBUG
+            }
+            handler = logging.StreamHandler()
+            handler.setLevel(levels[verbosity])
+            logger.addHandler(handler)
+
         if all_options:
             download = True
             load = True
@@ -1556,17 +1568,37 @@ class Command(NoArgsCommand):
             self.dump_to_file()
 
         if update:
-            self.update_votes()
-            self.update_laws_data()
-            self.update_presence()
-            self.get_protocols()
-            self.parse_laws()
-            self.find_proposals_in_other_data()
-            self.merge_duplicate_laws()
-            self.update_mk_role_descriptions()
-            self.update_mks_is_current()
-            self.update_gov_law_decisions()
-            self.correct_votes_matching()
+            update_run_only = options.get('update-run-only', '')
+            if update_run_only:
+                try:
+                    update_run_only = update_run_only.split(',')
+                except AttributeError, e:
+                    logger.error("Error in syncdata update:" + e)
+            else:
+                update_run_only = None
+            for func in ['update_votes',
+                         'update_laws_data',
+                         'update_presence',
+                         'get_protocols',
+                         'parse_laws',
+                         'find_proposals_in_other_data',
+                         'merge_duplicate_laws',
+                         'update_mk_role_descriptions',
+                         'update_mks_is_current',
+                         'update_gov_law_decisions',
+                         'correct_votes_matching']:
+                # in case update_run_only is none, we run all stages
+                if (update_run_only is None) or (func in update_run_only):
+                    try:
+                        logger.debug('update: running %s', func)
+                        self.__getattribute__(func).__call__()
+                    except:
+                        exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                        logger.error("Caught execption in syncdata update phase %s\n%s",
+                                     func,
+                                     ''.join(traceback.format_exception(exceptionType,
+                                                                        exceptionValue,
+                                                                        exceptionTraceback)))
             logger.debug('finished update')
 
         if committees:

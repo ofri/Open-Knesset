@@ -14,6 +14,7 @@ from committees.models import CommitteeMeeting,Committee
 from knesset.utils import RequestFactory
 import datetime
 import feedparser
+import json
 from backlinks.tests.xmlrpc import TestClientServerProxy
 from xmlrpclib import Fault, loads
 from urllib import urlencode
@@ -21,7 +22,6 @@ from backlinks.models import InboundBacklink
 from backlinks.pingback.server import PingbackServer
 from django import template
 from mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
-from django.utils import simplejson as json
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
 
@@ -74,7 +74,7 @@ class MemberViewsTest(TestCase):
         self.meeting_2.mks_attended.add(self.mk_1)
         self.meeting_2.save()
         self.vote = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
-        self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for')
+        self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for', party=self.mk_1.current_party)
         self.domain = 'http://' + Site.objects.get_current().domain
 
     def testMemberList(self):
@@ -265,7 +265,7 @@ class MemberBacklinksViewsTest(TestCase):
         self.meeting_2.mks_attended.add(self.mk_1)
         self.meeting_2.save()
         self.vote = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
-        self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for')
+        self.vote_action = VoteAction.objects.create(member=self.mk_1, vote=self.vote, type='for', party=self.mk_1.current_party)
 
         self.client = Client(SERVER_NAME='example.com')
         self.xmlrpc_client = TestClientServerProxy('/pingback/')
@@ -505,13 +505,13 @@ class MKAgendasTest(TestCase):
         self.vote_1 = Vote.objects.create(title='vote 1',time=datetime.datetime.now())
         self.vote_2 = Vote.objects.create(title='vote 2',time=datetime.datetime.now())
         self.voteactions = [ VoteAction.objects.create(vote=self.vote_1,
-                                member=self.mk_1, type='for'),
+                                member=self.mk_1, type='for', party=self.mk_1.current_party),
                              VoteAction.objects.create(vote=self.vote_2,
-                                member=self.mk_1, type='for'),
+                                member=self.mk_1, type='for', party=self.mk_1.current_party),
                              VoteAction.objects.create(vote=self.vote_1,
-                                member=self.mk_2, type='against'),
+                                member=self.mk_2, type='against', party=self.mk_2.current_party),
                              VoteAction.objects.create(vote=self.vote_2,
-                                member=self.mk_2, type='against'),
+                                member=self.mk_2, type='against', party=self.mk_2.current_party)
                              ]
         self.agendavotes = [AgendaVote.objects.create(agenda=self.agenda_1,
                                                       vote=self.vote_1,

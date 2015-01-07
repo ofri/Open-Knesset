@@ -16,6 +16,7 @@ class Title(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class PersonAlias(models.Model):
     name = models.CharField(max_length=64)
     person = models.ForeignKey('Person', related_name='aliases')
@@ -27,6 +28,7 @@ GENDER_CHOICES = (
     (u'M', _('Male')),
     (u'F', _('Female')),
 )
+
 
 class Person(models.Model):
     name = models.CharField(max_length=64)
@@ -50,6 +52,8 @@ class Person(models.Model):
     residence_centrality = models.IntegerField(blank=True, null=True)
     residence_economy = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    calendar_url = models.CharField(blank=True, null=True, max_length=1024)
+    calendar_sync_token = models.CharField(blank=True, null=True, max_length=1024)
 
     objects = PersonManager()
 
@@ -65,7 +69,7 @@ class Person(models.Model):
         if self.mk:
             return self.mk.get_absolute_url()
         else:
-            return reverse('person-detail', kwargs={'pk':self.id})
+            return reverse('person-detail', kwargs={'pk': self.id})
 
     def number_of_meetings(self):
         return self.protocol_parts.values('meeting').distinct().count()
@@ -107,11 +111,16 @@ def member_post_save(sender, **kwargs):
 
 
 class Role(models.Model):
-    text = models.CharField(blank=True,null=True, max_length=1024)
+    start_date  = models.DateField(null=True)
+    end_date  = models.DateField(blank=True, null=True)
+    text = models.CharField(blank=True, null=True, max_length=1024)
+    org = models.TextField(blank=True, null=True)
     person = models.ForeignKey(Person, related_name='roles')
 
     def __unicode__(self):
-        return self.text
+        return _('{person} serverd as {text} in {org} from {start_date} to {end_date}').format(
+                person=self.person, text=self.text, org=self.org,
+                start_date=self.start_date, end_date=self.end_date)
 
 class ProcessedProtocolPart(models.Model):
     """This model is used to keep track of protocol parts already searched for creating persons.
