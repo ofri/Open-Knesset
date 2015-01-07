@@ -634,26 +634,6 @@ class VoteViewsTest(TestCase):
         self.tag_1.delete()
         self.ti.delete()
 
-class testVoteAPI(TestCase):
-    def setUp(self):
-        self.vote_1 = Vote.objects.create(time=datetime(2001, 9, 11),
-                                          title='vote 1')
-        self.vote_2 = Vote.objects.create(time=datetime.now(),
-                                          title='vote 2')
-
-    def testDaysBackAPI(self):
-        res = self.client.get(reverse('vote-handler'), {'days_back': '300'})
-        self.assertEqual(res.status_code,200)
-        votes = json.loads(res.content)
-        self.assertEqual(map(lambda x: x['title'], votes), [self.vote_2.title])
-        res = self.client.get(reverse('vote-handler'), {'days_back': '30000'})
-        self.assertEqual(res.status_code,200)
-        votes = json.loads(res.content)
-        self.assertEqual(set(map(lambda x: x['title'], votes)), set([self.vote_1.title, self.vote_2.title]))
-
-    def tearDown(self):
-        self.vote_1.delete()
-        self.vote_2.delete()
 
 class BillStreamTest(TestCase):
     def setUp(self):

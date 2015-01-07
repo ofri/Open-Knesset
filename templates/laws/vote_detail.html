@@ -1,7 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n i18ninclude tagging_tags bills_tags links_tags mks_tags agendas_tags %}
 {% load static from staticfiles %}
-{% block help-section %}{% endblock %}
 {% block extratitle %}{{ vote.title }}{% endblock %}
 {% block keywords %}{{ vote.name }}{% endblock %}
 {% block description %}{{ vote.title }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}

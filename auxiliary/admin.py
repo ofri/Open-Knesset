@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Tidbit, TagSuggestion, TagSynonym
+from .models import Tidbit, TagSuggestion, TagSynonym, TagKeyphrase
 from auxiliary.tag_suggestions import approve as tag_suggestions_approve
 
 
@@ -27,5 +27,12 @@ class TagSynonymAdmin(admin.ModelAdmin):
     model = TagSynonym
     list_display = ('tag', 'synonym_tag')
     raw_id_fields = ('tag', 'synonym_tag')
+    ordering = ('tag', 'synonym_tag')
 
 admin.site.register(TagSynonym, TagSynonymAdmin)
+
+
+class TagKeyphraseAdmin(admin.ModelAdmin):
+    model = TagKeyphrase
+
+admin.site.register(TagKeyphrase, TagKeyphraseAdmin)

@@ -50,7 +50,8 @@ class VoteResource(BaseResource):
             'importance', 'controversy', 'against_party ', 'against_coalition',
             'against_opposition', 'against_own_bill',
         ]
-        filtering = dict(member=ALL,
+        filtering = dict(tag=('exact'),
+                         member=ALL,
                          member_for=ALL,
                          member_against=ALL)
 
@@ -60,6 +61,10 @@ class VoteResource(BaseResource):
                     null=True,
                     full=True)
     agendas = fields.ListField()
+    tags = fields.ToManyField('auxiliary.api.TagResource',
+                              attribute=lambda t: t.obj.tags,
+                              null=True,
+                              full=False)
 
     def build_filters(self, filters={}):
         orm_filters = super(VoteResource, self).build_filters(filters)
@@ -71,7 +76,10 @@ class VoteResource(BaseResource):
         if 'member_against' in filters:
             orm_filters["voteaction__member"] = filters['member_against']
             orm_filters["voteaction__type"] = 'against'
-
+        if 'tag' in filters:
+            # hard-coded the __in filter. not great, but works.
+            orm_filters["tagged_items__tag__in"] = \
+                filters["tag"].split(',')
         return orm_filters
 
     def dehydrate_agendas(self, bundle):
@@ -144,6 +152,10 @@ class BillResource(BaseResource):
                                    'proposals',
                                    null=True,
                                    full=True)
+    tags = fields.ToManyField('auxiliary.api.TagResource',
+                              attribute=lambda t: t.obj.tags,
+                              null=True,
+                              full=False)
 
 
     def dehydrate_explanation(self, bundle):

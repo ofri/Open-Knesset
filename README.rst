@@ -6,9 +6,12 @@
 .. important::
 
     This document contains quick start instruction.
-    For more details, **please see** the `Open Knesset developers documentation`_ 
+
+    * For detailed documentation **please see** the `Open Knesset developers documentation`_ 
+    * For API and Embedding documentation see `Open Knesset API and embedding`_
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
+.. _Open Knesset API and embedding: http://oknesset-api.readthedocs.org/
 
 .. contents::
 

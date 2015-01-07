@@ -209,13 +209,35 @@ def main(request):
 
     NUMOF_EVENTS = 8
     events = Event.objects.get_upcoming()
+
+    # Reduce the number of sql queries, by prefetching the objects and setting
+    # them on the objects
+    upcoming = list(events[:NUMOF_EVENTS])
+
+    generics = {}
+    for item in upcoming:
+        if item.which_pk:
+            generics.setdefault(item.which_type_id, set()).add(item.which_pk)
+
+    content_types = ContentType.objects.in_bulk(generics.keys())
+
+    relations = {}
+    for ct, fk_list in generics.items():
+        ct_model = content_types[ct].model_class()
+        relations[ct] = ct_model.objects.in_bulk(list(fk_list))
+
+    for item in upcoming:
+        if item.which_pk:
+            setattr(item, '_which_object_cache',
+                    relations[item.which_type_id].get(item.which_pk))
+
     context = {
         'title': _('Home'),
         'hide_crumbs': True,
         'is_index': True,
         'tidbits': Tidbit.active.all().order_by('?'),
         'suggestion_forms': {'tidbit': TidbitSuggestionForm()},
-        'events': events[:NUMOF_EVENTS],
+        'events': upcoming,
         'INITIAL_EVENTS': NUMOF_EVENTS,
         'events_more': events.count() > NUMOF_EVENTS,
     }

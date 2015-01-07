@@ -2,32 +2,55 @@ body{
     margin:0px;
 }
 
-#oknesset_container { height: 100%; }
 .oknesset_frame {
-    background-color:#EEFFFF;
-    border:2px solid #111199;
+    background-color:#EFEFEF;
+    border:1px solid #E6E6E6;
     direction:rtl;
     font-family:tahoma,arial;
-    font-size:16px;
-    height:100%;
+    font-size:14px;
+    height:200px;
     min-width:370px;
     padding:5px;
     position:relative;
     overflow: hidden;
     width:400px;
+    box-sizing: border-box;
+    color: #464545;
+    position: relative;
 }
 
-/* .oknesset_content_bottom { height: 100%; } */
+a:visited, a:link {
+    color:#464545;
+    text-decoration:none;
+}
+
+a:hover, a:active {
+    color:#464545;
+    text-decoration:underline;
+}
+.oknesset_frame .oknesset_link a {
+  font-size: 12px;
+  text-decoration: underline;
+  position: absolute;
+  bottom: 5px;
+  right: 94px;
+  display: block;
+}
+.oknesset_content_bottom {
+  margin-right: 89px;
+}
+
 .oknesset_content_top {
     padding-right: 0px;
-    min-height: 110px;
+    margin-bottom: 20px;
 }
 
 .oknesset_image {
-    border:1px solid #878787;
+    border:1px solid #E6E6E6;
     width:74px;
     height:110px;
     float:right;
+    margin-left: 15px;
 }
 .oknesset_content_top > div {
   margin-right: 80px;
@@ -45,15 +68,20 @@ body{
     padding: 0;
     height: 100%;
 }
-.oknesset_committees ul li {
-	background-color:#FFFFFF;
-	border:1px dashed #DDDDDD;
+.oknesset_committees li {
+	background-color:#777;
+  border-radius: 10px;
 	display:inline-block;
 	font-size:14px;
-	margin-right:4px;
+	margin-left:5px;
 	margin-top:4px;
-	padding:3px;
-	white-space:nowrap;}
+	padding:3px 8px;
+	white-space:nowrap;
+}
+
+.oknesset_committees li a, .oknesset_committees li a:link, .oknesset_committees li a:active, .oknesset_committees li a:visited   {
+  color: white;
+}
 .oknesset_attendance_value {
     font-weight: bold;
 }
@@ -65,34 +93,26 @@ body{
 }
 .oknesset_proposals, .oknesset_laws {
     display:inline-block;
-    position:relative;
+}
+.oknesset_proposals {
+  margin-left: 20px;
 }
 .oknesset_proposals_number, .oknesset_laws_number {
-    font-weight: bold;
-    text-align: center;
+  display: inline-block;
+  background-color: #337AB7;
+  border-radius: 10px;
+  margin-left: 5px;
+  color: white;
+  text-align: center;
+  padding: 3px;
+}
+
+.oknesset_laws_number {
+  background-color: #5CB85C;
 }
 .oknesset_proposals_desc, .oknesset_laws_desc {
     top: 13px;
     font-size:12px;
 }
-.oknesset_law_flow img {
-    margin-right: 20px;
-    vertical-align: top;
-}
-.oknesset_law_flow img.first {
-    margin-right: 0;
-}
-.oknesset_frame a:visited, .oknesset_frame a:link {
-    color:black;
-    text-decoration:none;
-}
-.oknesset_frame a:hover, .oknesset_frame a:active {
-    color:black;
-    text-decoration:underline;
-}
-.oknesset_frame .oknesset_link a {
-  font-size: 12px;
-  text-decoration: underline;
-  color:blue;
-}
+
 .clear {height:0; overflow:hidden; clear:both;}

@@ -22,6 +22,7 @@ from links.models import Link
 from plenum.create_protocol_parts import create_plenum_protocol_parts
 from mks.models import Knesset
 from lobbyists.models import LobbyistHistory, LobbyistCorporation
+from itertools import groupby
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -39,6 +40,20 @@ class Committee(models.Model):
     description = models.TextField(null=True,blank=True)
     portal_knesset_broadcasts_url = models.URLField(max_length=1000, blank=True)
     type = models.CharField(max_length=10, default='committee')
+
+    @property
+    def gender_presence(self):
+        # returns a touple of (female_presence, male_presence
+        r={'F': 0, 'M': 0}
+        for cm in self.meetings.all():
+            try:
+                results = groupby(cm.mks_attended.all(), lambda mk: mk.gender)
+            except ValueError:
+                continue
+            for i in results:
+                key, count = i[0], len(list(i[1]))
+                r[key] += count
+        return r['F'], r['M']
 
     def __unicode__(self):
         if self.type == 'plenum':
