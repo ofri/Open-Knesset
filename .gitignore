@@ -21,3 +21,4 @@ data/committee_mms_videos
 settings.js.dist
 node_modules
 bower_components
+!angular/.*
