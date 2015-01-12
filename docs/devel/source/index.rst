@@ -51,6 +51,7 @@ Contents:
     css_docs
     tips
     browsertests
+    angular
 
 Indices and tables
 ==================
