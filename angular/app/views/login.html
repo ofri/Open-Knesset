@@ -1,0 +1,15 @@
+
+<h3>Please login</h3>
+
+<form novalidate>
+  <div class="form-group">
+    <label for="loginusername">User Name</label>
+    <input class="form-control" id="loginusername" ng-model="credentials.username" type="text" placeholder="User Name"/>
+  </div>
+  <div class="form-group">
+    <label for="loginpassword">Password</label>
+    <input class="form-control" id="loginpassword" ng-model="credentials.password" type="password" placeholder="Password"/>
+  </div>
+  <button class="btn btn-primary" ng-click="login(credentials)" type="button">Login</button>
+  <button class="btn btn-default" ng-click="cancel()" type="button">Cancel</button>
+</form>

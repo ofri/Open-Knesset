@@ -15,6 +15,7 @@ from django.utils.encoding import smart_str, smart_unicode
 from django.conf import settings
 from mailer import send_html_mail
 from actstream.models import Action
+from rest_framework_jwt.utils import jwt_payload_handler as original_payload_handler
 
 def limit_by_request(qs, request):
     if 'num' in request.GET:
@@ -142,3 +143,8 @@ def main_actions():
     return Action.objects.filter(verb__in=['comment-added','annotated'])\
                          .order_by('-timestamp')\
                          .prefetch_related('target')
+
+def jwt_payload_handler(user):
+    payload = original_payload_handler(user)
+    # here you can add some metadata to the payload
+    return payload

@@ -1,6 +1,7 @@
 # Django settings for knesset project.
 import os
 import logging
+from datetime import timedelta
 
 # dummy gettext, to get django-admin makemessages to find i18n texts in this file
 gettext = lambda x: x
@@ -72,6 +73,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -152,6 +154,8 @@ INSTALLED_APPS = (
     'devserver',
     'crispy_forms',
     'storages',
+    'rest_framework',
+    'corsheaders',
     #'knesset',
     'auxiliary',                  # knesset apps
     'mks',
@@ -299,6 +303,25 @@ TASTYPIE_SWAGGER_API_MODULE = 'apis.resources.v2_api'
 # By default auto-SSL disabled, on production machines local_settings overrides
 # to False
 SSLIFY_DISABLE = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_PAYLOAD_HANDLER': 'knesset.utils.jwt_payload_handler',
+    'JWT_EXPIRATION_DELTA': timedelta(hours=48),
+}
+
+# in production you might want to limit it in local_settings
+CORS_ORIGIN_ALLOW_ALL = True
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
