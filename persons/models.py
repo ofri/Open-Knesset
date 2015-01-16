@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from mks.models import Member, GENDER_CHOICES
 from .managers import PersonManager
 
+from django.contrib.auth.models import User
 
 class Title(models.Model):
     name = models.CharField(max_length=64)
@@ -54,6 +55,7 @@ class Person(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     calendar_url = models.CharField(blank=True, null=True, max_length=1024)
     calendar_sync_token = models.CharField(blank=True, null=True, max_length=1024)
+    user = models.ForeignKey('auth.User', blank=True, null=True)
 
     objects = PersonManager()
 
@@ -97,6 +99,22 @@ class Person(models.Model):
             part.save()
         other.delete()
         self.save()
+
+    def create_user(self, username=None, password=None):
+        """Create an Auth User for this person - so she can login to django"""
+        name_split = self.name.split(' ')
+        user = User(
+            username=username if username is not None else self.email.split('@')[0],
+            first_name=name_split[0],
+            last_name=' '.join(name_split[1:]) if len(name_split) > 1 else '',
+            email=self.email
+        )
+        if password is not None:
+            user.set_password(password)
+        user.save()
+        self.user = user
+        self.save()
+        return user
 
 
 @receiver(post_save, sender=Member)
