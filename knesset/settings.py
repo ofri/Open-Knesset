@@ -302,8 +302,8 @@ SSLIFY_DISABLE = True
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 try:
     from local_settings import *
 except ImportError:
     pass
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
