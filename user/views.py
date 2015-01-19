@@ -9,6 +9,7 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import login as authlogin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -16,6 +17,9 @@ from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.http import require_http_methods
+from django.conf import settings
+from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler, timegm, api_settings
 
 from annotatetext.models import Annotation
 from actstream import unfollow, follow
@@ -220,3 +224,18 @@ def user_is_following(request):
     }
 
     return HttpResponse(json.dumps(res), content_type='application/json')
+
+def oklogin(request, *args, **kwargs):
+    kwargs['extra_context'] = {
+        'is_iframe': request.GET.get('is_iframe', '') == '1'
+    }
+    return authlogin(request, *args, **kwargs)
+
+def login_redirect_opensubs(request):
+    payload = jwt_payload_handler(request.user)
+    if api_settings.JWT_ALLOW_REFRESH:
+        payload['orig_iat'] = timegm(
+            datetime.utcnow().utctimetuple()
+        )
+    token = jwt_encode_handler(payload)
+    return HttpResponse('<script>parent.postMessage("'+token+'", "'+settings.OPEN_SUBS_BASE_URL+'");</script>')
