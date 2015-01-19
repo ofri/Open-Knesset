@@ -1,5 +1,5 @@
 from django.conf.urls import url, patterns, include
-from views import PublicUserProfile, ProfileListView
+from views import PublicUserProfile, ProfileListView, oklogin, login_redirect_opensubs
 
 profile_list = ProfileListView.as_view()
 user_public_profile = PublicUserProfile.as_view(
@@ -23,8 +23,6 @@ urlpatterns = patterns(
 # auth views
 urlpatterns += patterns(
     'django.contrib.auth.views',
-    url(r'^login/$', 'login',
-        {'template_name': 'user/login.html'}, name='login'),
     url(r'^logout/$', 'logout_then_login', name='logout'),
     url(r'^password_reset/$', 'password_reset',
         {'template_name': 'user/password_reset_form.html'},
@@ -43,6 +41,9 @@ urlpatterns += patterns(
 
 urlpatterns += patterns(
     '',
+    url(r'^login/$', oklogin,
+        {'template_name': 'user/login.html'}, name='login'),
+    url(r'^login-redirect-opensubs/$', login_redirect_opensubs),
     (r'^registration/', include('accounts.urls')),
     url(r'^(?P<pk>\d+)/$', user_public_profile, name='public-profile'),
     url(r'^(?P<pk>\d+)/topic/$', user_followed_topics,

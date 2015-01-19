@@ -323,6 +323,8 @@ JWT_AUTH = {
 # in production you might want to limit it in local_settings
 CORS_ORIGIN_ALLOW_ALL = True
 
+OPEN_SUBS_BASE_URL = 'http://localhost:9000/'
+
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.
 try:
