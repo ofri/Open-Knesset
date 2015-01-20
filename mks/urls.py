@@ -10,6 +10,7 @@ mksurlpatterns = patterns('mks.views',
     url(r'^member/csv$', mkv.MemberCsvView.as_view()),
     url(r'^party/csv$', mkv.PartyCsvView.as_view()),
     url(r'^member/(?P<pk>\d+)/$', 'mk_detail', name='member-detail'),
+    url(r'^member/(?P<pk>\d+)/embed/$', mkv.MemberEmbedView.as_view(), name='member-embed'),
 
     # "more" actions
     url(r'^member/(?P<pk>\d+)/more_actions/$', mkv.MemeberMoreActionsView.as_view(), name='member-more-actions'),

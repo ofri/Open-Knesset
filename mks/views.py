@@ -427,6 +427,8 @@ class MemberDetailView(DetailView):
         context.update(cached_context)
         return context
 
+class MemberEmbedView(MemberDetailView):
+    template_name = 'mks/member_embed.html'
 
 class PartyRedirectView(RedirectView):
     "Redirect to first stats view"
