@@ -111,3 +111,10 @@ urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_r
 # urlpatterns += polyorgurlpatterns + personsurlpatterns
 urlpatterns += personsurlpatterns
 urlpatterns += auxiliarysurlpatterns
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
+
+
