@@ -6708,6 +6708,9 @@ form .helptext {
 .carousel-indicators li.active {
   background-color: rgba(0, 0, 0, 0.75);
 }
+input.tobecopied {
+  width: 90%;
+}
 /* Add additional stylesheets below
 -------------------------------------------------- */
 #app-header {
@@ -8088,7 +8091,4 @@ body.infinity-protocol section.container > ul.breadcrumb {
 body.infinity-protocol #content-main > div > div.row > div.span3 {
   position: fixed;
   overflow: auto;
-}
-.tobecopied {
-  width: 90%;
 }
