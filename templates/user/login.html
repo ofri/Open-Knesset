@@ -29,15 +29,15 @@
 
 {% else %}
                 <li class="text-xcenter">
-                    <a href="{% url 'register' %}?next={{next}}">{% trans "New user? Register" %}</a>
+                    <a href="{% url 'register' %}?next={{next}}"{% if is_iframe %} target="_top"{% endif %}>{% trans "New user? Register" %}</a>
                 </li>
                 <li>
                     <p><strong>{% trans "Enter using" %}</strong></p>
                     <p>
-                        <a class="btn" href="{% url 'social:begin' 'twitter' %}" title="Twitter"><i class="fa fa-lg fa-twitter"></i></a>
-                        <a class="btn" href="{% url 'social:begin' 'google-oauth' %}" title="Google"><i class="fa fa-lg fa-google-plus"></i></a>
-                        <a class="btn" href="{% url 'social:begin' 'facebook' %}" title="Facebook"><i class="fa fa-lg fa-facebook"></i></a>
-                        <a class="btn" href="{% url 'social:begin' 'github' %}" title="GitHub"><i class="fa fa-lg fa-github"></i></a>
+                        <a class="btn" href="{% url 'social:begin' 'twitter' %}"{% if is_iframe %} target="_top"{% endif %} title="Twitter"><i class="fa fa-lg fa-twitter"></i></a>
+                        <a class="btn" href="{% url 'social:begin' 'google-oauth' %}"{% if is_iframe %} target="_top"{% endif %} title="Google"><i class="fa fa-lg fa-google-plus"></i></a>
+                        <a class="btn" href="{% url 'social:begin' 'facebook' %}"{% if is_iframe %} target="_top"{% endif %} title="Facebook"><i class="fa fa-lg fa-facebook"></i></a>
+                        <a class="btn" href="{% url 'social:begin' 'github' %}"{% if is_iframe %} target="_top"{% endif %} title="GitHub"><i class="fa fa-lg fa-github"></i></a>
                     </p>
                 </li>
                 <li>
@@ -46,7 +46,7 @@
                         <input type="submit" value="{% trans "login" %}" class="btn">
                         <input type="hidden" name="next" value="{{ next }}">
                         <input type="hidden" name="is_iframe" value="{{ is_iframe|yesno:"1,0" }}"/>
-                        <a href="{% url 'password_reset' %}?next={{next}}">{% trans "Forgot password?" %}</a>
+                        <a href="{% url 'password_reset' %}?next={{next}}"{% if is_iframe %} target="_top"{% endif %}>{% trans "Forgot password?" %}</a>
                     </form>
                 </li>
 {% endif %}

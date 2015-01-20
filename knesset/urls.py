@@ -101,7 +101,6 @@ urlpatterns = patterns('',
     (r'^suggestions/', include('suggestions.urls')),
     url(r'^feedback/', post_feedback, name="feedback-post"),
     url(r'^untagged/$', untagged_objects, name="untagged-objects"),
-    url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
 )
 
 

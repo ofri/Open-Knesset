@@ -49,6 +49,5 @@ ujson
 selenium
 sauceclient
 django-sslify>=0.2.0
-djangorestframework-jwt
-djangorestframework
 django-cors-headers
+pyjwt
