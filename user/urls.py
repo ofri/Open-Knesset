@@ -1,5 +1,5 @@
 from django.conf.urls import url, patterns, include
-from views import PublicUserProfile, ProfileListView, oklogin, login_redirect_opensubs
+from views import PublicUserProfile, ProfileListView, login_view, login_redirect
 
 profile_list = ProfileListView.as_view()
 user_public_profile = PublicUserProfile.as_view(
@@ -41,9 +41,9 @@ urlpatterns += patterns(
 
 urlpatterns += patterns(
     '',
-    url(r'^login/$', oklogin,
+    url(r'^login/$', login_view,
         {'template_name': 'user/login.html'}, name='login'),
-    url(r'^login-redirect-opensubs/$', login_redirect_opensubs),
+    url(r'^login-redirect/(?P<target>[0-9A-Za-z]+)/$', login_redirect),
     (r'^registration/', include('accounts.urls')),
     url(r'^(?P<pk>\d+)/$', user_public_profile, name='public-profile'),
     url(r'^(?P<pk>\d+)/topic/$', user_followed_topics,

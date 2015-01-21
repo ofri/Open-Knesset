@@ -308,8 +308,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 JWT_EXPIRATION_DELTA = timedelta(hours=48)
 JWT_ALGORITHM = 'HS256'
-OPEN_SUBS_BASE_URL = 'http://localhost:9000/'
-OPEN_SUBS_REDIRECT_TO_URL = 'http://localhost:9000/#/login/'
+
+LOGIN_REDIRECT_TARGETS = {
+    'opensubs': {
+        'parent_location_href': 'http://localhost:9000/',
+        'redirect_to_url': 'http://localhost:9000/#/login/',
+    }
+}
 
 # if you add a local_settings.py file, it will override settings here
 # but please, don't commit it to git.

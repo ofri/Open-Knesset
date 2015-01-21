@@ -224,7 +224,7 @@ def user_is_following(request):
 
     return HttpResponse(json.dumps(res), content_type='application/json')
 
-def oklogin(request, *args, **kwargs):
+def login_view(request, *args, **kwargs):
     is_iframe = request.GET.get('is_iframe', '') == '1'
     if is_iframe and request.user.is_authenticated():
        logout(request)
@@ -233,7 +233,8 @@ def oklogin(request, *args, **kwargs):
     }
     return authlogin(request, *args, **kwargs)
 
-def login_redirect_opensubs(request):
+def login_redirect(request, target):
+    target_settings = settings.LOGIN_REDIRECT_TARGETS[target]
     if request.user.is_authenticated() and not request.user.is_anonymous():
         payload = {
             'user_id': request.user.pk,
@@ -244,4 +245,4 @@ def login_redirect_opensubs(request):
         token = jwt.encode(payload, settings.SECRET_KEY, settings.JWT_ALGORITHM).decode('utf-8')
     else:
         token = ''
-    return HttpResponse('<script>if (parent == window) {window.location.href = "'+settings.OPEN_SUBS_REDIRECT_TO_URL+token+'"} else {parent.postMessage("'+token+'", "'+settings.OPEN_SUBS_BASE_URL+'");};</script>')
+    return HttpResponse('<script>if (parent == window) {window.location.href = "'+target_settings['parent_location_href']+token+'"} else {parent.postMessage("'+token+'", "'+target_settings['redirect_to_url']+'");};</script>')
