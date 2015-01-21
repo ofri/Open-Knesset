@@ -225,7 +225,7 @@ def user_is_following(request):
     return HttpResponse(json.dumps(res), content_type='application/json')
 
 def login_view(request, *args, **kwargs):
-    is_iframe = request.GET.get('is_iframe', '') == '1'
+    is_iframe = request.GET.get('is_iframe', '') == '1' or request.POST.get('is_iframe', '') == '1'
     if is_iframe and request.user.is_authenticated():
        logout(request)
     kwargs['extra_context'] = {
