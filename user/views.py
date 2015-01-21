@@ -7,8 +7,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import login as authlogin, logout_then_login as authlogout_then_login
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.views.generic.detail import DetailView
@@ -16,6 +17,8 @@ from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.http import require_http_methods
+from django.conf import settings
+import jwt
 
 from annotatetext.models import Annotation
 from actstream import unfollow, follow
@@ -220,3 +223,26 @@ def user_is_following(request):
     }
 
     return HttpResponse(json.dumps(res), content_type='application/json')
+
+def login_view(request, *args, **kwargs):
+    is_iframe = request.GET.get('is_iframe', '') == '1' or request.POST.get('is_iframe', '') == '1'
+    if is_iframe and request.user.is_authenticated():
+       logout(request)
+    kwargs['extra_context'] = {
+        'is_iframe': is_iframe
+    }
+    return authlogin(request, *args, **kwargs)
+
+def login_redirect(request, target):
+    target_settings = settings.LOGIN_REDIRECT_TARGETS[target]
+    if request.user.is_authenticated() and not request.user.is_anonymous():
+        payload = {
+            'user_id': request.user.pk,
+            'email': request.user.email,
+            'username': request.user.username,
+            'exp': datetime.utcnow() + settings.JWT_EXPIRATION_DELTA
+        }
+        token = jwt.encode(payload, settings.SECRET_KEY, settings.JWT_ALGORITHM).decode('utf-8')
+    else:
+        token = ''
+    return HttpResponse('<script>if (parent == window) {window.location.href = "'+target_settings['parent_location_href']+token+'"} else {parent.postMessage("'+token+'", "'+target_settings['redirect_to_url']+'");};</script>')
