@@ -5,6 +5,8 @@ class RoleInline(admin.TabularInline):
     model = Role
 
 class PersonAdmin(admin.ModelAdmin):
+    list_display=('name', 'mk', 'user')
+    search_fields = ('name',)
     ordering = ('name',)
     inlines = [
         RoleInline,
