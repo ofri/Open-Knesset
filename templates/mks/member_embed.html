@@ -17,11 +17,11 @@
       <div class="oknesset_roles">
       </div>
       <div class="oknesset_law_flow">
-        <a target="_blank" href="http://127.0.0.1:8000/bill/?member={{ object.id }}&stage=proposed" class="oknesset_proposals">
+        <a target="_blank" href="/bill/?member={{ object.id }}&amp;stage=proposed" class="oknesset_proposals">
           <span class="oknesset_proposals_number">{{ object.bills_stats_proposed }}</span>
           <span class="oknesset_proposals_desc">הצעות חוק</span>
         </a>
-        <a target="_blank" href="http://127.0.0.1:8000/bill/?member={{ object.id }}&stage=approved" class="oknesset_laws">
+        <a target="_blank" href="/bill/?member={{ object.id }}&amp;stage=approved" class="oknesset_laws">
           <span class="oknesset_laws_number">{{ object.bills_stats_approved }}~</span>
           <span class="oknesset_laws_desc">חוקים התקבלו</span>
         </a>
