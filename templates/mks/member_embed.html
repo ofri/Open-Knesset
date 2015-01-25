@@ -6,7 +6,7 @@
 <body>
   <div class="oknesset_frame" id="oknesset_mk_{{ object.id }}">
     <div class="oknesset_content_top">
-      {% url 'member-detail' id as mk_url %}
+      {% url 'member-detail' object.id as mk_url %}
       <a target="_blank" href="{{ mk_url }}">
         <img class="oknesset_image" src="{{ object.img_url }}">
       </a>
