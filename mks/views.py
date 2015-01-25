@@ -13,7 +13,7 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render_to_response
 from backlinks.pingback.server import default_server
 from actstream import actor_stream
 from actstream.models import Follow
@@ -24,6 +24,7 @@ from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
 from auxiliary.views import CsvView
+from persons.models import PersonAlias
 
 from video.utils import get_videos_queryset
 from datetime import date, timedelta
@@ -839,3 +840,27 @@ class PartiesMembersView(DetailView):
             is_current=False, current_party__knesset=self.object)
 
         return ctx
+
+def members_tooltips(request):
+    ''' returns a javascript that adds a tooltip for all mk names in the file '''
+    out = cache.get('members_tooltip') or {}
+    if out:
+        return out
+    current = request.GET.get('current', 1)
+    mks = list(Member.objects.filter(is_current=current==1).values(
+            'name', 'id'))
+    mks += [{'id': i['person__mk__id'], u'name': unicode(i['name'])}\
+            for i in PersonAlias.objects.filter(person__mk__isnull=False).values(
+                'name', 'person__mk__id')]
+
+    mks_by_name = {}
+    for i in mks:
+        mks_by_name[i['name']] = i['id']
+    out = render_to_response('mks/tooltip.js', {
+        're': u'{}'.format(u'|'.join([u'({})'.format(i['name']) for i in mks])),
+        'mks_by_name': json.dumps(mks_by_name),
+        'site_url': request.get_host(),
+        })
+    cache.set('members_tooltip', out, settings.LONG_CACHE_TIME)
+    return out
+

@@ -25,6 +25,8 @@ mksurlpatterns = patterns('mks.views',
     url(r'^member/auto_complete/$', mkv.member_auto_complete, name='member-auto-complete'),
     url(r'^member/search/?$', mkv.member_by_name, name='member-by-name'),
     url(r'^member/by/(?P<stat_type>' + '|'.join(x[0] for x in mkv.MemberListView.pages) + ')/$', mkv.MemberListView.as_view(), name='member-stats'),
+    # a JS view for adding mks tooltips on a page
+    url(r'^member/tooltip.js', mkv.members_tooltips, name='member-tooltip'),
 
     url(r'^party/$', mkv.PartyRedirectView.as_view(), name='party-list'),
     url(r'^party/(?P<pk>\d+)/$', mkv.PartyDetailView.as_view(), name='party-detail'),
