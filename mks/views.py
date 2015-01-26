@@ -375,7 +375,10 @@ class MemberDetailView(DetailView):
                         committee_actions[committee_type].append(action)
 
             committees_presence = []
-            for committee in member.committees.all():
+            committees = chain(member.committees.all(),
+                               member.chaired_committees.all(),
+                              )
+            for committee in committees:
                 committee_member = committee.members_by_presence(ids=[member.id])[0]
                 committees_presence.append({"committee": committee,
                     "presence": committee_member.meetings_percentage})
