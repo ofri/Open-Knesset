@@ -10,6 +10,7 @@ mksurlpatterns = patterns('mks.views',
     url(r'^member/csv$', mkv.MemberCsvView.as_view()),
     url(r'^party/csv$', mkv.PartyCsvView.as_view()),
     url(r'^member/(?P<pk>\d+)/$', 'mk_detail', name='member-detail'),
+    url(r'^member/(?P<pk>\d+)/embed/$', mkv.MemberEmbedView.as_view(), name='member-embed'),
 
     # "more" actions
     url(r'^member/(?P<pk>\d+)/more_actions/$', mkv.MemeberMoreActionsView.as_view(), name='member-more-actions'),
@@ -24,6 +25,8 @@ mksurlpatterns = patterns('mks.views',
     url(r'^member/auto_complete/$', mkv.member_auto_complete, name='member-auto-complete'),
     url(r'^member/search/?$', mkv.member_by_name, name='member-by-name'),
     url(r'^member/by/(?P<stat_type>' + '|'.join(x[0] for x in mkv.MemberListView.pages) + ')/$', mkv.MemberListView.as_view(), name='member-stats'),
+    # a JS view for adding mks tooltips on a page
+    url(r'^member/tooltip.js', mkv.members_tooltips, name='member-tooltip'),
 
     url(r'^party/$', mkv.PartyRedirectView.as_view(), name='party-list'),
     url(r'^party/(?P<pk>\d+)/$', mkv.PartyDetailView.as_view(), name='party-detail'),
