@@ -257,10 +257,12 @@ class MemberResource(BaseResource):
                                                     'api_name': 'v2',
                                                     'pk' : bundle.obj.id})
     def dehydrate_party_name(self, bundle):
-        return bundle.obj.current_party.name
+        party = bundle.obj.current_party
+        return party.name if party else None
 
     def dehydrate_party_url(self, bundle):
-        return bundle.obj.current_party.get_absolute_url()
+        party = bundle.obj.current_party
+        return party.get_absolute_url() if party else None
 
     def dehydrate_mmms_count(self, bundle):
         _cache_key = 'api_v2_member_mmms_' + str(bundle.obj.pk)
