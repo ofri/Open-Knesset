@@ -27,7 +27,6 @@ class PersonResource(BaseResource):
         allowed_methods = ['get']
         filtering = {
                 'roles': ALL_WITH_RELATIONS,
-                'roles__org': ALL,
                 }
 
     def get_object_list(self, request):
