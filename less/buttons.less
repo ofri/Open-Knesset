@@ -13,6 +13,10 @@
   background: @buttonBackgroundColor;
   color: @white;
   border: 2px solid darken(@buttonBackgroundColor, 20%);
+
+  &:hover {
+    background: lighten(@buttonBackgroundColor, 10%);
+  }
 }
 
 .btn-question, .btn-suggest {
@@ -70,7 +74,7 @@
 	.border-radius(0);
 	text-shadow: none;
 	background: lighten(@textColor, 60%);
-  color: lighten(@textColor,20%);
+  color: darken(@textColor,10%);
   border: none;
   &:hover{
 		background: lighten(@textColor, 50%);

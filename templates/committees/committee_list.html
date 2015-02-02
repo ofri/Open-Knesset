@@ -50,7 +50,7 @@
         <div class="cards span8">
             <section class="card card-list">
                 <header>
-                    <h2><i class="fa fa-users"></i>{% trans "Committees" %}</h2>
+                    <h1><i class="fa fa-users"></i>{% trans "Committees" %}</h1>
                     <a class="btn btn-mini btn-question" href="#committee-information-modal" data-toggle="modal">?</a>
                 </header>
                 <ul>
@@ -59,7 +59,7 @@
                         <p class="item-title">
                         <a id="detail-{{ o.id }}" href="{% url 'committee-detail' o.id %}">{{o.name}}</a></p>
 
-                        <p class="item-context">{{ o.description|linebreaksbr }}</p>
+                        <p>{{ o.description|linebreaksbr }}</p>
                         {% endfor %}
                     </li>
                 </ul>

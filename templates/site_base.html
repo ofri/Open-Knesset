@@ -38,10 +38,12 @@
 {% endif %}
       <div class="row">
         <div id="logo" class="span4 clearfix">
+        {% if is_index %}<h1>{% endif %}
           <a href="/">
             <img src="{% static "img/oknesset-logo.png" %}" alt="oknesset-logo" />
             <span>כנסת פתוחה</span>
           </a>
+          {% if is_index %}</h1>{% endif %}
         </div>
         <div id="search" class="span5">
             {% search_form "search_page" "span5" %}
@@ -83,9 +85,6 @@
         </ul>
 {% endif %}
         <div id="cse" class="main" style="display:none;"></div>
-        {% add_feedback_suggestion_form %}
-        {% trans "Feedback" as feedback_button_text %}
-        {% include "auxiliary/_suggestion_button.html" with suggest_for="feedback" button_text=feedback_button_text %}
         <div id="content-main" class="main">
             <div style="display:none;">
                 {% block messages %}{% endblock %}
@@ -154,8 +153,8 @@
                     </div>
                     <div class="follow-oknesset">
                         <h3>{% trans "Follow Open Knesset" %}:</h3>
-                        <a href="https://www.facebook.com/open.knesset" target="_blank"><img src="{% static "img/oknesset-facebook.png" %}"></a>
-                        <a href="https://twitter.com/OKnesset" target="_blank"><img src="{% static "img/oknesset-twitter.png" %}"></a>
+                        <a href="https://www.facebook.com/open.knesset" target="_blank"><img src="{% static "img/oknesset-facebook.png" %}" alt="{% trans "Open Knesset at Facebook" %}"></a>
+                        <a href="https://twitter.com/OKnesset" target="_blank"><img src="{% static "img/oknesset-twitter.png" %}" alt="{% trans "Open Knesset at Twitter" %}"></a>
                     </div>
                 </div>
                 <div class="span4 offset4 hasadna">
@@ -179,21 +178,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="span9">
+                <div class="span12">
                     {% trans "Some rights reserved. Using data from the site requires credit" %} -
                     <a href="{% url 'about' %}#terms">{% trans "Details in the link" %}</a>
-                </div>
-                <div class="span3">
-                <a href="https://play.google.com/store/apps/details?id=org.oknesset" target="_blank">
-                    <img alt="Get it on Google Play"
-                    src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
-                </a>
-                    <a target="_blank" href="http://itunes.apple.com/us/app/id475096101"><img src="/static/img/iphone_app.png" alt="אייפון"></a>
                 </div>
             </div>
         </div>
     </footer>
     <!-- END #footer -->
+    {% add_feedback_suggestion_form %}
+    {% trans "Feedback" as feedback_button_text %}
+    {% include "auxiliary/_suggestion_button.html" with suggest_for="feedback" button_text=feedback_button_text %}
 {% comment %} Suggestion forms {% endcomment %}
 {% if suggestion_forms %}{% include "auxiliary/_suggestion_forms.html" %}{% endif %}
 <!-- JS Placed at the end of the document so the pages load faster -->
