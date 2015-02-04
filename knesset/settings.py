@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'storages',
     'corsheaders',
+    'sslserver',
     #'knesset',
     'auxiliary',                  # knesset apps
     'mks',
