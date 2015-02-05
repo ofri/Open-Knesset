@@ -1,10 +1,19 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from links.models import Link
-from models import Person,PersonAlias,Title,Role
+from models import Person,PersonAlias,Title,Role, ExternalInfo, ExternalRelation
 
 class RoleInline(admin.TabularInline):
     model = Role
+
+class ExternalInfoInline(admin.TabularInline):
+    model = ExternalInfo
+    extra = 1
+
+class ExternalRelationInline(admin.TabularInline):
+    model = ExternalRelation
+    fk_name = 'person'
+    extra = 1
 
 def merge_persons(modeladmin, request, qs):
     pivot = None
@@ -44,9 +53,7 @@ class PersonAdmin(admin.ModelAdmin):
     list_display=('name', 'mk', 'user')
     search_fields = ('name',)
     ordering = ('name',)
-    inlines = [
-        RoleInline,
-    ]
+    inlines = [ RoleInline, ExternalInfoInline, ExternalRelationInline ]
     readonly_fields = ('calendar_sync_token',)
     actions = [merge_persons]
 

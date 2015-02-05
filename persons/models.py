@@ -144,3 +144,25 @@ class ProcessedProtocolPart(models.Model):
     """This model is used to keep track of protocol parts already searched for creating persons.
        There should be only 1 record in it, with the max id of a protocol part searched"""
     protocol_part_id = models.IntegerField()
+
+
+class ExternalData(models.Model):
+    ''' an abstract class for extranl data meta data '''
+    source = models.CharField(max_length=64)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        abstract = True
+
+class ExternalInfo(ExternalData):
+    ''' a model for a text key and its value tied to a person '''
+    person = models.ForeignKey(Person, related_name='external_info')
+    key = models.CharField(max_length=64)
+    value = models.TextField(null=True, blank=True)
+
+class ExternalRelation(ExternalData):
+    ''' a relationship between two persons '''
+    person = models.ForeignKey(Person, related_name='external_relation')
+    relationship = models.CharField(max_length=64)
+    with_person = models.ForeignKey(Person, null=True, blank=True)
