@@ -12,7 +12,7 @@ of the template add the line::
 .. code-block:: html
 
     <script type="text/javascript" src="//oknesset.org/static/js/tooltip.js"></script>
-    <script> generateMkFrameSet('#article'); </script>
+    <script> generateMkFrameSet('article'); </script>
 
 replace `#article` with a jQuery selector that returns all the text elements.
 To see a demo of a page using the Member widget visit https://oknesset.org/static/html/demo-article.html.
