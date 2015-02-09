@@ -13,10 +13,11 @@ class Command(NoArgsCommand):
     
     def handle_noargs(self, **options):
 
-        target_names = list(Person.objects.filter(mk__isnull=False).values_list('name',flat=True))
+        target_names = Person.objects.filter(mk__isnull=False).values_list('name','id')
         names = list(Person.objects.values_list('name',flat=True))
-        for n in target_names:
-            matches = difflib.get_close_matches(n,names,n=30,cutoff=0.2)
+        # loop on all persons who are mks
+        for n, id in target_names:
+            matches = difflib.get_close_matches(n,names,n=30,cutoff=0.9)
             if len(matches)>1:
                 for (i,m) in enumerate(matches):
                     print "%2d. %s" %(i,m[::-1])
@@ -30,13 +31,16 @@ class Command(NoArgsCommand):
                                 print "      %s" % r.text[::-1]
                         except:
                             pass
-                    x = raw_input('Enter (space separated) numbers for merge father and sons. [blank=do nothing, m=give more info] ')            
-                if x and x!='m':
+                    x = raw_input('Enter space separated) numbers for merge father and sons. [blank=do nothing')
+                if x:
                     user_merge = re.findall('\d+',x)
-                    if len(user_merge)>=2: 
-                        merge_father = int(user_merge[0])
+                    if len(user_merge)>=2:
+                        father = Person.objects.get(pk=id)
                         for merge_son in user_merge[1:]:
                             try:
-                                Person.objects.get(name=matches[merge_father]).merge(Person.objects.get(name=matches[int(merge_son)]))
+                                son = Person.objects.get(name=matches[int(merge_son)])
+                                father.merge(son)
                             except:
                                 print "can't find someone. probably already merged"
+                    else:
+                        print "sorry, I didn't get that.\nPlease re-run the command"

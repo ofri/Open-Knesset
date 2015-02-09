@@ -79,24 +79,61 @@ class Person(models.Model):
     def number_of_committees(self):
         return self.protocol_parts.values('meeting__committee').distinct().count()
 
+    def copy(self, mk = mk):
+        """ copy relelvant mk's data to self """
+        roles = other.mk.all()
+        for role in roles:
+            role.pk = None
+            role.person = self
+            role.save()
+        links = other.mk.all()
+        for link in links:
+            link.pk = None
+            link.content_object = self
+            link.save()
+        for field in mk._meta.fields:
+            if field in ['id']:
+                continue
+            field_name = field.get_attname()
+            val = getattr(mk, field_name)
+            if val and hasattr(self, field_name):
+                # update only empty fields
+                if not getattr(self, field_name):
+                    setattr(self, field_name, val)
+
     def merge(self, other):
         """make other into an alias of self"""
+        roles = other.roles.all()
+        links = other.links.all()
+        parts = other.protocol_parts.all()
         if other.mk:
             if self.mk and self.mk != other.mk:
                 # something is wrong, we are trying to merge two persons with non matching MKs
                 raise ValidationError('Trying to merge persons with non matching MKs')
             self.mk = other.mk
+            roles = chain(roles, other.mk.roles.all())
+            links = chain(links, other.mk.links.all())
         for title in other.titles.all():
             self.titles.add(title)
-        for role in other.roles.all():
+        for role in roles:
             role.person = self
             role.save()
-        (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
-        if created:
-            pa.save()
-        for part in other.protocol_parts.all():
+        for link in links:
+            link.content_object = self
+            link.save()
+        for part in parts:
             part.speaker = self
             part.save()
+        # copy all the model's fields
+        for field in self._meta.fields:
+            if field in ['id']:
+                continue
+            field_name = field.get_attname()
+            val = getattr(other, field_name)
+            if val and not getattr(self, field_name):
+                setattr(self, field_name, val)
+        if name != other.name:
+             (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
         other.delete()
         self.save()
 
