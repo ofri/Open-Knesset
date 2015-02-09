@@ -260,6 +260,30 @@ class MemberDetailView(DetailView):
                              stattype,
                              '%s_percentile' % stattype)
 
+    def get_agenda_data(self, member):
+        if self.request.user.is_authenticated():
+            agendas = Agenda.objects.get_selected_for_instance(
+                member, user=self.request.user, top=3, bottom=3)
+        else:
+            agendas = Agenda.objects.get_selected_for_instance(
+                member, user=None, top=3, bottom=3)
+        agendas = agendas['top'] + agendas['bottom']
+        for agenda in agendas:
+            agenda.watched = False
+            agenda.totals = agenda.get_mks_totals(member)
+        if self.request.user.is_authenticated():
+            watched_agendas = self.request.user.get_profile().agendas
+            for watched_agenda in watched_agendas:
+                if watched_agenda in agendas:
+                    agendas[agendas.index(watched_agenda)].watched = True
+                else:
+                    watched_agenda.score = watched_agenda.member_score(
+                        member)
+                    watched_agenda.watched = True
+                    agendas.append(watched_agenda)
+        agendas.sort(key=attrgetter('score'), reverse=True)
+        return agendas
+
     def get_context_data(self, **kwargs):
         context = super(MemberDetailView, self).get_context_data(**kwargs)
         member = context['object']
@@ -289,27 +313,7 @@ class MemberDetailView(DetailView):
             self.calc_bill_stats(member, bills_statistics, 'first')
             self.calc_bill_stats(member, bills_statistics, 'approved')
 
-            if self.request.user.is_authenticated():
-                agendas = Agenda.objects.get_selected_for_instance(
-                    member, user=self.request.user, top=3, bottom=3)
-            else:
-                agendas = Agenda.objects.get_selected_for_instance(
-                    member, user=None, top=3, bottom=3)
-            agendas = agendas['top'] + agendas['bottom']
-            for agenda in agendas:
-                agenda.watched = False
-                agenda.totals = agenda.get_mks_totals(member)
-            if self.request.user.is_authenticated():
-                watched_agendas = self.request.user.get_profile().agendas
-                for watched_agenda in watched_agendas:
-                    if watched_agenda in agendas:
-                        agendas[agendas.index(watched_agenda)].watched = True
-                    else:
-                        watched_agenda.score = watched_agenda.member_score(
-                            member)
-                        watched_agenda.watched = True
-                        agendas.append(watched_agenda)
-            agendas.sort(key=attrgetter('score'), reverse=True)
+            agendas = self.get_agenda_data(member)
 
             factional_discipline = VoteAction.objects.select_related(
                 'vote').filter(member=member,
@@ -433,6 +437,10 @@ class MemberDetailView(DetailView):
 
 class MemberEmbedView(MemberDetailView):
     template_name = 'mks/member_embed.html'
+
+    def get_agenda_data(self, member):
+        ''' we don't need this data is too speed things up we return nothing '''
+        return {}
 
 class PartyRedirectView(RedirectView):
     "Redirect to first stats view"
