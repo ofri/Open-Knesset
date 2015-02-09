@@ -1,11 +1,10 @@
-#!/usr/bin/python
-# coding: utf8
-
+# -*- coding: utf-8 -*-
 import urllib2
 from bs4 import BeautifulSoup
 import re
 import logging
 from datetime import datetime
+from itertools import permutations
 from django.core.management.base import BaseCommand
 from persons.models import Person, PersonAlias, Role
 
@@ -23,15 +22,27 @@ class Parties(object):
         party_name = name[1:] if name[0] == u'ה' else name
         ordinal = 1
         for i in data.find_all(attrs={"class": "candidate"}):
-            person_name = i.string
-            try:
-                person = Person.objects.get(name=person_name)
-            except Person.DoesNotExist:
+            ''' first try and find an existing person '''
+            person = None
+            person_names = i.string.split(' ')
+            for p in permutations(person_names):
+                ''' first and last names are mixed '''
+                person_name = ' '.join(p)
                 try:
-                    person = PersonAlias.objects.get(name=person_name).person
-                except PersonAlias.DoesNotExist:
-                    person = Person.objects.create(name=person_name)
+                    person = Person.objects.get(name=person_name)
+                    break;
+                except Person.DoesNotExist:
+                    try:
+                        person = PersonAlias.objects.get(name=person_name).person
+                        break;
+                    except PersonAlias.DoesNotExist:
+                        pass;
+                except Person.MultipleObjectsReturned:
+                    ''' not taking risks and creating one more name '''
+                    break;
 
+            if not person:
+                person = Person.objects.create(name=person_name)
 
             role, created = Role.objects.get_or_create(start_date=datetime(2015, 1, 29),
                              org=u"הבחירות לכנסת ה-20",
