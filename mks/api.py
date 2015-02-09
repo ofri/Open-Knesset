@@ -13,7 +13,7 @@ import tastypie.fields as fields
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from apis.resources.base import BaseResource
+from apis.resources.base import BaseResource, BaseNonModelResource
 from models import Member, Party, Knesset
 from agendas.models import Agenda
 from video.utils import get_videos_queryset
@@ -50,16 +50,18 @@ class PartyResource(BaseResource):
             return super(PartyResource, self).get_object_list(request).filter(
             knesset=Knesset.objects.current_knesset())
 
+
 class DictStruct:
     def __init__(self, **entries):
             self.__dict__.update(entries)
 
-class MemberBillsResource(BaseResource):
 
-    class Meta(BaseResource.Meta):
+class MemberBillsResource(BaseNonModelResource):
+
+    class Meta(BaseNonModelResource.Meta):
         allowed_methods = ['get']
         resource_name = "member-bills"
-        # object_class= DictStruct
+        object_class = DictStruct
 
     id = fields.IntegerField(attribute='id')
     bills = fields.ListField(attribute='bills')
