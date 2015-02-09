@@ -37,6 +37,9 @@ class Parties(object):
                         break;
                     except PersonAlias.DoesNotExist:
                         pass;
+                except Person.MultipleObjectsReturned:
+                    ''' not taking risks and creating one more name '''
+                    break;
 
             if not person:
                 person = Person.objects.create(name=person_name)

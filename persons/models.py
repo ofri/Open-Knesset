@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from mks.models import Member, GENDER_CHOICES
+from links.models import Link
 from .managers import PersonManager
 
 from django.contrib.auth.models import User
@@ -86,7 +87,7 @@ class Person(models.Model):
             role.pk = None
             role.person = self
             role.save()
-        links = other.mk.all()
+        links = Link.objects.for_model(mk)
         for link in links:
             link.pk = None
             link.content_object = self
@@ -104,7 +105,7 @@ class Person(models.Model):
     def merge(self, other):
         """make other into an alias of self"""
         roles = other.roles.all()
-        links = other.links.all()
+        links = Link.objects.for_model(other)
         parts = other.protocol_parts.all()
         if other.mk:
             if self.mk and self.mk != other.mk:
@@ -132,7 +133,7 @@ class Person(models.Model):
             val = getattr(other, field_name)
             if val and not getattr(self, field_name):
                 setattr(self, field_name, val)
-        if name != other.name:
+        if self.name != other.name:
              (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
         other.delete()
         self.save()
