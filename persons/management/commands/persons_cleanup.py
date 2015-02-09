@@ -10,14 +10,14 @@ from persons.models import Person,PersonAlias
 logger = logging.getLogger("open-knesset.persons.create_persons")
 
 class Command(NoArgsCommand):
-    
+
     def handle_noargs(self, **options):
 
         target_names = Person.objects.filter(mk__isnull=False).values_list('name','id')
-        names = list(Person.objects.values_list('name',flat=True))
+        names = list(Person.objects.filter(mk__isnull=True).values_list('name',flat=True))
         # loop on all persons who are mks
         for n, id in target_names:
-            matches = difflib.get_close_matches(n,names,n=30,cutoff=0.9)
+            matches = difflib.get_close_matches(n,names,n=30,cutoff=0.8)
             if len(matches)>1:
                 for (i,m) in enumerate(matches):
                     print "%2d. %s" %(i,m[::-1])
@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
                                 print "      %s" % r.text[::-1]
                         except:
                             pass
-                    x = raw_input('Enter space separated) numbers for merge father and sons. [blank=do nothing')
+                    x = raw_input('Enter space separated) numbers for merge father and sons. [blank=do nothing]')
                 if x:
                     user_merge = re.findall('\d+',x)
                     if len(user_merge)>=2:
