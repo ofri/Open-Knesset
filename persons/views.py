@@ -14,9 +14,11 @@ class PersonListView(ListView):
         context['title'] = _('Persons in committee meetings')
         return context 
 
+    ''' TODO: add filters: speakers, election candidates, mks, past mks...
     def get_queryset (self):
         return Person.objects.filter(protocol_parts__isnull=False).distinct()
-        
+    '''
+
 class PersonDetailView(DetailView):
 
     model = Person
