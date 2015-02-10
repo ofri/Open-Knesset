@@ -100,7 +100,7 @@
                 {% if not debug and not is_index %}
                     <!-- AddToAny BEGIN -->
                     <div class="a2a_kit a2a_default_style">
-                    <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
+                    <a class="a2a_dd" href="//www.addtoany.com/share_save">שיתוף</a>
                     <span class="a2a_divider"></span>
                     <a class="a2a_button_email"></a>
                     <a class="a2a_button_facebook"></a>
@@ -113,7 +113,7 @@
                     var a2a_config = a2a_config || {};
                     a2a_config.locale = "he";
                     </script>
-                    <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+                    <script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
                     <!-- AddToAny END -->
                 {% endif %}
             </div>
@@ -273,26 +273,29 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
 
-        //HASADNA PIWIK ANALYTICS
-        var _paq = _paq || [];
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-          var u=(("https:" == document.location.protocol) ? "https" : "http") + "://visitors.hasadna.org.il/";
-          _paq.push(['setTrackerUrl', u+'piwik.php']);
-          _paq.push(['setSiteId', 2]);
-          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
-          g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-        })();
-
     {% endif %}
     </script>
+
+    //HASADNA PIWIK ANALYTICS
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//visitors.hasadna.org.il/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', 2]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="//visitors.hasadna.org.il/piwik.php?idsite=2" style="border:0;" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
+
     {% block extrajs %}{% endblock %}
     {% block footer %}
     {% endblock %}
-
-    <!--HASADNA PIWIK ANALYTICS-->
-    <noscript><p><img src="http://visitors.hasadna.org.il/piwik.php?idsite=2" style="border:0;" alt="" /></p></noscript>
 
     </body>
 </html>
