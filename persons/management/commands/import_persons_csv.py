@@ -4,12 +4,12 @@ import re
 import logging
 from optparse import make_option
 import csv
+import codecs
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 from persons.models import Person, PersonAlias, Role
 
 logger = logging.getLogger("open-knesset.import_persons_csv")
-
 
 class Command(BaseCommand):
 
@@ -35,33 +35,37 @@ class Command(BaseCommand):
         )
     help = 'process a csv with persons data from standard input'
 
-    def get_person(text):
-        name, titles = text.split('/')
+    def get_person(self, text):
+        name, sep, titles = text.partition('/')
         titles = titles.split(',')
-        try:
-            p = Person.objects.get_by_name(name)
-        except Person.DoesNotExist:
-            p = Person.objects.create(name=name)
+        p = Person.objects.get_by_name(name, create=True)
         for t in titles:
-            p.titles.add_or_create(name=t)
+            p.titles.get_or_create(name=t)
         return p
 
     def handle(self, *args, **options):
         if options['save']:
-            f = open(options['input']) if options['input'] else sys.stdin
+            if options['input']:
+                f = codecs.open(options['input'], "r", "utf-8")
+            else:
+                f = sys.stdin
             for line in csv.DictReader(f):
-                p = Person.objects.get_by_name(line['name'])
+                p = Person.objects.get_by_name(line['name'], create=True)
                 for key,value in line.items():
-                    if key in ['declaration', 'text']:
-                        p.external_info.get_or_create(source=options['source'],
+                    parts = key.split('_')
+                    if parts[0] == "person":
+                        if value:
+                            other = self.get_person(value)
+                            new, created = p.external_relation.get_or_create(source=options['source'],
+                                relationship=_(parts[1]),
+                                with_person=other,
+                            )
+                            self.stdout.write(unicode(new))
+                    else:
+                        new, created = p.external_info.get_or_create(source=options['source'],
                             key= _(key),
                             value=value,
                             )
+                        print key, ':', value
+                        # self.stdout.write(unicode(new))
                         continue
-                    parts = key.split('_')
-                    if parts[0] == "person":
-                        other = self.get_person(value)
-                        p.external_relation.get_or_create(source=options['source'],
-                            relationship=_(parts[1]),
-                            with_persons=other,
-                        )
