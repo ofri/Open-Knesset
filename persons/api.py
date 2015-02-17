@@ -54,6 +54,7 @@ class PersonResource(BaseResource):
         queryset = Person.objects.all()
         allowed_methods = ['get']
         filtering = {
+                'id': ALL,
                 'roles': ALL_WITH_RELATIONS,
                 'relations': ALL_WITH_RELATIONS,
                 'external_info': ALL_WITH_RELATIONS,
