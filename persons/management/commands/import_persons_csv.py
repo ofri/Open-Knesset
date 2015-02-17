@@ -13,6 +13,7 @@ logger = logging.getLogger("open-knesset.import_persons_csv")
 
 class Command(BaseCommand):
 
+    args = "<content-source>"
     option_list = BaseCommand.option_list + (
         make_option('--save',
             action='store_true',
@@ -22,18 +23,14 @@ class Command(BaseCommand):
         make_option('-i',
             dest='input',
             default=False,
-            help='name of an input file'),
+            help='name an input file'),
         make_option('--delete',
             action='store_true',
             dest='delete',
             default=False,
             help='delete the data in the csv from the db'),
-        make_option('--source',
-            dest='source',
-            default=False,
-            help='delete the data in the csv from the db'),
         )
-    help = 'process a csv with persons data from standard input'
+    help = 'Import person data from a csv file. Must specify the content source as an argument.'
 
     def get_person(self, text):
         name, sep, titles = text.partition('/')
@@ -44,6 +41,10 @@ class Command(BaseCommand):
         return p
 
     def handle(self, *args, **options):
+        if not args:
+            sys.stderr.write("please specify the content source\n")
+            exit(-1)
+        source = " ".join(args)
         if options['save']:
             if options['input']:
                 f = codecs.open(options['input'], "r", "utf-8")
@@ -56,13 +57,13 @@ class Command(BaseCommand):
                     if parts[0] == "person":
                         if value:
                             other = self.get_person(value)
-                            new, created = p.external_relation.get_or_create(source=options['source'],
+                            new, created = p.external_relation.get_or_create(source=source,
                                 relationship=_(parts[1]),
                                 with_person=other,
                             )
                             self.stdout.write(unicode(new))
                     else:
-                        new, created = p.external_info.get_or_create(source=options['source'],
+                        new, created = p.external_info.get_or_create(source=source,
                             key= _(key),
                             value=value,
                             )
