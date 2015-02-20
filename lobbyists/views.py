@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 import json
 import sys
 from links.models import Link
@@ -131,3 +131,19 @@ def LobbyistCorporationMarkAliasView(request, alias, main):
         res['ok'] = False
         res['msg'] = unicode(sys.exc_info()[1])
     return HttpResponse(json.dumps(res), content_type="application/json")
+
+
+def lobbyists_auto_complete(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if not 'query' in request.GET:
+        raise Http404
+
+    suggestions = map(lambda lob: lob.person.name,
+                      Lobbyist.objects.filter(
+                          person__name__icontains=request.GET['query'])[:30])
+
+    result = { 'query': request.GET['query'], 'suggestions':suggestions }
+
+    return HttpResponse(json.dumps(result), mimetype='application/json')
