@@ -5,6 +5,7 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
+from tastypie.test import ResourceTestCase
 from actstream import follow,action
 from actstream.models import Action
 from mks.models import Member, Party, Membership, MemberAltname, Knesset
@@ -22,6 +23,7 @@ from backlinks.models import InboundBacklink
 from backlinks.pingback.server import PingbackServer
 from django import template
 from mks.mock import PINGABLE_MEMBER_ID, NON_PINGABLE_MEMBER_ID
+from persons.models import Person, PersonAlias
 
 TRACKBACK_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=utf-8'
 
@@ -416,6 +418,7 @@ class MemberBacklinksViewsTest(TestCase):
                           excerpt,
                           'Server did not use excerpt from ping request when registering')
 
+
     def tearDown(self):
         self.party_1.delete()
         self.party_2.delete()
@@ -423,6 +426,37 @@ class MemberBacklinksViewsTest(TestCase):
         self.mk_2.delete()
         self.jacob.delete()
 
+class MemberAPITests(ResourceTestCase):
+    def setUp(self):
+        super(MemberAPITests, self).setUp()
+
+        d = datetime.date.today()
+        self.knesset = Knesset.objects.create(
+            number=1,
+            start_date=d-datetime.timedelta(10))
+        self.party_1 = Party.objects.create(name='party 1',
+                                            knesset=self.knesset)
+        self.mk_1 = Member.objects.create(name='mk_1',
+                                          start_date=datetime.date(2010,1,1),
+                                          current_party=self.party_1,
+                                          backlinks_enabled=True)
+        PersonAlias.objects.create(name="mk_1_alias",
+                                   person=Person.objects.get(mk=self.mk_1))
+    def testSimpleGet(self):
+        res1 = self.api_client.get('/api/v2/member/', data={'name': 'mk_1'})
+        self.assertValidJSONResponse(res1)
+        ret = self.deserialize(res1)
+        self.assertEqual(ret['meta']['total_count'], 1)
+
+    def testAliases(self):
+        res1 = self.api_client.get('/api/v2/member/', data={'name': 'mk_1'}, format='json')
+        self.assertValidJSONResponse(res1)
+        res2 = self.api_client.get('/api/v2/member/', data={'name': 'mk_1_alias'}, format='json')
+        self.assertValidJSONResponse(res2)
+        self.assertEqual(self.deserialize(res1), self.deserialize(res2))
+
+    def tearDown(self):
+        self.mk_1.delete()
 
 class MemberModelsTests(TestCase):
 

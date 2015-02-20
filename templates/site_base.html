@@ -1,15 +1,302 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% block content-main %}
-  <div style="display:none;"> 
-    {% block messages %}{% endblock %}
-  </div>
-	{% block help-section %}{% endblock %}        
-    <div id="subnav">{% block subnav %} {% endblock %}</div>
-    {% block header %} {% endblock %}
-	<div>
-		{% block divcontent %} {% block content %}ahm.. my child should replace this block{% endblock %}{% endblock %}
-	</div>
-{% endblock %}
+<!DOCTYPE html>{% load i18n search avatar_tags feedback %}{% load static from staticfiles %}
+<html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}" class="{{ LANGUAGE_BIDI|yesno:"rtl,ltr" }}">
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}">
+    <title>{% block extratitle %}{% endblock %} | {% trans 'Open Knesset' %}</title>
+    <meta NAME="ROBOTS" content="{% if debug %}NOINDEX, NOFOLLOW{% else %}ALL{% endif %}">
+    <meta http-equiv="imagetoolbar" content="no"/>
+    <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
+    <meta name="MSSmartTagsPreventParsing" content="true" >
+    <meta name="Authors" content="OpenKnesset">
+    <meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
+    <meta name="keywords" content="{% trans 'Open Knesset' %} {% block keywords %}{% endblock %}" >
+    <meta name="description" content="{% block description %}{% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}">
+    <meta name="google-site-verification" content="TAmHbnTgm9dvrNMB41Ke-lZesXPgTd5xSW5lBTzq020" />
+    <meta property="og:image" content="/static/img/oknesset-logo-small.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}?v=26" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}"/>
+
+<!--
+    <link href="{% static "css/common.css" %}?v=22" rel="stylesheet" type="text/css" media="screen" />
+-->
+    <link href="{% static "css/jquery.jgrowl.css" %}" rel="stylesheet" type="text/css" media="screen" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    {% block extracss %} {% endblock %}
+    <link rel="shortcut icon" href="{% static "img/favicon.png" %}" />
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+    <header id="app-header" class="container">
+{% if debug %}
+      <div class="row"><div class="span12"><div class="alert alert-error">{% trans 'This is a development server, all data in it should be considered fictional.  users are kindly requested to go to '%}<a href="http://oknesset.org/">http://oknesset.org/</a></div></div></div>
+{% endif %}
+      <div class="row">
+        <div id="logo" class="span4 clearfix">
+        {% if is_index %}<h1>{% endif %}
+          <a href="/">
+            <img src="{% static "img/oknesset-logo.png" %}" alt="oknesset-logo" />
+            <span>כנסת פתוחה</span>
+          </a>
+          {% if is_index %}</h1>{% endif %}
+        </div>
+        <div id="search" class="span5">
+            {% search_form "search_page" "span5" %}
+        </div>
+
+        <div id="login" class="span3 dropdown">
+          {% if user.is_authenticated %}
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <b class="caret"></b>
+            <span class="user-pic">
+                {% avatar user 36%}
+            </span>
+          </a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a href="{% url 'edit-profile' %}"><i class="fa fa-edit fa-flip-horizontal"></i> {% trans 'Edit Profile' %}</a></li>
+            <li><a href="{% url 'logout' %}?next={{request.get_full_path}}"><i class="fa fa-sign-out fa-flip-horizontal"></i> {% trans 'Logout' %}</a></li>
+          </ul>
+          {% else %}
+          <a href='{% url 'login' %}?next={{request.get_full_path}}'><i class="fa fa-sign-in fa-flip-horizontal"></i> {% trans 'login' %}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <ul class="nav nav-pills">
+        <li id="nav-parties" {% block nav-parties %} {% endblock %} ><a href="{% url 'parties-members-index' %}">{% trans "Members and Parties" %}</a></li>
+        <li id="laws" {% block nav-laws %} {% endblock %} > <a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> </li>
+        <li id="votes" {% block nav-votes %} {% endblock %} > <a href="{% url 'vote-list' %}">{% trans "Votes" %}</a> </li>
+        <li id="nav-committees" {% block nav-committees %} {% endblock %} > <a href="{% url 'committee-list' %}">{% trans 'Committees' %}</a> </li>
+        <li id="nav-plenum" {% block nav-plenum %} {% endblock %} ><a href="{% url 'plenum' %}">מליאה</a></li>
+        <li id="nav-agendas" {% block nav-agendas %} {% endblock %} > <a href="{% url 'agenda-list' %}">{% trans 'Agendas' %}</a> </li>
+      </ul>
+    </header>
+    <div id="helptextcontainer"></div>
+    <section class="container">
+{% if not hide_crumbs %}
+        <ul class="breadcrumb">
+            <li><a class="home-icon" href="{% url 'main' %}">{% trans "Homepage" %}</a> <span class="divider">/</span></li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+{% endif %}
+        <div id="cse" class="main" style="display:none;"></div>
+        <div id="content-main" class="main">
+            <div style="display:none;">
+                {% block messages %}{% endblock %}
+            </div>
+            <div id="subnav">{% block subnav %} {% endblock %}</div>
+            {% block header %} {% endblock %}
+            <div>
+                {% block divcontent %} {% block content %}ahm.. my child should replace this block{% endblock %}{% endblock %}
+            </div>
+            <div class="clear"></div>
+            {% block social %}
+            <div class="content-footer">
+                {% if not debug and not is_index %}
+                    <!-- AddToAny BEGIN -->
+                    <div class="a2a_kit a2a_default_style">
+                    <a class="a2a_dd" href="//www.addtoany.com/share_save">שיתוף</a>
+                    <span class="a2a_divider"></span>
+                    <a class="a2a_button_email"></a>
+                    <a class="a2a_button_facebook"></a>
+                    <a class="a2a_button_twitter"></a>
+                    <a class="a2a_button_google_plus"></a>
+                    <a class="a2a_button_delicious"></a>
+                    <a class="a2a_button_digg"></a>
+                    </div>
+                    <script type="text/javascript">
+                    var a2a_config = a2a_config || {};
+                    a2a_config.locale = "he";
+                    </script>
+                    <script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+                    <!-- AddToAny END -->
+                {% endif %}
+            </div>
+            {% endblock %}
+        </div>
+        <!-- END #content-main -->
+    </section>
+    <!-- END #content -->
+    <footer id="app-footer">
+        <div class="container">
+            <div class="row">
+                <nav class="span8">
+                    <ul class="nav nav-pills">
+                        <li><a class="home-icon" href="{% url 'main' %}">{% trans "Homepage" %}</a></li>
+                        <li><a href="{% url 'party-list' %}">{% trans "Members and Parties" %}</a></li>
+                        <li><a href="{% url 'bill-list' %}">{% trans "Legislation" %}</a> </li>
+                        <li><a href="{% url 'committee-list' %}">{% trans 'Committees' %}</a> </li>
+                        <li><a href="{% url 'plenum' %}">מליאה</a></li>
+                        <li><a href="{% url 'agenda-list' %}">{% trans 'Agendas' %}</a> </li>
+                        <li><a href="{% url 'about' %}">{% trans 'About' %}</a> </li>
+                    </ul>
+                </nav>
+                <div id="search-bottom" class="span4">
+                    {% search_form "search_page_bottom" "span4" %}
+                </div>
+            </div>
+            <div class="row about">
+                <div class="span4">
+                    <div class="about-oknesset">
+                    <h3>{% trans "Open Knesset is a project aimed to expose Knesset's actions to the public" %}</h3>
+                    <p>
+                    {% blocktrans %}All the information comes from the Knesset's site.
+                    This site is maintained by volunteers and is not supported by
+                    any political party ...{% endblocktrans %}
+                    <a href="{% url 'about' %}">{% trans "Read more" %}</a>
+                    </p>
+                    </div>
+                    <div class="follow-oknesset">
+                        <h3>{% trans "Follow Open Knesset" %}:</h3>
+                        <a href="https://www.facebook.com/open.knesset" target="_blank"><img src="{% static "img/oknesset-facebook.png" %}" alt="{% trans "Open Knesset at Facebook" %}"></a>
+                        <a href="https://twitter.com/OKnesset" target="_blank"><img src="{% static "img/oknesset-twitter.png" %}" alt="{% trans "Open Knesset at Twitter" %}"></a>
+                    </div>
+                </div>
+                <div class="span4 offset4 hasadna">
+                    <h3>
+                        <img src="{% static "img/sadna30x30.png" %}" alt="{% trans "The Public Knowledge Workshop" %}">
+                        <span>{% trans "Project of" %}</span><a href="http://www.hasadna.org.il">{% trans "The Public Knowledge Workshop" %}</a>
+                    </h3>
+                    <ul>
+                        <li><a
+                            href="http://www.hasadna.org.il/projects/%D7%94%D7%AA%D7%A7%D7%A6%D7%99%D7%91-%D7%94%D7%A4%D7%AA%D7%95%D7%97/" target="_blank">{% trans "Open Budget" %}</a></li>
+                        <li><a href="http://www.hasadna.org.il/projects/%D7%A4%D7%95%D7%AA%D7%97%D7%99%D7%9D-%D7%90%D7%AA-%D7%95%D7%A2%D7%93%D7%AA-%D7%94%D7%9B%D7%A1%D7%A4%D7%99%D7%9D/" target="_blank">{% trans "Opening the finance committee" %}</a></li>
+                        <li><a href="http://www.hasadna.org.il/projects/%D7%9E%D7%A2%D7%A7%D7%91-%D7%98%D7%A8%D7%9B%D7%98%D7%A0%D7%91%D7%A8%D7%92/" target="_blank">{% trans "Traking Trachtenberg" %}</a></li>
+                        <li><a href="http://www.hasadna.org.il/projects/%D7%A8%D7%A9%D7%95%D7%99%D7%95%D7%AA-%D7%9E%D7%A7%D7%95%D7%9E%D7%99%D7%95%D7%AA-%D7%A4%D7%AA%D7%95%D7%97%D7%95%D7%AA/" target="_blank">{% trans "Open Local Authorities" %}</a></li>
+                    </ul>
+                    <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+                        <input type="hidden" value="_s-xclick" name="cmd">
+                        <input type="hidden" value="K7X4FWYPBR7H4" name="hosted_button_id">
+                        <input type="submit" name="submit" value="{% trans "Donate to Hasadna" %}" class="btn  btn-big btn-large btn-primary">
+                        <img width="1" height="1" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110306-1/he_IL/i/scr/pixel.gif" alt="">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                    {% trans "Some rights reserved. Using data from the site requires credit" %} -
+                    <a href="{% url 'about' %}#terms">{% trans "Details in the link" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END #footer -->
+    {% add_feedback_suggestion_form %}
+    {% trans "Feedback" as feedback_button_text %}
+    {% include "auxiliary/_suggestion_button.html" with suggest_for="feedback" button_text=feedback_button_text %}
+{% comment %} Suggestion forms {% endcomment %}
+{% if suggestion_forms %}{% include "auxiliary/_suggestion_forms.html" %}{% endif %}
+<!-- JS Placed at the end of the document so the pages load faster -->
+    <script src="{% static "js/jquery-1.8.3.min.js" %}"></script>
+    <script src="{% static "js/bootstrap-transition.js" %}"></script>
+    <script src="{% static "js/bootstrap-alert.js" %}"></script>
+    <script src="{% static "js/bootstrap-modal.js" %}"></script>
+    <script src="{% static "js/bootstrap-dropdown.js" %}"></script>
+    <script src="{% static "js/bootstrap-scrollspy.js" %}"></script>
+    <script src="{% static "js/bootstrap-tab.js" %}"></script>
+    <script src="{% static "js/bootstrap-tooltip.js" %}"></script>
+    <script src="{% static "js/bootstrap-popover.js" %}"></script>
+    <script src="{% static "js/bootstrap-button.js" %}"></script>
+    <script src="{% static "js/bootstrap-collapse.js" %}"></script>
+    <script src="{% static "js/bootstrap-carousel.js" %}?v=1"></script>
+    <script src="{% static "js/bootstrap-typeahead.js" %}"></script>
+
+    <script src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+    <script src="{% static "js/jquery.jgrowl.js" %}"></script>
+    <script src="{% static "js/okhelptexts.js" %}"></script>
+    <script src="{% static "js/togglehelpextended.js" %}"></script>
+
+    <script src="{% static "js/ok-toggle.js" %}"></script>
+    <script src="{% static "js/ok-more.js" %}"></script>
+    <script src="{% static "js/ok-search.js" %}?v=3"></script>
+    <script src="{% static "js/ok-suggest.js" %}?v=3"></script>
+<!-- end JS -->
+    <script>
+        $(function() {
+            // send csrf with AJAX
+            $(document).ajaxSend(function(event, xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+
+            // lazy load mkimages
+            $('.party-member-photo').hover(function() {
+                var card_info = $(this).find('.party-member-info'),
+                    card_info_display = card_info.css('display'),
+                    photo = card_info.find('.party-member-info-photo img');
+
+                // should work only for large screens, disply will be none for
+                // by media queries
+                if (card_info_display == 'block') {
+                    var img_src = photo.data('src');
+                    if (img_src) {
+                        photo.removeAttr('data-src');
+                        photo.attr('src', img_src).one('load', function() {photo.parent().css('background', 'white');});
+                    }
+                }
+
+            });
+            // set jGrowl position
+            $.jGrowl.defaults.position="top-left";
+        });
+    {% if not debug %}
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-15521464-1']);
+        _gaq.push(['_setDomainName','.oknesset.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    {% endif %}
+    </script>
+
+    //HASADNA PIWIK ANALYTICS
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//visitors.hasadna.org.il/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', 2]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="//visitors.hasadna.org.il/piwik.php?idsite=2" style="border:0;" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
+
+    {% block extrajs %}{% endblock %}
+    {% block footer %}
+    {% endblock %}
+
+    </body>
+</html>
 

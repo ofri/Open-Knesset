@@ -11,7 +11,7 @@
         var btn = $("#events-more");
         if (btn) {
             btn.attr("data-initial", $("#upcoming-events li").length)
-        }   
+        }
 {% if tidbits %}
         $('#tidbitCarousel').carousel({interval: 7000})
 {% endif %}
@@ -34,10 +34,7 @@
         <div class="item {% if forloop.first %}active{% endif %}">
             <img class="pull-right tidbit-pic"
                 src="{% if tidbit.photo %}{{tidbit.photo.url}}{% else %}{{STATIC_URL}}img/tidbits/{{tidbit.icon}}.png{% endif %}"
-                alt="Tidbit photo">            
-            <div class='pull-left'>
-                {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
-            </div>
+                alt="Tidbit photo">
             <strong class="tidbit-icon-{{tidbit.icon}}">{{tidbit.title}}</strong>
             <div class='tidbit-content'>{{tidbit.content|safe}}</div>
             <a class="btn btn-more" href="{{tidbit.button_link}}">{{tidbit.button_text}}</a>
@@ -49,6 +46,7 @@
             <a class="btn" href="admin/auxiliary/tidbit/add/">Add a tidbit</a>
         </div>
         {% endfor %}
+        {% include "auxiliary/_suggestion_button.html" with suggest_for="tidbit" %}
     </div>
     <!-- Carousel nav -->
     <a class="carousel-control left" href="#tidbitCarousel" data-slide="prev">&lsaquo;</a>
@@ -77,10 +75,10 @@
         <footer>
         <button id="events-more" class="btn btn-mini btn-expand" data-provide="okmore"
             data-loading-text="{% trans "Loading" %} ..."
-            autocomplete="off" data-target="#upcoming-events" 
+            autocomplete="off" data-target="#upcoming-events"
             data-url="{% url 'more-upcoming-events' %}"
             data-initial="INITIAL_EVENTS"
-            >{% trans "More" %} +</button>
+            >{% trans "More Upcoming Events" %} +</button>
         </footer>
         {% endif %}
       </div>
@@ -90,19 +88,19 @@
         <aside class="sidebar">
             <h2>מה אפשר לעשות באתר?</h2>
             <ul>
-              <li> 
+              <li>
                   <a href="{% url 'help' %}#follow-members">לעקוב אחרי הצעות חוק</a>
               </li>
-              <li> 
+              <li>
                   <a href="{% url 'help' %}#search-bills">לחפש הצעות חוק לפי נושא</a>
               </li>
-              <li> 
+              <li>
                   <a href="{% url 'help' %}#follow-member-votes">מעקב הצבעות חבר כנסת</a>
               </li>
-              <li> 
+              <li>
                   <a href="{% url 'help' %}#members-data">להשוות נתוני חברי־הכנסת</a>
               </li>
-              <li> 
+              <li>
                   <a href="{% url 'help' %}#protocols">לקרוא את הפרוטוקולים</a>
               </li>
               {% comment %}<li>
@@ -113,7 +111,7 @@
         <aside class="sidebar">
           <h2>מהי כנסת פתוחה ?</h2>
           <ul>
-              <li class="agenda-mini clearfix"> 
+              <li class="agenda-mini clearfix">
                   <p>
                       אתר כנסת פתוחה הוא פרויקט מבית הסדנא לידע ציבורי, החושף
                       ומנגיש מידע על המתרחש בכנסת. מטרת הפרויקט היא להגביר את
@@ -134,7 +132,7 @@
                   </p>
                   <!-- AddToAny BEGIN -->
                   <p class="a2a_kit a2a_default_style" style="width:200px; margin:0 auto;">
-                      <a class="a2a_dd" href="http://www.addtoany.com/share_save">שיתוף</a>
+                      <a class="a2a_dd" href="//www.addtoany.com/share_save">שיתוף</a>
                       <span class="a2a_divider"></span>
                       <a class="a2a_button_email"></a>
                       <a class="a2a_button_facebook"></a>
@@ -146,7 +144,7 @@
                       var a2a_config = a2a_config || {};
                       a2a_config.locale = "he";
                       </script>
-                      <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+                      <script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
                   </p>
                   <!-- AddToAny END -->
               </li>

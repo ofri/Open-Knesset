@@ -3,15 +3,17 @@ Api for the members app
 '''
 import urllib
 import math
+import logging
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.db.models.query import EmptyQuerySet
 from tastypie.constants import ALL
 from tastypie.bundle import Bundle
 import tastypie.fields as fields
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from apis.resources.base import BaseResource
+from apis.resources.base import BaseResource, BaseNonModelResource
 from models import Member, Party, Knesset
 from agendas.models import Agenda
 from video.utils import get_videos_queryset
@@ -19,10 +21,11 @@ from video.api import VideoResource
 from links.models import Link
 from links.api import LinkResource
 from persons.api import RoleResource
-from persons.models import Person
+from persons.models import Person, PersonAlias
 
 from django.db.models import Count
 
+logger = logging.getLogger(__name__)
 
 class PartyResource(BaseResource):
     ''' Party API
@@ -47,16 +50,18 @@ class PartyResource(BaseResource):
             return super(PartyResource, self).get_object_list(request).filter(
             knesset=Knesset.objects.current_knesset())
 
+
 class DictStruct:
     def __init__(self, **entries):
             self.__dict__.update(entries)
 
-class MemberBillsResource(BaseResource):
 
-    class Meta(BaseResource.Meta):
+class MemberBillsResource(BaseNonModelResource):
+
+    class Meta(BaseNonModelResource.Meta):
         allowed_methods = ['get']
         resource_name = "member-bills"
-        # object_class= DictStruct
+        object_class = DictStruct
 
     id = fields.IntegerField(attribute='id')
     bills = fields.ListField(attribute='bills')
@@ -220,6 +225,23 @@ class MemberResource(BaseResource):
     fields.ToOneField(PartyResource, 'current_party', full=True)
     average_weekly_presence_rank = fields.IntegerField()
 
+    def obj_get_list(self, bundle, **kwargs):
+        simple = super(MemberResource, self).obj_get_list(bundle, **kwargs)
+
+        if hasattr(bundle.request, 'GET'):
+            # Grab a mutable copy.
+            filters = bundle.request.GET.copy()
+
+        # Update with the provided kwargs.
+        filters.update(kwargs)
+        name = filters.get('name')
+        if name and not simple:
+            try:
+                return Member.objects.filter(person__aliases__name=name)
+            except PersonAlias.DoesNotExist:
+                return simple
+        return simple
+
     def dehydrate_committees (self, bundle):
         temp_list = bundle.obj.committee_meetings.exclude(committee__type='plenum')
         temp_list = temp_list.values("committee", "committee__name").annotate(Count("id")).order_by('-id__count')[:5]
@@ -237,10 +259,12 @@ class MemberResource(BaseResource):
                                                     'api_name': 'v2',
                                                     'pk' : bundle.obj.id})
     def dehydrate_party_name(self, bundle):
-        return bundle.obj.current_party.name
+        party = bundle.obj.current_party
+        return party.name if party else None
 
     def dehydrate_party_url(self, bundle):
-        return bundle.obj.current_party.get_absolute_url()
+        party = bundle.obj.current_party
+        return party.get_absolute_url() if party else None
 
     def dehydrate_mmms_count(self, bundle):
         _cache_key = 'api_v2_member_mmms_' + str(bundle.obj.pk)

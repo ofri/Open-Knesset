@@ -37,7 +37,7 @@
         <div class="cards span9">
             <section class="card card-list card-list-latest">
                 <header>
-                    <h2><i class="fa fa-gavel"></i>{{title}}</h2>
+                    <h1><i class="fa fa-gavel"></i>{{title}}</h1>
                     <a class="btn btn-mini btn-question" href="#legislation-information-modal" data-toggle="modal">?</a>
                 </header>
                 <ul>
@@ -65,4 +65,12 @@
             </aside>
         </div>
     </div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+$(function() {
+    $('#id_stage').focus();
+});
+</script>
 {% endblock %}

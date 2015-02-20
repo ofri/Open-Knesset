@@ -2,53 +2,28 @@ Embedding widgets
 ====================
 
 Member
-----------
+------
 
-To embed a Knesset member's card, use:
+If you have a site or a blog that mentions MKs name you need to add 
+only one line to your template to get a popup with the latest oknesset data
+for all the MKs mentioned ona page. Just before the </body> tag at the bottom
+of the template add the line::
 
 .. code-block:: html
 
-    <iframe width="400" height="200" scrolling="no" style="border:0" src="https://oknesset.org/static/html/oknesset-iframe.html?id=member_id"></iframe>
+    <script type="text/javascript" src="//oknesset.org/static/js/tooltip.js"></script>
+    <script> generateMkFrameSet('article'); </script>
+
+replace `article` with a text element id.  To see a demo of a page using the
+member widget visit https://oknesset.org/static/html/demo-article.html.
+
+To embed a single Knesset member's card, use:
+
+.. code-block:: html
+
+    <iframe width="400" height="186" scrolling="no" style="border:0" src="https://oknesset.org/member/[member_id]/embed/"></iframe>
 
 Replace `member_id` with the id of the member from the url, e.g:
 
-
-.. code-block:: html
-
-    <iframe width="400" height="200" scrolling="no" style="border:0" src="https://oknesset.org/static/html/oknesset-iframe.html?id=114"></iframe>
-
-
-.. raw:: html
-
-    <iframe width="400" height="200" scrolling="no" style="border:0" src="https://oknesset.org/static/html/oknesset-iframe.html?id=114"></iframe>
-
 You can get the embedding code for the member's page. For example visit
-https://oknesset.org/member/114/ and click the `"עמבד"` button:
-
-.. image:: ../_static/mk_embed.png
-
-
-Bill
--------
-
-To embed a bill information use:
-
-.. code-block:: html
-
-    <iframe frameborder="0" id="embed-widget" src="https://oknesset.org/bill/bill_id/embed/" style="width: 505px; height: 375px;"></iframe>
-
-Replace `bill_id` with the id from the bill's url, e.g:
-
-
-.. code-block:: html
-
-    <iframe frameborder="0" id="embed-widget" src="https://oknesset.org/bill/8407/embed/" style="width: 505px; height: 375px;"></iframe>
-
-.. raw:: html
-
-    <iframe frameborder="0" id="embed-widget" src="https://oknesset.org/bill/8407/embed/" style="width: 505px; height: 375px;"></iframe>
-
-You can get the embedding code from the bill's page. For the above example,
-visit https://oknesset.org/bill/8407/ and click the `"עמבד"` button:
-
-.. image:: ../_static/bill_embed.png
+https://oknesset.org/member/885/, and click the `"עמבד"` button.

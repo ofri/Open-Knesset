@@ -7,8 +7,10 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from mks.models import Member, GENDER_CHOICES
+from links.models import Link
 from .managers import PersonManager
 
+from django.contrib.auth.models import User
 
 class Title(models.Model):
     name = models.CharField(max_length=64)
@@ -54,6 +56,7 @@ class Person(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     calendar_url = models.CharField(blank=True, null=True, max_length=1024)
     calendar_sync_token = models.CharField(blank=True, null=True, max_length=1024)
+    user = models.ForeignKey('auth.User', blank=True, null=True)
 
     objects = PersonManager()
 
@@ -77,26 +80,79 @@ class Person(models.Model):
     def number_of_committees(self):
         return self.protocol_parts.values('meeting__committee').distinct().count()
 
+    def copy(self, mk = mk):
+        """ copy relelvant mk's data to self """
+        roles = other.mk.all()
+        for role in roles:
+            role.pk = None
+            role.person = self
+            role.save()
+        links = Link.objects.for_model(mk)
+        for link in links:
+            link.pk = None
+            link.content_object = self
+            link.save()
+        for field in mk._meta.fields:
+            if field in ['id']:
+                continue
+            field_name = field.get_attname()
+            val = getattr(mk, field_name)
+            if val and hasattr(self, field_name):
+                # update only empty fields
+                if not getattr(self, field_name):
+                    setattr(self, field_name, val)
+
     def merge(self, other):
         """make other into an alias of self"""
+        roles = other.roles.all()
+        links = Link.objects.for_model(other)
+        parts = other.protocol_parts.all()
         if other.mk:
             if self.mk and self.mk != other.mk:
                 # something is wrong, we are trying to merge two persons with non matching MKs
                 raise ValidationError('Trying to merge persons with non matching MKs')
             self.mk = other.mk
+            roles = chain(roles, other.mk.roles.all())
+            links = chain(links, other.mk.links.all())
         for title in other.titles.all():
             self.titles.add(title)
-        for role in other.roles.all():
+        for role in roles:
             role.person = self
             role.save()
-        (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
-        if created:
-            pa.save()
-        for part in other.protocol_parts.all():
+        for link in links:
+            link.content_object = self
+            link.save()
+        for part in parts:
             part.speaker = self
             part.save()
+        # copy all the model's fields
+        for field in self._meta.fields:
+            if field in ['id']:
+                continue
+            field_name = field.get_attname()
+            val = getattr(other, field_name)
+            if val and not getattr(self, field_name):
+                setattr(self, field_name, val)
+        if self.name != other.name:
+             (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
         other.delete()
         self.save()
+
+    def create_user(self, username=None, password=None):
+        """Create an Auth User for this person - so she can login to django"""
+        name_split = self.name.split(' ')
+        user = User(
+            username=username if username is not None else self.email.split('@')[0],
+            first_name=name_split[0],
+            last_name=' '.join(name_split[1:]) if len(name_split) > 1 else '',
+            email=self.email
+        )
+        if password is not None:
+            user.set_password(password)
+        user.save()
+        self.user = user
+        self.save()
+        return user
 
 
 @receiver(post_save, sender=Member)
@@ -126,3 +182,25 @@ class ProcessedProtocolPart(models.Model):
     """This model is used to keep track of protocol parts already searched for creating persons.
        There should be only 1 record in it, with the max id of a protocol part searched"""
     protocol_part_id = models.IntegerField()
+
+
+class ExternalData(models.Model):
+    ''' an abstract class for extranl data meta data '''
+    source = models.CharField(max_length=64)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        abstract = True
+
+class ExternalInfo(ExternalData):
+    ''' a model for a text key and its value tied to a person '''
+    person = models.ForeignKey(Person, related_name='external_info')
+    key = models.CharField(max_length=64)
+    value = models.TextField(null=True, blank=True)
+
+class ExternalRelation(ExternalData):
+    ''' a relationship between two persons '''
+    person = models.ForeignKey(Person, related_name='external_relation')
+    relationship = models.CharField(max_length=64)
+    with_person = models.ForeignKey(Person, null=True, blank=True)

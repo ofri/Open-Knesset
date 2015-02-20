@@ -19,6 +19,10 @@ body {
   margin-top: 20px;
 }
 
+a:focus {
+  outline: @linkColor dotted 2px;
+}
+
 .row {
   div[class*='span'] {
     .spacer {
@@ -107,4 +111,8 @@ form .helptext {
         background-color: rgba(0, 0, 0, 0.75);
       }
     }
+}
+
+input.tobecopied {
+  width: 90%;
 }

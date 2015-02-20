@@ -7,6 +7,7 @@ from models import CoalitionMembership, Correlation, Party, \
     Award, AwardType
 from links.models import Link
 from video.models import Video
+from persons.models import Person
 
 
 class MembershipInline(admin.TabularInline):
@@ -23,6 +24,15 @@ class MemberLinksInline(generic.GenericTabularInline):
 class MemberAltnameInline(admin.TabularInline):
     model = MemberAltname
     extra = 1
+
+
+class MemberPersonInline(admin.StackedInline):
+    model = Person
+    ct_fk_field = "mk"
+    extra = 0
+    max_num = 0
+    fields = ['calendar_url']
+    can_delete = False
 
 
 class MemberRelatedVideosInline(generic.GenericTabularInline):
@@ -62,7 +72,7 @@ class MemberAdmin(admin.ModelAdmin):
                     'is_current', 'current_position')
     list_editable = ('is_current', 'current_position')
     search_fields = ['name']
-    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline,
+    inlines = (MembershipInline, MemberLinksInline, MemberAltnameInline, MemberPersonInline,
                MemberRelatedVideosInline)
     list_filter = ('current_party__knesset', 'gender')
 
