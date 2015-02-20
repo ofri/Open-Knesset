@@ -34,6 +34,7 @@ from links.models import Link
 from mks.models import Member
 from mks.utils import get_all_mk_names
 from mmm.models import Document
+from lobbyists.models import Lobbyist
 
 
 logger = logging.getLogger("open-knesset.committees.views")
@@ -200,6 +201,16 @@ class MeetingDetailView(DetailView):
                         description=cm,
                         target=mk,
                         timestamp=datetime.datetime.now())
+
+        if user_input_type == 'add-lobbyist':
+            l = Lobbyist.objects.get(person__name=request.POST.get(
+                'lobbyist_name'))
+            cm.lobbyists_mentioned.add(l)
+
+        if user_input_type == 'remove-lobbyist':
+            l = Lobbyist.objects.get(person__name=request.POST.get(
+                'lobbyist_name'))
+            cm.lobbyists_mentioned.remove(l)
 
         if user_input_type == "protocol":
             if not cm.protocol_text:  # don't override existing protocols
