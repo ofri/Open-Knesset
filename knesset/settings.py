@@ -314,6 +314,7 @@ LOGIN_REDIRECT_TARGETS = {
     'opensubs': {
         'parent_location_href': 'http://localhost:9000/',
         'redirect_to_url': 'http://localhost:9000/#/login/',
+        'fb_secret': ''
     }
 }
 
