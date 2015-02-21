@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import json
+import urllib2
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, \
                         HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed
@@ -30,8 +31,12 @@ from laws.models import Bill
 from agendas.models import Agenda
 from tagvotes.models import TagVote
 from committees.models import CommitteeMeeting,Topic
+from user.models import UserCustomMetadata
 
 from forms import RegistrationForm, EditProfileForm
+from django.views.decorators.csrf import csrf_exempt
+from utils import parse_signed_request
+
 
 class PublicUserProfile(DetailView):
     model = User
@@ -246,3 +251,26 @@ def login_redirect(request, target):
     else:
         token = ''
     return HttpResponse('<script>if (parent == window) {window.location.href = "'+target_settings['parent_location_href']+token+'"} else {parent.postMessage("'+token+'", "'+target_settings['redirect_to_url']+'");};</script>')
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def fbstore(request, target):
+    secret = settings.LOGIN_REDIRECT_TARGETS['opensubs']['fb_secret']
+    data = json.loads(request.body)
+    signedRequest = data['signedRequest']
+    accessToken = data['accessToken']
+    k = data['k']
+    v = data['v']
+    fb = parse_signed_request(signedRequest, secret)
+    if fb is None:
+        return HttpResponse('%s: ERROR'%target)
+    else:
+        fb_user_id = fb['user_id']
+        fbuser = json.loads(urllib2.urlopen('https://graph.facebook.com/me?fields=id,email&access_token=%s'%accessToken).read(1000))
+        if fbuser['id'] != fb_user_id:
+            return HttpResponse('%s: ERROR'%target)
+        else:
+            email = fbuser['email']
+            user, is_created = User.objects.get_or_create(email=email)
+            user.get_profile().custom_metadata.add(UserCustomMetadata(app_id=target, k=k, v=v))
+            return HttpResponse('%s: OK'%target)
