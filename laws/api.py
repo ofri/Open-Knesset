@@ -2,7 +2,6 @@
 API for the laws app
 '''
 import logging
-
 from django.core.urlresolvers import reverse
 from tastypie.constants import ALL
 import tastypie.fields as fields
@@ -19,6 +18,7 @@ from models import Law, Bill, Vote, VoteAction, PrivateProposal
 from simple.management.commands.syncdata_globals import p_explanation
 from agendas.models import AgendaVote
 
+from datetime import datetime, timedelta
 logger = logging.getLogger("open-knesset.laws.api")
 
 class LawResource(BaseResource):
@@ -53,7 +53,9 @@ class VoteResource(BaseResource):
         filtering = dict(tag=('exact'),
                          member=ALL,
                          member_for=ALL,
-                         member_against=ALL)
+                         member_against=ALL,
+                         from_date=ALL,
+                         to_date=ALL)
 
     votes = fields.ToManyField(VoteActionResource,
                     attribute=lambda bundle:VoteAction.objects.filter(
@@ -80,6 +82,14 @@ class VoteResource(BaseResource):
             # hard-coded the __in filter. not great, but works.
             orm_filters["tagged_items__tag__in"] = \
                 filters["tag"].split(',')
+        if 'from_date' in filters:
+            orm_filters["time__gte"] = filters['from_date']
+        if 'to_date' in filters:
+            # the to_date needs to be incremented by a day since when humans say to_date=2014-07-30 they
+            # actually mean midnight between 30 to 31. python on the other hand interperts this as midnight between
+            # 29 and 30
+            to_date = datetime.strptime(filters["to_date"], "%Y-%M-%d")+timedelta(days=1)
+            orm_filters["time__lte"] = to_date.strftime("%Y-%M-%d")
         return orm_filters
 
     def dehydrate_agendas(self, bundle):
