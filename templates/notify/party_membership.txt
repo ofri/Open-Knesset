@@ -4,6 +4,3 @@
 {% for b in bills %}
     {{ b }} - http://{{domain}}{{ b.get_absolute_url }}
 {% endfor %}
-{% else %}
-    {% trans 'We have noticed that you are not listed as a party member. You should really consider it.' %}
-{% endif %}
