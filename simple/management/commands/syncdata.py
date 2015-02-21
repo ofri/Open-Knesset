@@ -25,6 +25,8 @@ import parse_presence, parse_laws, mk_roles_parser, parse_remote
 from parse_gov_legislation_comm import ParseGLC
 
 from syncdata_globals import p_explanation,strong_explanation,explanation
+from plenum.management.commands.parse_plenum_protocols_subcommands.download \
+    import _antiword
 
 ENCODING = 'utf8'
 
@@ -798,6 +800,14 @@ class Command(NoArgsCommand):
                     else:
                         subject = span[span.find(r'>')+1:] # no table, just take the text
             else: # we are parsing a matched link - comittee protocol url
+                if (link.find(r'.doc') > 0):
+                    logger.debug('doc found')
+                    html_url = link.split("'")[1]
+                    # this is the last info we need, so add data to results
+                    res.append([date_text, comittee, subject, html_url])
+                    date_text = ''
+                    comittee = ''
+                    subject = ''
                 if (link.find(r'html')>0)or(link.find(r'rtf')>0):
                     html_url = FILES_BASE_URL + re.search(r"'\.\./([^']*)'", link).group(1)
                     res.append([date_text, comittee, subject, html_url]) # this is the last info we need, so add data to results
@@ -905,7 +915,7 @@ class Command(NoArgsCommand):
 
     def get_committee_protocol_text(self, url):
         logger.debug('get_committee_protocol_text. url=%s' % url)
-        if url.find('html'):
+        if url.find('html') >= 0:
             url = url.replace('html','rtf')
         file_str = StringIO()
         count = 0
@@ -918,6 +928,22 @@ class Command(NoArgsCommand):
                 count += 1
         if flag:
             logger.error("can't open url %s. tried %d times" % (url, count))
+
+        if url.find(".rtf") >= 0:
+            return self.handle_rtf_protocol(file_str)
+        if url.find(".doc") >= 0:
+            return self.handle_doc_protocol(file_str)
+
+    def handle_doc_protocol(self, file_str):
+        fname = DATA_ROOT + 'comm_p/comm_p.doc'
+        f = open(fname, 'wb')
+        file_str.seek(0)
+        f.write(file_str.read())
+        f.close()
+        x = _antiword(fname)
+        return re.sub('[\n ]{2,}', '\n\n', re.sub('<.*?>','',x))
+
+    def handle_rtf_protocol(self, file_str):
         try:
             doc = Rtf15Reader.read(file_str)
         except Exception:
