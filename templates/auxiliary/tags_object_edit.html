@@ -15,7 +15,10 @@
     <input autocomplete='off' style='border:1px solid black;'/>
     <div id='tags_notexist' class='alert' style='display:none;'>
         <div>{% trans "The tag does not exist" %}</div>
-        <a href='#suggest-tag-modal' data-role="button" data-toggle="modal">{% trans "Click here to suggest the tag" %}</a>
+        <a href='javascript:tags.suggest();'>{% trans "Click here to suggest the tag" %}</a>
+    </div>
+    <div id='tag_suggestion_accepted' class='alert' style='display:none;'>
+        <div>{% trans "Started tag approval process" %}</div>
     </div>
     <div><a href='javascript:tags.add();'>{% trans "Add" %}</a></div>
 </div>

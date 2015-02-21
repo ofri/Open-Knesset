@@ -52,6 +52,15 @@ window.tags = {
 			});
 		};
 	},
+	suggest : function(name) {
+		var _this = this;
+		if (name === undefined)
+			name = _this._view.getAddTagName();
+		_this._model.suggest(name, function() {
+			_this._view.clearError();
+			_this._view.showApproval();
+		});
+	},
 	_model : {
 		_getTagId : function(name, callback) {
 			$.get('/api/v2/tag/', {
@@ -121,7 +130,18 @@ window.tags = {
 					callback(tmp);
 				};
 			});
-		}
+		},
+		suggest : function(name, callback) {
+			$.post("/suggest-tag-post/", {
+				name: name,
+				app_label: this._app_label,
+				object_type: this._object_type,
+				object_id: this._object_id,
+			}, function(data) {
+				callback();
+			});
+		},
+
 	},
 	_view : {
 		_errorMsgs : {
@@ -254,16 +274,22 @@ window.tags = {
 			$('#deltag_' + id).html(gettext('Undo Delete') + '<br/>');
 			$('#deltag_' + id).data('isDeleted', 'yes');
 		},
+		showError : function() {
+			$('#tags_notexist').show();
+		},
+		showApproval: function() {
+			$('#tag_suggestion_accepted').show();
+		},
 		clearError : function() {
 			$('#tags_notexist').hide();
 		},
+		clearApproval: function() {
+			$('#tag_suggestion_accepted').hide();
+		},
 		error : function(code, object_type, object_id, app_label) {
 			if (code == 'TAG_DOES_NOT_EXIST') {
-				$('#tags_notexist').show();
-				$('#suggest-tag-modal #id_name').val(this.getAddTagName());
-				$('#suggest-tag-modal #id_object_type').val(object_type);
-				$('#suggest-tag-modal #id_app_label').val(app_label);
-				$('#suggest-tag-modal #id_object_id').val(object_id);
+				this.clearApproval();
+				this.showError();
 			} else {
 				msg = this._errorMsgs[code];
 				alert(msg);
