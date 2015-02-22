@@ -1,6 +1,6 @@
 {% extends "site_base.html" %}
 {% load i18n mks_tags avatar_tags %}{% load static from staticfiles %}
-{% block extratitle %}{{ object }}{% endblock %}
+{% block extratitle %}{{ object.person.name }}{% endblock %}
 {% block keywords %}{{ object.person.name }}{% endblock %}
 {% block description %}{{ object.person.name }} - {% trans 'Open Knesset - Opening the Knesset to the public' %}{% endblock %}
 

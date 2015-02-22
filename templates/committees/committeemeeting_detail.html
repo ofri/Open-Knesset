@@ -75,6 +75,18 @@
                         <input type="text" name="mk_name" id="id_mk_name">
                         <input type="submit" value="{% trans "Submit" %}" class="btn">
                     </form>
+                    <form method="post" action="." class="form-inline">{% csrf_token %}
+                        <input type="hidden" name="user_input_type" value="add-lobbyist">
+                        <label for="id_lobbyist_name">{% trans "Add a lobbyist" %}</label>
+                        <input type="text" name="lobbyist_name" id="id_lobbyist_name">
+                        <input type="submit" value="{% trans "Submit" %}" class="btn">
+                    </form>
+                    <form method="post" action="." class="form-inline">{% csrf_token %}
+                        <input type="hidden" name="user_input_type" value="remove-lobbyist">
+                        <label for="id_lobbyist_name">{% trans "remove a lobbyist" %}</label>
+                        <input type="text" name="lobbyist_name" id="id_lobbyist_name">
+                        <input type="submit" value="{% trans "Submit" %}" class="btn">
+                    </form>
                     {% endif %}
                 </div>
             </div>
@@ -134,10 +146,6 @@
                 {% include "auxiliary/tags_object_edit.html" with tags=object.tags tag_suggestions=tag_suggestions %}
             </aside>
 
-            <aside class="sidebar">
-                {% agendas_for user object 'committeemeeting' %}
-            </aside>
-
             {% if mentioned_lobbyists or mentioned_lobbyist_corporations %}
             <aside class="sidebar sidebar-lobbyists">
                 {% if mentioned_lobbyists %}
@@ -161,6 +169,11 @@
                 </ul>
                 {% endif %}
             </aside>
+
+            <aside class="sidebar">
+                {% agendas_for user object 'committeemeeting' %}
+            </aside>
+
             {% endif %}
         </div>
 

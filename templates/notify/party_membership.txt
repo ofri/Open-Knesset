@@ -1,13 +1,6 @@
 {% load i18n %}
-{% trans 'Party Membership' %}
-{% if userprofile.party %}{% with userprofile.party as party %}{% blocktrans %}You are listed as a member of {{ party }}.{% endblocktrans %}{% endwith %}
-{% blocktrans %}Your party has {{ num_members }} members in open knesset. If you know other members of the party, point them to the user registration.{% endblocktrans %}
-
 {% trans 'Bills that are being discussed' %}
 {% trans 'Click the link below and vote to let your MKs what you think of these bills' %}
 {% for b in bills %}
     {{ b }} - http://{{domain}}{{ b.get_absolute_url }}
 {% endfor %}
-{% else %}
-    {% trans 'We have noticed that you are not listed as a party member. You should really consider it.' %}
-{% endif %}

@@ -5,6 +5,7 @@
 
 mimms>=3.2
 
-# Temporary, until pyth release a new pypi with pull #16
-# Using OriHoch's fork with a fix to ignore bad unicode characters in rtf reader
--e git://github.com/OriHoch/pyth.git#egg=pyth
+# Using yairchu's fork with a fix to ignore bad unicode characters in rtf reader
+# see this PR: https://github.com/hasadna/Open-Knesset/pull/326
+# and this commit: https://github.com/yairchu/pyth/commit/026bee7683709fc297ff6c8f7e1904e0fc13b91e
+-e git+git://github.com/yairchu/pyth.git@026bee7683709fc297ff6c8f7e1904e0fc13b91e#egg=pyth

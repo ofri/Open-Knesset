@@ -1,5 +1,5 @@
 from django.conf.urls import url, patterns, include
-from views import PublicUserProfile, ProfileListView, login_view, login_redirect
+from views import PublicUserProfile, ProfileListView, login_view, login_redirect, fbstore
 
 profile_list = ProfileListView.as_view()
 user_public_profile = PublicUserProfile.as_view(
@@ -44,6 +44,7 @@ urlpatterns += patterns(
     url(r'^login/$', login_view,
         {'template_name': 'user/login.html'}, name='login'),
     url(r'^login-redirect/(?P<target>[0-9A-Za-z]+)/$', login_redirect),
+    url(r'^fbstore/(?P<target>[0-9A-Za-z]+)/$', fbstore),
     (r'^registration/', include('accounts.urls')),
     url(r'^(?P<pk>\d+)/$', user_public_profile, name='public-profile'),
     url(r'^(?P<pk>\d+)/topic/$', user_followed_topics,

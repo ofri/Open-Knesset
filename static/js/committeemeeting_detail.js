@@ -34,6 +34,15 @@ $(function(){
         $(this).siblings("input[type$='submit']").attr('disabled', 'disabled'); });
     $("input[name$='mk_name']").autocomplete(options_mk);
 
+    var options_lobbyists = {
+         serviceUrl:'/lobbyist/auto_complete/',
+         minChars:2,
+         maxHeight:400,
+         width:150,
+         deferRequestBy: 100, //miliseconds
+         };
+    $("input[name$='lobbyist_name']").autocomplete(options_lobbyists);
+
     $(".annotation-content").each(function(){
         var annoid = $(this).attr("id").split("-")[1];
         annotation_objects[annoid] = new Annotations(annoid);

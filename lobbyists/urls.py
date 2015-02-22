@@ -20,5 +20,10 @@ lobbyistpatterns = patterns ('',
 
     # Edit actions
     url(r'^lobbyist/corporation/mark_alias/(?P<alias>\d+)/(?P<main>\d+)$',
-        LobbyistCorporationMarkAliasView)
+        LobbyistCorporationMarkAliasView),
+
+    # auto complete
+    url(r'^lobbyist/auto_complete/$',
+        lobbyists_auto_complete,
+        name='lobbyists-auto-complete'),
 )
