@@ -62,10 +62,10 @@ class Command(BaseCommand):
                             )
                             self.stdout.write(unicode(new))
                     else:
-                        new, created = p.external_info.get_or_create(source=options['source'],
-                            key= _(key),
-                            value=value,
-                            )
+                        ei, created = p.external_info.get_or_create(source=options['source'],
+                            key= _(key), defaults=dict(value=value))
+                        if not created:
+                            ei.value=value,
+                            ei.save()
                         print key, ':', value
-                        # self.stdout.write(unicode(new))
                         continue
