@@ -199,8 +199,16 @@ class ExternalInfo(ExternalData):
     key = models.CharField(max_length=64)
     value = models.TextField(null=True, blank=True)
 
+    def __unicode__(self):
+        return u"{} - {}: {}".format(self.person, self.key, self.value)
+
 class ExternalRelation(ExternalData):
     ''' a relationship between two persons '''
     person = models.ForeignKey(Person, related_name='external_relation')
     relationship = models.CharField(max_length=64)
     with_person = models.ForeignKey(Person, null=True, blank=True)
+
+    def __unicode__(self):
+        return u"{} - {}: {}".format(self.person, self.relationship,
+                self.with_person)
+

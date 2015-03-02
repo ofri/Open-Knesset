@@ -21,7 +21,6 @@ def merge_persons(modeladmin, request, qs):
         if person.mk:
             pivot = person
             break
-
     if not pivot:
         # if no mk based pivot, pick the first one
         pivot = qs[0]
