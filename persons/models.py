@@ -107,6 +107,8 @@ class Person(models.Model):
         roles = other.roles.all()
         links = Link.objects.for_model(other)
         parts = other.protocol_parts.all()
+        external_info = other.external_info.all()
+        external_relation = other.external_relation.all()
         if other.mk:
             if self.mk and self.mk != other.mk:
                 # something is wrong, we are trying to merge two persons with non matching MKs
@@ -125,7 +127,15 @@ class Person(models.Model):
         for part in parts:
             part.speaker = self
             part.save()
+        for i in external_info:
+            i.person = self
+            i.save()
+        for i in external_relation:
+            i.person = self
+            i.save()
+
         # copy all the model's fields
+
         for field in self._meta.fields:
             if field in ['id']:
                 continue
