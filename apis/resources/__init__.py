@@ -13,6 +13,7 @@ from auxiliary.api import PostResource, TagResource
 from events.api import EventResource
 from polyorg.api import CandidateListResource
 from persons.api import PersonResource
+from lobbyists.api import LobbyistsChangeResource, LobbyistResource, LobbyistCorporationResource
 
 v2_api = Api(api_name='v2')
 
@@ -35,3 +36,6 @@ v2_api.register(TagResource())
 v2_api.register(EventResource())
 v2_api.register(CandidateListResource())
 v2_api.register(PersonResource())
+v2_api.register(LobbyistsChangeResource())
+v2_api.register(LobbyistResource())
+v2_api.register(LobbyistCorporationResource())
