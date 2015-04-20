@@ -4,7 +4,7 @@ from django.db.models import Q
 
 from models import Member, Membership, MemberAltname
 from models import CoalitionMembership, Correlation, Party, \
-    Award, AwardType
+    Award, AwardType, Knesset
 from links.models import Link
 from video.models import Video
 from persons.models import Person
@@ -115,3 +115,8 @@ class AwardAdmin(admin.ModelAdmin):
     list_display = ('member', 'award_type', 'date_given')
     raw_id_fields = ('member',)
 admin.site.register(Award, AwardAdmin)
+
+
+class KnessetAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Knesset, KnessetAdmin)
