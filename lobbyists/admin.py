@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Lobbyist, LobbyistCorporation
+from models import Lobbyist, LobbyistCorporation, LobbyistsChange
 from django.contrib.contenttypes import generic
 from links.models import Link
 
@@ -22,6 +22,10 @@ class LobbyistCorporationAdmin(admin.ModelAdmin):
     inlines = (LinksInline,)
 
 
+class LobbyistsChangeAdmin(admin.ModelAdmin):
+    list_display = ('date', 'type', 'content_type', 'object_id', 'content_object')
+
+
 admin.site.register(Lobbyist, LobbyistAdmin)
 admin.site.register(LobbyistCorporation, LobbyistCorporationAdmin)
-
+admin.site.register(LobbyistsChange, LobbyistsChangeAdmin)
