@@ -294,7 +294,7 @@ class Command(NoArgsCommand):
         logger.debug("last member id found in local files is %d. " % self.last_downloaded_member_id)
         f.close()
 
-    def get_members_data(self, max_mk_id=1000):
+    def get_members_data(self, max_mk_id=1000, min_mk_id=1):
         """downloads members data to local files
         """
         # TODO - find max member id in knesset website and use for max_mk_id
@@ -311,8 +311,13 @@ class Command(NoArgsCommand):
 
         fields = [unicode(field.decode('utf8')) for field in fields]
 
-        for id in range(1,max_mk_id):
-            m = mk_parser.MKHtmlParser(id).Dict
+        for id in range(min_mk_id,max_mk_id):
+            logger.debug('mk %s'%id)
+            try:
+                m = mk_parser.MKHtmlParser(id).Dict
+            except UnicodeDecodeError as e:
+                logger.error('unicode decode error at mk id %s'%id)
+                m = {}
             if (m.has_key('name') and m['name'] != None): name = m['name'].replace(u'\xa0',u' ').encode(ENCODING).replace('&nbsp;',' ')
             else: continue
             f.write("%d\t%s\t" % (id, name))
