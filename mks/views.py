@@ -847,6 +847,7 @@ class PartiesMembersView(DetailView):
         ctx['opposition'] = Party.objects.filter(
             is_coalition=False, knesset=self.object).annotate(
                 extra=Sum('number_of_seats')).order_by('-extra')
+        ctx['parties'] = chain(ctx['coalition'],ctx['opposition'])
         ctx['past_members'] = Member.objects.filter(
             is_current=False, current_party__knesset=self.object)
 
