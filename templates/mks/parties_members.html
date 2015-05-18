@@ -37,13 +37,16 @@
         </div>
     </div>
     <div class="row">
+      <div class="cards span12">
         <section class="card card-list card-list-latest compact">
           {% for party in parties %}
             <div class="span1">
               <h4 style="height: 5em; "><a href="{{party.get_absolute_url}}">{{party.name}}<a></h4>
               {% include "mks/member_photos.html" with members=party.current_members %}
-           </div>
+            </div>
           {% endfor %}
+            <div class="clearfix"></div>
         </section>
+      </div>
     </div>
 {% endblock %}
