@@ -23,6 +23,7 @@ from plenum.create_protocol_parts import create_plenum_protocol_parts
 from mks.models import Knesset
 from lobbyists.models import LobbyistHistory, LobbyistCorporation
 from itertools import groupby
+from hebrew_numbers import gematria_to_int
 
 COMMITTEE_PROTOCOL_PAGINATE_BY = 120
 
@@ -306,6 +307,43 @@ class CommitteeMeeting(models.Model):
 
         # don't forget the last section
         ProtocolPart(meeting=self, order=i, header=header, body='\n'.join(section)).save()
+
+    def redownload_plenum_protocol(self):
+        """utility method to redownload plenum meeting protocol"""
+        from plenum.management.commands.parse_plenum_protocols_subcommands.download import download_for_existing_meeting
+        download_for_existing_meeting(self)
+
+    def reparse_plenum_protocol(self):
+        self.redownload_plenum_protocol()
+        from plenum.management.commands.parse_plenum_protocols_subcommands.parse import parse_for_existing_meeting
+        parse_for_existing_meeting(self)
+
+    @property
+    def plenum_meeting_number(self):
+        res = None
+        parts = self.parts.filter(body__contains=u'ישיבה')
+        if parts.count() > 0:
+            r = re.search(u'ישיבה (.*)$', self.parts.filter(body__contains=u'ישיבה').first().body)
+            if r:
+                res = gematria_to_int(r.groups()[0])
+        return res
+
+    def plenum_link_votes(self):
+        from laws.models import Vote
+        if self.plenum_meeting_number:
+            for vote in Vote.objects.filter(meeting_number=self.plenum_meeting_number):
+                for part in self.parts.filter(header__contains=u'הצבעה'):
+                    r = re.search(r' (\d+)$', part.header)
+                    if r and vote.vote_number == int(r.groups()[0]):
+                        url = part.get_absolute_url()
+                        Link.objects.get_or_create(
+                            object_pk=vote.pk,
+                            content_type=ContentType.objects.get_for_model(Vote),
+                            url = url,
+                            defaults = {
+                                'title': u'לדיון בישיבת המליאה'
+                            }
+                        )
 
     def get_bg_material(self):
         """

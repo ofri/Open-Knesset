@@ -9,12 +9,15 @@ from plenum import create_protocol_parts
 
 verbosity=1
 
-def Parse(verbosity_level,reparse):
+def Parse(verbosity_level,reparse, meeting_pks=None):
     global verbosity
     verbosity=int(verbosity_level)
     #DATA_ROOT = getattr(settings, 'DATA_ROOT')
-    plenum=Committee.objects.filter(type='plenum')[0]
-    meetings=CommitteeMeeting.objects.filter(committee=plenum).exclude(protocol_text='')
+    if meeting_pks is not None:
+        meetings = CommitteeMeeting.objects.filter(pk__in=meeting_pks)
+    else:
+        plenum=Committee.objects.filter(type='plenum')[0]
+        meetings=CommitteeMeeting.objects.filter(committee=plenum).exclude(protocol_text='')
     if not reparse:
         meetings=meetings.annotate(Count('parts')).filter(parts__count=0)
     if verbosity>1:
@@ -24,3 +27,6 @@ def Parse(verbosity_level,reparse):
     (mks,mk_names)=create_protocol_parts.get_all_mk_names()
     for meeting in meetings:
         meeting.create_protocol_parts(delete_existing=reparse,mks=mks,mk_names=mk_names)
+
+def parse_for_existing_meeting(meeting):
+    Parse(3, True, [meeting.pk])
