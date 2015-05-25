@@ -29,4 +29,4 @@ def Parse(verbosity_level,reparse, meeting_pks=None):
         meeting.create_protocol_parts(delete_existing=reparse,mks=mks,mk_names=mk_names)
 
 def parse_for_existing_meeting(meeting):
-    Parse(3, True, [meeting.pk])
+    Parse(1, True, [meeting.pk])
