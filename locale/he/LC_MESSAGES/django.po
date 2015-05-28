@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-21 21:48+0200\n"
+"POT-Creation-Date: 2015-05-28 16:45+0300\n"
 "PO-Revision-Date: 2015-02-21 22:01+0200\n"
 "Last-Translator: Ofri Raviv <ofri.raviv@gmail.com>\n"
 "Language-Team: Django-i18n <django-i18n@googlegroups.com>\n"
@@ -336,7 +336,7 @@ msgstr "לא נמצאו חברי כנסת \"%s\""
 msgid "Help"
 msgstr "עזרה"
 
-#: auxiliary/views.py:235 templates/main.he.html:5
+#: auxiliary/views.py:235 templates/main.B.he.html:5 templates/main.he.html:5
 msgid "Home"
 msgstr "דף הבית"
 
@@ -420,6 +420,12 @@ msgstr "נמחקה"
 #: templates/committees/committeemeeting_list.html:29
 #: templates/committees/flatpages.html:3 templates/committees/flatpages.html:4
 #: templates/committees/flatpages.html:5
+#: templates/committees/temp_committee_list.html:3
+#: templates/committees/temp_committee_list.html:4
+#: templates/committees/temp_committee_list.html:5
+#: templates/committees/temp_committee_list.html:30
+#: templates/committees/temp_committee_list.html:38
+#: templates/committees/temp_committee_list.html:53
 #: templates/committees/topic_detail.html:34
 #: templates/mks/member_detail.html:105 templates/mks/member_detail.html:271
 msgid "Committees"
@@ -1147,11 +1153,11 @@ msgstr "סיעות"
 msgid "%(name)s in Knesset %(number)d"
 msgstr "%(name)s בכנסת ה־%(number)d"
 
-#: mks/models.py:146 mks/views.py:680 templates/mks/parties_members.html:42
+#: mks/models.py:146 mks/views.py:680
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:146 mks/views.py:681 templates/mks/parties_members.html:55
+#: mks/models.py:146 mks/views.py:681
 msgid "Opposition"
 msgstr "אופוזיציה"
 
@@ -1339,7 +1345,7 @@ msgstr "עדכונים שונים"
 msgid "Open Knesset Updates"
 msgstr "עדכוני כנסת פתוחה"
 
-#: persons/admin.py:38
+#: persons/admin.py:37
 msgid "Merge two or more persons"
 msgstr "מזג שני אנשים או יותר"
 
@@ -1352,7 +1358,7 @@ msgstr "אדם"
 msgid "Persons"
 msgstr "אנשים"
 
-#: persons/models.py:177
+#: persons/models.py:187
 #, python-brace-format
 msgid "{person} serverd as {text} in {org} from {start_date} to {end_date}"
 msgstr "{person} שירת בתור {text} ב־{org} מ־{start_date} עד {end_date}"
@@ -1547,8 +1553,8 @@ msgid "About"
 msgstr "אודות"
 
 #: templates/about.html:9 templates/help_page.he.html:3
-#: templates/main.he.html:4 templates/site_base.html:14
-#: templates/agendas/agenda_add.html:5
+#: templates/main.B.he.html:4 templates/main.he.html:4
+#: templates/site_base.html:14 templates/agendas/agenda_add.html:5
 #: templates/agendas/agenda_bill_detail.html:5
 #: templates/agendas/agenda_detail.html:6
 #: templates/agendas/agenda_detail_edit.html:5
@@ -1564,8 +1570,10 @@ msgstr "אודות"
 #: templates/committees/committee_list.html:5
 #: templates/committees/committeemeeting_detail.html:7
 #: templates/committees/committeemeeting_list_by_tag.html:5
-#: templates/committees/flatpages.html:5 templates/laws/bill_detail.html:91
-#: templates/laws/bill_list.html:6 templates/laws/bill_list_by_tag.html:5
+#: templates/committees/flatpages.html:5
+#: templates/committees/temp_committee_list.html:5
+#: templates/laws/bill_detail.html:91 templates/laws/bill_list.html:6
+#: templates/laws/bill_list_by_tag.html:5
 #: templates/laws/bill_tags_cloud.html:5 templates/laws/vote_detail.html:6
 #: templates/laws/vote_list.html:6 templates/laws/vote_list_by_tag.html:5
 #: templates/laws/vote_tags_cloud.html:5
@@ -1594,7 +1602,8 @@ msgstr "עוד..."
 msgid "See less  ..."
 msgstr "פחות..."
 
-#: templates/help_page.he.html:3 templates/main.he.html:4
+#: templates/help_page.he.html:3 templates/main.B.he.html:4
+#: templates/main.he.html:4
 msgid ""
 "Non partisan, non commercial site that brings you relevant, detailed and "
 "accurate information about the knesset"
@@ -1609,6 +1618,7 @@ msgstr "בקרוב בכנסת"
 #: templates/agendas/agenda_detail.html:92
 #: templates/agendas/agenda_detail.html:107 templates/auxiliary/_watch.html:13
 #: templates/committees/committee_list.html:77
+#: templates/committees/temp_committee_list.html:78
 #: templates/mks/member_detail.html:236 templates/mks/member_detail.html:258
 #: templates/mks/member_detail.html:283 templates/mks/member_detail.html:308
 #: templates/mks/member_detail.html:331
@@ -2143,6 +2153,7 @@ msgstr "הצבעות משויכות"
 #: templates/agendas/agenda_detail.html:95
 #: templates/agendas/agenda_detail.html:110
 #: templates/committees/committee_list.html:82
+#: templates/committees/temp_committee_list.html:83
 #: templates/laws/bill_detail.html:406 templates/laws/vote_detail.html:60
 #: templates/laws/vote_list.html:32 templates/mks/member_detail.html:100
 #: templates/mks/member_detail.html:128 templates/mks/member_detail.html:144
@@ -2190,6 +2201,7 @@ msgstr "עריכת אג'נדה"
 #: templates/auxiliary/_suggestion_forms.html:18
 #: templates/auxiliary/_suggestion_forms.html:33
 #: templates/committees/committee_list.html:45
+#: templates/committees/temp_committee_list.html:45
 #: templates/laws/bill_detail.html:110 templates/laws/bill_detail.html:127
 #: templates/laws/bill_detail.html:147 templates/laws/bill_detail.html:200
 #: templates/laws/bill_detail.html:385 templates/laws/bill_list.html:33
@@ -2649,6 +2661,15 @@ msgstr " כדי להגיב"
 msgid "Please login to comment"
 msgstr "רוצה להגיב? לחץ/י כאן כדי להרשם ולהגיב"
 
+#: templates/committees/_meeting_li.html:11
+msgid ""
+"\n"
+"       %(present)s MKs Present\n"
+"      "
+msgstr ""
+"\n"
+"%(present)s ח\"כים נוכחים"
+
 #: templates/committees/_member_summary.html:5
 #: templates/committees/committee_member_photos.html:5
 #: templates/mks/member_detail.html:110
@@ -2693,6 +2714,8 @@ msgstr "מסמך ממ\"מ"
 #: templates/committees/committee_detail.html:130
 #: templates/committees/committee_list.html:71
 #: templates/committees/committee_list.html:82
+#: templates/committees/temp_committee_list.html:72
+#: templates/committees/temp_committee_list.html:83
 #: templates/committees/topic_list.html:8
 msgid "Suggested Agenda Topics"
 msgstr "הצעות לסדר יום"
@@ -2720,6 +2743,7 @@ msgid "No annotations yet..."
 msgstr "אין עדיין הארות"
 
 #: templates/committees/committee_list.html:41
+#: templates/committees/temp_committee_list.html:41
 msgid "what does committees do?"
 msgstr "מה עושות הועדות?"
 
@@ -5644,21 +5668,6 @@ msgstr "פרופיל המשתמש עודכן"
 
 #~ msgid "Time range"
 #~ msgstr "טווח זמנים"
-
-#~ msgid ""
-#~ "\n"
-#~ "            %(counter)s MK\n"
-#~ "            "
-#~ msgid_plural ""
-#~ "\n"
-#~ "            %(counter)s MKs\n"
-#~ "            "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "ח\"כ %(counter)s"
-#~ msgstr[1] ""
-#~ "\n"
-#~ "%(counter)s ח\"כים"
 
 #~ msgid "Link to compete vote text"
 #~ msgstr "קישור למסמך המלא"
