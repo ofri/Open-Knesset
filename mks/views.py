@@ -24,7 +24,7 @@ from utils import percentile
 from laws.models import MemberVotingStatistics, Bill, VoteAction
 from agendas.models import Agenda
 from auxiliary.views import CsvView
-from persons.models import PersonAlias
+from persons.models import PersonAlias, Person
 
 from video.utils import get_videos_queryset
 from datetime import date, timedelta
@@ -32,6 +32,8 @@ from datetime import date, timedelta
 import logging
 from auxiliary.views import GetMoreView
 from auxiliary.serializers import PromiseAwareJSONEncoder
+
+from actstream import Action
 
 
 logger = logging.getLogger("open-knesset.mks")
@@ -396,6 +398,10 @@ class MemberDetailView(DetailView):
                 object_id=member.pk,
                 content_type=content_type).count()
 
+            protocol_part_annotation_actions = Action.objects.filter(
+                actor_content_type=ContentType.objects.get_for_model(Person), actor_object_id__in=member.person.values_list('pk', flat=True),
+                verb='got annotation for protocol part'
+            )
 
             # since parties are prefetch_releated, will list and slice them
             previous_parties = list(member.parties.all())[1:]
@@ -426,6 +432,7 @@ class MemberDetailView(DetailView):
                 'INITIAL_DATA': self.MEMBER_INITIAL_DATA,
                 'previous_parties': previous_parties,
                 'committees_presence': committees_presence,
+                'protocol_part_annotation_actions': protocol_part_annotation_actions,
             }
 
             if not self.request.user.is_authenticated():
