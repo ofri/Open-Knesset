@@ -353,6 +353,7 @@
             </section>
             {% endif %}
 
+            {% if protocol_part_annotation_actions %}
             <section class="card card-list card-list-latest">
                 <header><h2><i class="fa fa-file-text"></i>{% trans "Protocol Parts With Annotations" %}</h2></header>
                 <ul>
@@ -369,6 +370,7 @@
                     {% endfor %}
                 </ul>
             </section>
+            {% endif %}
         </div> <!-- /span9 -->
         <div class="span3">
             <aside class="sidebar sidebar-stats">
