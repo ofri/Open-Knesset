@@ -117,3 +117,11 @@ def Download(verbosity_level,redownload):
     _downloadLatest(False,redownload)
     _downloadLatest(True,redownload)
 
+def download_for_existing_meeting(meeting):
+    DATA_ROOT = getattr(settings, 'DATA_ROOT')
+    _copy(meeting.src_url, DATA_ROOT+'plenum_protocols/tmp')
+    xmlData = _antiword(DATA_ROOT+'plenum_protocols/tmp')
+    os.remove(DATA_ROOT+'plenum_protocols/tmp')
+    meeting.protocol_text=xmlData
+    meeting.save()
+

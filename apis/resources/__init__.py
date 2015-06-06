@@ -6,13 +6,14 @@ from tastypie.api import Api
 from mks.api import MemberResource, PartyResource, MemberBillsResource, MemberAgendasResource
 from video.api import VideoResource
 from links.api import LinkResource
-from laws.api import BillResource, LawResource, VoteResource
+from laws.api import BillResource, LawResource, VoteResource, VoteActionResource
 from agendas.api import AgendaResource, AgendaTodoResource
 from committees.api import CommitteeResource, CommitteeMeetingResource, ProtocolPartResource
 from auxiliary.api import PostResource, TagResource
 from events.api import EventResource
 from polyorg.api import CandidateListResource
 from persons.api import PersonResource
+from lobbyists.api import LobbyistsChangeResource, LobbyistResource, LobbyistCorporationResource
 
 v2_api = Api(api_name='v2')
 
@@ -24,6 +25,7 @@ v2_api.register(VideoResource())
 v2_api.register(LinkResource())
 v2_api.register(BillResource())
 v2_api.register(VoteResource())
+v2_api.register(VoteActionResource())
 v2_api.register(LawResource())
 v2_api.register(AgendaResource())
 v2_api.register(AgendaTodoResource())
@@ -35,3 +37,6 @@ v2_api.register(TagResource())
 v2_api.register(EventResource())
 v2_api.register(CandidateListResource())
 v2_api.register(PersonResource())
+v2_api.register(LobbyistsChangeResource())
+v2_api.register(LobbyistResource())
+v2_api.register(LobbyistCorporationResource())

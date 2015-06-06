@@ -79,7 +79,7 @@
                     {% endwith %}
                     <ul>
                     {% for o in cms %}
-                        {% committee_meeting_list_item o %}
+                        {% committee_meeting_list_item o show_committee_name=True show_present=True %}
                     {% empty %}
                         <li>{% trans "no results found" %}</li>
                     {% endfor %}

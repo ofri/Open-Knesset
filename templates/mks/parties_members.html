@@ -39,28 +39,13 @@
     <div class="row">
       <div class="cards span12">
         <section class="card card-list card-list-latest compact">
-            <header><h1>{% trans "Coalition" %}</h1></header>
-            <ul>
-            {% for party in coalition %}
-                <li>
-                    <h2><a href="{{party.get_absolute_url}}">{{party.name}}<a></h2>
-                    {% include "mks/member_photos.html" with members=party.current_members %}
-                </li>
-            {% endfor %}
-            </ul>
-        </section>
-      </div>
-      <div class="cards span12">
-        <section class="card card-list card-list-latest compact">
-            <header><h1>{% trans "Opposition" %}</h1></header>
-            <ul>
-            {% for party in opposition %}
-                <li>
-                    <h2><a href="{{party.get_absolute_url}}">{{party.name}}<a></h2>
-                    {% include "mks/member_photos.html" with members=party.current_members %}
-                </li>
-            {% endfor %}
-            </ul>
+          {% for party in parties %}
+            <div class="span1">
+              <h4 style="height: 5em; "><a href="{{party.get_absolute_url}}">{{party.name}}<a></h4>
+              {% include "mks/member_photos.html" with members=party.current_members %}
+            </div>
+          {% endfor %}
+            <div class="clearfix"></div>
         </section>
       </div>
     </div>
