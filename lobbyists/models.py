@@ -4,6 +4,10 @@ from django.db import models
 from django.core.cache import cache
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+import json
+
 
 class LobbyistHistoryManager(models.Manager):
 
@@ -299,3 +303,24 @@ class LobbyistRepresentData(models.Model):
     name = models.CharField(blank=True, null=True, max_length=100)
     domain = models.CharField(blank=True, null=True, max_length=100)
     type = models.CharField(blank=True, null=True, max_length=100)
+
+
+class LobbyistsChange(models.Model):
+    """
+    this model records the changes in lobbyist data
+    """
+    date = models.DateField()
+    type = models.CharField(max_length=20, choices=(
+        ('added', 'Added'),
+        ('deleted', 'Deleted'),
+        ('modified', 'Modified'),
+    ))
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    # this field contains a json dumps of the change diff
+    # relevant only for modified type
+    extra_data = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return u'Lobbyists Change: {date} - {content_type} - {object} - {type}'.format(date=self.date, content_type=self.content_type, object=self.content_object, type=self.type)

@@ -9,6 +9,7 @@
 
     * For detailed documentation **please see** the `Open Knesset developers documentation`_ 
     * For API and Embedding documentation see `Open Knesset API and embedding`_
+    * Issue Tracker: https://huboard.com/hasadna/Open-Knesset
 
 .. _Open Knesset developers documentation: https://oknesset-devel.readthedocs.org/
 .. _Open Knesset API and embedding: http://oknesset-api.readthedocs.org/

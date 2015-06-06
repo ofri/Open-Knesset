@@ -32,12 +32,22 @@ class VoteActionResource(BaseResource):
         allowed_methods = ['get']
         excludes = ['type','id']
         include_resource_uri = False
+        filtering = {
+            'against_own_bill': ALL,
+        }
+        list_fields = [
+            'member', 'party', 'vote', 'against_party', 'against_coalition', 'against_opposition', 'against_own_bill', 'member_title', 'vote_title', 'member_url', 'vote_url', 'vote_time'
+        ]
 
     vote_type = fields.CharField('type',null=True)
-    member = fields.ToOneField(MemberResource,
-                              'member',
-                              full=False)
-
+    member = fields.ToOneField(MemberResource, 'member', full=False)
+    party = fields.ToOneField('mks.api.PartyResource', 'party', full=False)
+    vote = fields.ToOneField('laws.api.VoteResource', 'vote', full=False)
+    member_title = fields.CharField('member')
+    vote_title = fields.CharField('vote')
+    member_url = fields.CharField('member__get_absolute_url')
+    vote_url = fields.CharField('vote__get_absolute_url')
+    vote_time = fields.DateTimeField('vote__time')
 
 class VoteResource(BaseResource):
 

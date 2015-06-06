@@ -5,6 +5,7 @@ from datetime import datetime
 
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
+from django.core.exceptions import ObjectDoesNotExist
 from bs4 import BeautifulSoup
 from persons.models import Role
 from mks.models import Member
@@ -37,7 +38,15 @@ class Command(NoArgsCommand):
                     mk_id = mk_href.split("=")[1]
                     start_date = cs[3].text.lstrip(u'מ-')[:10]
                     end_date = cs[4].text.lstrip(u'עד ')[:10]
-                    person = Member.objects.get(pk=mk_id).person.all()[0]
+
+                    # lookup person by mk_id
+                    try:
+                        person = Member.objects.get(pk=mk_id).person.all()[0]
+                    except ObjectDoesNotExist:
+                        # There can be a cabinet minister who is not a knesset member (signaled with a red dot).
+                        # They do not appear in the persons table, so ignore them.
+                        logger.warn(u"Ignoring person in knesset={} with mk_id={}".format(i, mk_id))
+
                     # now get the field we need for the db
                     try:
                         end_date = datetime.strptime(end_date,"%d/%m/%Y")

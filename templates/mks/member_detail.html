@@ -352,6 +352,25 @@
                 </ul>
             </section>
             {% endif %}
+
+            {% if protocol_part_annotation_actions %}
+            <section class="card card-list card-list-latest">
+                <header><h2><i class="fa fa-file-text"></i>{% trans "Protocol Parts With Annotations" %}</h2></header>
+                <ul>
+                    {% for action in protocol_part_annotation_actions %}
+                        <li>
+                            <p class="item-action">
+                                <a href="{{ action.target.get_absolute_url }}">{{ action.target.meeting }}</a>
+                            </p>
+                            <p class="item-title">
+                                {{ action.target.body }}
+                            </p>
+                            <p class="item-context">{{ action.timestamp }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
         </div> <!-- /span9 -->
         <div class="span3">
             <aside class="sidebar sidebar-stats">

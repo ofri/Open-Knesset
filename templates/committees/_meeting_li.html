@@ -1,7 +1,20 @@
+{% load i18n %}
 {% if add_li %}<li>{% endif %}
+<a href="{{ o.get_absolute_url }}">  {% if show_committee_name %}
+    {{ o.committee }}
+  {% endif %}
     <p class="item-title">
-        <a href="{{ o.get_absolute_url }}">{{ o.topics|truncatewords:20|safe }}</a>
+        {{ o.topics|truncatewords:20|safe }}
     </p>
-    <p class="item-context">{{ o.date_string }}</p>
+    {% if show_present %}
+    <div class="item-context pull-left">
+      {% blocktrans with present=o.mks_attended.count %}
+       {{ present }} MKs Present
+      {% endblocktrans %}
+    </div>
+    <p class="item-context">{{ o.date_string }}
+    {% endif %}
+    </p>
+</a>
 {% if add_li %}</li>{% endif %}
 

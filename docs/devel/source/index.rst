@@ -35,7 +35,7 @@ is Python_ and Django_ based.
 .. _Django: https://www.djangoproject.com/
 .. _Open Knesset Developers group: https://groups.google.com/forum/#!forum/oknesset-dev
 .. _Our code repository: https://github.com/hasadna/Open-Knesset/
-.. _The issue tracker: https://github.com/hasadna/Open-Knesset/issues/
+.. _The issue tracker: https://huboard.com/hasadna/Open-Knesset
 .. _Open Knesset: http://oknesset.org/
 .. _Hasadna: http://www.hasadna.org.il/
 
