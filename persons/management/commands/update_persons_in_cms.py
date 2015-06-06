@@ -5,20 +5,24 @@ from django.db.models import Q
 from committees.models import CommitteeMeeting,ProtocolPart
 from mks.models import Member
 from persons.models import Person,PersonAlias
+from actstream import action, Action
+from django.contrib.contenttypes.models import ContentType
+from annotatetext.models import Annotation
 
 logger = logging.getLogger("open-knesset.persons.create_persons")
 
 class Command(NoArgsCommand):
     
     def handle_noargs(self, **options):
-
+        protocol_part_content_type = ContentType.objects.get_for_model(ProtocolPart)
         # Find persons in all protocol parts:
         p = Person.objects.all()
         names_and_aliases = zip([x.name for x in p],p)
         p = PersonAlias.objects.all()
         names_and_aliases.extend(zip([x.name for x in p],[x.person for x in p]))
         names_and_aliases.sort(key=lambda x:len(x[0]), reverse=True)
-        for pp_header in set(ProtocolPart.objects.exclude(header='').values_list('header',flat=True)):                
+        for pp in ProtocolPart.objects.exclude(header=''):
+            pp_header = pp.header
             for (name,person) in names_and_aliases:
                 if pp_header.find(name)>=0:
                     parts_updated = ProtocolPart.objects.filter(header=pp_header).update(speaker=person)                    
@@ -27,6 +31,9 @@ class Command(NoArgsCommand):
                         cm_ids = set(ProtocolPart.objects.filter(header=pp_header).values_list('meeting__id',flat=True))
                         for cm in CommitteeMeeting.objects.filter(id__in=cm_ids):
                             cm.mks_attended.add(person.mk)
+                    for annotation in Annotation.objects.filter(content_type=ContentType.objects.get_for_model(ProtocolPart), object_id=pp.pk):
+                        if not Action.objects.stream_for_actor(person).filter(target_content_type=protocol_part_content_type, target_object_id=pp.pk, timestamp=annotation.timestamp).exists():
+                            action.send(sender=person, verb='got annotation for protocol part', timestamp=annotation.timestamp, target=pp)
                     break
         
         # find mks in the presence protocol part. this is needed for MKs that don't talk.
